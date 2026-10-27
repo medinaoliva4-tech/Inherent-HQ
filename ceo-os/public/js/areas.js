@@ -1,56 +1,24 @@
-// Las cinco áreas de Inherent OS, iguales en las dos apps (el Tablero y el Chat). El área dice QUÉ trabajas; la app, CÓMO
-// (ver y mover las cosas, o conversarlas). Se escoge una vez con el switch de arriba de la barra y las dos apps la siguen.
-//   Estrategia    la estrategia de cada cliente (① Strategy)
-//   Organización  cómo se maneja Inherent: tu día, proyectos, ventas, servicios y sus finanzas
-//   Marketing     planear y medir la demanda de cada marca: plan del mes, campañas y eventos, calendario, pauta (③ Marketing)
-//   Diseño        hacer las piezas de cada marca: brief, ideas, guiones, identidad y video (④ Creatividad · ⑥A Diseño gráfico)
-//   Consulting    el backend de un cliente: sus operaciones, finanzas, márgenes y estructura (Operations OS y Money OS)
-// Cada una tiene su color (--ui-m-<id> en app.css). espacio: el espacio del Tablero (app.js) · modo: el modo del Chat (llm/modos.js).
-// Marketing y Diseño comparten el espacio de las marcas (#/marcas/…): el área la dice el grupo del módulo abierto (brandlist.js).
-// Puro: sin DOM ni red (lo prueba scripts/test-ui.mjs).
-export const AREAS = [
-  { id: 'estrategia', nombre: 'Estrategia', sub: 'La estrategia de cada cliente', icono: 'target', espacio: 'estrategia', modo: 'estrategia' },
-  { id: 'organizacion', nombre: 'Organización', sub: 'Cómo se maneja Inherent', icono: 'clipboard', espacio: 'org', modo: 'organizacion' },
-  { id: 'marketing', nombre: 'Marketing', sub: 'Plan del mes, campañas y eventos de cada marca', icono: 'megaphone', espacio: 'marcas', modo: 'marketing' },
-  { id: 'diseno', nombre: 'Diseño', sub: 'Las piezas de cada marca: ideas, guiones e identidad', icono: 'palette', espacio: 'marcas', modo: 'diseno' },
-  { id: 'consulting', nombre: 'Consulting', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', icono: 'chart-pie', espacio: 'consulting', modo: 'consulting' },
-];
+// Las áreas del Chat: una por modo del Inherent LLM (llm/modos.js). Son los cinco workspaces de herramientas.js, por su
+// modo, más Organización, que no es un workspace pero sí tiene modo en el Chat. Cada una lleva su color (--ui-m-<id> en
+// app.css), su ícono y su workspace (ws: '' en Organización). Lo usan el Chat (recordar el modo, los encargos de Estrategia)
+// y abrirEnChat, el atajo de las pantallas («Pregúntale al Chat», Consulting, Campañas y eventos y el plan del mes).
+// Puro salvo abrirEnChat (lo prueba scripts/test-llm.mjs).
+import { WORKSPACES } from './herramientas.js';
+
+// Organización no está en WORKSPACES: cómo se maneja Inherent (tareas, proyectos, leads, el día de cada quien).
+const ORGANIZACION = { id: 'organizacion', nombre: 'Organization', sub: 'Cómo se maneja Inherent', icono: 'clipboard', modo: 'organizacion', ws: '' };
+// El orden del Chat: Strategy · Organization · Marketing · Creative · Consulting · Production (un workspace nuevo va al final).
+const ORDEN = ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting', 'produccion'];
+const pos = (id) => { const i = ORDEN.indexOf(id); return i < 0 ? ORDEN.length : i; };
+export const AREAS = [ORGANIZACION, ...WORKSPACES.map((w) => ({ id: w.modo, nombre: w.nombre, sub: w.sub, icono: w.icono, modo: w.modo, ws: w.id }))]
+  .sort((a, b) => pos(a.id) - pos(b.id));
 export const areaDe = (id) => AREAS.find((a) => a.id === id) || null;
-export const areaDeEspacio = (sp) => AREAS.find((a) => a.espacio === sp) || null; // en «marcas» es la primera (Marketing): app.js usa el módulo
 export const areaDeModo = (m) => AREAS.find((a) => a.modo === m) || null;
 
-// Las que abre esta persona. puede = { estrategia, organizacion, diseno, consulting } (booleanos que arma cada app).
-// Consulting va con Estrategia: lo lleva el CEO con Strategy, y el CEO decide quién más en Vistas por rol. Marketing y Diseño, con las marcas.
-export const areasDe = (puede = {}) => AREAS.filter((a) => puede[a.id]);
-
-// El área elegida se recuerda por persona en este navegador: la escriben y la leen las dos apps.
+// El modo elegido se recuerda por persona en este navegador: lo escriben el Chat y abrirEnChat.
 const K = (email) => `os.area.${email || ''}`;
 export function areaGuardada(email) { try { return localStorage.getItem(K(email)) || ''; } catch { return ''; } }
 export function guardarArea(email, id) { try { localStorage.setItem(K(email), id); } catch {} }
-
-// El switch: una pastilla con el ícono de cada área (role="radiogroup"); la elegida lleva su color. Texto HTML, sin DOM.
-// svg(nombre, px) pinta el ícono (svgIco de iconos.js). clase: 'asw' en la barra, 'asw chico' en el cel.
-export function switchHtml(areas, actual, svg, clase = 'asw') {
-  // Sin un área de la lista elegida: sin pastilla, y el primero recibe el Tab (si no, con teclado no se entra al switch).
-  const j = areas.findIndex((a) => a.id === actual), i = Math.max(0, j), on = j >= 0 ? actual : '';
-  return `<div class="${clase}" role="radiogroup" aria-label="Área" style="--n:${areas.length};--i:${i}" data-on="${on}"><span class="asw-pastilla" aria-hidden="true"></span>${areas.map((a, k) => `<button type="button" role="radio" data-area="${a.id}" aria-checked="${a.id === on}" tabindex="${(on ? a.id === on : k === 0) ? 0 : -1}" aria-label="${a.nombre}" style="--c:var(--ui-m-${a.id})">${svg(a.icono, 18)}<span class="asw-tip">${a.nombre}</span></button>`).join('')}</div>`;
-}
-// Flechas dentro del switch: la siguiente o la anterior (da la vuelta). → id del área o null.
-export function areaConFlecha(areas, actual, tecla) {
-  const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[tecla]; if (!d || !areas.length) return null;
-  const i = areas.findIndex((a) => a.id === actual);
-  return areas[(i + d + areas.length) % areas.length].id;
-}
-
-// La barra lateral del Tablero (la misma forma que la del Chat): primero para el CEO; cada quien la prende o la apaga en
-// Mi perfil y se recuerda en este navegador. Sin ella, el Tablero sigue con la barra de arriba de siempre.
-const KB = (email) => `os.barra.${email || ''}`;
-export function barraLateral(me) {
-  if (!me || me.role === 'client') return false;
-  let v = ''; try { v = localStorage.getItem(KB(me.email)) || ''; } catch {}
-  return v ? v === 'lateral' : me.role === 'ceo';
-}
-export function ponerBarra(me, lateral) { try { localStorage.setItem(KB(me.email), lateral ? 'lateral' : 'arriba'); } catch {} }
 
 // Abrir el Chat con un pedido escrito: en el modo de un área, con su cliente o marca y (opcional) el mes del plan. Lo usan
 // «Pregúntale al Chat», Consulting, Campañas y eventos y el plan del mes. Lo único de este archivo que toca el navegador.
