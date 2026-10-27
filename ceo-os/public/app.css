@@ -5171,7 +5171,7 @@ html[data-pantalla="chat"] .top,html[data-pantalla="chat"] .nav-cel{display:none
   --ui-amb-bg:color-mix(in srgb,var(--ui-amb-f) 18%,transparent); --ui-info-bg:color-mix(in srgb,var(--ui-info) 14%,transparent);
 }
 /* Lo que se oculta con [hidden] se oculta aunque la clase le ponga display. */
-:is(.tsh,.sal,.cau,.pro,.esc,.bp,.im) [hidden]{display:none!important}
+:is(.tsh,.sal,.cau,.pro,.esc,.bp,.im,.dn,.xr,.ofa,.grm) [hidden]{display:none!important}
 
 /* ---------- Estado de un entregable: el mismo chip en la cabecera del shell, las tarjetas y el Overview ---------- */
 .chip:is(.tsh-estado,.cs-ent-e,.tool-card-ult-e){gap:6px;background:var(--ui-fill2);color:var(--ui-ink2);font-weight:600}
@@ -5182,11 +5182,11 @@ html[data-pantalla="chat"] .top,html[data-pantalla="chat"] .nav-cel{display:none
 .tool-card-ult-d{display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px}
 
 /* ---------- Lo que no tiene dato: «⚠️ SIN DATOS: sale de …». Ámbar de aviso, nunca rojo ni un 0. ---------- */
-:is(.tsh-sindatos,.sal-sd,.cau-sd,.pro-sd,.esc-sin,.esc-fuente,.bp-sin,.bp-fuente,.im-sin,.im-fuente,.cs-sd){font-size:12.5px;line-height:1.4;color:var(--ui-amb-t)}
-:is(p.sal-sd,p.cau-sd,p.pro-sd,p.esc-sin,p.esc-fuente,p.bp-sin,p.bp-fuente,p.im-sin,p.im-fuente,p.cs-sd,.tsh-sindatos,.cs-sd){padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+:is(.tsh-sindatos,.sal-sd,.cau-sd,.pro-sd,.esc-sin,.esc-fuente,.bp-sin,.bp-fuente,.im-sin,.im-fuente,.cs-sd,.dn-sd,.xr-sd,.ofa-sd,.grm-sd){font-size:12.5px;line-height:1.4;color:var(--ui-amb-t)}
+:is(p.sal-sd,p.cau-sd,p.pro-sd,p.esc-sin,p.esc-fuente,p.bp-sin,p.bp-fuente,p.im-sin,p.im-fuente,p.cs-sd,.tsh-sindatos,.cs-sd,p.dn-sd,p.xr-sd,p.ofa-sd,p.grm-sd){padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
 .tsh-sindatos,.cs-sd{display:block}
 .cs-sd{font-size:13px}
-:is(.sal-ro,.cau-ro,.pro-ro)[data-vacio="1"]{color:var(--ui-amb-t)}
+:is(.sal-ro,.cau-ro,.pro-ro,.dn-ro,.xr-ro,.ofa-ro)[data-vacio="1"]{color:var(--ui-amb-t)}
 
 /* ===================== TOOL SHELL ===================== */
 .tsh{--tsh-c:var(--ws-c,var(--ui-m-consulting));display:block;width:100%;min-width:0}
@@ -5334,21 +5334,21 @@ p.tsh-aviso:empty{display:none}
 }
 
 /* ===================== CONSULTING · lo que comparten las vistas ===================== */
-.sal,.cau,.pro,.esc,.bp,.im{display:flex;flex-direction:column;gap:16px;min-width:0}
+.sal,.cau,.pro,.esc,.bp,.im,.dn,.xr,.ofa{display:flex;flex-direction:column;gap:16px;min-width:0}
 .bp{gap:14px}
 .im{gap:18px}
 /* Una sección = una tarjeta de borde fino. */
-:is(.sal-sec,.cau-raiz,.cau-arbol,.pro-recorrido,.pro-estandar,.pro-envios,.im-sec){min-width:0;padding:16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+:is(.sal-sec,.cau-raiz,.cau-arbol,.pro-recorrido,.pro-estandar,.pro-envios,.im-sec,.dn-sec,.xr-sec,.ofa-sec){min-width:0;padding:16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
 /* Títulos de sección: ícono + texto + la aclaración apagada al lado. */
-:is(.sal-t,.cau-t,.pro-t){display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em}
-:is(.sal-t,.cau-t,.pro-t) .lni{flex:none;color:var(--ui-ink2)}
-:is(.sal-t,.cau-t,.pro-t) .mut{font-size:12.5px;font-weight:400;letter-spacing:0}
+:is(.sal-t,.cau-t,.pro-t,.dn-t,.xr-t,.ofa-t){display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0 0 12px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+:is(.sal-t,.cau-t,.pro-t,.dn-t,.xr-t,.ofa-t) .lni{flex:none;color:var(--ui-ink2)}
+:is(.sal-t,.cau-t,.pro-t,.dn-t,.xr-t,.ofa-t) .mut{font-size:12.5px;font-weight:400;letter-spacing:0}
 legend.sal-t{display:block;float:left;width:100%;padding:0;margin-bottom:12px}
 legend.sal-t+*{clear:both}
 legend.sal-t .lni{margin-right:8px;vertical-align:-3px}
 legend.sal-t .mut{margin-left:8px}
-:is(.sal,.cau,.pro,.esc,.bp,.im) .in{min-width:0}
-.sal-f,.cau-f,.pro-f,.esc-f,.bp-c,.im-c{display:flex;flex-direction:column;gap:5px;min-width:0}
+:is(.sal,.cau,.pro,.esc,.bp,.im,.dn,.xr,.ofa,.grm) .in{min-width:0}
+.sal-f,.cau-f,.pro-f,.esc-f,.bp-c,.im-c,.dn-f,.xr-f,.ofa-f,.grm-f{display:flex;flex-direction:column;gap:5px;min-width:0}
 :is(.pro-medidas,.pro-std-estrellas,.tsh-res){min-width:0}
 /* Un campo inválido: borde rojo suave (el JS pone aria-invalid en vivo). */
 :is(.esc-in,.bp-in,.im-in,.pro-c-rol input)[aria-invalid="true"],.pro input[type=number]:invalid{border-color:color-mix(in srgb,var(--ui-bad) 60%,transparent)}
@@ -5968,3 +5968,459 @@ ul.cs-ents{display:grid;gap:8px;list-style:none;margin:0;padding:0}
   .cs-ent-v{margin-right:auto}
   .cs-ent>a>svg{margin-left:auto}
 }
+
+/* ===================== FASE 3a · Strategy =====================
+   Las vistas de Strategy que se pintan en el centro del Tool Shell (Customer Bullseye .dn-*, Business X-Ray .xr-*, Offer Architect
+   .ofa-*), el Growth Roadmap Builder (.grm-*, sin shell: su casa es la estrategia en vivo), la franja de Buyer Journey y la tarjeta
+   resumen de Customer Avatar Studio (.av-main, .av-flip, .av-res, .av-jr…) y lo nuevo del Tool Shell (.tsh-aprobada, .tsh-act-chat).
+   Todo con tokens --ui-*; lo que se suma lleva su valor de día y de noche aquí abajo. Las vistas del shell miden por el ancho de su centro
+   (@container vista); el Roadmap y Avatar Studio, por el de la pantalla. Lo vacío se pinta en ámbar (--ui-amb), nunca en rojo ni en cero:
+   el rojo es lo que está mal (un eje en riesgo, un límite del nivel). Lo que ya existía se reusa sumando la clase al :is(…) de la Fase 2
+   (⚠️ SIN DATOS, texto de solo lectura, tarjeta de sección, título, columna de campo, [hidden]). */
+/* Los 4 colores de la diana (centro, anillo 1, anillo 2 y anillos 3-4): una rampa del acento, del más fuerte al más suave. De noche el
+   más fuerte es el más claro. El texto de cada anillo usa --ui-acc-ink sobre el centro y --ui-ink sobre los demás (AA en los dos temas). */
+:root{--ui-dn-0:#8a5a36;--ui-dn-1:#c4966e;--ui-dn-2:#e2c9b0;--ui-dn-3:#efe4d8}
+:root[data-theme="dark"]{--ui-dn-0:#c99d74;--ui-dn-1:#7d5a3c;--ui-dn-2:#584333;--ui-dn-3:#413830}
+/* El verde «lleno» del OK (la Fase 2 solo tenía su texto y su fondo): sigue al tema porque se arma del --ui-ok de cada tema. */
+:root,:root[data-theme="dark"]{--ui-ok-f:var(--ui-ok)}
+
+/* ---------- Texto plano de solo lectura de las 3 vistas de Strategy (como el de Consulting, pero con salto de línea) ---------- */
+:is(.dn-ro,.xr-ro,.ofa-ro){display:block;min-width:0;font-size:13.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ui-ink)}
+:is(.dn-f-ancho,.xr-f-ancho){grid-column:1/-1}
+/* La aclaración al lado de un título de campo: en minúsculas y sin negrita, para que no compita con el título. */
+:is(.dn-f,.xr-f,.ofa-f,.grm-f) .lbl .mut{font-size:inherit;font-weight:400;letter-spacing:0;text-transform:none}
+
+/* ===================== CUSTOMER BULLSEYE (.dn-*) ===================== */
+.dn-centro{display:grid;gap:12px}
+.dn-centro>.dn-t{margin:0}
+.dn-envios{display:flex;flex-wrap:wrap;gap:8px}
+.dn-envia{text-decoration:none}
+.dn-envia[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+a.dn-envia[aria-disabled="true"]{pointer-events:none}
+.btn.ghost.dn-envia[aria-disabled="true"]:hover{transform:none;filter:none;background:var(--ui-surf);box-shadow:var(--ui-sh-1)}
+/* La diana a la izquierda y los segmentos a la derecha; la diana se queda a la vista mientras se escribe en un segmento. */
+.dn-cuerpo{display:grid;grid-template-columns:minmax(220px,340px) minmax(0,1fr);gap:20px;align-items:start}
+.dn-cuerpo>*{min-width:0}
+.dn-fig{position:sticky;top:96px;margin:0}
+.dn-fig figcaption{margin-top:8px;line-height:1.4;text-align:center}
+.dn-svg{display:block;width:100%;max-width:340px;height:auto;margin:0 auto}
+.dn-ring{cursor:pointer;outline:none}
+.dn-ring circle{fill:var(--ui-dn-0);stroke:var(--ui-surf);stroke-width:1.5}
+.dn-ring[data-clave="prioritario"] circle{fill:var(--ui-dn-1)}
+.dn-ring[data-clave="secundario"] circle{fill:var(--ui-dn-2)}
+.dn-ring[data-clave="baja"] circle{fill:var(--ui-dn-3)}
+.dn-ring[data-i="4"] circle{stroke:var(--ui-mut2);stroke-width:1}
+.dn-ring[data-lleno="0"] circle{fill-opacity:.45;stroke:var(--ui-mut2);stroke-width:1;stroke-dasharray:4 3}
+.dn-ring:hover circle{stroke:var(--ui-mut);stroke-width:2}
+.dn-ring[data-sel="1"] circle{stroke:var(--ui-ink);stroke-width:2.5}
+.dn-ring:focus-visible circle{stroke:var(--ui-ink);stroke-width:3.5;stroke-dasharray:none}
+.dn-n{pointer-events:none;user-select:none;fill:var(--ui-ink);font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.dn-ring[data-clave="icp"] .dn-n{font-size:11px}
+.dn-ring[data-clave="icp"][data-lleno="1"] .dn-n{fill:var(--ui-acc-ink)}
+@media (prefers-reduced-motion:no-preference){.dn-ring circle{transition:stroke-width var(--d-2) var(--e-std),fill-opacity var(--d-2) var(--e-std)}}
+/* Un segmento por anillo: su color es el mismo del anillo. */
+.dn-segs{display:flex;flex-direction:column;gap:var(--s2)}
+.dn-seg{min-width:0;padding:12px 14px;border-radius:var(--r-3);background:var(--ui-bg);border:1px solid var(--ui-line)}
+.dn-seg[data-sel="1"]{border-color:var(--ui-acc);box-shadow:0 0 0 1px var(--ui-acc)}
+.dn-seg-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-bottom:10px}
+.dn-dot{flex:none;width:12px;height:12px;border-radius:50%;background:var(--ui-dn-0);box-shadow:0 0 0 1px var(--ui-line2)}
+.dn-seg[data-clave="prioritario"] .dn-dot{background:var(--ui-dn-1)}
+.dn-seg[data-clave="secundario"] .dn-dot{background:var(--ui-dn-2)}
+.dn-seg[data-clave="baja"] .dn-dot{background:var(--ui-dn-3)}
+.dn-seg-t{display:flex;flex:1 1 180px;flex-direction:column;gap:1px;min-width:0}
+.dn-seg-t h4{margin:0;font-size:14px;font-weight:600}
+.dn-seg-est{display:inline-flex;flex-wrap:wrap;max-width:100%;margin-left:auto}
+.dn-chip{display:inline-flex;align-items:center;gap:4px;max-width:100%;padding:3px 10px;border-radius:12px;background:var(--ui-fill2);color:var(--ui-ink2);font-size:11.5px;font-weight:600;line-height:1.35}
+.dn-chip[data-ok="1"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.dn-chip[data-ok="0"]{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+.dn-seg-b{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 12px}
+.dn-mas{grid-column:1/-1}
+.dn-mas>summary{cursor:pointer;font-size:12.5px;color:var(--ui-mut)}
+.dn-mas>summary:hover{color:var(--ui-ink)}
+.dn-mas-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 12px;margin-top:10px}
+.dn-mas-bus{margin-top:10px}
+.dn-mas-bus:empty{display:none}
+.dn-bus{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.dn-bus-i{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:3px 10px;border-radius:99px;background:var(--ui-fill);font-size:12.5px}
+.dn-bus-i>span{min-width:0;overflow-wrap:anywhere}
+.dn-bus-i a{flex:none;font-size:12px;color:var(--ui-ink2);text-decoration:underline;text-underline-offset:2px}
+.dn-bus-i a:hover{color:var(--ui-ink)}
+/* La mezcla 3/1/1: cada video lleva el color de su anillo en el filo izquierdo. */
+.dn-mix>p{margin:0 0 12px}
+.dn-mix-l{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 12px;list-style:none;margin:0;padding:0}
+.dn-mix-f{min-width:0;padding:10px 12px;border-radius:var(--r-2);background:var(--ui-bg);border:1px solid var(--ui-line);border-left:4px solid var(--ui-dn-0)}
+.dn-mix-f[data-ring="1"]{border-left-color:var(--ui-dn-1)}
+.dn-mix-f[data-ring="2"]{border-left-color:var(--ui-dn-2)}
+/* Lo que se aprendió por lote (solo lectura). */
+table.dn-cal{width:100%;border-collapse:collapse}
+.dn-cal :is(th,td){position:static;height:auto;padding:8px 10px;background:transparent;border-bottom:1px solid var(--ui-line);font-size:13px;text-align:center}
+.dn-cal thead th{border-bottom-color:var(--ui-line2);color:var(--ui-ink);font-weight:700}
+.dn-cal tbody th{color:var(--ui-ink);font-weight:600;text-align:left}
+.dn-cal td:last-child{text-align:left}
+.dn-cal tbody tr:hover{background:none}
+.dn-cal tbody tr:last-child>:is(th,td){border-bottom:0}
+.dn-res{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%}
+.dn-res-c{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@container vista (max-width:719px){
+  .dn-cuerpo{grid-template-columns:minmax(0,1fr)}
+  .dn-fig{position:static}
+}
+@container vista (max-width:559px){
+  table.dn-cal{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
+/* ===================== BUSINESS X-RAY (.xr-*) ===================== */
+.xr-etapa{display:grid;gap:10px}
+.xr-etapa>.xr-t{margin:0}
+.xr-etapa>[data-r]:empty{display:none}
+.xr-badge{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0}
+.xr-badge-n{font-size:15px;font-weight:700}
+.xr-badge[data-estado="falta"]{width:fit-content;max-width:100%;padding:6px 10px;border-radius:8px;background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.chip.xr-chip{background:var(--ui-info-bg);color:var(--ui-info-t);font-weight:600}
+.chip.xr-chip[data-confirmada="1"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.chip.xr-chip[data-confirmada="0"]{background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+.xr-badge[data-estado="confirmada"] .xr-badge-n{color:var(--ui-ok-t)}
+.xr-badge[data-estado="propuesta"] .xr-badge-n{color:var(--ui-amb-t)}
+.xr-prop{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0;font-size:13.5px}
+.xr-prop .mut{min-width:0}
+.xr-etapa-f{max-width:320px}
+.xr-etapa-det{margin:0;font-size:13.5px;line-height:1.45;color:var(--ui-ink2)}
+.xr-etapa-det i{color:var(--ui-ink)}
+.xr-etapa-bt{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.xr-concl>.xr-f{margin:0}
+/* Los 6 tiles de salud. ok = verde, riesgo = rojo con fondo, falta = punteado y sin fondo (no es un problema: es «sin datos»). */
+.xr-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.xr-tile{display:flex;flex-direction:column;gap:10px;min-width:0;padding:14px;border-radius:var(--r-3);background:var(--ui-bg);border:1px solid var(--ui-line);border-top:3px solid var(--ui-line2)}
+.xr-tile[data-estado="ok"]{border-color:color-mix(in srgb,var(--ui-ok) 32%,transparent);border-top-color:var(--ui-ok)}
+.xr-tile[data-estado="riesgo"]{border-color:color-mix(in srgb,var(--ui-bad) 32%,transparent);border-top-color:var(--ui-bad);background:linear-gradient(var(--ui-bad-bg),var(--ui-bad-bg)),var(--ui-bg)}
+.xr-tile[data-estado="falta"]{border:1px dashed color-mix(in srgb,var(--ui-amb-f) 50%,transparent);background:transparent}
+.xr-tile-h{display:flex;flex-direction:column;gap:2px}
+.xr-tile-h h4{margin:0;font-size:14px;font-weight:600}
+.xr-tile[data-sin="1"] label.xr-f:first-of-type .in{border-color:color-mix(in srgb,var(--ui-amb-f) 60%,transparent);background:var(--ui-amb-bg)}
+.xr-tile-av{display:flex;flex-direction:column;gap:6px}
+.xr-tile-av:empty{display:none}
+/* El estado como control segmentado: los radios siguen en el orden de tabulación (no display:none), el span de cada opción es el botón. */
+fieldset.xr-estado{display:flex;flex-wrap:wrap;gap:4px;min-width:0;margin:0;padding:0;border:0}
+.xr-op{position:relative;display:inline-flex;cursor:pointer}
+.xr-op input{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+.xr-op>span{display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:99px;border:1px solid var(--ui-line2);background:var(--ui-fill);color:var(--ui-ink2);font-size:12.5px;font-weight:600}
+.xr-op:hover>span{background:var(--ui-fill2);color:var(--ui-ink)}
+.xr-op input:focus-visible+span{outline:2px solid var(--ui-focus);outline-offset:2px}
+.xr-op[data-estado="ok"] input:checked+span{background:var(--ui-ok-bg);border-color:color-mix(in srgb,var(--ui-ok) 55%,transparent);color:var(--ui-ok-t)}
+.xr-op[data-estado="riesgo"] input:checked+span{background:var(--ui-bad-bg);border-color:color-mix(in srgb,var(--ui-bad) 55%,transparent);color:var(--ui-bad-t)}
+.xr-op[data-estado="falta"] input:checked+span{background:transparent;border-style:dashed;border-color:color-mix(in srgb,var(--ui-amb-f) 60%,transparent);color:var(--ui-amb-t)}
+.chip.xr-estado-chip{align-self:flex-start;font-weight:600}
+.chip.xr-estado-chip[data-estado="ok"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.chip.xr-estado-chip[data-estado="riesgo"]{background:var(--ui-bad-bg);color:var(--ui-bad-t)}
+.chip.xr-estado-chip[data-estado="falta"]{background:transparent;border:1px dashed color-mix(in srgb,var(--ui-amb-f) 55%,transparent);color:var(--ui-amb-t)}
+.xr-trabado-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.xr-riesgos{margin:10px 0 0;font-size:12.5px;color:var(--ui-mut)}
+.xr-riesgos b{color:var(--ui-ink);font-weight:600}
+.xr-riesgos:empty{display:none}
+.xr-pie{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.btn.xr-huecos:disabled,.btn.xr-huecos[disabled]{opacity:.45;cursor:not-allowed;pointer-events:auto;transform:none;filter:none}
+.xr-res{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%}
+.xr-res-c{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@container vista (max-width:699px){
+  .xr-analisis .ev-g3{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ===================== OFFER ARCHITECT (.ofa-*) ===================== */
+.ofa-aprueba{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font-size:13px;line-height:1.4;color:var(--ui-mut)}
+.ofa-aprueba>svg{flex:none}
+.ofa-aprueba a{color:var(--ui-ink);text-decoration:underline;text-underline-offset:3px}
+.ofa-aprueba a:hover{color:var(--ui-acc)}
+.ofa[data-aprobado="1"] .ofa-aprueba{color:var(--ui-ok-t)}
+.ofa-nivel,.ofa-cand{display:flex;align-items:flex-start;gap:8px;margin:0;padding:8px 12px;border-radius:var(--r-2);border:1px solid color-mix(in srgb,var(--ui-amb-f) 30%,transparent);background:var(--ui-amb-bg);color:var(--ui-ink);font-size:13px;line-height:1.4}
+.ofa-nivel>svg,.ofa-cand>svg{flex:none;margin-top:2px;color:var(--ui-amb-t)}
+.ofa-cand{margin-bottom:12px}
+/* Una sección que el nivel bloquea: solo lectura, con su candado. */
+.ofa-sec[data-bloq="1"]{background:var(--ui-fill);border-style:dashed;border-color:var(--ui-line2)}
+.ofa-sec[data-bloq="1"] .ofa-ro{color:var(--ui-ink2)}
+.ofa-fila{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s3)}
+.ofa-f-ancho{grid-column:1/-1}
+.ofa-ro{padding:2px 0}
+.ofa-nota{margin:0 0 10px}
+.ofa :is(input,textarea,select):disabled{opacity:.6;cursor:not-allowed}
+/* La ecuación de valor: 4 tarjetas; las que suman llevan filo verde y las que restan, ámbar. */
+.ofa-facs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ofa-fac{display:flex;flex-direction:column;gap:8px;min-width:0;padding:12px;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line);border-top:3px solid var(--ui-line2)}
+.ofa-fac[data-lado="arriba"]{border-top-color:var(--ui-ok-f)}
+.ofa-fac[data-lado="abajo"]{border-top-color:var(--ui-amb-f)}
+.ofa-fac-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 8px}
+.ofa-fac-h b{font-size:14px;font-weight:600}
+.ofa-lado{font-weight:600}
+.ofa-fac[data-lado="arriba"] .ofa-lado{color:var(--ui-ok-t)}
+.ofa-fac[data-lado="abajo"] .ofa-lado{color:var(--ui-amb-t)}
+.ofa-fac-ayuda{margin:0;line-height:1.35}
+.ofa-rango{display:flex;align-items:center;gap:8px;min-width:0}
+.ofa-rango input[type="range"]{flex:1 1 0;min-width:0;accent-color:var(--ui-acc)}
+.ofa-rango input[type="range"][data-vacio="1"]{opacity:.45}
+.ofa-rango .btn{flex:none}
+.ofa-num{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 4px;min-height:28px}
+.ofa-n{font-size:22px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.ofa-valor{margin-top:12px;padding:16px 18px;border-radius:var(--r-3);background:color-mix(in srgb,var(--ui-acc) 10%,var(--ui-surf));border:1px solid color-mix(in srgb,var(--ui-acc) 28%,transparent)}
+.ofa-valor-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.ofa-valor-n{font-size:34px;font-weight:600;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.ofa-valor-t>.ofa-sd{font-size:14px;font-weight:500}
+.ofa-valor p{margin:6px 0 0}
+/* El stack: 4 listas con su botón de agregar. */
+.ofa-listas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.ofa-lista{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ofa-lista h4{margin:0 0 2px;font-size:13px;font-weight:600}
+.ofa-lista>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ofa-it{display:flex;align-items:center;gap:6px;min-width:0}
+.ofa-it .in{flex:1 1 0;min-width:0}
+.btn.ofa-x{flex:none;width:32px;height:32px;padding:0;justify-content:center}
+.btn.ofa-mas{align-self:flex-start}
+.ofa-ul{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px;line-height:1.4}
+.ofa-ul>li{padding-bottom:6px;border-bottom:1px solid var(--ui-line);overflow-wrap:anywhere}
+.ofa-ul>li:last-child{padding-bottom:0;border-bottom:0}
+/* Las variaciones lado a lado y la escalera. */
+.ofa-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.ofa-var,.ofa-paso{display:flex;flex-direction:column;gap:8px;min-width:0;padding:12px;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line)}
+.ofa-var-h{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
+.ofa-var-h b{font-size:14px;font-weight:600}
+.ofa-cols+.btn.ofa-mas{margin-top:12px}
+.ofa-pasos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ofa-paso h4{margin:0;font-size:14px;font-weight:600}
+.ofa-paso>p{margin:0;line-height:1.35}
+.ofa-res{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-width:0;max-width:100%}
+.ofa-res-p{min-width:0;overflow-wrap:anywhere}
+@container vista (min-width:640px){
+  .ofa-f-ancho{grid-column:span 2}
+}
+@container vista (max-width:959px){
+  .ofa-facs,.ofa-listas,.ofa-pasos{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@container vista (max-width:559px){
+  .ofa-facs,.ofa-listas,.ofa-pasos{grid-template-columns:minmax(0,1fr)}
+  .ofa-valor{padding:14px}
+  .ofa-valor-n{font-size:30px}
+}
+
+/* ===================== GROWTH ROADMAP BUILDER (.grm-*) ===================== */
+/* No usa el shell: pinta directo en la pantalla del workspace. La cabecera, el aviso, la barra de acciones y los paneles de la IA siguen
+   el mismo diseño del shell (.tsh-*) con su propio prefijo. */
+.grm{--grm-c:var(--ws-c,var(--ui-m-strategy));display:block;width:100%;min-width:0;max-width:100%}
+.grm>*:not(:empty){margin-top:16px}
+.grm>*:first-child{margin-top:0}
+.grm-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.grm-head-t{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;min-width:0}
+.grm-head-t h2{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.2}
+.grm-head-t h2 .lni{color:var(--grm-c)}
+.grm-cli{font-size:13.5px;color:var(--ui-mut)}
+.grm-head-m{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.chip.grm-estado{gap:6px;background:var(--ui-fill2);color:var(--ui-ink2);font-weight:600}
+.chip.grm-estado::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}
+.chip.grm-estado[data-aprobada="1"]{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.chip.grm-sucio{background:var(--ui-amb-bg);color:var(--ui-amb-t);font-weight:600}
+/* El aviso con candado: ámbar suave para «solo lectura»; con la estrategia aprobada, el verde calmado de .tsh-aprobada. */
+.grm-aviso{display:flex;align-items:flex-start;gap:10px;margin:0;padding:12px 14px;border-radius:var(--r-3);border:1px solid color-mix(in srgb,var(--ui-amb-f) 30%,transparent);border-left:3px solid var(--ui-amb-f);background:var(--ui-amb-bg);color:var(--ui-ink);font-size:13.5px;line-height:1.4}
+.grm-aviso>svg{flex:none;margin-top:1px;color:var(--ui-amb-t)}
+.grm-aviso[data-aprobada="1"]{border-color:color-mix(in srgb,var(--ui-ok-f) 30%,transparent);border-left-color:var(--ui-ok-f);background:var(--ui-ok-bg)}
+.grm-aviso[data-aprobada="1"]>svg{color:var(--ui-ok-t)}
+.grm-acts{display:flex;flex-wrap:wrap;align-items:center;gap:8px 0;padding:8px 12px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.grm-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.grm-grp:empty{display:none}
+.grm-grp:not(:empty)~.grm-grp:not(:empty){padding-left:12px;border-left:1px solid var(--ui-line2)}
+.grm-grp:not(:empty):has(~ .grm-grp:not(:empty)){padding-right:12px}
+.btn.grm-act{height:32px;padding:0 12px;font-size:13px;gap:6px;text-decoration:none}
+.btn.grm-act:disabled,.btn.grm-act[disabled]{opacity:.45;cursor:not-allowed;pointer-events:auto;transform:none;filter:none}
+.btn.grm-act:disabled:hover{transform:none;filter:none}
+/* Las chips del Opportunity Map (llegan en la Fase 3e): hoy solo el marcador, apagado. */
+.grm-opp{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.grm-opp .chip{background:transparent;border:1px dashed var(--ui-line2);color:var(--ui-mut)}
+/* El timeline y el plan de 90 días son una tarjeta; Hitos, otra. */
+.grm-sec{min-width:0;padding:16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.grm-sec-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:12px}
+.grm-sec-h h3{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.grm-sec-h h3 .lni{flex:none;color:var(--ui-ink2)}
+.grm-sec-h h3 .mut{font-size:12.5px;font-weight:400;letter-spacing:0}
+.grm-vistas{display:inline-flex;flex-wrap:wrap;gap:2px;max-width:100%;margin-bottom:12px;padding:3px;border-radius:18px;background:var(--ui-fill);border:1px solid var(--ui-line)}
+.grm-vistas>.btn{height:30px;padding:0 14px;border:0;box-shadow:none;font-size:13px}
+.grm-vistas>.btn:hover{transform:none;box-shadow:none}
+.grm-vistas>.btn.ghost{background:transparent;color:var(--ui-ink2)}
+.grm-vistas>.btn.ghost:hover{background:var(--ui-fill2);color:var(--ui-ink)}
+.grm-vistas>.btn[aria-pressed="true"]{background:var(--ui-ink);color:var(--ui-bg)}
+/* La grilla: 6 áreas × 4 trimestres. En celular se desliza dentro de su tarjeta y la columna de áreas se queda a la izquierda. */
+.grm-sc{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.grm-grid{width:100%;min-width:900px;table-layout:fixed;border-collapse:separate;border-spacing:6px}
+.grm-grid thead>tr>:first-child{width:120px}
+.grm-grid :is(th,td){height:auto;border:0;font-size:13px}
+.grm-grid th{padding:6px 8px}
+.grm-grid th[scope="col"]{position:static;background:transparent;color:var(--ui-ink);font-weight:600;text-align:center}
+.grm-grid th[scope="col"] b{display:block;font-size:14px}
+.grm-grid th[scope="col"] .mut{display:block;font-weight:400}
+.grm-grid th[scope="row"]{position:sticky;top:auto;left:0;z-index:2;padding:8px 10px 8px 4px;background:var(--ui-surf);box-shadow:-6px 0 0 var(--ui-surf),6px 0 0 var(--ui-surf);color:var(--ui-ink);font-weight:600;text-align:left;vertical-align:top}
+.grm-grid th[scope="row"] b{display:block;font-size:13.5px}
+.grm-grid thead td{padding:0;background:transparent}
+.grm-grid tbody tr:hover{background:none}
+td.grm-celda{height:72px;padding:8px;border-radius:var(--r-2);background:var(--ui-fill);vertical-align:top}
+.chip.grm-fuera{display:inline-flex;margin-top:6px;background:var(--ui-amb-bg);color:var(--ui-amb-t);font-weight:600;text-align:left;white-space:normal}
+.grm-its{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.grm-its+.grm-mas{margin-top:8px}
+.grm-it{display:flex;flex-direction:column;gap:6px;min-width:0;padding:8px;border-radius:var(--r-2);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.grm-it-t{padding:6px 8px;font-size:13px}
+.grm-it-m{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.grm-it-m select.in{flex:1 1 84px;width:auto;min-width:0;height:28px;padding:0 24px 0 8px;font-size:12.5px;background-position:right 8px center}
+.btn.grm-x{flex:none;width:28px;height:28px;padding:0;justify-content:center}
+.grm-it-m .grm-x{margin-left:auto}
+.grm-it-ro{margin:0;font-size:13.5px;line-height:1.4;overflow-wrap:anywhere}
+.grm-ts>summary{cursor:pointer;font-size:12.5px;color:var(--ui-ink2)}
+.grm-ts>ul{margin:6px 0 0;padding-left:16px;font-size:12.5px;line-height:1.4}
+.chip.grm-opp-c{align-self:flex-start;background:var(--ui-info-bg);color:var(--ui-info-t)}
+.btn.grm-mas{display:flex;width:100%;justify-content:center;border-style:dashed;background:transparent;box-shadow:none;color:var(--ui-mut)}
+.btn.grm-mas:hover{transform:none;background:var(--ui-surf);color:var(--ui-ink)}
+/* El plan de 90 días (solo lectura): la misma grilla, con celdas de texto y la fila de la meta. */
+table.grm-90{min-width:700px}
+.grm-90 td.grm-celda{font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+tr.grm-meta>:is(th,td){font-weight:700}
+tr.grm-meta td.grm-celda{background:color-mix(in srgb,var(--ui-acc) 12%,var(--ui-fill))}
+.grm-etapa{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:var(--ui-ink2)}
+.grm-etapa b{color:var(--ui-ink)}
+/* Hitos. */
+ol.grm-hs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 12px;padding:0;list-style:none}
+.grm-h{display:flex;flex:1 1 260px;flex-direction:column;gap:8px;min-width:0;max-width:380px;padding:10px;border-radius:var(--r-2);background:var(--ui-fill)}
+.grm-h>b{font-size:14px;line-height:1.3}
+.grm-h>span{font-size:13px;line-height:1.4;color:var(--ui-ink2)}
+.grm-h>.grm-x{align-self:flex-end}
+.grm-faltas:empty{display:none}
+.grm-faltas:not(:empty){padding:14px 16px;border-radius:var(--r-3);background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent)}
+.grm-faltas h3{margin:0 0 8px;font-size:14px;font-weight:600}
+ul.grm-fl{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+ul.grm-fl>li{position:relative;padding-left:16px}
+ul.grm-fl>li::before{content:"";position:absolute;left:3px;top:.55em;width:5px;height:5px;border-radius:50%;background:currentColor}
+/* La IA: corriendo, propuesta, sin bloque o error. */
+.grm-gen,.grm-prop{position:relative;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1)}
+.grm-gen>header,.grm-prop>header{display:flex;align-items:center;gap:10px;min-height:32px}
+.grm-gen-t,.grm-prop>header h3{display:inline-flex;align-items:center;gap:8px;margin:0;font-size:14px;font-weight:600}
+.grm-prop>header h3{flex:1;min-width:0}
+.grm-prop>header .mut{flex:none;max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grm-paso{flex:1;min-width:0;overflow:hidden;text-align:center;text-overflow:ellipsis;white-space:nowrap;color:var(--ui-mut)}
+.grm-gen>header>.btn{margin-left:auto}
+.grm-gen p{margin:0;font-size:13.5px}
+.grm-gen[data-fase="corriendo"]{border-color:color-mix(in srgb,var(--grm-c) 55%,transparent)}
+.grm-gen[data-fase="sin-bloque"]{border-color:color-mix(in srgb,var(--ui-amb-f) 45%,transparent);background:linear-gradient(var(--ui-amb-bg),var(--ui-amb-bg)),var(--ui-surf)}
+.grm-gen[data-fase="error"]{border-color:color-mix(in srgb,var(--ui-bad) 45%,transparent);background:linear-gradient(var(--ui-bad-bg),var(--ui-bad-bg)),var(--ui-surf)}
+.grm-prop[data-fase="propuesta"]{border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent)}
+.grm-gen summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.grm-gen details{display:grid;gap:8px}
+pre.grm-stream{max-height:220px;margin:0;padding:10px 12px;overflow:auto;border-radius:var(--r-2);background:var(--ui-fill);border:1px solid var(--ui-line);color:var(--ui-ink2);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word}
+.grm-prop-res{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0;font-size:13.5px}
+.grm-prop-d{display:grid;gap:8px}
+.grm-prop-d>summary{cursor:pointer;font-size:13px;color:var(--ui-ink2)}
+.grm-prop-l{display:grid;gap:6px;max-height:260px;margin:8px 0 0;padding:0;overflow:auto;list-style:none;font-size:13px;line-height:1.4}
+.grm-prop-l>li{overflow-wrap:anywhere}
+ul.grm-crit{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:13.5px}
+.grm-crit li{display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.grm-crit li>span[aria-hidden="true"]{flex:none;width:1.2em;font-weight:700;text-align:center}
+.grm-crit li.ok>span[aria-hidden="true"]{color:var(--ui-ok-t)}
+.grm-crit li.falta>span[aria-hidden="true"]{color:var(--ui-bad-t)}
+.grm-prop-bt{display:flex;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion:no-preference){
+  .grm-gen[data-fase="corriendo"]::after{content:"";position:absolute;inset:-1px;border-radius:inherit;border:2px solid var(--grm-c);pointer-events:none;opacity:.15;animation:tshPulso 1.8s ease-in-out infinite}
+  .grm-gen[data-fase="corriendo"] .grm-gen-t .lni{animation:tshGira 1s linear infinite}
+}
+@media (max-width:720px){
+  .grm-head-m{width:100%}
+  .grm-acts{gap:8px}
+  .grm-grp,.grm-grp:not(:empty)~.grm-grp:not(:empty),.grm-grp:not(:empty):has(~ .grm-grp:not(:empty)){flex:1 1 100%;padding:0;border-left:0}
+  .grm-grp:not(:empty)~.grm-grp:not(:empty){padding-top:8px;border-top:1px solid var(--ui-line)}
+  .btn.grm-act{flex:1 1 auto;justify-content:center}
+  .grm-vistas>.btn{padding:0 10px;font-size:12.5px}
+  .grm-gen,.grm-prop{width:100%}
+  .grm-prop>header .mut{max-width:40%}
+  .grm-prop-bt>.btn{flex:1 1 auto;justify-content:center}
+  .grm-h{max-width:none}
+}
+
+/* ===================== CUSTOMER AVATAR STUDIO · tarjeta que se voltea, resumen y Buyer Journey ===================== */
+/* La columna de la izquierda: la tarjeta (resumen ↔ ficha) y debajo la franja del Buyer Journey. */
+.av-main{display:flex;flex-direction:column;gap:var(--s3);min-width:0}
+.av-flip{min-width:0}
+.av-flip-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:var(--s2)}
+.avt .av-flip-bar .lbl{margin:0}
+.av-cara{min-width:0}
+.av-voltear:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+/* El voltear: sale girando hasta 90° (160 ms) y entra desde -90° (200 ms). El JS cambia la cara entre las dos; con «reducir movimiento» no hay giro. */
+@media (prefers-reduced-motion:no-preference){
+  .av-flip{transform-origin:50% 50%}
+  .av-flip[data-voltea]{will-change:transform,opacity}
+  .av-flip[data-voltea="sale"]{animation:avVolteaSale 160ms var(--e-std) both}
+  .av-flip[data-voltea="entra"]{animation:avVolteaEntra 200ms var(--e-out) both}
+}
+@keyframes avVolteaSale{from{transform:perspective(900px) rotateY(0);opacity:1}to{transform:perspective(900px) rotateY(90deg);opacity:0}}
+@keyframes avVolteaEntra{from{transform:perspective(900px) rotateY(-90deg);opacity:0}to{transform:perspective(900px) rotateY(0);opacity:1}}
+/* La tarjeta resumen: la misma piel que .av-sec. */
+.av-res{display:flex;flex-direction:column;gap:var(--s4);min-width:0;padding:var(--s5);border-radius:var(--r-l);background:var(--glass2);border:1px solid var(--stroke);box-shadow:var(--sh-1)}
+.av-res-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.av-res-h>div:first-child{min-width:0}
+.av-res-h h3{margin:0;font-size:16px;font-weight:600;letter-spacing:-.2px;overflow-wrap:anywhere}
+.av-res-p{margin:2px 0 0;font-size:13.5px;line-height:1.4;color:var(--ink2)}
+.av-res-c{display:flex;flex:none;align-items:center;gap:8px}
+.av-res-c b{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.av-res-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--s3) var(--s4)}
+.av-res-i{min-width:0}
+.av-res-i ul{margin:0;padding-left:16px;font-size:13.5px;line-height:1.45}
+.av-res-i li::marker{color:var(--ui-mut2)}
+.av-res-i li.mut{margin-left:-16px;list-style:none;font-size:12.5px}
+.av-res-i p{margin:0;font-size:13.5px;line-height:1.45}
+.av-res-j,.av-res-ang{min-width:0}
+ol.av-res-jr{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.av-res-jr li{display:inline-flex;align-items:baseline;gap:6px;padding:4px 10px;border-radius:99px;background:var(--fill);font-size:12.5px}
+.av-res-jr li>span{font-variant-numeric:tabular-nums;color:var(--mut)}
+.av-res-jr li[data-n="0"]{background:transparent;border:1px dashed var(--hair-strong);color:var(--mut)}
+.av-res-ang ul{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.av-res-ang li{max-width:100%;padding:4px 10px;border-radius:12px;background:var(--fill);font-size:12.5px;line-height:1.4;overflow-wrap:anywhere}
+.av-res-ang li b{margin-right:4px;font-weight:600}
+/* Lo que falta: ⚠️ SIN DATOS y de dónde sale. */
+.av-sd{font-size:13px;line-height:1.4;color:var(--warn)}
+/* La franja del Buyer Journey: 5 etapas × 6 filas. Es una .av-sec; su encabezado va a dos lados (título a la izquierda, avance a la derecha). */
+.av-jr header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:var(--s4)}
+.av-jr-hd{min-width:0}
+.av-jr header .chip{flex:none}
+.av-jr-sd{margin:0 0 var(--s3)}
+.av-jr-sc{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.av-jr-t{width:100%;min-width:860px;table-layout:fixed;border-collapse:separate;border-spacing:6px}
+.av-jr-t thead th:first-child{width:130px}
+.av-jr-t th{height:auto;padding:6px 4px;border:0}
+.av-jr-t th[scope="col"]{position:static;background:transparent;color:var(--ink);font-size:13px;font-weight:600;text-align:center}
+.av-jr-t th[scope="row"]{position:sticky;top:auto;left:0;z-index:2;padding:8px 8px 8px 4px;background:var(--ui-surf);box-shadow:-6px 0 0 var(--ui-surf),6px 0 0 var(--ui-surf);color:var(--ink);font-size:13px;text-align:left;vertical-align:top}
+.av-jr-t th[scope="row"] b{display:block;font-size:13.5px;font-weight:600}
+.av-jr-t th[scope="row"] .mut{display:block;font-weight:400}
+.av-jr-t td{height:auto;padding:0;border:0;vertical-align:top}
+.av-jr-t tbody tr:hover{background:none}
+textarea.in.av-jr-c{display:block;width:100%;min-height:72px;padding:8px 10px;font-size:13.5px;line-height:1.4;resize:vertical}
+.av-jr-c::placeholder{color:var(--warn);opacity:1}
+.av-jr-ro{margin:0;font-size:13.5px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+/* Al lado: la IA y «Enviar a Offer Architect». */
+.btn.av-envia{align-self:flex-start;gap:6px}
+.av-rev>summary{cursor:pointer;font-size:12.5px;color:var(--tone)}
+.av-rev-l{display:grid;gap:8px;max-height:260px;margin:6px 0 0;padding:0;overflow:auto;list-style:none}
+.av-rev-l>li{font-size:12.5px;line-height:1.4;color:var(--ink2);overflow-wrap:anywhere}
+.av-rev-l>li>b{display:block;margin-bottom:1px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+.av-pisa{display:inline-block;padding:1px 8px;border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);border-radius:99px;background:transparent;color:var(--warn);font-size:11.5px;line-height:1.4;white-space:nowrap}
+@media (max-width:760px){
+  .av-res{padding:var(--s4)}
+}
+@media (max-width:720px){
+  .av-res-g{grid-template-columns:minmax(0,1fr)}
+  .av-flip-bar{flex-wrap:wrap}
+  .btn.av-envia{align-self:stretch;justify-content:center}
+}
+
+/* ===================== TOOL SHELL · Strategy aprobada y el chat de Strategy ===================== */
+/* La estrategia aprobada cierra Strategy: no es «fuera del alcance» (ámbar o rojo), es el candado del CEO. Mismo esqueleto que .tsh-fuera en verde. */
+.tsh-aprobada{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:var(--r-3);border:1px solid color-mix(in srgb,var(--ui-ok-f) 30%,transparent);border-left:3px solid var(--ui-ok-f);background:var(--ui-ok-bg);color:var(--ui-ink)}
+.tsh-aprobada>svg{flex:none;margin-top:2px;color:var(--ui-ok-t)}
+.tsh-aprobada p{margin:0 0 4px;font-size:13.5px}
+.tsh-aprobada b{display:inline-block;margin-right:10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-ok-t)}
+.tsh-aprobada-a{font-size:12.5px;font-weight:600;color:var(--ui-ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ui-ok-f) 55%,transparent);text-underline-offset:3px}
+.tsh-aprobada-a:hover{text-decoration-color:currentColor}
+.tsh-aprobada-a:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px;border-radius:4px}
+a.btn.tsh-act-chat{text-decoration:none}
+/* Ganchos de las vistas de Strategy: secciones y envoltorios que solo necesitan poder encogerse dentro del centro, y los botones sueltos de una fila. */
+:is(.dn-svg-w,.dn-calib,.xr-salud,.xr-trabado,.ofa-empujar,.ofa-ec,.ofa-stack,.ofa-propuesta,.ofa-vars,.ofa-esc,.grm-hitos){min-width:0}
+.btn:is(.dn-traer,.xr-usar){flex:none}
+.ofa-bloque:empty{display:none}
