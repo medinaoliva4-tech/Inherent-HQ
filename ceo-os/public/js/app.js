@@ -1,7 +1,7 @@
 import { instalarMenu } from './menu-contextual.js';
 import { applyViews, GROUPS, SPACES, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, initials, esc, LOGO, infoTips, canTransition, ico, skel, roleName } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, esc, LOGO, infoTips, canTransition, ico, skel, roleName } from './core.js';
 import { loadBrands, brandsNow, brandAccess, MODULES, AREAS, areaOf, firstOfArea, modulesFor, defaultModule, isSoon, areaDeModulo, gruposDe } from './brandlist.js';
 import { openSearch, searchOpen } from './search.js';
 import { loadEstrategia, estrategiaNow } from './stratlist.js';
@@ -428,7 +428,7 @@ function menuYo(btn) {
 const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.documentElement.toggleAttribute('data-lat-mini', on); if (me) markNav(); const b = $('.lat [data-lat="mini"]'); if (b) { b.setAttribute('aria-label', on ? 'Mostrar la barra (⌘B)' : 'Esconder la barra (⌘B)'); b.title = on ? 'Mostrar la barra · ⌘B' : 'Esconder la barra · ⌘B'; } };
 function latHtml(mac) {
   return html`<aside class="lat" aria-label="Barra lateral">
-    <a class="lat-marca" href="#/" aria-label="Inherent OS"><span class="lat-emb">${emblem()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
+    <a class="lat-marca" href="#/" aria-label="Inherent OS"><span class="lat-emb">${emblemaTema()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
     <div id="lat-area"></div>
     <button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>
@@ -485,7 +485,7 @@ function shell() {
   const conLat = lateral(); if (conLat) document.documentElement.dataset.barra = 'lateral'; else delete document.documentElement.dataset.barra;
   mount(root, html`${conLat ? latHtml(mac) : ''}<div class="app">
     <header class="top">
-      <div class="brand"><div class="emb">${emblem()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
+      <div class="brand"><div class="emb">${emblemaTema()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <nav class="nav" aria-label="Secciones"></nav>
       <div class="sp"></div>
       ${me.role !== 'client' ? html`<a class="tochat" href="#/chat" aria-label="Abrir el Chat (Inherent LLM)" title="Chat · Inherent LLM">${icoApp('chat')}</a>` : ''}

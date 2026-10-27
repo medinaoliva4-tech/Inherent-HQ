@@ -4,7 +4,7 @@
 // su memoria y el conector de Inherent OS. Un modo por área (areas.js), con su harness (llm/modos.js) y su panel (llm/paneles.js).
 // Arriba de la barra, el switch de áreas (el mismo del Tablero); en la caja, el switch de IA (Claude, ChatGPT, en tu compu u otras).
 // Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
-import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
+import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk, emblemaTema } from '../core.js';
 import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, IAS, iaDe, iasListas } from '../hermes.js';
 import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
@@ -106,7 +106,7 @@ export async function render(el, { me, sub = [], alive }) {
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     const estado = !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
-    mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${raw('<img src="/brand/emblem.svg" alt="">')}</span><span class="ls-wm">${raw('<img class="wm-noche" src="/brand/wordmark-light.svg" alt="Inherent"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="">')}<sup>LLM</sup></span></div>
+    mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${emblemaTema()}</span><span class="ls-wm">${raw('<img class="wm-noche" src="/brand/wordmark-light.svg" alt="Inherent"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="">')}<sup>LLM</sup></span></div>
       ${areas.length > 1 ? raw(switchHtml(areas, a?.id, (n, px) => svgIco(n, px))) : ''}
       <div class="ls-area" data-m="${S.modo}"><b>${a?.nombre || modoDe(S.modo).nombre}</b><small>${a?.sub || modoDe(S.modo).sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>

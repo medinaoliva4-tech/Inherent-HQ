@@ -237,6 +237,8 @@ export const skel = (tipo = 'pagina', n = 6) => html`<div class="skel skel-${tip
 // Íconos de línea (sin emojis): toman el color del texto. Uso: ${ico('lock')} o ${ico('cal', 18)} (o 'sm' · 'md' · 'lg' · 'xl').
 // El set vive en iconos.js (Lucide + los propios); los nombres de antes siguen como alias.
 export const ico = (n, s = 15) => raw(svgIco(n, s));
+// El emblema que sigue al tema: oscuro de día, claro de noche (app.css › El logo).
+export const emblemaTema = () => raw('<img class="emb-dia" src="/brand/emblem-dark.svg" alt="Inherent"><img class="emb-noche" src="/brand/emblem.svg" alt="">');
 export const emblem = (dark) => raw(`<img src="/brand/${dark ? 'emblem-dark' : 'emblem'}.svg" alt="Inherent" style="width:100%;display:block">`);
 
 // Matriz de puntos decorativa: retirada. Se conserva el export para no tocar las pantallas que la llaman.
