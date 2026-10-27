@@ -16,8 +16,10 @@ const CSS = fs.readFileSync(path.join(RAIZ, 'app.css'), 'utf8');
 t('cada ícono que el OS nombra existe en el set', () => {
   const faltan = [];
   for (const [f, s] of JS) for (const m of s.matchAll(/\b(?:ico|svgIco)\(\s*'([\w-]+)'/g)) if (!m[1].endsWith('-') && !tieneIco(m[1])) faltan.push(`${f}: ${m[1]}`);
-  // Los de la barra se arman por sección: svg('hoy') → nav-hoy.
-  for (const k of ['hoy', 'proyectos', 'ventas', 'servicios', 'finanzas', 'inherent', 'marcas', 'estrategia', 'diseno', 'portal']) if (!tieneIco('nav-' + k)) faltan.push(`nav-${k}`);
+  // Los de la barra lateral se arman por entrada (ico('nav-home')) y los workspaces por su id (nav-strategy…).
+  for (const k of ['home', 'organization', 'ai', 'strategy', 'marketing', 'creative', 'consulting', 'production', 'library', 'finances', 'portal']) if (!tieneIco('nav-' + k)) faltan.push(`nav-${k}`);
+  // Los nombres de antes siguen como alias mientras algo los nombre.
+  for (const k of ['hoy', 'proyectos', 'ventas', 'servicios', 'finanzas', 'inherent', 'marcas', 'estrategia', 'diseno']) if (!tieneIco('nav-' + k)) faltan.push(`nav-${k}`);
   // Los mapas de símbolos → ícono (Ventas, Mis tareas) también.
   for (const [f, s] of JS) for (const m of s.matchAll(/const GLIFO = \{([^}]*)\}/g)) for (const v of m[1].matchAll(/:\s*'([\w-]+)'/g)) if (!tieneIco(v[1])) faltan.push(`${f}: GLIFO ${v[1]}`);
   assert.deepEqual(faltan, []);

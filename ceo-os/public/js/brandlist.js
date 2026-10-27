@@ -1,5 +1,9 @@
-// Las marcas del espacio Marcas: los clientes activos, Inherent y la marca personal del CEO (solo él la ve).
-// Lo leen la barra de Marcas, su pantalla de inicio y el buscador. Se lee una vez por sesión (refresh() lo vuelve a leer).
+// Las marcas que se trabajan en los workspaces: los clientes activos, Inherent y la marca personal del CEO (solo él la ve).
+// Lo leen el selector de contexto, Home, el Chat y el buscador. Se lee una vez por sesión ({ force } lo vuelve a leer).
+// La navegación la lleva herramientas.js (WORKSPACES, HERRAMIENTAS, rutas #/ws/…): aquí ya no se decide a dónde va nada.
+// MODULES, AREAS y FLUJO se quedan solo como datos: modulesFor (qué módulo de antes puede abrir cada perfil, por marca)
+// y las pruebas (test-plan.mjs y el test de herramientas los leen como texto). LEGACY_MODULO de herramientas.js cubre
+// sus 16 claves. isSoon lo lee brand-home.js (el Inicio de la marca).
 import { api, col } from './core.js';
 import { levelName } from './levels.js';
 
@@ -47,8 +51,9 @@ export function loadBrands(me, { force = false } = {}) {
 }
 export const brandsNow = () => cache || [];
 
-// ---------- Los módulos de una marca (Marca › Módulo › Elemento) ----------
+// ---------- Los módulos de antes de una marca (datos, no navegación) ----------
 // [clave, nombre, ícono, qué hará (solo los que llegan después)]. Los que traen texto se ven como «Pronto».
+// No se cambia: cada clave es una herramienta en herramientas.js (LEGACY_MODULO) y las pruebas leen esta lista como texto.
 export const MODULES = [
   ['inicio', 'Inicio', 'home'],
   ['investigacion', 'Investigación', 'search'],
@@ -67,9 +72,9 @@ export const MODULES = [
   ['tech', 'Tech', 'globe'],
   ['resultados', 'Resultados', 'bars'],
 ];
-// Los grupos: los módulos agrupados por función, en el orden del trabajo (entender → planear → crear → diseñar → publicar y medir).
-// [clave, nombre, ícono, módulos, para qué, área]. El área (areas.js) dice dónde vive el grupo con la barra lateral:
-// Marketing planea y mide (③ Marketing, ⑩ Ads); Diseño hace las piezas (④ Creatividad, ⑥A, ⑦). Inicio, el panel de la marca, va en las dos.
+// Los grupos de antes: los módulos por función, en el orden del trabajo (entender → planear → crear → diseñar → publicar y medir).
+// [clave, nombre, ícono, módulos, para qué, área]. Ya no arman ninguna barra: los lee brand-home.js (el panel de la marca) y las pruebas.
+// El área ('marketing' · 'diseno' · 'ambas') solo dice de qué lado del trabajo cae cada grupo.
 export const AREAS = [
   ['inicio', 'Inicio', 'home', ['inicio'], 'Cómo va la marca hoy', 'ambas'],
   ['entender', 'Entender', 'search', ['investigacion', 'icp'], 'Qué funciona y a quién le hablamos', 'marketing'],
@@ -79,10 +84,8 @@ export const AREAS = [
   ['publicar', 'Publicar y medir', 'cal', ['calendario', 'ads', 'resultados'], 'Qué sale, cuándo, con qué pauta y qué funcionó', 'marketing'],
   ['tech', 'Tech', 'globe', ['tech'], 'Su web, sus landings y sus herramientas', 'marketing'],
 ];
-// El área de un módulo: 'marketing' · 'diseno' · 'ambas'. Y los grupos de un área (con Inicio).
-export const areaDeModulo = (k) => (AREAS.find(([, , , mods]) => mods.includes(k)) || [])[5] || '';
-export const gruposDe = (area) => AREAS.filter((g) => g[5] === area || g[5] === 'ambas');
-// La línea del trabajo: de dónde viene cada herramienta, qué se hace en ella y a dónde pasa. Es la misma cabecera en todas.
+// La línea del trabajo de antes (por clave de módulo): de dónde viene, qué se hace y a dónde pasa. La cadena de las
+// herramientas nuevas es cadena() de herramientas.js; esta se queda para el panel de la marca y las pruebas.
 // clave → [viene de, qué haces aquí, pasa a]
 export const FLUJO = {
   investigacion: [null, 'Los posts que ganan en su mercado, con su porqué. De aquí salen los formatos.', 'formatos'],
@@ -101,7 +104,6 @@ export const FLUJO = {
   tech: ['design', 'Su web, landings y herramientas: la landing conectada al CRM, la web viva y la auditoría de SEO.', 'resultados'],
   resultados: ['calendario', 'Qué funcionó y qué no. Vuelve a Investigación y al plan del mes siguiente.', 'investigacion'],
 };
-export const areaOf = (k) => AREAS.find(([, , , mods]) => mods.includes(k)) || AREAS[0];
 export const isSoon = (k) => Boolean(MODULES.find(([x]) => x === k)?.[3]);
 // Los módulos que ya funcionan y que este perfil puede abrir en esta marca.
 export function modulesFor(me, b) {
@@ -127,7 +129,3 @@ export function modulesFor(me, b) {
   };
   return MODULES.filter(([k, , , soon]) => !soon && ok[k]).map(([k]) => k);
 }
-// El módulo con el que abre una marca: su Inicio (o el primero que este perfil puede abrir).
-export const defaultModule = (me, b) => modulesFor(me, b)[0] || 'creacion';
-// El módulo con el que abre un área: el primero que funciona para este perfil, o el primero «Pronto».
-export const firstOfArea = (me, b, area) => { const mods = (AREAS.find(([k]) => k === area) || AREAS[0])[3], live = modulesFor(me, b); return mods.find((k) => live.includes(k)) || mods.find(isSoon) || mods[0]; };

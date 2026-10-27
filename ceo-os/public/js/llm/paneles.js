@@ -44,7 +44,7 @@ async function panelEstrategia(me, slug) {
   if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es la estrategia. El panel muestra la estrategia en vivo mientras la trabajan.');
   const data = await datosEstrategia(slug), v = data.viva || {}, a = avance(v);
   return html`<div class="lp-head"><div><span class="lp-k">Estrategia</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'} · ${a.n} de 5 pasos${data.vivaAprobada ? ' · Aprobada' : ''}</span></div>
-      <a class="lp-btn" href="#/estrategia/${esc(slug)}" title="La pantalla de Estrategia de siempre: aprobar, editar la ficha y los documentos">Tablero ↗</a></div>
+      <a class="lp-btn" href="#/ws/strategy/${esc(slug)}/overview" title="La pantalla de Estrategia de siempre: aprobar, editar la ficha y los documentos">Tablero ↗</a></div>
     ${data.nivel ? '' : html`<div class="lp-warn">Sin ficha de oferta, el agente bloquea a este cliente: el alcance contratado es el techo.</div>`}
     <div class="lp-viva">${panelViva({ v, data, bid: '', editable: false, esCeo: me.role === 'ceo', aprobada: Boolean(data.vivaAprobada) })}</div>`;
 }
@@ -66,17 +66,17 @@ async function panelMarketing(me, slug, nombre, mes) {
   const [d, cs, enc] = await Promise.all([una(`mk:${slug}:${mes}`, () => api(`plan/${encodeURIComponent(slug)}/${mes}`)).catch(() => null), api(`campanas/${encodeURIComponent(slug)}`).catch(() => null), encargosHtml(me, 'marketing', slug)]);
   const n = d?.plan ? avancePlan(d.plan) : 0, hoy = today();
   const vienen = (cs?.campanas || []).filter((c) => !['Cerrada', 'Archivada'].includes(c.estado)).sort((a, z) => String(a.ancla).localeCompare(String(z.ancla))).slice(0, 5);
-  return html`<div class="lp-head"><div><span class="lp-k">Marketing</span><h3>${nombre || slug}</h3><span class="lp-mut">Plan de ${nombreMes(mes)} · ${d?.piezas ? 'en Ideas' : n ? `${n} de 5` : 'vacío'}</span></div><a class="lp-btn" href="#/marcas/${esc(slug)}/plan/${mes}">Plan ↗</a></div>
+  return html`<div class="lp-head"><div><span class="lp-k">Marketing</span><h3>${nombre || slug}</h3><span class="lp-mut">Plan de ${nombreMes(mes)} · ${d?.piezas ? 'en Ideas' : n ? `${n} de 5` : 'vacío'}</span></div><a class="lp-btn" href="#/ws/marketing/${esc(slug)}/content/content-strategy-studio/${mes}">Plan ↗</a></div>
     ${d && !d.estrategia?.aprobada ? html`<div class="lp-warn">La estrategia todavía no está aprobada: sin ella no hay plan ni campañas.</div>` : ''}
-    <section class="lp-sec"><span class="lp-k">Campañas y eventos</span>${vienen.length ? vienen.map((c) => { const px = proximaFecha(c, hoy), f = revisarCampana(c, hoy).length; return html`<a class="lp-row ${f ? 'tarde' : ''}" href="#/marcas/${esc(slug)}/campanas"><span class="lp-dot"></span><span class="lp-t">${c.nombre}</span><small>${px ? `${px.que.toLowerCase()} ${fdate(px.fecha)}` : tipoDe(c.tipo)[1]}</small></a>`; }) : html`<p class="lp-mut">Nada por delante. Pide una campaña o un evento y guárdala con su botón.</p>`}</section>
+    <section class="lp-sec"><span class="lp-k">Campañas y eventos</span>${vienen.length ? vienen.map((c) => { const px = proximaFecha(c, hoy), f = revisarCampana(c, hoy).length; return html`<a class="lp-row ${f ? 'tarde' : ''}" href="#/ws/marketing/${esc(slug)}/campaigns/campaign-architect"><span class="lp-dot"></span><span class="lp-t">${c.nombre}</span><small>${px ? `${px.que.toLowerCase()} ${fdate(px.fecha)}` : tipoDe(c.tipo)[1]}</small></a>`; }) : html`<p class="lp-mut">Nada por delante. Pide una campaña o un evento y guárdala con su botón.</p>`}</section>
     ${enc}
-    <div class="lp-links"><a href="#/marcas/${esc(slug)}/campanas">Campañas y eventos ↗</a><a href="#/marcas/${esc(slug)}/calendario">Calendario ↗</a></div>`;
+    <div class="lp-links"><a href="#/ws/marketing/${esc(slug)}/campaigns/campaign-architect">Campañas y eventos ↗</a><a href="#/ws/marketing/${esc(slug)}/content/content-calendar">Calendario ↗</a></div>`;
 }
 
 async function panelConsulting(me, slug) {
   if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es el consulting. El panel muestra su alcance, los encargos de Estrategia y los temas para empezar.');
   const [data, enc] = await Promise.all([datosEstrategia(slug), encargosHtml(me, 'consulting', slug)]);
-  return html`<div class="lp-head"><div><span class="lp-k">Consulting</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'}</span></div><a class="lp-btn" href="#/consulting/${esc(slug)}">Tablero ↗</a></div>
+  return html`<div class="lp-head"><div><span class="lp-k">Consulting</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'}</span></div><a class="lp-btn" href="#/ws/consulting/${esc(slug)}/overview">Tablero ↗</a></div>
     ${avisoConsulting(data.nivel, data.ficha)}${enc}
     ${CONSULTING.map(([, g, , ts]) => html`<section class="lp-sec"><span class="lp-k">${g}</span>${ts.map(([t, q]) => html`<button type="button" class="lp-row lp-tema" data-a="sugerencia" data-t="${q}"><span class="lp-dot"></span><span class="lp-t">${t}</span></button>`)}</section>`)}`;
 }
@@ -103,9 +103,9 @@ async function panelDiseno(me, slug, nombre) {
   const ESTADOS = ['Idea', 'En proceso', 'Listo', 'Publicado'];
   const n = (e) => piezas.filter((x) => (x.status || 'Idea') === e).length;
   const proximas = piezas.filter((x) => !['Publicado', 'Archivado'].includes(x.status)).sort((a, b) => String(a.date || '').localeCompare(String(b.date || ''))).slice(0, 6);
-  return html`<div class="lp-head"><div><span class="lp-k">Diseño</span><h3>${nombre || slug}</h3><span class="lp-mut">${piezas.length} piezas este mes</span></div><a class="lp-btn" href="#/marcas/${esc(slug)}/ideas">Ideas ↗</a></div>
+  return html`<div class="lp-head"><div><span class="lp-k">Diseño</span><h3>${nombre || slug}</h3><span class="lp-mut">${piezas.length} piezas este mes</span></div><a class="lp-btn" href="#/ws/creative/${esc(slug)}/concepts/creative-direction-lab">Ideas ↗</a></div>
     <div class="lp-grid">${ESTADOS.map((e) => html`<div class="lp-stat"><b>${n(e)}</b><span>${e}</span></div>`)}</div>
     ${await encargosHtml(me, 'diseno', slug)}
-    <section class="lp-sec"><span class="lp-k">Lo próximo</span>${proximas.length ? proximas.map((x) => html`<a class="lp-row" href="#/marcas/${esc(slug)}/ideas"><span class="lp-dot"></span><span class="lp-t">${x.title || 'Pieza'}</span><small>${x.status || 'Idea'}${x.date ? ` · ${fdate(x.date)}` : ''}</small></a>`) : html`<p class="lp-mut">Sin piezas con fecha este mes. Se crean en Ideas (con el plan del mes).</p>`}</section>
-    <div class="lp-links"><a href="#/marcas/${esc(slug)}/plan">Plan del mes ↗</a><a href="#/marcas/${esc(slug)}/design">Design system ↗</a><a href="#/marcas/diseno/${esc(slug)}" title="El chat de Diseño de siempre, por el puente: diseña en Figma con Claude Code">Chat con Figma ↗</a></div>`;
+    <section class="lp-sec"><span class="lp-k">Lo próximo</span>${proximas.length ? proximas.map((x) => html`<a class="lp-row" href="#/ws/creative/${esc(slug)}/concepts/creative-direction-lab"><span class="lp-dot"></span><span class="lp-t">${x.title || 'Pieza'}</span><small>${x.status || 'Idea'}${x.date ? ` · ${fdate(x.date)}` : ''}</small></a>`) : html`<p class="lp-mut">Sin piezas con fecha este mes. Se crean en Ideas (con el plan del mes).</p>`}</section>
+    <div class="lp-links"><a href="#/ws/marketing/${esc(slug)}/content/content-strategy-studio">Plan del mes ↗</a><a href="#/ws/creative/${esc(slug)}/design/visual-identity-builder">Design system ↗</a><a href="#/ws/creative/${esc(slug)}/design/design-studio" title="El chat de Diseño de siempre, por el puente: diseña en Figma con Claude Code">Chat con Figma ↗</a></div>`;
 }
