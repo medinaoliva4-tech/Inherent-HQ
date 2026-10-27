@@ -10,7 +10,7 @@ import { resumenTexto as resumenXray } from './xray.js';
 
 export const BLOQUE = 'oferta';
 export const MAX_VARIACIONES = 3;
-export const PARTES_BLOQUEABLES = ['stack', 'variaciones', 'escalera'];
+export const PARTES_BLOQUEABLES = ['ecuacion', 'stack', 'propuesta', 'variaciones', 'escalera'];
 // lado: arriba suma valor (más es mejor) · abajo lo resta (más demora o esfuerzo es peor). Escala 1 a 10.
 export const FACTORES = [
   { id: 'sueno', nombre: 'Resultado soñado', lado: 'arriba', ayuda: 'Qué tanto desea lo que promete la oferta (1 a 10)' },
@@ -25,7 +25,8 @@ const ESCALERA_IDS = ESCALERA.map((e) => e.id);
 
 // ---------- El nivel manda ----------
 // Qué partes no se tocan: Brand Growth no cambia el stack ni las variaciones (con su precio); la escalera es solo de Growth Partnership.
-export const bloqueos = (nivelId) => ({ stack: nivelId === 'growth', variaciones: nivelId === 'growth', escalera: nivelId !== 'partnership' });
+// Brand Growth solo elige qué oferta empujar y su mensaje: la ecuación, el stack, la propuesta y el precio son de Foundation y Partnership.
+export const bloqueos = (nivelId) => ({ ecuacion: nivelId === 'growth', stack: nivelId === 'growth', propuesta: nivelId === 'growth', variaciones: nivelId === 'growth', escalera: nivelId !== 'partnership' });
 
 // ---------- El contenido ----------
 const factorVacio = () => ({ valor: null, evidencia: '' });

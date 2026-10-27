@@ -10,7 +10,7 @@ import { rutaHerramienta } from '../herramientas.js';
 import { SIN_DATOS, corta, numeroONull } from '../consulting/marcos.js';
 import { FACTORES, STACK_LISTAS, ESCALERA, MAX_VARIACIONES, vacio, limpiar, valorPercibido, bloqueos } from './oferta.js';
 
-const NOTA_GROWTH = 'Brand Growth: solo eliges qué oferta empujar y su mensaje (el stack y el precio son de Foundation y Partnership)';
+const NOTA_GROWTH = 'Brand Growth: solo eliges qué oferta empujar y su mensaje (la ecuación, el stack, la propuesta y el precio son de Foundation y Partnership)';
 const NOTA_ESCALERA = 'Solo en Growth Partnership';
 const MAX_LISTA = 12;
 // De dónde sale lo que falta (va en el placeholder o en el texto de solo lectura: «⚠️ SIN DATOS: sale de …»).
@@ -93,7 +93,7 @@ const REGIONES = { fac: regFactor, valor: regValor, 'vars-n': regVarsN, ofertas:
 // ---------- La vista ----------
 function plantilla(E, f) {
   const { c, ed, bq, nivel } = E;
-  const fS = campos(ed && !bq.stack), fV = campos(ed && !bq.variaciones), fE = campos(ed && !bq.escalera);
+  const fS = campos(ed && !bq.stack), fV = campos(ed && !bq.variaciones), fE = campos(ed && !bq.escalera), fEc = campos(ed && !bq.ecuacion), fP = campos(ed && !bq.propuesta);
   const vEd = { ...E, ed: ed && !bq.variaciones }, sEd = { ...E, ed: ed && !bq.stack };
   const cand = (txt) => html`<p class="ofa-cand" role="note">${ico('lock', 14)} ${txt}</p>`;
   return html`<div class="ofa" data-nivel="${nivel || ''}" data-editable="${ed ? 1 : 0}">
@@ -114,9 +114,9 @@ function plantilla(E, f) {
       <div class="ofa-facs">${FACTORES.map((fa) => html`<article class="ofa-fac" data-f="${fa.id}" data-lado="${fa.lado}">
         <header class="ofa-fac-h"><b>${fa.nombre}</b><span class="ofa-lado mut sm">${fa.lado === 'arriba' ? 'Suma valor' : 'Resta valor'}</span></header>
         <p class="mut sm ofa-fac-ayuda">${fa.ayuda}</p>
-        ${ed ? html`<div class="ofa-rango"><input type="range" min="1" max="10" step="1" value="${c.ecuacion[fa.id].valor ?? 5}" data-c="ecuacion.${fa.id}.valor" data-tipo="num" data-vacio="${c.ecuacion[fa.id].valor === null ? 1 : 0}" aria-label="${fa.nombre}, de 1 a 10"><button type="button" class="btn ghost xs" data-of="sin-dato" data-f="${fa.id}">Sin dato</button></div>` : ''}
+        ${ed && !bq.ecuacion ? html`<div class="ofa-rango"><input type="range" min="1" max="10" step="1" value="${c.ecuacion[fa.id].valor ?? 5}" data-c="ecuacion.${fa.id}.valor" data-tipo="num" data-vacio="${c.ecuacion[fa.id].valor === null ? 1 : 0}" aria-label="${fa.nombre}, de 1 a 10"><button type="button" class="btn ghost xs" data-of="sin-dato" data-f="${fa.id}">Sin dato</button></div>` : ''}
         <div class="ofa-num" data-r="fac" data-f="${fa.id}" aria-live="polite"></div>
-        <label class="ofa-f"><span class="lbl">Evidencia</span>${f.area(`ecuacion.${fa.id}.evidencia`, c.ecuacion[fa.id].evidencia, { max: 300, label: `Evidencia de ${fa.nombre}`, ph: 'De dónde sale este número', sd: SD[fa.id] })}</label>
+        <label class="ofa-f"><span class="lbl">Evidencia</span>${fEc.area(`ecuacion.${fa.id}.evidencia`, c.ecuacion[fa.id].evidencia, { max: 300, label: `Evidencia de ${fa.nombre}`, ph: 'De dónde sale este número', sd: SD[fa.id] })}</label>
       </article>`)}</div>
       <div class="ofa-valor" data-r="valor" aria-live="polite"></div>
     </section>
@@ -134,7 +134,7 @@ function plantilla(E, f) {
 
     <section class="ofa-sec ofa-propuesta" aria-label="Propuesta de valor">
       <h3 class="ofa-t">${ico('sparkles', 16)} Propuesta de valor <span class="mut sm">una o dos frases</span></h3>
-      <label class="ofa-f"><span class="sr-only">Propuesta de valor</span>${f.area('propuesta', c.propuesta, { max: 500, filas: 3, label: 'Propuesta de valor', sd: SD.propuesta })}</label>
+      <label class="ofa-f"><span class="sr-only">Propuesta de valor</span>${fP.area('propuesta', c.propuesta, { max: 500, filas: 3, label: 'Propuesta de valor', sd: SD.propuesta })}</label>
     </section>
 
     <section class="ofa-sec ofa-vars" data-bloq="${bq.variaciones ? 1 : 0}" aria-label="Variaciones de la oferta">

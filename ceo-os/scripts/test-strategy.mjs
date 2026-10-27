@@ -186,11 +186,11 @@ t('oferta valorPercibido: (sueño × probabilidad) / (tiempo × esfuerzo); con u
 });
 
 t('oferta bloqueos: Brand Growth bloquea stack y variaciones; la escalera es solo de Growth Partnership', () => {
-  assert.deepEqual(oferta.bloqueos('growth'), { stack: true, variaciones: true, escalera: true });
-  assert.deepEqual(oferta.bloqueos('partnership'), { stack: false, variaciones: false, escalera: false });
-  assert.deepEqual(oferta.bloqueos('foundation'), { stack: false, variaciones: false, escalera: true });
-  assert.deepEqual(oferta.bloqueos('medida'), { stack: false, variaciones: false, escalera: true });
-  assert.deepEqual(oferta.bloqueos(null), { stack: false, variaciones: false, escalera: true }); assert.deepEqual(oferta.bloqueos(undefined), oferta.bloqueos(null));
+  assert.deepEqual(oferta.bloqueos('growth'), { ecuacion: true, stack: true, propuesta: true, variaciones: true, escalera: true });
+  assert.deepEqual(oferta.bloqueos('partnership'), { ecuacion: false, stack: false, propuesta: false, variaciones: false, escalera: false });
+  assert.deepEqual(oferta.bloqueos('foundation'), { ecuacion: false, stack: false, propuesta: false, variaciones: false, escalera: true });
+  assert.deepEqual(oferta.bloqueos('medida'), { ecuacion: false, stack: false, propuesta: false, variaciones: false, escalera: true });
+  assert.deepEqual(oferta.bloqueos(null), { ecuacion: false, stack: false, propuesta: false, variaciones: false, escalera: true }); assert.deepEqual(oferta.bloqueos(undefined), oferta.bloqueos(null));
 });
 
 t('oferta cambiaBloqueado: detecta el cambio de precio, del stack y de la escalera según el nivel', () => {
@@ -199,10 +199,13 @@ t('oferta cambiaBloqueado: detecta el cambio de precio, del stack y de la escale
   assert.deepEqual(oferta.cambiaBloqueado(antes, precio, 'partnership'), []); assert.deepEqual(oferta.cambiaBloqueado(antes, precio, 'foundation'), []);
   const stack = ofertaCompleta(); stack.stack.nombre = 'Otro nombre'; stack.escalera.upsell.propuesta = 'Otro upsell';
   assert.deepEqual(oferta.cambiaBloqueado(antes, stack, 'growth'), ['stack', 'escalera']); assert.deepEqual(oferta.cambiaBloqueado(antes, stack, 'foundation'), ['escalera']); assert.deepEqual(oferta.cambiaBloqueado(antes, stack, 'partnership'), []);
-  const empuja = ofertaCompleta(); empuja.empujar.oferta = 'Completa'; empuja.empujar.mensaje = 'Otro'; empuja.propuesta = 'Otra'; empuja.ecuacion.sueno.valor = 3;
+  const empuja = ofertaCompleta(); empuja.empujar.oferta = 'Completa'; empuja.empujar.mensaje = 'Otro';
   assert.deepEqual(oferta.cambiaBloqueado(antes, empuja, 'growth'), [], 'elegir qué se empuja y su mensaje sí se puede');
+  const ofertaNueva = ofertaCompleta(); ofertaNueva.propuesta = 'Otra'; ofertaNueva.ecuacion.sueno.valor = 3;
+  assert.deepEqual(oferta.cambiaBloqueado(antes, ofertaNueva, 'growth'), ['ecuacion', 'propuesta'], 'Brand Growth no cambia la oferta: ni la ecuación ni la propuesta');
+  assert.deepEqual(oferta.cambiaBloqueado(antes, ofertaNueva, 'foundation'), []);
   assert.deepEqual(oferta.cambiaBloqueado(antes, antes, 'growth'), []);
-  assert.deepEqual(oferta.cambiaBloqueado(null, ofertaCompleta(), 'growth'), ['stack', 'variaciones', 'escalera'], 'un doc nuevo con stack, variaciones y escalera en Brand Growth');
+  assert.deepEqual(oferta.cambiaBloqueado(null, ofertaCompleta(), 'growth'), ['ecuacion', 'stack', 'propuesta', 'variaciones', 'escalera'], 'un doc nuevo con la oferta completa en Brand Growth');
   assert.deepEqual(oferta.cambiaBloqueado(null, { empujar: { oferta: 'x', mensaje: 'y' } }, 'growth'), []);
   assert.deepEqual(oferta.cambiaBloqueado(antes, { ...ofertaCompleta(), v: 9, _meta: {}, raro: 1 }, 'growth'), [], 'lo que limpiar quita no cuenta como cambio');
   const c = oferta.conservarBloqueado(antes, { ...precio, empujar: { oferta: 'Completa', mensaje: 'M' } }, 'growth');
