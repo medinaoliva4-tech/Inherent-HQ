@@ -22,7 +22,6 @@ export function consciencia(x) {
 export const nivelConsciencia = (x) => { const c = consciencia(x); return c ? CONSCIENCIA.indexOf(c) + 1 : 0; };
 // La etapa del funnel sale del nivel de consciencia: 1-2 → TOF (atraer), 3-4 → MOF (convencer), 5 → BOF (cerrar).
 export const ETAPAS = ['TOF', 'MOF', 'BOF'];
-export const ETAPA_AYUDA = { TOF: 'Atraer: no te conoce', MOF: 'Convencer: conoce la solución', BOF: 'Cerrar: listo para comprar' };
 export const etapaFunnel = (x) => { const n = nivelConsciencia(x); return !n ? '' : n <= 2 ? 'TOF' : n <= 4 ? 'MOF' : 'BOF'; };
 // El avatar de una pieza (id de Cliente ideal) → su nombre, con la lista de avatares de la marca.
 export const avatarDe = (p, avatares = []) => (p?.avatar ? avatares.find((a) => a.id === p.avatar)?.nombre || '' : '');

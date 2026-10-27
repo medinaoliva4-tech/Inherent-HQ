@@ -15,7 +15,6 @@ export const KINDS = ['cobrar', 'pagar'];
 export const STATUS = ['pendiente', 'pagada', 'anulada'];
 export const ESTADOS = ['pendiente', 'vencida', 'pagada', 'anulada'];
 export const SOURCES = ['auto', 'manual', 'claude'];
-export const CURRENCIES = ['GTQ', 'USD'];
 export const DIA_COBRO = 5; // si el cliente no tiene día de cobro, vence el 5 del mes
 // Las categorías de los movimientos de Finanzas (las usa la pantalla y el registro automático de ingresos y gastos).
 export const CATS_IN = ['Plan mensual', 'Proyecto', 'Performance fee', 'Otro'];
@@ -39,11 +38,6 @@ export function estadoFactura(inv, hoy = hoyISO()) {
   return isDate(inv?.due) && inv.due < hoy ? 'vencida' : 'pendiente';
 }
 const abierta = (inv, hoy) => ['pendiente', 'vencida'].includes(estadoFactura(inv, hoy));
-// Lo pendiente que vence de hoy a «dias» días (sin las ya vencidas), de la más próxima a la más lejana.
-export function porVencer(invs = [], hoy = hoyISO(), dias = 7) {
-  const hasta = addDays(hoy, dias);
-  return invs.filter((i) => estadoFactura(i, hoy) === 'pendiente' && isDate(i.due) && i.due >= hoy && i.due <= hasta).sort((a, z) => a.due.localeCompare(z.due));
-}
 // El monto en quetzales (USD a Q7.70, el tipo de cambio del manual).
 export const enGTQ = (inv) => (+inv?.amount || 0) * (inv?.currency === 'USD' ? USD_GTQ : 1);
 // Los tres números de arriba, en quetzales:

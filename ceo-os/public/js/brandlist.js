@@ -46,7 +46,6 @@ export function loadBrands(me, { force = false } = {}) {
   return pending;
 }
 export const brandsNow = () => cache || [];
-export const forgetBrands = () => { cache = null; pending = null; };
 
 // ---------- Los módulos de una marca (Marca › Módulo › Elemento) ----------
 // [clave, nombre, ícono, qué hará (solo los que llegan después)]. Los que traen texto se ven como «Pronto».

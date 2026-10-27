@@ -17,7 +17,6 @@ export async function ojoEstado(force = false) {
 }
 // El contexto de la marca (moodboard y descripción), una vez por marca y sesión.
 async function contexto(slug) { return ctx[slug] || (ctx[slug] = await api(`ojo/contexto?profile=${encodeURIComponent(slug)}`).catch(() => ({ refs: [], texto: '' }))); }
-export const olvidarContexto = (slug) => { delete ctx[slug]; };
 
 // { url } (https) o { imagen } (base64, p. ej. una captura de Figma).
 export async function verImagen(slug, { url, imagen }) {

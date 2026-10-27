@@ -26,15 +26,6 @@ import { seesTask } from './leer.js';
 // Los 5 niveles de Research (los tres últimos nombres, nicho/referente/agregado, son los viejos y se siguen aceptando).
 export const RESEARCH_TIPOS = ['competencia', 'referente-similar', 'referente-aspiracional', 'referente-crecimiento', 'propia', 'nicho', 'referente', 'agregado'];
 export const tokenHash = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
-export async function newToken(email) {
-  const t = crypto.randomBytes(24).toString('base64url');
-  const me = await db.get('team', email);
-  if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');
-  const h = tokenHash(t);
-  await db.vaultSet('mcp:' + h, email);
-  await db.upsert('team', email, { mcp_hash: h, mcp_at: new Date().toISOString() }, email);
-  return t;
-}
 export async function revoke(email) {
   const me = await db.get('team', email);
   if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');

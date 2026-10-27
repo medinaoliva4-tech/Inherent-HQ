@@ -113,7 +113,6 @@ export function recipesWith(docs = []) {
   return out;
 }
 export const isDefaultId = (id) => DEFAULT_RECIPES.some((r) => r.id === id);
-export const defaultRecipe = (id) => DEFAULT_RECIPES.find((r) => r.id === id) || null;
 // La receta de un tipo de proyecto.
 export const recipeFor = (R, kind) => (R || DEFAULT_RECIPES).find((r) => r.type === 'proyecto' && r.kind === kind && r.active !== false) || (R || DEFAULT_RECIPES).find((r) => r.type === 'proyecto' && r.kind === 'Proyecto') || DEFAULT_RECIPES[2];
 // La receta de un servicio del catálogo (si el CEO la escribió).

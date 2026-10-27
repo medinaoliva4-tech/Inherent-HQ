@@ -76,7 +76,6 @@ export async function chatHermes(me, { sesion, sistema, mensaje, modelo = {}, si
 }
 // Nombre de una herramienta de Hermes, en humano, para la lista de pasos del chat.
 export const pasoHermes = (n) => ({ read_file: 'Leyendo un archivo', search_files: 'Buscando en el repo', terminal: 'Corriendo un comando', web_search: 'Buscando en la web', web_extract: 'Leyendo una página', memory: 'Guardando en memoria', skill_view: 'Leyendo una skill', skills_list: 'Buscando skills', todo_list: 'Ordenando los pasos' }[n] || n.replace(/_/g, ' '));
-export const URL_HERMES = URL_BASE;
 
 // ---------- Las sesiones de Hermes (el Inherent LLM) ----------
 // Cada conversación del Inherent LLM es una sesión de Hermes con id «inh-<modo>-…» y su propio system prompt (el harness

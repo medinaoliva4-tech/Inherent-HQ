@@ -67,7 +67,6 @@ export function abrirGuia(d, me) {
   if (!cache?.vistos?.[d.id]) api('guia/visto', { method: 'POST', body: { id: d.id } }).then((r) => { if (cache) cache.vistos = r.vistos; if (me) me.vistos = r.vistos; }).catch(() => {});
 }
 export function cerrarGuia() { pip?.remove(); pip = null; abierto = null; }
-export const guiaAbierta = () => abierto;
 
 // ---------- Lo que vio cada quien (Mi perfil y Equipo) ----------
 export const vistosDe = (items, vistos = {}) => ({ total: items.length, vistos: items.filter((d) => vistos[d.id]).length });

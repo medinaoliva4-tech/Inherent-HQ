@@ -95,17 +95,6 @@ export async function writeFile(path, content, sha, message) {
   return { sha: (await r.json()).content.sha };
 }
 
-export async function deleteFile(path, sha, message) {
-  if (LOCAL) { try { fs.unlinkSync(lp(path)); } catch {} return { ok: true }; }
-  const r = await gh(`contents/${enc(path)}`, {
-    method: 'DELETE',
-    body: JSON.stringify({ message: `ceo-os: ${message || 'borra ' + path}`, sha, branch: cfg().branch }),
-  });
-  if (r.status === 409 || r.status === 422) return { conflict: true };
-  if (!r.ok) throw new Error(`GitHub ${r.status} borrando ${path}`);
-  return { ok: true };
-}
-
 // Todos los archivos bajo una carpeta (recursivo). Desde la copia del build o, en local, del disco.
 export function listFiles(prefix) {
   if (LOCAL) {

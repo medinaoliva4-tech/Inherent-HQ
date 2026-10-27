@@ -139,7 +139,6 @@ export async function indice() {
   }
   INDICE = out; INDICE_AT = Date.now(); return out;
 }
-export const olvidarIndice = () => { INDICE = null; };
 
 // Una cita (de extraerCitas) → el archivo que cita, con el pasaje exacto: { ok, raw, ruta, titulo, t, p }.
 export async function resolverCita(c) {

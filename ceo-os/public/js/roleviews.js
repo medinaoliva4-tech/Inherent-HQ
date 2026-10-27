@@ -42,7 +42,6 @@ export function movedRoute(parts = []) {
   const to = MOVED[`${p[0]}/${p[1]}`];
   return to ? ['org', ...to.split('/'), ...p.slice(2)] : null;
 }
-export const groupOf = (area) => (GROUPS.find(([, , l]) => l.includes(area)) || [])[0] || null;
 export const AREAS = SECTIONS.map(([k]) => k);
 export const LEVELS = [['oculto', 'Oculto'], ['resumen', 'Resumen'], ['completo', 'Completo'], ['edita', 'Edita']];
 export const RANK = { oculto: 0, resumen: 1, completo: 2, edita: 3 };

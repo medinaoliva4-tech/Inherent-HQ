@@ -35,8 +35,6 @@ export function faltaMotor(me, chat, { diseno = false } = {}) {
 }
 export const faltaHtml = (f, cmd) => html`<div class="es-setup"><b>${f.t}</b><p>${f.p}</p>${f.cmd ? cmd(f.cmd) : ''}<div class="row" style="gap:8px">${f.cmd || f.instalar ? html`<button class="btn xs" data-act="reintentar">Ya lo hice</button>` : ''}<button class="btn ghost xs" data-act="motor">${f.elegir ? 'Elegir modelo' : 'Cambiar de modelo'}</button></div></div>`;
 
-// El botón del motor (va junto a los demás de la caja) y su menú.
-export const motorBtn = (me) => html`<button type="button" class="es-pick" data-act="motor" aria-haspopup="listbox" title="Qué modelo responde">${ico('spark', 12)} ${nombreMotor(motorDe(me))} ▾</button>`;
 // hermes = { salud: { on, auth }, modelos: lo que devuelve modelosHermes() } cuando la pantalla lo averiguó.
 export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = null, hermes = null } = {}) {
   document.querySelector('.es-menu')?.remove();
