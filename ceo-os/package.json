@@ -26,6 +26,7 @@
     "test:produccion": "node scripts/test-produccion.mjs && node scripts/test-shotlist.mjs && node scripts/test-produccion-p2.mjs",
     "test:creative": "node scripts/test-creative.mjs && node scripts/test-creative-marca.mjs && node scripts/test-creative-p2.mjs",
     "capturas": "node scripts/capturas.mjs",
+    "test:harness": "node scripts/test-harness.mjs",
     "test:avisos": "node scripts/test-avisos.mjs && node scripts/test-avisos-trabajo.mjs && node scripts/test-avisos-estrategia.mjs && node scripts/test-avisos-marcas.mjs && node scripts/test-avisos-plataforma.mjs"
   },
   "dependencies": {
