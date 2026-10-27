@@ -12,6 +12,7 @@
 // Variaciones de hoy); el Performance Center va al Tool Shell (vista 'rendimiento', un entregable por mes) y conserva «Instagram» (los analytics de siempre).
 // Creative (Fase 3c): el Creative Direction Lab va al Tool Shell (vista 'direccion', un entregable por mes) y conserva «Ideas» y «Formatos» de hoy como sub-vistas
 // (…/creative-direction-lab/ideas|formatos: ahí NO se monta el shell); Brand DNA y Moodboard montan su hoja ('dna' y 'moodboard'); en la marca personal siguen en meBrand.
+// Production (Fase 3d): el Production Brief y el Shot List Builder van al Tool Shell (vistas brief y shotlist, un entregable por mes); el Review & Approval Studio monta su hoja ('review').
 import { html, mount, col, api, ico, initials, skel, $, fdate, today } from '../core.js';
 import { WORKSPACES, FLUJO, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, rutaHerramienta, puedeWs, veEstrategia, acc } from '../herramientas.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto, selectorHtml } from '../contexto.js';
@@ -53,6 +54,8 @@ const VISTAS = {
   oferta: () => import('../strategy/oferta-ui.js'),
   rendimiento: () => import('../marketing/rendimiento-ui.js'),
   direccion: () => import('../creative/direccion-ui.js'),
+  brief: () => import('../production/brief-ui.js'),
+  shotlist: () => import('../production/shotlist-ui.js'),
 };
 const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
@@ -64,7 +67,7 @@ const nomTool = (id) => herramientaDe(id)?.nombre || id;
 const herr = (x) => (typeof x === 'string' ? herramientaDe(x) : x);
 // Qué módulo de Marcas monta cada clave de montaje: modulesFor(me, b) sigue diciendo si el perfil lo abre.
 // (avatar ya no está: el Customer Avatar Studio es de Strategy y el servidor deja entrar a quien edita Contenido o Estrategia.)
-const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', adsIntel: 'ads', brandBoard: 'marca', dna: 'marca', moodboard: 'marca', design: 'design', creacion: 'creacion', video: 'video' };
+const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', adsIntel: 'ads', brandBoard: 'marca', dna: 'marca', moodboard: 'marca', design: 'design', creacion: 'creacion', video: 'video', review: 'video' };
 // El ciclo de Production (un ciclo por marca y mes): en qué fase cae el día de hoy.
 const CICLO = [[1, 3, 'brief'], [4, 5, 'coordinar'], [6, 10, 'grabar'], [11, 11, 'último día de grabación'], [12, 15, 'editar'], [16, 19, 'cambios'], [20, 20, 'presentar']];
 const diaCiclo = (dia) => (dia > 20 ? 'Ciclo del mes cerrado · se presentó el 20' : `Día ${dia} del ciclo · ${(CICLO.find(([a, z]) => dia >= a && dia <= z) || [])[2] || ''}`);
@@ -330,6 +333,15 @@ export async function render(el, { me, sub = [], alive }) {
         if (!alive() || !host.isConnected) return;
         if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
         return hoja(host, { me, slug, b, alive, resto });
+      }
+      // Review & Approval Studio: su hoja propia (no usa el shell; vive en videos: revision, comentarios al segundo y aprobación).
+      case 'review': {
+        mount(host, esqueleto());
+        let reviewTool = null;
+        try { ({ reviewTool } = await import('../production/review-ui.js')); } catch (e) { console.error(e); }
+        if (!alive() || !host.isConnected) return;
+        if (typeof reviewTool !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        return reviewTool(host, { me, slug, b, alive, resto });
       }
       case 'avatar': return avatarUI(host, { me, b, alive });
       case 'plan': return planMesUI(host, { me, b, alive, resto });

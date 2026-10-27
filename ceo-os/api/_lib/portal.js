@@ -4,6 +4,8 @@
 import * as db from './db.js';
 import { DEPTS } from '../../public/js/cycle.js';
 import { estadoDe, conEstado, fechaPublicado } from '../../public/js/element.js';
+import { COLL_V, comentariosVisibles, limpiarVersiones } from '../../public/js/video.js';
+import * as video from './video.js';
 
 const DAY = 864e5;
 const iso = (t) => new Date(t).toISOString().slice(0, 10);
@@ -161,4 +163,45 @@ export async function decidir(u, slug, id, b) {
   const saved = await db.update('content', cur.id, next, cur.v, u.email);
   if (!saved) throw err('La pieza cambió mientras la veías. Ábrela de nuevo', 409);
   return { ok: true, id: cur.id, estado: estadoDe(saved), cliente: saved.aprobacion.estado };
+}
+
+// ---------- Videos en revisión (Review & Approval Studio, lado del cliente) ----------
+// El cliente ve SOLO los videos de su marca que el equipo mandó a revisión, con sus versiones (link, nota) y los comentarios que no son
+// internos. Nunca ve QA, cortes, notas de edición ni comentarios internos. Comenta (interno siempre false) y aprueba o pide cambios por
+// las mismas funciones del equipo (video.js · comentar / revisar), que ya limitan la ficha a la marca del cliente.
+const enRevision = (f) => f.kind === 'ficha' && !f.archivado && (f.revision === 'Pendiente' || f.estado === 'En revisión');
+const publica = (f, post) => {
+  const versiones = limpiarVersiones(f.versiones).map(({ v, link, nota, en }) => ({ v, link, nota, en }));
+  const vigente = Math.max(+f.version || 1, ...versiones.map((x) => x.v));
+  return { id: f.id, titulo: f.titulo, formato: f.formato, version: vigente, versiones, rondas: Math.max(0, versiones.length - 1), revision: f.revision || '',
+    aprobacion: f.aprobacion ? { v: f.aprobacion.v, en: f.aprobacion.en } : null, comentarios: comentariosVisibles(f, true).map(({ id, seg, texto, por, en, version }) => ({ id, seg, texto, por, en, version })),
+    caption: String(post?.caption || '').slice(0, 2200) };
+};
+export async function videos(slug) {
+  const fs = (await db.list(COLL_V)).filter((f) => f.profile === slug && enRevision(f));
+  const out = [];
+  for (const f of fs) out.push(publica(f, f.post ? await db.get('content', f.post).catch(() => null) : null));
+  return out.sort((a, z) => String(a.titulo).localeCompare(String(z.titulo)));
+}
+// Rutas del cliente. Solo el cliente actúa (con SU client_slug); el equipo que mira «como cliente» solo lee. Pedir lo interno es 403.
+// on/guard/body/slugOk son los de api/index.js: se montan con portal.rutasVideo({ on, guard, body, slugOk }).
+export function rutasVideo({ on, guard, body, slugOk }) {
+  const quien = async (req, res, actua) => {
+    const u = await guard(req, res, 'portal', { client: true }); if (!u) return null;
+    if (/^(1|true|si)$/i.test(String(req.query.interno || ''))) { res.status(403).json({ error: 'Eso es interno del equipo' }); return null; }
+    if (actua && u.role !== 'client') { res.status(403).json({ error: 'Solo el cliente revisa sus videos' }); return null; }
+    const slug = u.role === 'client' ? u.client_slug : String(req.query.slug || '');
+    if (!slugOk(slug)) { res.status(400).json({ error: 'Cliente inválido' }); return null; }
+    return { u, slug };
+  };
+  const responde = (res, r) => (r.error ? res.status(r.status || 400).json({ error: r.error }) : res.json({ ok: true, id: r.doc?.id, revision: r.doc?.revision || '' }));
+  on('GET', 'portal/videos', async (req, res) => { const q = await quien(req, res, false); if (q) res.json(await videos(q.slug)); });
+  on('POST', 'portal/videos/:id/comentarios', async (req, res) => {
+    const q = await quien(req, res, true); if (!q) return;
+    const b = body(req); responde(res, await video.comentar(q.u, req.params.id, { texto: b.texto, seg: b.seg, version: b.version, interno: false }));
+  });
+  on('POST', 'portal/videos/:id/revision', async (req, res) => {
+    const q = await quien(req, res, true); if (!q) return;
+    const b = body(req); responde(res, await video.revisar(q.u, req.params.id, { accion: b.accion, nota: b.nota, version: b.version }));
+  });
 }

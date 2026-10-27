@@ -1,7 +1,8 @@
 // El portal del cliente, como el dashboard de la web: Resumen · Contenido · Entregas · Metas.
 // Todo sale de /api/portal (el servidor decide qué se ve). Lo que no tiene dato dice «—» y qué falta conectar: nunca un número inventado.
 // Intel («Entregables» de estrategia) NO se muestra aquí: es información del cliente, pero no para el cliente.
-import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, ico, initials, ask, confirmAsk } from '../core.js';
+import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, ico, initials, ask, confirmAsk, embedUrl } from '../core.js';
+import { reloj } from '../video.js';
 import { estadoDe } from '../element.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
@@ -34,12 +35,17 @@ function chart(serie) {
 
 export async function render(el, { me, sub, alive }) {
   const slug = me.role === 'client' ? '' : sub[0] || '';
+  const q0 = slug ? `?slug=${encodeURIComponent(slug)}` : '';
   let d;
   try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir el portal</b>${e.message}</div>`); }
   if (!alive()) return;
+  // Videos que el equipo mandó a revisión (solo los de esta marca; sin nada interno). Si falla, el portal sigue sin ellos.
+  let vids = [];
+  try { vids = await api('portal/videos' + q0); } catch { vids = []; }
+  if (!alive()) return;
   const isClient = me.role === 'client', r = d.resumen, en = d.entregas;
   const q = slug ? `?slug=${encodeURIComponent(slug)}` : '';
-  const pend = d.content.filter(porAprobar);
+  const pend = d.content.filter(porAprobar), pendN = pend.length + vids.filter((v) => v.revision !== 'Aprobado').length;
   const ob = d.onboarding, obN = ob ? ob.items.filter((x) => x.done).length : 0, obAll = ob ? obN === ob.items.length : false;
   const R0 = 26, C0 = 2 * Math.PI * R0;
   const ring = (pct) => html`<div class="sp-ring pt-ring" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="trk" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6"/>${raw(pct ? `<circle class="val" cx="32" cy="32" r="${R0}" fill="none" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C0.toFixed(2)}" stroke-dashoffset="${(C0 * (1 - pct / 100)).toFixed(2)}"/>` : '')}</svg><b>${pct == null ? '—' : html`${pct}<small>%</small>`}</b></div>`;
@@ -92,7 +98,20 @@ export async function render(el, { me, sub, alive }) {
 
   // ---- Contenido
   const cardCls = ['a', 'b', 'c', 'd'];
+  const videoCard = (v) => {
+    const vig = v.versiones.find((x) => x.v === v.version) || v.versiones.at(-1), emb = vig ? embedUrl(vig.link) : null;
+    return html`<article class="pd-box pd-vid" data-vid="${v.id}">
+      <h4>${v.titulo} <span class="pd-c">v${v.version}</span></h4>
+      ${emb ? html`<div class="pd-vp"><iframe src="${emb}" title="${v.titulo}" allow="autoplay; fullscreen" allowfullscreen loading="lazy" style="width:100%;aspect-ratio:${v.formato === '9:16' ? '9/16;max-height:520px' : v.formato === '4:5' ? '4/5;max-height:520px' : v.formato === '1:1' ? '1/1' : '16/9'};border:0;border-radius:12px"></iframe></div>`
+        : vig?.link ? html`<a class="btn ghost sm" href="${vig.link}" target="_blank" rel="noopener noreferrer">Ver el video ↗</a>` : html`<div class="mut sm">Todavía no hay link de este video.</div>`}
+      ${vig?.nota ? html`<p class="mut sm">${vig.nota}</p>` : ''}
+      ${v.caption ? html`<div class="pd-pn"><b class="sm">Caption</b><div class="sm" style="white-space:pre-wrap">${v.caption}</div></div>` : ''}
+      ${v.comentarios.length ? html`<div class="pd-list">${v.comentarios.map((c) => html`<div class="pd-li"><span class="pd-st s-idea">${c.seg != null ? reloj(c.seg) : 'General'}</span><span>${c.texto}<small>${c.por === 'cliente' ? 'Tú' : 'Equipo'} · v${c.version}</small></span></div>`)}</div>` : ''}
+      ${isClient ? html`<div class="pd-act"><button class="btn xs ghost" data-vc="${v.id}">Comentar</button><button class="btn xs" data-vr="aprobar" data-id="${v.id}">Aprobar</button><button class="btn xs ghost" data-vr="cambios" data-id="${v.id}">Pedir cambios</button></div>` : ''}
+    </article>`;
+  };
   const contenido = html`
+    ${vids.length ? html`<div class="pd-sec"><h3>Videos por revisar</h3></div>${vids.map(videoCard)}` : ''}
     ${pend.length ? html`<div class="pd-banner">${ico('check')} ${pend.length === 1 ? '1 pieza espera tu OK' : `${pend.length} piezas esperan tu OK`}</div>` : ''}
     ${d.content.length ? html`<div class="pd-cal">${d.content.map((x, i) => { const [lab, cls] = pstate(x);
       return html`<article class="pd-post">
@@ -135,7 +154,7 @@ export async function render(el, { me, sub, alive }) {
       <div class="pd-hd"><div class="pd-av">${initials(d.name)}</div>
         <div style="min-width:0"><h1>${d.name}</h1><small>Últimos 30 días · ${fdate(r.desde)} al ${fdate(r.hasta)}</small></div>
         <div class="sp"></div><span class="pd-chip live">● En vivo</span>${d.plan ? html`<span class="pd-chip">Tu nivel: ${d.plan}</span>` : ''}</div>
-      <div class="pd-tabs" role="tablist">${TABS.map(([k, l]) => html`<button role="tab" data-tab="${k}" class="${TAB === k ? 'on' : ''}" aria-selected="${TAB === k}">${l}${k === 'contenido' && pend.length ? html`<i class="pd-n">${pend.length}</i>` : ''}</button>`)}</div>
+      <div class="pd-tabs" role="tablist">${TABS.map(([k, l]) => html`<button role="tab" data-tab="${k}" class="${TAB === k ? 'on' : ''}" aria-selected="${TAB === k}">${l}${k === 'contenido' && pendN ? html`<i class="pd-n">${pendN}</i>` : ''}</button>`)}</div>
       ${TABS.map(([k]) => html`<div class="pd-pane ${TAB === k ? 'on' : ''}" id="pd-${k}" role="tabpanel">${panes[k]}</div>`)}
     </div></div>`);
   const again = () => render(el, { me, sub, alive });
@@ -149,6 +168,22 @@ export async function render(el, { me, sub, alive }) {
       if (pa.dataset.pa === 'aprobar') { if (!(await confirmAsk(`¿Aprobar «${x.title}»? Queda programada para salir.`))) return; body = { accion: 'aprobar' }; }
       else { const v = await ask(`Pedir cambios · ${x.title}`, [{ k: 'nota', l: '¿Qué cambiamos?', t: 'textarea', req: true }], 'Enviar'); if (!v) return; body = { accion: 'cambios', nota: v.nota }; }
       try { await api(`portal/content/${encodeURIComponent(x.id)}`, { method: 'POST', body }); toast(body.accion === 'aprobar' ? 'Aprobada. Queda programada' : 'Listo: le avisamos al equipo'); again(); } catch (err) { toast(err.message, true); }
+      return;
+    }
+    const vc = e.target.closest('[data-vc]');
+    if (vc) {
+      const v = vids.find((x) => x.id === vc.dataset.vc); if (!v) return;
+      const r = await ask(`Comentar · ${v.titulo}`, [{ k: 'seg', l: 'Segundo del video (opcional, ej. 0:12)' }, { k: 'texto', l: 'Tu comentario', t: 'textarea', req: true }], 'Enviar'); if (!r) return;
+      try { await api(`portal/videos/${encodeURIComponent(v.id)}/comentarios`, { method: 'POST', body: { texto: r.texto, seg: r.seg || null, version: v.version } }); toast('Comentario enviado'); again(); } catch (err) { toast(err.message, true); }
+      return;
+    }
+    const vr = e.target.closest('[data-vr]');
+    if (vr) {
+      const v = vids.find((x) => x.id === vr.dataset.id); if (!v) return;
+      let body;
+      if (vr.dataset.vr === 'aprobar') { if (!(await confirmAsk(`¿Aprobar «${v.titulo}» (v${v.version})?`))) return; body = { accion: 'aprobar', version: v.version }; }
+      else { const r = await ask(`Pedir cambios · ${v.titulo}`, [{ k: 'nota', l: '¿Qué cambiamos?', t: 'textarea', req: true }], 'Enviar'); if (!r) return; body = { accion: 'cambios', nota: r.nota, version: v.version }; }
+      try { await api(`portal/videos/${encodeURIComponent(v.id)}/revision`, { method: 'POST', body }); toast(body.accion === 'aprobar' ? 'Aprobado' : 'Listo: le avisamos al equipo'); again(); } catch (err) { toast(err.message, true); }
       return;
     }
     const b = e.target.closest('[data-ob]'); if (!b) return;

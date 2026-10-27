@@ -1164,6 +1164,8 @@ escritorio.rutas(on);
 internos.rutas(on);
 // ---------- App 01 · Marca › Video, Ads y Tech ----------
 video.rutas(on);
+// El portal del cliente: sus videos en revisión, comentarios y aprobar o pedir cambios (solo el cliente actúa, con su client_slug).
+portal.rutasVideo({ on, guard, body, slugOk });
 adsStudio.rutas(on);
 tech.rutas(on);
 // ---------- Marketing Performance Center: los KPIs del mes de un cliente (solo lectura) ----------

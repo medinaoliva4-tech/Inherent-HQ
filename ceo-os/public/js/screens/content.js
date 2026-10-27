@@ -39,7 +39,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   const FIXED_TABS = [['research', 'Research'], ['postear', 'Ideas'], ['calendario', 'Calendario'], ['analytics', 'Analytics']];
   const tabs = embed?.only ? FIXED_TABS.filter(([k]) => embed.only.includes(k)) : fixed ? FIXED_TABS : resumen ? TABS.filter(([k]) => k === 'analytics') : TABS;
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0]?.[0] || 'analytics';
-  let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null, shotMes = null;
+  let data = null, week = null, posts = null, poll = null, ig = null, inbox = null, rf = null, rfPoll = null;
   let gstack = null, gfiles = null, gcur = null, pview = 'semana', pdate = today();
   let parch = false, rs = null, shoots = null, ops = null, cvista = 'mes';
   // Los filtros del calendario de la marca: los que se apagaron quedan apagados (por persona).
@@ -47,7 +47,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
 
   async function load() {
     try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
-    slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; shotMes = null; gstack = null; gfiles = null; gcur = null;
+    slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; gstack = null; gfiles = null; gcur = null;
     if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`); }
     else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
@@ -70,7 +70,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
 
       </div>
       <div id="cbody" class="swap"></div>`);
-    ({ shot, refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes, research, calendario })[tab]($('#cbody', el));
+    ({ refs: refsTab, semana, postear, guiones, plan, bandeja, analytics, fuentes, research, calendario })[tab]($('#cbody', el));
   }
 
   // ---------- Semana: top 10 del nicho + los videos que agregaste ----------
@@ -99,44 +99,6 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   }
 
   // ---------- Ideas: reels y carruseles que propone Claude con lo que encontró el scraper ----------
-  // ---------- Shot list: lo que entregó ④ Creatividad en el repo (plan-de-contenido.csv + ideas-<formato>.md) ----------
-  // Para llegar a un video hay trabajo antes (estrategia, brief, BIG IDEA): aquí solo se despliega lo que ya está en el repo.
-  function shotData() {
-    const ms = (data.profile.months || []).filter((m) => m.files.some((f) => f.name === 'plan-de-contenido.csv'));
-    const m = ms.find((x) => x.mes === shotMes) || ms[0];
-    if (!m) return { ms, m: null, rows: [] };
-    const f = m.files.find((x) => x.name === 'plan-de-contenido.csv');
-    // Las 13 columnas del método; si un CSV viejo trae otros nombres (idea, titulo…), se leen igual.
-    const [head, ...body] = csv(f.content); const H = head.map((h) => h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-    const ALIAS = { concepto: ['concepto', 'idea', 'titulo', 'title'], campana: ['campana', 'campaign'] };
-    const val = (r, k) => { for (const a of ALIAS[k] || [k]) { const i = H.indexOf(a); if (i >= 0 && r[i]) return r[i].trim(); } return ''; };
-    const rows = body.filter((r) => r.some(Boolean)).map((r, i) => { const o = Object.fromEntries(['id', 'campana', 'fecha', 'canal', 'formato', 'pilar', 'funcion', 'concepto', 'mezcla', 'traza', 'material', 'estado', 'trial'].map((k) => [k, val(r, k)])); o.id ||= `#${i + 1}`; return o; });
-    return { ms, m, rows };
-  }
-  // La sección de una pieza en su ideas-<formato>.md: desde la línea con su id hasta la siguiente pieza.
-  function pieceText(m, row) {
-    const slugF = (x) => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    const f = m.files.find((x) => x.name === `ideas-${slugF(row.formato)}.md`) || m.files.find((x) => /^ideas-.*\.md$/.test(x.name) && x.content.includes(row.id));
-    if (!f) return null;
-    const L = f.content.split('\n'), i = L.findIndex((l) => /^#{1,4}\s/.test(l) && l.includes(row.id)); if (i < 0) return null;
-    const lvl = L[i].match(/^#+/)[0].length; let j = i + 1; while (j < L.length && !(new RegExp(`^#{1,${lvl}}\\s`).test(L[j]))) j++;
-    return L.slice(i, j).join('\n');
-  }
-  function shot(b) {
-    const { ms, m, rows } = shotData();
-    if (!m) return mount(b, html`<div class="empty"><b>Todavía no hay shot list de ${data.profile.name}</b>Lo entrega ④ Creatividad en el repo: <code>04-contenido/AAAA-MM/ideas/plan-de-contenido.csv</code> y un <code>ideas-&lt;formato&gt;.md</code> por formato. Antes van la estrategia, el brief y las BIG IDEAS del ciclo.</div>`);
-    const brief = m.files.find((x) => x.name === 'brief-del-ciclo.md');
-    const pend = rows.filter((r) => r.estado && r.estado !== 'listo').length, mat = (k) => rows.filter((r) => r.material === k).length;
-    mount(b, html`<div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        ${ms.length > 1 ? html`<select class="in" id="shotMes" style="width:auto">${ms.map((x) => html`<option ${x.mes === m.mes ? raw('selected') : ''}>${x.mes}</option>`)}</select>` : html`<span class="chip dark">${m.mes}</span>`}
-        <span class="chip">${rows.length} piezas</span>${mat('video') ? html`<span class="chip">${ico('video')} ${mat('video')} por grabar</span>` : ''}${mat('foto') ? html`<span class="chip">${ico('camera')} ${mat('foto')} fotos</span>` : ''}${pend ? html`<span class="chip amber">${pend} pendientes</span>` : ''}
-        <div class="sp"></div>${brief ? html`<button class="btn ghost xs" data-act="shotBrief">Brief del ciclo</button>` : ''}</div>
-      <div class="card tscroll"><table class="wktable shottbl"><thead><tr><th>Id</th><th>Fecha</th><th>Formato</th><th>Pilar</th><th>Concepto</th><th>Material</th><th>Estado</th></tr></thead><tbody>
-        ${rows.map((r) => html`<tr class="click" data-act="shotOpen" data-id="${r.id}"><td class="mut">${r.id}</td><td>${r.fecha ? fdate(r.fecha) : '—'}</td><td>${r.formato}</td><td>${r.pilar}</td><td style="min-width:220px">${r.concepto}</td><td>${{ video: html`${ico('video', 14)} video`, foto: html`${ico('camera', 14)} foto`, ninguno: '—' }[r.material] || r.material}</td><td><span class="chip ${r.estado === 'listo' ? 'green' : r.estado ? 'amber' : ''} sm2">${r.estado || '—'}</span></td></tr>`)}
-      </tbody></table></div>`);
-    const sm = $('#shotMes', b); if (sm) sm.onchange = () => { shotMes = sm.value; shot(b); };
-  }
-
   // ---------- Referencias por pilar: 5 videos por pilar → similares (Apify) → desglose con Claude ----------
   function refsTab(b) {
     if (rf === null) { mount(b, html`<p class="loading">Cargando referencias…</p>`); api(`content/refs?profile=${encodeURIComponent(slug)}`).then((r) => { rf = r; }).catch((e) => { rf = { error: e.message }; }).finally(() => alive() && tab === 'refs' && refsTab(b)); return; }
@@ -616,14 +578,6 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       const p = t.dataset.p, out = await claudeJSON(`Desglose · ${p}`, breakPrompt(p)); if (!out) return;
       try { const r = await api('content/refs/breakdown', { method: 'PUT', body: { profile: slug, pillar: p, items: out.videos || out } }); rf = { ...rf, breakdown: r.breakdown }; toast('Desglose guardado'); refsTab($('#cbody', el)); } catch (e) { toast(e.message, true); }
     },
-    shotOpen: (t) => {
-      const { m, rows } = shotData(), r = rows.find((x) => x.id === t.dataset.id); if (!r) return;
-      const txt = pieceText(m, r);
-      drawer(html`<div class="row"><span class="chip">${r.formato}</span><span class="chip">${r.pilar}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
-        <h2>${r.id} · ${r.concepto}</h2><div class="mut sm">${[r.fecha && fdate(r.fecha), r.canal, r.campana, r.funcion, r.material && 'material: ' + r.material].filter(Boolean).join(' · ')}</div>
-        <div class="mdbody" style="margin-top:14px">${txt ? md(txt) : html`<div class="mut">No encontré la sección de ${r.id} en ideas-${r.formato.toLowerCase()}.md.</div>`}</div>`);
-    },
-    shotBrief: () => { const { m } = shotData(); const f = m?.files.find((x) => x.name === 'brief-del-ciclo.md'); if (f) drawer(html`<div class="row"><span class="chip">Brief del ciclo · ${m.mes}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><div class="mdbody" style="margin-top:14px">${md(f.content)}</div>`); },
   });
   acts(el, { auto: (t) => saveCfg({ auto: t.checked }).then(() => toast(t.checked ? 'Se scrapea solo cada lunes' : 'Scrape semanal apagado')) }, 'change');
   mount(el, html`<p class="loading">Leyendo el repo…</p>`);

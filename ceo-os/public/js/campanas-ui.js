@@ -456,7 +456,13 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
     await cargarCreative(true); if (!alive()) return;
     if (S.creative?.length && !(await confirmAsk(`Ya enviaste «${S.W.nombre}» a Creative. ¿La mando otra vez como un Borrador nuevo?`))) return;
     if (!alive()) return;
-    const r = await api('entregables', { method: 'POST', body: { tool: 'creative-direction-lab', client_slug: slug, titulo: `Dirección creativa · ${S.W.nombre}`, contenido: contenidoParaCreative(S.W) } });
+    // El Borrador lleva como entradas las que alimentaron la campaña (la Oferta aprobada, que a su vez viene de la Diana): así la cadena
+    // Bullseye → Offer → Campaign → Creative → Production Brief llega entera. Si esa entrada ya no es la versión aprobada, el Borrador sale sin ella.
+    const base = { tool: 'creative-direction-lab', client_slug: slug, titulo: `Dirección creativa · ${S.W.nombre}`, contenido: contenidoParaCreative(S.W) };
+    const entradas = (await entradasDe(S.W).catch(() => [])).map((e) => ({ deliverable_id: e.deliverable_id, version: e.version, tool: e.tool }));
+    let r = null;
+    if (entradas.length) r = await api('entregables', { method: 'POST', body: { ...base, entradas } }).catch(() => null);
+    if (!r) r = await api('entregables', { method: 'POST', body: base });
     if (!alive()) return;
     S.creative = [...(S.creative || []), r]; S.enviado = { href: rutaHerramienta('creative', slug, 'creative-direction-lab') };
     pintarCab(); pintarEnviado(); toast('Enviada a Creative');

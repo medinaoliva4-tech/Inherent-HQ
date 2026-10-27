@@ -43,10 +43,10 @@ t('cada herramienta: ws válido, pestaña del ws, prioridad, estado, aprueba, gu
     assert.equal(typeof h.puede, 'function', `${h.id}: puede`);
     if (h.estado !== 'pronto') assert.ok(h.monta, `${h.id}: ${h.estado} sin monta`); else assert.equal(h.monta, null, `${h.id}: pronto con monta`);
   }
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'viral-intelligence-lab', 'content-strategy-studio', 'content-calendar', 'campaign-architect', 'ads-intelligence', 'marketing-performance-center', 'brand-dna-studio', 'moodboard-studio', 'creative-direction-lab', 'visual-identity-builder', 'design-studio'], 'las 5 de Strategy de la Fase 3a + las 6 de Marketing de la Fase 3b + las 5 P1 de Creative de la Fase 3c');
-  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 9, '3 de la Fase 1 que siguen parciales + las 6 de Consulting de la Fase 2');
-  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 25, 'las 19 de la Fase 1 + las 6 del Tool Shell');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'viral'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'adsIntel'], ['marketing-performance-center', 'shell'], ['brand-dna-studio', 'dna'], ['moodboard-studio', 'moodboard'], ['creative-direction-lab', 'shell'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'viral-intelligence-lab', 'content-strategy-studio', 'content-calendar', 'campaign-architect', 'ads-intelligence', 'marketing-performance-center', 'brand-dna-studio', 'moodboard-studio', 'creative-direction-lab', 'visual-identity-builder', 'design-studio', 'production-brief', 'script-storyboard-studio', 'shot-list-builder', 'post-production-workspace', 'review-approval-studio'], 'las 5 de Strategy de la Fase 3a + las 6 de Marketing de la Fase 3b + las 5 P1 de Creative de la Fase 3c + las 5 P1 de Production de la Fase 3d');
+  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 7, 'el Funnel Builder de la Fase 1 + las 6 de Consulting de la Fase 2 (el Script & Storyboard y el Post-Production pasaron a lista en la 3d)');
+  assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 28, 'las 19 de la Fase 1 + las 6 del Tool Shell + el Brief, el Shot List y el studio de revisión de la 3d');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'viral'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'adsIntel'], ['marketing-performance-center', 'shell'], ['brand-dna-studio', 'dna'], ['moodboard-studio', 'moodboard'], ['creative-direction-lab', 'shell'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['production-brief', 'shell'], ['script-storyboard-studio', 'creacion'], ['shot-list-builder', 'shell'], ['post-production-workspace', 'video'], ['review-approval-studio', 'review']]);
   // Consulting lleva el nombre en español y el inglés como alias.
   for (const h of deWorkspace('consulting')) assert.ok(h.alias, `${h.id}: alias`);
   assert.equal(herramientaDe('business-health-assessment').nombre, 'Diagnóstico de crecimiento');
@@ -369,8 +369,8 @@ t('estáticas · costos y versión: toda respuesta con un entregable pasa por sa
   // El shell manda la versión que leyó en estado, tareas, siguiente, resultado y archivar.
   for (const ruta of ['estado', 'tareas', 'siguiente', 'resultado', 'archivar']) assert.match(shell, new RegExp('/' + ruta + '`, \\{ method: \'POST\', body: \\{ v: S\\.doc\\.v'), `tool-shell: /${ruta} manda v`);
   // Solo tres herramientas tienen costos que ocultar: las recomendaciones de pauta, el reporte del Performance Center y el Money Model Lab.
-  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.sinCostos === 'function' || typeof h.conCostos === 'function').map((h) => h.id), ['ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab']);
-  for (const id of ['ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab']) { const h = herramientaDe(id); assert.equal(typeof h.sinCostos, 'function', id); assert.equal(typeof h.conCostos, 'function', id); }
+  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.sinCostos === 'function' || typeof h.conCostos === 'function').map((h) => h.id), ['ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab', 'shot-list-builder']);
+  for (const id of ['ads-intelligence', 'marketing-performance-center', 'financial-scenario-lab', 'shot-list-builder']) { const h = herramientaDe(id); assert.equal(typeof h.sinCostos, 'function', id); assert.equal(typeof h.conCostos, 'function', id); }
 });
 
 // ---------- Fase 2: las 6 herramientas reales de Consulting se montan en el Tool Shell ----------
@@ -678,6 +678,65 @@ t('Creative 3c · estáticas: package.json trae test:creative y app.css el bloqu
   const css = leerSrc('public/app.css'); assert.match(css, /FASE 3c · Creative/);
   for (const k of ['.dl{', '.dl-cons{', '.dz.dz3{', '.dz-cola{', '.dna,.mb{', '.dse{']) assert.ok(css.includes(k), k);
   const bloque = css.slice(css.indexOf('FASE 3c · Creative'));
+  assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '')), 'el bloque no trae colores sueltos: solo tokens --ui-*');
+});
+
+// ---------- Fase 3d: Production ----------
+t('Production 3d: las 5 P1 quedan «lista» con su montaje; el Brief y el Shot List van al shell con ciclo; las 3 restantes siguen Pronto', () => {
+  const montaje = { 'production-brief': 'shell', 'script-storyboard-studio': 'creacion', 'shot-list-builder': 'shell', 'post-production-workspace': 'video', 'review-approval-studio': 'review' };
+  for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'production', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'production').map((h) => h.id), ['production-brief', 'shot-list-builder']);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'production').map((h) => h.id), ['production-brief', 'shot-list-builder']);
+  for (const id of ['production-planner', 'ai-video-lab', 'content-repurposing']) { assert.equal(herramientaDe(id).estado, 'pronto', id); assert.equal(herramientaDe(id).monta, null, id); }
+  assert.equal(herramientaDe('production-brief').guarda.coll, 'deliverables'); assert.equal(herramientaDe('shot-list-builder').guarda.coll, 'deliverables');
+  assert.equal(herramientaDe('script-storyboard-studio').guarda.coll, 'scripts'); assert.equal(herramientaDe('post-production-workspace').guarda.coll, 'videos'); assert.equal(herramientaDe('review-approval-studio').guarda.coll, 'videos');
+});
+
+t('Production 3d: Brief y Shot List traen las funciones de su módulo puro; cada prompt pide su bloque y sus criterios, cabe en 5 000 y no toca costos', () => {
+  for (const [id, vista, bloque] of [['production-brief', 'brief', 'produccion'], ['shot-list-builder', 'shotlist', 'shotlist']]) {
+    const h = herramientaDe(id);
+    assert.equal(h.vista, vista, id); assert.equal(h.bloque, bloque, id);
+    for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `${id}.${f}`);
+    const p = h.prompt({ cliente: { nombre: 'X', slug: 'x' }, hoy: '2026-10-27', mes: '2026-10', entradas: [] });
+    assert.ok(p.includes(bloque) && p.includes('criterios') && p.length < 5000, `${id}: prompt`);
+    assert.ok(!/06-ECONOMIA/.test(p.replace(/nunca leas ni cites inherent\/06-ECONOMIA/i, '')), `${id}: no pide la economía de Inherent`);
+  }
+  assert.equal(typeof herramientaDe('production-brief').tareasDe, 'function', 'el brief convierte las devueltas en tareas');
+  assert.equal(herramientaDe('production-brief').tareasDe({ devueltas: [] }).length, 0);
+  const sl = herramientaDe('shot-list-builder');
+  assert.equal(typeof sl.sinCostos, 'function'); assert.equal(typeof sl.conCostos, 'function');
+  const c = sl.limpiar({ escenas: [{ id: 'PR-001', id_creativo: 'C-01', costo_estimado: 250 }] });
+  assert.equal(sl.sinCostos(c).escenas[0].costo_estimado, null, 'quien no ve costos no lee el costo estimado');
+  assert.equal(sl.conCostos(c, sl.sinCostos(c)).escenas[0].costo_estimado, 250, 'ni lo pisa al guardar');
+});
+
+t('Production 3d: la cadena Bullseye → Offer → Campaign → Creative → Production Brief está en el registro y siguienteDe la arma con entradas', () => {
+  const cadenaTools = ['customer-bullseye', 'offer-architect', 'campaign-architect', 'creative-direction-lab', 'production-brief'];
+  for (let i = 0; i < cadenaTools.length - 1; i++) assert.ok(herramientaDe(cadenaTools[i]).va_a.includes(cadenaTools[i + 1]), `${cadenaTools[i]} → ${cadenaTools[i + 1]}`);
+  assert.ok(cadena('customer-bullseye').includes('production-brief'));
+  let doc = { id: 'd-0', tool: cadenaTools[0], estado: 'Aprobado', version: 1, aprobado: { version: 1 }, titulo: 'Diana', client_slug: 'akai', ciclo: '' };
+  for (const sig of cadenaTools.slice(1)) {
+    const n = E.siguienteDe(doc, sig);
+    assert.ok(n, `siguienteDe → ${sig}`); assert.equal(n.entradas[0].deliverable_id, doc.id); assert.equal(n.entradas[0].tool, doc.tool);
+    doc = { ...n, id: `d-${sig}`, estado: 'Aprobado', version: 1, aprobado: { version: 1 } };
+  }
+  assert.equal(doc.tool, 'production-brief');
+  const campanas = leerSrc('public/js/campanas-ui.js');
+  assert.match(campanas, /entradasDe\(S\.W\)[\s\S]*body: \{ \.\.\.base, entradas \}/, '«Enviar a Creative» lleva las entradas de la campaña (la Oferta aprobada)');
+});
+
+t('Production 3d · estáticas: workspace.js monta el brief, el shot list y el studio de revisión; el portal y el servidor montan sus rutas; Kit por cliente enlaza Post-production', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  assert.match(ws, /brief: \(\) => import\('\.\.\/production\/brief-ui\.js'\)/, 'VISTAS.brief');
+  assert.match(ws, /shotlist: \(\) => import\('\.\.\/production\/shotlist-ui\.js'\)/, 'VISTAS.shotlist');
+  assert.match(ws, /case 'review': \{[\s\S]*'\.\.\/production\/review-ui\.js'[\s\S]*reviewTool\(host, \{ me, slug, b, alive, resto \}\)/, 'monta reviewTool con { me, slug, b, alive, resto }');
+  assert.match(ws, /review: 'video'/, 'el studio de revisión pide el módulo Video de Marcas');
+  assert.match(leerSrc('api/index.js'), /portal\.rutasVideo\(\{ on, guard, body, slugOk \}\)/, 'las rutas de video del portal');
+  assert.match(leerSrc('public/js/screens/work.js'), /rutaHerramienta\('production', clientSel, 'post-production-workspace'\)/, 'Kit por cliente → Post-production');
+  const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:produccion'], /test-produccion\.mjs.*test-shotlist\.mjs/);
+  const css = leerSrc('public/app.css'); assert.match(css, /FASE 3d · Production/);
+  for (const k of ['.pb{', '.pb-bar>span{', '.pb-bar[data-sobre="1"]>span{', '.pb-pie{', '.sl{', '.sl-gr{', '.sl-tablero{', '.vd-capas{', '.vd-v{', '.vd-coms{', '.cr-fr-ed{']) assert.ok(css.includes(k), k);
+  const bloque = css.slice(css.indexOf('FASE 3d · Production'));
   assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '')), 'el bloque no trae colores sueltos: solo tokens --ui-*');
 });
 

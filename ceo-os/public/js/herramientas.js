@@ -12,6 +12,9 @@
 // Creative (Fase 3c): las 5 P1 quedan «lista». El Creative Direction Lab va al Tool Shell (vista 'direccion', un entregable por mes: ciclo: true) y conserva
 // «Ideas» y «Formatos» de hoy como sub-vistas (resto[0]); Brand DNA y Moodboard montan su propia hoja ('dna' y 'moodboard': viven en brand_boards, no en deliverables);
 // el Visual Identity Builder ('design') y el Design Studio ('disenoChat') siguen con su hoja.
+// Production (Fase 3d): el Production Brief y el Shot List Builder van al Tool Shell (vistas 'brief' y 'shotlist', un entregable por mes: ciclo: true);
+// el Script & Storyboard Studio y el Post-Production Workspace conservan su hoja ('creacion' y 'video', ahora con frames, versiones, capas y QA);
+// el Review & Approval Studio tiene su propia hoja ('review': vive en videos, no en deliverables).
 import * as salud from './consulting/salud.js';
 import * as causas from './consulting/causas.js';
 import * as procesos from './consulting/procesos.js';
@@ -25,6 +28,8 @@ import * as patrones from './marketing/patrones.js';
 import * as reporte from './marketing/reporte.js';
 import * as ads from './marketing/ads.js';
 import * as direccion from './creative/direccion.js';
+import * as brief from './production/brief.js';
+import * as shotlist from './production/shotlist.js';
 
 // ---------- El flujo compartido (7 pasos) ----------
 export const FLUJO = [
@@ -255,12 +260,14 @@ export const HERRAMIENTAS = [
 
   // Production — planear, crear, coordinar y entregar producciones audiovisuales (8)
   H({ id: 'production-brief', ws: 'production', pestana: 'pre-production', nombre: 'Production Brief Builder', produce: 'El brief del ciclo: piezas video y foto, techo de horas y devoluciones',
-    prioridad: 'P1', icono: 'file-text', guarda: D('tool production-brief, uno por ciclo AAAA-MM'),
+    ...SH(brief, 'brief', { estado: 'lista', ciclo: true, tareasDe: brief.tareasDe }),
+    prioridad: 'P1', icono: 'file-text', guarda: D('tool production-brief, uno por ciclo AAAA-MM; sin costos ni tarifas; las devueltas a ④ se vuelven tareas de Creatividad'),
     va_a: ['shot-list-builder', 'script-storyboard-studio', 'production-planner'], puede: contenido }),
   H({ id: 'script-storyboard-studio', ws: 'production', pestana: 'pre-production', nombre: 'Script & Storyboard Studio', produce: 'Guiones con storyboard por tramo y versiones',
-    estado: 'parcial', prioridad: 'P1', icono: 'square-pen', monta: 'creacion', guarda: { coll: 'scripts', nota: 'por sus rutas; frames[] y versiones[]; se archiva, no se borra' },
+    estado: 'lista', prioridad: 'P1', icono: 'square-pen', monta: 'creacion', guarda: { coll: 'scripts', nota: 'por sus rutas; frames[] y versiones[]; se archiva, no se borra' },
     va_a: ['shot-list-builder'], puede: contenido }),
   H({ id: 'shot-list-builder', ws: 'production', pestana: 'pre-production', nombre: 'Shot List Builder', produce: 'Escenas PR-xxx agrupadas por locación, talento y setup; CSV de 16 columnas',
+    ...SH(shotlist, 'shotlist', { estado: 'lista', ciclo: true, sinCostos: shotlist.sinCostos, conCostos: shotlist.conCostos }),
     prioridad: 'P1', icono: 'table', guarda: D('tool shot-list-builder, por ciclo; costo_estimado vacío para quien no ve costos'),
     va_a: ['production-planner'], puede: contenido }),
   H({ id: 'production-planner', ws: 'production', pestana: 'production', nombre: 'Production Planner', produce: 'Jornadas, orden de tiro y call sheet, con el candado del día 11',
@@ -270,10 +277,10 @@ export const HERRAMIENTAS = [
     prioridad: 'P3', icono: 'sparkles', guarda: D('solo integra; la generación corre afuera'),
     va_a: ['post-production-workspace'], puede: contenido }),
   H({ id: 'post-production-workspace', ws: 'production', pestana: 'post-production', nombre: 'Post-Production Workspace', produce: 'Pipeline por capas, versiones y checklist QA de cada video',
-    estado: 'parcial', prioridad: 'P1', icono: 'video', monta: 'video', guarda: { coll: 'videos', nota: 'por sus rutas; capa, version, versiones[], qa, derivada_de y post' },
+    estado: 'lista', prioridad: 'P1', icono: 'video', monta: 'video', guarda: { coll: 'videos', nota: 'por sus rutas; capa, version, versiones[], qa, derivada_de y post' },
     va_a: ['review-approval-studio', 'content-repurposing'], puede: contenido }),
   H({ id: 'review-approval-studio', ws: 'production', pestana: 'delivery', nombre: 'Review & Approval Studio', produce: 'Reproductor con comentarios al segundo, versiones y aprobar o pedir cambios',
-    prioridad: 'P1', icono: 'circle-check', guarda: { coll: 'videos', nota: 'revision, comentarios[], aprobacion; espejado en la pieza ligada' },
+    estado: 'lista', monta: 'review', prioridad: 'P1', icono: 'circle-check', guarda: { coll: 'videos', nota: 'revision, comentarios[], aprobacion; espejado en la pieza ligada (video_aprobacion)' },
     va_a: ['content-repurposing'], puede: contenido }),
   H({ id: 'content-repurposing', ws: 'production', pestana: 'delivery', nombre: 'Content Repurposing Engine', produce: 'Matriz maestro × salidas y derivadas, con el medidor 1:2',
     prioridad: 'P2', icono: 'repeat', guarda: { coll: 'videos', nota: 'las derivadas son fichas con derivada_de; las variantes de hook van a Ads Studio' },
