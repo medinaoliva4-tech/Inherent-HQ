@@ -4752,10 +4752,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lat .wm-noche,:root[data-theme="dark"] .lat .wm-dia{display:none}
 :root[data-theme="dark"] .lat .wm-noche{display:block}
 #lat-area{display:grid;gap:8px}
-.lat-area{display:grid;gap:1px;padding:0 8px}
-.lat-area b{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:650;letter-spacing:-.01em;color:var(--ui-ink)}
-.lat-area b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ac,var(--ui-acc));flex:none}
-.lat-area small{font-size:11.5px;color:var(--ui-mut);padding-left:16px;line-height:1.35}
 .lat[data-area="estrategia"]{--ac:var(--ui-m-estrategia)}.lat[data-area="organizacion"]{--ac:var(--ui-m-organizacion)}.lat[data-area="marketing"]{--ac:var(--ui-m-marketing)}.lat[data-area="diseno"]{--ac:var(--ui-m-diseno)}.lat[data-area="consulting"]{--ac:var(--ui-m-consulting)}
 .lat-k{margin:6px 10px 2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut)}
 .lat-nav{display:flex;flex-direction:column;gap:1px;min-height:0;overflow-y:auto;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
@@ -4802,7 +4798,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 @media (min-width:761px){
   html[data-barra="lateral"][data-lat-mini]{--lat-w:64px}
   [data-lat-mini] .lat{padding-left:8px;padding-right:8px;align-items:stretch}
-  [data-lat-mini] .lat-wm,[data-lat-mini] .lat-area,[data-lat-mini] .lat-k,[data-lat-mini] .lat-subs,[data-lat-mini] .lat-it>.lat-t,[data-lat-mini] .lat-it kbd,[data-lat-mini] .lat-chat span,[data-lat-mini] .lat-yo-b span{display:none}
+  [data-lat-mini] .lat-wm,[data-lat-mini] .lat-k,[data-lat-mini] .lat-subs,[data-lat-mini] .lat-it>.lat-t,[data-lat-mini] .lat-it kbd,[data-lat-mini] .lat-chat span,[data-lat-mini] .lat-yo-b span{display:none}
   /* «Cómo se usa» y tu primer día siguen ahí, solo con su ícono (o su avance). */
   [data-lat-mini] .lat-ayuda{flex-direction:column;align-items:center}
   [data-lat-mini] .lat-ayuda .guiabtn{width:40px;padding:0;flex:none}[data-lat-mini] .lat-ayuda .guiabtn span{display:none}
@@ -4981,25 +4977,48 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 :root[data-theme="dark"] .emb-dia{display:none!important}
 :root[data-theme="dark"] .emb-noche{display:block!important}
 
-/* Organización y los workspaces. Organización es la casa (neutra); cada workspace es una app con su color: la barra se
-   tiñe, arriba va la app con lo que está abierto y «← Organización» para volver. En el cel, Organización tiene su botón. */
-.lat-volver{color:var(--ui-ink2)}
-.lat-app{display:flex;align-items:center;gap:10px;margin:0 2px;padding:8px;border-radius:14px;background:color-mix(in srgb,var(--ac) 12%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 30%,transparent)}
-.lat-app-ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--ac);color:var(--ui-surf)}
-.lat-app>span{display:grid;min-width:0;line-height:1.25}
-.lat-app small{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ac)}
-.lat-app b{font-size:15px;font-weight:650;letter-spacing:-.01em;color:var(--ui-ink)}
-.lat-app em{font-style:normal;font-size:12px;color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lat-k-apps{margin-top:2px}
+/* Organización y los workspaces. Organización es la casa (neutra): un botón aparte. Debajo, el workspace es una barra que
+   se abre como un select con los demás (Estrategia, Marketing, Diseño, Consulting). Dentro de un workspace la barra
+   lateral se tiñe de su color; en el cel, la barra de arriba lleva una línea de ese color. */
+.org-btn,.ws-sel{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:7px 10px 7px 7px;border:0;border-radius:14px;text-align:left;cursor:pointer;color:var(--ui-ink);background:var(--ui-surf);box-shadow:inset 0 0 0 1px var(--ui-line)}
+.org-btn:hover,.ws-sel:hover{box-shadow:inset 0 0 0 1px var(--ui-line2,var(--ui-line)),0 1px 3px rgb(30 25 20 / .08)}
+.org-btn:focus-visible,.ws-sel:focus-visible{outline:2px solid var(--ac,var(--ui-ink));outline-offset:2px}
+.org-btn>span,.ws-sel>span{display:grid;flex:1;min-width:0;line-height:1.25}
+.org-btn b,.ws-sel b{font-size:14.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-btn small,.ws-sel small{font-size:12px;color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.org-btn:not(.on){background:transparent;box-shadow:none}
+.org-btn:not(.on):hover{background:var(--ui-fill2)}
+.org-ico,.ws-ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center}
+.org-ico{background:var(--ui-fill2);color:var(--ui-ink2)}
+.org-btn.on .org-ico{background:var(--ui-ink);color:var(--ui-surf)}
+.ws-ico{background:var(--ac);color:var(--ui-surf)}
+.ws-ico-vacio{background:var(--ui-fill2);color:var(--ui-ink2)}
+.ws-ico-suave{background:color-mix(in srgb,var(--ac) 14%,var(--ui-surf));color:var(--ac)}
+.ws-sel>svg{flex:none;color:var(--ui-mut)}
+.ws-sel[aria-expanded="true"]>svg{transform:rotate(180deg)}
+.ws-sel.on{background:color-mix(in srgb,var(--ac) 10%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 30%,transparent)}
+.lat[data-area="estrategia"] .ws-sel,.top[data-app="estrategia"] .ws-sel{--ac:var(--ui-m-estrategia)}.lat[data-area="marketing"] .ws-sel,.top[data-app="marketing"] .ws-sel{--ac:var(--ui-m-marketing)}.lat[data-area="diseno"] .ws-sel,.top[data-app="diseno"] .ws-sel{--ac:var(--ui-m-diseno)}.lat[data-area="consulting"] .ws-sel,.top[data-app="consulting"] .ws-sel{--ac:var(--ui-m-consulting)}
+.lat-k-ws{margin-top:8px}
+#lat-area{display:grid;gap:4px}
+.ws-menu{position:fixed;z-index:300;box-sizing:border-box;padding:8px;border-radius:18px;background:var(--ui-surf);box-shadow:0 12px 32px rgb(30 25 20 / .16),0 0 0 1px var(--ui-line);display:grid;gap:2px}
+.ws-menu-k{padding:6px 10px 6px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ui-mut)}
+.ws-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:8px 10px 8px 8px;border:0;border-radius:12px;background:transparent;text-align:left;cursor:pointer;color:var(--ui-ink)}
+.ws-menu button:hover,.ws-menu button:focus-visible{background:var(--ui-fill2);outline:0}
+.ws-menu button.on{background:color-mix(in srgb,var(--ui-ink) 6%,transparent)}
+.ws-menu button>span{display:grid;flex:1;min-width:0;line-height:1.3}
+.ws-menu b{font-size:14.5px;font-weight:600}
+.ws-menu small{font-size:12px;color:var(--ui-mut)}
+.ws-menu button>svg{flex:none;color:var(--ui-acc)}
 @media (min-width:761px){html[data-barra="lateral"] .lat[data-app="1"]{background:color-mix(in srgb,var(--ac) 6%,var(--ui-side))}}
-[data-lat-mini] .lat-app{justify-content:center;margin:0;padding:3px;background:none;box-shadow:none}
-[data-lat-mini] .lat-app>span{display:none}
+[data-lat-mini] .org-btn,[data-lat-mini] .ws-sel{justify-content:center;padding:4px;background:transparent;box-shadow:none}
+[data-lat-mini] .org-btn>span,[data-lat-mini] .ws-sel>span,[data-lat-mini] .ws-sel>svg,[data-lat-mini] .lat-k-ws{display:none}
 .top-areas{display:flex;align-items:center;gap:6px;flex:none}
-.top-org{width:34px;height:34px;flex:none;border:0;border-radius:999px;display:grid;place-items:center;padding:0;cursor:pointer;background:var(--ui-fill2);box-shadow:inset 0 0 0 1px var(--ui-line);color:var(--ui-ink2)}
-.top-org.on{background:var(--ui-surf);color:var(--ui-m-organizacion);box-shadow:0 1px 3px rgb(30 25 20 / .12),0 0 0 1px color-mix(in srgb,var(--ui-m-organizacion) 40%,transparent)}
-.top-org:focus-visible{outline:2px solid var(--ui-m-organizacion);outline-offset:2px}
+.top-areas .org-btn,.top-areas .ws-sel{width:auto;padding:3px}
+.top-areas .org-btn>span{display:none}
+.top-areas .ws-sel{padding-right:8px;gap:6px}
+.top-areas .ws-sel small{display:none}
+.top-areas .ws-sel b{font-size:13px;max-width:96px}
+.top-areas .org-ico,.top-areas .ws-ico{width:28px;height:28px;border-radius:8px}
 .top[data-app="estrategia"]{--ac:var(--ui-m-estrategia)}.top[data-app="marketing"]{--ac:var(--ui-m-marketing)}.top[data-app="diseno"]{--ac:var(--ui-m-diseno)}.top[data-app="consulting"]{--ac:var(--ui-m-consulting)}
 .top[data-app]:not([data-app=""]){box-shadow:inset 0 -2px 0 var(--ac),0 1px 2px rgb(30 25 20 / .06)}
-@media (max-width:460px){.top-areas{gap:4px}.top-org{width:30px;height:30px}}
-/* Sin un área elegida (en Organización, el switch de workspaces): sin pastilla. */
-.asw[data-on=""] .asw-pastilla{opacity:0}
+@media (max-width:420px){.top-areas .ws-sel b{display:none}}

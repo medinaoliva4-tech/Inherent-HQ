@@ -10,7 +10,7 @@ import { primerDia } from './primer-dia.js';
 import { pintarDock, quitarDock, icoApp } from './dock.js';
 import { svgIco } from './iconos.js';
 import { ponerTema, esNoche, temaElegido } from './tema.js';
-import { areasDe, areaDe, areaDeEspacio, areaGuardada, guardarArea, switchHtml as areaSwitch, areaConFlecha, barraLateral, abrirEnChat } from './areas.js';
+import { areasDe, areaDe, areaDeEspacio, areaGuardada, guardarArea, barraLateral, abrirEnChat } from './areas.js';
 
 // Tres espacios, como cambiar de app en un iPhone: el interruptor de arriba (junto al logo) cambia entre
 //   ORGANIZATION  cómo se maneja la empresa   Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent
@@ -133,8 +133,36 @@ const areasTablero = () => areasDe({ estrategia: hasEstrategia(), organizacion: 
 // dedicarse a una cosa. Por eso no van en el mismo switch: Organización tiene su botón y los workspaces el suyo.
 const appsTablero = () => areasTablero().filter((a) => a.id !== 'organizacion');
 const tieneOrg = () => areasTablero().some((a) => a.id === 'organizacion');
-// El cliente o la marca abierta en un workspace (para el encabezado de la app).
+// El cliente o la marca abierta en un workspace (para la barra del workspace).
 const abiertoEn = (cur) => { const s = cur?.rest?.[0] ? decodeURIComponent(cur.rest[0]) : ''; if (!s || s === 'diseno') return ''; return cur.key === 'marcas' ? brandsNow().find((b) => b.slug === s)?.name || '' : ['estrategia', 'consulting'].includes(cur.key) ? estrategiaNow().find((c) => c.slug === s)?.nombre || '' : ''; };
+// Organización: un botón aparte. Debajo, el workspace como una barra que se abre (como un select) con los demás.
+// clase: 'lat' en la barra lateral, 'top' arriba en el cel.
+const orgBtnHtml = (on, clase) => `<button type="button" class="org-btn ${clase}-org${on ? ' on' : ''}" data-ir-area="organizacion" title="Organización: tareas y proyectos de todos"${on ? ' aria-current="page"' : ''}><i class="org-ico">${svgIco('clipboard', 17)}</i><span><b>Organización</b><small>Tareas y proyectos de todos</small></span></button>`;
+function wsSelHtml(a, abierto, clase) {
+  const tile = a ? `<i class="ws-ico" style="--ac:var(--ui-m-${a.id})">${svgIco(a.icono, 17)}</i>` : `<i class="ws-ico ws-ico-vacio">${svgIco('grid', 17)}</i>`;
+  return `<button type="button" class="ws-sel ${clase}-ws${a ? ' on' : ''}" data-ws-menu aria-haspopup="listbox" aria-expanded="false" title="${a ? 'Workspace: ' + esc(a.nombre) : 'Elige un workspace'}">${tile}<span><b>${a ? esc(a.nombre) : 'Elige un workspace'}</b><small>${a ? esc(abierto || a.sub) : 'Estrategia, Marketing, Diseño…'}</small></span>${svgIco('chevron-down', 15)}</button>`;
+}
+function menuWs(btn) {
+  const viejo = $('.ws-menu'); viejo?.remove(); if (viejo) { btn.setAttribute('aria-expanded', 'false'); return; }
+  const actual = areaDeRuta()?.id, apps = appsTablero(), r = btn.getBoundingClientRect();
+  const m = document.createElement('div'); m.className = 'ws-menu'; m.setAttribute('role', 'listbox'); m.setAttribute('aria-label', 'Workspaces');
+  m.innerHTML = `<span class="ws-menu-k">Cambiar de workspace</span>${apps.map((a) => `<button type="button" role="option" data-area="${a.id}" aria-selected="${a.id === actual}" class="${a.id === actual ? 'on' : ''}" style="--ac:var(--ui-m-${a.id})"><i class="ws-ico ws-ico-suave">${svgIco(a.icono, 17)}</i><span><b>${esc(a.nombre)}</b><small>${esc(a.sub)}</small></span>${a.id === actual ? svgIco('check', 15) : ''}</button>`).join('')}`;
+  const ancho = Math.max(r.width, 280), izq = Math.min(r.left, innerWidth - ancho - 8);
+  Object.assign(m.style, { top: `${r.bottom + 6}px`, left: `${Math.max(8, latMini() && enBarra() ? r.right + 10 : izq)}px`, width: `${ancho}px` });
+  if (latMini() && enBarra()) m.style.top = `${r.top}px`;
+  document.body.append(m); btn.setAttribute('aria-expanded', 'true');
+  const ops = [...m.querySelectorAll('[data-area]')]; (ops.find((o) => o.classList.contains('on')) || ops[0])?.focus();
+  const cerrar = (volver) => { m.remove(); btn.setAttribute('aria-expanded', 'false'); document.removeEventListener('pointerdown', fuera); if (volver) btn.focus(); };
+  const fuera = (e) => { if (!m.contains(e.target) && !btn.contains(e.target)) cerrar(); };
+  setTimeout(() => document.addEventListener('pointerdown', fuera));
+  m.addEventListener('click', (e) => { const o = e.target.closest('[data-area]'); if (!o) return; cerrar(); irArea(o.dataset.area); });
+  m.addEventListener('keydown', (e) => {
+    const i = ops.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); ops[(i + (e.key === 'ArrowDown' ? 1 : -1) + ops.length) % ops.length].focus(); }
+    else if (e.key === 'Escape') { e.preventDefault(); cerrar(true); }
+    else if (e.key === 'Tab') cerrar();
+  });
+}
 // El área de lo que está abierto. En las marcas la dice el grupo del módulo (Marketing planea y mide; Diseño hace las piezas);
 // en la lista de marcas o en el Inicio de una marca, la última de las dos que se eligió.
 function areaDeRuta(cur = resolve(hashNow())) {
@@ -294,10 +322,10 @@ function paintNav(force) {
     // En el cel, arriba va el switch de áreas (el mismo de la barra lateral, más chico).
     // Organización con su botón y, al lado, los workspaces; en un workspace la barra lleva su color.
     const xs = areasTablero(), apps = appsTablero(), want = xs.length >= 2, aid = areaDeRuta()?.id, enOrg = aid === 'organizacion';
-    const enSw = document.activeElement?.closest?.('.top .asw, .top .top-org');
+    const enSw = document.activeElement?.closest?.('.top .org-btn') ? 'org' : document.activeElement?.closest?.('.top .ws-sel') ? 'ws' : '';
     $('.top-areas', top)?.remove();
-    if (want && top) $('.brand', top).insertAdjacentHTML('afterend', `<div class="top-areas">${tieneOrg() ? `<button type="button" class="top-org${enOrg ? ' on' : ''}" data-ir-area="organizacion" aria-label="Organización" title="Organización"${enOrg ? ' aria-current="page"' : ''}>${svgIco('clipboard', 17)}</button>` : ''}${apps.length ? areaSwitch(apps, enOrg ? '' : aid, (n, px) => svgIco(n, px), 'asw chico') : ''}</div>`);
-    if (enSw) (enOrg ? $('.top .top-org') : $(`.top .asw [data-area="${aid}"]`))?.focus();
+    if (want && top) $('.brand', top).insertAdjacentHTML('afterend', `<div class="top-areas">${tieneOrg() ? orgBtnHtml(enOrg, 'top') : ''}${apps.length ? wsSelHtml(enOrg ? null : areaDe(aid), enOrg ? '' : abiertoEn(resolve(hashNow())), 'top') : ''}</div>`);
+    if (enSw) $(enSw === 'org' ? '.top .org-btn' : '.top .ws-sel')?.focus();
     if (top) top.dataset.app = enOrg ? '' : aid || '';
     top?.classList.toggle('has-sw', want); return;
   }
@@ -390,16 +418,14 @@ function paintLat(cur = resolve(hashNow())) {
   const lat = $('.lat'); if (!lat) return;
   const a = areaDeRuta(cur), apps = appsTablero(), enOrg = a?.id === 'organizacion', abierto = enOrg ? '' : abiertoEn(cur);
   lat.dataset.area = a?.id || ''; lat.dataset.app = a && !enOrg ? '1' : '';
-  // Se vuelve a pintar en cada navegación: el foco del teclado se queda donde estaba (el switch o el mismo link).
-  const enSw = document.activeElement?.closest?.('.lat .asw'), enLink = document.activeElement?.closest?.('.lat-nav a')?.getAttribute('href');
-  // En Organización: su nombre y, abajo, los workspaces. En un workspace: «← Organización», la app con su color y lo abierto.
-  mount($('#lat-area', lat), html`${tieneOrg() && a && !enOrg ? html`<button type="button" class="lat-it lat-volver" data-ir-area="organizacion" title="Volver a Organización">${ico('arrow-left', 16)}<span class="lat-t">Organización</span></button>` : ''}
-    ${a ? (enOrg ? html`<div class="lat-area"><b>${a.nombre}</b><small>${a.sub}</small></div>` : html`<div class="lat-app" title="${a.nombre}"><i class="lat-app-ico">${raw(svgIco(a.icono, 17))}</i><span><small>Workspace</small><b>${a.nombre}</b>${abierto ? html`<em>${abierto}</em>` : ''}</span></div>`) : ''}
-    ${apps.length && (tieneOrg() || apps.length >= 2) ? html`<span class="lat-k lat-k-apps">Workspaces</span>${raw(areaSwitch(apps, enOrg ? '' : a?.id, (n, px) => svgIco(n, px)))}` : ''}`);
+  // Se vuelve a pintar en cada navegación: el foco del teclado se queda donde estaba (Organización, el workspace o el mismo link).
+  const enSw = document.activeElement?.closest?.('.lat .org-btn, .lat .ws-sel')?.className.includes('org-btn') ? 'org' : document.activeElement?.closest?.('.lat .ws-sel') ? 'ws' : '', enLink = document.activeElement?.closest?.('.lat-nav a')?.getAttribute('href');
+  const verWs = apps.length && (tieneOrg() || apps.length >= 2);
+  mount($('#lat-area', lat), html`${tieneOrg() ? raw(orgBtnHtml(enOrg, 'lat')) : ''}${verWs ? html`<span class="lat-k lat-k-ws">Workspace</span>${raw(wsSelHtml(enOrg ? null : a, abierto, 'lat'))}` : ''}`);
   mount($('#lat-nav', lat), html`${cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : ''}${latSecciones(cur)}`);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
   const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = `En modo ${a?.nombre || 'Organización'}`;
-  if (enSw) $(`.lat .asw [data-area="${a?.id}"]`)?.focus();
+  if (enSw) $(enSw === 'org' ? '.lat .org-btn' : '.lat .ws-sel')?.focus();
   else if (enLink) [...lat.querySelectorAll('.lat-nav a')].find((x) => x.getAttribute('href') === enLink)?.focus();
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
@@ -455,7 +481,8 @@ function latHtml(mac) {
 function instalarLat() {
   const lat = $('.lat'); if (!lat) return;
   lat.addEventListener('click', (e) => {
-    const ar = e.target.closest('.asw [data-area], [data-ir-area]'); if (ar) return irArea(ar.dataset.area || ar.dataset.irArea);
+    const ar = e.target.closest('[data-ir-area]'); if (ar) return irArea(ar.dataset.irArea);
+    const ws = e.target.closest('[data-ws-menu]'); if (ws) return menuWs(ws);
     const b = e.target.closest('[data-lat]'); if (!b) return;
     const k = b.dataset.lat;
     if (k === 'buscar') return search();
@@ -465,8 +492,7 @@ function instalarLat() {
   });
   lat.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { if ($('.lat-menu')) { $('.lat-menu').remove(); $('.lat [data-lat="yo"]')?.focus(); } return; }
-    if (!e.target.closest('.asw')) return;
-    const id = areaConFlecha(appsTablero(), areaDeRuta()?.id, e.key); if (id) { e.preventDefault(); irArea(id); }
+    if (e.key === 'ArrowDown' && e.target.closest('[data-ws-menu]')) { e.preventDefault(); menuWs(e.target.closest('[data-ws-menu]')); }
   });
   ponerMini(latMini());
   desk.addEventListener('change', () => { ubicarAyuda(); markNav(); });
@@ -516,8 +542,7 @@ function shell() {
   $('#subnav').onclick = (e) => { const b = e.target.closest('[data-sub]'); if (b) location.hash = '/' + b.dataset.sub; };
   // El interruptor: cambia de espacio y vuelve a donde estabas en ese espacio.
   // El switch de áreas de arriba (cel o ventana angosta): las flechas cambian de área, como en la barra lateral.
-  $('.top').addEventListener('keydown', (e) => { if (!e.target.closest?.('.asw')) return; const id = areaConFlecha(appsTablero(), areaDeRuta()?.id, e.key); if (id) { e.preventDefault(); irArea(id); } });
-  $('.top').addEventListener('click', (e) => { const ar = e.target.closest('.asw [data-area], [data-ir-area]'); if (ar) return irArea(ar.dataset.area || ar.dataset.irArea); const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });
+  $('.top').addEventListener('click', (e) => { const ar = e.target.closest('[data-ir-area]'); if (ar) return irArea(ar.dataset.irArea); const ws = e.target.closest('[data-ws-menu]'); if (ws) return menuWs(ws); const b = e.target.closest('[data-space]'); if (!b || b.dataset.space === space) return; lsSet('space', b.dataset.space); const last = lsGet('last.' + b.dataset.space); location.hash = '/' + (last || spaceHome(b.dataset.space)); });
   $('#searchbtn')?.addEventListener('click', search);
   instalarBoton(me);
   if (conLat) instalarLat();
