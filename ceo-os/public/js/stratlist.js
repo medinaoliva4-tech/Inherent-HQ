@@ -1,5 +1,7 @@
-// Los clientes del espacio Estrategia (los que ve esta persona). Los leen la barra de Estrategia, su pantalla de inicio y el
-// buscador (Ir a). Se leen una vez por sesión; forgetEstrategia() los vuelve a leer (por ejemplo, al aprobar un bloque).
+// Los clientes de Estrategia (los que ve esta persona), tal como los da /api/estrategia: slug, nombre, nivel, ficha, etapa y
+// el estado de sus bloques. La lista única del selector de cliente la arma contexto.js uniendo esto con brandlist.js; aquí
+// siguen leyendo strategy.js, consulting.js, llm.js, clients.js, work.js y app.js. Se lee una vez por sesión;
+// forgetEstrategia() la vuelve a leer (por ejemplo, al aprobar un bloque).
 import { api } from './core.js';
 
 let cache = null, pending = null;
