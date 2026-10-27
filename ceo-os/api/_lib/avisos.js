@@ -4,12 +4,16 @@
 //   POST avisos/quitar     → la quita
 //   POST avisos/probar     → manda un aviso de prueba a la persona
 //   GET  cron/avisos       → el resumen de la mañana (Vercel Cron, con CRON_SECRET)
+//   GET  avisos            → los Avisos de la persona (#/avisos y la campanita): Tu trabajo · Clientes · La plataforma
+//   POST avisos            → posponer uno { clave, hasta, huella } o regresarlo { clave, volver: true } (team.<email>.avisos_pos)
 // Las claves van en VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY y VAPID_SUBJECT (mailto:). Sin ellas, nada se rompe: el botón dice que falta configurarlo.
 import webpush from 'web-push';
 import * as db from './db.js';
-import { guard, userFor, effective, viewsDoc } from './access.js';
+import { guard, userFor, effective, viewsDoc, scoper } from './access.js';
 import { body } from './http.js';
-import { isWaiting } from '../../public/js/ventas-flujo.js';
+import { datosDe } from './avisos-datos.js';
+import { REGLAS } from '../../public/js/avisos-reglas/index.js';
+import { correr, aplicarPospuestos, posponer, contar, hoyGT } from '../../public/js/avisos-reglas/base.js';
 
 export const listo = () => Boolean(process.env.VAPID_PUBLIC_KEY?.trim() && process.env.VAPID_PRIVATE_KEY?.trim());
 let configurado = false;
@@ -41,29 +45,54 @@ async function conAvisos() {
   }
   return out;
 }
-// Entró un lead: a quien ve Ventas, para responder en un minuto.
+// Entró un lead: a quien ve Ventas y lo tiene en su alcance (con «asignados», los de su rol), para responder en un minuto.
 export async function nuevoLead(lead) {
   if (!listo() || !lead || lead.direction === 'out') return;
   try {
-    for (const u of await conAvisos()) if (u.areas.includes('sales')) await mandar(u.email, { title: 'Lead nuevo · responde en un minuto', body: [lead.name, lead.source].filter(Boolean).join(' · ').slice(0, 120), url: '/#/org/sales', tag: 'lead-' + lead.id });
+    for (const u of await conAvisos()) { if (!u.areas.includes('sales')) continue; const sc = await scoper(u); if (sc && !sc.leads(lead)) continue; await mandar(u.email, { title: 'Lead nuevo · responde en un minuto', body: [lead.name, lead.source].filter(Boolean).join(' · ').slice(0, 120), url: '/#/org/sales', tag: 'lead-' + lead.id }); }
   } catch (e) { console.error('aviso de lead', e.message); }
 }
-// La mañana: tus tareas de hoy o vencidas y los leads sin responder (si ves Ventas).
-export async function resumenDiario(hoy = new Date().toISOString().slice(0, 10)) {
+// La mañana: lo urgente de tus Avisos (lo mismo que ves en #/avisos, sin lo que pospusiste).
+export async function resumenDiario(hoy = hoyGT()) {
   if (!listo()) return { mandados: 0 };
-  const [tasks, leads] = await Promise.all([db.list('tasks'), db.list('leads')]);
-  const esperando = leads.filter(isWaiting).length;
   let mandados = 0;
   for (const u of await conAvisos()) {
-    const mias = tasks.filter((t) => String(t.assignee || '').toLowerCase() === u.email && t.status !== 'Hecha' && t.due && t.due <= hoy);
-    const partes = [mias.length ? `${mias.length} ${mias.length === 1 ? 'tarea' : 'tareas'} para hoy` : '', u.areas.includes('sales') && esperando ? `${esperando} ${esperando === 1 ? 'lead sin responder' : 'leads sin responder'}` : ''].filter(Boolean);
-    if (!partes.length) continue;
-    mandados += await mandar(u.email, { title: 'Hoy en Inherent OS', body: partes.join(' · '), url: u.areas.includes('home') ? '/#/org/home' : '/#/org/work', tag: 'manana-' + hoy });
+    const r = await avisosDe(u, hoy).catch(() => null); const urg = (r?.items || []).filter((x) => x.urgencia === 'alta'); if (!urg.length) continue;
+    mandados += await mandar(u.email, { title: 'Hoy en Inherent OS', body: urg.length === 1 ? urg[0].titulo : `${urg.length} cosas urgentes · ${urg[0].titulo}`, url: '/#/avisos', tag: 'manana-' + hoy });
   }
   return { mandados };
 }
+// Los Avisos de una persona, ya sin los que pospuso. errores: reglas que fallaron (solo se le muestran al CEO).
+export async function avisosDe(u, hoy = hoyGT()) {
+  const { persona, datos } = await datosDe(u);
+  const r0 = correr(REGLAS, datos, persona, hoy), errores = r0.errores;
+  // El nombre del cliente para la etiqueta del aviso (la regla trae el slug).
+  const nombres = Object.fromEntries((datos.clientes || []).map((c) => [c.slug, c.nombre]));
+  const items = r0.items.map((x) => (x.cliente && nombres[x.cliente] ? { ...x, clienteNombre: nombres[x.cliente] } : x));
+  const { visibles, pospuestos } = aplicarPospuestos(items, datos.yo?.avisos_pos || {}, hoy);
+  return { hoy, items: visibles, pospuestos, n: contar(visibles), errores, pos: datos.yo?.avisos_pos || {}, todos: items };
+}
+
+const COMPU = /^pla-(hermes|puente|app-mac)$|^pla-avisos-celular:este$/;
 
 export function rutas(on) {
+  on('GET', 'avisos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await avisosDe(u);
+    // pos: lo que pospuso (clave → hasta y huella), para que el navegador aplique lo mismo a los avisos de la compu.
+    res.json({ hoy: r.hoy, items: r.items, pospuestos: r.pospuestos, pos: r.pos, n: r.n, ...(u.role === 'ceo' && r.errores.length ? { errores: r.errores } : {}) });
+  });
+  on('POST', 'avisos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const b = body(req), clave = String(b.clave || '').slice(0, 160); if (!clave) return res.status(400).json({ error: 'Falta el aviso' });
+    const r = await avisosDe(u);
+    // Los de la compu (Hermes, el puente, la app, este dispositivo) los calcula el navegador: llegan con su urgencia y su huella.
+    const compu = COMPU.test(clave) && b.compu ? { clave, urgencia: ['alta', 'media', 'baja'].includes(b.compu.urgencia) ? b.compu.urgencia : 'alta', huella: String(b.compu.huella ?? '').slice(0, 200), fijo: false } : null;
+    const out = posponer(r.pos, { clave, hasta: b.hasta, huella: b.huella, volver: Boolean(b.volver) }, r.todos.find((x) => x.clave === clave) || compu, r.hoy);
+    if (out.error) return res.status(400).json({ error: out.error });
+    await db.upsert('team', u.email, { avisos_pos: out.pos }, u.email);
+    res.json({ ok: true, hasta: out.pos[clave]?.hasta || null });
+  });
   on('GET', 'avisos/clave', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const t = await db.get('team', u.email);

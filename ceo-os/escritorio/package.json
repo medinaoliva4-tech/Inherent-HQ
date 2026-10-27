@@ -1,7 +1,7 @@
 {
   "name": "inherent-os-escritorio",
   "productName": "Inherent OS",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Inherent OS como app de escritorio, con el puente de Laya adentro.",
   "private": true,
   "main": "main.js",

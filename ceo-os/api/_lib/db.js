@@ -37,23 +37,30 @@ export async function list(coll) {
 export async function get(coll, id) {
   return row((await (await conn())('SELECT * FROM docs WHERE coll=$1 AND id=$2', [coll, id]))[0]);
 }
+// Cuántas escrituras hubo en esta instancia: las memorias cortas (los Avisos) se olvidan cuando cambia.
+let escrituras = 0;
+export const version = () => escrituras;
 export async function create(coll, data, who, id = newId()) {
+  escrituras++;
   const r = (await (await conn())('INSERT INTO docs (coll,id,data,created_by,updated_by) VALUES ($1,$2,$3::jsonb,$4,$4) RETURNING *', [coll, id, JSON.stringify(clean(data)), who]))[0];
   await audit(who, 'create', coll, id);
   return row(r);
 }
 // v = la versión que el cliente leyó. Si alguien la cambió antes, no se pisa: devuelve null.
 export async function update(coll, id, data, v, who) {
+  escrituras++;
   const r = (await (await conn())('UPDATE docs SET data=$3::jsonb, v=v+1, updated_at=now(), updated_by=$5 WHERE coll=$1 AND id=$2 AND v=$4 RETURNING *', [coll, id, JSON.stringify(clean(data)), v, who]))[0];
   if (r) await audit(who, 'update', coll, id);
   return row(r) || null;
 }
 export async function upsert(coll, id, data, who) {
+  escrituras++;
   const r = (await (await conn())(`INSERT INTO docs (coll,id,data,created_by,updated_by) VALUES ($1,$2,$3::jsonb,$4,$4)
     ON CONFLICT (coll,id) DO UPDATE SET data=docs.data || EXCLUDED.data, v=docs.v+1, updated_at=now(), updated_by=$4 RETURNING *`, [coll, id, JSON.stringify(clean(data)), who]))[0];
   return row(r);
 }
 export async function remove(coll, id, who) {
+  escrituras++;
   const r = await (await conn())('DELETE FROM docs WHERE coll=$1 AND id=$2 RETURNING id', [coll, id]);
   if (r.length) await audit(who, 'delete', coll, id);
   return r.length > 0;

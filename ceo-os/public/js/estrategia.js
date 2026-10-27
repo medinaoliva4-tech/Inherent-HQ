@@ -7,7 +7,6 @@
 // Nada se inventa: lo que un workflow no dice, no está aquí.
 import { levelOf } from './levels.js';
 
-export const AREA = 'estrategia';
 export const COLL = 'strategy';
 export const HORMOZI = 'agents/01-strategy/brain/skills/hormozi-brain';
 

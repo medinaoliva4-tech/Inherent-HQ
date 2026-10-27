@@ -150,13 +150,14 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos app
 - `#/marcas/diseno[/<marca>]` · `diseno-chat.js` — el chat de Diseño gráfico: Plan del mes → Ideas → Diseño en Figma. Ya no va en la barra de Marcas (su lugar es el modo Diseño del Chat); se abre desde el panel del Chat y con ⌘K.
 
 **Fuera de los espacios**
+- `#/avisos` · `screens/avisos.js` — **Avisos**: lo que pide atención, en Tu trabajo · Clientes · La plataforma, del más urgente al menos. Cada aviso con su botón (ir, hacer, abrir la tarea, abrir el Chat con el pedido, copiar un comando), «Después» (mañana o en una semana; lo urgente, un día; lo fijo, nunca) y los pospuestos para regresarlos. La campanita (barra lateral y arriba en el cel) cuenta lo urgente y lo de pronto, y se pone al día sola (`avisos-ui.js`).
 - `#/me` · `screens/me.js` — Mi perfil: foto, cumpleaños, contacto, conexiones (Google y el conector MCP), prender o apagar la barra lateral y salir.
 - `#/portal` · `screens/portal.js` — el portal del rol `client`: Resumen · Contenido (aprobar o pedir cambios) · Entregas · Metas.
 - `/?connect=<id>` · `connectai.js` — la pantalla «Permitir» cuando una app de IA se conecta por MCP.
 - `/diagnostico` · `public/diagnostico.html` + `diagnostico.js` — el quiz público, sin login, que manda leads a la fuente tipo quiz.
 
 **Archivos de pantalla sin ruta**
-- `screens/control.js`, `screens/results.js`, `screens/control-hub.js` y `screens/soon.js`: sus rutas llevan a Hoy o no existen.
+- Control del flujo, Indicadores y el Centro de control ya no existen como pantallas: sus links viejos (`#/org/control`, `#/org/resultados`, `#/control-hub/…`) llevan a Hoy o a su sección nueva.
 - `screens/content.js` y `screens/me-brand.js` no tienen ruta propia: se montan dentro de Marcas.
 
 ---
@@ -187,7 +188,9 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos app
 - `intel.js` — los entregables de los agentes en la carpeta del cliente (según `intel-mapa.js`), limpios de costos, y el avatar · ruta `repo/client/:slug/intel` (al cliente, 403).
 - `investigacion.js` — referentes por marca, «Actualizar ahora» (CEO y COO), webhook de Apify, crons, posts nuevos a Research con su juicio de Laya por hacer · rutas `investigacion*`.
 - `ojo.js` — el contexto del ojo visual por marca (el moodboard y una frase de la marca) · ruta `ojo/contexto`.
-- `avisos.js` — los avisos al celular (web push, con `web-push`): `avisos/clave`, `avisos/suscribir`, `avisos/quitar`, `avisos/probar` y el cron `cron/avisos` (la mañana: tus tareas de hoy y los leads sin responder). `nuevoLead` avisa a quien ve Ventas cuando entra un lead. Claves en `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` y `VAPID_SUBJECT`.
+- `avisos.js` — **Avisos**: `GET avisos` (los de la persona, sin los pospuestos) y `POST avisos` (posponer o regresar, en `team.<email>.avisos_pos`); y los avisos al celular (web push, con `web-push`): `avisos/clave`, `avisos/suscribir`, `avisos/quitar`, `avisos/probar` y el cron `cron/avisos` (la mañana: lo urgente de tus Avisos).
+- `avisos-datos.js` — junta para una persona lo que las reglas de Avisos necesitan, ya filtrado con lo que ve (`leer.js`); las listas se recuerdan 20 s (se olvidan al primer cambio) y las fichas y archivos de cada cliente, 60 s.
+- `leer.js` — **una sola definición de qué ve cada quien** de una colección (visibilidad de tareas, la marca personal, alcance, «resumen», costos): la usan `db/:coll`, el conector, los indicadores y los Avisos. `nuevoLead` avisa a quien ve Ventas cuando entra un lead. Claves en `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` y `VAPID_SUBJECT`.
 - `guia.js` — el primer día y los videos «Cómo se usa»: `guia` (los documentos de la Library marcados con `guia = <sección>`), `guia/visto` (qué vio cada quien, en `team.<email>.vistos`), `me/primer-dia` (el recorrido: paso, hechos, pausado, terminado; la prueba final se detecta por lo que creó la persona).
 - `laya.js` — los juicios (`judgments`), las preguntas (`settings` `laya_gates`, solo el CEO), los que esperan juicio y las herramientas MCP `juicios_pendientes` y `guardar_juicio` · rutas `laya/*`.
 - `leads.js` — las reglas del CRM (etapas, candado, duplicados, historial), las fuentes y la entrada pública.
@@ -200,7 +203,7 @@ Las rutas están en `public/js/app.js` (`SCREENS`, `TABS`, `resolve`). **Dos app
 - `recipes.js` — las recetas en uso: las de siempre más lo que editó el CEO.
 - `recurring.js` — las tareas de las responsabilidades recurrentes, sin duplicar (una clave por periodo).
 - `refs.js` — Referencias por pilar: videos que pega el equipo → Apify busca lo que más rindió de esos creadores (`sources/refs-<slug>`).
-- `results.js` — los Indicadores reales (comercial, entregas a tiempo, ingresos del mes, metas) y el `done_at` de cada tarea.
+- `results.js` — los indicadores reales (comercial, entregas a tiempo, ingresos del mes, metas) y el `done_at` de cada tarea; los usa la herramienta `resultados` del conector (sin ruta ni pantalla propias).
 - `session.js` — la cookie firmada: 30 días máximo, 14 sin uso, se renueva al usarse.
 - `tech.js` — Marca › Tech sobre `tech`: sitios, conectar una landing al CRM (el CEO crea su fuente de leads), la web viva (la enciende el CEO) y las auditorías de SEO · rutas `tech*` y la pública `publico/:marca/publicado`.
 - `vault.js` — cifra con AES-256-GCM, con una clave que sale de `SESSION_SECRET`.
@@ -410,6 +413,10 @@ Todos en `public/js/`. «Puro» = sin DOM ni red: lo comparten servidor, conecto
 - `openClaude` y `claudeJSON` (`core.js`) abren la IA de la persona en una pestaña nueva con el prompt listo; la persona pega la respuesta. Lo usan Contenido, Investigación, la diana, la Library, el Workspace y los paquetes por industria.
 
 ---
+
+**Avisos** (`public/js/avisos-reglas/`, `api/_lib/avisos-datos.js`, `public/js/avisos-compu.js`)
+- Cada aviso es una regla pura de `public/js/avisos-reglas/` (`trabajo.js`, `clientes-estrategia.js`, `clientes-marcas.js`, `plataforma.js`; la base en `base.js`): qué avisa, cuándo, quién lo ve, su botón y la regla del manual que lo pide (en el comentario). Corre en el servidor con los datos que esa persona ve; si un cliente no tiene ficha, solo sale ese aviso de ese cliente. Pruebas: `npm run test:avisos`.
+- Lo que vive en la compu (Hermes, el puente, la app de Mac) lo revisa el navegador (`avisos-compu.js`): solo toca 127.0.0.1 si la persona usa esas partes o abre Avisos.
 
 **Los avisos al celular** (`public/sw.js`, `public/js/avisos.js`, `api/_lib/avisos.js`)
 - El OS se instala como app (manifest) y, con los avisos activados desde Mi perfil, recibe: un aviso cuando entra un lead (a quien ve Ventas, para responder en un minuto) y, de lunes a viernes a las 7:30 de Guatemala (`cron/avisos`), lo que necesita atención hoy. El service worker solo recibe avisos: no guarda páginas.

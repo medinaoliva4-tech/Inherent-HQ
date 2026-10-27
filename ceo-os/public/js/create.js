@@ -70,7 +70,6 @@ export async function newProject({ team, me, projects = [], tasks = [], pre = {}
 
 // ---------- Tarea ----------
 export const VIS_OPTS = [{ v: 'all', i: ico('users'), l: 'Todos', d: 'El equipo completo' }, { v: 'private', i: ico('lock'), l: 'Solo yo', d: 'Y quien la hace' }, { v: 'people', i: ico('eye'), l: 'Ciertas personas', d: 'Tú eliges quién' }];
-export const visLabel = (t) => (t.visibility === 'private' ? 'Solo yo' : t.visibility === 'people' ? `${(t.viewers || []).length + 1}+ personas` : '');
 // Proyecto custom: un control 5–10 por servicio; se ven las horas, el costo (CEO) y el precio.
 function levels(list, rates) {
   return new Promise((resolve) => {

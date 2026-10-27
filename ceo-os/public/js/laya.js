@@ -18,10 +18,6 @@ export const TIPOS = ['noul', 'score', 'choice'];
 export const TIPO_LABEL = { noul: 'Sí o no', score: 'Escala', choice: 'Elegir una opción' };
 // El modelo de Laya que lee español (y 100+ idiomas). Se fija para no bajar el checkpoint en inglés.
 export const MODELO = 'multilingual';
-// Cómo se instala y se enciende el puente (ceo-os/tools/laya-puente/), desde la raíz del repo.
-export const INSTALAR = 'pip install "laya[serve]"';
-export const ENCENDER = 'python ceo-os/tools/laya-puente/puente.py';
-export const COMANDO = `${INSTALAR} && ${ENCENDER}`;
 // El instalador de un comando (public/laya/): deja el puente corriendo siempre en la compu de cada quien.
 export const INSTALADOR = 'https://inherent-work.vercel.app/laya';
 export const INSTALAR_MAC = `curl -fsSL ${INSTALADOR}/instalar.sh | bash`;
@@ -51,7 +47,6 @@ const CAT_DESC = {
   Impuestos: 'impuestos, SAT, contador o trámites fiscales',
   Otro: 'nada de lo anterior',
 };
-export const NIVELES = ['Brand Foundation', 'Brand Growth', 'Growth Partnership'];
 
 // Las puertas de fábrica. El CEO cambia las preguntas en Inherent → Laya. Los umbrales quedan vacíos: «sin umbral».
 // noul: texto (+ si/no opcionales) · score: niveles de menor a mayor («corto: descripción») · choice: opciones { etiqueta: descripción }.

@@ -118,6 +118,15 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - el video se abre en una ventanita que sigue contigo mientras haces lo que explica;
   - el OS sabe qué videos vio cada quien y lo muestra en su perfil y en Equipo.
 
+### Avisos
+
+- **Un solo lugar dice qué falta: en tu trabajo, en cada cliente y en la plataforma.** La campanita lo cuenta; cada aviso dice qué pasa y trae un solo botón para resolverlo.
+- *No se pierde:*
+  - cada quien ve solo lo suyo y lo de los clientes de su alcance, nunca costos de Inherent ni nada de otro cliente;
+  - cada aviso sale de una regla del manual (el día 11, el 20, la ficha, el gate del CEO…), no de una ocurrencia de la pantalla;
+  - lo urgente se pospone un día como máximo, y lo que bloquea (un lead esperando, la pauta sin OK, un cliente sin ficha) no se pospone;
+  - sin ruido: si un cliente no tiene ficha, solo sale eso de ese cliente.
+
 ### El celular
 
 - **El OS en el bolsillo, como app, y avisa lo justo.** *No se pierde:* un aviso cuando entra un lead (responder en un minuto) y uno por la mañana con lo que necesita atención; nunca ruido. Cada quien lo enciende o lo apaga en su perfil.

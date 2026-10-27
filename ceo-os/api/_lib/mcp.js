@@ -21,19 +21,11 @@ import * as layaLib from './laya.js';
 import { estadoFactura, totales as totalesFacturas, ESTADOS as ESTADOS_FACTURA } from '../../public/js/facturas.js';
 import { repeatText, RECIPE_TYPES, KINDS as RECIPE_KINDS, RECIPE_ROLES } from '../../public/js/recipes.js';
 import { phasesFor, meetingsFor, tasksFor, holders, roleToWork, DEPTS, hoursAt, svcHours, svcCost, svcPrice, svcAuto, growthText, includesAt, daysAt, addDays } from '../../public/js/cycle.js';
+import { seesTask } from './leer.js';
 
 // Los 5 niveles de Research (los tres últimos nombres, nicho/referente/agregado, son los viejos y se siguen aceptando).
 export const RESEARCH_TIPOS = ['competencia', 'referente-similar', 'referente-aspiracional', 'referente-crecimiento', 'propia', 'nicho', 'referente', 'agregado'];
 export const tokenHash = (t) => crypto.createHash('sha256').update(String(t)).digest('hex');
-export async function newToken(email) {
-  const t = crypto.randomBytes(24).toString('base64url');
-  const me = await db.get('team', email);
-  if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');
-  const h = tokenHash(t);
-  await db.vaultSet('mcp:' + h, email);
-  await db.upsert('team', email, { mcp_hash: h, mcp_at: new Date().toISOString() }, email);
-  return t;
-}
 export async function revoke(email) {
   const me = await db.get('team', email);
   if (me?.mcp_hash) await db.vaultSet('mcp:' + me.mcp_hash, '');
@@ -54,7 +46,6 @@ const slugOk = (s) => /^[\w-]{2,60}$/.test(String(s || ''));
 const today = () => new Date().toISOString().slice(0, 10);
 const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
 const sopOk = (v) => { const s = String(v || '').trim(); return /^https?:\/\/\S+$/i.test(s) || /^[\w.@+-]{1,120}$/.test(s) ? s.slice(0, 500) : ''; };
-const seesTask = (u, t) => { if (t?.tipo === 'Personal') return String(t._meta?.created_by || t.assignee || '').toLowerCase() === u.email; const vis = t?.visibility || 'all'; if (vis === 'all') return true; return [t._meta?.created_by, t.assignee, ...(vis === 'people' ? [t.accountable, ...(t.viewers || [])] : [])].filter(Boolean).map((x) => String(x).toLowerCase()).includes(u.email); };
 const pick = (t, ps = []) => ({ id: t.id, titulo: t.title, estado: t.status || 'Por empezar', persona: t.assignee || '', vence: t.due || '', proyecto: ps.find((p) => p.id === t.project_id)?.name || '', depto: t.dept || '', tipo: t.tipo || '', sop: t.sop || '', ...(t.origen === 'estrategia' ? { encargo: { area: t.area || '', cliente: t.cliente || '' } } : {}) });
 // El mismo precio que la app: automático (horas × costo/h × multiplicador × complejidad) salvo que tenga precio fijo.
 const priceAt = (s, lv, rates) => (!s.price_fixed && !(s.price && !s.prices) ? svcAuto(s, rates, lv) : null) ?? svcPrice(s, lv);

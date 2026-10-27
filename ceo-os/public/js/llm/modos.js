@@ -191,6 +191,15 @@ const nombraFinanzas = (ficha) => (ficha?.incluye || []).some((x) => /finanz|mon
 export const alcanceConsulting = (nivel, ficha) => (!nivel ? 'sin-ficha' : nivel.id === 'partnership' ? (!ficha || nombraFinanzas(ficha) ? 'si' : 'sin-finanzas') : nivel.id === 'medida' ? 'ficha' : 'fuera');
 // ¿Se le puede mandar un encargo a Consulting? Con Partnership o a la medida (la ficha es el techo); con otro nivel, no.
 export const consultingAbierto = (a) => a === 'si' || a === 'sin-finanzas' || a === 'ficha';
+// Lo que se le dice a la persona del alcance de Consulting ('' si su nivel lo trae completo). Lo usan el aviso del panel y de
+// la pantalla de Consulting (llm/paneles.js · avisoConsulting) y los Avisos (avisos-reglas/clientes-estrategia.js).
+export function textoAlcanceConsulting(nivel, ficha) {
+  const a = alcanceConsulting(nivel, ficha);
+  return a === 'sin-ficha' ? 'Sin ficha de oferta, el agente bloquea a este cliente: el alcance contratado es el techo.'
+    : a === 'fuera' ? `Operations OS y Money OS son de Growth Partnership. Con ${nivel.nombre}, lo que se proponga va FUERA DEL ALCANCE.`
+    : a === 'ficha' ? 'A la medida: lo que incluye su ficha es el techo.'
+    : a === 'sin-finanzas' ? 'Operación y organización comercial sí. Finanzas va «según acuerdo» y su ficha no la incluye: lo de Money OS va FUERA DEL ALCANCE.' : '';
+}
 
 // Los comandos «/» de la caja: atajos del OS y las capacidades de Hermes (skills y la Terminal).
 export const COMANDOS = [
@@ -220,6 +229,7 @@ export const TERMINAL = [
   ['Elegir el modelo (suscripción, API o local)', 'inherent model'],
   ['Conectar ChatGPT con tu suscripción', 'inherent auth add openai-codex --browser'],
   ['Conectar Claude', 'inherent auth add anthropic'],
+  ['Conectar Kilo Pass (Claude, ChatGPT y Gemini con una sola suscripción): elige «Kilo Code» y pega tu llave', 'inherent model'],
   ['Autorizar el conector de Inherent OS', 'inherent mcp login inherent'],
   ['Modelo local, gratis y privado (con Ollama instalado)', 'ollama pull qwen3-coder:30b'],
   ['Darle al modelo local la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],

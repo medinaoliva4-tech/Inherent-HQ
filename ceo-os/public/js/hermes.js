@@ -44,10 +44,10 @@ export async function modelosHermes(me, { fresco = false } = {}) {
   return { actual: { provider: j.provider || '', model: j.model || '' }, proveedores };
 }
 // Nombres amables de los proveedores de Hermes, para el selector.
-export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok' }[slug] || slug);
+export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok', kilocode: 'Kilo', 'ai-gateway': 'Vercel AI Gateway', gemini: 'Gemini' }[slug] || slug);
 
 // Los proveedores locales y las IAs del switch viven en llm/ias.js (puro, lo prueba scripts/test-llm.mjs).
-export { LOCALES, esLocal, IAS, iaDe, iasListas } from './llm/ias.js';
+export { LOCALES, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from './llm/ias.js';
 
 // Una respuesta en streaming por la API compatible con OpenAI. Mantiene la conversación con X-Hermes-Session-Id
 // (Hermes guarda el historial): cada chat del OS manda su propia sesión. onDelta(texto acumulado) · onTool(nombre).
@@ -76,7 +76,6 @@ export async function chatHermes(me, { sesion, sistema, mensaje, modelo = {}, si
 }
 // Nombre de una herramienta de Hermes, en humano, para la lista de pasos del chat.
 export const pasoHermes = (n) => ({ read_file: 'Leyendo un archivo', search_files: 'Buscando en el repo', terminal: 'Corriendo un comando', web_search: 'Buscando en la web', web_extract: 'Leyendo una página', memory: 'Guardando en memoria', skill_view: 'Leyendo una skill', skills_list: 'Buscando skills', todo_list: 'Ordenando los pasos' }[n] || n.replace(/_/g, ' '));
-export const URL_HERMES = URL_BASE;
 
 // ---------- Las sesiones de Hermes (el Inherent LLM) ----------
 // Cada conversación del Inherent LLM es una sesión de Hermes con id «inh-<modo>-…» y su propio system prompt (el harness

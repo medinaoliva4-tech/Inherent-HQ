@@ -6,8 +6,6 @@ import * as db from './db.js';
 import { AREAS as VIEW_AREAS, baseAreas, levelsFor, scopeFor, startFor } from '../../public/js/roleviews.js';
 
 export const AREAS = VIEW_AREAS;
-// Las áreas de siempre de cada rol (sin configuración). El CEO y el COO también ven el portal como lo ve el cliente.
-export const areasFor = (role, roles = []) => (role === 'client' ? ['portal'] : [...baseAreas(role, roles), ...(role === 'ceo' || role === 'coo' ? ['portal'] : [])]);
 
 // Cada colección pertenece a un área. Algunas solo las escribe el CEO.
 export const COLLS = {

@@ -15,6 +15,15 @@ export const PASOS_LOGIN = 'Se venció la sesión de Claude en tu compu. Abre la
 
 export const tokenDe = (me) => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } };
 
+// El /health completo del puente (o null si no responde): lo leen el primer día y el aviso pla-puente (avisos-compu.js).
+export async function healthPuente(ms = 4000) {
+  try { const r = await fetch(PUENTE + '/health', { credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: AbortSignal.timeout(ms) }); return r.ok ? await r.json() : null; } catch { return null; }
+}
+// ¿El token de esta compu sirve? → el código de /chat/estado (200 sí, 401 no) o 0 si el puente no contestó.
+export async function estadoToken(token, ms = 4000) {
+  try { const r = await fetch(PUENTE + '/chat/estado', { headers: { Authorization: 'Bearer ' + token }, credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: AbortSignal.timeout(ms) }); return r.status; } catch { return 0; }
+}
+
 // ¿El puente está encendido y con chat? → { on, listo, ayuda }
 export async function saludPuente(ms = 15000) {
   const c = new AbortController(), t = setTimeout(() => c.abort(), ms);

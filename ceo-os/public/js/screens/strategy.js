@@ -19,7 +19,6 @@ import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, m
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
-const TONE = ['', 't1', 't2'];
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
 
 // Los chats viven en memoria y en localStorage (por persona, cliente y bloque): al cambiar de bloque o recargar no se pierden.

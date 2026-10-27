@@ -10,7 +10,6 @@ export const LABELS = { Prospecto: 'Prospecto', Nuevo: 'Nuevo', Contactado: 'Res
 const ALIAS = { respondido: 'Contactado', 'entendiendo el caso': 'Reunión', diagnóstico: 'Reunión', diagnostico: 'Reunión', 'propuesta con alcance': 'Propuesta' };
 for (const k of STORED) ALIAS[k.toLowerCase()] = k;
 ALIAS.reunion = 'Reunión';
-export const STAGE_ALIAS = ALIAS;
 // Lo que se acepta como etapa al guardar: las de siempre y los nombres del flujo.
 export const STAGE_INPUTS = [...STORED, 'Respondido', 'Entendiendo el caso', 'Propuesta con alcance'];
 // Etapa guardada (o la misma, si no se reconoce: el candado del servidor la rechaza).
@@ -83,7 +82,6 @@ export function dueAccess(me) {
   return { sales: ceo || sees('sales'), cobrar: ceo || sees('finanzas'), pagar: ceo };
 }
 // Una factura vence pronto si está pendiente y su fecha cae en los próximos 7 días o ya pasó.
-export const invoiceOverdue = (f, T) => (f?.status || 'pendiente') === 'pendiente' && /^\d{4}-\d{2}-\d{2}$/.test(String(f?.due || '')) && f.due < T;
 export const invoiceSoon = (f, T, days = 7) => (f?.status || 'pendiente') === 'pendiente' && /^\d{4}-\d{2}-\d{2}$/.test(String(f?.due || '')) && f.due <= plus(T, days);
 // Mezcla y ordena por fecha lo que vence: leads sin responder, siguientes pasos de ventas de hoy o mañana (y los vencidos)
 // y facturas. Cada fila trae a dónde lleva. `now` en ms; T = hoy (AAAA-MM-DD).
@@ -99,7 +97,7 @@ export function dueSoon({ leads = [], invoices = [], access, T, now = Date.now()
   }
   for (const f of Array.isArray(invoices) ? invoices : []) {
     if (!f || !['cobrar', 'pagar'].includes(f.kind) || !access?.[f.kind] || !invoiceSoon(f, T)) continue;
-    out.push({ kind: f.kind, id: f.id, date: f.due, rank: 2, title: (f.kind === 'cobrar' ? String(f.client || '').toUpperCase() : f.vendor) || f.vendor || 'Factura', sub: f.concept || '', amount: +f.amount || 0, currency: f.currency || 'GTQ', tone: f.due < T ? 'late' : f.due === T ? 'warn' : '', overdue: f.due < T, href: '#/org/finanzas/facturas' });
+    out.push({ kind: f.kind, id: f.id, date: f.due, rank: 2, title: (f.kind === 'cobrar' ? String(f.client || '').toUpperCase() : f.vendor) || f.vendor || 'Factura', sub: f.concept || '', amount: +f.amount || 0, currency: f.currency || 'GTQ', tone: f.due < T ? 'late' : f.due === T ? 'warn' : '', overdue: f.due < T, href: '#/org/finanzas/fact' });
   }
   return out.sort((a, z) => a.date.localeCompare(z.date) || a.rank - z.rank || String(a.title).localeCompare(String(z.title)));
 }

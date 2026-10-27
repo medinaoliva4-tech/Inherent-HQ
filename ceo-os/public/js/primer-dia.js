@@ -2,22 +2,14 @@
 // Cada paso se comprueba solo (la app, Claude, Laya, Google, la prueba final); se puede pausar y el OS recuerda dónde iba
 // (team.<email>.primer_dia). Un chip en la barra lo vuelve a abrir. El cliente no lo ve.
 import { html, raw, mount, api, toast, $, ico, roleName } from './core.js';
-import { PUENTE } from './laya.js';
+import { healthPuente } from './puente-chat.js';
+import { PASOS_PRIMER_DIA } from './primer-dia-pasos.js';
 
-const PASOS = [
-  ['quien', 'Quién eres', 'Tu puesto y lo que vas a ver'],
-  ['app', 'Instala la app', 'Inherent OS en tu Mac, con el puente adentro'],
-  ['claude', 'Entra a Claude', 'Con tu cuenta, desde la app'],
-  ['laya', 'Laya y el ojo visual', 'Se descargan solos la primera vez'],
-  ['google', 'Conecta Google', 'Drive y Calendar'],
-  ['prueba', 'Una prueba', 'Crea algo de punta a punta'],
-];
+const PASOS = PASOS_PRIMER_DIA;
 const OPCIONALES = new Set(['app', 'claude', 'laya']);
 let dlg = null, salud = null;
 
-async function saludPuente() {
-  try { const r = await fetch(PUENTE + '/health', { credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: AbortSignal.timeout(4000) }); return r.ok ? await r.json() : null; } catch { return null; }
-}
+const saludPuente = () => healthPuente(4000); // el /health completo (puente-chat.js): lo mismo que lee el aviso pla-puente
 const enApp = () => Boolean(window.inherentEscritorio);
 const arch = () => (/arm|aarch64|apple/i.test(navigator.userAgent + (navigator.platform || '')) || (navigator.userAgentData?.platform === 'macOS' && !/Intel/.test(navigator.userAgent)) ? 'arm64' : 'x64');
 
