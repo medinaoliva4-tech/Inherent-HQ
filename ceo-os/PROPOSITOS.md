@@ -21,7 +21,8 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 - **Un mismo lenguaje.** Los chats tienen la misma estructura; los calendarios se ven igual; cada módulo de una marca dice de dónde viene, qué se hace ahí y a dónde pasa.
 - **Los chats se sienten como ChatGPT o Claude.** La conversación centrada; lo tuyo en una burbuja suave a la derecha; la respuesta sin burbuja, con el avatar del agente y sus acciones al pasar el mouse (copiar, reintentar, guardar); el chat vacío con un título y tarjetas de lo que se puede pedir; la caja abajo con la franja de cliente, mes, contexto y modo, el modelo con su punto verde o rojo y la voz; un aviso de que puede equivocarse; el panel que se esconde. **Un chat por parte del proceso, no un historial de chats.**
 - **Evidencia o etiqueta.** Lo que no tiene fuente dice «⚠️ SIN DATOS». El OS no inventa.
-- **Dos apps, un OS.** Organización (proyectos, briefs, clientes, ventas, finanzas) y Chat (el Inherent LLM) se separan y se unen con el dock, como un escritorio. Cada una vuelve a donde estabas.
+- **Dos apps, un OS.** El Tablero (las pantallas: proyectos, briefs, clientes, ventas, finanzas, marcas) y el Chat (el Inherent LLM) se separan y se unen con el dock, como un escritorio. Cada una vuelve a donde estabas.
+- **Cinco áreas, las mismas en las dos apps:** Estrategia · Organización · Marketing · Diseño · Consulting. Marketing planea y mide la demanda de cada marca (plan del mes, campañas y eventos, calendario y pauta); Diseño hace sus piezas. El área dice qué trabajas; la app, cómo. Se escoge una vez con el switch (un ícono y un color por área) y las dos apps la siguen. La barra lateral (como la del Chat) va primero para el CEO y se apaga en Mi perfil; en el cel sigue la barra de abajo.
 - **Un solo sistema de diseño.** Organización y el Chat comparten colores (de noche gris cálido tipo Claude, de día blanco cálido, café solo de acento), íconos (un solo set) y un solo día/noche. Las zonas de papel (cotización, login, portadas) no cambian.
 - **Nada se congela.** Al tocar una sección se ve al momento la forma de la pantalla y los datos llegan encima; lo que no cargó dice «Reintentar», nunca se ve vacío.
 - **Movimiento corto y con propósito.** Menos de 300 ms, solo lo que ayuda a entender qué pasó; con «reducir movimiento» no se mueve nada.
@@ -51,7 +52,7 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
 
 ### Chat · el Inherent LLM
 
-- **Un solo chat con modos** (Estrategia, Organización, Diseño) para trabajar con IA dentro de las reglas de Inherent, con el modelo que cada quien tenga (su suscripción de ChatGPT, Claude o uno local), por Hermes en su compu.
+- **Un solo chat con un modo por área** (Estrategia, Organización, Diseño, Consulting) para trabajar con IA dentro de las reglas de Inherent, con la IA que cada quien tenga (su suscripción de ChatGPT, Claude o una local), por Hermes en su compu. El switch de IA dice qué empresa responde; el modelo se elige dentro de ella.
 - *No se pierde:*
   - cada modo trae su harness: las reglas de siempre, cómo trabaja ese departamento y sus criterios de aceptación; lo entregado se revisa contra ellos a la vista;
   - el repo no se edita desde el chat: Hermes no tiene terminal, ni código, ni navegador, y su copia del repo se limpia antes de cada turno;
@@ -60,7 +61,27 @@ Si un cambio choca con un propósito, no se hace: se le pregunta al CEO.
   - la estrategia la sigue aprobando el CEO: el chat no la cambia si ya está aprobada;
   - las conversaciones viven en la compu de cada persona, no en Vercel;
   - la **Brújula** convierte lo vago en una meta medible con fecha y tareas, y avisa cuando la conversación se desvía: el chat sirve para avanzar, no solo para explorar (pensado para el TDAH del CEO: una cosa a la vez, la de ahora a la vista);
-  - el **modo privado** existe para lo que no debe salir de la compu (datos de clientes, finanzas): responde un modelo local y, si no hay, no manda nada.
+  - el **modo privado** («En tu compu» en el switch de IA) existe para lo que no debe salir de la compu (datos de clientes, finanzas): responde un modelo local y, si no hay, no manda nada;
+  - **Estrategia empodera a las demás áreas:** lo que la estrategia pide y se ejecuta en otra área (un BMC en Consulting, una pieza en Diseño) sale como encargo; la persona lo manda con un botón, queda como tarea y se trabaja ahí. Nada se manda solo. A Consulting solo va si el nivel del cliente lo trae; si no, se escala al CEO. El encargo lo ven quien lo manda y a quien se asigna (lleva el porqué de la estrategia).
+
+### Marketing
+
+- **Planear y medir la demanda de cada marca** — el plan del mes, las campañas y los eventos con su anticipación (primer aviso, recordatorio y último empujón), qué se pauta y qué funcionó. Se arma en el Chat (modo Marketing) y se guarda en el OS con un botón.
+- *No se pierde:*
+  - una campaña es un empujón con fecha; sin fecha es un pilar. Una por ciclo, dos como máximo (mk-campana);
+  - sin estrategia aprobada no hay plan ni campañas;
+  - el plan del mes vive solo en el OS;
+  - quién lleva cada campaña o evento se asigna en cada una;
+  - Marketing no escribe piezas ni copy: eso es de Diseño (④ Creatividad, ⑥A).
+
+### Consulting
+
+- **El backend de un cliente** — lo útil para organizar sus operaciones, sus finanzas (márgenes, precio, costo de adquisición, valor de vida, su modelo de negocio) y su equipo (quién decide qué, puestos, onboarding), más los encargos que le manda Estrategia. Lo lleva el CEO con Strategy.
+- *No se pierde:*
+  - Operations OS y Money OS son de Growth Partnership (Finanzas, según acuerdo: solo si la ficha la incluye): con otro nivel, lo que se proponga va FUERA DEL ALCANCE y se dice;
+  - los números del cliente son el trabajo; los costos y márgenes de Inherent no entran (`inherent/06-ECONOMIA.md` no se lee);
+  - los números son del cliente: sin costos confiables, el margen es teoría y se dice; nada de otro cliente;
+  - las finanzas de Inherent no viven aquí: están en Organización → Finanzas.
 
 ### Estrategia
 

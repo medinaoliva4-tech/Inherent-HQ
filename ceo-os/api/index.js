@@ -22,6 +22,7 @@ import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
+import * as campanas from './_lib/campanas.js';
 import * as portal from './_lib/portal.js';
 import * as inv from './_lib/investigacion.js';
 import * as buscar from './_lib/buscar.js';
@@ -125,6 +126,8 @@ async function collGuard(req, res, write) {
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
   // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
   if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
+  // Las campañas y los eventos también piden la estrategia aprobada: solo por /api/campanas.
+  if (coll === 'mk_campaigns') { res.status(404).json({ error: 'Las campañas y los eventos están en /api/campanas' }); return null; }
   // Video, Ads y Tech de cada marca: solo por sus rutas (el OK del CEO para pautar y la web viva viven ahí).
   if (coll === 'videos' || coll === 'ad_variants' || coll === 'tech') { res.status(404).json({ error: 'Esto está en /api/video, /api/ads-studio y /api/tech' }); return null; }
   const any = coll === 'settings' && !write ? null : [area, ...((write ? WRITE_ALSO : READ_ALSO)[coll] || [])];
@@ -212,7 +215,20 @@ on('GET', 'db/:coll/:id', async (req, res) => {
   out ? res.json(out) : res.status(404).json({ error: 'No existe' });
 });
 // Una tarea solo cae en un proyecto del alcance de quien la crea o la mueve; una cotización, en un lead de su alcance.
+// Un encargo de Estrategia (origen «estrategia», con su área y su cliente) solo lo manda quien ve Estrategia, y solo a un
+// cliente que existe y está en su alcance. Quien no ve Estrategia, al editar, conserva lo que la tarea ya traía.
+const ENCARGO_K = ['origen', 'area', 'cliente', 'client_slug'];
+const veEstrategia = (u) => u.role === 'ceo' || (u.areas || []).includes('estrategia');
+async function encargoMal(u, b, cur) {
+  if (!veEstrategia(u)) { for (const k of ENCARGO_K) { if (cur && k in cur) b[k] = cur[k]; else delete b[k]; } return null; }
+  const cambia = ENCARGO_K.some((k) => (b[k] ?? '') !== (cur?.[k] ?? ''));
+  if (!cambia || !b.cliente) return null;
+  if (!(await intel.slugValido(String(b.cliente)))) return 'Ese cliente no existe';
+  const sc = await scoper(u); if (sc && b.cliente !== 'inherent' && !sc.client(String(b.cliente))) return 'Ese cliente no está entre los tuyos';
+  return null;
+}
 async function outOfScope(u, coll, b, cur) {
+  if (coll === 'tasks') { const why = await encargoMal(u, b, cur); if (why) return why; }
   if (coll === 'tasks' && b.project_id && b.project_id !== cur?.project_id) { const p = await db.get('projects', String(b.project_id)); if (p && !inScope(await scoper(u), 'projects', p)) return 'Ese proyecto no está entre los tuyos'; }
   if (coll === 'quotes' && b.lead_id && b.lead_id !== cur?.lead_id) { const l = await db.get('leads', String(b.lead_id)); if (l && !inScope(await scoper(u), 'leads', l)) return 'Ese lead no está entre los tuyos'; }
   // Un presupuesto o un tablero de marca solo se crea para un cliente del alcance de quien lo crea; el tablero «personal» es del CEO.
@@ -1162,6 +1178,7 @@ avatares.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);
+campanas.rutas(on);
 // ---------- Investigación (Fase 4): referentes por marca, scraping automático con Apify y «Usar como formato» ----------
 inv.rutas(on);
 // ---------- La app de escritorio: si hay versión nueva y el link para bajarla ----------

@@ -28,6 +28,8 @@ export const COLLS = {
   formats: 'content', scripts: 'content',
   // App 01 · Marca › Crear › Plan del mes: el plan de ③ Marketing de cada mes. Solo por /api/plan/* (api/_lib/plan.js).
   plans: 'content',
+  // Marca › Planear › Campañas y eventos de ③ Marketing. Solo por /api/campanas/* (api/_lib/campanas.js).
+  mk_campaigns: 'content',
   // App 01 · Marca › Video, Ads y Tech. Solo por /api/video, /api/ads-studio y /api/tech (api/_lib/video.js, ads-studio.js, tech.js).
   videos: 'content', ad_variants: 'content', tech: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',

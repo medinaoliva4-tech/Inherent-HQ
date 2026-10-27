@@ -30,7 +30,10 @@ export function instalarBoton(me) {
     const m = document.createElement('div'); m.className = 'guia-menu'; m.setAttribute('role', 'menu');
     mount(m, html`${xs.map((d) => html`<button type="button" role="menuitem" data-id="${d.id}">${ico('video', 14)} ${d.title}${cache.vistos?.[d.id] ? html` <i>${ico('check', 12)}</i>` : ''}</button>`)}`);
     m.onclick = (e) => { const x = e.target.closest('[data-id]'); if (x) { abrirGuia(xs.find((d) => d.id === x.dataset.id), me); m.remove(); } };
-    const r = b.getBoundingClientRect(); m.style.top = r.bottom + 6 + 'px'; m.style.right = innerWidth - r.right + 'px';
+    // Desde arriba abre hacia abajo; desde el pie de la barra lateral, hacia arriba y alineado a la izquierda del botón.
+    const r = b.getBoundingClientRect(), w = document.documentElement.clientWidth;
+    if (r.top > innerHeight / 2) m.style.bottom = innerHeight - r.top + 6 + 'px'; else m.style.top = r.bottom + 6 + 'px';
+    if (b.closest('.lat')) m.style.left = r.left + 'px'; else m.style.right = w - r.right + 'px';
     document.body.append(m);
     setTimeout(() => document.addEventListener('click', function cierra(ev) { if (!m.contains(ev.target)) { m.remove(); document.removeEventListener('click', cierra); } }), 0);
   };

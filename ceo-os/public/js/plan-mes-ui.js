@@ -1,9 +1,10 @@
 // Marca › Crear › Plan del mes: la herramienta. El plan de ③ Marketing de cada mes, a la vista para revisarlo y pasarlo a
-// Ideas. Se arma en el chat de Diseño gráfico (etapa 1); aquí se ve, se revisa y se pasa a Creatividad.
+// Ideas. Se arma en el Chat, en modo Marketing (o en el chat de Diseño gráfico, etapa 1); aquí se ve, se revisa y se pasa a Creatividad.
 // Rutas: #/marcas/<marca>/plan · #/marcas/<marca>/plan/<AAAA-MM>
 import { html, raw, mount, api, toast, ico, confirmAsk, $, $$ } from './core.js';
 import { nombreMes, revisarSlots, sumaPilares, avancePlan, SECCIONES_P, NOMBRE_P } from './plan-mes.js';
 import { docHtml } from './artifact.js';
+import { abrirEnChat } from './areas.js';
 
 const PILAR_C = ['#2a1f17', '#8a6a50', '#c9b39b', '#5d7a46', '#3f6ea8', '#b4472f'];
 export const mesDe = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -44,7 +45,7 @@ export async function pasarPlan(b, mes, plan) {
 }
 
 // La herramienta: el plan del mes y el botón para trabajarlo en el chat.
-export async function planMesUI(el, { b, alive, rest = [] }) {
+export async function planMesUI(el, { me, b, alive, rest = [] }) {
   el.dataset.island = '1';
   const meses = mesesPlan(), mes = /^\d{4}-\d{2}$/.test(rest[0] || '') ? rest[0] : meses[1];
   mount(el, html`<p class="loading">Cargando…</p>`);
@@ -54,11 +55,11 @@ export async function planMesUI(el, { b, alive, rest = [] }) {
   const S = { plan: d.plan || {}, piezas: d.piezas || 0, pasando: false };
   const paint = () => mount(el, html`<div class="pmt-top"><div class="tabs" style="margin:0">${meses.map((x) => html`<a class="${x === mes ? 'on' : ''}" href="#/marcas/${b.slug}/plan/${x}">${nombreMes(x).replace(/^./, (c) => c.toUpperCase())}</a>`)}</div><span class="sp"></span>
       ${!d.estrategia?.aprobada ? html`<span class="pm-warn">${ico('lock', 12)} La estrategia de ${b.name} todavía no está aprobada</span>` : ''}</div>
-    <section class="pm-pane pmt">${planPanel({ b, mes, plan: S.plan, piezas: S.piezas, edit: d.puede?.editar, pasando: S.pasando, abrir: [`#/marcas/diseno/${b.slug}`, 'Trabajarlo en el chat', 'plan'] })}</section>`);
+    <section class="pm-pane pmt">${planPanel({ b, mes, plan: S.plan, piezas: S.piezas, edit: d.puede?.editar, pasando: S.pasando, abrir: [`#/chat`, 'Trabajarlo en el Chat', 'plan'] })}</section>`);
   paint();
   el.onclick = async (e) => {
     const t = e.target.closest('[data-act="pasar"],[data-etapa]'); if (!t) return;
-    if (t.dataset.etapa) { try { localStorage.setItem('os.dg.etapa', JSON.stringify({ slug: b.slug, etapa: t.dataset.etapa, mes })); } catch {} return; }
+    if (t.dataset.etapa) { e.preventDefault(); return abrirEnChat(me.email, { modo: 'marketing', slug: b.slug, mes, borrador: `Armemos el plan de ${nombreMes(mes)} de ${b.name}: la idea del mes, el mensaje, los pilares, los canales y las piezas.` }); }
     S.pasando = true; paint(); const n = await pasarPlan(b, mes, S.plan); if (n != null) S.piezas = n; S.pasando = false; if (alive()) paint();
   };
 }

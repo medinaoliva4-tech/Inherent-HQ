@@ -50,10 +50,39 @@ t('Una idea trae qué comunicamos, el formato ganador y cómo se adapta', () => 
 const src = (await import('node:fs')).readFileSync(new URL('../public/js/brandlist.js', import.meta.url), 'utf8');
 const lista = (nombre) => Function(`return ${src.match(new RegExp(`export const ${nombre} = ([\\[{][\\s\\S]*?\\n[\\]}]);`))[1]}`)();
 const FLUJO = lista('FLUJO'), MODULES = lista('MODULES'), AREAS = lista('AREAS');
-t('La línea del trabajo apunta a herramientas que existen y Crear va en orden', () => {
+t('La línea del trabajo apunta a herramientas que existen; Marketing planea y Diseño crea', () => {
   const keys = MODULES.map(([k]) => k);
   for (const [k, [de, , a]] of Object.entries(FLUJO)) { assert.ok(keys.includes(k), k); if (de) assert.ok(keys.includes(de), de); if (a) assert.ok(keys.includes(a), a); }
-  assert.deepEqual(AREAS.find(([k]) => k === 'crear')[3], ['plan', 'formatos', 'ideas', 'creacion']);
+  assert.deepEqual(AREAS.find(([k]) => k === 'planear')[3], ['plan', 'campanas']);
+  assert.deepEqual(AREAS.find(([k]) => k === 'crear')[3], ['brief', 'formatos', 'ideas', 'creacion']);
+  // cada grupo dice su área y cada módulo está en un solo grupo
+  assert.ok(AREAS.every((g) => ['marketing', 'diseno', 'ambas'].includes(g[5])), 'cada grupo tiene área');
+  const todos = AREAS.flatMap((g) => g[3]); assert.equal(new Set(todos).size, todos.length);
+  assert.deepEqual([...new Set(todos)].sort(), [...keys].sort(), 'todos los módulos tienen grupo');
+});
+
+// Campañas y eventos (mk-campana): la anticipación, lo que falta y una por ciclo.
+const C = await import('../public/js/campanas.js');
+t('Campañas: la anticipación de mk-campana, lo que falta y una por ciclo', () => {
+  const ev = C.limpiarCampana({ nombre: '  Cata de vinos ', tipo: 'Evento con cupo', ancla: '2026-11-28', frase: 'Que vengan a probar', mbt: 'B', se_nota: '+40 reservas', no_es: 'No es una fiesta', evento: { objetivo: 'Vender la membresía', medicion: 'Membresías vendidas', cupo: '60' }, raro: 1 });
+  assert.equal(ev.nombre, 'Cata de vinos'); assert.equal(ev.tipo, 'evento'); assert.equal(ev.evento.cupo, 60); assert.equal(ev.raro, undefined);
+  assert.deepEqual(C.anticipacion(ev).map((x) => [x.fecha, x.que]), [['2026-11-07', 'Primer aviso'], ['2026-11-21', 'Recordatorio'], ['2026-11-26', 'Último empujón'], ['2026-11-28', 'El día']]);
+  assert.deepEqual(C.revisarCampana(ev, '2026-10-26'), [], 'completa: no le falta nada');
+  // promoción: el último día va sobre «hasta»
+  const pr = C.limpiarCampana({ nombre: 'Black Friday', tipo: 'promocion', ancla: '2026-11-27', hasta: '2026-11-30' });
+  assert.equal(C.anticipacion(pr).at(-1).fecha, '2026-11-30'); assert.equal(C.anticipacion(pr).at(-1).que, 'Último día');
+  // lo que falta y las reglas
+  const f = C.revisarCampana(C.limpiarCampana({ nombre: 'X', tipo: 'apertura', ancla: '2026-12-03' }), '2026-10-26');
+  assert.ok(f.some((x) => /frase/.test(x)) && f.some((x) => /MUST BE TRUE/.test(x)) && f.some((x) => /qué NO es/.test(x)));
+  assert.ok(f.some((x) => /ciclo anterior/.test(x)), 'una apertura el 3 se avisa desde el ciclo anterior');
+  assert.ok(C.revisarCampana(C.limpiarCampana({ nombre: 'Y', tipo: 'promocion', ancla: '2026-12-04' }), '2026-12-01').some((x) => /llegó tarde/.test(x)), 'promo en los primeros 7 días y el ciclo ya empezó: llegó tarde');
+  assert.ok(C.revisarCampana(C.limpiarCampana({ nombre: 'Z' })).some((x) => /pilar/.test(x)), 'sin fecha es un pilar');
+  // una por ciclo, dos como máximo
+  const xs = ['a', 'b', 'c'].map((n) => C.limpiarCampana({ nombre: n, tipo: 'campana', ancla: '2026-12-10', estado: 'En curso' }));
+  assert.match(C.revisarMes(xs, '2026-12'), /3 campañas/); assert.equal(C.revisarMes(xs.slice(0, 2), '2026-12'), '');
+  assert.equal(C.campanasDelMes([ev], '2026-11').length, 1); assert.equal(C.campanasDelMes([ev], '2026-10').length, 0);
+  assert.equal(C.idCampana('nao', 'Apertura Cayalá!'), 'nao--apertura-cayala');
+  assert.equal(C.leerCampana({ tipo: 'evento' }), null, 'sin nombre no hay campaña');
 });
 
 // El calendario de la marca: los 3 filtros.

@@ -18,6 +18,7 @@ import { creacionUI } from '../creacion-ui.js';
 import { designSystemUI } from '../design-system-ui.js';
 import { disenoChat } from '../diseno-chat.js';
 import { planMesUI } from '../plan-mes-ui.js';
+import { campanasUI } from '../campanas-ui.js';
 import { videoUI } from '../video-ui.js';
 import { adsUI } from '../ads-ui.js';
 import { techUI } from '../tech-ui.js';
@@ -93,6 +94,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (mod === 'creacion') return creacionUI(box, { me, b, alive, rest });
     if (mod === 'design') return designSystemUI(box, { me, b, alive });
     if (mod === 'plan') return planMesUI(box, { me, b, alive, rest });
+    if (mod === 'campanas') return campanasUI(box, { me, b, alive });
     if (mod === 'video') return videoUI(box, { me, b, alive });
     if (mod === 'ads') return adsUI(box, { me, b, alive });
     if (mod === 'tech') return techUI(box, { me, b, alive });

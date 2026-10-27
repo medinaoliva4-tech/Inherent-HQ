@@ -10,6 +10,10 @@ import { payDialog } from '../flowui.js';
 import { openDelivery, dueChip as tDue, stChip as tSt } from '../taskcard.js';
 import { purposeCard } from '../purpose.js';
 import { taskKanban } from '../kanban.js';
+import { estrategiaNow } from '../stratlist.js';
+
+// El cliente de una tarea sin proyecto (un encargo de Estrategia lo trae en client_slug).
+const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow().find((c) => c.slug === s)?.nombre || s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, ' ') : ''; };
 import { PURPOSE } from '../roleviews.js';
 // Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
 const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
@@ -73,7 +77,7 @@ export async function render(el, { me, sub, alive }) {
   const clientOf = (t) => proj(t.project_id)?.client_slug || null;
   const dueChip = (d, st) => { if (!d || st === 'Hecha') return d ? html`<span class="mut sm">${fdate(d)}</span>` : '';
     return d < T0 ? html`<span class="chip red sm2">Atrasada</span>` : d === T0 ? html`<span class="chip red sm2">Hoy</span>` : d === T1 ? html`<span class="chip amber sm2">Mañana</span>` : html`<span class="mut sm">${fdate(d)}</span>`; };
-  const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock')} </span>` : ''}${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
+  const trow = (t, extra = '') => html`<div class="wkrow ${status(t) === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}">${extra}${t.assignee ? av(t.assignee, 20) : ''}<span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock')} </span>` : ''}${t.title}<span class="mut sm"> · ${proj(t.project_id)?.client || proj(t.project_id)?.name || cliDe(t) || 'Interno'}</span></span>${dueChip(t.due, status(t))}</div>`;
   const box = (title, sub, body, right = '', cls = 'card wkbox') => html`<div class="${cls}"><div class="wkhead"><div><h3 class="wkttl">${iconFor(title)}${title}</h3>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div><div class="sp"></div>${right}</div>${body}</div>`;
 
   // ---------- pantalla ----------
@@ -114,7 +118,7 @@ export async function render(el, { me, sub, alive }) {
   function fila(t) {
     const st = status(t), p = proj(t.project_id), late = t.due && t.due < T0 && st !== 'Hecha';
     return html`<div class="mt-tk ${st === 'Hecha' ? 'done' : ''}" data-act="task" data-id="${t.id}"><input type="checkbox" class="mt-c" data-act="tdone" data-id="${t.id}" ${st === 'Hecha' ? raw('checked') : ''} aria-label="Marcar como hecha"><div class="mt-x"><div>${t.title}</div>
-      <small>${t.due ? html`<span class="${late ? 'mt-late' : ''}">${t.due === T0 ? 'Hoy' : t.due === T1 ? 'Mañana' : fdate(t.due)}</span>` : ''}${st === 'En revisión' ? html`<span class="mt-flag">En revisión</span>` : st === 'En curso' ? html`<span>En curso</span>` : ''}${p ? html`<span class="mt-chip">${p.client || p.name}</span>` : ''}${t.dept ? html`<span>${t.dept}</span>` : ''}</small></div></div>`;
+      <small>${t.due ? html`<span class="${late ? 'mt-late' : ''}">${t.due === T0 ? 'Hoy' : t.due === T1 ? 'Mañana' : fdate(t.due)}</span>` : ''}${st === 'En revisión' ? html`<span class="mt-flag">En revisión</span>` : st === 'En curso' ? html`<span>En curso</span>` : ''}${p || cliDe(t) ? html`<span class="mt-chip">${p ? p.client || p.name : cliDe(t)}</span>` : ''}${t.dept ? html`<span>${t.dept}</span>` : ''}</small></div></div>`;
   }
   function lista(b, k, L, D) {
     const sub = k === 'hoy' ? `${new Date(T0 + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' })}` : k === 'decisiones' ? (isCeo && !asP ? 'Lo que espera que tú decidas' : 'Lo que te entregaron para revisar') : k === 'proximos' ? 'Lo que viene, por fecha' : k === 'atrasadas' ? 'Se pasaron de su fecha' : 'Tus tareas por proyecto';
@@ -140,7 +144,7 @@ export async function render(el, { me, sub, alive }) {
     cobros: (t) => t.kind === 'pago' || /cobr|pago|factur/i.test(`${t.dept || ''} ${t.title || ''}`),
   };
   const roleTasks = () => { const l = open(mine()); const f = myRoles.length > 1 && ROLE_TASKS[role]; return (f ? l.filter(f) : l).sort(byDue); };
-  const cli = (t) => proj(t.project_id)?.client || proj(t.project_id)?.name || 'Interno';
+  const cli = (t) => proj(t.project_id)?.client || proj(t.project_id)?.name || cliDe(t) || 'Interno';
   const dayName = (d) => (d === T0 ? 'Hoy' : d === T1 ? 'Mañana' : new Date(d + 'T12:00').toLocaleDateString('es', { weekday: 'short', day: 'numeric' }));
   const empty = (t) => html`<div class="wsempty">${t}</div>`;
   const panel = (body, cls = '') => html`<div class="card wspanel ${cls}">${body}</div>`;

@@ -49,7 +49,7 @@ export const avancePrimerDia = (me) => { const h = me.primer_dia?.hechos || {}; 
 export function pintarChip(me) {
   const c = $('#pdchip'); if (!c) return;
   const on = me.role !== 'client' && !primerDiaHecho(me) && Boolean(me.primer_dia?.pausado);
-  c.hidden = !on; if (on) { const a = avancePrimerDia(me); c.innerHTML = `Tu primer día · ${a.n} de ${a.total}`; c.onclick = () => abrirPrimerDia(me); }
+  c.hidden = !on; if (on) { const a = avancePrimerDia(me); c.innerHTML = `Tu primer día · ${a.n} de ${a.total}`; c.dataset.n = `${a.n}/${a.total}`; c.title = `Tu primer día · ${a.n} de ${a.total}`; c.onclick = () => abrirPrimerDia(me); }
 }
 
 // Al entrar: si nunca lo terminó y no lo pausó, se abre solo.
