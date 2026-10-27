@@ -4,7 +4,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { tieneIco } from '../public/js/iconos.js';
-import { WORKSPACES, FLUJO, HERRAMIENTAS, LEGACY_MODULO, LEGACY_BLOQUE, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, moduloDe, rutaHerramienta, rutaBloque, rutaModulo, wsDeRuta, puedeWs } from '../public/js/herramientas.js';
+import { WORKSPACES, FLUJO, HERRAMIENTAS, LEGACY_MODULO, LEGACY_BLOQUE, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, moduloDe, rutaHerramienta, rutaBloque, rutaChat, rutaModulo, wsDeRuta, puedeWs } from '../public/js/herramientas.js';
+import { cambiaBloqueado } from '../public/js/strategy/oferta.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const ids = HERRAMIENTAS.map((h) => h.id);
@@ -42,14 +43,15 @@ t('cada herramienta: ws válido, pestaña del ws, prioridad, estado, aprueba, gu
     assert.equal(typeof h.puede, 'function', `${h.id}: puede`);
     if (h.estado !== 'pronto') assert.ok(h.monta, `${h.id}: ${h.estado} sin monta`); else assert.equal(h.monta, null, `${h.id}: pronto con monta`);
   }
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['content-calendar']);
-  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 24, '18 de la Fase 1 + las 6 de Consulting de la Fase 2');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'content-calendar'], 'las 5 de Strategy de la Fase 3a + el calendario');
+  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 19, '13 de la Fase 1 + las 6 de Consulting de la Fase 2');
   assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 25, 'las 19 de la Fase 1 + las 6 del Tool Shell');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'bullseye'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'strategy'], ['offer-architect', 'strategy'], ['growth-roadmap', 'strategy'], ['viral-intelligence-lab', 'research'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'ads'], ['marketing-performance-center', 'analytics'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'research'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'ads'], ['marketing-performance-center', 'analytics'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
   // Consulting lleva el nombre en español y el inglés como alias.
   for (const h of deWorkspace('consulting')) assert.ok(h.alias, `${h.id}: alias`);
   assert.equal(herramientaDe('business-health-assessment').nombre, 'Diagnóstico de crecimiento');
-  // Los 3 bloques de strategy.js que se montan.
+  // Los 3 bloques de strategy.js que ya solo se abren por …/chat (rutaChat); ninguna herramienta monta strategy.js ni la vieja diana directo.
+  assert.ok(HERRAMIENTAS.every((h) => h.monta !== 'strategy' && h.monta !== 'bullseye'), 'la clave strategy y la bullseye ya no montan nada');
   assert.deepEqual(HERRAMIENTAS.filter((h) => h.bloque_hz).map((h) => [h.id, h.bloque_hz]), [['business-xray', 'diagnostico'], ['offer-architect', 'oferta'], ['growth-roadmap', 'roadmap']]);
 });
 
@@ -111,7 +113,7 @@ t('LEGACY_MODULO cubre los 16 módulos de MODULES y apunta a pestañas y herrami
 });
 
 t('rutaHerramienta y rutaBloque arman la ruta canónica', () => {
-  assert.equal(rutaBloque('akai', 'modelo'), '#/ws/strategy/akai/strategy/offer-architect/modelo');
+  assert.equal(rutaBloque('akai', 'modelo'), '#/ws/strategy/akai/strategy/offer-architect/chat/modelo', 'Modelo y Leads no tienen herramienta: abren el chat de ese bloque');
   assert.equal(rutaBloque('akai', 'diagnostico'), '#/ws/strategy/akai/analysis/business-xray');
   assert.equal(rutaBloque('akai', 'nada'), '#/ws/strategy/akai/overview');
   assert.equal(rutaBloque('', 'oferta'), '#/ws/strategy');
@@ -150,7 +152,9 @@ t('wsDeRuta traduce cada ruta vieja de la tabla 3.6 (los ejemplos de «Alias»)'
   assert.equal(r('#/marcas/diseno'), 'ws/creative');
   assert.equal(r('#/marcas/personal/marca'), 'ws/creative/personal/brief/brand-dna-studio');
   assert.equal(r('#/estrategia/akai/roadmap'), 'ws/strategy/akai/roadmap/growth-roadmap');
-  assert.equal(r('#/estrategia/akai/modelo'), 'ws/strategy/akai/strategy/offer-architect/modelo');
+  assert.equal(r('#/estrategia/akai/modelo'), 'ws/strategy/akai/strategy/offer-architect/chat/modelo');
+  assert.equal(r('#/estrategia/akai/leads'), 'ws/strategy/akai/strategy/offer-architect/chat/leads');
+  assert.equal(r('#/estrategia/akai/oferta'), 'ws/strategy/akai/strategy/offer-architect', 'la Oferta abre Offer Architect, no su chat');
   assert.equal(r('#/estrategia/akai'), 'ws/strategy/akai/overview');
   assert.equal(r('#/estrategia', 'nao'), 'ws/strategy/nao/overview');
   assert.equal(r('#/estrategia'), 'ws/strategy');
@@ -405,6 +409,102 @@ t('Plan de 90 días: con la capacidad en rojo (extra o Diagnóstico en las entra
   assert.equal(h.faltas({ ...c, filas: [fila('f1', 'capacidad', 1), fila('f2', 'demanda', 2)] }, diag('rojo')).length, 0, 'capacidad primero: pasa');
   // faltas() de entregables.js suma las del registro (lo que llama el servidor al aprobar).
   assert.equal(E.faltas({ tool: 'solution-blueprint-builder', contenido: c, criterios: { cumple: [], falta: ['otra'] } }, { capacidadRoja: true }).length, 2);
+});
+
+// ---------- Fase 3a: Strategy se monta en el Tool Shell (diana, X-Ray, oferta), el Roadmap en su hoja y el chat de hoy por /chat ----------
+const ESTRATEGIA = [['customer-bullseye', 'diana', 'bullseye'], ['business-xray', 'xray', 'xray'], ['offer-architect', 'oferta', 'oferta']];
+const CTX = (nivel) => ({ hoy: '2026-10-27', cliente: { slug: 'akai', nombre: 'Akai', nivel: { id: nivel, nombre: nivel } }, ficha: null, estrategia: { etapa: null, trabado: '', meta: '' }, entradas: [], aprendizajes: [] });
+t('Strategy 3a: diana, X-Ray y oferta con monta shell, su vista y las funciones de su módulo puro; todas en estado lista', () => {
+  for (const [id, vista, bloque] of ESTRATEGIA) {
+    const h = herramientaDe(id);
+    assert.equal(h.estado, 'lista', id); assert.equal(h.monta, 'shell', id); assert.equal(h.vista, vista, id); assert.equal(h.bloque, bloque, id);
+    for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', `${id}.${f}`);
+    assert.ok(fs.existsSync(new URL(`../public/js/strategy/${vista}-ui.js`, import.meta.url)), `${id}: falta strategy/${vista}-ui.js`);
+    for (const nivel of ['foundation', 'growth', 'partnership', 'medida']) { const p = h.prompt(CTX(nivel)); assert.ok(p.includes(bloque) && p.includes('criterios') && p.length < 5000, `${id}/${nivel}: prompt`); }
+    const l = h.limpiar({ ...h.vacio(), id: 'x', v: 9, _meta: { a: 1 } });
+    assert.ok(!('id' in l) && !('v' in l) && !('_meta' in l), `${id}: limpiar`);
+  }
+  assert.equal(new Set(ESTRATEGIA.map(([, , b]) => b)).size, 3, 'cada una pide su propio bloque de IA');
+  // Solo la diana y la oferta traen alUsar; solo la oferta se aprueba con su bloque.
+  assert.deepEqual(HERRAMIENTAS.filter((h) => typeof h.alUsar === 'function').map((h) => h.id), ['customer-bullseye', 'offer-architect']);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.aprobarConBloque).map((h) => [h.id, h.aprobarConBloque]), [['offer-architect', 'oferta']]);
+  assert.equal(herramientaDe('offer-architect').aprueba, 'ceo');
+  assert.equal(herramientaDe('customer-bullseye').guarda.coll, 'sources'); assert.match(herramientaDe('customer-bullseye').guarda.nota, /PUT estrategia\/:slug\/bullseye/);
+  assert.equal(herramientaDe('business-xray').guarda.coll, 'deliverables'); assert.equal(herramientaDe('customer-avatar-studio').guarda.coll, 'avatars');
+  // El Roadmap: su hoja propia (sin shell, sin vista) y su casa es viva.roadmap; el Avatar Studio sigue como está.
+  const rm = herramientaDe('growth-roadmap');
+  assert.equal(rm.monta, 'roadmap'); assert.equal(rm.estado, 'lista'); assert.equal(rm.vista, undefined); assert.equal(rm.guarda.coll, 'strategy'); assert.match(rm.guarda.nota, /viva\.roadmap/);
+  assert.equal(herramientaDe('customer-avatar-studio').monta, 'avatar'); assert.equal(herramientaDe('customer-avatar-studio').estado, 'lista');
+  const ui = fs.readFileSync(new URL('../public/js/strategy/roadmap-ui.js', import.meta.url), 'utf8');
+  assert.match(ui, /export async function roadmapTool\(host, \{ me, slug, b, alive, resto/, 'roadmap-ui.js exporta roadmapTool con la firma del contrato');
+  for (const [id, vista] of ESTRATEGIA.map(([i, v]) => [i, v])) assert.match(fs.readFileSync(new URL(`../public/js/strategy/${vista}-ui.js`, import.meta.url), 'utf8'), /export const vista = \{/, `${id}: strategy/${vista}-ui.js exporta vista`);
+});
+
+t('Strategy 3a: «Usar esta propuesta» no pierde los lotes de la diana ni toca lo que el nivel de la oferta bloquea', () => {
+  // Diana: la propuesta de la IA no trae calib; alUsar conserva los lotes que ya había.
+  const dn = herramientaDe('customer-bullseye'), actual = dn.limpiar({ ...dn.vacio(), center: 'Dueños de restaurante', calib: [{ at: '2026-10-01', n: 3, ok: 2 }] });
+  const prop = dn.limpiar({ ...dn.vacio(), center: 'Otro centro' });
+  const rd = dn.alUsar(prop, actual, CTX('growth'));
+  assert.equal(rd.center, 'Otro centro', 'lo nuevo entra'); assert.deepEqual(rd.calib, actual.calib, 'los lotes se quedan');
+  // Oferta: partimos de un contenido lleno y la IA propone otra cosa.
+  const of = herramientaDe('offer-architect');
+  const lleno = of.limpiar({ ecuacion: { sueno: { valor: 8, evidencia: 'a' }, probabilidad: { valor: 7, evidencia: 'b' }, tiempo: { valor: 3, evidencia: 'c' }, esfuerzo: { valor: 2, evidencia: 'd' } },
+    stack: { problemas: ['p'], soluciones: ['s'], vehiculos: ['v'], bonos: ['b'], garantia: 'g', escasez: 'e', nombre: 'N' }, propuesta: 'La propuesta', variaciones: [{ nombre: 'A', precio: 'Q1,500', para_quien: 'x', diferencia: 'y' }, { nombre: 'B', precio: 'Q2,500', para_quien: 'x', diferencia: 'y' }],
+    escalera: { atraccion: { hoy: 'h', propuesta: 'p', cita: 'c' }, upsell: {}, downsell: {}, continuidad: {} }, empujar: { oferta: 'Vieja', mensaje: 'Vieja' } });
+  const vaciaIA = of.limpiar({ empujar: { oferta: 'Nueva', mensaje: 'El mensaje nuevo' } });
+  // Brand Growth: solo cambia lo que empuja; todo lo demás se queda como estaba (y el servidor no lo rechaza).
+  const g = of.alUsar(vaciaIA, lleno, CTX('growth'));
+  assert.deepEqual(g.empujar, { oferta: 'Nueva', mensaje: 'El mensaje nuevo' }); assert.deepEqual({ ...g, empujar: null }, { ...lleno, empujar: null });
+  assert.deepEqual(cambiaBloqueado(lleno, g, 'growth'), [], 'cambiaBloqueado de Growth no ve nada');
+  // Foundation y a la medida: la escalera no entra y se queda; Partnership: todo lo de la IA entra.
+  for (const n of ['foundation', 'medida']) { const r = of.alUsar(vaciaIA, lleno, CTX(n)); assert.deepEqual(r.escalera, lleno.escalera, `${n}: la escalera se queda`); }
+  assert.deepEqual(of.alUsar(vaciaIA, lleno, CTX('partnership')), vaciaIA, 'Partnership: la propuesta entra completa');
+  // Sin nivel o con basura no lanza.
+  assert.doesNotThrow(() => of.alUsar(null, undefined, null)); assert.doesNotThrow(() => dn.alUsar('x', 5, undefined));
+});
+
+t('Strategy 3a: rutaChat arma …/<herramienta>/chat[/<bloque>] y wsDeRuta la lee con el resto intacto', () => {
+  assert.equal(rutaChat('akai', 'diagnostico'), '#/ws/strategy/akai/analysis/business-xray/chat');
+  assert.equal(rutaChat('akai', 'oferta'), '#/ws/strategy/akai/strategy/offer-architect/chat');
+  assert.equal(rutaChat('akai', 'modelo'), '#/ws/strategy/akai/strategy/offer-architect/chat/modelo');
+  assert.equal(rutaChat('akai', 'leads'), '#/ws/strategy/akai/strategy/offer-architect/chat/leads');
+  assert.equal(rutaChat('akai', 'roadmap'), '#/ws/strategy/akai/roadmap/growth-roadmap/chat');
+  assert.equal(rutaChat('akai', 'nada'), '#/ws/strategy/akai/overview'); assert.equal(rutaChat('', 'oferta'), '#/ws/strategy');
+  assert.equal(rutaHerramienta('strategy', 'akai', 'business-xray', ['chat']), rutaChat('akai', 'diagnostico'));
+  assert.deepEqual(wsDeRuta('#/ws/strategy/akai/strategy/offer-architect/chat/modelo'), { ws: 'strategy', slug: 'akai', pestana: 'strategy', tool: 'offer-architect', resto: ['chat', 'modelo'], ruta: 'ws/strategy/akai/strategy/offer-architect/chat/modelo' });
+  assert.deepEqual(wsDeRuta('#/ws/strategy/akai/roadmap/growth-roadmap/chat').resto, ['chat']);
+  // Las rutas viejas de la Fase 1 (offer-architect/modelo) las atiende workspace.js; aquí siguen leyéndose como resto.
+  assert.deepEqual(wsDeRuta('#/ws/strategy/akai/strategy/offer-architect/modelo').resto, ['modelo']);
+});
+
+t('Strategy 3a · estáticas: workspace.js monta las vistas, el roadmap y el chat solo por /chat; el avatar lo abre quien ve Strategy', () => {
+  const ws = fs.readFileSync(new URL('../public/js/screens/workspace.js', import.meta.url), 'utf8');
+  for (const v of ['diana', 'xray', 'oferta']) assert.match(ws, new RegExp(`${v}: \\(\\) => import\\('\\.\\./strategy/${v}-ui\\.js'\\)`), `VISTAS.${v}`);
+  assert.match(ws, /case 'roadmap':[\s\S]*import\('\.\.\/strategy\/roadmap-ui\.js'\)[\s\S]*roadmapTool\(host, \{ me, slug, b, alive, resto \}\)/, 'monta roadmap');
+  assert.ok(!/case 'strategy':|case 'bullseye':/.test(ws) && !/bullseyeTool/.test(ws), 'ya no hay montaje directo de strategy.js ni de la vieja diana');
+  assert.match(ws, /resto\[0\] !== 'chat'/, 'el chat se abre por /chat');
+  assert.match(ws, /const chat = bloqueChat\(t\);\s*if \(chat\) return strategy\(host, \{ me, sub: \[slug, chat\], alive \}\)/, 'strategy.js se monta como hoy: strategy(host, { me, sub: [slug, bloque], alive })');
+  assert.ok(!/avatar: 'icp'/.test(ws), 'el Avatar Studio no pide el módulo icp de Contenido: el servidor acepta Contenido o Estrategia');
+  assert.match(fs.readFileSync(new URL('../public/js/screens/strategy.js', import.meta.url), 'utf8'), /rutaChat\(slug, x\.id\)/, 'el menú de bloques del chat se queda en el chat');
+});
+
+t('Strategy 3a · estáticas: el shell aprueba y reabre Offer Architect con su bloque, cierra todo con APROBADO y trae «Chat de Strategy»', () => {
+  const sh = fs.readFileSync(new URL('../public/js/tool-shell.js', import.meta.url), 'utf8');
+  // (a) Aprobar y Reabrir van por la ruta del bloque con { aprobar }; aprobar lleva además la v del entregable que se revisó (el servidor
+  // la compara y corre sus faltas); con aprobarConBloque nunca se manda «Aprobado» a /estado.
+  assert.match(sh, /api\(`estrategia\/\$\{enc\(slug\)\}\/\$\{enc\(bloque\)\}\/aprobar`, \{ method: 'POST', body: si \? \{ aprobar: true, v: S\.doc\.v \} : \{ aprobar: false \} \}\)/);
+  assert.match(sh, /'tsh-aprobar': \(\) => \(tool\.aprobarConBloque \? aprobarBloque\(true\) : cambiarEstado\('Aprobado'\)\), 'tsh-reabrir': \(\) => aprobarBloque\(false\)/);
+  assert.ok(!/aprobarBloque[\s\S]{0,900}\/estado/.test(sh.slice(sh.indexOf('async function aprobarBloque'), sh.indexOf('// ---------- Tareas'))), 'aprobarBloque no toca /estado');
+  // (b) alcance APROBADO: otro aviso, otro tono; los 409 APROBADO releen el alcance sin perder lo editado.
+  assert.match(sh, /a\.code === 'APROBADO'\) return mount\(el, html`<div class="tsh-aprobada" role="status"/);
+  assert.match(sh, /e\?\.status === 409 && e\.code === 'APROBADO'/);
+  // (c) El botón del chat de Strategy: solo en Strategy y con bloque; no reemplaza a «Continuar en el Chat».
+  assert.match(sh, /tool\.ws === 'strategy' && tool\.bloque_hz\) salida\.push\(html`<a class="btn ghost sm tsh-act tsh-act-chat" href="\$\{rutaHerramienta\(tool\.ws, slug, tool\.id, \['chat'\]\)\}"/);
+  assert.match(sh, /'tsh-chat': \(\) => abrirEnChat\(me\.email, \{ modo, slug \}\)/);
+  // «Usar esta propuesta» pasa por alUsar de la herramienta.
+  assert.match(sh, /tool\.alUsar\(nuevo, clon\(S\.contenido\), S\.ctx\)/);
+  // Cerrado (aprobado con su bloque): ni Generar ni Guardar.
+  assert.match(sh, /const editable = \(\) => escribe\(\) && !cerrado\(\)/);
 });
 
 console.log(`\n${ok} pruebas OK`);
