@@ -1,36 +1,55 @@
-// Hoy. Para el CEO y el COO: el pulso del mes (un número por área), lo que necesita atención, la agenda y el contenido.
-// Para el equipo: sus responsabilidades (qué, para cuándo y dónde se entrega). Sin revenue, leads ni engagement.
-import { html, raw, mount, col, api, fdate, today, toast, acts, IC, $, $$, Q, USD, calQ, teamList, ico, initials } from '../core.js';
-import { USD_GTQ } from '../levels.js';
+// Home (#/home): la portada del OS para todo el equipo (plan §3.4). Arriba el hero y «Ask InherentOS» (abre el Chat con
+// el borrador, en el modo del último workspace y con el cliente del contexto); luego 4 KPIs (proyectos, tareas, ingresos,
+// clientes: cada uno lleva a donde se trabaja; sin dato, vacío y de dónde va a salir, nunca 0), la actividad reciente
+// (lo que esta pantalla ya carga, por _meta.updated_at) y los accesos a los 5 workspaces. Abajo, para el CEO y el COO,
+// lo que necesita atención, la agenda y el contenido del mes; para el equipo, sus responsabilidades. Los cargadores de
+// datos son los de siempre; cambió el layout.
+import { html, raw, mount, col, api, fdate, today, acts, IC, $, $$, Q, calQ, teamList, ico, initials, skel } from '../core.js';
 import { upcoming, people as meetPeople } from '../meetings.js';
-import { kpis, PAL } from '../charts.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
 import { bdayText } from './me.js';
 import { connectNotice, hookNotice } from '../connectai.js';
 import { purposeCard } from '../purpose.js';
 import { estadoDe } from '../element.js';
 import { dueAccess, dueSoon, durText, updateWaits } from '../ventas-flujo.js';
-import { llevamos, pronostico, habilesQuedan } from '../ventas-meta.js';
 import { totales } from '../facturas.js';
-import { goalsOf, healthOf } from '../goals.js';
 import { levelName } from '../levels.js';
 import { payDialog, openProof, confirmarYArrancar } from '../flowui.js';
+import { projStatus } from '../project-page.js';
+import { WORKSPACES, puedeWs } from '../herramientas.js';
+import { cargarContexto, contextoLista, contextoActual } from '../contexto.js';
+import { abrirEnChat } from '../areas.js';
+import { SUGERENCIAS, modoDe } from '../llm/modos.js';
+
+export const esqueleto = () => skel('pagina');
 
 const greet = () => { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; };
 const iso = (d) => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return iso(d); };
 const mondayOf = (s) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return iso(d); };
+const lsGet = (k) => { try { return localStorage.getItem(k) || ''; } catch { return ''; } };
+// «hace 5 min», «hace 2 h», «ayer», «hace 3 días» o la fecha.
+const relativo = (s) => {
+  const ms = Date.parse(String(s || '')); if (!ms) return '';
+  const m = Math.round((Date.now() - ms) / 6e4); if (m < 1) return 'ahora'; if (m < 60) return `hace ${m} min`;
+  const h = Math.round(m / 60); if (h < 24) return `hace ${h} h`;
+  const d = Math.round(h / 24); if (d === 1) return 'ayer'; if (d < 7) return `hace ${d} días`;
+  return fdate(String(s).slice(0, 10));
+};
 
 export async function render(el, { me, alive }) {
   const ceoish = me.role === 'ceo' || me.role === 'coo';
-  let [tasks, projects, people, accounts] = await Promise.all([col('tasks').list(), col('projects').list().catch(() => []), teamList().catch(() => []), col('accounts').list().catch(() => [])]);
-  let repoClients = null; if (ceoish) api('repo/clients').then((r) => { repoClients = r.clients || []; if (alive()) paint(); }).catch(() => { repoClients = []; });
+  const acc = dueAccess(me), seesClients = (me.areas || []).includes('clients');
+  let [tasks, projects, people, accounts] = await Promise.all([col('tasks').list(), col('projects').list().catch(() => []), teamList().catch(() => []), col('accounts').list().catch(() => []), cargarContexto(me).catch(() => [])]);
+  // Los clientes del repo (ficha): los lee quien ve Clientes (el KPI y el contenido del mes).
+  let repoClients = null; if (seesClients) api('repo/clients').then((r) => { repoClients = r.clients || []; if (alive()) paint(); }).catch(() => { repoClients = []; if (alive()) paint(); });
   const T = today(), M = T.slice(0, 7), first = (me.name || '').split(' ')[0];
   const monday = mondayOf(T), sunday = addDays(monday, 6);
   const st = (t) => t.status || 'Por empezar', open = (t) => st(t) !== 'Hecha';
   const proj = (id) => projects.find((p) => p.id === id);
   const person = (k) => people.find((p) => p.id === k || p.email === k);
   const nameOf = (k) => person(k)?.name || (k === me.email ? me.name : k ? String(k).split('@')[0] : 'Sin responsable');
+  const corto = (k) => (k ? nameOf(k).split(' ')[0] : '');
   const clientOf = (t) => { const p = proj(t.project_id); return p ? p.client || p.name : 'Interno'; };
   // Cumpleaños del equipo: hoy y los próximos 7 días.
   const md = (d) => d.toISOString().slice(5, 10), soon = Array.from({ length: 8 }, (_, i) => md(new Date(Date.now() + i * 864e5)));
@@ -45,7 +64,6 @@ export async function render(el, { me, alive }) {
 
   // «Vence pronto»: leads sin responder y seguimientos de ventas de hoy o mañana (quien ve Ventas) y facturas de los
   // próximos 7 días o vencidas (por cobrar: el CEO y quien ve Finanzas; por pagar: solo el CEO). Se carga aparte.
-  const acc = dueAccess(me);
   let dueLeads = acc.sales ? null : [], dueInv = acc.cobrar || acc.pagar ? null : [];
   if (acc.sales) col('leads').list().catch(() => []).then((l) => { dueLeads = l; if (alive()) paint(); });
   if (acc.cobrar || acc.pagar) col('invoices').list().catch(() => []).then((l) => { dueInv = l; if (alive()) paint(); });
@@ -63,54 +81,95 @@ export async function render(el, { me, alive }) {
 
   const ctx = () => ({ me, projects, team: people });
   const onTask = (r, t) => { tasks = r ? tasks.map((x) => (x.id === r.id ? r : x)) : tasks.filter((x) => x.id !== t.id); paint(); };
-  const trow = (t, extra = '') => html`<div class="wkrow" data-act="open" data-id="${t.id}"><span class="grow"><b style="font-weight:500">${t.title}</b><span class="mut sm"> · ${clientOf(t)}${extra ? ' · ' + extra : ''}</span></span>${dueChip(t)}${stChip(t)}</div>`;
   const agendaRows = () => agenda === null ? html`<p class="mut sm">Cargando tu agenda…</p>` : agErr ? html`<div class="mut sm">No pude leer tu Google Calendar: conecta tu Google en <a href="#/me">Mi perfil</a>. <button class="sm linkish" data-act="agRetry">Reintentar</button></div>`
     : agenda.slice(0, 5).map((e) => html`<a class="wkrow" href="${/^https:\/\//.test(e.link || '') ? e.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="wkt">${e.allDay ? 'Día' : String(e.start).slice(11, 16)}</span><span class="grow">${e.summary}</span>${e.meet ? html`<span class="mut sm">Meet</span>` : ''}</a>`);
-  const head = (linea) => html`<div class="hello sp-hero"><h1>${greet()}, ${first}.</h1><p>${linea || (ceoish ? html`Esto es lo que pasa hoy en <em>Inherent</em>.` : html`Esto es lo tuyo <em>hoy</em>.`)}</p></div>
+  const daysFrom = (d) => Math.round((new Date(d + 'T12:00') - new Date(T + 'T12:00')) / 864e5);
+  const whenLabel = (d) => (d === T ? 'Hoy' : daysFrom(d) === 1 ? 'Mañana' : fdate(d));
+  const pct = (a, b) => (b ? Math.max(0, Math.min(100, Math.round((a / b) * 100))) : 0);
+  let quotes = null;
+  if (ceoish || acc.sales) col('quotes').list().catch(() => []).then((l) => { quotes = l; if (alive()) paint(); });
+  const qSub = (q) => (q.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0) * (1 - (+q.discount_pct || 0) / 100);
+
+  // ---------- El contexto y el último workspace ----------
+  // app.js guarda el último workspace abierto (os.ws.ultimo.<correo>) y el último cliente por workspace
+  // (os.ws.ultimo.<correo>.<ws>); si no hay, vale el cliente del contexto.
+  const ctxSlug = () => contextoActual(me) || '';
+  const nombreDe = (slug) => (slug ? contextoLista().find((c) => c.slug === slug)?.name || slug : '');
+  const ultimoWs = () => lsGet(`os.ws.ultimo.${me.email}`);
+  const ultimoSlug = (ws) => lsGet(`os.ws.ultimo.${me.email}.${ws}`) || ctxSlug();
+  const modoAsk = () => WORKSPACES.find((w) => w.id === ultimoWs())?.modo || 'organizacion';
+
+  // ---------- Hero ----------
+  const fechaLarga = new Date(T + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase());
+  const hero = (linea) => html`<div class="home-hero sp-hero"><h1>Turn business opportunities into real results</h1><p>${greet()}, <em>${first}</em> · ${fechaLarga}${linea || ''}</p></div>
     ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
     ${connectNotice(me)}`;
 
-  // ---------- CEO · COO ----------
-  // Arriba, el pulso del mes: cuatro números, uno por área, y cada uno lleva a donde se trabaja (Ventas, Finanzas,
-  // Proyectos, Clientes). Abajo, una sola lista de lo que se traba si nadie lo mueve, con su botón; a la derecha, la
-  // agenda y el contenido del mes. Lo de cobrar y arrancar (lo que era Control del flujo) vive aquí.
-  const tasksOf = (p) => tasks.filter((t) => t.project_id === p.id);
-  const daysFrom = (d) => Math.round((new Date(d + 'T12:00') - new Date(T + 'T12:00')) / 864e5);
-  const whenLabel = (d) => (d === T ? 'Hoy' : daysFrom(d) === 1 ? 'Mañana' : fdate(d));
-  const seesClients = (me.areas || []).includes('clients');
-  let quotes = null, metaDoc = null;
-  if (ceoish || acc.sales) col('quotes').list().catch(() => []).then((l) => { quotes = l; if (alive()) paint(); });
-  if (acc.sales) col('settings').get('ventas_meta').catch(() => null).then((d) => { metaDoc = d; if (alive()) paint(); });
-  const qSub = (q) => (q.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0) * (1 - (+q.discount_pct || 0) / 100);
-  const pct = (a, b) => (b ? Math.max(0, Math.min(100, Math.round((a / b) * 100))) : 0);
+  // ---------- «Ask InherentOS anything» ----------
+  // Al enviar abre el Chat con el borrador, en el modo del último workspace usado (o Organización) y con el cliente del contexto.
+  const ask = () => {
+    const modo = modoAsk(), sug = (SUGERENCIAS[modo] || SUGERENCIAS.organizacion || []).slice(0, 3), quien = nombreDe(ctxSlug());
+    return html`<form class="home-ask" data-act="ask" autocomplete="off">
+      <div class="home-ask-box"><span class="home-ask-ic">${ico('chat-ia', 20)}</span>
+        <label class="sr-only" for="home-q">Pregúntale a InherentOS</label>
+        <textarea id="home-q" class="home-ask-ta" rows="1" placeholder="Ask InherentOS anything" data-act="askTa"></textarea>
+        <button class="btn home-ask-go" type="submit" aria-label="Enviar al Chat">${ico('enviar', 16)}</button></div>
+      <div class="home-ask-foot"><div class="home-chips">${sug.map(([q]) => html`<button type="button" class="chip home-chip" data-act="chip" data-q="${q}">${q}</button>`)}</div>
+        <span class="home-ask-modo mut sm">Modo ${modoDe(modo).nombre}${quien ? html` · ${quien}` : ''}</span></div></form>`;
+  };
 
-  function pulso(late) {
+  // ---------- 4 KPIs ----------
+  // Cada uno lleva a donde se trabaja. Sin dato: «—» y de dónde va a salir, nunca 0.
+  function kpis() {
     const out = [];
-    if (acc.sales) {
-      const l = dueLeads || [], meta = +(metaDoc?.meses?.[M]) || 0, ganado = llevamos(l, M).ganado, fc = Math.round(pronostico(l));
-      out.push({ k: 'Ventas', href: '#/org/sales/crm', big: dueLeads === null ? '…' : ganado ? Q(ganado * USD_GTQ) : '—', de: meta ? `de ${Q(meta * USD_GTQ)}` : '', bar: meta ? pct(ganado, meta) : null,
-        sub: meta ? html`Pronóstico <em>${Q(fc * USD_GTQ)}</em> · faltan ${habilesQuedan()} días hábiles` : ganado ? html`Sin meta este mes · ponla en Ventas › Meta` : html`Sale de las cotizaciones ganadas en Ventas · sin meta este mes` });
-    }
+    const activos = projects.filter((p) => !p.archived && !p.archivado && projStatus(p, tasks) !== 'Hecho');
+    out.push({ k: 'Active projects', href: '#/org/operations', ic: 'kanban', big: activos.length || null,
+      sub: !projects.length ? 'Sale de los proyectos en Proyectos' : activos.length ? `de ${projects.length} en total` : 'Ninguno en curso: todos terminados' });
+    const abiertas = tasks.filter(open), semana = abiertas.filter((t) => t.due && t.due <= sunday), vencidas = semana.filter((t) => t.due < T);
+    out.push({ k: 'Tasks due', href: '#/org/work', ic: 'list-checks', big: semana.length || null,
+      sub: !tasks.length ? 'Sale de las tareas con fecha en Mis tareas' : semana.length ? html`Hasta el domingo${vencidas.length ? html` · <span class="r">${vencidas.length} vencida${vencidas.length === 1 ? '' : 's'}</span>` : ''}` : 'Nada vence esta semana', red: vencidas.length > 0 });
     if (acc.cobrar) {
-      const t = totales(dueInv || []), tot = t.cobradoMes + t.porCobrar;
-      out.push({ k: 'Ingresos cobrados', href: '#/org/finanzas', big: dueInv === null ? '…' : t.cobradoMes ? Q(t.cobradoMes) : '—', bar: tot ? pct(t.cobradoMes, tot) : null, green: true,
-        sub: t.nPorCobrar ? html`${Q(t.porCobrar)} por cobrar${t.nVencidas ? html` · <span class="r">${t.nVencidas} vencida${t.nVencidas === 1 ? '' : 's'}</span>` : ''}` : 'Sale de las facturas marcadas como pagadas en Finanzas' });
+      const t = totales(dueInv || []);
+      out.push({ k: 'Monthly revenue', href: '#/org/finanzas', ic: 'wallet', big: dueInv === null ? '…' : t.cobradoMes ? Q(t.cobradoMes) : null,
+        sub: dueInv === null ? 'Cargando…' : t.cobradoMes ? (t.nPorCobrar ? `${Q(t.porCobrar)} por cobrar` : 'Cobrado este mes') : 'Sale de las facturas marcadas como pagadas en Finanzas' });
     }
-    const dueM = tasks.filter((t) => t.due && t.due.slice(0, 7) === M && t.due < T && (open(t) || t.done_at));
-    const onTime = dueM.filter((t) => !open(t) && String(t.done_at).slice(0, 10) <= t.due).length, p2 = dueM.length ? Math.round((onTime / dueM.length) * 100) : null;
-    out.push({ k: 'Entregas a tiempo', href: '#/org/operations', big: p2 == null ? '—' : p2, de: p2 == null ? '' : '%', bar: p2,
-      sub: p2 == null ? 'Sale de las tareas de este mes que ya vencieron' : html`${onTime} de ${dueM.length}${late.length ? html` · <span class="r">${late.length} atrasada${late.length === 1 ? '' : 's'}</span>` : ''}` });
     if (seesClients) {
-      const con = accounts.map((a) => ({ a, gs: goalsOf(a).filter((g) => g.status !== 'done') })).filter((x) => x.gs.length);
-      const mal = con.filter((x) => x.gs.some((g) => ['riesgo', 'off'].includes(healthOf(g))));
-      out.push({ k: 'Clientes en su meta', href: '#/org/clients', big: con.length ? con.length - mal.length : '—', de: con.length ? `de ${con.length}` : '', bar: con.length ? pct(con.length - mal.length, con.length) : null,
-        sub: !con.length ? 'Sin metas puestas en los clientes' : mal.length ? `${mal.map((x) => x.a.name).slice(0, 2).join(' y ')} va${mal.length === 1 ? '' : 'n'} por debajo` : 'Todos van en camino' });
+      const set = new Set([...(repoClients || []).filter((c) => c.hasPlan).map((c) => c.slug), ...accounts.filter((a) => a.from_quote).map((a) => a.slug || String(a.id).replace(/^acc-/, ''))]);
+      out.push({ k: 'Active clients', href: '#/org/clients', ic: 'users', big: repoClients === null ? '…' : set.size || null,
+        sub: repoClients === null ? 'Cargando…' : set.size ? 'Con ficha de oferta o cuenta desde una cotización' : 'Sale de los clientes con ficha en Clientes' });
     }
-    return html`<div class="hy-pulso">${out.map((x) => html`<a class="hy-k" href="${x.href}"><span class="hy-go">↗</span><span class="lbl" style="margin:0">${x.k}</span><b>${x.big}${x.de ? html`<small>${x.de}</small>` : ''}</b>
-      <span class="hy-bar">${x.bar != null ? html`<i style="width:${x.bar}%${x.green ? ';background:#3c8a5a' : ''}"></i>` : ''}</span><span class="hy-n">${x.sub}</span></a>`)}</div>`;
+    return html`<section class="home-kpis" aria-label="Indicadores">${out.map((x) => html`<a class="home-kpi ${x.red ? 'warn' : ''}" href="${x.href}"><span class="home-kpi-top"><span class="home-kpi-ic">${ico(x.ic, 16)}</span><span class="lbl">${x.k}</span><span class="home-kpi-go">↗</span></span><b>${x.big == null ? '—' : x.big}</b><span class="home-kpi-sub mut sm">${x.sub}</span></a>`)}</section>`;
   }
 
-  // Lo que necesita atención: pagos, cotizaciones, leads listos para cotizar, seguimientos, facturas, tareas y onboardings.
+  // ---------- Actividad reciente ----------
+  // Con lo que esta pantalla ya carga (tareas, proyectos, leads, cotizaciones y contenido), por _meta.updated_at
+  // (/api/db lo entrega a todos; si no viene, created_at o la fecha del doc). Sin rutas nuevas.
+  const cuando = (d) => d?._meta?.updated_at || d?._meta?.created_at || d?.updated_at || d?.created_at || '';
+  const quien = (d, alt) => d?._meta?.updated_by || d?._meta?.created_by || alt || '';
+  function actividad() {
+    const rows = [];
+    for (const t of tasks) rows.push({ ts: cuando(t), ic: 'list-checks', t: t.title, s: `${clientOf(t)} · ${st(t)}`, who: quien(t, t.assignee), href: t.project_id ? `#/org/operations/p/${t.project_id}/tareas` : '#/org/work' });
+    for (const p of projects) rows.push({ ts: cuando(p), ic: 'kanban', t: p.name, s: p.client || 'Interno', who: quien(p), href: `#/org/operations/p/${p.id}/resumen` });
+    if (acc.sales) for (const l of dueLeads || []) if (!l.archived) rows.push({ ts: cuando(l), ic: 'phone', t: l.name, s: [l.company, l.stage].filter(Boolean).join(' · ') || 'Lead', who: quien(l, l.owner), href: `#/org/sales/crm/${encodeURIComponent(l.id)}` });
+    if (ceoish || acc.sales) for (const q of quotes || []) rows.push({ ts: cuando(q), ic: 'receipt', t: `Cotización ${q.number || ''}`.trim(), s: [q.client, q.status].filter(Boolean).join(' · '), who: quien(q), href: `#/org/sales/quotes/${q.id}` });
+    if (ceoish) for (const c of content.posts) rows.push({ ts: cuando(c), ic: 'image', t: c.title || 'Pieza', s: [content.accounts?.find((a) => a.slug === c.profile)?.name || c.profile, estadoDe(c)].filter(Boolean).join(' · '), who: quien(c), href: `#/ws/marketing/${c.profile}/content/content-calendar` });
+    const lista = rows.filter((r) => r.ts).sort((a, z) => String(z.ts).localeCompare(String(a.ts))).slice(0, 8);
+    return html`<section class="home-act"><div class="hy-bh"><h2>Recent Activity</h2><span>Lo último que se movió</span></div>
+      ${lista.length ? lista.map((r) => html`<a class="home-act-row" href="${r.href}"><span class="home-act-ic">${ico(r.ic, 15)}</span><span class="home-act-t">${r.t}<small>${r.s}</small></span><span class="home-act-who mut sm">${r.who ? corto(r.who) : ''}</span><span class="home-act-when mut sm">${relativo(r.ts)}</span></a>`)
+      : html`<div class="mut sm" style="padding:8px 0">Nada todavía: sale de las tareas, proyectos${acc.sales ? ', leads, cotizaciones' : ''}${ceoish ? ' y contenido' : ''} que se muevan.</div>`}</section>`;
+  }
+
+  // ---------- Quick Access: los 5 workspaces ----------
+  function accesos() {
+    const ws = WORKSPACES.filter((w) => puedeWs(me, w.id));
+    if (!ws.length) return '';
+    return html`<section class="home-quick" aria-label="Workspaces">${ws.map((w) => { const n = nombreDe(ultimoSlug(w.id)); return html`<a class="home-ws" href="#/ws/${w.id}" style="--ac:var(${w.color})"><span class="home-ws-ic">${ico(w.icono, 18)}</span><b>${w.nombre}</b><span class="home-ws-sub mut sm">${w.sub}</span><span class="home-ws-last sm">${n ? html`Último cliente: <em>${n}</em>` : 'Sin cliente todavía'}</span></a>`; })}</section>`;
+  }
+  const comun = () => html`${ask()}${kpis()}<div class="home-two">${actividad()}${accesos()}</div>`;
+
+  // ---------- CEO · COO ----------
+  // Lo que se traba si nadie lo mueve, con su botón; a la derecha, la agenda y el contenido del mes. Lo de cobrar y
+  // arrancar (lo que era Control del flujo) vive aquí.
   function atencion(late, review) {
     const out = [], qs = quotes || [];
     const conQuote = new Set(qs.filter((q) => q.status !== 'Rechazada').map((q) => q.lead_id).filter(Boolean));
@@ -140,11 +199,9 @@ export async function render(el, { me, alive }) {
     const meets = [...evs.filter((e) => e.date >= T), ...pm].sort((a, z) => (a.date + (a.time || '99')).localeCompare(z.date + (z.time || '99')));
     const att = atencion(late, review), decide = att.filter((x) => x.btn || x.w <= 2).length;
     const n = decide || att.length;
-    const fecha = new Date(T + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase());
-    mount(el, html`${head(html`${fecha}${n ? html` · <em>${n} cosa${n === 1 ? '' : 's'}</em> necesita${n === 1 ? '' : 'n'} tu decisión hoy.` : ' · Todo en orden.'}`)}
+    mount(el, html`${hero(n ? html` · <em>${n} cosa${n === 1 ? '' : 's'}</em> necesita${n === 1 ? '' : 'n'} tu decisión hoy.` : ' · Todo en orden.')}
       ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/org/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
-      <span class="lbl hy-lbl">El pulso del mes · ${new Date(T + 'T12:00').toLocaleDateString('es', { month: 'long' })}</span>
-      ${pulso(late)}
+      ${comun()}
       <div class="hy-two">
         <section class="hy-box" id="hoy-att"><div class="hy-bh"><h2>Necesita atención</h2><span>Lo que se traba si nadie lo mueve, con su siguiente paso</span>${att.length ? html`<span class="hy-c">${att.length}</span>` : ''}</div>
           ${att.length ? att.slice(0, 12).map(itemHtml) : html`<div class="mut sm" style="padding:10px 0">Nada trabado ${ico('check', 14)}</div>`}
@@ -165,7 +222,7 @@ export async function render(el, { me, alive }) {
     if (!content.accounts.length) return html`<div class="mut sm" style="padding:6px 0">Sin cuentas activas con contenido.</div>`;
     return content.accounts.map((a) => {
       const ps = content.posts.filter((x) => x.profile === a.slug && String(x.date || '').slice(0, 7) === M), pub = ps.filter((x) => estadoDe(x) === 'Publicado').length, listo = ps.filter((x) => ['Listo', 'Publicado'].includes(estadoDe(x))).length;
-      return html`<a class="hy-ct" href="#/marcas/${a.slug}/calendario"><span class="hy-m"><i>${initials(a.name)}</i>${a.name}</span><span class="hy-cb">${ps.length ? html`<i style="width:${pct(listo, ps.length)}%"></i><i style="width:${pct(pub, ps.length)}%"></i>` : ''}</span><span class="hy-cn">${ps.length ? html`<b>${pub}</b> de ${ps.length}` : 'Sin piezas'}</span></a>`;
+      return html`<a class="hy-ct" href="#/ws/marketing/${a.slug}/content/content-calendar"><span class="hy-m"><i>${initials(a.name)}</i>${a.name}</span><span class="hy-cb">${ps.length ? html`<i style="width:${pct(listo, ps.length)}%"></i><i style="width:${pct(pub, ps.length)}%"></i>` : ''}</span><span class="hy-cn">${ps.length ? html`<b>${pub}</b> de ${ps.length}` : 'Sin piezas'}</span></a>`;
     });
   }
   // Las cuentas: los perfiles de contenido del repo que son clientes activos (más Inherent).
@@ -181,13 +238,12 @@ export async function render(el, { me, alive }) {
   // ---------- Equipo: mis responsabilidades ----------
   function team() {
     const mine = tasks.filter((t) => t.assignee === me.email && open(t)).sort((a, z) => String(a.due || '9').localeCompare(String(z.due || '9')));
-    const late = mine.filter((t) => t.due && t.due < T).length, week = mine.filter((t) => t.due && t.due >= monday && t.due <= sunday).length, review = mine.filter((t) => st(t) === 'En revisión').length;
     const groups = new Map(); for (const t of mine) { const k = t.project_id || ''; (groups.get(k) || groups.set(k, []).get(k)).push(t); }
     const title = (k) => { const p = proj(k); return p ? `${p.client ? p.client + ' · ' : ''}${p.name}` : 'Interno'; };
     const meets = upcoming(projects).filter((x) => x.date === T);
-    mount(el, html`${head()}
+    mount(el, html`${hero()}
+      ${comun()}
       ${purposeCard(me, { area: 'home' })}
-      ${kpis([['Esta semana', week], ['Atrasadas', late, late ? PAL.red : ''], ['En revisión', review]])}
       <div class="grid g2" style="margin-top:14px;align-items:start">
         <div><div class="sec-title" style="margin-top:0"><h2>Mis responsabilidades</h2><span class="mut sm">Qué, para cuándo y dónde se entrega</span><div class="sp"></div><button class="btn ghost xs" data-act="addTask">+ Tarea</button></div>
           ${mine.length ? [...groups.entries()].map(([k, l]) => html`<div class="card wkbox" style="margin-bottom:12px"><div class="wkhead"><h3>${title(k)}</h3><div class="sp"></div><span class="mut sm">${l.length}</span></div>
@@ -196,13 +252,32 @@ export async function render(el, { me, alive }) {
         <div class="hoy-side"><div class="card wkbox"><div class="wkhead"><div><h3>Hoy</h3><span class="mut sm">Tu agenda y las reuniones de tus proyectos</span></div><span class="gbadge" style="margin-left:auto">${IC.cal}</span></div>
           ${agendaRows()}${meets.map((x) => html`<div class="wkrow"><span class="wkt">${ico('users', 14)}</span><span class="grow">${x.name}<span class="mut sm"> · ${x.p.client || x.p.name}</span></span></div>`)}
           ${agenda && !agenda.length && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones hoy.</div>` : ''}
-          <div class="mut sm" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">Tus SOPs y plantillas están en la <a href="#/library" style="color:inherit">Library</a>.</div></div>
+          <div class="mut sm" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">Tus SOPs y plantillas están en la <a href="#/org/library" style="color:inherit">Library</a>.</div></div>
           ${dueCard()}</div>
       </div>`);
   }
 
-  const paint = () => { if (!alive()) return; (ceoish ? ceo : team)(); };
+  // La caja de «Ask» crece con el texto (hasta ~6 líneas).
+  const auto = (ta) => { if (!ta) return; ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 180) + 'px'; };
+  // Al repintar (llegan datos) se conserva lo que la persona ya escribió en la caja, y el foco si lo tenía.
+  const paint = () => {
+    if (!alive()) return;
+    const ta0 = $('#home-q', el), txt = ta0?.value || '', foco = ta0 && document.activeElement === ta0, pos = foco ? ta0.selectionStart : 0;
+    (ceoish ? ceo : team)();
+    const ta = $('#home-q', el); if (!ta) return;
+    if (txt) { ta.value = txt; auto(ta); }
+    if (foco) { ta.focus({ preventScroll: true }); try { ta.setSelectionRange(pos, pos); } catch {} }
+  };
+  const enviar = () => {
+    const ta = $('#home-q', el), texto = (ta?.value || '').trim();
+    if (!texto) return ta?.focus();
+    abrirEnChat(me.email, { modo: modoAsk(), slug: ctxSlug(), borrador: texto });
+  };
+  acts(el, { ask: (f, e) => { e.preventDefault(); enviar(); } }, 'submit');
+  acts(el, { askTa: (t, e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); enviar(); } } }, 'keydown');
+  acts(el, { askTa: (t) => auto(t) }, 'input');
   acts(el, {
+    chip: (b) => { const ta = $('#home-q', el); if (!ta) return; ta.value = b.dataset.q || ''; auto(ta); ta.focus(); },
     open: (b) => { const t = tasks.find((x) => x.id === b.dataset.id); if (t) openDelivery(t, ctx(), (r) => onTask(r, t)); },
     confirm: async (b) => { const q = (quotes || []).find((x) => x.id === b.dataset.id); if (!q) return; const r = await confirmarYArrancar(q, { leads: dueLeads || [] }); if (r?.project_id) { [quotes, tasks, projects] = await Promise.all([col('quotes').list(), col('tasks').list(), col('projects').list()]); paint(); } },
     pay: async (b) => { const q = (quotes || []).find((x) => x.id === b.dataset.id); if (!q) return; if (await payDialog({ quote_id: q.id, client: q.client, currency: q.currency || 'GTQ', amount: Math.round(qSub(q) * (q.currency && q.currency !== 'GTQ' ? +q.rate || 1 : 1) * 100) / 100 })) { quotes = await col('quotes').list(); paint(); } },

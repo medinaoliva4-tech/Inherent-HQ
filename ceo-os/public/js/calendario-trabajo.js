@@ -5,6 +5,7 @@
 // Cada quien ve lo que su perfil permite: Ventas pide el área de Ventas; Facturas, la de Finanzas (y las por pagar, solo el CEO,
 // igual que el servidor: api/_lib/access.js → stripInvoice). El servidor además filtra cada colección por alcance.
 // Arriba: funciones puras (las usan la pantalla y las pruebas). Abajo: cómo se pinta (solo en el navegador).
+import { rutaModulo } from './herramientas.js';
 const core = typeof document === 'undefined' ? null : await import('./core.js');
 
 export const TIPOS = [['reuniones', 'Reuniones'], ['produccion', 'Producción'], ['entregas', 'Entregas'], ['ventas', 'Ventas'], ['facturas', 'Facturas'], ['ciclo', 'Ciclo']];
@@ -81,7 +82,7 @@ export function juntarEventos({ google = [], tasks = [], projects = [], shoots =
   }
   for (const x of shoots) {
     if (!x || (x.kind && x.kind !== 'shoot') || x.status === 'Cancelado' || !inR(x.date)) continue;
-    out.push({ k: `s-${x.id}`, tipo: 'produccion', date: x.date, time: x.time || '', title: `Grabación · ${x.title || ''}`.trim(), sub: x.place || '', go: { href: `#/marcas/${encodeURIComponent(x.profile || '')}/calendario/grabacion` } });
+    out.push({ k: `s-${x.id}`, tipo: 'produccion', date: x.date, time: x.time || '', title: `Grabación · ${x.title || ''}`.trim(), sub: x.place || '', go: { href: rutaModulo(encodeURIComponent(x.profile || ''), 'calendario', ['grabacion']) } });
   }
   for (const l of leads) {
     if (!l || l.archived || !OPEN.includes(l.stage || 'Nuevo') || !inR(l.next_date)) continue;

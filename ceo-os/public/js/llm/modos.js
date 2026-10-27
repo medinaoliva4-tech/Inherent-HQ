@@ -1,15 +1,17 @@
-// El Inherent LLM: los cuatro modos, uno por área (el harness de cada uno), los criterios de aceptación y los comandos «/».
-// Puro: sin DOM ni red (lo prueba scripts/test-llm.mjs). El harness viaja en cada turno a Hermes como system_message,
-// encima de su SOUL.md (la identidad de Inherent) y del CLAUDE.md del repo, que Hermes ya lee solo.
+// El Inherent LLM: los seis modos, uno por workspace más Organización (el harness de cada uno), los criterios de aceptación
+// y los comandos «/». Puro: sin DOM ni red (lo prueba scripts/test-llm.mjs). El harness viaja en cada turno a Hermes como
+// system_message, encima de su SOUL.md (la identidad de Inherent) y del CLAUDE.md del repo, que Hermes ya lee solo.
 
-// pide: lo que el modo necesita para trabajar (un cliente de Estrategia o de Consulting, una marca de Marcas o nada).
-// Los modos son las áreas de areas.js: el switch de áreas del Chat elige el modo.
+// pide: lo que el modo necesita para trabajar (un cliente de Strategy o de Consulting, una marca, o nada).
+// Los ids NO cambian (las sesiones de Hermes se llaman inh-<modo>-…); los nombres son los del CEO, en inglés (areas.js
+// los comparte con los workspaces de herramientas.js). El modo se elige con los comandos «/» o llega por abrirEnChat.
 export const MODOS = [
-  { id: 'estrategia', nombre: 'Estrategia', letra: 'S', icono: 'target', sub: 'La estrategia de cada cliente', pide: 'cliente', depto: '① Strategy' },
-  { id: 'organizacion', nombre: 'Organización', letra: 'O', icono: 'clipboard', sub: 'Tareas, proyectos, leads y tu día', pide: '', depto: 'Organización' },
+  { id: 'estrategia', nombre: 'Strategy', letra: 'S', icono: 'target', sub: 'La estrategia de cada cliente', pide: 'cliente', depto: '① Strategy' },
+  { id: 'organizacion', nombre: 'Organization', letra: 'O', icono: 'clipboard', sub: 'Tareas, proyectos, leads y tu día', pide: '', depto: 'Organización' },
   { id: 'marketing', nombre: 'Marketing', letra: 'M', icono: 'megaphone', sub: 'Plan del mes, campañas y eventos', pide: 'marca', depto: '③ Marketing' },
-  { id: 'diseno', nombre: 'Diseño', letra: 'D', icono: 'edit', sub: 'Las piezas: ideas, guiones e identidad', pide: 'marca', depto: '⑥A Diseño gráfico' },
+  { id: 'diseno', nombre: 'Creative', letra: 'D', icono: 'edit', sub: 'Las piezas: ideas, guiones e identidad', pide: 'marca', depto: '⑥A Diseño gráfico' },
   { id: 'consulting', nombre: 'Consulting', letra: 'C', icono: 'chart-pie', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', pide: 'cliente', depto: 'Consulting · Operations OS y Money OS' },
+  { id: 'produccion', nombre: 'Production', letra: 'P', icono: 'video', sub: 'Brief, guiones, shot list, grabación y edición de cada marca', pide: 'marca', depto: '⑤ Producción · ⑦ Video Editing' },
 ];
 export const modoDe = (id) => MODOS.find((m) => m.id === id) || MODOS[0];
 
@@ -118,6 +120,19 @@ export const HARNESS = {
     herramientas: 'Leer y buscar en el repo (inherent/ y la carpeta del cliente). El conector «inherent» solo para leer (el cliente y su proyecto de Business Growth); no crees ni cambies nada salvo que la persona lo pida.',
     criterios: ['Parte de dónde está trabado el negocio, con evidencia o etiqueta', 'Cada número viene del cliente o va como ⚠️ SIN DATOS; nada de otro cliente', 'Respeta el nivel contratado: fuera de Growth Partnership, Operations OS y Money OS van FUERA DEL ALCANCE', 'Cada propuesta lleva dueño (rol), primer paso y cómo se mide', 'Termina con un primer paso concreto'],
   },
+  produccion: {
+    rol: 'Eres ⑤ Producción y ⑦ Video Editing de Inherent: planeas, coordinas y entregas la producción audiovisual del ciclo de la marca: el brief, el guion con su storyboard, el shot list, las jornadas de grabación y la edición. Trabajas en SOLO LECTURA: lo que escribes es un borrador que el COO revisa.',
+    como: [
+      'Lee agents/05-production/brain/WORKFLOW.md, agents/07-video-editing/brain/WORKFLOW.md y la ficha de oferta de la marca antes de proponer. Sin ficha, no planees: dilo.',
+      'El ciclo va del día 1 al 20: el día 11 es el último día de grabación y el 20 se presenta. Todo cabe en ese calendario; nada se graba después del día 11 sin el OK del CEO.',
+      'La capacidad de la ficha (horas o sesiones de grabación, piezas de video) es el techo. Lo que se pasa va marcado FUERA DEL ALCANCE y se devuelve a ④ Creatividad con el motivo y 2 alternativas que sí caben.',
+      'Un guion lleva tramos con segundos, plano, texto en pantalla y VO (voz en off); cada escena lleva su id_creativo (el de la idea de ④). El shot list sale del guion: escena, plano, locación, qué hace falta y cuánto dura.',
+      'Una jornada de grabación lleva fecha (antes del día 11), locación, lista de tomas, quién va (roles) y qué se necesita del cliente. Antes de proponerla, revisa el calendario de la marca por el conector.',
+      'Nunca tarifas ni costos (ni de Inherent ni de proveedores): si hace falta un proveedor, una locación o un gasto, déjalo como pendiente y escálalo al CEO.',
+    ],
+    herramientas: 'Leer y buscar en el repo (los WORKFLOW de ⑤ y ⑦ y la carpeta de la marca). El conector «inherent» solo para ver las piezas, los guiones y el calendario de la marca (planner, contenido_semana, calendario); no crees ni cambies nada salvo que la persona lo pida.',
+    criterios: ['Hook en los primeros 3 segundos', 'Duración y formato del canal donde se publica', 'Texto y subtítulos dentro de las safe zones, legibles en celular', 'Audio limpio: sin ruido, sin saltos', 'Sin marca de agua ni material de otra marca', 'Cada escena lleva su id_creativo', 'Nada se graba después del día 11 sin el OK del CEO', 'Respeta la capacidad de la ficha: lo demás va FUERA DEL ALCANCE'],
+  },
 };
 
 // El mensaje de sistema de un turno: el harness del modo + el contexto que arma el OS (datos, no instrucciones).
@@ -160,6 +175,7 @@ export const SUGERENCIAS = {
   marketing: [['Armemos el plan del mes', 'Plan del mes'], ['¿Este mes es campaña o pilar?', 'Campaña'], ['Organiza el evento de lanzamiento con su anticipación', 'Evento'], ['¿Qué funcionó el mes pasado y qué cambiamos?', 'Resultados']],
   diseno: [['¿Qué piezas del plan del mes faltan por diseñar?', 'Plan del mes'], ['Especifica un carrusel lámina por lámina', 'Carrusel'], ['Revisa esta pieza contra la guía de la marca', 'Revisión'], ['Propón 3 portadas para el reel de la semana', 'Ideas']],
   consulting: [['¿Dónde se traba la operación hoy?', 'Operaciones'], ['¿Qué decisiones solo debería tomar el fundador?', 'Estructura'], ['¿Qué línea deja margen y cuál lo desangra?', 'Márgenes'], ['¿Cuánto puede pagar por un cliente sin perder?', 'Finanzas']],
+  produccion: [['¿Qué videos del plan del mes faltan por producir?', 'Plan del mes'], ['Escribe el guion con storyboard del reel de la semana', 'Guion'], ['Arma el shot list y la jornada de grabación', 'Grabación'], ['Revisa este corte contra los criterios de video', 'Edición']],
 };
 
 // Los temas de Consulting: lo útil para organizar las operaciones, las finanzas y el equipo de un cliente (inherent/02-METODO.md:
@@ -203,11 +219,12 @@ export function textoAlcanceConsulting(nivel, ficha) {
 
 // Los comandos «/» de la caja: atajos del OS y las capacidades de Hermes (skills y la Terminal).
 export const COMANDOS = [
-  ['/estrategia', 'Cambiar al modo Estrategia'],
-  ['/organizacion', 'Cambiar al modo Organización'],
+  ['/estrategia', 'Cambiar al modo Strategy'],
+  ['/organizacion', 'Cambiar al modo Organization'],
   ['/marketing', 'Cambiar al modo Marketing'],
-  ['/diseno', 'Cambiar al modo Diseño'],
+  ['/diseno', 'Cambiar al modo Creative'],
   ['/consulting', 'Cambiar al modo Consulting'],
+  ['/produccion', 'Cambiar al modo Production'],
   ['/nuevo', 'Empezar una conversación nueva'],
   ['/modelo', 'Elegir el modelo que responde'],
   ['/privado', 'Prender o apagar el modo privado (un modelo en tu compu)'],

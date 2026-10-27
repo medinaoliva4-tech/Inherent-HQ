@@ -43,8 +43,8 @@ function cliente(slug) {
   const h = `#/clients/${slug}`;
   return [
     { l: 'Abrir perfil', run: () => { location.hash = h; } },
-    { l: 'Abrir su Estrategia', run: () => { location.hash = `#/estrategia/${slug}`; } },
-    { l: 'Abrir su Marca', run: () => { location.hash = `#/marcas/${slug}`; } },
+    { l: 'Abrir su Estrategia', run: () => { location.hash = `#/ws/strategy/${slug}/overview`; } },
+    { l: 'Abrir su Marca', run: () => { location.hash = `#/ws/marketing/${slug}/overview`; } },
     '-', { l: 'Copiar link', run: () => copiar(link(h), 'Link copiado') },
   ];
 }

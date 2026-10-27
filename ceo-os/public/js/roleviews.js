@@ -8,24 +8,23 @@
 // Un perfil que no está en la lista no opina; si una persona tiene varios perfiles, gana el más amplio.
 // «sales» abre Ventas (CRM, cotizaciones, fuentes) y Servicios (paquetes, catálogo, especialistas, responsabilidades).
 export const SECTIONS = [['home', 'Hoy'], ['control', 'Control del flujo'], ['clients', 'Clientes'], ['sales', 'Ventas y Servicios'],['operations', 'Proyectos'], ['work', 'Mis tareas'], ['content', 'Marcas · contenido'], ['estrategia', 'Estrategia'], ['resultados', 'Indicadores'], ['roadmap', 'Roadmap'], ['finanzas', 'Finanzas'], ['library', 'Library'], ['team', 'Equipo']];
-// Los dos espacios del OS y sus secciones. El interruptor de arriba cambia de espacio; cada uno tiene su propia barra.
-//   Organization (cómo se maneja la empresa): Hoy · Proyectos · Ventas · Servicios · Finanzas · Inherent.
-//   Marcas (cómo se crean marcas): una marca por cliente, Inherent y la marca personal del CEO (privada).
-// [clave, nombre, áreas de la matriz que agrupa, espacio]. Una sección aparece si su perfil ve al menos una de sus áreas
-// (Servicios pide ver Comercial completo; Inherent también tiene Visión y misión, que ve todo el equipo).
-// El Centro de control ya no es una sección: sus herramientas viven en Hoy, Ventas, Servicios, Finanzas e Inherent.
+// Los grupos de Vistas por rol: cómo se agrupan las secciones de la matriz en la pantalla del CEO (Equipo → Vistas por rol),
+// con los nombres de la barra lateral de hoy (en inglés, como el menú: decisión 7.2-e del plan). Ya no hay espacios ni
+// interruptor: una sola barra (app.js → NAV) y los workspaces (herramientas.js); esta lista no arma ninguna navegación.
+// [clave, nombre, áreas de la matriz que agrupa, dónde vive: 'org' (Organization) · 'ws' (un workspace)].
+// Una sección aparece si su perfil ve al menos una de sus áreas (Services pide ver Comercial completo; Company también
+// tiene Visión y misión, que ve todo el equipo). El Centro de control ya no es una sección: sus herramientas viven en
+// Home, CRM, Services, Finances y Company.
 export const GROUPS = [
-  ['hoy', 'Hoy', ['home', 'work', 'control', 'resultados'], 'org'],
-  ['inherent', 'Inherent', ['team', 'roadmap', 'library'], 'org'],
-  ['proyectos', 'Proyectos', ['clients', 'operations'], 'org'],
-  ['ventas', 'Ventas', ['sales'], 'org'],
-  ['servicios', 'Servicios', [], 'org'],
-  ['finanzas', 'Finanzas', ['finanzas'], 'org'],
-  ['estrategia', 'Estrategia', ['estrategia'], 'estrategia'],
-  ['marcas', 'Marcas', ['content'], 'marcas'],
+  ['hoy', 'Home', ['home', 'work', 'control', 'resultados'], 'org'],
+  ['inherent', 'Company', ['team', 'roadmap', 'library'], 'org'],
+  ['proyectos', 'Projects', ['clients', 'operations'], 'org'],
+  ['ventas', 'CRM', ['sales'], 'org'],
+  ['servicios', 'Services', [], 'org'],
+  ['finanzas', 'Finances', ['finanzas'], 'org'],
+  ['estrategia', 'Strategy', ['estrategia'], 'ws'],
+  ['marcas', 'Workspaces', ['content'], 'ws'],
 ];
-// Tres espacios: Organization · Estrategia (App 02: lo ve el CEO y quien él habilite aquí) · Marcas.
-export const SPACES = [['org', 'Organization'], ['estrategia', 'Estrategia'], ['marcas', 'Marcas']];
 // Cada cosa vive en un solo lugar: Ventas = conseguir y cerrar (CRM · Cotizaciones · Fuentes); Servicios = lo que vendemos
 // y cómo se entrega (Paquetes · Servicios · Especialistas · Responsabilidades); Proyectos = ejecutar (Tareas · Calendario · Timeline).
 // Las rutas viejas de lo que se mudó redirigen a su lugar nuevo (las usa el router de app.js). Lo que sigue a la ruta se conserva.

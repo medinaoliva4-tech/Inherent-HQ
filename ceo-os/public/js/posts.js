@@ -7,6 +7,7 @@ import { layaBox } from './laya-ui.js';
 import { verImagen, ojoChip } from './ojo.js';
 import { CONSCIENCIA, consciencia, replicasDe, replicaNombre, conReplica } from './calendario-contenido.js';
 import { ANGULOS, ANGULO_AYUDA } from './avatares.js';
+import { rutaModulo } from './herramientas.js';
 
 // Los estados son los del modelo de elemento (Idea · En proceso · Listo · Publicado, más Archivado).
 // Los viejos (Grabado, Editado, Programado) se leen como los nuevos: nada se reescribe en la base.
@@ -140,7 +141,7 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
       ${e === 'En proceso' ? html`<div class="row" style="margin-top:18px;gap:8px"><button class="btn ${p.por_aprobar ? 'ghost' : ''}" data-act="aprob">${p.por_aprobar ? 'Quitar de aprobación' : 'Enviar a aprobación'}</button><span class="mut sm">${p.por_aprobar ? 'El cliente la ve en «Por aprobar»' : 'El cliente solo aprueba lo que envías aquí'}</span></div>` : ''}
       <b class="sm" style="display:block;margin-top:18px">Mover a</b>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">${ESTADOS_TODOS.map((s) => html`<button class="chip ${s === e ? 'dark' : ''}" data-act="st" data-s="${s}" style="padding:8px 12px" title="${ESTADO_AYUDA[s]}">${s}</button>`)}</div>
-      <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button>${profile ? html`<a class="btn ghost" href="#/marcas/${profile}/creacion/${p.guion || `nuevo/post:${p.id}`}" data-act="aguion">${ico('edit', 14)} ${p.guion ? 'Ver el guion' : 'Convertir en guion'}</a>` : ''}<div class="sp"></div><button class="btn ghost" data-act="del">${ico('trash')}</button></div>`, {
+      <div class="row" style="margin-top:22px"><button class="btn" data-act="edit">Editar</button>${profile ? html`<a class="btn ghost" href="${rutaModulo(profile, 'creacion', p.guion ? [p.guion] : ['nuevo', `post:${p.id}`])}" data-act="aguion">${ico('edit', 14)} ${p.guion ? 'Ver el guion' : 'Convertir en guion'}</a>` : ''}<div class="sp"></div><button class="btn ghost" data-act="del">${ico('trash')}</button></div>`, {
       st: async (t) => { try { const r = await C.save(conEstado(p, t.dataset.s)); save(r); openPost(r); } catch (err) { toast(err.message, true); } },
       aprob: async () => { try { const { aprobacion, ...rest } = p; const r = await C.save(p.por_aprobar ? { ...p, por_aprobar: false } : { ...rest, por_aprobar: true }); save(r); openPost(r); toast(r.por_aprobar ? 'Enviada: el cliente ya la ve en «Por aprobar»' : 'Quitada de aprobación'); } catch (err) { toast(err.message, true); } },
       aguion: () => closeDrawer(),

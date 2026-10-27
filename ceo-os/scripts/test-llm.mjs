@@ -1,16 +1,17 @@
 // Pruebas del Inherent LLM: el harness de cada modo, los comandos «/», las tarjetas (criterios, pregunta y encargos), las sesiones,
-// las áreas (las mismas del Tablero) y el switch de IA.
+// las áreas (los workspaces de herramientas.js más Organización) y el switch de IA.
 // npm run test:llm
 import assert from 'node:assert/strict';
 import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
 import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
-import { AREAS, areasDe, areaDe, areaDeModo, areaDeEspacio, switchHtml, areaConFlecha } from '../public/js/areas.js';
+import { AREAS, areaDe, areaDeModo } from '../public/js/areas.js';
 import { IAS, iaDe, iasListas, modelosDeIa, fuertesDe, esLocal } from '../public/js/llm/ias.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
-t('cinco modos, cada uno con su harness y sus sugerencias', () => {
-  assert.deepEqual(MODOS.map((m) => m.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting']);
+t('seis modos, cada uno con su harness y sus sugerencias', () => {
+  assert.deepEqual(MODOS.map((m) => m.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting', 'produccion']);
+  assert.deepEqual(MODOS.map((m) => m.nombre), ['Strategy', 'Organization', 'Marketing', 'Creative', 'Consulting', 'Production'], 'los nombres del CEO; los ids no cambian');
   for (const m of MODOS) {
     const h = HARNESS[m.id];
     assert.ok(h.rol && h.como.length && h.herramientas && h.criterios.length >= 3, m.id);
@@ -21,7 +22,7 @@ t('cinco modos, cada uno con su harness y sus sugerencias', () => {
 
 t('el system prompt lleva reglas, harness, criterios, protocolo y el contexto como datos', () => {
   const s = sistemaDe('estrategia', { persona: 'Ana', puesto: 'CEO', fecha: '2026-10-26', cliente: 'Akai', carpeta: 'clients/akai', nivel: 'Brand Growth', extra: ['Paso: 2'], instrucciones: 'BLOQUE ESTRATEGIA' });
-  assert.match(s, /^INHERENT LLM · MODO ESTRATEGIA \(① Strategy\)/);
+  assert.match(s, /^INHERENT LLM · MODO STRATEGY \(① Strategy\)/);
   for (const r of REGLAS_COMUNES) assert.ok(s.includes(r));
   assert.ok(s.includes('hormozi-brain'));
   assert.ok(s.includes('CRITERIOS DE ACEPTACIÓN DE ESTE MODO'));
@@ -47,7 +48,8 @@ t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () =>
   assert.deepEqual(leerComando('/skill hormozi'), { cmd: '/skill', arg: 'hormozi' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 12);
+  assert.equal(COMANDOS.length, 13);
+  assert.deepEqual(leerComando('/producción'), { cmd: '/produccion', arg: '' });
   assert.deepEqual(leerComando('/marketing'), { cmd: '/marketing', arg: '' });
   assert.deepEqual(leerComando('/consulting nao'), { cmd: '/consulting', arg: 'nao' });
   assert.deepEqual(leerComando('/brújula'), { cmd: '/brujula', arg: '' });
@@ -200,20 +202,28 @@ t('Marketing: el plan del mes y las campañas salen del Chat como bloques', () =
   assert.equal(tareaDeEncargo({ area: 'marketing', titulo: 'Campaña de apertura' }, { cliente: 'nao', email: 'a' }).dept, '③ Marketing');
 });
 
-t('las áreas: las mismas del Tablero y del Chat, con su switch', () => {
-  assert.deepEqual(AREAS.map((a) => a.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting']);
+t('las áreas: los workspaces por su modo, más Organización', () => {
+  assert.deepEqual(AREAS.map((a) => a.id), ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting', 'produccion']);
   for (const a of AREAS) assert.ok(MODOS.some((m) => m.id === a.modo), `${a.id} tiene modo en el Chat`);
-  assert.equal(areaDeEspacio('marcas').id, 'marketing', 'Marketing y Diseño comparten las marcas: el área la decide el módulo (app.js)'); assert.equal(areaDeEspacio('org').id, 'organizacion'); assert.equal(areaDeModo('consulting').espacio, 'consulting');
-  const xs = areasDe({ organizacion: true, diseno: true });
-  assert.deepEqual(xs.map((a) => a.id), ['organizacion', 'diseno']);
-  assert.equal(areaConFlecha(xs, 'diseno', 'ArrowRight'), 'organizacion', 'da la vuelta');
-  assert.equal(areaConFlecha(xs, 'organizacion', 'ArrowLeft'), 'diseno');
-  assert.equal(areaConFlecha(xs, 'organizacion', 'Enter'), null);
-  const h = switchHtml(xs, 'diseno', (n) => `<svg data-i="${n}"></svg>`);
-  assert.match(h, /role="radiogroup"/); assert.match(h, /--n:2;--i:1/);
-  assert.equal((h.match(/aria-checked="true"/g) || []).length, 1);
-  assert.match(h, /data-area="diseno" aria-checked="true" tabindex="0"/);
+  for (const a of AREAS) assert.ok(a.nombre && a.sub && a.icono && typeof a.ws === 'string', `${a.id} completa`);
+  assert.equal(areaDeModo('consulting').ws, 'consulting');
+  assert.equal(areaDeModo('produccion').ws, 'production');
+  assert.equal(areaDeModo('organizacion').ws, '', 'Organización no es un workspace, pero sí un modo del Chat');
   assert.equal(areaDe('nada'), null);
+  assert.equal(areaDeModo('nada'), null);
+});
+
+t('Production: brief, guion, shot list, grabación y edición, con el ciclo y la ficha como techo', () => {
+  const s = sistemaDe('produccion', { cliente: 'Akai', carpeta: 'clients/akai' });
+  assert.match(s, /^INHERENT LLM · MODO PRODUCTION \(⑤ Producción · ⑦ Video Editing\)/);
+  assert.match(s, /día 11/); assert.match(s, /FUERA DEL ALCANCE/); assert.match(s, /id_creativo/);
+  assert.match(s, /- Marca: Akai \(clients\/akai\)/);
+  assert.match(s, /Hook en los primeros 3 segundos/); assert.match(s, /safe zones/); assert.match(s, /marca de agua/);
+  assert.match(s, /Nunca tarifas ni costos/);
+  assert.equal(SUGERENCIAS.produccion.length, 4);
+  assert.deepEqual(leerIdSesion(idSesion('produccion', 'akai', 1767225600000, 0.5)), { modo: 'produccion', slug: 'akai' }, 'las de Production se reabren');
+  assert.deepEqual(leerComando('/produccion'), { cmd: '/produccion', arg: '' });
+  assert.deepEqual(leerComando('/produccion guion del reel'), { cmd: '/produccion', arg: 'guion del reel' });
 });
 
 t('el switch de IA: qué empresa responde, aparte del modelo', () => {

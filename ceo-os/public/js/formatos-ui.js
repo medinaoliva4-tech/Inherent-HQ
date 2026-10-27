@@ -4,6 +4,7 @@
 //   Cada tarjeta lleva a «Escribir guion» con ese formato (Crear › Creación).
 import { html, raw, mount, api, toast, ico, $, $$, confirmAsk, drawer, closeDrawer, col } from './core.js';
 import { TIPOS, BASE, DURACION } from './formatos.js';
+import { rutaModulo } from './herramientas.js';
 
 export async function formatosUI(el, { me, b, alive }) {
   const S = { base: BASE, marca: [], puede: {}, tipo: '', refs: [] };
@@ -14,7 +15,7 @@ export async function formatosUI(el, { me, b, alive }) {
   } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir los formatos</b>${e.message}</div>`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), tipoNombre = (k) => TIPOS.find(([x]) => x === k)?.[1] || k;
-  const nuevoGuion = (id) => `#/marcas/${b.slug}/creacion/nuevo/f:${id}`;
+  const nuevoGuion = (id) => rutaModulo(b.slug, 'creacion', ['nuevo', `f:${id}`]);
 
   function card(f) {
     return html`<article class="fm-card"><header><span class="chip sm2">${tipoNombre(f.tipo)}</span>${f.base ? html`<span class="mut sm">Del método</span>` : f.ref ? html`<span class="mut sm">${ico('repeat', 11)} De un referente</span>` : ''}</header>

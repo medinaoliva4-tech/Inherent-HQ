@@ -205,6 +205,10 @@ export const ALIAS = {
   'nav-diseno': 'pen-tool',
   'nav-consulting': 'chart-pie',
   'nav-portal': 'door-open',
+  // La barra lateral de los workspaces (PLAN-WORKSPACES §3.2) y las páginas del AI Harness: alias a trazos que ya existen.
+  'nav-home': 'house', 'nav-organization': 'building-2', 'nav-ai': 'sparkles', 'nav-strategy': 'sparkle', 'nav-marketing': 'megaphone',
+  'nav-creative': 'pen-tool', 'nav-production': 'video', 'nav-library': 'book-open', 'nav-finances': 'chart-column',
+  'agents': 'users', 'skills': 'puzzle', 'workflows': 'git-branch', 'memory': 'layers', 'models': 'command', 'evals': 'list-checks',
   'panel': 'panel-right',
   'side': 'panel-left',
   'nuevo': 'square-pen',

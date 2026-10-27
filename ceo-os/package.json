@@ -19,6 +19,7 @@
     "test:marca": "node scripts/test-marca.mjs",
     "test:llm": "node scripts/test-llm.mjs",
     "test:ui": "node scripts/test-ui.mjs",
+    "test:herramientas": "node scripts/test-herramientas.mjs",
     "capturas": "node scripts/capturas.mjs",
     "test:avisos": "node scripts/test-avisos.mjs && node scripts/test-avisos-trabajo.mjs && node scripts/test-avisos-estrategia.mjs && node scripts/test-avisos-marcas.mjs && node scripts/test-avisos-plataforma.mjs"
   },

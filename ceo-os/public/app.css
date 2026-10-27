@@ -31,11 +31,6 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 /* «OS» siempre arriba a la derecha de la palabra, en todos los espacios: nunca salta de línea aunque la barra venga llena. */
 .word img{flex:none}
 .word sup{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:1px;margin-left:4px;vertical-align:top;position:relative;top:4px;color:var(--mut)}
-.nav{display:flex;gap:4px;padding:5px;border-radius:99px;background:var(--glass);border:1px solid var(--stroke);backdrop-filter:blur(18px);box-shadow:var(--shadow)}
-.nav button{display:flex;align-items:center;gap:7px;padding:10px 15px;border-radius:99px;color:var(--ink2);font-weight:500;font-size:13.5px;transition:.2s}
-.nav button:hover{background:rgb(var(--surface-rgb) / .8)}
-.nav button.on{background:var(--ink);color:var(--cream)}
-.nav svg{width:15px;height:15px}
 .sp{flex:1}
 .search{display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:99px;background:var(--glass);border:1px solid var(--stroke);color:var(--mut);font-size:13px;min-width:180px;backdrop-filter:blur(18px)}
 .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#36271b,#735741);color:var(--cream);display:grid;place-items:center;font-weight:700;font-size:14px;border:3px solid #fdfaf3;box-shadow:var(--shadow);cursor:pointer;flex:none}
@@ -347,8 +342,8 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:no-preference){
   #main.enter>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
   #main.enter>*:nth-child(2){animation-delay:.05s}#main.enter>*:nth-child(3){animation-delay:.1s}#main.enter>*:nth-child(4){animation-delay:.15s}#main.enter>*:nth-child(5){animation-delay:.2s}#main.enter>*:nth-child(n+6){animation-delay:.24s}
-  .card,.btn,.chip,.artifact,.folder,.arrow,.tabs button,.nav [data-go],.ev,tr.click{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,opacity .2s ease,outline-color .2s ease}
-  .btn:active,.chip:active,.tabs button:active,.artifact:active,.arrow:active,.nav [data-go]:active,.folder:active{transform:scale(.96)}
+  .card,.btn,.chip,.artifact,.folder,.arrow,.tabs button,.ev,tr.click{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,opacity .2s ease,outline-color .2s ease}
+  .btn:active,.chip:active,.tabs button:active,.artifact:active,.arrow:active,.folder:active{transform:scale(.96)}
   .card[data-act]:hover,a.card:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgb(var(--ink-rgb) / .12)}
   .artifact:hover{transform:translateY(-2px)}
   .dlg[open]{animation:pop .3s cubic-bezier(.2,.8,.2,1)}
@@ -375,10 +370,6 @@ html{scroll-behavior:smooth}
   /* arriba: marca + avatar · abajo: barra de navegación fija que se desliza */
   .top{margin-bottom:20px}
   .word img{height:20px!important}
-  .nav{position:fixed;left:10px;right:10px;bottom:max(8px, calc(env(safe-area-inset-bottom) - 12px));z-index:30;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;padding:6px;gap:2px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
-  .nav::-webkit-scrollbar{display:none}
-  .nav button{flex-direction:column;gap:3px;padding:8px 12px;font-size:10.5px;flex:none;scroll-snap-align:center;min-width:62px}
-  .nav svg{width:19px;height:19px}
   .menu{position:fixed;right:12px;left:12px;top:70px;width:auto}
   /* títulos */
   .hello h1{font-size:30px;letter-spacing:-1px}
@@ -433,7 +424,7 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
   .card,.artifact,.folder,tr.click,.ev{transition:box-shadow .2s ease,background-color .15s ease}
   .card[data-act]:hover,a.card:hover,.artifact:hover{transform:none}
   .card[data-act]:active,a.card:active,.artifact:active,.folder:active{transform:none;opacity:.85}
-  .btn,.chip,.tabs button,.nav [data-go],.arrow{transition:transform .12s ease,background-color .15s ease,color .15s ease}
+  .btn,.chip,.tabs button,.arrow{transition:transform .12s ease,background-color .15s ease,color .15s ease}
   #main.enter>*{animation-duration:.32s}
   .swap{animation:none}
 }
@@ -652,7 +643,6 @@ input[type=range]{accent-color:#795c45;cursor:grab}
   .app::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(120px + env(safe-area-inset-bottom));z-index:4;pointer-events:none;
     background:linear-gradient(to top,var(--bg) 0%,var(--bg) 30%,rgba(241,234,223,.85) 60%,rgba(241,234,223,0) 100%)}
   /* iOS: sin blur detrás de una barra que se desliza (parpadea y deja manchas); fondo sólido y su propia capa */
-  .nav{background:rgb(var(--surface-rgb) / .97);-webkit-backdrop-filter:none;backdrop-filter:none;transform:translateZ(0);overscroll-behavior-x:contain;touch-action:pan-x}
   .aifoot .btn{flex:none}
 }
 
@@ -881,7 +871,7 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier
 .themebtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--stroke);color:var(--ink2);backdrop-filter:blur(18px);flex:none}
 .themebtn:hover{color:var(--ink)}
 /* Espacio para el botón de modo noche en la barra de arriba */
-.nav{gap:2px}.nav button{padding:10px 12px}.themebtn{width:40px;height:40px}
+.themebtn{width:40px;height:40px}
 /* Al cambiar de pestaña la página no se corre de lado: el espacio de la barra de scroll queda siempre reservado */
 html{scrollbar-gutter:stable;overflow-y:scroll}
 /* Library · Entrevista: pregunta, caja de respuesta y «Lo ideal» */
@@ -976,13 +966,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .rolemap{display:grid;grid-template-columns:minmax(120px,170px) 1fr auto;gap:8px 12px;align-items:center}.rolemap .chip{justify-self:start}
 @media (max-width:760px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.rolemap{grid-template-columns:1fr}}
 
-/* Las 8 secciones: las pestañas de la sección (ej. Operaciones → Proyectos · Workspace · Contenido) van arriba de la pantalla. */
-.subnav{margin:-8px 0 18px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.subnav[hidden]{display:none}
-.subnav::-webkit-scrollbar{display:none}
-.subnav .tabs{margin:0}
-.subnav .tabs button{flex:none;white-space:nowrap}
-@media (max-width:760px){.subnav{margin:-6px 0 14px}}
 /* Resultados: filas de indicadores de 4 y de 3. */
 
 /* ---------- Cara simple: gráficas en SVG, semáforos, servicios y links ---------- */
@@ -1166,14 +1149,6 @@ p,.md p,.md li{line-height:1.55}
   border:1px solid var(--stroke);box-shadow:0 8px 24px -14px rgb(var(--ink-rgb) / .25), 0 1px 0 rgb(255 255 255 / .35) inset}
 :root[data-theme="dark"] .top{box-shadow:0 10px 30px -14px rgb(0 0 0 / .7)}
 .emb{width:23px;height:30px}.word img{height:21px!important}.word sup{top:2px}
-.nav{position:relative;background:transparent;border:0;box-shadow:none;backdrop-filter:none;padding:3px;gap:2px;isolation:isolate}
-.nav button{position:relative;z-index:1;padding:8px 13px;font-size:13.5px;font-weight:500;color:var(--ink2);border-radius:99px;gap:7px;background:transparent!important;transition:color var(--t) var(--ease)}
-.nav button:hover{color:var(--ink)}
-.nav button.on{color:var(--cream)}
-.nav svg{width:16px;height:16px;stroke-width:1.75}
-.nav-ind{position:absolute;z-index:0;top:3px;bottom:3px;left:0;width:0;border-radius:99px;background:linear-gradient(180deg,var(--espresso),var(--ink));box-shadow:0 2px 8px -2px rgb(var(--ink-rgb) / .35);opacity:0;pointer-events:none}
-.nav-ind.ready{transition:transform 280ms var(--ease),width 280ms var(--ease),opacity var(--t) ease}
-.nav:not(:has(.nav-ind)) button.on{background:var(--ink)!important}
 .themebtn{width:36px;height:36px;background:transparent;border:1px solid transparent;backdrop-filter:none;color:var(--ink2);transition:background var(--t) var(--ease)}
 .themebtn:hover{background:rgb(var(--ink-rgb) / .06)}
 .avatar{width:36px;height:36px;font-size:12.5px;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--hair-strong);transition:box-shadow var(--t) var(--ease)}
@@ -1305,7 +1280,7 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn 240ms var(--ease)
 ::selection{background:rgb(161 135 112 / .32);color:inherit}
 *{-webkit-tap-highlight-color:transparent}
 button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visible,.btn:focus-visible{outline:2px solid rgb(var(--ink-rgb) / .55);outline-offset:2px;border-radius:10px}
-.btn:focus-visible,.chip:focus-visible,.tabs button:focus-visible,.nav button:focus-visible{border-radius:99px}
+.btn:focus-visible,.chip:focus-visible,.tabs button:focus-visible{border-radius:99px}
 .md img,.mdbody img,.adcard img{border-radius:12px}
 hr{border:0;height:1px;background:var(--hair)}
 .warnbox b,.sp-callout b{font-weight:600}
@@ -1469,12 +1444,6 @@ a.sp-tile:hover .sp-tile-go{transform:translate(2px,-2px);background:var(--ink);
   .sec-title h2{font-size:19px}
   /* barra de abajo tipo iOS: vidrio, íconos con etiqueta de 10.5px y safe-area */
   .app::after{height:calc(64px + env(safe-area-inset-bottom));background:var(--bar);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);border-top:.5px solid var(--hair-strong)}
-  .nav{left:0;right:0;bottom:0;padding:4px 6px calc(4px + env(safe-area-inset-bottom));border-radius:0;background:transparent!important;border:0;box-shadow:none;gap:0;justify-content:space-around}
-  .nav button{flex:1 0 auto;min-width:58px;padding:6px 6px 4px;gap:3px;font-size:10.5px;font-weight:500;color:var(--mut);border-radius:12px}
-  .nav button.on{color:var(--ink)}
-  .nav button.on svg{stroke-width:2.1}
-  .nav svg{width:22px;height:22px}
-  .nav-ind{display:none}
   #toast{top:calc(10px + env(safe-area-inset-top))}
   .card,.sp-panel,.sp-tile{border-radius:18px}
   .sp-cover{padding:22px 20px;border-radius:22px}.sp-cover h1{font-size:30px}
@@ -1499,7 +1468,6 @@ a.sp-tile:hover .sp-tile-go{transform:translate(2px,-2px);background:var(--ink);
 :root[data-theme="dark"] .word img{filter:brightness(0) invert(.95) sepia(.2) brightness(.93)}
 .avatar{color:#fdfaf3}
 .sp-kpis>*,.wkkpi{justify-content:space-between}
-@media (max-width:760px){.nav{position:fixed}}
 .mstrip .md.past{opacity:1}.mstrip .md .n{color:var(--ink2)}.mstrip .md.past .n{color:var(--mut)}
 .itip{opacity:1;color:var(--mut)}.itip:hover,.itip:focus{color:var(--ink)}
 .mstrip .md.today .n{color:var(--cream)}
@@ -2175,37 +2143,22 @@ button.lib-tw:hover{background:var(--fill);color:var(--ink)}
 @media (max-width:760px){.lib-edit.wide #dtitle{font-size:26px!important;padding:4px 0!important;margin-top:0!important}.lib-dged{height:calc(100dvh - 190px)}}
 
 /* =====================================================================================
-   FASE 1 · ESTRUCTURA — interruptor de espacios, barra por espacio, buscador global (⌘K),
+   FASE 1 · ESTRUCTURA — buscador global (⌘K),
    Marcas (tiles y módulos), Visión y misión, y el modelo de elemento (estado y archivo).
    ===================================================================================== */
-/* ---------- interruptor Organization / Marcas: control segmentado tipo iOS ---------- */
-.space-sw{position:relative;display:inline-flex;flex:none;padding:3px;gap:0;border-radius:99px;background:rgb(var(--ink-rgb) / .07);box-shadow:inset 0 0 0 .5px rgb(var(--ink-rgb) / .08);isolation:isolate}
-.space-sw button{position:relative;z-index:1;height:30px;padding:0 13px;border-radius:99px;font-size:13px;font-weight:600;letter-spacing:-.01em;color:var(--mut);white-space:nowrap;transition:color var(--t) var(--ease)}
-.space-sw button:hover{color:var(--ink)}
-.space-sw button[aria-selected="true"]{color:var(--ink)}
-.space-ind{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:0;border-radius:99px;background:var(--surface);box-shadow:0 1px 3px rgb(var(--ink-rgb) / .16), 0 0 0 .5px rgb(var(--ink-rgb) / .06);opacity:0;pointer-events:none}
-.space-ind.ready{transition:transform 300ms var(--ease),width 300ms var(--ease),opacity var(--t) ease}
-:root[data-theme="dark"] .space-sw{background:rgb(255 240 225 / .07)}
-:root[data-theme="dark"] .space-ind{background:var(--fill-2);box-shadow:0 1px 3px rgb(0 0 0 / .5)}
-.top .nav{min-width:0;flex:0 1 auto;overflow-x:auto;scrollbar-width:none}
-.top .nav::-webkit-scrollbar{display:none}
-.nav button{flex:none;white-space:nowrap}
 /* La barra de Marcas: cada marca con su monograma en vez de ícono */
 .nav-mono{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:6px;font-size:8.5px;font-weight:700;letter-spacing:.02em;color:#fdfaf3;flex:none;
   background:linear-gradient(140deg,var(--cover-c),var(--cover-a) 55%,var(--cover-b))}
 .nav-mono.t1{--cover-c:#97795f;--cover-a:#6b513c;--cover-b:#3b2a1e}.nav-mono.t2{--cover-c:#7c6250;--cover-a:#4a3628;--cover-b:#241a12}
 .nav-mono.priv{background:var(--ink);color:var(--cream)}
 .nav-mono.sm{width:20px;height:20px;font-size:9px}
-.nav button.on .nav-mono{box-shadow:0 0 0 1.5px rgb(255 255 255 / .5)}
 /* ---------- la lupa: abre el buscador ---------- */
 .searchbtn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 8px 0 11px;border-radius:99px;color:var(--ink2);background:rgb(var(--ink-rgb) / .055);flex:none;transition:background var(--t) var(--ease),color var(--t) var(--ease)}
 .searchbtn:hover{background:rgb(var(--ink-rgb) / .09);color:var(--ink)}
 .searchbtn kbd,.spot kbd{font:600 11px/1 var(--sans);letter-spacing:.02em;color:var(--mut);padding:4px 6px;border-radius:6px;background:var(--surface);box-shadow:inset 0 0 0 .5px var(--hair-strong), 0 1px 0 rgb(var(--ink-rgb) / .08)}
 @media (max-width:1240px){.searchbtn kbd{display:none}.searchbtn{width:36px;padding:0;justify-content:center}}
 /* ---------- pestañas de la sección / de la marca ---------- */
-.subnav .tabs button.soon{color:var(--mut)}
 .soon-tag{font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;padding:2px 6px;border-radius:99px;background:rgb(var(--ink-rgb) / .07);color:var(--mut);vertical-align:1px}
-.subnav .tabs button.soon.on .soon-tag{background:var(--fill-2)}
 
 /* ---------- buscador global: sheet tipo Spotlight ---------- */
 .spot-veil{position:fixed;inset:0;z-index:80;display:flex;justify-content:center;align-items:flex-start;padding:max(10vh,calc(24px + env(safe-area-inset-top))) 16px 16px;
@@ -2291,22 +2244,17 @@ html.spot-open{overflow:hidden}
 .el-archive{margin-bottom:var(--s5);padding:14px 16px;border-radius:var(--r);background:rgb(var(--ink-rgb) / .03)}
 .el-archive .itile{opacity:.8}
 
-/* ---------- cel: el interruptor queda arriba; la barra de abajo cambia con el espacio ---------- */
+/* ---------- cel: la barra de arriba, más compacta ---------- */
 @media (max-width:760px){
-  .top.has-sw .word{display:none}
   .top{gap:8px}
-  .space-sw button{height:30px;padding:0 11px;font-size:12.5px}
   .searchbtn{width:36px;height:36px;padding:0;justify-content:center;background:transparent}
   .themebtn{width:34px;height:34px}
-  .nav button span{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .nav.brands button{min-width:64px}
   .nav-mono{width:22px;height:22px;border-radius:7px;font-size:9.5px}
   .brand-tiles{grid-template-columns:1fr}
   .brand-tile.r43{aspect-ratio:auto;min-height:168px}
   .brand-hero{gap:12px}.sp-mono.big{width:44px;height:44px;border-radius:13px;font-size:15px}
-  .subnav .tabs{max-width:100%}
 }
-@media (max-width:380px){.space-sw button{padding:0 9px;font-size:12px}.top{gap:6px}}
+@media (max-width:380px){.top{gap:6px}}
 
 /* === Fase 2B · Ventas y Hoy === */
 /* El cronómetro del primer contacto: verde antes del minuto, ámbar antes de 15, rojo después */
@@ -3156,15 +3104,6 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 /* =====================================================================================
    App 01 · Marca: la barra por áreas (Inicio · Entender · Crear · Diseño · Publicar · Medir) y el Inicio de la marca.
    ===================================================================================== */
-.brand-nav{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
-.brand-nav .tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
-.brand-nav .tabs::-webkit-scrollbar{display:none}
-.area-tabs button{display:inline-flex;align-items:center;gap:7px}
-.area-tabs button svg{opacity:.7}.area-tabs button.on svg{opacity:1}
-.brand-nav .mod-tabs{background:transparent;border-color:transparent;padding:0 4px;gap:2px}
-.brand-nav .mod-tabs button{padding:6px 12px;font-size:13px;border-radius:99px}
-.brand-nav .mod-tabs button.on,:root[data-theme="dark"] .brand-nav .mod-tabs button.on{background:var(--ink);color:var(--cream);box-shadow:none}
-.brand-nav .mod-tabs button.on .soon-tag{background:rgb(255 255 255 / .16);color:inherit}
 
 .bh{display:flex;flex-direction:column;gap:var(--s4)}
 .bh .lbl{display:block;font-size:var(--fs-e);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
@@ -3254,7 +3193,6 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
   .bh-est{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bh-grid{grid-template-columns:minmax(0,1fr)}
   .bh-ciclo-l span:nth-child(2){display:none}
-  .brand-nav .tabs{width:100%}
 }
 /* App 01 · Marca › Entender › Cliente ideal (avatares) */
 .avt{display:flex;flex-direction:column;gap:var(--s4)}
@@ -4121,36 +4059,10 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .pd-dlg{position:fixed;inset:0;margin:auto;max-height:calc(100vh - 32px);overflow:visible}
 .pdchip,.guiabtn{white-space:nowrap;flex:none}
 
-/* ===================== El dock y el Inherent LLM (#/chat) =====================
-   Dos apps unidas por el dock: Organización (la de siempre) y Chat. El Chat ocupa toda la pantalla, con la estructura de
-   Hermes Desktop (sesiones · conversación · panel), la noche de Claude más contemporánea, vidrio difuminado y café solo
+/* ===================== El Inherent LLM (#/chat) =====================
+   El Chat vive dentro de #main (clase llm-host), a la derecha de la barra lateral del cascarón: ya no es una app aparte ni hay
+   dock. Estructura de Hermes Desktop (conversaciones · conversación · panel), la noche de Claude más contemporánea y café solo
    como acento. Sus colores viven en .llm (--l-*) y por dentro redefinen los del OS, así el panel de Estrategia se ve igual. */
-.dock{display:none}
-.tochat{display:none}
-html[data-app="chat"] .top,html[data-app="chat"] #subnav{display:none!important}
-html[data-app="chat"] .app{padding:0;max-width:none}
-@media (min-width:761px){
-  html.con-dock body{padding-left:60px}
-  .dock{position:fixed;left:0;top:0;bottom:0;width:60px;z-index:45;display:flex;flex-direction:column;align-items:center;gap:6px;padding:calc(14px + env(safe-area-inset-top)) 0 14px;background:var(--glass2);border-right:1px solid var(--hair);-webkit-backdrop-filter:blur(24px) saturate(1.5);backdrop-filter:blur(24px) saturate(1.5)}
-  .dock button{position:relative;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;color:var(--mut);background:transparent;border:0;cursor:pointer;transition:background var(--t) var(--ease),color var(--t) var(--ease)}
-  .dock button:hover{background:var(--fill);color:var(--ink)}
-  .dock button.on{background:var(--ink);color:var(--cream)}
-  .dock button.on::before{content:"";position:absolute;left:-9px;top:11px;bottom:11px;width:3px;border-radius:3px;background:var(--ink)}
-  .dock-tip{position:absolute;left:54px;top:50%;transform:translate(-4px,-50%);white-space:nowrap;background:var(--ink);color:var(--cream);font-size:12px;font-weight:500;padding:5px 9px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;z-index:2}
-  .dock button:hover .dock-tip,.dock button:focus-visible .dock-tip{opacity:1;transform:translate(0,-50%)}
-  html[data-app="chat"] .dock{background:#141413;border-right-color:rgb(255 250 240 / .06)}
-  html[data-app="chat"] .dock button{color:#8e8a80}
-  html[data-app="chat"] .dock button:hover{background:#262522;color:#ecebe6}
-  html[data-app="chat"] .dock button.on,html[data-app="chat"] .dock button.on::before{background:#ecebe6;color:#141413}
-  html[data-app="chat"] .dock-tip{background:#ecebe6;color:#141413}
-  html[data-app="chat"][data-llm-tema="dia"] .dock{background:#ebe8e1;border-right-color:rgb(30 25 20 / .08)}
-  html[data-app="chat"][data-llm-tema="dia"] .dock button{color:#8a857b}
-  html[data-app="chat"][data-llm-tema="dia"] .dock button:hover{background:#e0dcd3;color:#1f1d1a}
-  html[data-app="chat"][data-llm-tema="dia"] .dock button.on,html[data-app="chat"][data-llm-tema="dia"] .dock button.on::before{background:#1f1d1a;color:#faf9f6}
-  html[data-app="chat"][data-llm-tema="dia"] .dock-tip{background:#1f1d1a;color:#faf9f6}
-  html.con-dock .llm{left:60px}
-}
-@media (max-width:760px){.tochat{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:50%;color:var(--ink);background:var(--glass);border:1px solid var(--hair)}}
 
 .llm{
   --l-bg:#1f1e1c; --l-side:#181816; --l-surf:#2a2926; --l-surf2:#34322e; --l-line:rgb(255 250 240 / .085); --l-line2:rgb(255 250 240 / .14);
@@ -4163,7 +4075,7 @@ html[data-app="chat"] .app{padding:0;max-width:none}
   --line:var(--l-line); --hair:var(--l-line); --hair-strong:var(--l-line2); --glass:var(--l-glass); --glass2:var(--l-surf); --stroke:var(--l-line);
   --cream:var(--l-bg); --cream2:var(--l-side); --espresso:var(--l-ink); --brown:var(--l-ink2); --lime:var(--l-surf2); --lime-ink:var(--l-ink);
   color-scheme:dark;
-  position:fixed;inset:0;z-index:20;display:grid;grid-template-columns:264px minmax(0,1fr) 0;background:var(--l-bg);color:var(--l-ink);font:15px/1.5 var(--sans);overflow:hidden;
+  position:absolute;inset:0;z-index:20;display:grid;grid-template-columns:264px minmax(0,1fr) 0;background:var(--l-bg);color:var(--l-ink);font:15px/1.5 var(--sans);overflow:hidden;
 }
 .llm[data-panel="on"]{grid-template-columns:264px minmax(0,1fr) 380px}
 .llm[data-tema="dia"]{
@@ -4187,10 +4099,6 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 .ls-brand{display:flex;align-items:center;gap:10px;padding:2px 6px 16px}
 .ls-emb{width:24px;height:31px;flex:none;display:grid;place-items:center}
 .ls-emb img{width:100%;height:auto;display:block}
-.ls-wm{display:flex;align-items:flex-start;gap:5px;line-height:1}
-.ls-wm img{height:20px;width:auto;display:block}
-.ls-wm .wm-noche{opacity:.94}
-.ls-wm sup{font:700 9.5px/1 var(--sans);letter-spacing:1px;color:var(--l-ink);position:relative;top:1px}
 .llm .wm-dia{display:none}.llm[data-tema="dia"] .wm-dia{display:block}.llm[data-tema="dia"] .wm-noche{display:none}
 
 .ls-new{display:flex;align-items:center;gap:9px;width:100%;height:38px;padding:0 12px;border-radius:11px;border:1px solid var(--l-line);background:var(--l-surf);font-size:13.5px;font-weight:500;transition:background .15s}
@@ -4222,7 +4130,6 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 .ls-dot{width:7px;height:7px;border-radius:50%;background:var(--l-mut);flex:none;display:inline-block}
 .ls-dot.on{background:var(--l-ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--l-ok) 22%,transparent)}
 .ls-dot.off{background:var(--l-warn)}
-.ls-os{display:none}
 
 /* La conversación */
 .llm-main{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0}
@@ -4446,7 +4353,6 @@ html[data-app="chat"] .app{padding:0;max-width:none}
   .llm.side-on .llm-side{transform:none;box-shadow:var(--l-shadow)}
   .llm.side-on .llm-velo{display:block;position:absolute;inset:0;z-index:35;background:rgb(0 0 0 / .45)}
   .llm-solo-cel{display:grid}
-  .ls-os{display:flex;align-items:center;gap:9px;width:100%;padding:8px;border:0;border-radius:10px;background:transparent;font-size:13.5px;color:var(--l-ink2)}
   .llm-head{padding-left:8px}
   .llm-col{padding:8px 16px 200px}
   .llm-compw,.llm-sug{padding-left:12px;padding-right:12px}
@@ -4466,8 +4372,8 @@ html[data-app="chat"] .app{padding:0;max-width:none}
 .lsh{grid-template-columns:minmax(0,1fr)}
 .lsh section{min-width:0}
 .lsh .lsu-btn{justify-self:start}
-html[data-app="chat"],html[data-app="chat"] body{overflow:hidden;overscroll-behavior:none;scrollbar-gutter:auto}
-html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:none}
+html[data-pantalla="chat"],html[data-pantalla="chat"] body{overflow:hidden;overscroll-behavior:none;scrollbar-gutter:auto}
+html[data-pantalla="chat"] .app::before,html[data-pantalla="chat"] .app::after{display:none}
 @media (max-width:760px){
   .lc-row{flex-wrap:nowrap}
   .lc-chip{min-width:0;flex-shrink:1;overflow:hidden;text-overflow:ellipsis}
@@ -4485,7 +4391,7 @@ html[data-app="chat"] .app::before,html[data-app="chat"] .app::after{display:non
 .lmn-g:first-child{padding-top:6px}
 .lm-acts button svg{width:13px;height:13px}
 @media (max-width:760px){.lc-priv span{display:none}.lc-priv{padding:0 9px;flex-shrink:0}.lc-esf{display:none}}
-html[data-app="chat"] .app{overflow:hidden}
+html[data-pantalla="chat"] .app{overflow:hidden}
 
 /* ===================== SISTEMA v2 · un solo sistema para Organización y el Chat =====================
    Los colores del Inherent LLM: de noche gris cálido tipo Claude, de día blanco cálido, café solo de acento. El tema lo pone
@@ -4560,27 +4466,13 @@ body::before,body::after,:root[data-theme="dark"] body::before,:root[data-theme=
   color-scheme:light;
 }
 :root[data-theme="dark"] .llm{color-scheme:dark}
-/* El logo del Chat y el panel de Estrategia siguen al tema global. */
-.llm .wm-dia,:root[data-theme="dark"] .llm .wm-dia{display:none}
-.llm .wm-noche{display:none}
-:root[data-theme="light"] .llm .wm-dia{display:block}
-:root[data-theme="dark"] .llm .wm-noche{display:block}
+/* El panel de Estrategia dentro del Chat sigue al tema global. */
 
 :root[data-theme="dark"] .ev-bar.w{background:rgb(201 162 39 / .16);color:#e6c873}
 :root[data-theme="dark"] .ev-sup.falta{color:#e0b84a;border-bottom-color:rgb(224 184 74 / .6)}
 :root[data-theme="dark"] .ev-ck.riesgo i{background:rgb(201 162 39 / .2)}
 :root[data-theme="dark"] .ev-week span.s{background:#4a3d30;color:#ecebe6}
 
-/* El dock: la barrita de las dos apps, con los mismos tokens en las dos. */
-@media (min-width:761px){
-  .dock,html[data-app="chat"] .dock,html[data-app="chat"][data-llm-tema="dia"] .dock{background:var(--ui-side);border-right:1px solid var(--ui-line);-webkit-backdrop-filter:none;backdrop-filter:none}
-  .dock button,html[data-app="chat"] .dock button,html[data-app="chat"][data-llm-tema="dia"] .dock button{color:var(--ui-mut2);transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
-  .dock button:hover,html[data-app="chat"] .dock button:hover,html[data-app="chat"][data-llm-tema="dia"] .dock button:hover{background:var(--ui-surf2);color:var(--ui-ink)}
-  .dock button:active{transform:scale(.95)}
-  .dock button.on,html[data-app="chat"] .dock button.on,html[data-app="chat"][data-llm-tema="dia"] .dock button.on{background:var(--ui-ink);color:var(--ui-bg)}
-  .dock button.on::before,html[data-app="chat"] .dock button.on::before,html[data-app="chat"][data-llm-tema="dia"] .dock button.on::before{background:var(--ui-ink)}
-  .dock-tip,html[data-app="chat"] .dock-tip,html[data-app="chat"][data-llm-tema="dia"] .dock-tip{background:var(--ui-ink);color:var(--ui-bg)}
-}
 
 /* Íconos: un solo set (iconos.js), trazo parejo según el tamaño. Sin estilos sueltos en el HTML. */
 .lni{stroke-width:1.75;flex:none;vertical-align:-3px}
@@ -4618,8 +4510,8 @@ html[data-vt=nav]::view-transition-old(vt-main){animation:vt2Out 120ms var(--e-o
 html[data-vt=nav]::view-transition-new(vt-main){animation:vt2In 200ms var(--e-out) both}
 /* Lo que se toca responde: un leve hundirse al presionar (solo transform). */
 @media (prefers-reduced-motion:no-preference){
-  .btn,.nav button,.space-sw button,.chip,.tile,.ls-row a,.ls-new,.lc-send,.lsg-c{transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
-  .btn:active,.nav button:active,.space-sw button:active,.ls-new:active,.lsg-c:active{transform:scale(.97)}
+  .btn,.chip,.tile,.ls-row a,.ls-new,.lc-send,.lsg-c{transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
+  .btn:active,.ls-new:active,.lsg-c:active{transform:scale(.97)}
 }
 /* Con «reducir movimiento» el corte global de arriba apaga todo; los indicadores de estado (girar, pensar) sí se quedan. */
 @media (prefers-reduced-motion:reduce){
@@ -4628,10 +4520,6 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vt2In 200ms var(--e-ou
 /* Ventas: las listas inteligentes y el volumen con íconos de línea en su color, sin cuadrito de fondo (como Linear). */
 .vx-v i,.vx-ah i{background:none!important;width:18px;height:18px;border-radius:0}
 .vx-v i .lni,.vx-ah i .lni{vertical-align:0}
-/* La pestaña activa de arriba: un fondo suave como en el Chat, no una píldora oscura. */
-.nav-ind{background:var(--ui-surf2);box-shadow:inset 0 0 0 1px var(--ui-line)}
-.nav button.on{color:var(--ui-ink)}
-:root[data-theme="dark"] .space-ind{background:var(--ui-surf2)}
 /* Mis tareas: las mismas listas con íconos de línea en su color, sin círculo de fondo. */
 .mt-ic,.mt-li i{background:none!important;border-radius:0}
 .mt-li i{width:20px;height:20px}
@@ -4697,50 +4585,26 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lp-cerrar{display:inline-flex;align-items:center;gap:6px;justify-self:end;align-self:flex-end;padding:6px 12px;border-radius:99px;border:1px solid var(--l-line2);background:var(--l-surf);color:var(--l-ink2);font-size:13px}
 
 /* ===================== ÁREAS Y BARRA LATERAL (bloque 2) =====================
-   Las cuatro áreas (areas.js) con su color, el switch de áreas (Tablero y Chat), la barra lateral del Tablero (html[data-barra=lateral],
-   solo en la compu; en el cel sigue la barra de abajo), el switch de IA del Chat, los encargos y la pantalla de Consulting. */
-:root{--ui-m-marketing:#b0553f;--ui-m-consulting:#3f6c9a;--ia-claude:#d97757;--ia-chatgpt:var(--ui-ink);--ia-gemini:#4b7bec;--ia-local:var(--ui-ok);--ia-otras:var(--ui-acc);--lat-w:256px}
-:root[data-theme="dark"]{--ui-m-marketing:#e3937a;--ui-m-consulting:#8fb0dc}
-.llm,.llm[data-tema="dia"]{--l-m-consulting:var(--ui-m-consulting);--l-m-marketing:var(--ui-m-marketing)}
+   Los colores de los workspaces y modos (con sus alias en inglés para herramientas.js), la barra lateral del cascarón
+   (html[data-barra=lateral], solo en la compu; en el cel va la barra de abajo .nav-cel), el switch de IA del Chat, los encargos y Consulting. */
+:root{--ui-m-marketing:#b0553f;--ui-m-consulting:#3f6c9a;--ui-m-produccion:#2a7570;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion);--ia-claude:#d97757;--ia-chatgpt:var(--ui-ink);--ia-gemini:#4b7bec;--ia-local:var(--ui-ok);--ia-otras:var(--ui-acc);--lat-w:256px}
+:root[data-theme="dark"]{--ui-m-marketing:#e3937a;--ui-m-consulting:#8fb0dc;--ui-m-produccion:#86c7c0;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion)}
+.llm,.llm[data-tema="dia"]{--l-m-consulting:var(--ui-m-consulting);--l-m-marketing:var(--ui-m-marketing);--l-m-produccion:var(--ui-m-produccion)}
 .llm [data-m="consulting"]{--m:var(--l-m-consulting)}
 .llm [data-m="marketing"]{--m:var(--l-m-marketing)}
+.llm [data-m="produccion"]{--m:var(--l-m-produccion)}
 
-/* El switch de áreas: una pastilla con el ícono de cada área; la elegida sube con su color. */
-.asw{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));padding:3px;border-radius:999px;background:var(--ui-fill2);box-shadow:inset 0 0 0 1px var(--ui-line);isolation:isolate}
-:root[data-theme="dark"] .asw{background:rgb(0 0 0 / .28)}
-.asw-pastilla{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:calc((100% - 6px) / var(--n));border-radius:999px;background:var(--ui-surf);
-  box-shadow:0 1px 2px rgb(30 25 20 / .1),0 0 0 1px color-mix(in srgb,var(--ui-m-estrategia) 0%,var(--ui-line2));transform:translateX(calc(var(--i) * 100%))}
-.asw[data-on] .asw-pastilla{box-shadow:0 1px 3px rgb(30 25 20 / .12),0 0 0 1px color-mix(in srgb,var(--pc,var(--ui-acc)) 40%,transparent)}
-.asw[data-on="estrategia"]{--pc:var(--ui-m-estrategia)}.asw[data-on="organizacion"]{--pc:var(--ui-m-organizacion)}.asw[data-on="marketing"]{--pc:var(--ui-m-marketing)}.asw[data-on="diseno"]{--pc:var(--ui-m-diseno)}.asw[data-on="consulting"]{--pc:var(--ui-m-consulting)}
-:root[data-theme="dark"] .asw-pastilla{background:var(--ui-surf2)}
-.asw button{position:relative;z-index:1;height:34px;border:0;background:transparent;border-radius:999px;display:grid;place-items:center;color:var(--ui-ink2);cursor:pointer;padding:0}
-.asw button:hover,.asw button[aria-checked="true"]{color:var(--c)}
-.asw button:focus-visible{outline:2px solid var(--c);outline-offset:-2px}
-.asw-tip{position:absolute;z-index:30;top:calc(100% + 7px);left:50%;transform:translate(-50%,-3px);white-space:nowrap;pointer-events:none;opacity:0;
-  background:var(--ui-ink);color:var(--ui-bg);font-size:12px;font-weight:550;padding:4px 8px;border-radius:7px}
-.asw button[aria-checked="true"] .asw-tip{display:none}
-@media (hover:hover){.asw button:hover .asw-tip,.asw button:focus-visible .asw-tip{opacity:1;transform:translate(-50%,0);transition:opacity var(--d-2) var(--e-out) .35s,transform var(--d-2) var(--e-out) .35s}}
-@media (prefers-reduced-motion:no-preference){
-  .asw-pastilla{transition:transform 380ms cubic-bezier(.3,1.3,.5,1),box-shadow var(--d-3) var(--e-std)}
-  .asw button{transition:color var(--d-3) var(--e-std)}
-  .asw button[aria-checked="true"] svg{animation:aswPop 380ms cubic-bezier(.3,1.5,.5,1)}
-}
-@keyframes aswPop{0%{transform:scale(.8)}60%{transform:scale(1.1)}100%{transform:none}}
-.asw.chico{flex:none;width:calc(var(--n) * 36px)}
-.asw.chico button{height:28px}
-@media (max-width:460px){html[data-barra="lateral"] .top{gap:4px}html[data-barra="lateral"] .top .guiabtn span{display:none}html[data-barra="lateral"] .top .guiabtn{width:34px;padding:0;justify-content:center}.asw.chico{width:calc(var(--n) * 32px)}.asw.chico button{height:26px}}
+@media (max-width:460px){html[data-barra="lateral"] .top{gap:4px}html[data-barra="lateral"] .top .guiabtn span{display:none}html[data-barra="lateral"] .top .guiabtn{width:34px;padding:0;justify-content:center}}
 @media (max-width:380px){html[data-barra="lateral"] .top .guiabtn{display:none}}
 
-/* La barra lateral del Tablero (compu). La del cel es la de siempre. */
+/* La barra lateral (compu). En el cel va .nav-cel, abajo. */
 .lat{display:none}
 .top-ayuda{display:contents}
 @media (min-width:761px){
-  html[data-barra="lateral"] .lat{position:fixed;z-index:20;top:0;bottom:0;left:60px;width:var(--lat-w);display:flex;flex-direction:column;gap:10px;box-sizing:border-box;
+  html[data-barra="lateral"] .lat{position:fixed;z-index:20;top:0;bottom:0;left:0;width:var(--lat-w);display:flex;flex-direction:column;gap:10px;box-sizing:border-box;
     padding:calc(14px + env(safe-area-inset-top)) 10px 10px;background:var(--ui-side);border-right:1px solid var(--ui-line)}
-  html.con-dock[data-barra="lateral"] body{padding-left:calc(60px + var(--lat-w))}
-  html[data-barra="lateral"]:not([data-app="chat"]) .top{display:none}
-  html[data-barra="lateral"][data-app="chat"] .lat{display:none}
-  html.con-dock[data-barra="lateral"][data-app="chat"] body{padding-left:60px}
+  html[data-barra="lateral"] body{padding-left:var(--lat-w)}
+  html[data-barra="lateral"] .top{display:none}
   html[data-barra="lateral"] .app{padding-top:28px}
 }
 .lat-marca{display:flex;align-items:center;gap:10px;padding:2px 6px 4px;text-decoration:none;color:inherit}
@@ -4751,8 +4615,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lat-wm sup{font:700 9.5px/1 var(--sans);letter-spacing:1px;color:var(--ui-ink);position:relative;top:1px}
 .lat .wm-noche,:root[data-theme="dark"] .lat .wm-dia{display:none}
 :root[data-theme="dark"] .lat .wm-noche{display:block}
-#lat-area{display:grid;gap:8px}
-.lat[data-area="estrategia"]{--ac:var(--ui-m-estrategia)}.lat[data-area="organizacion"]{--ac:var(--ui-m-organizacion)}.lat[data-area="marketing"]{--ac:var(--ui-m-marketing)}.lat[data-area="diseno"]{--ac:var(--ui-m-diseno)}.lat[data-area="consulting"]{--ac:var(--ui-m-consulting)}
 .lat-k{margin:6px 10px 2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut)}
 .lat-nav{display:flex;flex-direction:column;gap:1px;min-height:0;overflow-y:auto;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
 .lat-it{display:flex;align-items:center;gap:10px;width:100%;min-height:34px;padding:6px 10px;border-radius:10px;border:0;background:transparent;color:var(--ui-ink2);
@@ -4803,20 +4665,15 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
   [data-lat-mini] .lat-ayuda{flex-direction:column;align-items:center}
   [data-lat-mini] .lat-ayuda .guiabtn{width:40px;padding:0;flex:none}[data-lat-mini] .lat-ayuda .guiabtn span{display:none}
   [data-lat-mini] .lat-ayuda .pdchip{width:40px;padding:0;flex:none;font-size:0;justify-content:center}[data-lat-mini] .lat-ayuda .pdchip::before{content:attr(data-n);font-size:11.5px;font-weight:600}
-  /* El menú de tú sale a la derecha con su ancho; los nombres del switch, a la derecha del ícono. */
+  /* El menú de tú sale a la derecha con su ancho. */
   [data-lat-mini] .lat-menu{left:calc(100% + 10px);right:auto;bottom:0;width:248px}
-  [data-lat-mini] .lat .asw-tip{top:50%;left:calc(100% + 10px);transform:translate(-3px,-50%)}
-  [data-lat-mini] .lat .asw button:hover .asw-tip,[data-lat-mini] .lat .asw button:focus-visible .asw-tip{transform:translate(0,-50%)}
   [data-lat-mini] .lat-marca{justify-content:center;padding:2px 0 4px}
-  [data-lat-mini] .lat .asw{grid-template-columns:1fr;grid-auto-rows:34px;border-radius:14px}
-  [data-lat-mini] .lat .asw-pastilla{width:calc(100% - 6px);height:34px;bottom:auto;transform:translateY(calc(var(--i) * 100%))}
   [data-lat-mini] .lat-it,[data-lat-mini] .lat-chat{justify-content:center;padding:6px}
   [data-lat-mini] .lat-yo{flex-direction:column}
   [data-lat-mini] .lat-yo-b{justify-content:center}
 }
 
-/* Chat: el switch de áreas arriba de la barra y el nombre del área. */
-.llm-side .asw{margin:0 2px 10px}
+/* Chat: el nombre del modo arriba de la barra de conversaciones (un select chico cuando la persona abre más de un modo). */
 .ls-area{display:grid;gap:1px;padding:0 8px 12px}
 .ls-area b{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:650;color:var(--l-ink)}
 .ls-area b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--m,var(--l-acc));flex:none}
@@ -4977,48 +4834,322 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 :root[data-theme="dark"] .emb-dia{display:none!important}
 :root[data-theme="dark"] .emb-noche{display:block!important}
 
-/* Organización y los workspaces. Organización es la casa (neutra): un botón aparte. Debajo, el workspace es una barra que
-   se abre como un select con los demás (Estrategia, Marketing, Diseño, Consulting). Dentro de un workspace la barra
-   lateral se tiñe de su color; en el cel, la barra de arriba lleva una línea de ese color. */
-.org-btn,.ws-sel{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:7px 10px 7px 7px;border:0;border-radius:14px;text-align:left;cursor:pointer;color:var(--ui-ink);background:var(--ui-surf);box-shadow:inset 0 0 0 1px var(--ui-line)}
-.org-btn:hover,.ws-sel:hover{box-shadow:inset 0 0 0 1px var(--ui-line2,var(--ui-line)),0 1px 3px rgb(30 25 20 / .08)}
-.org-btn:focus-visible,.ws-sel:focus-visible{outline:2px solid var(--ac,var(--ui-ink));outline-offset:2px}
-.org-btn>span,.ws-sel>span{display:grid;flex:1;min-width:0;line-height:1.25}
-.org-btn b,.ws-sel b{font-size:14.5px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.org-btn small,.ws-sel small{font-size:12px;color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.org-btn:not(.on){background:transparent;box-shadow:none}
-.org-btn:not(.on):hover{background:var(--ui-fill2)}
-.org-ico,.ws-ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center}
-.org-ico{background:var(--ui-fill2);color:var(--ui-ink2)}
-.org-btn.on .org-ico{background:var(--ui-ink);color:var(--ui-surf)}
-.ws-ico{background:var(--ac);color:var(--ui-surf)}
-.ws-ico-vacio{background:var(--ui-fill2);color:var(--ui-ink2)}
-.ws-ico-suave{background:color-mix(in srgb,var(--ac) 14%,var(--ui-surf));color:var(--ac)}
-.ws-sel>svg{flex:none;color:var(--ui-mut)}
-.ws-sel[aria-expanded="true"]>svg{transform:rotate(180deg)}
-.ws-sel.on{background:color-mix(in srgb,var(--ac) 10%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 30%,transparent)}
-.lat[data-area="estrategia"] .ws-sel,.top[data-app="estrategia"] .ws-sel{--ac:var(--ui-m-estrategia)}.lat[data-area="marketing"] .ws-sel,.top[data-app="marketing"] .ws-sel{--ac:var(--ui-m-marketing)}.lat[data-area="diseno"] .ws-sel,.top[data-app="diseno"] .ws-sel{--ac:var(--ui-m-diseno)}.lat[data-area="consulting"] .ws-sel,.top[data-app="consulting"] .ws-sel{--ac:var(--ui-m-consulting)}
-.lat-k-ws{margin-top:8px}
-#lat-area{display:grid;gap:4px}
-.ws-menu{position:fixed;z-index:300;box-sizing:border-box;padding:8px;border-radius:18px;background:var(--ui-surf);box-shadow:0 12px 32px rgb(30 25 20 / .16),0 0 0 1px var(--ui-line);display:grid;gap:2px}
-.ws-menu-k{padding:6px 10px 6px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ui-mut)}
-.ws-menu button{display:flex;align-items:center;gap:12px;width:100%;padding:8px 10px 8px 8px;border:0;border-radius:12px;background:transparent;text-align:left;cursor:pointer;color:var(--ui-ink)}
-.ws-menu button:hover,.ws-menu button:focus-visible{background:var(--ui-fill2);outline:0}
-.ws-menu button.on{background:color-mix(in srgb,var(--ui-ink) 6%,transparent)}
-.ws-menu button>span{display:grid;flex:1;min-width:0;line-height:1.3}
-.ws-menu b{font-size:14.5px;font-weight:600}
-.ws-menu small{font-size:12px;color:var(--ui-mut)}
-.ws-menu button>svg{flex:none;color:var(--ui-acc)}
-@media (min-width:761px){html[data-barra="lateral"] .lat[data-app="1"]{background:color-mix(in srgb,var(--ac) 6%,var(--ui-side))}}
-[data-lat-mini] .org-btn,[data-lat-mini] .ws-sel{justify-content:center;padding:4px;background:transparent;box-shadow:none}
-[data-lat-mini] .org-btn>span,[data-lat-mini] .ws-sel>span,[data-lat-mini] .ws-sel>svg,[data-lat-mini] .lat-k-ws{display:none}
-.top-areas{display:flex;align-items:center;gap:6px;flex:none}
-.top-areas .org-btn,.top-areas .ws-sel{width:auto;padding:3px}
-.top-areas .org-btn>span{display:none}
-.top-areas .ws-sel{padding-right:8px;gap:6px}
-.top-areas .ws-sel small{display:none}
-.top-areas .ws-sel b{font-size:13px;max-width:96px}
-.top-areas .org-ico,.top-areas .ws-ico{width:28px;height:28px;border-radius:8px}
-.top[data-app="estrategia"]{--ac:var(--ui-m-estrategia)}.top[data-app="marketing"]{--ac:var(--ui-m-marketing)}.top[data-app="diseno"]{--ac:var(--ui-m-diseno)}.top[data-app="consulting"]{--ac:var(--ui-m-consulting)}
-.top[data-app]:not([data-app=""]){box-shadow:inset 0 -2px 0 var(--ac),0 1px 2px rgb(30 25 20 / .06)}
-@media (max-width:420px){.top-areas .ws-sel b{display:none}}
+/* ===================== EL CASCARÓN · una sola barra (Fase 1 del plan de workspaces) =====================
+   La barra lateral de la compu con el selector de cliente arriba y los grupos que se abren (Organization, AI Harness,
+   Company adentro), la barra de abajo del cel con sus hojas, el chip del cliente en la barra de arriba del cel y el Chat
+   viviendo dentro de #main. Todo con los tokens --ui-* de «SISTEMA v2»: nada de paleta nueva. */
+
+/* La barra lateral: el selector debajo del logo, los grupos y el color del workspace en su ítem (style="--ac:…"). */
+.lat-ctx{margin:2px 0 6px}
+.lat-grp{position:relative;display:block}
+.lat-grp>.lat-it{padding-right:34px}
+.lat-grp-tg{position:absolute;top:0;right:0;width:32px;height:34px;display:grid;place-items:center;padding:0;border:0;border-radius:8px;background:transparent;color:var(--ui-mut);cursor:pointer}
+.lat-grp-tg:hover{background:var(--ui-surf2);color:var(--ui-ink)}
+.lat-grp-tg>svg,.lat-sub-tg>svg{transition:transform var(--d-2) var(--e-std)}
+.lat-grp[open]>.lat-grp-tg>svg,.lat-sub-grp[open]>.lat-sub-tg>svg{transform:rotate(180deg)}
+.lat-grp:not([open])>.lat-subs{display:none}
+.lat-sub-grp{margin-top:2px}
+.lat-sub-tg{display:flex;align-items:center;gap:6px;width:100%;padding:5px 10px;border:0;background:transparent;font:inherit;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut);text-align:left;cursor:pointer}
+.lat-sub-tg:hover{color:var(--ui-ink)}
+.lat-sub-grp:not([open])>.lat-subs{display:none}
+.lat-sub-grp>.lat-subs{margin:0;padding-left:10px}
+.lat-nav>.lat-k{margin-top:10px}
+.lat-it[style*="--ac"]:hover>.lni{color:var(--ac)}
+.lat-chat>svg{width:20px;height:20px}
+@media (min-width:761px){
+  [data-lat-mini] .lat-ctx{margin:2px auto 6px}
+  [data-lat-mini] .lat .ctx-btn{width:40px;height:40px;padding:0;margin:0 auto;justify-content:center;gap:0}
+  [data-lat-mini] .lat .ctx-btn .ctx-t,[data-lat-mini] .lat .ctx-btn>svg{display:none}
+  [data-lat-mini] .lat-grp-tg,[data-lat-mini] .lat-sub-grp{display:none}
+  [data-lat-mini] .lat-grp>.lat-it{padding-right:6px}
+}
+
+/* El cel: la barra de abajo (fija, con safe-area), la hoja que sube desde abajo y el chip del cliente en la barra de arriba. */
+.nav-cel{display:none}
+@media (max-width:760px){
+  .nav-cel{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;align-items:stretch;padding:4px 6px calc(4px + env(safe-area-inset-bottom));
+    background:rgb(var(--ui-surf-rgb) / .97);border-top:1px solid var(--ui-line);-webkit-backdrop-filter:none;backdrop-filter:none;transform:translateZ(0)}
+  .nc-b{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;min-width:0;padding:6px 2px;border:0;border-radius:10px;background:transparent;
+    color:var(--ui-mut);font:inherit;font-size:10.5px;font-weight:500;text-decoration:none;cursor:pointer}
+  .nc-b>svg{width:20px;height:20px}
+  .nc-b span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nc-b.on,.nc-b[aria-expanded="true"]{color:var(--ui-ink)}
+  .nc-b.on>svg,.nc-b[aria-expanded="true"]>svg{color:var(--ui-acc)}
+  .top-ctx{flex:1 1 auto;min-width:118px;max-width:52vw}
+  .top-ctx .ctx-btn{padding:6px 8px;border-radius:10px}
+  .top:has(.top-ctx) .word{display:none}
+  /* El chip del cliente manda en la barra de arriba: «Tu primer día» y «Cómo se usa» ceden espacio y se cortan. */
+  .top .top-ayuda{flex:0 1 auto;min-width:0;overflow:hidden}
+  .top .top-ayuda .pdchip,.top .top-ayuda .guiabtn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+@media (max-width:380px){.top-ctx .ctx-t small{display:none}}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:35;box-sizing:border-box;max-height:72vh;overflow:auto;padding:10px 12px calc(14px + env(safe-area-inset-bottom));
+  background:var(--ui-surf);border:1px solid var(--ui-line);border-bottom:0;border-radius:18px 18px 0 0;box-shadow:var(--ui-sh-3)}
+.hoja-h{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 8px}
+.hoja-h b{font-size:15px;font-weight:600}
+.hoja-lista{display:flex;flex-direction:column;gap:2px}
+.hoja-it{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:11px 12px;border:0;border-radius:12px;background:transparent;color:var(--ui-ink);font:inherit;font-size:15px;text-align:left;text-decoration:none;cursor:pointer}
+.hoja-it>svg{width:18px;height:18px;flex:none;color:var(--ac,var(--ui-mut))}
+.hoja-it:hover,.hoja-it:focus-visible{background:var(--ui-surf2)}
+.hoja-it.on{background:var(--ui-fill2);font-weight:600}
+.hoja-it.on>svg{color:var(--ac,var(--ui-acc))}
+.hoja .lat-k{margin:8px 12px 2px}
+.hoja-subs{display:flex;flex-wrap:wrap;gap:6px;padding:2px 12px 8px 42px}
+.hoja-subs .hoja-it{width:auto;padding:6px 12px;border-radius:99px;font-size:13px;background:var(--ui-fill)}
+.hoja-subs .hoja-it.on{background:var(--ui-ink);color:var(--ui-bg)}
+@keyframes hojaSube{from{transform:translateY(16px);opacity:0}}
+@media (prefers-reduced-motion:no-preference){.hoja{animation:hojaSube var(--d-3) var(--e-sheet) both}}
+
+/* El selector de cliente (contexto.js): el botón de la barra (y del chip del cel), su popover y el panel grande (Home o
+   un workspace sin cliente). En el cel el popover es una hoja (lleva .hoja: hereda su forma y su entrada). */
+.ctx-btn{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--ui-line);border-radius:12px;background:var(--ui-surf);color:var(--ui-ink);font:inherit;text-align:left;cursor:pointer}
+.ctx-btn:hover{background:var(--ui-surf2)}
+.ctx-btn[aria-expanded="true"]{border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent)}
+.ctx-btn>svg{margin-left:auto;flex:none;color:var(--ui-mut)}
+.ctx-btn:not(.on) .ctx-t b{font-weight:500;color:var(--ui-ink2)}
+.ctx-mono{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex:none;border-radius:8px;background:var(--ui-fill2);color:var(--ui-ink);font-size:12px;font-weight:600;letter-spacing:.02em;font-style:normal}
+.ctx-btn.on .ctx-mono{background:color-mix(in srgb,var(--ui-acc) 14%,var(--ui-surf));color:var(--ui-acc)}
+.ctx-t{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.ctx-t b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctx-t small{font-size:11px;color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctx-pop{position:fixed;z-index:300;box-sizing:border-box;max-height:380px;overflow:auto;padding:6px;border:1px solid var(--ui-line);border-radius:14px;background:var(--ui-surf);box-shadow:var(--ui-sh-2)}
+.ctx-busca{display:block;width:calc(100% - 4px);box-sizing:border-box;margin:2px 2px 6px;padding:8px 10px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-bg);color:var(--ui-ink);font:inherit;font-size:13.5px}
+.ctx-busca:focus,.ctx-busca:focus-visible{outline:none;border-color:color-mix(in srgb,var(--ui-acc) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-acc) 18%,transparent)}
+.ctx-lista{display:flex;flex-direction:column;gap:2px}
+.ctx-op{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:8px 10px;border:0;border-radius:10px;background:transparent;color:var(--ui-ink);font:inherit;text-align:left;cursor:pointer}
+.ctx-op:hover,.ctx-op:focus-visible{background:var(--ui-surf2)}
+.ctx-op:focus-visible{outline:2px solid var(--ui-focus);outline-offset:-2px}
+.ctx-op.on,.ctx-op[aria-selected="true"]{background:var(--ui-fill2)}
+.ctx-op>svg{margin-left:auto;flex:none;color:var(--ui-acc)}
+.ctx-op[hidden]{display:none}
+.ctx-vacio{margin:0;padding:10px 12px;color:var(--ui-mut)}
+.ctx-grande{max-width:720px;box-sizing:border-box;padding:20px;border:1px solid var(--ui-line);border-radius:16px;background:var(--ui-surf);text-align:left}
+.ctx-grande h2{margin:0 0 4px;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.ctx-grande p.mut{margin:0 0 14px}
+.ctx-grande .ctx-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.ctx-grande .ctx-op{border:1px solid var(--ui-line);border-radius:12px;background:var(--ui-surf)}
+.ctx-grande .ctx-op:hover,.ctx-grande .ctx-op:focus-visible{background:var(--ui-surf2)}
+.ctx-grande .ctx-op.on{background:var(--ui-fill2);border-color:color-mix(in srgb,var(--ui-acc) 40%,transparent)}
+@media (max-width:760px){
+  .ctx-pop.hoja{left:0;right:0;bottom:0;top:auto;width:auto;max-height:70vh;border-radius:16px 16px 0 0;padding:8px 8px calc(10px + env(safe-area-inset-bottom))}
+}
+
+/* El Chat dentro del cascarón: #main lleva la clase llm-host y el Chat lo llena de punta a punta (en la compu a la derecha de
+   la barra lateral; en el cel, toda la pantalla: la barra de arriba y la de abajo se esconden). */
+html[data-pantalla="chat"] .app{padding:0;max-width:none;margin:0;overflow:hidden}
+html[data-pantalla="chat"] .top,html[data-pantalla="chat"] .nav-cel{display:none!important}
+.llm-host,#main.llm-host{position:relative;height:100vh;height:100dvh;min-height:0!important;padding:0;margin:0;overflow:hidden}
+/* Dentro del Chat: el nombre, el modo (un select chico cuando hay más de uno) y su chevron. */
+.ls-ttl{font-size:14px;font-weight:650;color:var(--l-ink);white-space:nowrap}
+.ls-area b:has(>.ls-modo){position:relative}
+.ls-area b:has(>.ls-modo)::after{content:"";position:absolute;right:5px;top:50%;width:6px;height:6px;margin-top:-5px;border-right:1.6px solid var(--l-mut);border-bottom:1.6px solid var(--l-mut);transform:rotate(45deg);pointer-events:none}
+.ls-modo{appearance:none;-webkit-appearance:none;min-width:0;max-width:100%;margin:0;padding:0 18px 0 0;border:0;background:transparent;font:inherit;font-size:15px;font-weight:650;color:var(--l-ink);cursor:pointer;text-overflow:ellipsis}
+.ls-modo:focus-visible{outline:2px solid var(--l-acc);outline-offset:2px;border-radius:6px}
+.ls-modo option{color:var(--ui-ink);background:var(--ui-surf)}
+
+/* ===================== WORKSPACES (screens/workspace.js) =====================
+   La cabecera sin cliente, las pestañas, el hero del cliente con el flujo de 7 pasos, la grilla de herramientas (tarjeta,
+   ficha «Pronto» y cabecera de herramienta). El color del workspace llega en --ws-c (style="--ws-c:var(--ui-m-<ws>)"). */
+.ws-cab{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.ws-cab-ico{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ws-c,var(--ui-acc)) 14%,transparent);color:var(--ws-c,var(--ui-acc))}
+.ws-cab h1{margin:0;font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+.ws-cab p{margin:2px 0 0;font-size:13.5px}
+.ws-vacio{max-width:640px;margin:0 auto;padding:24px;box-sizing:border-box}
+.ws-vacio .ctx-grande{max-width:none}
+.ws-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ws-tabs{display:flex;gap:2px;margin:0 0 16px;border-bottom:1px solid var(--ui-line);overflow-x:auto;scrollbar-width:none}
+.ws-tabs::-webkit-scrollbar{display:none}
+.ws-tabs a{position:relative;flex:none;padding:8px 12px 10px;border-radius:8px 8px 0 0;font-size:13.5px;font-weight:500;color:var(--ui-mut);text-decoration:none;white-space:nowrap}
+.ws-tabs a:hover{color:var(--ui-ink);background:var(--ui-fill)}
+.ws-tabs a.on{color:var(--ui-ink);font-weight:600}
+.ws-tabs a.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:var(--ws-c,var(--ui-acc))}
+.ws-hero{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:18px;border-radius:var(--r-4);background:var(--ui-surf);border:1px solid var(--ui-line);border-left:4px solid var(--ws-c,var(--ui-acc));box-shadow:var(--ui-sh-1)}
+.ws-hero-mono{width:48px;height:48px;flex:none;border-radius:14px;display:grid;place-items:center;background:var(--ui-fill2);color:var(--ui-ink);font-size:15px;font-weight:600;letter-spacing:.02em}
+.ws-hero-mono.priv{background:var(--ui-ink);color:var(--ui-bg)}
+.ws-hero-t{flex:1;min-width:0}
+.ws-hero-t h1{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+.ws-hero-t p{margin:2px 0 0;font-size:13.5px;color:var(--ui-mut)}
+.ws-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ws-hero>.btn{flex:none}
+/* El flujo compartido: 7 pastillas chicas, la del paso de la pestaña abierta resaltada (va fuera del hero: no hereda --ws-c). */
+.ws-flujo{list-style:none;margin:12px 0 20px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.ws-flujo li{padding:4px 10px;border-radius:99px;background:var(--ui-fill);color:var(--ui-mut2);font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.ws-flujo li.on{background:var(--ws-c,var(--ui-ink));color:var(--ui-bg)}
+.ws-sec{margin-bottom:24px}
+.ws-sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ws-sec-h h2{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.ws-sec-h h2 a{color:inherit;text-decoration:none}
+.ws-sec-h h2 a:hover{text-decoration:underline;text-underline-offset:3px}
+.ws-sec-h h3{margin:0;font-size:14px;font-weight:600}
+.ws-sec.ws-next{display:grid;gap:4px;padding:14px 16px;border-radius:var(--r-3);background:var(--ui-surf2);border:1px solid var(--ui-line)}
+.ws-next .lbl{margin:0}
+.ws-next>a{display:inline-flex;align-items:center;gap:8px;justify-self:start;font-size:15px;font-weight:600;color:var(--ui-ink);text-decoration:none}
+.ws-next>a:hover{color:var(--ui-acc)}
+.ws-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.tool-card{position:relative;display:flex;flex-direction:column;min-width:0;padding:14px;border-radius:var(--r-4);background:var(--ui-surf);border:1px solid var(--ui-line);box-shadow:var(--ui-sh-1);cursor:pointer}
+.tool-card:hover{box-shadow:var(--ui-sh-2)}
+.tool-card[data-est="pronto"]{opacity:.72}
+.tool-card-ico{width:34px;height:34px;flex:none;margin-bottom:10px;border-radius:10px;display:grid;place-items:center;background:var(--ui-fill);color:var(--ui-ink2)}
+.tool-card[data-est="pronto"] .tool-card-ico{color:var(--ui-mut2)}
+.tool-card-t{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.tool-card-t>a{min-width:0;font-size:14.5px;font-weight:600;line-height:1.25;color:var(--ui-ink);text-decoration:none}
+.tool-card-t>a:hover{text-decoration:underline;text-underline-offset:3px}
+.tool-card-est{flex:none;display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.04em;line-height:1.4;text-transform:uppercase;background:var(--ui-fill);color:var(--ui-mut2)}
+.tool-card-est[data-est="lista"]{background:color-mix(in srgb,var(--ui-ok) 15%,transparent);color:var(--ui-ok)}
+.tool-card-est[data-est="parcial"]{background:color-mix(in srgb,var(--ui-warn) 14%,transparent);color:var(--ui-warn)}
+.tool-card>p{margin:6px 0;font-size:13px;line-height:1.45;color:var(--ui-ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tool-card-ult{display:flex;flex-direction:column;gap:2px}
+.tool-card-ult .sm{font-size:11.5px}
+.tool-card-chips{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.tool-card-chip{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.tool-card-chip a{text-decoration:none}
+.tool-card-chip a:hover{background:var(--ui-fill2)}
+.tool-ficha{max-width:640px;margin:0 auto;padding:24px;box-sizing:border-box;border-radius:var(--r-4);background:var(--ui-surf);border:1px solid var(--ui-line);text-align:center}
+.tool-ficha-ico{width:48px;height:48px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:var(--ui-fill);color:var(--ui-ink2)}
+.tool-ficha h2{margin:8px 0 4px;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.tool-ficha>p{margin:0 0 14px;font-size:14px;color:var(--ui-ink2)}
+.tool-ficha-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 14px;text-align:left}
+.tool-ficha-dl dt{margin-bottom:3px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-mut2)}
+.tool-ficha-dl dd{margin:0;font-size:13.5px;color:var(--ui-ink)}
+.tool-ficha-dl ul{list-style:none;margin:0;padding:0}
+.tool-ficha-dl a{color:inherit}
+.tool-ficha>.btn{margin-top:14px}
+.tool-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--ui-line)}
+.tool-head-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tool-head-t b{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:600}
+.tool-head-t b>svg{color:var(--ws-c,var(--ui-acc))}
+.tool-head-t strong{color:var(--ui-ink);font-weight:600}
+.ws-sub-tabs{display:inline-flex;gap:2px;margin:0 0 12px;padding:3px;border-radius:99px;background:var(--ui-fill)}
+.ws-sub-tabs a{padding:5px 11px;border-radius:99px;font-size:12.5px;font-weight:500;color:var(--ui-ink2);text-decoration:none}
+.ws-sub-tabs a.on{background:var(--ui-surf);color:var(--ui-ink);box-shadow:var(--ui-sh-1)}
+.ws-lista{list-style:none;margin:0;padding:0}
+.ws-lista li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--ui-line)}
+.ws-lista li>span:first-child{min-width:0;font-size:13.5px;color:var(--ui-ink)}
+/* Consulting dentro de un workspace (cabecera:false): la etapa que lee de Strategy. */
+.cs-etapa{flex-wrap:wrap;margin-bottom:10px}
+@media (max-width:760px){
+  .ws-hero{padding:14px}
+  .ws-hero>.btn{width:100%;justify-content:center}
+  .tool-ficha-dl{grid-template-columns:1fr}
+}
+
+/* ===================== HOME (screens/home.js) =====================
+   El hero, «Ask InherentOS», los KPIs, la actividad reciente y los accesos a los workspaces. Las cajas .hy-* son las de Hoy. */
+.home-hero{margin-bottom:var(--s4)}
+.home-hero p em{font-style:normal;color:var(--ink2)}
+.home-ask{display:block;margin:0 0 var(--s5)}
+.home-ask-box{display:flex;align-items:flex-end;gap:10px;padding:10px 12px 10px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--hair);box-shadow:var(--sh-1)}
+.home-ask-box:focus-within{border-color:var(--hair-strong)}
+.home-ask-ic{width:32px;height:32px;flex:none;align-self:flex-start;display:grid;place-items:center;color:var(--ink2)}
+.home-ask-ta{flex:1;min-width:0;min-height:24px;max-height:180px;margin:4px 0;padding:0;border:0;border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:15.5px;line-height:1.4;resize:none;overflow:auto}
+.home-ask-ta:focus,.home-ask-ta:focus-visible{outline:none;box-shadow:none}
+.home-ask-go{width:36px;height:36px;flex:none;padding:0;border-radius:50%}
+.home-ask-foot{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px}
+.home-chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.home-chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent;cursor:pointer}
+.home-chip:hover{background:var(--fill-2);border-color:var(--hair-strong)}
+.home-ask-modo{margin-left:auto;white-space:nowrap}
+.home-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:var(--s3);margin-bottom:var(--s4)}
+.home-kpi{display:flex;flex-direction:column;gap:6px;min-width:0;padding:16px 18px;border-radius:20px;background:var(--surface);border:1px solid var(--hair);color:var(--ink);text-decoration:none;transition:border-color var(--d-2) var(--e-std)}
+.home-kpi:hover{border-color:var(--hair-strong)}
+.home-kpi-top{display:flex;align-items:center;gap:8px}
+.home-kpi-top .lbl{margin:0}
+.home-kpi-ic{width:26px;height:26px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
+.home-kpi-go{margin-left:auto;font-size:13px;color:var(--mut)}
+.home-kpi b{font-size:36px;font-weight:500;line-height:1;letter-spacing:-1px}
+.home-kpi-sub{font-size:12.5px}
+.home-kpi-sub .r{color:var(--ui-bad)}
+.home-two{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:var(--s4);align-items:start;margin-bottom:var(--s5)}
+.home-act{display:flex;flex-direction:column;min-width:0;padding:16px 18px;border-radius:20px;background:var(--surface);border:1px solid var(--hair)}
+.home-act-row{display:flex;align-items:center;gap:10px;min-width:0;padding:9px 0;border-top:1px solid var(--hair);color:var(--ink);font-size:13.5px;text-decoration:none}
+.home-act-row:hover{background:rgb(var(--ink-rgb) / .03)}
+.home-act-ic{width:26px;height:26px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
+.home-act-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-act-t small{display:block;font-size:11.5px;color:var(--mut);overflow:hidden;text-overflow:ellipsis}
+.home-act-who,.home-act-when{flex:none;font-size:12px;white-space:nowrap}
+.home-act-when{min-width:64px;text-align:right}
+.home-quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s3)}
+.home-two>.home-quick{grid-template-columns:1fr;gap:10px}
+.home-ws{display:flex;flex-direction:column;gap:4px;min-width:0;padding:14px 16px;border-radius:var(--r);background:var(--surface);border:1px solid var(--hair);border-left:3px solid var(--ac,var(--ui-acc));color:var(--ink);text-decoration:none;
+  transition:transform var(--d-2) var(--e-out),box-shadow var(--d-2) var(--e-std)}
+.home-ws:hover{transform:translateY(-1px);box-shadow:var(--sh-2)}
+.home-ws-ic{width:30px;height:30px;margin-bottom:2px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ac,var(--ui-acc)) 14%,transparent);color:var(--ac,var(--ui-acc))}
+.home-ws b{font-size:15.5px;font-weight:600}
+.home-ws-sub{font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.home-ws-last{margin-top:4px;font-size:12px;color:var(--mut)}
+.home-ws-last em{font-style:normal;color:var(--ink2)}
+@media (max-width:900px){
+  .home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .home-two{grid-template-columns:1fr}
+  .home-quick,.home-two>.home-quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .home-ask-modo{margin-left:0;flex-basis:100%}
+  .home-act-who{display:none}
+}
+
+/* ===================== AI HARNESS (screens/harness.js) =====================
+   La portada (acciones rápidas, Memory & Context), las pestañas de sus páginas, la ficha «Pronto» y los agentes (modos). */
+.ai-hero .lbl{display:block;margin-bottom:6px}
+.ai-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:-8px 0 var(--s5)}
+.ai-tabs a{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;border:1px solid var(--hair);background:var(--surface);color:var(--ink2);font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap}
+.ai-tabs a>svg{width:14px;height:14px}
+.ai-tabs a:hover{background:var(--fill)}
+.ai-tabs a[aria-current="page"]{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.ai-quick,.ai-memoria{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s3)}
+.ai-memoria{margin-bottom:var(--s5)}
+.ai-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;min-width:0;box-sizing:border-box;padding:18px;border-radius:var(--r);border:1px solid var(--hair);background:var(--surface);color:var(--ink);
+  font:inherit;text-align:left;text-decoration:none;cursor:pointer;transition:transform var(--d-2) var(--e-out),box-shadow var(--d-2) var(--e-std)}
+.ai-card:hover{transform:translateY(-2px);box-shadow:var(--sh-2)}
+.ai-card b{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.ai-card em{font-style:normal;color:var(--ink2)}
+.ai-card-ic{width:34px;height:34px;flex:none;margin-bottom:4px;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
+.ai-card-go{position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink2);font-size:13px}
+.ai-card.off{opacity:.6;cursor:default}
+.ai-card.off:hover{transform:none;box-shadow:none}
+/* «Create Deliverable»: un details que se abre como menú debajo de la tarjeta. */
+.ai-menu{padding:0;overflow:visible}
+.ai-menu>summary{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;box-sizing:border-box;padding:18px;border-radius:inherit;list-style:none;cursor:pointer}
+.ai-menu>summary::-webkit-details-marker{display:none}
+.ai-menu>summary::marker{content:""}
+.ai-menu[open]{z-index:5;border-color:var(--hair-strong)}
+.ai-menu[open]:hover{transform:none}
+.ai-menu-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:6;box-sizing:border-box;max-height:60vh;overflow:auto;padding:10px;border-radius:16px;border:1px solid var(--hair);background:var(--surface);box-shadow:var(--sh-2);cursor:default}
+.ai-menu-grp{margin-bottom:8px}
+.ai-menu-grp>.lbl{display:flex;align-items:center;gap:6px;margin:0 0 4px;padding:4px 8px 0}
+.ai-menu-grp>.lbl::before{content:"";width:8px;height:8px;flex:none;border-radius:50%;background:var(--ac,var(--ui-acc))}
+.ai-menu-it{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;color:var(--ink);font-size:13.5px;text-decoration:none}
+.ai-menu-it:hover{background:var(--fill)}
+.ai-menu-it .grow{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai-menu-it small{display:block;font-size:11.5px;color:var(--mut);overflow:hidden;text-overflow:ellipsis}
+.ai-menu-it .chip{flex:none}
+.ai-mem{display:flex;flex-direction:column;gap:6px;min-width:0;padding:18px;border-radius:var(--r);border:1px solid var(--hair);background:var(--surface)}
+.ai-mem-ic{width:30px;height:30px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink2)}
+.ai-mem b{font-size:15.5px;font-weight:600}
+.ai-mem em{font-style:normal;color:var(--ink2)}
+.ai-mem-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ai-mem-links a{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:99px;border:1px solid var(--hair-strong);color:var(--ink);font-size:12.5px;text-decoration:none}
+.ai-mem-links a:hover{background:var(--fill)}
+.ai-mem.pronto{border:1.5px dashed var(--hair-strong);background:transparent}
+.ai-pronto{margin-top:var(--s3)}
+.ai-pronto-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ai-pronto-h h2{margin:2px 0 0;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.ai-pronto ul{margin:8px 0 0 18px;padding:0;line-height:1.5;color:var(--ink2)}
+.ai-pronto li{margin-bottom:4px;font-size:14px}
+.ai-pronto-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--hair)}
+.ai-pronto-foot a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.ai-agentes{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--s3);margin-bottom:var(--s5)}
+.ai-agente{display:flex;flex-direction:column;gap:8px;min-width:0;padding:16px 18px;border-radius:var(--r);border:1px solid var(--hair);border-top:3px solid var(--ac,var(--ui-acc));background:var(--surface)}
+.ai-agente-h{display:flex;align-items:center;gap:10px}
+.ai-agente-h .ai-card-ic{width:30px;height:30px;margin:0;background:color-mix(in srgb,var(--ac,var(--ui-acc)) 14%,transparent);color:var(--ac,var(--ui-acc))}
+.ai-agente-h b{font-size:15.5px;font-weight:600}
+.ai-agente-h .mut{display:block}
+.ai-agente>p{margin:0;font-size:13.5px;line-height:1.45;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.ai-agente-f{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px;border-top:1px solid var(--hair)}
+@media (max-width:900px){.ai-quick,.ai-memoria{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){
+  .ai-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px 4px}
+  .ai-tabs::-webkit-scrollbar{display:none}
+  .ai-menu-list{position:static;margin-top:10px}
+}
+@media (max-width:600px){.ai-quick,.ai-memoria{grid-template-columns:1fr}}
