@@ -5,11 +5,18 @@ import { api } from './core.js';
 
 const K = (me) => `os.hermes.${me.email}`;
 const URL_BASE = 'http://127.0.0.1:8642';
+// Hermes corre un servicio por compu: la API la abre el perfil principal y atiende al perfil «inherent» en /p/inherent
+// (con la llave de ese perfil). Un Hermes de antes (un servicio por perfil) contesta en la raíz.
+const PREFIJO = '/p/inherent';
+const otraUrl = (u) => (u.endsWith(PREFIJO) ? u.slice(0, -PREFIJO.length) : u + PREFIJO);
+// La dirección que sí contestó con esta llave (la encuentra saludHermes). Manda sobre la guardada.
+const buena = new Map();
 
 // La conexión de esta compu: { url, key } · la app de Mac la entrega en window.inherentEscritorio.hermes; en el navegador se pega una vez.
 export function hermesDe(me) {
-  try { const h = window.inherentEscritorio?.hermes; if (h?.key) return { url: h.url || URL_BASE, key: h.key }; } catch {}
-  try { const j = JSON.parse(localStorage.getItem(K(me)) || 'null'); if (j?.key) return { url: j.url || URL_BASE, key: j.key }; } catch {}
+  const con = (url, key) => ({ url: buena.get(key) || url || URL_BASE, key });
+  try { const h = window.inherentEscritorio?.hermes; if (h?.key) return con(h.url, h.key); } catch {}
+  try { const j = JSON.parse(localStorage.getItem(K(me)) || 'null'); if (j?.key) return con(j.url, j.key); } catch {}
   return null;
 }
 export function setHermes(me, v) { try { if (v?.key) localStorage.setItem(K(me), JSON.stringify({ url: v.url || URL_BASE, key: v.key })); else localStorage.removeItem(K(me)); } catch {} }
@@ -24,15 +31,29 @@ const pide = async (h, ruta, { method = 'GET', body, headers = {}, signal, ms = 
 };
 
 // ¿Hermes está encendido en esta compu? → { on, version, auth (la llave sirve) }
+// Prueba la dirección guardada y, si la llave no entra ahí, la otra (/p/inherent o la raíz); se queda con la que contesta.
 export async function saludHermes(me) {
   const h = hermesDe(me) || { url: URL_BASE, key: '' };
-  try {
-    const r = await fetch(h.url + '/health', { credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return { on: false };
-    const j = await r.json();
-    let auth = false; if (h.key) { try { await pide(h, '/v1/capabilities', { ms: 4000 }); auth = true; } catch {} }
-    return { on: j.status === 'ok', version: j.version || '', auth };
-  } catch { return { on: false }; }
+  let salud = { on: false };
+  for (const url of [h.url, otraUrl(h.url)]) {
+    try {
+      const r = await fetch(url + '/health', { credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: AbortSignal.timeout(4000) });
+      if (!r.ok) continue;
+      const j = await r.json(), on = j.status === 'ok';
+      if (!h.key) return { on, version: j.version || '', auth: false };
+      try {
+        await pide({ url, key: h.key }, '/v1/capabilities', { ms: 4000 });
+        if (url !== h.url) {
+          buena.set(h.key, url);
+          // En el navegador se guarda la dirección buena; la de la app de Mac la escribe su instalador (api-url).
+          let enApp = false; try { enApp = Boolean(window.inherentEscritorio?.hermes?.key); } catch {}
+          if (!enApp) setHermes(me, { url, key: h.key });
+        }
+        return { on, version: j.version || '', auth: true };
+      } catch { if (!salud.on) salud = { on, version: j.version || '', auth: false }; }
+    } catch {}
+  }
+  return salud;
 }
 
 // Los proveedores y modelos que esta compu tiene conectados (lo mismo que ve el selector de Hermes).
