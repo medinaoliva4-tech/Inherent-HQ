@@ -1,22 +1,18 @@
-// Diseño gráfico › Chat: el único chat del espacio. Una secuencia cerrada por marca y mes:
-//   1 · Plan del mes (③ Marketing) → 2 · Ideas (④ Creatividad) → 3 · Diseño (⑥A, en Figma).
-// Sin estrategia aprobada no hay plan; sin plan pasado a Creatividad no hay ideas; sin ideas no hay diseño. La excepción a
-// propósito es la «pieza suelta» (una presentación, algo puntual): va directo a Diseño y se marca así.
-// A la izquierda el chat; a la derecha el área de trabajo de la etapa (el plan, las ideas, las piezas), armada con lo que se
-// habló y lo que ya está en las herramientas. Corre con el modelo de tu compu por el puente de Laya (Plan e Ideas en solo
-// lectura; Diseño suma Figma con figwright).
-// Rutas: #/ws/creative/<marca>/design/design-studio (lo monta screens/workspace.js); las viejas #/marcas/diseno[/<marca>] son alias.
+// Diseño gráfico › Design Studio: una sola etapa, la de Diseño (⑥A), con tres columnas:
+//   la cola de piezas del mes · el lienzo de láminas con variaciones A/B/C y toggle de formato · el panel (concepto, copy,
+//   revisión, ojo) con el chat debajo. Plan es de Marketing e Ideas es del Lab: ya no están aquí.
+// El chat corre con el modelo de tu compu por el puente de Laya y diseña en Figma (figwright). Lo diseñado se guarda en
+// content.diseno = { variaciones[], elegida, figma, laminas } por la ruta de siempre, con la v leída (409 → se relee y reintenta).
+// Las variaciones no elegidas no se borran. Sin puente se muestra cómo emparejar; en el cel, «Disponible solo en tu compu».
+// Ruta: #/ws/creative/<marca>/design/design-studio (lo monta screens/workspace.js); las viejas #/marcas/diseno[/<marca>] son alias.
 import { html, raw, mount, api, col, toast, ico, md, initials, confirmAsk, ask, uploadToDrive, $, $$ } from './core.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from './laya.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './puente-chat.js';
-import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoIdea, textoRefs, textoFormatos, carpetaDe } from './diseno.js';
+import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, mesNombre, etiquetaCtx, textoCalendario, textoIdea, textoRefs, carpetaDe, variacionesDe, letraLibre, elegirVariacion, colaDelMes, esStory } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
-import { promptPlan, leerPlan, sinBloqueP, NOMBRE_P, nombreMes } from './plan-mes.js';
-import { planPanel, pasarPlan, mesesPlan } from './plan-mes-ui.js';
-import { promptIdeas, leerIdeas, sinBloqueI } from './ideas-chat.js';
-import { divisor, ubicarPop, junto } from './divisor.js';
-import { docHtml, tarjetaDoc, barraChat, botonesEnviar, bandeja } from './artifact.js';
+import { ubicarPop, junto } from './divisor.js';
+import { tarjetaDoc, barraChat, botonesEnviar, bandeja } from './artifact.js';
 import { botonVoz, dictar } from './voz.js';
 import { verImagen, ojoChip } from './ojo.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn } from './motor-ui.js';
@@ -24,7 +20,6 @@ import { rutaModulo } from './herramientas.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
 const OJO = new Map(); // `${marca}|${nodo}` → { parecido, refs } del ojo visual
-const ETAPAS = [['plan', 'Plan del mes', '③ Marketing'], ['ideas', 'Ideas', '④ Creatividad'], ['diseno', 'Diseño', '⑥A Diseño gráfico']];
 let enVuelo = null;
 const enCompu = () => !/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '');
 
@@ -54,7 +49,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
 
   // ---------- Inicio: «¿Qué diseñamos hoy?» ----------
   function inicio() {
-    mount(el, html`<div class="es-start dz-start"><h1>¿Qué hacemos hoy?</h1><p class="mut">Elige la marca. Del plan del mes a las piezas en Figma, en un solo chat y en orden.</p>
+    mount(el, html`<div class="es-start dz-start"><h1>¿Qué diseñamos hoy?</h1><p class="mut">Elige la marca. Las piezas del mes en Figma, con variaciones A, B y C para elegir.</p>
       <div class="es-box es-box-start"><div class="es-form"><textarea class="in" rows="1" placeholder="Elige una marca para escribir…" disabled aria-label="Mensaje para el chat"></textarea><button class="btn es-send" type="button" disabled aria-label="Enviar">${ico('right', 16)}</button></div>
         <div class="es-foot"><button type="button" class="es-pick need" data-act="marca" aria-haspopup="listbox">Elegir marca ▾</button><span></span></div></div>
       <div class="dz-sug">${SUGERENCIAS.map((s) => html`<span>${s}</span>`)}</div></div>`);
@@ -62,54 +57,45 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     const t = $('[data-act="marca"]', el); if (t && marcas.length) menuMarcas(t);
   }
 
-  // ---------- Una marca ----------
+
   async function trabajo(b) {
     el.onclick = null;
     mount(el, html`<p class="loading">Cargando…</p>`);
     const key = `os.diseno.chat.${me.email}.${b.slug}`;
     // El contexto: claves «cal:AAAA-MM» · «plan:AAAA-MM» · «idea:<id>» · «lib:<id>» · «refs». `enviados`: las que esta sesión de Claude ya leyó.
-    const chat = (() => { const base = { msgs: [], sesion: null, motor: '', formato: 'Carrusel', ideaId: '', resultado: null, ctx: [], libT: {}, enviados: [], etapa: 'plan', mes: mesesPlan()[1], suelta: false, hormozi: true, area: true, vistas: [], ideasProp: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, ctx: Array.isArray(j.ctx) ? j.ctx : j.ideaId ? [`idea:${j.ideaId}`] : [], enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
-    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, doc }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(doc ? { doc } : {}) })), sesion: chat.sesion, motor: chat.motor, etapa: chat.etapa, mes: chat.mes, suelta: chat.suelta, hormozi: chat.hormozi, area: chat.area, vistas: chat.vistas, ideasProp: chat.ideasProp.slice(-40), formato: chat.formato, ideaId: chat.ideaId, resultado: chat.resultado, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
+    const chat = (() => { const base = { msgs: [], sesion: null, motor: '', formato: 'Carrusel', ideaId: '', borradores: {}, letra: '', ctx: [], libT: {}, enviados: [], mes: MESES_CTX()[0], hormozi: true, area: true, vistas: [] }; try { const j = JSON.parse(localStorage.getItem(key) || 'null'); if (j && Array.isArray(j.msgs)) return { ...base, ...j, borradores: j.borradores && typeof j.borradores === 'object' ? j.borradores : {}, mes: /^\d{4}-\d{2}$/.test(j.mes || '') ? j.mes : base.mes, ctx: (Array.isArray(j.ctx) ? j.ctx : []).filter((k) => !k.startsWith('plan:')), enviados: Array.isArray(j.enviados) ? j.enviados : [] }; } catch {} return base; })();
+    const guardar = () => { try { localStorage.setItem(key, JSON.stringify({ msgs: chat.msgs.slice(-30).map(({ r, t, err, pregunta, doc }) => ({ r, t, ...(err ? { err } : {}), ...(pregunta ? { pregunta } : {}), ...(doc ? { doc } : {}) })), sesion: chat.sesion, motor: chat.motor, mes: chat.mes, hormozi: chat.hormozi, area: chat.area, vistas: chat.vistas, formato: chat.formato, ideaId: chat.ideaId, borradores: chat.borradores, letra: chat.letra, ctx: chat.ctx, libT: chat.libT, enviados: chat.enviados })); } catch {} };
     const tok = () => { try { return window.inherentEscritorio?.token || localStorage.getItem(`os.estrategia.token.${me.email}`) || ''; } catch { return ''; } }; // en la app de escritorio, el token llega solo
     const setTok = (t) => { try { if (t) localStorage.setItem(`os.estrategia.token.${me.email}`, t); else localStorage.removeItem(`os.estrategia.token.${me.email}`); } catch {} };
-    // Si se llegó desde una herramienta («Trabajarlo en el chat»), abre en esa etapa y ese mes.
-    try { const j = JSON.parse(localStorage.getItem('os.dg.etapa') || 'null'); if (j?.slug === b.slug) { if (ETAPAS.some(([k]) => k === j.etapa)) chat.etapa = j.etapa; if (/^\d{4}-\d{2}$/.test(j.mes || '')) chat.mes = j.mes; } localStorage.removeItem('os.dg.etapa'); } catch {}
-    const cargarEstado = () => api(`plan/${encodeURIComponent(b.slug)}/${chat.mes}`).catch((e) => ({ error: e.message, plan: null, piezas: 0, conIdea: 0, estrategia: { aprobada: false } }));
-    let [sisD, todo, E] = await Promise.all([api(`repo/client/${encodeURIComponent(b.slug)}/sistema`).catch(() => ({ md: '' })), col('content').list().catch(() => []), cargarEstado()]);
+    let [sisD, todo] = await Promise.all([api(`repo/client/${encodeURIComponent(b.slug)}/sistema`).catch(() => ({ md: '' })), col('content').list().catch(() => [])]);
     if (!alive()) return;
     const sis = sisD.md ? leerSistema(sisD.md) : null;
     const ideas = todo.filter((p) => p.kind === 'post' && p.profile === b.slug && !['Publicado', 'Archivado'].includes(estadoDe(p))).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
-    const S = { salud: null, pareo: '', lamina: null, guardando: false, fresh: [], pasando: false, enviando: false };
-    // ---------- La secuencia ----------
-    const planHecho = () => Boolean(E.plan?.slots?.length && E.piezas);
-    // Todo pide la estrategia aprobada; la pieza suelta es la única que entra directo (y solo a Diseño).
-    const abierta = (k) => (k === 'diseno' && chat.suelta) || Boolean(E.estrategia?.aprobada && (k === 'plan' || (k === 'ideas' ? planHecho() : E.conIdea > 0)));
-    const hecha = (k) => (k === 'plan' ? planHecho() : k === 'ideas' ? E.conIdea > 0 : Boolean(chat.resultado?.guardado));
-    const Mes = () => nombreMes(chat.mes).replace(/^./, (c) => c.toUpperCase());
-    // La barra fija de arriba: el cliente, el mes y el panel; abajo, las etapas en orden.
-    const etapaHtml = () => html`${barraChat({ panel: chat.area,
-        pasos: html`${ETAPAS.map(([k, l, dep], i) => html`${i ? html`<span class="cb-sep">›</span>` : ''}<button type="button" class="dg-e ${chat.etapa === k ? 'on' : ''} ${hecha(k) ? 'ok' : ''}" data-act="etapa" data-e="${k}" aria-label="${l}" title="${l} · ${dep}${abierta(k) ? '' : ' · todavía cerrada'}"><i>${hecha(k) ? ico('check', 11) : abierta(k) ? i + 1 : ico('lock', 11)}</i><span class="cb-l">${l}</span></button>`)}${chat.suelta ? '' : html`<button type="button" class="cb-mini" data-act="suelta" title="Algo puntual que no sale del plan: va directo a Diseño">${ico('plus', 11)}<span class="cb-l">Pieza suelta</span></button>`}` })}
-      ${chat.suelta ? html`<div class="dg-suelta">${ico('alert', 12)} Pieza suelta: no sale de la estrategia ni del plan del mes. <button type="button" class="linkish" data-act="suelta">Volver a la secuencia</button></div>` : ''}`;
-    // Lo que se pide en cada etapa: el título del chat vacío y las sugerencias de arriba de la caja.
-    const ayuda = () => ({ plan: ['target', `El plan de ${nombreMes(chat.mes)}`, 'Qué se dice este mes, en qué canal y en qué semana, y para qué sirve cada pieza. Sale de la estrategia aprobada.', ['Arma el plan del mes', '¿Este mes es campaña o pilar?', 'Reparte las piezas por semana']],
-      ideas: ['bulb', `Las ideas de ${nombreMes(chat.mes)}`, 'Una idea por pieza del plan: qué comunicamos, el formato que ya funciona en Investigación y cómo se adapta.', ['Dame ideas para todas las piezas', 'Ideas para la semana 1', '¿Qué referente nos sirve más?']],
-      diseno: ['edit', `¿Qué diseñamos de ${b.name}?`, 'Se diseña lo que ya se ideó. El chat lee el design system y el kit de redes, y arma las piezas en Figma.', SUGERENCIAS] })[chat.etapa];
-    // El documento de cada etapa (la tarjeta del chat y la cabecera del panel).
-    const docDe = (e) => (e === 'plan' ? { ic: 'target', titulo: `Plan de ${Mes()} · ③ Marketing`, sub: 'Ábrelo para ver el plan completo' }
-      : e === 'ideas' ? { ic: 'bulb', titulo: `Ideas de ${Mes()} · ④ Creatividad`, sub: `${chat.ideasProp.filter((x) => (x.mes || chat.mes) === chat.mes).length} ideas en la mesa` }
-      : { ic: 'layers', titulo: chat.resultado?.titulo || `Las piezas de ${b.name}`, sub: '⑥A Diseño gráfico' });
-    // Por qué una etapa está cerrada y qué hacer.
-    function cerradaHtml(k) {
-      if (k === 'plan') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, la estrategia</b><p>Nadie hace contenido sin estrategia. La de ${b.name} todavía no está aprobada por el CEO.</p><div class="row" style="gap:8px"><a class="btn xs" href="#/ws/strategy/${b.slug}/overview">Ir a Estrategia</a><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
-      if (k === 'ideas') return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, el plan del mes</b><p>Las ideas salen de los slots del plan de ${nombreMes(chat.mes)}. Arma el plan y pásalo a Creatividad.</p><div class="row" style="gap:8px"><button class="btn xs" data-act="etapa" data-e="plan">Ir al plan del mes</button></div></div>`;
-      return html`<div class="es-setup"><b>${ico('lock', 14)} Primero, las ideas</b><p>Se diseña lo que Creatividad ya ideó para el plan. Si es algo puntual que no sale del plan, márcalo como pieza suelta.</p><div class="row" style="gap:8px"><button class="btn xs" data-act="etapa" data-e="ideas">Ir a las ideas</button><button class="btn ghost xs" data-act="suelta">Es una pieza suelta</button></div></div>`;
-    }
+    const S = { salud: null, pareo: '', lamina: null, guardando: false, ver: '' };
+    // ---------- Helpers ----------
+    const Mes = () => mesNombre(chat.mes);
+    const posts = () => todo.filter((p) => p.kind === 'post' && p.profile === b.slug);
+    const pieza = () => todo.find((p) => p.id === chat.ideaId) || null;
+    const llave = () => chat.ideaId || '_';
+    const borrador = () => chat.borradores[llave()] || null;
+    const fmtDia = (d) => (d ? `${String(d).slice(8, 10)}/${String(d).slice(5, 7)}` : 'sin fecha');
+    const phTxt = () => (chat.letra ? `Qué cambia en la variación ${chat.letra}…` : borrador() ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`);
+    const ayuda = () => ['edit', `¿Qué diseñamos de ${b.name}?`, 'Elige una pieza del mes a la izquierda. El chat lee el design system y el kit de redes, arma las láminas en Figma y las deja como variaciones para elegir.', SUGERENCIAS];
+    const docDe = () => ({ ic: 'layers', titulo: borrador()?.titulo || pieza()?.title || `Las piezas de ${b.name}`, sub: '⑥A Diseño gráfico' });
     const ponerArea = () => root.classList.toggle('sin-area', !chat.area);
-    const idea = () => ideas.find((p) => p.id === chat.ideaId) || null;
     const ideasCtx = () => chat.ctx.filter((k) => k.startsWith('idea:')).map((k) => ideas.find((p) => p.id === k.slice(5))).filter(Boolean);
-    // La pieza donde se guarda lo diseñado: la única idea del contexto (si hay varias, se pregunta al guardar).
-    const fijarDestino = () => { const l = ideasCtx(); chat.ideaId = l.length === 1 ? l[0].id : ''; };
+    // Una sola idea en el contexto = la pieza donde se guarda.
+    const fijarDestino = () => { const l = ideasCtx(); if (l.length === 1) chat.ideaId = l[0].id; };
     const img = (id) => IMGS.get(`${b.slug}|${id}`) || '';
+    // Una pieza guardada vuelve a las listas con su v nueva.
+    const poner = (sv) => { const i = todo.findIndex((x) => x.id === sv.id); if (i >= 0) todo[i] = sv; else todo.push(sv); const k = ideas.findIndex((x) => x.id === sv.id); if (k >= 0) ideas[k] = sv; else ideas.push(sv); };
+    // Cada PUT lleva la v leída; si otro la cambió (409) se vuelve a leer y se reaplica una vez.
+    async function guardarConV(id, base, fn) {
+      for (let n = 0; ; n++) {
+        const cur = await col('content').get(id).catch((e) => { if (n === 0 && base) return base; throw e; });
+        try { return await col('content').save(fn(cur)); } catch (e) { if (e.status !== 409 || n) throw e; }
+      }
+    }
     // El ojo visual sobre cada lámina con captura: ¿se parece a la marca? De a una, sin trabar el chat.
     let viendo = false;
     async function verLaminas(laminas) {
@@ -117,14 +103,15 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       try {
         for (const l of laminas) {
           const k = `${b.slug}|${l.id}`, src = IMGS.get(k); if (!src || OJO.has(k) || !alive()) continue;
-          try { const r = await verImagen(b.slug, { imagen: src }); if (!r) break; OJO.set(k, r); document.querySelectorAll(`[data-ojo="${l.id}"]`).forEach((x) => { x.innerHTML = String(ojoChip(r, { compact: true })); }); }
+          try { const r = await verImagen(b.slug, { imagen: src }); if (!r) break; OJO.set(k, r); document.querySelectorAll(`[data-ojo="${l.id}"]`).forEach((x) => { x.innerHTML = String(ojoChip(r, { compact: x.dataset.c !== '0' })); }); }
           catch { break; }
         }
       } finally { viendo = false; }
     }
 
-    mount(el, html`<div class="dz"><section class="es-chat dz-chat" id="dz-chat"></section><section class="dz-pane" id="dz-pane"></section></div>`);
-    const root = $('.dz', el), chatEl = $('#dz-chat', el), paneEl = $('#dz-pane', el);
+    // Columnas: la cola del mes · el lienzo con las variaciones · el lado (concepto, copy, revisión, ojo) con el chat debajo.
+    mount(el, html`<div class="dz dz3"><aside class="dz-cola" id="dz-cola"></aside><section class="dz-pane dz-lienzo" id="dz-pane"></section><aside class="dz-lado"><div class="dz-info" id="dz-info"></div><section class="es-chat dz-chat" id="dz-chat"></section></aside></div>`);
+    const root = $('.dz', el), chatEl = $('#dz-chat', el), paneEl = $('#dz-pane', el), colaEl = $('#dz-cola', el), infoEl = $('#dz-info', el);
 
     // ---------- El puente ----------
     async function salud(ms = 4000) {
@@ -133,7 +120,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       S.salud = v; return v;
     }
     function fase() {
-      if (!sis && chat.etapa === 'diseno') return 'sin-sistema';
+      if (!sis) return 'sin-sistema';
       const s = S.salud; if (!s) return 'cargando';
       if (!s.on) return 'apagado';
       if (!s.chat || !(s.chat.modos || []).includes('diseno')) return 'viejo';
@@ -172,10 +159,10 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         ${S.lamina ? html`<span class="dz-chip">${S.lamina.nombre}<button type="button" data-act="sin-lamina" aria-label="Quitar la lámina">×</button></span>` : ''}`;
     }
     // La franja de abajo de la caja: el cliente, el mes, el contexto y el modo de trabajo.
-    const modoTxt = () => [chat.hormozi ? 'Hormozi' : '', chat.etapa === 'diseno' ? chat.formato : '', chat.suelta ? 'Pieza suelta' : ''].filter(Boolean).join(' · ') || 'Modo de trabajo';
+    const modoTxt = () => [chat.hormozi ? 'Hormozi' : '', chat.formato, chat.letra ? `Variación ${chat.letra}` : ''].filter(Boolean).join(' · ') || 'Modo de trabajo';
     const bandejaHtml = () => bandeja({ cliente: { act: 'marca-cambiar', nombre: b.name }, contexto: chat.ctx.length, modo: modoTxt(),
       mes: html`<button type="button" class="cx-t" data-act="mesdg" aria-haspopup="listbox" title="El mes que se trabaja">${ico('cal', 13)}${Mes()} <span class="cx-car">▾</span></button>` });
-    function repintarCaja() { const c = $('#dz-chips', chatEl); if (c) mount(c, chipsHtml()); const t = $('#dz-tray', chatEl); if (t) mount(t, bandejaHtml()); }
+    function repintarCaja() { repintarPh(); const c = $('#dz-chips', chatEl); if (c) mount(c, chipsHtml()); const t = $('#dz-tray', chatEl); if (t) mount(t, bandejaHtml()); }
     const toggleCtx = (k) => { chat.ctx = chat.ctx.includes(k) ? chat.ctx.filter((x) => x !== k) : [...chat.ctx, k]; fijarDestino(); guardar(); repintarCaja(); paintPane(); };
     function panelCtx(anchor, vista = 'inicio', q = '', solo = '') {
       document.querySelector('.dz-ctxp')?.remove();
@@ -198,12 +185,10 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
           ${fila('refs', 'play', 'Investigación', refs.length ? `${refs.filter((x) => x.replicar).length || Math.min(8, refs.length)} posts ganadores ${refs.some((x) => x.replicar) ? 'marcados «Usar como formato»' : 'de su mercado'}` : 'Todavía no hay nada en Investigación', refs.length ? '' : 'disabled')}
           ${ir('lib', 'Documentos de la Library', 'SOPs, entrevistas, notas', nLib)}
           ${MESES_CTX().map((mes) => fila(`cal:${mes}`, 'cal', nombreCtx(`cal:${mes}`), `${deMes(mes)} pieza${deMes(mes) === 1 ? '' : 's'} con fecha · lo que falta diseñar`))}
-          ${fila(`plan:${MESES_CTX()[0]}`, 'target', nombreCtx(`plan:${MESES_CTX()[0]}`), 'El mensaje, los pilares y la función de cada canal')}
-          ${ir('ideas', 'Ideas del calendario', 'Una o varias, con su guion', nIdeas)}</div>`}
+          ${ir('ideas', 'Piezas del calendario', 'Una o varias, con su guion', nIdeas)}</div>`}
         ${solo === 'contexto' ? '' : html`<header class="dz-ph ${solo ? '' : 'dz-ph2'}"><b>Modo de trabajo</b><span class="mut sm">Cómo responde</span></header><div class="dz-ol">
           ${modo('hormozi', 'target', 'Lente Hormozi', 'Oferta, valor y demanda en cada respuesta')}
-          <button type="button" class="dz-o" data-vista="formato"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">Formato · ${chat.formato}<small>Carrusel, estático, story o plantilla</small></span><span class="dz-n">${ico('right', 12)}</span></button>
-          ${modo('suelta', 'alert', 'Pieza suelta', 'Algo puntual que no sale del plan: va directo a Diseño')}</div>`}`);
+          <button type="button" class="dz-o" data-vista="formato"><span class="dz-oi">${ico('layers', 14)}</span><span class="dz-ot">Formato · ${chat.formato}<small>Carrusel, estático, story o plantilla</small></span><span class="dz-n">${ico('right', 12)}</span></button></div>`}`);
         const inp = m.querySelector('[data-q]'); if (inp) { inp.oninput = () => { q = inp.value; pinta(); const n = m.querySelector('[data-q]'); n.focus(); n.setSelectionRange(q.length, q.length); }; }
       };
       pinta(); box.append(m); ubicarPop(m, box); anchor.setAttribute('aria-expanded', 'true');
@@ -212,7 +197,6 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         const f = e.target.closest('[data-fmt]'); if (f) { chat.formato = f.dataset.fmt; guardar(); repintarCaja(); vista = 'inicio'; return pinta(); }
         const g = e.target.closest('[data-tg]');
         if (g?.dataset.tg === 'hormozi') { chat.hormozi = !chat.hormozi; guardar(); repintarCaja(); return pinta(); }
-        if (g?.dataset.tg === 'suelta') { m.remove(); chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }
         const o = e.target.closest('[data-ck]'); if (!o || o.disabled) return;
         const k = o.dataset.ck; if (k.startsWith('lib:')) { const d = libData?.docs.find((x) => `lib:${x.id}` === k); if (d) chat.libT[d.id] = d.titulo; }
         toggleCtx(k); pinta();
@@ -230,7 +214,6 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (libIds.length) { try { libDocs = (await api('estrategia/library/textos', { method: 'POST', body: { ids: libIds } })).docs; } catch (e) { toast(`No pude leer la Library: ${e.message}`, true); } }
       for (const k of nuevas) {
         if (k.startsWith('cal:')) partes.push(textoCalendario({ marca: b.name, mes: k.slice(4), piezas: todo.filter((x) => x.kind === 'post' && x.profile === b.slug), estadoDe }));
-        else if (k.startsWith('plan:')) partes.push(textoPlan({ root, mes: k.slice(5) }));
         else if (k.startsWith('idea:')) { const p = ideas.find((x) => x.id === k.slice(5)); if (p) partes.push(textoIdea(p, await guionDe(p.guion))); }
         else if (k.startsWith('lib:')) { const d = libDocs.find((x) => x.id === k.slice(4)); if (d) partes.push(`DOCUMENTO DE LA LIBRARY «${d.titulo}» (${d.tipo}${d.carpeta ? ' · ' + d.carpeta : ''}):\n${d.contenido}`); }
         else if (k === 'refs') partes.push(textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)));
@@ -239,18 +222,17 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     }
 
     function paintChat() {
-      const f = fase(), ok = f === 'listo', abre = abierta(chat.etapa);
-      const ph = chat.etapa === 'plan' ? 'Qué se dice este mes, y en qué canal…' : chat.etapa === 'ideas' ? 'Pide ideas para una pieza del plan…' : chat.resultado ? 'Pide un cambio, o selecciona una lámina y dile qué ajustar…' : `Qué diseñamos de ${b.name}…`;
-      mount(chatEl, html`${etapaHtml()}<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
-        ${!abre ? cerradaHtml(chat.etapa) : ok ? html`<div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${ph}" aria-label="Mensaje para el chat"></textarea></form>
+      const f = fase(), ok = f === 'listo';
+      mount(chatEl, html`${barraChat({ panel: chat.area, pasos: html`<span class="dg-e on"><i>${ico('layers', 11)}</i><span class="cb-l">Diseño</span></span>` })}<div class="es-msgs" id="dz-msgs" aria-live="polite"></div>
+        ${ok ? html`<div class="es-box cx"><div class="dz-chips" id="dz-chips">${chipsHtml()}</div><form class="es-form" id="dz-form"><textarea class="in" id="dz-in" rows="1" placeholder="${phTxt()}" aria-label="Mensaje para el chat"></textarea></form>
           <div class="cx-bar"><button type="button" class="cx-plus" data-act="ctx" aria-haspopup="dialog" aria-expanded="false" aria-label="Contexto y cómo trabaja">${ico('plus', 16)}</button><span class="sp"></span>${modeloHtml()}${botonVoz()}${botonesEnviar('dz-form')}</div><div id="dz-tray">${bandejaHtml()}</div></div><p class="ch-aviso">Diseño trabaja en Figma con el design system y puede equivocarse: revisa lo importante.</p><button type="button" class="ch-abajo" data-act="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>`
           : html`${setup(f)}<div class="es-foot"><span></span>${modeloHtml()}</div>`}`);
       paintMsgs();
       const ta = $('#dz-in', chatEl); if (ta) ta.oninput = () => { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
       const msgs = $('#dz-msgs', chatEl); if (msgs) msgs.onscroll = flechaAbajo;
     }
-    // El chat vacío: el título de la etapa y las tarjetas con lo que se le puede pedir.
-    const cardsHtml = () => (abierta(chat.etapa) ? html`<div class="ch-cards">${ayuda()[3].map((x) => html`<button type="button" class="ch-card" data-act="${chat.etapa === 'diseno' ? 'sug' : 'rapido'}" data-t="${x}"><b>${x}</b><span>${ETAPAS.find((e) => e[0] === chat.etapa)?.[1] || ''}</span></button>`)}</div>` : '');
+    // El chat vacío: el título y las tarjetas con lo que se le puede pedir.
+    const cardsHtml = () => html`<div class="ch-cards">${ayuda()[3].map((x) => html`<button type="button" class="ch-card" data-act="sug" data-t="${x}"><b>${x}</b><span>Diseño</span></button>`)}</div>`;
     // La flecha para bajar al final: aparece cuando la conversación quedó arriba.
     function flechaAbajo() {
       const box = $('#dz-msgs', chatEl), b = $('.ch-abajo', chatEl); if (!box || !b) return;
@@ -283,10 +265,9 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     async function enviar(texto) {
       texto = String(texto || '').trim(); if (!texto || enVuelo) return;
       if (fase() !== 'listo') return toast('Primero conecta tu compu', true);
-      if (!abierta(chat.etapa)) return paintChat();
       const ctrl = new AbortController(); enVuelo = ctrl;
       if (chat.motor !== claveMotor(me)) { chat.sesion = null; chat.motor = claveMotor(me); }
-      const primera = !chat.sesion, etapa = chat.etapa;
+      const primera = !chat.sesion, etapa = 'diseno';
       if (primera) chat.vistas = [];
       const metodo = !chat.vistas.includes(etapa); // la primera vez en esta etapa, el pedido lleva el método del departamento
       chat.msgs.push({ r: 'u', t: S.lamina ? `${S.lamina.nombre} · ${texto}` : texto, ts: Date.now(), pedido: texto }); chat.msgs.push({ r: 'a', t: '', stream: true, tools: [] });
@@ -296,14 +277,11 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (primera) chat.enviados = [];
       const nuevas = chat.ctx.filter((k) => !chat.enviados.includes(k));
       const contexto = nuevas.length ? await textoContexto(nuevas) : '';
-      const delMes = todo.filter((x) => x.kind === 'post' && x.profile === b.slug && String(x.date || '').slice(0, 7) === chat.mes);
-      const fms = etapa === 'ideas' && metodo ? await api(`formatos?profile=${encodeURIComponent(b.slug)}`).then((r) => [...(r.marca || []), ...(r.base || [])]).catch(() => []) : [];
-      const prompt = etapa === 'plan' ? promptPlan({ marca: b.name, slug: b.slug, mes: chat.mes, plan: E.plan, ...(metodo ? await encargo() : {}), contexto, hormozi: chat.hormozi, pedido: texto, primera: metodo })
-        : etapa === 'ideas' ? promptIdeas({ marca: b.name, slug: b.slug, mes: chat.mes, slots: E.plan?.slots || [], existentes: delMes.map((x) => x.title).filter(Boolean), investigacion: metodo ? textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)) : '', formatos: textoFormatos(fms), contexto, hormozi: chat.hormozi, pedido: texto, primera: metodo })
-        : promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, contexto: [chat.suelta ? 'PIEZA SUELTA: no sale del plan del mes; es algo puntual que pidió la persona.' : '', contexto].filter(Boolean).join('\n\n'), lamina: S.lamina, pedido: texto, primera: metodo });
+      const { variaciones: vs } = variacionesDe(pieza() || {});
+      const prompt = promptDiseno({ marca: b.name, slug: b.slug, formato: chat.formato, contexto, lamina: S.lamina, variacion: chat.letra, otras: vs, pedido: texto, primera: metodo });
       let raw0 = '', fallo = null;
       try {
-        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, ...(etapa === 'diseno' ? { modo: 'diseno' } : {}), ...cuerpoMotor(me), ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
+        const r = await fetch(PUENTE + '/chat', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', signal: ctrl.signal, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok() }, body: JSON.stringify({ prompt, modo: 'diseno', ...cuerpoMotor(me), ...(chat.sesion ? { resume: chat.sesion } : {}) }) });
         if (!r.ok) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error(j.error || `El puente respondió ${r.status}`), { status: r.status }); }
         const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '';
         for (;;) {
@@ -313,7 +291,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
             const bloq = buf.slice(0, k); buf = buf.slice(k + 2);
             const ev = /^event: (\w+)/m.exec(bloq)?.[1]; let d = {}; try { d = JSON.parse(/^data: (.*)$/m.exec(bloq)?.[1] || '{}'); } catch {}
             if (ev === 'inicio' && d.sesion) chat.sesion = d.sesion;
-            else if (ev === 'delta') { raw0 += d.texto || ''; msg.t = sinBloqueP(sinBloqueI(sinBloque(raw0))); paintMsgs(); }
+            else if (ev === 'delta') { raw0 += d.texto || ''; msg.t = sinBloque(raw0); paintMsgs(); }
             else if (ev === 'herramienta') { const p = pasoDe(d); if (msg.tools[msg.tools.length - 1] !== p) msg.tools.push(p); paintMsgs(); }
             else if (ev === 'imagen' && d.datos) { const url = `data:${d.tipo || 'image/png'};base64,${d.datos}`; if (d.nodo) IMGS.set(`${b.slug}|${d.nodo}`, url); else sueltas.push(url); }
             else if (ev === 'fin') { raw0 = d.texto || raw0; if (d.sesion) chat.sesion = d.sesion; }
@@ -328,116 +306,83 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         else msg.err = chromeBloquea() ? PASOS_COPIA_VIEJA : sesionVencida(e.message) ? PASOS_LOGIN : e.message && e.message !== 'Failed to fetch' ? e.message : 'No pude hablar con el puente. ¿Sigue encendido?';
         if (e.status === 401 || e.status === 412) await salud();
       } finally { enVuelo = null; msg.stream = false; }
-      if (etapa === 'plan') {
-        const { texto: limpio, parche, pregunta } = leerPlan(raw0);
-        msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
-        if (Object.keys(parche).length) {
-          if (!E.puede?.editar) msg.aviso = 'Tu perfil no puede cambiar el plan.';
-          else { try { const x = await api(`plan/${encodeURIComponent(b.slug)}/${chat.mes}`, { method: 'PUT', body: { parche } }); E.plan = x.plan || E.plan; S.fresh = x.cambiadas || []; msg.doc = 'plan'; msg.aplicado = [`Plan del mes · ${S.fresh.map((k) => NOMBRE_P[k] || k).join(', ')} actualizado`]; } catch (er) { msg.err = `No pude guardar el plan: ${er.message}`; } }
-        }
-      } else if (etapa === 'ideas') {
-        const { texto: limpio, ideas: nuevasI, pregunta } = leerIdeas(raw0);
-        msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
-        if (nuevasI.length) { msg.doc = 'ideas'; chat.ideasProp = [...nuevasI.map((x) => ({ ...x, mes: chat.mes })), ...chat.ideasProp.filter((x) => x.enviada)].slice(0, 40); msg.aplicado = [`${nuevasI.length} idea${nuevasI.length === 1 ? '' : 's'} a la derecha, listas para enviar a Ideas`]; }
-      } else {
-        const { texto: limpio, resultado, pregunta } = leerDiseno(raw0);
-        msg.t = sinBloqueP(sinBloqueI(sinBloque(limpio))); if (pregunta) msg.pregunta = pregunta;
-        if (resultado) {
-          msg.doc = 'diseno';
-          resultado.laminas.forEach((l, k) => { if (!img(l.id) && sueltas[k]) IMGS.set(`${b.slug}|${l.id}`, sueltas[k]); });
-          chat.resultado = { ...resultado, guardado: null }; S.lamina = null;
-        }
+      const { texto: limpio, resultado, pregunta } = leerDiseno(raw0);
+      msg.t = sinBloque(limpio); if (pregunta) msg.pregunta = pregunta;
+      if (resultado) {
+        msg.doc = 'diseno';
+        resultado.laminas.forEach((l, k) => { if (!img(l.id) && sueltas[k]) IMGS.set(`${b.slug}|${l.id}`, sueltas[k]); });
+        if (['Carrusel', 'Estático', 'Story'].includes(resultado.formato)) chat.formato = resultado.formato;
+        chat.borradores[llave()] = { ...resultado, guardado: null }; S.lamina = null; S.ver = 'draft';
       }
       guardar();
       if (!alive()) return;
       if (fase() !== 'listo') return paintChat();
       paintMsgs(); paintPane(); repintarCaja(); $('#dz-in', chatEl)?.focus();
     }
-    // El encargo de Marketing: la estrategia del OS y lo que funciona (Investigación). Si el perfil no ve Estrategia, se lee del repo.
-    async function encargo() {
-      let estrategia = '';
-      try { const e = await api(`estrategia/${encodeURIComponent(b.slug)}`), v = e.viva || {}; estrategia = JSON.stringify({ nivel: e.nivel?.nombre, etapa: e.etapa?.n, aprobada: e.vivaAprobada, meta: v.meta, contexto: v.contexto?.conclusion, analisis: v.analisis, inversa: v.inversa, contenido: v.contenido, pauta: v.pauta, riesgos: v.riesgos, metodologia: v.metodologia, roadmap: v.roadmap }, (k, x) => (x === undefined || x === null || x === '' ? undefined : x)); } catch { /* la lee del repo */ }
-      return { estrategia, investigacion: textoRefs(todo.filter((x) => x.kind === 'research' && x.profile === b.slug)) };
+    // ---------- Las tres columnas ----------
+    const FMT3 = ['Carrusel', 'Estático', 'Story'];
+    // Qué variación se ve: el borrador si hay uno nuevo, si no la elegida.
+    function vista() {
+      const { variaciones, elegida } = variacionesDe(pieza() || {}), dr = borrador();
+      const id = S.ver === 'draft' && dr ? 'draft' : variaciones.some((v) => v.id === S.ver) ? S.ver : dr ? 'draft' : elegida;
+      return { variaciones, elegida, dr, id, cur: id === 'draft' ? dr : variaciones.find((v) => v.id === id) || null };
     }
-
-    // ---------- Las piezas ----------
+    function colaHtml() {
+      const c = colaDelMes({ piezas: posts(), mes: chat.mes, estadoDe });
+      return html`<header class="dz-ch"><b>Piezas del mes</b><button type="button" class="cx-t" data-act="mesdg" aria-haspopup="listbox" title="El mes que se trabaja">${ico('cal', 13)}${Mes()} <span class="cx-car">▾</span></button></header>
+        ${c.length ? html`<ul class="dz-cl">${c.map((x) => html`<li><button type="button" class="dz-ci ${x.id === chat.ideaId ? 'on' : ''} ${x.falta ? 'falta' : ''}" data-act="pieza" data-id="${x.id}" aria-pressed="${x.id === chat.ideaId ? 'true' : 'false'}"><b>${x.titulo}</b><small>${[x.formato, fmtDia(x.fecha), x.estado].filter(Boolean).join(' · ')}</small>${x.variaciones ? html`<span class="dz-nv">${x.variaciones} variación${x.variaciones === 1 ? '' : 'es'}</span>` : x.falta ? html`<span class="dz-nv am">Falta diseñar</span>` : ''}</button></li>`)}</ul>`
+          : html`<p class="mut sm dz-vacio">${b.name} no tiene piezas de diseño con fecha en ${Mes()}. ⚠️ SIN DATOS: salen del Calendario.</p>`}
+        <button type="button" class="dz-ci suelta ${chat.ideaId ? '' : 'on'}" data-act="pieza" data-id=""><b>Pieza suelta</b><small>Algo puntual, sin pieza del calendario</small></button>`;
+    }
+    function lienzoHtml() {
+      const p = pieza(), { variaciones, elegida, dr, id, cur } = vista();
+      const letraNueva = chat.letra || letraLibre(variaciones) || 'A';
+      const laminas = cur?.laminas || [];
+      const faltan = laminas.filter((l) => !img(l.id)).length;
+      const malas = (cur?.revision || []).filter((x) => !x.ok);
+      return html`<div class="ad dz-lz"><header class="dz-lh"><div class="dz-lt"><b>${p?.title || dr?.titulo || 'Sin pieza elegida'}</b><small>${p ? [p.format, fmtDia(p.date), estadoDe(p)].filter(Boolean).join(' · ') : 'Pieza suelta'}</small></div><span class="sp"></span>
+          <div class="dz-fmt" role="group" aria-label="Formato">${FMT3.map((f) => html`<button type="button" class="${chat.formato === f ? 'on' : ''}" data-act="fmt" data-f="${f}" aria-pressed="${chat.formato === f ? 'true' : 'false'}">${f}</button>`)}</div></header>
+        <div class="dz-tabs" role="tablist" aria-label="Variaciones">${variaciones.map((v) => html`<button type="button" role="tab" class="dz-tab ${id === v.id ? 'on' : ''}" aria-selected="${id === v.id ? 'true' : 'false'}" data-act="var" data-l="${v.id}">${v.id}${elegida === v.id ? html` <i title="La elegida">${ico('check', 11)}</i>` : ''}</button>`)}${dr ? html`<button type="button" role="tab" class="dz-tab bor ${id === 'draft' ? 'on' : ''}" aria-selected="${id === 'draft' ? 'true' : 'false'}" data-act="var" data-l="draft">${letraNueva} · borrador</button>` : ''}${letraLibre(variaciones) || dr ? html`<button type="button" class="dz-tab mas" data-act="nueva-var" title="Pídele a Claude otra dirección visual">${ico('plus', 11)} Variación</button>` : ''}</div>
+        <div class="ad-b"><div class="ad-in">${cur ? html`${cur.revision?.length ? html`<div class="dz-rev">${cur.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
+          <div class="dz-grid ${esStory(chat.formato) ? 'st' : ''}">${laminas.map((l) => html`<button type="button" class="dz-fr ${S.lamina?.id === l.id ? 'sel' : ''}" data-act="lamina" data-id="${l.id}" title="Seleccionar para pedir un cambio">
+            <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b><span class="dz-ojo" data-ojo="${l.id}">${ojoChip(OJO.get(`${b.slug}|${l.id}`), { compact: true })}</span></span></button>`)}</div>
+          ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}`
+          : html`<div class="dz-empty"><span class="es-hint-i">${ico('layers', 22)}</span><b>${p ? 'Todavía no hay láminas de esta pieza' : 'Elige una pieza del mes'}</b><p class="mut">Claude las arma en Figma con el design system de ${b.name} y las revisa contra su guía. Cada intento queda como variación A, B o C: eliges una y las demás se conservan.</p>
+            ${sis?.colores.length ? html`<div class="dz-pal">${sis.colores.map((c) => html`<span title="${c.nombre} · ${c.hex}" style="background:${c.hex}"></span>`)}</div>` : ''}</div>`}</div></div>
+        ${cur ? html`<footer class="ad-f">${id === 'draft' ? html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda como <b>variación ${letraNueva}</b> en ${p ? `«${p.title}»` : 'una pieza nueva del calendario'}.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : `Guardar variación ${letraNueva}`}</button>`
+          : html`<span>${elegida === id ? html`Es la <b>elegida</b>. Las otras variaciones se conservan.` : 'Elegirla no borra las otras.'}</span><span class="sp"></span><button class="btn ghost xs" data-act="rehacer" data-l="${id}">Rehacer ${id}</button>${elegida === id ? '' : html`<button class="btn xs" data-act="elegir" data-l="${id}" ${S.guardando ? raw('disabled') : ''}>Elegir ${id}</button>`}`}</footer>` : ''}</div>`;
+    }
+    function infoHtml() {
+      const p = pieza(), { cur } = vista(), l = S.lamina || cur?.laminas?.[0];
+      const sin = (t) => html`<span class="pm-warn">${ico('alert', 12)} ⚠️ SIN DATOS: ${t}</span>`;
+      return html`<section class="dz-sec"><h4>Concepto</h4>${p ? html`<p><b>${p.title}</b></p>${p.hook ? html`<p class="dg-hook">«${p.hook}»</p>` : ''}<p class="mut sm">${[p.pillar && `Pilar: ${p.pillar}`, p.campana && `Campaña: ${p.campana}`].filter(Boolean).join(' · ') || ''}</p>` : sin('elige una pieza del calendario')}</section>
+        <section class="dz-sec"><h4>Copy</h4>${p?.caption ? html`<p class="dz-copy">${p.caption}</p>` : sin('la pieza no tiene caption todavía')}</section>
+        <section class="dz-sec"><h4>Revisión</h4>${cur?.revision?.length ? html`<ul class="dz-chk">${cur.revision.map((x) => html`<li class="${x.ok ? 'ok' : 'am'}">${ico(x.ok ? 'check' : 'alert', 12)} ${x.texto}</li>`)}</ul>` : html`<p class="mut sm">Claude revisa cada lámina contra el sistema visual y la lista sale aquí.</p>`}</section>
+        <section class="dz-sec"><h4>El ojo</h4>${l ? html`<span class="dz-ojo" data-ojo="${l.id}" data-c="0">${ojoChip(OJO.get(`${b.slug}|${l.id}`))}</span><p class="mut sm">${l.nombre}</p>` : html`<p class="mut sm">Sin láminas todavía.</p>`}</section>
+        <div class="row" style="gap:6px;flex-wrap:wrap">${cur?.figma ? html`<a class="btn ghost xs" href="${cur.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${cur?.laminas?.some((x) => img(x.id)) ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}<a class="btn ghost xs" href="${rutaModulo(b.slug, 'design')}">${ico('layers', 12)} Design system</a></div>`;
+    }
     function paintPane() {
       ponerArea();
-      paneEl.className = chat.etapa === 'diseno' ? 'dz-pane' : 'pm-pane dg-pane';
-      if (chat.etapa === 'plan') {
-        mount(paneEl, planPanel({ b, mes: chat.mes, plan: E.plan || {}, piezas: E.piezas, edit: E.puede?.editar && abierta('plan'), fresh: S.fresh, pasando: S.pasando, cerrar: true, abrir: [rutaModulo(b.slug, 'plan', [chat.mes]), 'Abrir en Plan del mes'] }));
-        if (S.fresh.length) setTimeout(() => { S.fresh = []; $$('.ev-sec.fresh', paneEl).forEach((x) => x.classList.remove('fresh')); }, 4000);
-        return;
-      }
-      if (chat.etapa === 'ideas') return mount(paneEl, ideasPanel());
-      const docD = (cuerpo, extra = {}) => mount(paneEl, docHtml({ ...docDe('diseno'), sub: `${b.name} · ⑥A Diseño gráfico`, cerrar: true, acciones: html`<a class="btn ghost xs" href="${rutaModulo(b.slug, 'design')}">${ico('layers', 12)} Design system</a>`, cuerpo, ...extra }));
-      if (!abierta('diseno')) return docD(html`<div class="dz-empty"><span class="es-hint-i">${ico('lock', 22)}</span><b>Todavía no hay qué diseñar</b><p class="mut">Se diseña lo que Creatividad ya ideó para el plan de ${nombreMes(chat.mes)}.</p></div>`, { estado: 'Cerrado' });
-      const r = chat.resultado;
-      if (!r) {
-        docD(html`<div class="dz-empty"><span class="es-hint-i">${ico('layers', 22)}</span><b>Aquí aparecen las piezas</b><p class="mut">Claude las arma en Figma con el design system de ${b.name} y las revisa contra su guía antes de mostrártelas.</p>
-          ${sis?.colores.length ? html`<div class="dz-pal">${sis.colores.map((c) => html`<span title="${c.nombre} · ${c.hex}" style="background:${c.hex}"></span>`)}</div>` : ''}</div>`, { estado: 'Vacío' });
-        return;
-      }
-      const faltan = r.laminas.filter((l) => !img(l.id)).length;
-      const malas = r.revision.filter((x) => !x.ok);
-      queueMicrotask(() => verLaminas(r.laminas));
-      docD(html`${r.revision.length ? html`<div class="dz-rev">${r.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
-        <div class="dz-grid ${/story/i.test(r.formato || chat.formato) ? 'st' : ''}">${r.laminas.map((l) => html`<button type="button" class="dz-fr ${S.lamina?.id === l.id ? 'sel' : ''}" data-act="lamina" data-id="${l.id}" title="Seleccionar para pedir un cambio">
-          <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b><span class="dz-ojo" data-ojo="${l.id}">${ojoChip(OJO.get(`${b.slug}|${l.id}`), { compact: true })}</span></span></button>`)}</div>
-        ${faltan ? html`<p class="mut sm" style="margin:0">${faltan === r.laminas.length ? 'Las vistas previas no se guardan al recargar.' : `Faltan ${faltan} vistas previas.`} <button type="button" class="linkish" data-act="reexportar">Pedirlas otra vez</button></p>` : ''}`, { titulo: r.titulo || 'Sin título', sub: `${r.formato || chat.formato} · ${r.laminas.length} lámina${r.laminas.length === 1 ? '' : 's'} · ⑥A Diseño gráfico`, estado: r.guardado ? 'Guardado' : 'Borrador', ok: Boolean(r.guardado),
-        acciones: html`${r.figma ? html`<a class="btn ghost xs" href="${r.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${faltan < r.laminas.length ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}`,
-        pie: { texto: '', accion: html`${r.guardado ? html`<span>Guardado ${raw('&middot;')} queda <b>Listo</b> en el Calendario de ${b.name}.</span><span class="sp"></span><a class="btn xs" href="${rutaModulo(b.slug, 'calendario')}">Ir al Calendario</a>`
-          : html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda en ${idea() ? `la idea «${idea().title}»` : ideasCtx().length > 1 ? 'la idea que elijas del contexto' : 'una pieza nueva del calendario'}: queda <b>Lista</b> para programarla y publicarla.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : 'Guardar en contenido'}</button>`}` } });
+      mount(colaEl, colaHtml()); mount(paneEl, lienzoHtml()); mount(infoEl, infoHtml());
+      const { cur } = vista(); if (cur) queueMicrotask(() => verLaminas(cur.laminas));
     }
+    function seleccionar(id) {
+      chat.ideaId = id || ''; chat.letra = ''; S.ver = ''; S.lamina = null;
+      chat.ctx = [...chat.ctx.filter((k) => !k.startsWith('idea:')), ...(id && ideas.some((x) => x.id === id) ? [`idea:${id}`] : [])];
+      guardar(); repintarCaja(); paintPane();
+    }
+    async function cambiarMes(mes) { chat.mes = mes; guardar(); repintarCaja(); paintPane(); }
+    const repintarPh = () => { const ta = $('#dz-in', chatEl); if (ta) ta.placeholder = phTxt(); };
+    function pedir(texto, letra) { chat.letra = letra; guardar(); repintarCaja(); repintarPh(); const ta = $('#dz-in', chatEl); if (ta) { ta.value = texto; ta.focus(); } else toast('Primero conecta tu compu', true); }
 
-    // El área de trabajo de Ideas: lo que propuso Creatividad (por enviar) y lo que ya está en las piezas del plan.
-    function ideasPanel() {
-      const delPlan = todo.filter((x) => x.kind === 'post' && x.slot?.plan === `${b.slug}--${chat.mes}`);
-      const prop = chat.ideasProp.filter((x) => (x.mes || chat.mes) === chat.mes), porEnviar = prop.filter((x) => !x.enviada && E.plan?.slots?.some((y) => y.id === x.slot));
-      const slotDe = (id) => E.plan?.slots?.find((x) => x.id === id);
-      // El referente: si es un post de Investigación, se ve con su cuenta y cuánto rinde (×N su promedio).
-      const refDe = (rf) => { const p = todo.find((r) => r.kind === 'research' && r.profile === b.slug && r.url && (rf.includes(r.url) || r.url.includes(rf))), n = +p?.x;
-        return p ? html`<a class="pm-tag g" href="${p.url}" target="_blank" rel="noopener">@${p.handle || 'referente'}${n ? ` · ×${+n.toFixed(1)}` : ''} ↗</a>` : link(rf); };
-      const link = (rf) => (/^https?:\/\//.test(rf) ? html`<a class="pm-tag" href="${rf}" target="_blank" rel="noopener">${rf.replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)} ↗</a>` : rf ? html`<span class="pm-tag">${rf}</span>` : '');
-      return docHtml({ ...docDe('ideas'), sub: b.name, estado: prop.length ? `${prop.length} en la mesa` : 'Vacío', cerrar: true,
-        acciones: html`<a class="btn ghost xs" href="${rutaModulo(b.slug, 'ideas')}">${ico('link', 12)} Abrir en Ideas</a>`,
-        cuerpo: html`
-          ${prop.length ? html`<div class="dg-ideas">${prop.map((x, i) => { const sl = slotDe(x.slot); return html`<article class="dg-idea ${x.enviada ? 'ok' : ''}"><div class="row" style="gap:6px;flex-wrap:wrap"><span class="pm-tag">${x.slot}</span>${sl ? html`<span class="mut sm">Semana ${sl.semana} · ${sl.canal} · ${sl.funcion || ''}</span>` : html`<span class="pm-warn">Ese slot no está en el plan</span>`}<span class="sp"></span>${x.enviada ? html`<span class="ev-ok">${ico('check', 12)} En Ideas</span>` : E.puede?.editar && sl && abierta('ideas') ? html`<button class="btn ghost xs" data-act="idea-enviar" data-i="${chat.ideasProp.indexOf(x)}">Enviar a Ideas</button>` : ''}</div>
-              <h3>${x.titulo}</h3>${x.hook ? html`<p class="dg-hook">«${x.hook}»</p>` : ''}
-              <dl class="dg-tri"><div><dt>Qué comunicamos</dt><dd>${x.mensaje || sl?.objetivo || html`<span class="mut">Sin mensaje</span>`}</dd></div>
-                <div><dt>El formato que ya funciona</dt><dd>${x.referente ? html`${refDe(x.referente)}${x.por_que ? html`<span class="mut sm">${x.por_que}</span>` : ''}` : html`<span class="pm-warn">${ico('alert', 12)} Sin formato de referencia. Pídele uno de Investigación.</span>`}</dd></div>
-                <div><dt>Cómo se adapta</dt><dd>${x.adaptacion || html`<span class="mut">Falta la adaptación</span>`}</dd></div></dl>
-              <div class="row" style="gap:6px;flex-wrap:wrap">${x.formato ? html`<span class="pm-tag">${x.formato}</span>` : ''}${sl?.traza ? html`<span class="pm-tag g">Traza a la estrategia: ${sl.traza}</span>` : ''}</div></article>`; })}</div>`
-          : html`<p class="ev-vacio">Pídele al chat ideas para los slots del plan. Cada una llega con qué comunicamos, el formato que ya funciona (un post ganador de Investigación) y cómo se adapta. Las que te gusten se envían a Ideas.</p>`}
-          <section class="ev-sec"><header><b>En las piezas del plan</b><span class="mut sm">${delPlan.filter((x) => x.idea_chat).length} de ${delPlan.length} slots con idea</span></header>
-            ${delPlan.length ? html`<div class="pm-tbl"><table><thead><tr><th>Slot</th><th>Pieza</th><th>Estado</th></tr></thead><tbody>${delPlan.sort((a, z) => String(a.slot?.id).localeCompare(String(z.slot?.id))).map((x) => html`<tr><td>${x.slot?.id}</td><td>${x.title}${x.idea_chat ? '' : html` <span class="mut sm">· sin idea todavía</span>`}</td><td>${estadoDe(x)}</td></tr>`)}</tbody></table></div>` : html`<p class="ev-vacio">El plan todavía no pasó a Creatividad.</p>`}</section>`,
-        pie: { texto: 'Las ideas enviadas quedan en la pieza de su slot. Ahí se eligen, se ordenan y pasan a Guiones.',
-          accion: porEnviar.length && E.puede?.editar && abierta('ideas') ? html`<button class="btn" data-act="ideas-enviar" ${S.enviando ? raw('disabled') : ''}>${S.enviando ? 'Enviando…' : `Enviar ${porEnviar.length} a Ideas`} ${ico('right', 13)}</button>` : '' } });
-    }
-    async function enviarIdeas(lista) {
-      if (!lista.length || S.enviando) return;
-      S.enviando = true; paintPane();
-      try {
-        const x = await api(`plan/${encodeURIComponent(b.slug)}/${chat.mes}/ideas`, { method: 'POST', body: { ideas: lista } });
-        for (const i of lista) if (!x.faltan.includes(i.slot)) i.enviada = true;
-        toast(`${x.puestas} idea${x.puestas === 1 ? '' : 's'} en Ideas${x.faltan.length ? ` · ${x.faltan.length} sin slot en el plan` : ''}`);
-        [todo, E] = await Promise.all([col('content').list().catch(() => todo), cargarEstado()]);
-        guardar();
-      } catch (e) { toast(e.message, true); }
-      S.enviando = false; if (alive()) { paintChat(); paintPane(); }
-    }
-    async function cambiarMes(mes) { chat.mes = mes; guardar(); E = await cargarEstado(); if (!alive()) return; if (!abierta(chat.etapa) && !chat.suelta) chat.etapa = ETAPAS.map(([k]) => k).find(abierta) || 'plan'; paintChat(); paintPane(); }
     async function guardarEnContenido() {
-      const r = chat.resultado; if (!r || S.guardando) return;
-      let post = idea();
-      const varias = ideasCtx();
-      if (!post && varias.length > 1) {
-        const v = await ask('¿En qué idea del calendario se guarda?', [{ k: 'id', l: 'Idea', t: 'select', opts: [...varias.map((p) => [p.id, `${p.title}${p.date ? ` · ${p.date.slice(8, 10)}/${p.date.slice(5, 7)}` : ''}`]), ['', 'Una pieza nueva']] }], 'Guardar');
-        if (!v) return; post = varias.find((p) => p.id === v.id) || null;
-      } else if (!post && !(await confirmAsk(`No hay una idea del calendario en el contexto. ¿Creo una pieza nueva «${r.titulo || 'Sin título'}» en ${b.name}?`))) return;
+      const r = borrador(); if (!r || S.guardando) return;
+      let post = pieza();
+      if (!post && !(await confirmAsk(`No hay una pieza del calendario elegida. ¿Creo una pieza nueva «${r.titulo || 'Sin título'}» en ${b.name}?`))) return;
       S.guardando = true; paintPane();
       try {
-        if (!post) post = await col('content').create({ kind: 'post', profile: b.slug, title: r.titulo || 'Sin título', format: ['Carrusel', 'Estático', 'Story'].includes(r.formato) ? r.formato : chat.formato === 'Plantilla' ? 'Estático' : chat.formato, status: 'Idea' });
+        if (!post) post = await col('content').create({ kind: 'post', profile: b.slug, title: r.titulo || 'Sin título', format: FMT3.includes(r.formato) ? r.formato : chat.formato === 'Plantilla' ? 'Estático' : chat.formato, status: 'Idea' });
+        const letra = chat.letra || letraLibre(variacionesDe(post).variaciones) || 'A';
         const subidas = [];
         if (me.google?.drive) {
           for (const [k, l] of r.laminas.entries()) {
@@ -446,20 +391,27 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
             const ext = tipo === 'image/jpeg' ? 'jpg' : 'png';
             const f = new File([bytesDe(datos)], `${l.nombre}.${ext}`, { type: tipo });
             toast(`Subiendo a Drive ${k + 1} de ${r.laminas.length}…`);
-            const d = await uploadToDrive(f, `${b.name} · ${r.titulo || post.title} · ${l.nombre}.${ext}`, () => {}, { client: b.slug, sub: '04 Por postear' });
+            const d = await uploadToDrive(f, `${b.name} · ${r.titulo || post.title} · ${letra} · ${l.nombre}.${ext}`, () => {}, { client: b.slug, sub: '04 Por postear' });
             subidas.push({ drive_id: d.id, url: d.link || d.webViewLink || '' });
           }
         }
-        const cur = await col('content').get(post.id).catch(() => post);
-        const sv = await col('content').save(piezaLista(cur, r, subidas));
-        if (!ideas.some((x) => x.id === sv.id)) ideas.push(sv);
-        chat.ideaId = sv.id; if (!chat.ctx.includes(`idea:${sv.id}`)) chat.ctx = [...chat.ctx, `idea:${sv.id}`]; chat.resultado = { ...r, guardado: { id: sv.id, at: new Date().toISOString() } }; guardar();
-        toast(me.google?.drive ? 'Guardado: quedó Listo en el Calendario' : 'Guardado con el link de Figma. Conecta tu Google para subir también las láminas a Drive.');
+        const sv = await guardarConV(post.id, post, (cur) => piezaLista(cur, r, subidas, undefined, { letra }));
+        poner(sv); chat.ideaId = sv.id; if (!chat.ctx.includes(`idea:${sv.id}`)) chat.ctx = [...chat.ctx, `idea:${sv.id}`];
+        delete chat.borradores[llave()]; delete chat.borradores._; chat.letra = ''; S.ver = letra; S.lamina = null; guardar();
+        toast(me.google?.drive ? `Variación ${letra} guardada: la pieza quedó Lista en el Calendario` : `Variación ${letra} guardada con el link de Figma. Conecta tu Google para subir también las láminas a Drive.`);
       } catch (e) { toast(e.message, true); }
+      S.guardando = false; if (alive()) { repintarCaja(); repintarPh(); paintPane(); }
+    }
+    // Elegir una variación: solo cambia `elegida`; las otras no se tocan.
+    async function elegir(letra) {
+      const p = pieza(); if (!p || S.guardando) return;
+      S.guardando = true; paintPane();
+      try { const sv = await guardarConV(p.id, p, (cur) => elegirVariacion(cur, letra)); poner(sv); S.ver = letra; toast(`Elegiste la variación ${letra}`); }
+      catch (e) { toast(e.message, true); }
       S.guardando = false; if (alive()) paintPane();
     }
     function bajar() {
-      for (const l of chat.resultado?.laminas || []) { const u = img(l.id); if (!u) continue; const a = document.createElement('a'); a.href = u; a.download = `${b.name} - ${l.nombre}.png`; document.body.append(a); a.click(); a.remove(); }
+      for (const l of vista().cur?.laminas || []) { const u = img(l.id); if (!u) continue; const a = document.createElement('a'); a.href = u; a.download = `${b.name} - ${l.nombre}.png`; document.body.append(a); a.click(); a.remove(); }
     }
 
     // ---------- Clics ----------
@@ -478,20 +430,20 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (a === 'voz') return dictar(t, $('#dz-in', chatEl));
       if (a === 'panel-tg' || a === 'panel-x' || a === 'panel-abrir') { chat.area = a === 'panel-tg' ? !chat.area : a === 'panel-abrir'; guardar(); ponerArea(); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', chat.area); tg.setAttribute('aria-pressed', String(chat.area)); } paintMsgs(); return; }
       if (a === 'marca-cambiar') return menuMarcas(t, b.slug);
-      if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Lo que ya está en el panel se queda.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [], vistas: [] }); guardar(); paintChat(); return; }
-      if (a === 'etapa') { chat.etapa = t.dataset.e; if (chat.etapa !== 'diseno') S.lamina = null; guardar(); paintChat(); paintPane(); return; }
-      if (a === 'mesdg') return menuDz(t, mesesPlan().map((x, i) => ({ label: nombreMes(x).replace(/^./, (c) => c.toUpperCase()), sub: ['El anterior', 'Este mes', 'El siguiente'][i], on: x === chat.mes, pick: () => cambiarMes(x) })));
-      if (a === 'suelta') { chat.suelta = !chat.suelta; chat.etapa = chat.suelta ? 'diseno' : ETAPAS.map(([k]) => k).find(abierta) || 'plan'; guardar(); paintChat(); paintPane(); return; }
-      if (a === 'rapido') return enviar(t.dataset.t);
-      if (a === 'pasar') { S.pasando = true; paintPane(); const n = await pasarPlan(b, chat.mes, E.plan || {}); S.pasando = false; if (n != null) { E = await cargarEstado(); todo = await col('content').list().catch(() => todo); } if (alive()) { paintChat(); paintPane(); } return; }
-      if (a === 'ideas-enviar') return enviarIdeas(chat.ideasProp.filter((x) => !x.enviada && (x.mes || chat.mes) === chat.mes && E.plan?.slots?.some((y) => y.id === x.slot)));
-      if (a === 'idea-enviar') { const x = chat.ideasProp[+t.dataset.i]; return x ? enviarIdeas([x]) : null; }
+      if (a === 'chat-nuevo') { if (enVuelo) return; if (chat.msgs.length && !(await confirmAsk('¿Empiezo una conversación nueva? Las piezas y variaciones se quedan.'))) return; Object.assign(chat, { msgs: [], sesion: null, enviados: [], vistas: [] }); guardar(); paintChat(); return; }
+      if (a === 'mesdg') return menuDz(t, [...new Set([chat.mes, ...MESES_CTX()])].sort().map((x) => ({ label: mesNombre(x), sub: x === MESES_CTX()[0] ? 'Este mes' : x === MESES_CTX()[1] ? 'El siguiente' : '', on: x === chat.mes, pick: () => cambiarMes(x) })));
+      if (a === 'pieza') return seleccionar(t.dataset.id);
+      if (a === 'fmt') { chat.formato = t.dataset.f; guardar(); repintarCaja(); paintPane(); return; }
+      if (a === 'var') { S.ver = t.dataset.l; S.lamina = null; paintPane(); repintarCaja(); return; }
+      if (a === 'nueva-var') { const l = vista().dr ? chat.letra || letraLibre(vista().variaciones) : letraLibre(vista().variaciones); if (!l) return toast('Ya hay seis variaciones: rehaz una', true); return pedir('Hazme otra variación con una dirección visual distinta: ', l); }
+      if (a === 'rehacer') return pedir(`Rehaz la variación ${t.dataset.l}: `, t.dataset.l);
+      if (a === 'elegir') return elegir(t.dataset.l);
       if (a === 'ctx') return document.querySelector('.dz-ctxp') ? (document.querySelector('.dz-ctxp').remove(), t.setAttribute('aria-expanded', 'false')) : panelCtx(t);
       if (a === 'ctx-x') return toggleCtx(t.dataset.k);
       if (a === 'hz-x') { chat.hormozi = false; guardar(); return repintarCaja(); }
-      if (a === 'formato') return menuDz(t, FORMATOS.map(([f, dsc]) => ({ label: f, sub: dsc, on: chat.formato === f, pick: () => { chat.formato = f; guardar(); repintarCaja(); } })));
+      if (a === 'formato') return menuDz(t, FORMATOS.map(([f, dsc]) => ({ label: f, sub: dsc, on: chat.formato === f, pick: () => { chat.formato = f; guardar(); repintarCaja(); paintPane(); } })));
       if (a === 'sin-lamina') { S.lamina = null; repintarCaja(); paintPane(); return; }
-      if (a === 'lamina') { const l = chat.resultado?.laminas.find((x) => x.id === t.dataset.id); S.lamina = S.lamina?.id === l?.id ? null : l; paintPane(); repintarCaja(); $('#dz-in', chatEl)?.focus(); return; }
+      if (a === 'lamina') { const l = vista().cur?.laminas.find((x) => x.id === t.dataset.id); S.lamina = S.lamina?.id === l?.id ? null : l; paintPane(); repintarCaja(); $('#dz-in', chatEl)?.focus(); return; }
       if (a === 'opcion') { t.closest('.es-q')?.classList.add('hecha'); return enviar(t.dataset.t); }
       if (a === 'sug') { const ta = $('#dz-in', chatEl); if (ta) { ta.value = t.dataset.t; ta.focus(); } return; }
       if (a === 'detener') { try { enVuelo?.abort(); } catch {} return; }
@@ -514,8 +466,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
     });
     root.addEventListener('keydown', (e) => { if (e.target.id === 'dz-in' && e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#dz-form', root)?.requestSubmit(); } });
 
-    if (!abierta(chat.etapa) && !chat.suelta) chat.etapa = ETAPAS.map(([k]) => k).find(abierta) || chat.etapa;
-    divisor(root, chatEl, { key: 'diseno' });
+    if (chat.ideaId && !todo.some((p) => p.id === chat.ideaId)) chat.ideaId = '';
     paintChat(); paintPane(); salud().then(() => { if (alive()) paintChat(); });
   }
 }

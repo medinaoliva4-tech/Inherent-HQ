@@ -157,3 +157,93 @@ export function tipoAsset(f) {
   if (/^video\//.test(m)) return 'Video';
   return 'Otros';
 }
+
+// ---------- La inversa: datos → sistema-visual.md (Visual Identity Builder) ----------
+// escribirSistema(leerSistema(md)) devuelve un md que se lee igual: lo que el editor guarda y exporta.
+const celda = (s) => String(s ?? '').replace(/\r?\n/g, ' ').replace(/\|/g, '/').trim();
+const filaMd = (cs) => `| ${cs.map(celda).join(' | ')} |`;
+const tablaMd = (head, rows) => [filaMd(head), `|${head.map(() => '---').join('|')}|`, ...rows.map(filaMd)];
+const mdReglas = (rs) => { const L = []; let prev = ''; for (const t of rs || []) { if (t.titulo && t.titulo !== prev) { L.push(`### ${t.titulo}`, ''); prev = t.titulo; } L.push(...tablaMd(t.head || ['', ''], t.rows || []), ''); } return L; };
+const mdNotas = (ns) => (ns || []).flatMap((n) => [n, '']);
+const mdVinetas = (vs) => ((vs || []).length ? [...vs.map((v) => `- ${v}`), ''] : []);
+const NOMBRE_PESO = { 100: 'Thin', 200: 'ExtraLight', 300: 'Light', 400: 'Regular', 500: 'Medium', 600: 'SemiBold', 700: 'Bold', 900: 'Black' };
+const pct = (n) => `${+(n * 100).toFixed(2)}%`;
+// El texto «Fuente» de una fila de la escala si no trae el original (familia + peso, mayúsculas y color).
+export const fuenteDe = (e, cs = []) => {
+  const nom = cs.find((c) => c.hex === e.color)?.nombre;
+  return [`${e.familia} ${NOMBRE_PESO[e.peso] || 'Regular'}`.trim(), e.mayus ? 'mayúsculas' : '', nom || ''].filter(Boolean).join(', ');
+};
+const medidaDe = (e) => {
+  if (e.medida) { const p = String(e.medida).split(' · '); return [p[0], p[1] || '0']; }
+  return [`${e.size} / ${pct(e.lh)}`, e.tracking ? `${e.tracking > 0 ? '+' : '−'}${pct(Math.abs(e.tracking))}` : '0'];
+};
+export function escribirSistema(sis, { nombre = '' } = {}) {
+  const s = sis || {}, tipo = s.tipo || {}, cs = s.colores || [];
+  const L = [`# Sistema visual${nombre ? ` — ${nombre}` : ''}`, ''];
+  for (const l of s.intro || []) L.push(`> ${l}`);
+  if ((s.intro || []).length) L.push('');
+  const sec = (titulo, cuerpo) => { if (cuerpo.some((x) => x !== '')) L.push('---', '', `## § ${titulo}`, '', ...cuerpo); };
+  sec('De dónde sale', (s.referentes || []).length ? [...tablaMd(['Referente', 'Qué se toma'], s.referentes.map((r) => [`**${r.quien}**`, r.que])), ''] : []);
+  const color = [];
+  if (cs.length) color.push(...tablaMd(['Rol', 'Nombre', 'Hex', 'Dónde se usa', 'Dónde NO'], cs.map((c) => [`**${c.rol}**`, `**${c.nombre}**`, `\`${c.hex}\``, c.usa, c.no || '—'])), '');
+  color.push(...mdNotas(s.colorNotas));
+  if ((s.contrastes || []).length) color.push('**Contraste verificado:**', '', ...tablaMd(['', 'Contraste', ''], s.contrastes.map((x) => [x.label, x.ratio ?? '', `${x.ok ? '✅' : '❌'} ${x.nota}`])), '');
+  sec('Color', color);
+  const ty = [];
+  if ((tipo.familias || []).length) ty.push(...tablaMd(['Familia', 'Para qué', 'Pesos'], tipo.familias.map((f) => [`**${f.nombre}**`, f.para, f.pesos])), '');
+  if ((tipo.escala || []).length) ty.push('### La escala', '', ...tablaMd(['Nivel', 'Fuente', 'Tamaño', 'Espaciado'], tipo.escala.map((e) => { const [tam, esp] = medidaDe(e); return [`**${e.nivel}**`, e.fuente || fuenteDe(e, cs), tam, esp]; })), '');
+  if ((tipo.combinaciones || []).length) ty.push('### Las combinaciones', '', ...tablaMd(['', 'Combinación'], tipo.combinaciones.map((c) => [`**${c.n}**`, c.que])), '');
+  ty.push(...mdVinetas(tipo.notas));
+  sec('Tipografía', ty);
+  sec('Logo', (s.logos || []).length ? [...tablaMd(['Versión', 'Archivo', 'Dónde'], s.logos.map((l) => [l.version, `\`${l.archivo}\``, l.donde])), ''] : []);
+  sec('Composición', mdReglas(s.composicion));
+  sec('Imagen', [...mdReglas(s.imagen?.reglas), ...mdNotas(s.imagen?.notas)]);
+  sec('Movimiento', mdReglas(s.movimiento));
+  sec('Qué está prohibido', mdVinetas(s.prohibido));
+  for (const o of s.otras || []) sec(o.titulo, [...mdReglas(o.reglas), ...mdVinetas(o.vinetas), ...mdNotas(o.notas)]);
+  return `${L.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd()}\n`;
+}
+export const aMd = escribirSistema;
+
+// La huella de un texto (FNV-1a): para saber si el archivo del repo cambió desde que se abrió el borrador.
+export const huella = (txt) => { let h = 0x811c9dc5; const s = String(txt ?? ''); for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+
+// ---------- Contraste: la matriz y la regla de los 4.5 ----------
+export const AA = 4.5;
+export const hexOk = (h) => /^#([0-9a-f]{6}|[0-9a-f]{3})$/i.test(String(h || '').trim());
+// El mismo cálculo que contraste(), con 2 decimales hacia abajo: 4.46 nunca se muestra ni pasa como 4.5.
+export const contrasteFino = (a, b) => { if (!hexOk(a) || !hexOk(b)) return null; const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return Math.floor(((x + 0.05) / (y + 0.05)) * 100 + 1e-9) / 100; };
+export const pasaAA = (a, b) => { const r = contrasteFino(a, b); return r !== null && r >= AA; };
+// Todos los pares tinta/fondo de la paleta (la matriz del editor).
+export const matrizContraste = (cs) => cs.filter((c) => hexOk(c.hex)).map((t) => ({ tinta: t, fila: cs.filter((c) => hexOk(c.hex)).map((f) => ({ fondo: f, ratio: t === f ? null : contrasteFino(t.hex, f.hex) })) }));
+// Un par nuevo con su verdad: ok solo si pasa 4.5.
+export function parContraste(t, f, nota = '') {
+  const ratio = contraste(t.hex, f.hex), ok = pasaAA(t.hex, f.hex);
+  return { label: `${t.nombre} sobre ${f.nombre}`, ratio, ok, nota: nota || (ok ? 'Sirve' : 'No sirve en texto chico'), tinta: t, fondo: f };
+}
+// Las faltas del sistema: lo que impide exportarlo. Nunca un par «ok» bajo 4.5, ni hex inválidos, ni dos acentos.
+export function faltasSistema(sis) {
+  const out = [], cs = sis?.colores || [];
+  for (const c of cs) if (!hexOk(c.hex)) out.push(`El color «${c.nombre || 'sin nombre'}» no tiene un hex válido.`);
+  if (!cs.length) out.push('Falta la paleta: ⚠️ SIN DATOS, sale de la guía de marca y del brief.');
+  if (cs.filter((c) => /acento/i.test(c.rol)).length > 1) out.push('Hay más de un acento: el sistema lleva uno solo.');
+  for (const x of sis?.contrastes || []) { const r = contrasteFino(x.tinta?.hex, x.fondo?.hex); if (x.ok && (r === null || r < AA)) out.push(`«${x.label}» está marcado ok con ${r ?? 'sin dato'}: bajo ${AA} no puede ir en ok.`); }
+  return out;
+}
+
+// ---------- Medidas de la composición, para las maquetas ----------
+const n1 = (m) => (m ? parseFloat(m[1].replace(',', '.')) : null);
+export function medidasDe(comp) {
+  const filas = (comp || []).flatMap((t) => t.rows || []), de = (re) => filas.find((r) => re.test(plano(r[0])))?.[1] || '';
+  const safeTxt = String(de(/safe/i)).split('·')[0], grilla = de(/grilla/i);
+  const arriba = n1(/(\d+(?:[.,]\d+)?)\s*%\s*de\s*arriba/i.exec(safeTxt)), abajo = n1(/(\d+(?:[.,]\d+)?)\s*%\s*de\s*abajo/i.exec(safeTxt)), der = n1(/(\d+(?:[.,]\d+)?)\s*%\s*(?:derecho|de la derecha|a la derecha)/i.exec(safeTxt));
+  return {
+    margen: n1(/(\d+(?:[.,]\d+)?)\s*%/.exec(de(/m[aá]rgenes/i))),
+    safe: arriba !== null && abajo !== null && der !== null ? { arriba, abajo, der } : null,
+    columnas: n1(/(\d+)\s*columnas?\s*en\s*redes/i.exec(grilla)) ?? n1(/(\d+)\s*columnas?/i.exec(grilla)),
+    canaleta: n1(/canaleta\s*de\s*(\d+(?:[.,]\d+)?)\s*%/i.exec(grilla)),
+  };
+}
+
+// Un sistema vacío para empezar de cero (⚠️ SIN DATOS: nada inventado).
+export const sistemaVacio = () => leerSistema('');

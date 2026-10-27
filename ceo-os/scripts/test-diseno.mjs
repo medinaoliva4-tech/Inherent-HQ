@@ -1,7 +1,7 @@
 // Pruebas del chat de Diseño: el pedido lleva el método, el bloque final se lee limpio y la pieza queda Lista.
 // npm run test:diseno
 import assert from 'node:assert/strict';
-import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoRefs, textoFormatos, textoIdea } from '../public/js/diseno.js';
+import { promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, carpetaDe, MESES_CTX, etiquetaCtx, textoCalendario, textoPlan, textoRefs, textoFormatos, textoIdea, SUGERENCIAS, variacionesDe, letraLibre, elegirVariacion, colaDelMes } from '../public/js/diseno.js';
 import { figmaDe, tipoAsset } from '../public/js/sistema-visual.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -51,5 +51,28 @@ t('Design system: el link de Figma del kit y el grupo de cada asset', () => {
   assert.equal(tipoAsset({ name: 'textura-madera.jpg', mime: 'image/jpeg' }), 'Texturas');
   assert.equal(tipoAsset({ name: 'lobby.jpg', mime: 'image/jpeg' }), 'Fotos e imágenes');
   assert.equal(tipoAsset({ name: 'Logos', mime: 'application/vnd.google-apps.folder' }), 'Carpetas');
+});
+t('Sin «Retocar fotos con IA» en las sugerencias', () => assert.ok(!SUGERENCIAS.some((x) => /retocar|foto/i.test(x))));
+t('Variaciones: A, B y C se guardan, elegir no borra y rehacer una letra conserva la versión anterior', () => {
+  const r = (n) => ({ titulo: 'T', formato: 'Carrusel', figma: 'https://www.figma.com/design/x' + n, laminas: [{ id: n, nombre: 'L' + n }], revision: [{ ok: true, texto: 'ok' }] });
+  let p = piezaLista({ id: 'p', title: 'T', format: 'Carrusel' }, r('1'), [], '2026-10-01');
+  assert.equal(p.diseno.elegida, 'A'); assert.equal(p.diseno.laminas[0].id, '1');
+  p = piezaLista(p, r('2'), [], '2026-10-02'); p = piezaLista(p, r('3'), [], '2026-10-03');
+  assert.deepEqual(p.diseno.variaciones.map((v) => v.id), ['A', 'B', 'C']); assert.equal(p.diseno.elegida, 'A'); assert.equal(letraLibre(p.diseno.variaciones), 'D');
+  p = elegirVariacion(p, 'C'); assert.equal(p.diseno.elegida, 'C'); assert.equal(p.diseno.laminas[0].id, '3'); assert.equal(p.diseno.variaciones.length, 3);
+  p = piezaLista(p, r('9'), [], '2026-10-04', { letra: 'B' }); const b = p.diseno.variaciones.find((v) => v.id === 'B');
+  assert.equal(b.laminas[0].id, '9'); assert.equal(b.versiones[0].laminas[0].id, '2'); assert.equal(p.diseno.elegida, 'C'); assert.equal(p.status, 'Listo');
+});
+t('Una pieza vieja con solo laminas cuenta como variación A', () => {
+  const v = variacionesDe({ title: 'X', format: 'Estático', diseno: { figma: 'f', laminas: [{ id: '1', nombre: 'a' }] } });
+  assert.equal(v.variaciones[0].id, 'A'); assert.equal(v.elegida, 'A'); assert.deepEqual(variacionesDe({ title: 'Y' }), { variaciones: [], elegida: '' });
+});
+t('La cola del mes: orden por fecha, lo que falta y cuántas variaciones lleva', () => {
+  const c = colaDelMes({ mes: '2026-10', piezas: [{ id: 'a', date: '2026-10-09', format: 'Carrusel', title: 'Cifras', status: 'Idea' }, { id: 'b', date: '2026-10-02', format: 'Reel', title: 'Apertura' }, { id: 'c', date: '2026-10-03', format: 'Story', title: 'Hecha', status: 'Listo', diseno: { laminas: [{ id: '1' }] } }, { id: 'd', date: '2026-11-01', format: 'Story' }] });
+  assert.deepEqual(c.map((x) => x.id), ['c', 'a']); assert.equal(c[0].variaciones, 1); assert.equal(c[0].falta, false); assert.equal(c[1].falta, true);
+});
+t('La variación pide otra dirección y nombra las anteriores', () => {
+  const p = promptDiseno({ marca: 'X', slug: 'x', pedido: 'Otra', primera: false, variacion: 'B', otras: [{ id: 'A', titulo: 'Cifra grande' }] });
+  assert.ok(p.includes('VARIACIÓN B') && p.includes('A: Cifra grande'));
 });
 console.log(`\n${ok} pruebas pasaron`);

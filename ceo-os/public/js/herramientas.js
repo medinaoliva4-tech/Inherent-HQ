@@ -9,6 +9,9 @@
 // Marketing (Fase 3b): las 6 herramientas P1 quedan «lista» (el calendario ya lo era). El Performance Center va al Tool Shell (vista 'rendimiento', un entregable por mes:
 // ciclo: true, el ciclo es contenido.mes); el Viral Lab y Ads Intelligence tienen su propia hoja (monta 'viral' y 'adsIntel') y traen aquí solo
 // lo que el servidor usa con su entregable (limpiar, faltas y, si llevan montos, sinCostos y conCostos).
+// Creative (Fase 3c): las 5 P1 quedan «lista». El Creative Direction Lab va al Tool Shell (vista 'direccion', un entregable por mes: ciclo: true) y conserva
+// «Ideas» y «Formatos» de hoy como sub-vistas (resto[0]); Brand DNA y Moodboard montan su propia hoja ('dna' y 'moodboard': viven en brand_boards, no en deliverables);
+// el Visual Identity Builder ('design') y el Design Studio ('disenoChat') siguen con su hoja.
 import * as salud from './consulting/salud.js';
 import * as causas from './consulting/causas.js';
 import * as procesos from './consulting/procesos.js';
@@ -21,6 +24,7 @@ import * as oferta from './strategy/oferta.js';
 import * as patrones from './marketing/patrones.js';
 import * as reporte from './marketing/reporte.js';
 import * as ads from './marketing/ads.js';
+import * as direccion from './creative/direccion.js';
 
 // ---------- El flujo compartido (7 pasos) ----------
 export const FLUJO = [
@@ -187,19 +191,20 @@ export const HERRAMIENTAS = [
 
   // Creative — convertir la estrategia aprobada en identidad y piezas (7)
   H({ id: 'brand-dna-studio', ws: 'creative', pestana: 'brief', nombre: 'Brand DNA Studio', produce: 'Territorio, personalidad, voz y activos distintivos de la marca',
-    estado: 'parcial', prioridad: 'P1', icono: 'heart', monta: 'brandBoard', guarda: { coll: 'brand_boards', nota: 'campo dna; exportar al repo solo el CEO (decisión 7.2-f)' },
+    estado: 'lista', prioridad: 'P1', icono: 'heart', monta: 'dna', guarda: { coll: 'brand_boards', nota: 'campo dna; exportar al repo solo el CEO (decisión 7.2-f)' },
     va_a: ['moodboard-studio', 'visual-identity-builder', 'creative-direction-lab'], puede: marca }),
   H({ id: 'moodboard-studio', ws: 'creative', pestana: 'concepts', nombre: 'Moodboard Studio', produce: 'Moodboard por zonas con 2 o 3 direcciones',
-    estado: 'parcial', prioridad: 'P1', icono: 'image', monta: 'brandBoard', guarda: { coll: 'brand_boards', nota: 'images extendido (zona, nota, fuente, ojo) + direcciones' },
+    estado: 'lista', prioridad: 'P1', icono: 'image', monta: 'moodboard', guarda: { coll: 'brand_boards', nota: 'images extendido (zona, nota, fuente, ojo) + direcciones' },
     va_a: ['creative-direction-lab', 'visual-identity-builder'], puede: marca }),
   H({ id: 'creative-direction-lab', ws: 'creative', pestana: 'concepts', nombre: 'Creative Direction Lab', produce: 'Insight, big idea y 3 a 5 conceptos comparables',
-    estado: 'parcial', prioridad: 'P1', icono: 'lightbulb', monta: 'ideas', guarda: D('uno por marca y mes, con la campaña como entrada'),
+    ...SH(direccion, 'direccion', { estado: 'lista', ciclo: true }),
+    prioridad: 'P1', icono: 'lightbulb', guarda: D('uno por marca y mes (el ciclo AAAA-MM es contenido.mes), con la campaña como entrada; los conceptos se descartan, no se borran'),
     va_a: ['design-studio', 'production-brief', 'script-storyboard-studio'], puede: contenido }),
   H({ id: 'visual-identity-builder', ws: 'creative', pestana: 'design', nombre: 'Visual Identity Builder', produce: 'El sistema visual: paleta, tipografía, logos, grilla y prohibido',
-    estado: 'parcial', prioridad: 'P1', icono: 'palette', monta: 'design', guarda: { coll: 'brand_boards', nota: 'sistema_borrador; publicar al repo solo el CEO (decisión 7.2-f)' },
+    estado: 'lista', prioridad: 'P1', icono: 'palette', monta: 'design', guarda: { coll: 'brand_boards', nota: 'sistema_borrador; publicar al repo solo el CEO (decisión 7.2-f)' },
     va_a: ['design-studio', 'brand-consistency-checker'], puede: sistema }),
   H({ id: 'design-studio', ws: 'creative', pestana: 'design', nombre: 'Design Studio', produce: 'Las láminas de cada pieza con variaciones A, B y C',
-    estado: 'parcial', prioridad: 'P1', icono: 'pen-tool', monta: 'disenoChat', guarda: { coll: 'content', nota: 'diseno + variaciones[] + elegida' },
+    estado: 'lista', prioridad: 'P1', icono: 'pen-tool', monta: 'disenoChat', guarda: { coll: 'content', nota: 'diseno + variaciones[] + elegida' },
     va_a: ['brand-consistency-checker', 'content-calendar'], puede: contenido }),
   H({ id: 'brand-consistency-checker', ws: 'creative', pestana: 'review', nombre: 'Brand Consistency Checker', produce: 'Un reporte por pieza: color, tipografía, composición, prohibido, voz y parecido',
     prioridad: 'P2', icono: 'badge-check', guarda: { coll: 'content', nota: 'cumplimiento, con historial que solo se agrega' },

@@ -43,10 +43,10 @@ t('cada herramienta: ws válido, pestaña del ws, prioridad, estado, aprueba, gu
     assert.equal(typeof h.puede, 'function', `${h.id}: puede`);
     if (h.estado !== 'pronto') assert.ok(h.monta, `${h.id}: ${h.estado} sin monta`); else assert.equal(h.monta, null, `${h.id}: pronto con monta`);
   }
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'viral-intelligence-lab', 'content-strategy-studio', 'content-calendar', 'campaign-architect', 'ads-intelligence', 'marketing-performance-center'], 'las 5 de Strategy de la Fase 3a + las 6 de Marketing de la Fase 3b');
-  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 14, '8 de la Fase 1 que siguen parciales + las 6 de Consulting de la Fase 2');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.estado === 'lista').map((h) => h.id), ['customer-bullseye', 'customer-avatar-studio', 'business-xray', 'offer-architect', 'growth-roadmap', 'viral-intelligence-lab', 'content-strategy-studio', 'content-calendar', 'campaign-architect', 'ads-intelligence', 'marketing-performance-center', 'brand-dna-studio', 'moodboard-studio', 'creative-direction-lab', 'visual-identity-builder', 'design-studio'], 'las 5 de Strategy de la Fase 3a + las 6 de Marketing de la Fase 3b + las 5 P1 de Creative de la Fase 3c');
+  assert.equal(HERRAMIENTAS.filter((h) => h.estado === 'parcial').length, 9, '3 de la Fase 1 que siguen parciales + las 6 de Consulting de la Fase 2');
   assert.equal(HERRAMIENTAS.filter((h) => h.monta).length, 25, 'las 19 de la Fase 1 + las 6 del Tool Shell');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'viral'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'adsIntel'], ['marketing-performance-center', 'shell'], ['brand-dna-studio', 'brandBoard'], ['moodboard-studio', 'brandBoard'], ['creative-direction-lab', 'ideas'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta).map((h) => [h.id, h.monta]), [['customer-bullseye', 'shell'], ['customer-avatar-studio', 'avatar'], ['business-xray', 'shell'], ['offer-architect', 'shell'], ['growth-roadmap', 'roadmap'], ['viral-intelligence-lab', 'viral'], ['content-strategy-studio', 'plan'], ['content-calendar', 'calendario'], ['campaign-architect', 'campanas'], ['funnel-builder', 'tech'], ['ads-intelligence', 'adsIntel'], ['marketing-performance-center', 'shell'], ['brand-dna-studio', 'dna'], ['moodboard-studio', 'moodboard'], ['creative-direction-lab', 'shell'], ['visual-identity-builder', 'design'], ['design-studio', 'disenoChat'], ['business-health-assessment', 'shell'], ['root-cause-explorer', 'shell'], ['process-mapper', 'shell'], ['financial-scenario-lab', 'shell'], ['solution-blueprint-builder', 'shell'], ['impact-tracker', 'shell'], ['script-storyboard-studio', 'creacion'], ['post-production-workspace', 'video']]);
   // Consulting lleva el nombre en español y el inglés como alias.
   for (const h of deWorkspace('consulting')) assert.ok(h.alias, `${h.id}: alias`);
   assert.equal(herramientaDe('business-health-assessment').nombre, 'Diagnóstico de crecimiento');
@@ -516,7 +516,7 @@ t('Marketing 3b: las 6 herramientas P1 quedan «lista» con su montaje; solo el 
   const montaje = { 'viral-intelligence-lab': 'viral', 'content-strategy-studio': 'plan', 'content-calendar': 'calendario', 'campaign-architect': 'campanas', 'ads-intelligence': 'adsIntel', 'marketing-performance-center': 'shell' };
   for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'marketing', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
   assert.equal(herramientaDe('marketing-performance-center').vista, 'rendimiento');
-  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo).map((h) => h.id), ['marketing-performance-center'], 'un solo entregable por mes: solo el Performance Center');
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'marketing').map((h) => h.id), ['marketing-performance-center'], 'en Marketing, un solo entregable por mes: solo el Performance Center');
   assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'marketing').map((h) => h.id), ['marketing-performance-center']);
   assert.equal(herramientaDe('campaign-architect').guarda.coll, 'mk_campaigns'); assert.equal(herramientaDe('content-strategy-studio').guarda.coll, 'plans'); assert.equal(herramientaDe('content-calendar').guarda.coll, 'content');
   for (const id of ['hook-laboratory', 'copywriting-studio', 'funnel-builder', 'growth-experiment-lab']) assert.notEqual(herramientaDe(id).estado, 'lista', `${id} no es de esta fase`);
@@ -632,6 +632,53 @@ t('Marketing 3b · estáticas: el shell con ciclo trae el selector de mes, pide 
   assert.match(sh, /S\.ctx = \{ \.\.\.S\.ctx, mes: S\.ciclo \}/, 'la IA recibe el mes elegido');
   // Una herramienta sin ciclo se pide como siempre: sin ciclo en la URL.
   assert.ok(sh.includes("`entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}${conCiclo"), 'la URL de la lista es la de siempre más el ciclo opcional');
+});
+
+// ---------- Fase 3c: Creative ----------
+t('Creative 3c: las 5 P1 quedan «lista» con su montaje; solo el Creative Direction Lab va al shell y tiene ciclo; las 2 P2 siguen Pronto', () => {
+  const montaje = { 'brand-dna-studio': 'dna', 'moodboard-studio': 'moodboard', 'creative-direction-lab': 'shell', 'visual-identity-builder': 'design', 'design-studio': 'disenoChat' };
+  for (const [id, monta] of Object.entries(montaje)) { const h = herramientaDe(id); assert.equal(h.estado, 'lista', id); assert.equal(h.monta, monta, id); assert.equal(h.ws, 'creative', id); assert.ok(h.guarda.coll && h.guarda.nota, `${id}: guarda`); }
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.monta === 'shell' && h.ws === 'creative').map((h) => h.id), ['creative-direction-lab']);
+  assert.deepEqual(HERRAMIENTAS.filter((h) => h.ciclo && h.ws === 'creative').map((h) => h.id), ['creative-direction-lab']);
+  for (const id of ['brand-consistency-checker', 'creative-performance-analyzer']) { assert.equal(herramientaDe(id).estado, 'pronto', id); assert.equal(herramientaDe(id).monta, null, id); }
+  assert.equal(herramientaDe('brand-dna-studio').guarda.coll, 'brand_boards'); assert.equal(herramientaDe('moodboard-studio').guarda.coll, 'brand_boards'); assert.equal(herramientaDe('creative-direction-lab').guarda.coll, 'deliverables');
+});
+
+t('Creative 3c: el Creative Direction Lab trae las funciones de direccion.js; su prompt pide su bloque y sus criterios y cabe en 5 000', () => {
+  const h = herramientaDe('creative-direction-lab');
+  assert.equal(h.vista, 'direccion'); assert.equal(h.bloque, 'direccion');
+  for (const f of ['vacio', 'prompt', 'leer', 'limpiar', 'faltas', 'aMd']) assert.equal(typeof h[f], 'function', f);
+  const p = h.prompt({ cliente: { nombre: 'X', slug: 'x' }, hoy: '2026-10-27', mes: '2026-10', entradas: [] });
+  assert.ok(p.includes('direccion') && p.includes('criterios') && p.length < 5000, 'prompt');
+  assert.match(p, /nunca leas ni cites inherent\/06-ECONOMIA/i, 'el prompt prohíbe leer los costos de Inherent');
+  assert.equal(h.limpiar(h.vacio()).conceptos.length, 0);
+});
+
+t('Creative 3c · estáticas: workspace.js monta la dirección, el DNA y el moodboard; Ideas y Formatos siguen como sub-vistas sin shell', () => {
+  const ws = leerSrc('public/js/screens/workspace.js');
+  assert.match(ws, /direccion: \(\) => import\('\.\.\/creative\/direccion-ui\.js'\)/, 'VISTAS.direccion');
+  assert.match(ws, /case 'dna': case 'moodboard':[\s\S]*'\.\.\/creative\/dna-ui\.js', 'dnaTool'[\s\S]*'\.\.\/creative\/moodboard-ui\.js', 'moodboardTool'[\s\S]*hoja\(host, \{ me, slug, b, alive, resto \}\)/, 'monta dnaTool y moodboardTool con { me, slug, b, alive, resto }');
+  assert.match(ws, /dna: 'marca', moodboard: 'marca'/, 'DNA y Moodboard piden el módulo Identidad de Marcas');
+  assert.match(ws, /t\.id === 'creative-direction-lab' && \['ideas', 'formatos'\]\.includes\(resto\[0\]\)/, 'ideas y formatos salen de resto[0]');
+  assert.match(ws, /if \(sv === 'ideas'\) return embed\(sede, 'postear'\);\s*if \(sv === 'formatos'\) return formatosUI\(sede, \{ me, b, alive \}\)/, 'Ideas y Formatos no pasan por el shell');
+  assert.match(ws, /case 'dna': case 'moodboard': \{\s*if \(b\.personal\) return meBrand\(/, 'la marca personal sigue en meBrand');
+  assert.ok(!/case 'ideas':/.test(ws), 'ya no hay montaje de la clave vieja ideas');
+  for (const f of ['direccion', 'dna', 'moodboard']) assert.ok(fs.existsSync(new URL(`../public/js/creative/${f}-ui.js`, import.meta.url)), `${f}-ui.js`);
+  assert.match(leerSrc('public/js/creative/direccion-ui.js'), /export const vista = \{/); assert.match(leerSrc('public/js/creative/dna-ui.js'), /export async function dnaTool\(/); assert.match(leerSrc('public/js/creative/moodboard-ui.js'), /export async function moodboardTool\(/);
+});
+
+t('Creative 3c · las rutas viejas de Ideas y Formatos siguen llegando al Creative Direction Lab', () => {
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/ideas').resto[0], 'ideas');
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/2026-10').resto[0], '2026-10');
+  assert.equal(wsDeRuta('#/ws/creative/akai/concepts/creative-direction-lab/formatos').tool, 'creative-direction-lab');
+});
+
+t('Creative 3c · estáticas: package.json trae test:creative y app.css el bloque de Creative solo con tokens --ui-*', () => {
+  const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:creative'], /test-creative\.mjs.*test-creative-marca\.mjs/);
+  const css = leerSrc('public/app.css'); assert.match(css, /FASE 3c · Creative/);
+  for (const k of ['.dl{', '.dl-cons{', '.dz.dz3{', '.dz-cola{', '.dna,.mb{', '.dse{']) assert.ok(css.includes(k), k);
+  const bloque = css.slice(css.indexOf('FASE 3c · Creative'));
+  assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '')), 'el bloque no trae colores sueltos: solo tokens --ui-*');
 });
 
 console.log(`\n${ok} pruebas OK`);

@@ -2,6 +2,9 @@
 // npm run test:design
 import assert from 'node:assert/strict';
 import { leerSistema, colorEn, contraste, fuentesUrl, tokensCss } from '../public/js/sistema-visual.js';
+import { escribirSistema, huella, contrasteFino, pasaAA, matrizContraste, parContraste, faltasSistema, medidasDe } from '../public/js/sistema-visual.js';
+import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const MD = `# Sistema visual — Prueba
@@ -80,5 +83,38 @@ t('Contraste WCAG, fuentes y tokens', () => {
 });
 t('Un archivo vacío no rompe: todo queda vacío', () => {
   const v = leerSistema(''); assert.deepEqual([v.colores, v.logos, v.prohibido, v.tipo.escala], [[], [], [], []]);
+});
+
+// ---------- Visual Identity Builder: escribirSistema es la inversa de leerSistema ----------
+const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
+const reales = existsSync(RAIZ + 'clients') ? readdirSync(RAIZ + 'clients').map((c) => RAIZ + `clients/${c}/02-marca/sistema-visual.md`).filter((f) => existsSync(f)) : [];
+t('Hay al menos un sistema real de cliente para probar', () => assert.ok(reales.length >= 1, 'no hay clients/*/02-marca/sistema-visual.md'));
+for (const f of reales) t(`leerSistema(escribirSistema(x)) = x con ${f.split('/').slice(-3, -2)[0]}`, () => {
+  const x = leerSistema(readFileSync(f, 'utf8')), md = escribirSistema(x, { nombre: 'Prueba' });
+  assert.deepEqual(leerSistema(md), x);
+  assert.equal(escribirSistema(leerSistema(md), { nombre: 'Prueba' }), md, 'escribir es estable');
+});
+t('Lo mismo con un sistema mínimo y con uno vacío', () => {
+  const m = leerSistema(MD); assert.deepEqual(leerSistema(escribirSistema(m)), m);
+  const solo = leerSistema('## § Color\n| Rol | Nombre | Hex | Dónde se usa | Dónde NO |\n|---|---|---|---|---|\n| Acento | Rojo | `#ff0000` | Botón | — |\n'); assert.deepEqual(leerSistema(escribirSistema(solo)), solo);
+  const v = leerSistema(''); assert.deepEqual(leerSistema(escribirSistema(v)), v);
+});
+t('Contraste fino: 4.46 no pasa como 4.5, y la matriz cubre todos los pares', () => {
+  assert.equal(contrasteFino('#FFFFFF', '#000000'), 21); assert.equal(contrasteFino('zzz', '#000'), null);
+  assert.equal(pasaAA('#FFFFFF', '#262523'), true); assert.equal(pasaAA('#C4702A', '#262523'), false);
+  const mx = matrizContraste(S.colores); assert.equal(mx.length, 3); assert.ok(mx.every((r) => r.fila.length === 3 && r.fila.filter((c) => c.ratio === null).length === 1));
+});
+t('Ningún par marcado ok baja de 4.5: un par nuevo solo sale ok si pasa, y las faltas lo cazan', () => {
+  const [neg, bla, nar] = S.colores;
+  assert.equal(parContraste(bla, neg).ok, true); assert.equal(parContraste(nar, neg).ok, false); assert.equal(parContraste(bla, nar).ok, false);
+  const malo = { ...S, contrastes: [{ ...parContraste(nar, neg), ok: true }] };
+  assert.match(faltasSistema(malo).join(), /bajo 4.5/);
+  assert.deepEqual(faltasSistema({ ...S, contrastes: [parContraste(bla, neg), parContraste(nar, neg)] }), []);
+  assert.match(faltasSistema({ ...S, colores: [{ ...nar, rol: 'Acento' }, { ...neg, rol: 'Acento' }] }).join(), /más de un acento/);
+});
+t('Huella estable y medidas de composición', () => {
+  assert.equal(huella(MD), huella(MD)); assert.notEqual(huella(MD), huella(MD + ' ')); assert.equal(huella(''), '811c9dc5');
+  assert.deepEqual(medidasDe(S.composicion), { margen: 7, safe: { arriba: 14, abajo: 22, der: 12 }, columnas: 6, canaleta: null });
+  assert.deepEqual(medidasDe([]), { margen: null, safe: null, columnas: null, canaleta: null });
 });
 console.log(`\n${ok} pruebas pasaron`);

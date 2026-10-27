@@ -10,6 +10,8 @@
 // propia hoja (monta 'roadmap'). El chat de Strategy de hoy (screens/strategy.js) ya no es la casa de ninguna: se abre por …/<herramienta>/chat[/<bloque>].
 // Marketing (Fase 3b): el Viral Lab y Ads Intelligence montan su propia hoja (monta 'viral' y 'adsIntel'; cada una trae adentro la Investigación y las
 // Variaciones de hoy); el Performance Center va al Tool Shell (vista 'rendimiento', un entregable por mes) y conserva «Instagram» (los analytics de siempre).
+// Creative (Fase 3c): el Creative Direction Lab va al Tool Shell (vista 'direccion', un entregable por mes) y conserva «Ideas» y «Formatos» de hoy como sub-vistas
+// (…/creative-direction-lab/ideas|formatos: ahí NO se monta el shell); Brand DNA y Moodboard montan su hoja ('dna' y 'moodboard'); en la marca personal siguen en meBrand.
 import { html, mount, col, api, ico, initials, skel, $, fdate, today } from '../core.js';
 import { WORKSPACES, FLUJO, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, rutaHerramienta, puedeWs, veEstrategia, acc } from '../herramientas.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto, selectorHtml } from '../contexto.js';
@@ -50,6 +52,7 @@ const VISTAS = {
   xray: () => import('../strategy/xray-ui.js'),
   oferta: () => import('../strategy/oferta-ui.js'),
   rendimiento: () => import('../marketing/rendimiento-ui.js'),
+  direccion: () => import('../creative/direccion-ui.js'),
 };
 const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
@@ -61,7 +64,7 @@ const nomTool = (id) => herramientaDe(id)?.nombre || id;
 const herr = (x) => (typeof x === 'string' ? herramientaDe(x) : x);
 // Qué módulo de Marcas monta cada clave de montaje: modulesFor(me, b) sigue diciendo si el perfil lo abre.
 // (avatar ya no está: el Customer Avatar Studio es de Strategy y el servidor deja entrar a quien edita Contenido o Estrategia.)
-const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', adsIntel: 'ads', brandBoard: 'marca', ideas: 'ideas', design: 'design', creacion: 'creacion', video: 'video' };
+const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', adsIntel: 'ads', brandBoard: 'marca', dna: 'marca', moodboard: 'marca', design: 'design', creacion: 'creacion', video: 'video' };
 // El ciclo de Production (un ciclo por marca y mes): en qué fase cae el día de hoy.
 const CICLO = [[1, 3, 'brief'], [4, 5, 'coordinar'], [6, 10, 'grabar'], [11, 11, 'último día de grabación'], [12, 15, 'editar'], [16, 19, 'cambios'], [20, 20, 'presentar']];
 const diaCiclo = (dia) => (dia > 20 ? 'Ciclo del mes cerrado · se presentó el 20' : `Día ${dia} del ciclo · ${(CICLO.find(([a, z]) => dia >= a && dia <= z) || [])[2] || ''}`);
@@ -275,7 +278,9 @@ export async function render(el, { me, sub = [], alive }) {
     // El chat de Strategy de hoy (puente/Hermes), intacto: solo por …/<herramienta>/chat[/<bloque>] (y por las rutas de la Fase 1 de Modelo y Leads).
     const chat = bloqueChat(t);
     if (chat) return strategy(host, { me, sub: [slug, chat], alive });
-    const mod = t.monta === 'ideas' && resto[0] === 'formatos' ? 'formatos' : MOD_LEGADO[t.monta];
+    // El Creative Direction Lab trae «Ideas» y «Formatos» de hoy como sub-vistas (resto[0]); cada una pide su módulo de Marcas.
+    const subLab = t.id === 'creative-direction-lab' && ['ideas', 'formatos'].includes(resto[0]) ? resto[0] : '';
+    const mod = subLab || MOD_LEGADO[t.monta];
     if (mod && !modulesFor(me, b).includes(mod)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>${b.personal ? 'En la marca personal no aplica.' : 'Pídele al CEO acceso a Contenido o a Clientes en Equipo → Vistas por rol.'}</div>`);
     const common = { me, alive, fixed: b.slug };
     const embed = (h, only, extra = {}) => { h.dataset.island = '1'; return content(h, { ...common, sub: [only], embed: { base, only: [only], brand: b.name, ...extra } }); };
@@ -284,8 +289,16 @@ export async function render(el, { me, sub = [], alive }) {
       case 'shell': {
         const cargar = VISTAS[t.vista];
         if (!cargar) return mount(host, ficha(t));
-        // Performance Center: el reporte del mes es el centro; «Instagram» es la pantalla de analytics de siempre (ahí se conecta la cuenta).
+        // Creative Direction Lab: la dirección del mes es el centro (shell con ciclo); «Ideas» y «Formatos» son las pantallas de siempre, sin shell.
         let sede = host;
+        if (t.id === 'creative-direction-lab') {
+          const sv = subLab, enlace = (id, nombre) => html`<a class="${sv === id ? 'on' : ''}" href="${id ? `${base}/${id}` : base}">${nombre}</a>`;
+          mount(host, html`<nav class="ws-sub-tabs" aria-label="Dirección, ideas o formatos">${enlace('', 'Dirección')}${enlace('ideas', 'Ideas')}${enlace('formatos', 'Formatos')}</nav><div id="ws-cdl"></div>`);
+          sede = $('#ws-cdl', host);
+          if (sv === 'ideas') return embed(sede, 'postear');
+          if (sv === 'formatos') return formatosUI(sede, { me, b, alive });
+        }
+        // Performance Center: el reporte del mes es el centro; «Instagram» es la pantalla de analytics de siempre (ahí se conecta la cuenta).
         if (t.id === 'marketing-performance-center') {
           const ig = resto[0] === 'instagram';
           mount(host, html`<nav class="ws-sub-tabs" aria-label="Reporte o Instagram"><a class="${ig ? '' : 'on'}" href="${base}">Reporte del mes</a><a class="${ig ? 'on' : ''}" href="${base}/instagram">Instagram</a></nav><div id="ws-mpc"></div>`);
@@ -323,17 +336,22 @@ export async function render(el, { me, sub = [], alive }) {
       case 'calendario': return embed(host, 'calendario');
       case 'campanas': return campanasUI(host, { me, b, alive, resto });
       case 'tech': { mount(host, html`<div class="ws-sec-h"><h2>Sitios y landings</h2></div><p class="mut sm" style="margin:0 0 14px">El Funnel Builder llega en la Fase 3; mientras, aquí viven los sitios y landings.</p><div id="ws-tech"></div>`); return techUI($('#ws-tech', host), { me, b, alive }); }
+      // Brand DNA Studio y Moodboard Studio: su hoja propia (no usan el shell; viven en brand_boards con id = slug del cliente). La marca personal sigue en meBrand.
+      case 'dna': case 'moodboard': {
+        if (b.personal) return meBrand(host, { me, sub: resto, alive, embed: { base, only: ['roadmap', 'asociaciones'] } });
+        const [archivo, nombre] = t.monta === 'dna' ? ['../creative/dna-ui.js', 'dnaTool'] : ['../creative/moodboard-ui.js', 'moodboardTool'];
+        mount(host, esqueleto());
+        let hoja = null;
+        try { hoja = (await import(archivo))[nombre]; } catch (e) { console.error(e); }
+        if (!alive() || !host.isConnected) return;
+        if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        return hoja(host, { me, slug, b, alive, resto });
+      }
       case 'brandBoard': {
         if (b.personal) return meBrand(host, { me, sub: resto, alive, embed: { base, only: ['roadmap', 'asociaciones'] } });
         const acc = await col('accounts').get('acc-' + b.slug).catch(() => null);
         if (!alive() || !host.isConnected) return;
         return brandBoard({ el: host, me, id: b.slug, name: b.name, edit: canEdit(me, 'clients'), business: true, folder: acc?.assets || '' });
-      }
-      case 'ideas': {
-        const f = resto[0] === 'formatos';
-        mount(host, html`<nav class="ws-sub-tabs" aria-label="Ideas o formatos"><a class="${f ? '' : 'on'}" href="${base}">Ideas</a><a class="${f ? 'on' : ''}" href="${base}/formatos">Formatos</a></nav><div id="ws-ideas"></div>`);
-        const h = $('#ws-ideas', host);
-        return f ? formatosUI(h, { me, b, alive }) : embed(h, 'postear');
       }
       case 'design': return designSystemUI(host, { me, b, alive });
       case 'disenoChat': return disenoChat(host, { me, sub: [slug, ...resto], alive, brands: contextoLista() });
