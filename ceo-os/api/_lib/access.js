@@ -30,6 +30,9 @@ export const COLLS = {
   mk_campaigns: 'content',
   // App 01 · Marca › Video, Ads y Tech. Solo por /api/video, /api/ads-studio y /api/tech (api/_lib/video.js, ads-studio.js, tech.js).
   videos: 'content', ad_variants: 'content', tech: 'content',
+  // Los entregables de las herramientas del OS y sus versiones (área nominal: el permiso real lo pone la ruta, según el workspace).
+  // Solo por /api/entregables/* (api/_lib/entregables.js); nunca por /api/db.
+  deliverables: 'content', deliverable_versions: 'content',
   invoices: 'finanzas', bank_moves: 'finanzas', cost_recipes: 'finanzas',
 };
 // Lo que el Workspace necesita leer aunque la persona no entre a esas áreas
@@ -138,6 +141,9 @@ export async function scoper(u, pre = {}) {
     budgets: (d) => slugs.has(lc(d.client_slug)),
     campaigns: (d) => slugs.has(lc(d.client_slug)),
     strategy: (d) => lc(d.slug) === 'inherent' || slugs.has(lc(d.slug)),
+    // Un entregable (y cada versión) lleva el cliente en client_slug.
+    deliverables: (d) => lc(d.client_slug) === 'inherent' || slugs.has(lc(d.client_slug)),
+    deliverable_versions: (d) => lc(d.client_slug) === 'inherent' || slugs.has(lc(d.client_slug)),
   };
 }
 export const inScope = (sc, coll, d) => !sc || typeof sc[coll] !== 'function' || !d || sc[coll](d);
