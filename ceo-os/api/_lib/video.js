@@ -4,6 +4,7 @@ import * as db from './db.js';
 import { edits } from './access.js';
 import { body } from './http.js';
 import { abreMarca } from './creacion.js';
+import { assetsNuevos } from '../../public/js/production/repurposing.js';
 import { COLL_V, idKit, limpiarKit, limpiarFicha, fusionarVersiones, limpiarComentario, limpiarComentarios, puedeEnviar, decidirRevision } from '../../public/js/video.js';
 
 const idOk = (s) => /^[\w-]{1,80}$/.test(String(s || ''));
@@ -45,6 +46,14 @@ async function enlaces(slug, f, selfId) {
   return { post: post && post.profile === slug ? f.post : '', derivada_de: master && master.kind === 'ficha' && master.profile === slug ? f.derivada_de : '' };
 }
 
+// Una derivada (ficha con derivada_de) no agrega assets nuevos: solo usa lo que ya tiene su maestro. '' = pasa. `previos` = lo que la ficha ya tenía.
+async function sinAssetsNuevos(f, derivada_de, previos = []) {
+  if (!derivada_de) return '';
+  const m = await db.get(COLL_V, derivada_de).catch(() => null), antes = new Set(previos.map((a) => a?.url || `n:${a?.nombre}`));
+  const nuevos = assetsNuevos(f.assets, m?.assets).filter((a) => !antes.has(a.url || `n:${a.nombre}`));
+  return nuevos.length ? `Una derivada no agrega assets nuevos: ${nuevos.slice(0, 3).map((a) => a.nombre || a.url).join(', ')} no están en el maestro. Súbelos al maestro y vuelve a derivar.` : '';
+}
+
 export function rutas(on) {
   on('GET', 'video', async (req, res) => {
     const slug = String(req.query.profile || ''), u = await abreMarca(req, res, slug); if (!u) return;
@@ -58,8 +67,9 @@ export function rutas(on) {
   on('POST', 'video', async (req, res) => {
     const b = body(req), slug = String(b.profile || ''), u = await abreMarca(req, res, slug, true); if (!u) return;
     const f = limpiarFicha(b); if (!f.titulo) return res.status(400).json({ error: 'Ponle un título al video' });
+    const enl = await enlaces(slug, f), mal = await sinAssetsNuevos(f, enl.derivada_de); if (mal) return res.status(400).json({ error: mal });
     const por = quien(u), en = ahora();
-    res.json(await db.create(COLL_V, { profile: slug, kind: 'ficha', ...f, ...(await enlaces(slug, f)), versiones: f.versiones.map((x) => ({ ...x, por, en })), qa: f.qa, revision: '', comentarios: [], aprobacion: null }, u.email));
+    res.json(await db.create(COLL_V, { profile: slug, kind: 'ficha', ...f, ...enl, versiones: f.versiones.map((x) => ({ ...x, por, en })), qa: f.qa, revision: '', comentarios: [], aprobacion: null }, u.email));
   });
   on('PUT', 'video/:id', async (req, res) => {
     const id = String(req.params.id || ''), cur = idOk(id) ? await db.get(COLL_V, id) : null;
@@ -73,7 +83,8 @@ export function rutas(on) {
       const f = limpiarFicha({ ...cur, ...b, versiones: fusionarVersiones(cur.versiones, b.versiones ?? cur.versiones) });
       const tenia = new Set((cur.versiones || []).map((x) => x.v)), nuevas = f.versiones.filter((x) => !tenia.has(x.v));
       f.versiones = f.versiones.map((x) => (tenia.has(x.v) ? x : { ...x, por: quien(u), en: ahora() }));
-      data = { ...sinMeta(cur), ...f, ...(await enlaces(cur.profile, f, id)) };
+      const enl = await enlaces(cur.profile, f, id), mal = await sinAssetsNuevos(f, enl.derivada_de, cur.derivada_de === enl.derivada_de ? cur.assets : []); if (mal) return res.status(400).json({ error: mal });
+      data = { ...sinMeta(cur), ...f, ...enl };
       if (f.estado === 'En revisión' && cur.estado !== 'En revisión') {
         const falta = puedeEnviar(f); if (falta) return res.status(400).json({ error: falta });
         data.revision = 'Pendiente';

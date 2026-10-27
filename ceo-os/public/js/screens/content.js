@@ -7,6 +7,7 @@ import { TIPOS_MARCA, eventosMarca, redDe } from '../calendario-vistas.js';
 import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-trabajo.js';
 import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre, bandasDelMes, bandasPorDia, slotDe, tituloSlot, metricasDe, resumenMetricas, motivoNoMover, moverEnLista, ponerPieza, falloAlMover } from '../calendario-contenido.js';
 import { rutaModulo } from '../herramientas.js';
+import { archivar } from '../production/planner.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -264,7 +265,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (shoots === null || ops === null) {
       mount(b, html`<p class="loading">Cargando…</p>`);
       Promise.all([C.list().catch(() => []), col('tasks').list().catch(() => []), col('projects').list().catch(() => [])])
-        .then(([l, t, pr]) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug); ops = { tasks: t, projects: pr }; })
+        .then(([l, t, pr]) => { shoots = l.filter((x) => x.kind === 'shoot' && x.profile === slug && !x.archivado); ops = { tasks: t, projects: pr }; })
         .then(() => alive() && b.isConnected && calendario(b));
       return;
     }
@@ -388,11 +389,12 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       { k: 'crew', l: 'Quién graba', v: x?.crew, half: true },
       { k: 'pieces', l: 'Piezas y tomas (una por línea)', t: 'textarea', v: x?.pieces },
       { k: 'notes', l: 'Notas', t: 'textarea', v: x?.notes },
-      ...(x ? [{ k: 'status', l: 'Estado', t: 'select', opts: [...SHOOT, ['__del', 'Eliminar esta grabación']], v: x.status || SHOOT[0] }] : []),
+      ...(x ? [{ k: 'status', l: 'Estado', t: 'select', opts: [...SHOOT, ['__del', 'Archivar esta grabación']], v: x.status || SHOOT[0] }] : []),
     ], x ? 'Guardar' : 'Agendar');
     if (!v) return;
     try {
-      if (v.status === '__del') { if (!(await confirmAsk(`¿Eliminar «${x.title}»?`))) return; await C.remove(x.id); shoots = shoots.filter((y) => y.id !== x.id); toast('Grabación eliminada'); }
+      // Nada se borra: la grabación se archiva (queda Cancelada y fuera del calendario; el Production Planner la guarda con su historial).
+      if (v.status === '__del') { if (!(await confirmAsk(`¿Archivar «${x.title}»?`))) return; await C.save({ ...x, ...archivar(x) }); shoots = shoots.filter((y) => y.id !== x.id); toast('Grabación archivada'); }
       else if (x) { const r = await C.save({ ...x, ...v }); shoots = shoots.map((y) => (y.id === r.id ? r : y)); toast('Guardado'); }
       else { const r = await C.create({ kind: 'shoot', profile: slug, status: SHOOT[0], ...v }); shoots = [...shoots, r]; toast('Grabación agendada'); }
       recal();

@@ -12,6 +12,9 @@
 // Variaciones de hoy); el Performance Center va al Tool Shell (vista 'rendimiento', un entregable por mes) y conserva «Instagram» (los analytics de siempre).
 // Creative (Fase 3c): el Creative Direction Lab va al Tool Shell (vista 'direccion', un entregable por mes) y conserva «Ideas» y «Formatos» de hoy como sub-vistas
 // (…/creative-direction-lab/ideas|formatos: ahí NO se monta el shell); Brand DNA y Moodboard montan su hoja ('dna' y 'moodboard'); en la marca personal siguen en meBrand.
+// Fase 3e · P2: las vistas nuevas (radar, oportunidades, precios, organizacion, automatizacion, hooks, copy, funnel, rendimientoCreativo y repurposing) van al Tool Shell; el Funnel
+// Builder conserva «Sitios y landings» (…/funnel-builder/sitios: techUI, sin shell); Commercial Diagnosis, Brand Consistency Checker y Production Planner montan su hoja
+// ('comercial', 'consistencia' y 'planner'; no usan el shell).
 // Production (Fase 3d): el Production Brief y el Shot List Builder van al Tool Shell (vistas brief y shotlist, un entregable por mes); el Review & Approval Studio monta su hoja ('review').
 import { html, mount, col, api, ico, initials, skel, $, fdate, today } from '../core.js';
 import { WORKSPACES, FLUJO, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, rutaHerramienta, puedeWs, veEstrategia, acc } from '../herramientas.js';
@@ -56,6 +59,16 @@ const VISTAS = {
   direccion: () => import('../creative/direccion-ui.js'),
   brief: () => import('../production/brief-ui.js'),
   shotlist: () => import('../production/shotlist-ui.js'),
+  radar: () => import('../strategy/radar-ui.js'),
+  oportunidades: () => import('../strategy/oportunidades-ui.js'),
+  precios: () => import('../strategy/precios-ui.js'),
+  organizacion: () => import('../consulting/organizacion-ui.js'),
+  automatizacion: () => import('../consulting/automatizacion-ui.js'),
+  hooks: () => import('../marketing/hooks-ui.js'),
+  copy: () => import('../marketing/copy-ui.js'),
+  funnel: () => import('../marketing/funnel-ui.js'),
+  rendimientoCreativo: () => import('../creative/rendimiento-creativo-ui.js'),
+  repurposing: () => import('../production/repurposing-ui.js'),
 };
 const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
@@ -67,7 +80,7 @@ const nomTool = (id) => herramientaDe(id)?.nombre || id;
 const herr = (x) => (typeof x === 'string' ? herramientaDe(x) : x);
 // Qué módulo de Marcas monta cada clave de montaje: modulesFor(me, b) sigue diciendo si el perfil lo abre.
 // (avatar ya no está: el Customer Avatar Studio es de Strategy y el servidor deja entrar a quien edita Contenido o Estrategia.)
-const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', adsIntel: 'ads', brandBoard: 'marca', dna: 'marca', moodboard: 'marca', design: 'design', creacion: 'creacion', video: 'video', review: 'video' };
+const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', viral: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', adsIntel: 'ads', brandBoard: 'marca', dna: 'marca', moodboard: 'marca', design: 'design', creacion: 'creacion', video: 'video', review: 'video' };
 // El ciclo de Production (un ciclo por marca y mes): en qué fase cae el día de hoy.
 const CICLO = [[1, 3, 'brief'], [4, 5, 'coordinar'], [6, 10, 'grabar'], [11, 11, 'último día de grabación'], [12, 15, 'editar'], [16, 19, 'cambios'], [20, 20, 'presentar']];
 const diaCiclo = (dia) => (dia > 20 ? 'Ciclo del mes cerrado · se presentó el 20' : `Día ${dia} del ciclo · ${(CICLO.find(([a, z]) => dia >= a && dia <= z) || [])[2] || ''}`);
@@ -283,7 +296,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (chat) return strategy(host, { me, sub: [slug, chat], alive });
     // El Creative Direction Lab trae «Ideas» y «Formatos» de hoy como sub-vistas (resto[0]); cada una pide su módulo de Marcas.
     const subLab = t.id === 'creative-direction-lab' && ['ideas', 'formatos'].includes(resto[0]) ? resto[0] : '';
-    const mod = subLab || MOD_LEGADO[t.monta];
+    // El Funnel Builder trae «Sitios y landings» (…/funnel-builder/sitios): esa sub-vista pide el módulo tech de Marcas; el embudo no.
+    const sitios = t.id === 'funnel-builder' && resto[0] === 'sitios';
+    const mod = subLab || (sitios ? 'tech' : MOD_LEGADO[t.monta]);
     if (mod && !modulesFor(me, b).includes(mod)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>${b.personal ? 'En la marca personal no aplica.' : 'Pídele al CEO acceso a Contenido o a Clientes en Equipo → Vistas por rol.'}</div>`);
     const common = { me, alive, fixed: b.slug };
     const embed = (h, only, extra = {}) => { h.dataset.island = '1'; return content(h, { ...common, sub: [only], embed: { base, only: [only], brand: b.name, ...extra } }); };
@@ -307,6 +322,12 @@ export async function render(el, { me, sub = [], alive }) {
           mount(host, html`<nav class="ws-sub-tabs" aria-label="Reporte o Instagram"><a class="${ig ? '' : 'on'}" href="${base}">Reporte del mes</a><a class="${ig ? 'on' : ''}" href="${base}/instagram">Instagram</a></nav><div id="ws-mpc"></div>`);
           sede = $('#ws-mpc', host);
           if (ig) return modulesFor(me, b).includes('resultados') ? embed(sede, 'analytics') : mount(sede, html`<div class="empty"><b>Tu perfil no abre los analytics</b>Pídele al CEO acceso a Contenido en Equipo → Vistas por rol.</div>`);
+        }
+        // Funnel Builder: el embudo es el centro; «Sitios y landings» son los sitios de siempre (techUI), sin shell.
+        if (t.id === 'funnel-builder') {
+          mount(host, html`<nav class="ws-sub-tabs" aria-label="Embudo o sitios y landings"><a class="${sitios ? '' : 'on'}" href="${base}">Embudo</a><a class="${sitios ? 'on' : ''}" href="${base}/sitios">Sitios y landings</a></nav><div id="ws-fnl"></div>`);
+          sede = $('#ws-fnl', host);
+          if (sitios) return techUI(sede, { me, b, alive });
         }
         mount(sede, esqueleto());
         let vista = null, toolShell = null;
@@ -343,11 +364,20 @@ export async function render(el, { me, sub = [], alive }) {
         if (typeof reviewTool !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
         return reviewTool(host, { me, slug, b, alive, resto });
       }
+      // Commercial Diagnosis, Brand Consistency Checker y Production Planner: su hoja propia (no usan el shell; cada una guarda por sus rutas).
+      case 'comercial': case 'consistencia': case 'planner': {
+        const [archivo, nombre] = { comercial: ['../strategy/comercial-ui.js', 'comercialTool'], consistencia: ['../creative/consistencia-ui.js', 'consistenciaTool'], planner: ['../production/planner-ui.js', 'plannerTool'] }[t.monta];
+        mount(host, esqueleto());
+        let hoja = null;
+        try { hoja = (await import(archivo))[nombre]; } catch (e) { console.error(e); }
+        if (!alive() || !host.isConnected) return;
+        if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        return hoja(host, { me, slug, b, alive, resto });
+      }
       case 'avatar': return avatarUI(host, { me, b, alive });
       case 'plan': return planMesUI(host, { me, b, alive, resto });
       case 'calendario': return embed(host, 'calendario');
       case 'campanas': return campanasUI(host, { me, b, alive, resto });
-      case 'tech': { mount(host, html`<div class="ws-sec-h"><h2>Sitios y landings</h2></div><p class="mut sm" style="margin:0 0 14px">El Funnel Builder llega en la Fase 3; mientras, aquí viven los sitios y landings.</p><div id="ws-tech"></div>`); return techUI($('#ws-tech', host), { me, b, alive }); }
       // Brand DNA Studio y Moodboard Studio: su hoja propia (no usan el shell; viven en brand_boards con id = slug del cliente). La marca personal sigue en meBrand.
       case 'dna': case 'moodboard': {
         if (b.personal) return meBrand(host, { me, sub: resto, alive, embed: { base, only: ['roadmap', 'asociaciones'] } });

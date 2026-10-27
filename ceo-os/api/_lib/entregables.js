@@ -49,6 +49,18 @@ async function alcanceDe(ws, slug) {
   if (!consultingAbierto(a)) return { abierto: false, code: 'FUERA_DEL_ALCANCE', texto };
   return { abierto: true, code: '', texto };
 }
+// El nivel contratado también pone el techo de dos herramientas completas: Pricing & Packages no entra en Brand Growth y Funnel Builder es solo de
+// Growth Partnership. Es el mismo criterio de ofertaMal (nivelDeOferta): sin ficha (Inherent, marca personal) pasa; «A la medida» manda su ficha; una
+// ficha cuyo nivel no se reconoce cuenta como Brand Growth. Aplica a toda escritura (crear, editar, estado, archivar, siguiente). null = pasa.
+const NIVEL_MIN = { 'pricing-packages': (id) => id !== 'growth', 'funnel-builder': (id) => id === 'partnership' };
+async function nivelMal(tool, slug) {
+  const permite = NIVEL_MIN[tool];
+  if (!permite) return null;
+  const n = await nivelDeOferta(slug);
+  if (!n || n.id === 'medida' || permite(n.id)) return null;
+  const con = n.supuesto ? 'La ficha no dice el nivel contratado y se aplica el más bajo (Brand Growth). Esta herramienta' : `Con ${n.nombre} esta herramienta`;
+  return { error: `${con} queda fuera del alcance. Se escala al CEO.`, code: 'FUERA_DEL_ALCANCE' };
+}
 const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el CEO la reabra';
 // Brand Growth solo elige qué oferta empujar y su mensaje: el stack y las variaciones (y la escalera, que es de Partnership) se bloquean aquí,
 // no solo en la interfaz. Lo decide el módulo puro (oferta.cambiaBloqueado) con el nivel de la ficha; «A la medida» manda su ficha y no se bloquea.
@@ -97,6 +109,7 @@ async function abre(req, res, { ws, slug, write = false, tool = '', cierra = wri
   if (write) {
     const al = await alcanceDe(ws, slug);
     if (!al.abierto) { res.status(al.code === 'SIN_FICHA' ? 409 : 403).json({ error: al.texto, code: al.code }); return null; }
+    const malN = await nivelMal(tool, slug); if (malN) { res.status(403).json(malN); return null; }
     if (cierra && ws === 'strategy' && (await estrategiaCerrada(slug))) { res.status(409).json({ error: 'La estrategia en vivo de este cliente está aprobada: el CEO tiene que reabrirla para cambiar Strategy.', code: 'APROBADO' }); return null; }
   }
   return u;
@@ -128,6 +141,8 @@ async function entradasMal(entradas, slug) {
 // Lo que la herramienta necesita saber de otras para decir qué falta. Hoy: el Plan de crecimiento 90 días no recomienda
 // demanda mientras el último Diagnóstico aprobado del cliente tenga la capacidad en rojo.
 async function extraDe(cur) {
+  // Pricing & Packages: el nivel contratado va a sus faltas (en Brand Growth no entra; el gate real es nivelMal en abre()).
+  if (cur.tool === 'pricing-packages') return { nivelId: (await nivelDeOferta(cur.client_slug))?.id ?? null };
   if (cur.tool !== 'solution-blueprint-builder') return {};
   const d = (await db.list(COLL)).filter((x) => x.tool === 'business-health-assessment' && lc(x.client_slug) === lc(cur.client_slug) && !x.archivado && ['Aprobado', 'Entregado'].includes(x.estado) && x.aprobado)
     .sort((a, z) => tiempo(z.aprobado.en) - tiempo(a.aprobado.en))[0];

@@ -161,9 +161,9 @@ Las rutas están en `public/js/app.js` (`NAV`, `SCREENS`, `resolve`, `alias`). *
 **Workspaces** (`#/ws/<ws>/<cliente>/<pestaña>[/<herramienta>[/<resto>]]` · `screens/workspace.js`; el cliente nunca)
 - **Los cinco**, con sus pestañas (`WORKSPACES` en `herramientas.js`; cada pestaña tiene su paso del flujo):
   - **Strategy** (quien ve Estrategia; modo `estrategia` del Chat): Overview · Research · Analysis · Strategy · Roadmap — 9 herramientas; cinco con vista propia (**Lista**): Customer Bullseye, Customer Avatar Studio, Business X-Ray, Offer Architect y Growth Roadmap Builder (más abajo).
-  - **Marketing** (quien ve Contenido o Clientes; modo `marketing`): Overview · Audience · Campaigns · Content · Analytics — 10: las 6 P1 (Viral Intelligence Lab, Content Strategy Studio, Content Calendar, Campaign Architect, Ads Intelligence y Marketing Performance Center) están en Lista; Funnel Builder, en Parcial; las otras 3, en Pronto.
+  - **Marketing** (quien ve Contenido o Clientes; modo `marketing`): Overview · Audience · Campaigns · Content · Analytics — 10: las 6 P1 y, desde la Fase 3e, Hook Laboratory, Copywriting Studio y Funnel Builder están en Lista; solo Growth Experiment Lab sigue en Pronto.
   - **Creative** (ídem; modo `diseno`): Overview · Brief · Concepts · Design · Review — 7.
-  - **Consulting** (quien ve Estrategia; modo `consulting`): Overview · Assessment · Analysis · Solutions · Implementation — 8: 6 con entregable (Parcial) y 2 Pronto (Automation Opportunity Finder y Equipo para la siguiente etapa).
+  - **Consulting** (quien ve Estrategia; modo `consulting`): Overview · Assessment · Analysis · Solutions · Implementation — 8: 6 con entregable (Parcial) y, desde la Fase 3e, Automation Opportunity Finder y Equipo para la siguiente etapa en Lista.
   - **Production** (quien ve Contenido o Clientes; modo `produccion`): Overview · Pre-production · Production · Post-production · Delivery — 8.
 - **Sin cliente** (`#/ws/<ws>`): el del contexto, si está en la lista (abre su Overview sin dejar entrada en el historial); si no, el selector de cliente en grande. Un cliente que no está en la lista: aviso y el selector. `personal` (la marca del CEO) solo con el CEO. Abrir un cliente por la ruta lo vuelve el contexto.
 - **El hero del cliente:** monograma (candado en la marca personal), nombre y nivel; chips con la etapa (Strategy: sale del Business X-Ray, donde se propone y el CEO la confirma; dice si la confirmó), el día del ciclo 1-20 (Production), la aprobación de la estrategia (Strategy y Consulting) y «Privado» (marca personal); **«Continuar en el Chat»** (abre el Chat en el modo del workspace con ese cliente); y **el flujo compartido** (`FLUJO`: Objective · Research · Plan · Execute · Deliver · Measure · Improve) con el paso de la pestaña resaltado.
@@ -192,7 +192,7 @@ Las rutas están en `public/js/app.js` (`NAV`, `SCREENS`, `resolve`, `alias`). *
 | Marketing › Content Strategy Studio (`/<AAAA-MM>`) | `plan-mes-ui.js` (el plan del mes editable, con la propuesta de la IA como diff; «Trabajarlo en el Chat» abre el modo Marketing con la marca y el mes) |
 | Marketing › Content Calendar (**Lista**) | `screens/content.js` + `calendario-vistas.js` (arrastrar a otro día, bandas de campaña, badge de slot y métricas) |
 | Marketing › Campaign Architect (`/<id de la campaña>`) | `campanas-ui.js` (blueprint, plan de canales y briefs de `mk_campaigns` por `/api/campanas`, con el candado de la estrategia aprobada) |
-| Marketing › Funnel Builder | `tech-ui.js` (sitios, landing al CRM, web viva y SEO) |
+| Marketing › Funnel Builder | `marketing/funnel-ui.js` por el shell (Fase 3e); «Sitios y landings» (`…/funnel-builder/sitios`) sigue en `tech-ui.js` (sitios, landing al CRM, web viva y SEO) |
 | Marketing › Ads Intelligence (`/variaciones`, `/competencia`) | `adsIntelTool` de `marketing/ads-intel-ui.js` (clave `adsIntel`, sin shell: dashboard de pauta, recomendaciones, Variaciones con `ads-ui.js` y Competencia) |
 | Marketing › Marketing Performance Center (`/<AAAA-MM>`, `/instagram`) | `tool-shell.js` con `marketing/rendimiento-ui.js` (el reporte del mes) y, en `/instagram`, el embed de analytics de `screens/content.js` |
 | Creative › Brand DNA Studio · Moodboard Studio | `brand-board.js` (en la marca personal, `screens/me-brand.js`) |
@@ -202,6 +202,23 @@ Las rutas están en `public/js/app.js` (`NAV`, `SCREENS`, `resolve`, `alias`). *
 | Production › Script & Storyboard Studio | `creacion-ui.js` (el editor de guiones) |
 | Production › Post-Production Workspace | `video-ui.js` (el kit de edición y las fichas) |
 | Consulting › Diagnóstico de crecimiento · Árbol de la brecha · Mapa del camino del dinero · Money Model Lab · Plan de crecimiento 90 días · Impact Tracker | `tool-shell.js` con la vista de cada una (`consulting/<m>-ui.js`, sección 5) |
+
+- **Fase 3e · P2: las 13 herramientas P2 quedan «Lista»** (cada una trae su módulo puro y su vista; el registro las cablea con `SH(módulo, vista)` o `HOJA`; `growth-experiment-lab` y `ai-video-lab` siguen «Pronto»):
+
+| Herramienta (workspace › pestaña) | Monta | Dónde guarda y reglas clave |
+|---|---|---|
+| Strategy › Competitor Radar | shell, `strategy/radar-ui.js` | Entregable `competitor-radar`; una posición sin url de evidencia no se pinta; competidores y huecos se archivan; «Actualizar ahora» lo decide el servidor (CEO/COO y topes de Apify) |
+| Strategy › Commercial Diagnosis | `comercialTool` de `strategy/comercial-ui.js` (clave `comercial`, sin shell) | `viva.comercial { bottlenecks, acciones }` por `PUT estrategia/<slug>/viva`; el score y los cuellos se calculan, no se guardan; «Cuellos → Opportunity Map» crea un Borrador |
+| Strategy › Opportunity Map | shell, `strategy/oportunidades-ui.js` | Entregable `opportunity-map`; el ranking se calcula (impacto × confianza ÷ dificultad × costo × tiempo); `fuera_alcance` nunca se elige ni se envía; «Enviar al Roadmap» escribe `viva.roadmap.items` |
+| Strategy › Pricing & Packages | shell, `strategy/precios-ui.js` | Entregable `pricing-packages`; `sinCostos`/`conCostos` quitan y conservan los costos del cliente para quien no los ve; el simulador no se guarda; Brand Growth queda fuera (403 `FUERA_DEL_ALCANCE`, `nivelMal` en `abre()`) |
+| Marketing › Hook Laboratory · Copywriting Studio | shell, `marketing/hooks-ui.js` y `copy-ui.js` | Entregables `hook-laboratory` y `copywriting-studio`; los hooks salen del research sin reescribirlos; el copy va a Ads solo como Borrador, nunca lanza |
+| Marketing › Funnel Builder | shell, `marketing/funnel-ui.js` (+ `…/funnel-builder/sitios` = `tech-ui.js` sin shell) | Entregable `funnel-builder`; sin dato sale «⚠️ SIN DATOS», nunca 0; solo Growth Partnership (403 en otro nivel) |
+| Creative › Brand Consistency Checker | `consistenciaTool` de `creative/consistencia-ui.js` (clave `consistencia`, sin shell) | `content.cumplimiento`; el historial solo se agrega; tope de rondas de la ficha |
+| Creative › Creative Performance Analyzer | shell con ciclo, `creative/rendimiento-creativo-ui.js` | Entregable por marca y mes; el resultado de cada pieza va a `content.resultado` |
+| Consulting › Organization Architect · Automation Opportunity Finder | shell, `consulting/organizacion-ui.js` y `automatizacion-ui.js` | Entregables `organization-architect` y `automation-opportunity-finder`; nunca leen `team` ni `recipes`; las horas vienen del cliente o dicen SIN DATOS |
+| Production › Production Planner | `plannerTool` de `production/planner-ui.js` (clave `planner`, sin shell) | `content` kind `shoot`; el servidor rechaza con 423 `DIA_11` una jornada después del día 11 salvo CEO; los montos de recursos solo para CEO/COO; archivar, no borrar |
+| Production › Content Repurposing | shell, `production/repurposing-ui.js` | Entregable `content-repurposing`; las derivadas son fichas de `videos` con `derivada_de` (solo con assets que el maestro tiene) |
+
 
 - **Strategy: las 5 herramientas P1 y dónde guarda cada una** (cada una trae su módulo puro y su vista en `public/js/strategy/`, sección 5):
 
