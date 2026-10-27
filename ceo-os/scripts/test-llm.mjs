@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
 import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
 import { AREAS, areasDe, areaDe, areaDeModo, areaDeEspacio, switchHtml, areaConFlecha } from '../public/js/areas.js';
-import { IAS, iaDe, iasListas, esLocal } from '../public/js/llm/ias.js';
+import { IAS, iaDe, iasListas, modelosDeIa, fuertesDe, esLocal } from '../public/js/llm/ias.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
@@ -223,6 +223,14 @@ t('el switch de IA: qué empresa responde, aparte del modelo', () => {
   const ms = { proveedores: [{ slug: 'openai-codex', listo: true, modelos: ['gpt'] }, { slug: 'anthropic', listo: false, modelos: ['c'] }, { slug: 'xai', listo: true, modelos: [] }] };
   assert.deepEqual(iasListas(ms).map(([id]) => id), ['chatgpt', 'local'], 'solo las listas con modelos; en tu compu siempre');
   assert.ok(IAS.every(([id, n, ic]) => id && n && ic));
+  // Con una pasarela (Kilo Pass, OpenRouter…), la IA sale de la empresa del modelo.
+  assert.equal(iaDe('kilocode', 'anthropic/claude-sonnet-4.5'), 'claude'); assert.equal(iaDe('openrouter', 'openai/gpt-5'), 'chatgpt'); assert.equal(iaDe('kilocode', 'google/gemini-2.5-pro'), 'gemini');
+  assert.equal(iaDe('kilocode', 'qwen/qwen3-coder'), 'otras'); assert.equal(iaDe('kilocode'), 'otras'); assert.equal(iaDe('anthropic', 'claude-opus'), 'claude');
+  const kilo = { proveedores: [{ slug: 'kilocode', listo: true, modelos: ['anthropic/claude-opus', 'google/gemini-pro', 'qwen/qwen3'] }, { slug: 'ollama', listo: true, modelos: ['qwen3:8b'] }] };
+  assert.deepEqual(iasListas(kilo).map(([id]) => id), ['claude', 'gemini', 'local', 'otras'], 'con Kilo, cada empresa sale en su IA');
+  assert.deepEqual(modelosDeIa(kilo, 'claude'), [{ provider: 'kilocode', model: 'anthropic/claude-opus' }]);
+  assert.deepEqual(modelosDeIa(kilo, 'local'), [{ provider: 'ollama', model: 'qwen3:8b' }]);
+  assert.deepEqual(fuertesDe('anthropic/claude-opus-5.5'), ['estrategia', 'diseno']); assert.deepEqual(fuertesDe('moonshotai/kimi-k3'), ['diseno', 'consulting']); assert.deepEqual(fuertesDe('qwen/qwen3'), []);
 });
 
 console.log(`\n${ok} pruebas del Inherent LLM pasaron`);

@@ -229,6 +229,7 @@ export const TERMINAL = [
   ['Elegir el modelo (suscripción, API o local)', 'inherent model'],
   ['Conectar ChatGPT con tu suscripción', 'inherent auth add openai-codex --browser'],
   ['Conectar Claude', 'inherent auth add anthropic'],
+  ['Conectar Kilo Pass (Claude, ChatGPT y Gemini con una sola suscripción): elige «Kilo Code» y pega tu llave', 'inherent model'],
   ['Autorizar el conector de Inherent OS', 'inherent mcp login inherent'],
   ['Modelo local, gratis y privado (con Ollama instalado)', 'ollama pull qwen3-coder:30b'],
   ['Darle al modelo local la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],

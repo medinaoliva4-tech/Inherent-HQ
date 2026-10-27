@@ -5,7 +5,7 @@
 // Arriba de la barra, el switch de áreas (el mismo del Tablero); en la caja, el switch de IA (Claude, ChatGPT, en tu compu u otras).
 // Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk, emblemaTema } from '../core.js';
-import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, IAS, iaDe, iasListas } from '../hermes.js';
+import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../hermes.js';
 import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
@@ -74,7 +74,7 @@ export async function render(el, { me, sub = [], alive }) {
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
   const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().filter((c) => S.modo === 'estrategia' || c.slug !== 'inherent').map((c) => [c.slug, c.nombre]) : S.modo === 'diseno' || S.modo === 'marketing' ? brandsNow().filter((b) => S.modo === 'diseno' || !b.personal).map((b) => [b.slug, b.name]) : []);
   // Qué IA responde ahora: la del modelo elegido, la de Hermes por defecto, o «en tu compu» con el modo privado. '' si no se sabe.
-  const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider) : '');
+  const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider, S.modelo.model) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider, S.modelos.actual.model) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
   const listo = () => Boolean(S.salud?.on && S.salud?.auth);
 
@@ -154,8 +154,9 @@ export async function render(el, { me, sub = [], alive }) {
   }
 
   // ---------- La caja (composer): modo · cliente/marca · modelo · voz · enviar ----------
-  // El nombre del modelo en la caja: sin la IA (ya la dice el switch), salvo en «Otras», donde va el proveedor.
-  const conProv = (x) => (iaDe(x.provider) === 'otras' || esLocal(x.provider) ? `${nombreProveedor(x.provider)} · ` : '') + x.model.split('/').pop();
+  // El nombre del modelo en la caja: sin la IA (ya la dice el switch), salvo en «Otras» o por una pasarela (Kilo,
+  // OpenRouter…), donde va el proveedor.
+  const conProv = (x) => (iaDe(x.provider, x.model) === 'otras' || esLocal(x.provider) || PASARELAS.includes(x.provider) ? `${nombreProveedor(x.provider)} · ` : '') + x.model.split('/').pop();
   function nombreModelo() {
     if (S.privado) { const l = modeloLocal(); return l ? conProv(l) : 'Sin modelo local'; }
     const v = S.modelo, a = S.modelos?.actual;
@@ -181,16 +182,16 @@ export async function render(el, { me, sub = [], alive }) {
   // Cambiar de IA: vuelve al último modelo que usaste con ella, o al de Hermes por defecto si es de ella, o al primero que tenga.
   function ponerIa(id) {
     if (id === 'local' ? S.privado : !S.privado && id === iaAhora()) return;
-    if (S.modelo?.model) S.porIa[esLocal(S.modelo.provider) ? 'local' : iaDe(S.modelo.provider)] = S.modelo;
+    if (S.modelo?.model) S.porIa[iaDe(S.modelo.provider, S.modelo.model)] = S.modelo;
     if (id === 'local') {
       S.privado = true; if (provListo(S.porIa.local)) S.modelo = S.porIa.local;
       persistir(); toast(modeloLocal() ? 'En tu compu: nada sale de ella' : 'Falta un modelo en tu compu', !modeloLocal()); return pintarCaja();
     }
     S.privado = false; if (esLocal(S.modelo?.provider)) S.modelo = null;
-    const ps = (S.modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length && iaDe(p.slug) === id && !esLocal(p.slug));
-    const guardado = S.porIa[id], sigue = guardado && ps.some((p) => p.slug === guardado.provider && p.modelos.includes(guardado.model));
+    const ms = modelosDeIa(S.modelos, id);
+    const guardado = S.porIa[id], sigue = guardado && ms.some((m) => m.provider === guardado.provider && m.model === guardado.model);
     const a = S.modelos?.actual;
-    S.modelo = sigue ? guardado : a?.model && iaDe(a.provider) === id ? null : ps[0] ? { provider: ps[0].slug, model: ps[0].modelos[0] } : null;
+    S.modelo = sigue ? guardado : a?.model && iaDe(a.provider, a.model) === id ? null : ms[0] || null;
     persistir(); pintarCaja();
   }
   function pintarCaja() {
@@ -393,7 +394,7 @@ export async function render(el, { me, sub = [], alive }) {
   function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
     el.querySelector('.llm-menu')?.remove();
     const m = document.createElement('div'); m.className = 'llm-menu'; m.setAttribute('role', 'listbox');
-    const pintar = (q = '') => { const xs = items.filter((x) => x.grupo ? !q : !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => x.grupo ? html`<span class="lmn-k lmn-g">${x.grupo}</span>` : html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
+    const pintar = (q = '') => { const xs = items.filter((x) => x.grupo ? !q : !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => x.grupo ? html`<span class="lmn-k lmn-g">${x.grupo}</span>` : html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.fin || ''}${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
     mount(m, pintar());
     R.append(m);
     const r = anchor.getBoundingClientRect(), rr = R.getBoundingClientRect();
@@ -405,21 +406,23 @@ export async function render(el, { me, sub = [], alive }) {
   }
   const menuModo = (a) => menu(a, 'Modo', modos.map((m) => ({ v: m.id, label: m.nombre, sub: m.sub, on: m.id === S.modo, ico: html`<i class="lmn-m" data-m="${m.id}">${m.letra}</i>` })), (v) => cambiarModo(v));
   const menuSlug = (a) => menu(a, S.modo === 'diseno' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
+  // Los íconos de las áreas donde el modelo rinde mejor (llm/ias.js · FUERTES).
+  const fuertesHtml = (x) => { const as = fuertesDe(x).map(areaDe).filter(Boolean); return as.length ? html`<span class="lmn-fu" title="${'Rinde mejor en ' + as.map((a) => a.nombre).join(' y ')}">${as.map((a) => html`<i style="color:var(--ui-m-${a.id})">${ico(a.icono, 13)}</i>`)}</span>` : ''; };
   async function menuModelo(a) {
     if (!S.modelos) { try { S.modelos = await modelosHermes(me); ajustarModelo(); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
     // Con el switch de IA, aquí van solo los modelos de esa IA (sin IA conocida, todos).
     // Si la IA de ahora ya no está lista en Hermes, no se filtra: que siempre haya algo que elegir.
-    const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug) === ia));
+    const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug, x) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug, x) === ia));
     const nombreIa = (IAS.find(([k]) => k === ia) || [])[1];
     const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : nombreIa ? `Modelos de ${nombreIa}` : 'Qué modelo responde' }];
-    if (!S.privado && (!ia || iaDe(S.modelos.actual.provider) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
+    if (!S.privado && (!ia || iaDe(S.modelos.actual.provider, S.modelos.actual.model) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
     const loc = S.privado ? modeloLocal() : null;
-    for (const p of S.modelos.proveedores) for (const x of p.listo && deIa(p.slug) ? p.modelos.slice(0, 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
+    for (const p of S.modelos.proveedores) for (const x of p.listo ? p.modelos.filter((x) => deIa(p.slug, x)).slice(0, PASARELAS.includes(p.slug) ? 40 : 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, fin: fuertesHtml(x), on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
     if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con Ollama', off: true });
     const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
     menu(a, 'Modelo', items, (v) => {
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
-      else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider)] = S.modelo; ajustarModelo(); }
+      else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider, S.modelo.model)] = S.modelo; ajustarModelo(); }
       persistir(); pintarCaja();
     }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>Ollama</b> instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · luego <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
   }
