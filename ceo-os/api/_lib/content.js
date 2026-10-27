@@ -81,6 +81,30 @@ export function cleanBullseye(x) {
   return { center: t(x.center, 400), buyer: t(x.buyer, 300), rings, mix, calib, at: t(x.at, 30) || new Date().toISOString() };
 }
 
+// «audiencia» al día con la diana (lo que todavía lee el conector MCP y Marketing › Audience): igual que saveBx de screens/content.js.
+export const audienciaDe = (bx) => {
+  const t = (v) => String(v || '').trim().slice(0, 400);
+  return { exacto: t(bx.center || bx.rings[0]?.label), nicho: t(bx.rings[1]?.label), general: t(bx.rings[3]?.label) };
+};
+// Guarda la diana en sources «cfg-<perfil>» (la misma casa de siempre: la herramienta planner del conector devuelve esta forma).
+// Con db.update y la versión que se leyó (queda en audit); la primera vez, db.create. Si v llega y ya no es la de hoy: conflicto.
+// Sin cambios (sin contar la fecha) no escribe. Devuelve { ok, bullseye, v, igual } | { invalida } | { conflicto }.
+export async function guardarDiana(slug, crudo, who, { v } = {}) {
+  const bx = cleanBullseye(crudo); if (!bx) return { invalida: true };
+  const id = 'cfg-' + slug, sinFecha = ({ at, ...r }) => JSON.stringify(r);
+  for (let i = 0; i < 2; i++) {
+    const cur = await db.get('sources', id);
+    if (cur && v != null && cur.v !== Number(v)) return { conflicto: true };
+    const audience = audienciaDe(bx);
+    if (cur?.bullseye && sinFecha(cleanBullseye(cur.bullseye) || {}) === sinFecha(bx) && ['exacto', 'nicho', 'general'].every((k) => (cur.audience?.[k] || '') === audience[k])) return { ok: true, igual: true, bullseye: cur.bullseye, v: cur.v };
+    const data = { ...(cur || {}), profile: slug, bullseye: bx, audience };
+    let d = null;
+    try { d = cur ? await db.update('sources', id, data, cur.v, who) : await db.create('sources', data, who, id); } catch (e) { if (i) throw e; }
+    if (d) return { ok: true, bullseye: d.bullseye, v: d.v };
+  }
+  return { conflicto: true };
+}
+
 export async function profile(p) {
   // Las cuentas propias: las del onboarding (repo) y las que se agregan en la app.
   const [links, c] = await Promise.all([readFile(`${p.root}/00-onboarding/LINKS.md`), cfg(p.slug)]);

@@ -1,8 +1,10 @@
-// App 02 · Estrategia en vivo: lo que se va concretando en el chat, por cliente. Sin imports: lo usan el servidor y la pantalla.
+// App 02 · Estrategia en vivo: lo que se va concretando en el chat, por cliente. Puro: lo usan el servidor y la pantalla.
 // Un documento por cliente en la colección de Estrategia (id «<slug>--viva»). Sigue el método de ① Strategy:
 //   contexto (+ Diagnóstico) → análisis → ingeniería inversa (+ Modelo de dinero y Leads) → metodología (+ Oferta) → entrega (roadmap).
 // Strategy lo llena desde el chat con un bloque ```estrategia {…}``` y pide datos puntuales con ```pregunta {…}```.
 // La cascada (clientes, conversaciones, visitas, alcance) no se guarda: se calcula de la meta y los supuestos.
+// Lo único que importa es el módulo puro del roadmap (strategy/roadmap.js): limpia las filas con área y trimestre y los hitos.
+import { limpiarItems, limpiarHitos } from './strategy/roadmap.js';
 
 export const PASOS = [
   { id: 'contexto', n: 1, nombre: 'Contexto', largo: 'Contexto + Diagnóstico', hz: ['diagnostico'] },
@@ -34,7 +36,12 @@ export function limpiarParche(p) {
   if (p.pauta) o.pauta = sinUndef({ mensual: num(p.pauta.mensual), cpm: num(p.pauta.cpm, 1e5), nota: txt(p.pauta.nota, 300) });
   if (Array.isArray(p.riesgos)) o.riesgos = lista(p.riesgos, 12, (r) => (r && txt(r.texto, 200) ? sinUndef({ texto: txt(r.texto, 200), estado: ['ok', 'riesgo', 'falta'].includes(r.estado) ? r.estado : 'falta', nota: txt(r.nota, 200) }) : undefined));
   if (p.metodologia) { const m = p.metodologia; o.metodologia = sinUndef({ oferta: txt(m.oferta, 600), modelo: m.modelo ? sinUndef({ atraccion: txt(m.modelo.atraccion, 200), upsell: txt(m.modelo.upsell, 200), downsell: txt(m.modelo.downsell, 200), continuidad: txt(m.modelo.continuidad, 200) }) : undefined, canales: lista(m.canales, 6, (x) => txt(x, 80)) }); }
-  if (p.roadmap) o.roadmap = sinUndef({ filas: lista(p.roadmap.filas, 8, (f) => (f && txt(f.area, 40) ? { area: txt(f.area, 40), celdas: Array.from({ length: 4 }, (_, i) => txt(f.celdas?.[i], 160) || '') } : undefined)), hitos: Array.isArray(p.roadmap.hitos) ? Array.from({ length: 4 }, (_, i) => num(p.roadmap.hitos[i]) ?? null) : undefined });
+  if (p.roadmap) {
+    const rm = p.roadmap, h = rm.hitos;
+    // hitos: los 4 números de la meta por trimestre (el panel de hoy) o, de la herramienta Growth Roadmap, [{ id, titulo, fecha, meta }].
+    const hitos = !Array.isArray(h) ? undefined : h.some((x) => x && typeof x === 'object') ? limpiarHitos(h) : Array.from({ length: 4 }, (_, i) => num(h[i]) ?? null);
+    o.roadmap = sinUndef({ filas: lista(rm.filas, 8, (f) => (f && txt(f.area, 40) ? { area: txt(f.area, 40), celdas: Array.from({ length: 4 }, (_, i) => txt(f.celdas?.[i], 160) || '') } : undefined)), hitos, items: Array.isArray(rm.items) ? limpiarItems(rm.items) : undefined });
+  }
   return Object.fromEntries(Object.entries(o).filter(([, v]) => v && (Array.isArray(v) || Object.keys(v).length)));
 }
 
@@ -67,7 +74,7 @@ export function avance(v = {}) {
     analisis: Boolean(a.mbt && a.unfair && a.goget),
     inversa: Boolean(v.meta?.objetivo && i.ticket && i.cierre && i.conversion && i.visita),
     metodologia: Boolean(m.oferta || Object.values(m.modelo || {}).some(Boolean)),
-    entrega: Boolean(v.roadmap?.filas?.length),
+    entrega: Boolean(v.roadmap?.filas?.length || v.roadmap?.items?.length),
   };
   const ahora = PASOS.find((p) => !listo[p.id])?.id || 'entrega';
   return { listo, ahora, n: PASOS.filter((p) => listo[p.id]).length };

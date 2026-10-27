@@ -2,12 +2,15 @@
 // Visual Workspace en el centro (su vista); el shell pone la cabecera, la entrada, las acciones, los criterios y el
 // aprendizaje, y habla con las rutas de entregables y con la IA (ia-herramienta.js). Existe para que cada herramienta no
 // reinvente estados, versiones, aprobación ni exportar. El permiso lo pone el servidor: aquí solo se refleja.
+// Strategy (Fase 3a): una herramienta con aprobarConBloque (Offer Architect) no se aprueba con /estado: el CEO la aprueba y la reabre con la
+// ruta de su bloque (POST estrategia/<slug>/<bloque>/aprobar) y el servidor deja el entregable Aprobado o en Borrador. Con la estrategia
+// aprobada (alcance APROBADO) toda la herramienta queda en solo lectura, con otro aviso que el de «fuera del alcance».
 import { html, raw, mount, api, ico, toast, confirmAsk, ask, acts, fdate, skel, techDetail, $ } from './core.js';
 import { herramientaDe, rutaHerramienta, WORKSPACES } from './herramientas.js';
 import { abrirEnChat } from './areas.js';
 import { pasoPermitido, faltas as faltasEntregable } from './entregables.js';
 import { armarCtx, correrIA } from './ia-herramienta.js';
-import { etapaDe } from './estrategia.js';
+import { etapaDe, bloqueDe } from './estrategia.js';
 
 const K_PLEGADO = 'os.tsh.input';
 const TRABADO = { oferta: 'La oferta', modelo: 'El modelo', leads: 'Los leads', capacidad: 'La capacidad' };
@@ -18,6 +21,7 @@ const reciente = (a, z) => String(z._meta?.updated_at || z._meta?.created_at || 
 const rutaDoc = (id) => 'entregables/' + enc(id);
 const SIN_CRITERIOS = { cumple: [], falta: [] };
 const tareasTxt = (n) => (n === 1 ? '1 tarea' : `${n} tareas`);
+const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el CEO la reabra';
 
 // host: dónde se monta · tool: el registro de herramientas.js (con prompt, leer, faltas, aMd…) · vista: la de la herramienta
 // (consulting/<m>-ui.js) · resto[0]: el id de un entregable que se quiere abrir. Devuelve cuando el primer pintado terminó.
@@ -34,7 +38,11 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
 
   // ---------- Qué se puede hacer ----------
   const escribe = () => S.puede.editar && S.alcance.abierto && !S.doc?.archivado;
-  const editable = escribe; // en Aprobado o Entregado también: editar crea una versión nueva y vuelve a Borrador
+  // Aprobado con su bloque (Offer Architect): el contenido se cierra hasta que el CEO lo reabra (el servidor responde 409 APROBADO).
+  const cerrado = () => Boolean(tool.aprobarConBloque) && ['Aprobado', 'Entregado'].includes(estadoDe());
+  // Cambiar el contenido. En Aprobado o Entregado también (editar crea una versión nueva y vuelve a Borrador), salvo si es cerrado().
+  const editable = () => escribe() && !cerrado();
+  const nombreBloque = () => bloqueDe(tool.aprobarConBloque)?.nombre || tool.aprobarConBloque || '';
   const estadoDe = () => S.doc?.estado || 'Borrador';
   const aprueba = () => (tool.aprueba === 'ceo' ? 'CEO' : 'COO');
   // Las faltas: las que dejó la IA o la persona en el doc, más las que calcula la herramienta sobre lo que hay en pantalla.
@@ -91,9 +99,24 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   function falla(e) {
     if (e?.name === 'AbortError') return;
     if (e?.status === 409 && e.code === 'CONFLICTO') { toast('Alguien lo cambió justo ahora. Recarga y vuelve a intentar', true); recargar(); return; }
+    if (e?.status === 409 && e.code === 'APROBADO') { toast(e.message || 'Está aprobado: el CEO tiene que reabrirlo para cambiarlo.', true); refrescarAlcance(); return; }
     if (e?.status === 403 && e.code === 'FUERA_DEL_ALCANCE') { S.alcance = { abierto: false, code: e.code, texto: e.message || S.alcance.texto }; pintarTodo(); return; }
     if (e?.status === 400 && e.code === 'FALTAS') { const f = faltasAhora(); toast(`No se puede aprobar. Falta: ${(f.length ? f : [e.message]).join(' · ')}`, true); return; }
     toast(e?.message || 'No se pudo completar. Inténtalo de nuevo.', true);
+  }
+  // Un 409 APROBADO: la estrategia (o la oferta) se aprobó mientras se trabajaba. Se vuelve a leer el alcance y el entregable sin tocar lo que
+  // hay en pantalla (lo que la persona venía editando no se pierde).
+  async function refrescarAlcance() {
+    try {
+      const r = await api(`entregables?ws=${enc(tool.ws)}&slug=${enc(slug)}&tool=${enc(tool.id)}`);
+      if (!alive()) return;
+      S.alcance = { abierto: r.alcance?.abierto !== false, code: r.alcance?.code || '', texto: r.alcance?.texto || '' };
+      S.puede = { editar: Boolean(r.puede?.editar), aprobar: Boolean(r.puede?.aprobar) };
+      S.items = (r.items || []).filter((d) => !d.archivado).sort(reciente);
+      const nuevo = S.doc ? S.items.find((d) => d.id === S.doc.id) : null;
+      if (nuevo) S.doc = nuevo;
+    } catch { return; }
+    S.k = {}; pintarHead(); pintarBanner(); pintarActs(); pintarAviso(); pintarVista(); pintarCrit();
   }
   const haz = async (fn) => {
     if (S.ocupado) return;
@@ -117,7 +140,10 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   }
   function pintarBanner() {
     const a = S.alcance, el = $('#tsh-banner', root); if (!el) return;
-    mount(el, a.abierto ? '' : html`<div class="tsh-fuera" role="alert" data-code="${a.code}">${ico('triangle-alert', 16)}<div><p>${a.texto || 'Este cliente no tiene esta herramienta dentro de lo que contrató.'}</p><b>${a.code === 'SIN_FICHA' ? 'SIN FICHA DE OFERTA' : 'FUERA DEL ALCANCE'} · escálalo al CEO</b></div></div>`);
+    if (a.abierto) return mount(el, '');
+    // La estrategia aprobada cierra Strategy: no es un problema de alcance sino el candado del CEO (otro tono: «Aprobada», no «Fuera del alcance»).
+    if (a.code === 'APROBADO') return mount(el, html`<div class="tsh-aprobada" role="status" data-code="APROBADO">${ico('lock', 16)}<div><p>${a.texto || TEXTO_APROBADA}</p><b>Aprobada · solo lectura</b>${me.role === 'ceo' ? html` <a class="tsh-aprobada-a" href="${rutaHerramienta('strategy', slug, 'growth-roadmap')}">Reabrirla en Growth Roadmap</a>` : ''}</div></div>`);
+    mount(el, html`<div class="tsh-fuera" role="alert" data-code="${a.code}">${ico('triangle-alert', 16)}<div><p>${a.texto || 'Este cliente no tiene esta herramienta dentro de lo que contrató.'}</p><b>${a.code === 'SIN_FICHA' ? 'SIN FICHA DE OFERTA' : 'FUERA DEL ALCANCE'} · escálalo al CEO</b></div></div>`);
   }
   function pintarInput() {
     const el = $('#tsh-input', root); if (!el) return;
@@ -137,23 +163,29 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   }
   function pintarActs() {
     const el = $('#tsh-acts', root); if (!el) return;
-    const d = S.doc, est = estadoDe(), esc = escribe(), fa = faltasAhora(), corriendo = S.gen?.fase === 'corriendo';
-    if (!hayCambio('acts', [S.sucio, S.ocupado, S.gen?.fase, d?.id, est, d?.version, d?.archivado, fa.length, S.puede, S.alcance.abierto, Boolean(S.cmp), (d?.tareas || []).length])) return;
+    const d = S.doc, est = estadoDe(), esc = escribe(), edit = editable(), fa = faltasAhora(), corriendo = S.gen?.fase === 'corriendo';
+    if (!hayCambio('acts', [S.sucio, S.ocupado, S.gen?.fase, d?.id, est, d?.version, d?.archivado, fa.length, S.puede, S.alcance.abierto, S.alcance.code, Boolean(S.cmp), (d?.tareas || []).length])) return;
     const btn = (act, icono, txt, { primario = false, off = false, tip = '', tool: t = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm tsh-act" data-act="tsh-${act}" ${t ? html`data-tool="${t}"` : ''} title="${tip}" ${off ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
     const flujo = [], salida = [];
     const g1 = [
-      esc && puedeIA ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : '',
-      esc ? btn('guardar', 'check', d ? 'Guardar' : 'Guardar borrador', { off: Boolean(d) && !S.sucio }) : '',
+      edit && puedeIA ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : '',
+      edit ? btn('guardar', 'check', d ? 'Guardar' : 'Guardar borrador', { off: Boolean(d) && !S.sucio }) : '',
       esc && S.sucio ? btn('descartar-cambios', 'x', 'Descartar cambios') : '',
       d ? btn('comparar', 'layers', 'Comparar versiones', { off: d.version < 2, tip: d.version < 2 ? 'Todavía hay una sola versión' : '' }) : '',
     ];
     if (d && esc && pasoPermitido(est, 'En revisión') === 'edita') flujo.push(btn('enviar-rev', 'send', 'Enviar a revisión'));
     if (d && esc && pasoPermitido(est, 'Borrador') === 'edita') flujo.push(btn('devolver', 'arrow-left', 'Devolver a borrador'));
-    if (d && S.puede.aprobar && S.alcance.abierto && pasoPermitido(est, 'Aprobado') === 'aprobador') flujo.push(html`<span class="tsh-tip" title="${fa.length ? `No se puede aprobar. Falta: ${fa.join(' · ')}` : ''}">${btn('aprobar', 'badge-check', 'Aprobar', { primario: true, off: fa.length > 0 })}</span>`);
+    if (d && !d.archivado && S.puede.aprobar && S.alcance.abierto && tool.aprobarConBloque) {
+      // Offer Architect: se aprueba y se reabre con su bloque (solo el CEO), nunca con /estado.
+      if (cerrado()) flujo.push(btn('reabrir', 'refresh-cw', 'Reabrir', { tip: `Regresa el bloque ${nombreBloque()} y este entregable a Borrador` }));
+      else if (['Borrador', 'En revisión'].includes(est)) flujo.push(html`<span class="tsh-tip" title="${fa.length ? `No se puede aprobar. Falta: ${fa.join(' · ')}` : `Se aprueba con el bloque ${nombreBloque()} (solo el CEO)`}">${btn('aprobar', 'badge-check', 'Aprobar', { primario: true, off: fa.length > 0 || S.sucio })}</span>`);
+    } else if (d && S.puede.aprobar && S.alcance.abierto && pasoPermitido(est, 'Aprobado') === 'aprobador') flujo.push(html`<span class="tsh-tip" title="${fa.length ? `No se puede aprobar. Falta: ${fa.join(' · ')}` : ''}">${btn('aprobar', 'badge-check', 'Aprobar', { primario: true, off: fa.length > 0 })}</span>`);
     if (d && esc && pasoPermitido(est, 'Entregado') === 'edita') flujo.push(btn('entregado', 'circle-check', 'Marcar entregado'));
     if (d && esc && typeof tool.tareasDe === 'function') salida.push(btn('tareas', 'list-checks', 'Convertir en tareas'));
     if (d && esc && ['Aprobado', 'Entregado'].includes(est)) (tool.va_a || []).forEach((id) => { const h = herramientaDe(id); if (h && (typeof h.puede !== 'function' || h.puede(me, b))) salida.push(btn('siguiente', 'arrow-right', `Enviar a ${h.nombre}`, { tool: id })); });
     if (typeof tool.aMd === 'function' && (d || S.alcance.abierto)) salida.push(btn('exportar', 'download', 'Exportar'), btn('copiar', 'copy', 'Copiar'));
+    // El chat de Strategy de hoy (puente/Hermes) de esta herramienta: sigue intacto, ahora en su propia ruta.
+    if (tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
     salida.push(btn('chat', 'chat-ia', 'Continuar en el Chat'));
     if (d && esc) salida.push(btn('archivar', 'trash-2', 'Archivar'));
     mount(el, html`<div class="tsh-grp">${g1}</div>${flujo.length ? html`<div class="tsh-grp">${flujo}</div>` : ''}<div class="tsh-grp">${salida}</div>`);
@@ -169,7 +201,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     }
     if (g.fase === 'propuesta') {
       const cr = g.prop.criterios || SIN_CRITERIOS;
-      let resumen = ''; try { resumen = vista.resumen(g.prop.contenido); } catch { resumen = ''; }
+      // El resumen muestra lo que quedaría al usarla (con alUsar: Brand Growth conserva su stack, la diana sus lotes), no la propuesta cruda.
+      let resumen = ''; try { let c = g.prop.contenido; if (typeof tool.alUsar === 'function') { try { c = tool.alUsar(clon(c), clon(S.contenido), S.ctx) ?? c; } catch { c = g.prop.contenido; } } resumen = vista.resumen(c); } catch { resumen = ''; }
       mount(el, html`<section class="tsh-prop" data-fase="propuesta"><header><h3>${ico('sparkles', 14)} Propuesta de la IA</h3><span class="mut sm">${g.via === 'manual' ? 'Pegada a mano' : g.modelo || g.via}</span></header>
         <div class="tsh-prop-res">${resumen}</div>
         ${(cr.cumple || []).length + (cr.falta || []).length ? html`<ul class="tsh-crit-ul">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${(cr.falta || []).map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
@@ -192,7 +225,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
       let r = ''; try { r = vista.resumen(d.contenido); } catch { r = ''; }
       return html`<div class="tsh-cmp-col"><h4>v${n}${n === S.doc?.version ? html` <span class="chip">actual</span>` : ''}</h4><div class="tsh-cmp-res">${r}</div>
         <details><summary>Ver el JSON</summary><pre class="tsh-json">${JSON.stringify(d.contenido, null, 2)}</pre></details>
-        ${escribe() && n !== S.doc?.version ? html`<button type="button" class="btn ghost sm" data-act="tsh-restaurar" data-v="${n}">Cargar esta versión</button>` : ''}</div>`; };
+        ${editable() && n !== S.doc?.version ? html`<button type="button" class="btn ghost sm" data-act="tsh-restaurar" data-v="${n}">Cargar esta versión</button>` : ''}</div>`; };
     mount(el, html`<section class="tsh-cmp"><header><h3>${ico('layers', 14)} Comparar versiones</h3><button type="button" class="btn ghost sm" data-act="tsh-cmp-cerrar">${ico('x', 14)} Cerrar</button></header>
       ${c.lista.length < 2 ? html`<p class="mut sm">Solo hay una versión: todavía no hay con qué comparar.</p>` : html`<div class="tsh-cmp-sel"><label>Antes <select class="in" data-act="tsh-cmp-a">${op(c.a)}</select></label><label>Después <select class="in" data-act="tsh-cmp-b">${op(c.b)}</select></label></div>
       <div class="tsh-cmp-cols">${col(c.a)}${col(c.b)}</div>`}</section>`);
@@ -201,12 +234,15 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     const el = $('#tsh-aviso', root); if (!el) return;
     const est = estadoDe(), nota = !S.alcance.abierto ? '' : !S.puede.editar ? 'Solo lectura: tu perfil lo ve, pero no lo cambia.'
       : S.doc?.archivado ? 'Está archivado: no se edita.'
+      : cerrado() ? `Está ${est.toLowerCase()} con el bloque ${nombreBloque()}: solo se cambia cuando el CEO lo reabre.`
       : S.doc && ['Aprobado', 'Entregado'].includes(est) ? `Está ${est.toLowerCase()}: si lo editas, se crea una versión nueva y vuelve a Borrador.` : '';
     mount(el, nota ? html`${nota}` : '');
   }
   function pintarVista() {
     const el = $('#tsh-vista', root); if (!el) return;
-    if (!S.alcance.abierto && !S.doc) return mount(el, html`<div class="empty tsh-vacio"><b>Sin entregable</b>Esta herramienta queda fuera de lo que este cliente contrató.</div>`);
+    if (!S.alcance.abierto && !S.doc) return mount(el, S.alcance.code === 'APROBADO'
+      ? html`<div class="empty tsh-vacio"><b>Sin entregable</b>La estrategia está aprobada y esta herramienta no tiene uno: el CEO la reabre para empezar un borrador.</div>`
+      : html`<div class="empty tsh-vacio"><b>Sin entregable</b>Esta herramienta queda fuera de lo que este cliente contrató.</div>`);
     S.pintando = true; // la vista puede avisar un cambio mientras se pinta: eso no cuenta como edición
     try { vista.pintar(el, { contenido: S.contenido, editable: editable(), onCambio, ctx: S.ctx, me, slug, docId: S.doc?.id || '' }); }
     catch (e) { mount(el, html`<div class="empty"><b>No pude pintar ${tool.nombre}</b>Recarga la página. Si sigue, avísale al COO.${techDetail(e)}</div>`); }
@@ -249,7 +285,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   const cuerpo = (contenido, { criterios, ia, doc } = {}) => ({ tool: tool.id, titulo: doc?.titulo || tituloNuevo(), client_slug: slug, ciclo: doc?.ciclo || '', project_id: doc?.project_id || '',
     entradas: doc?.entradas || [], contenido, criterios: criterios || doc?.criterios || clon(SIN_CRITERIOS), ia: ia || doc?.ia || S.local?.ia || { via: 'manual', modelo: '' } });
   async function guardar(contenido = S.contenido, extra = {}) {
-    if (!escribe()) return;
+    if (!editable()) return;
     const antes = S.doc;
     const d = antes
       ? await api(rutaDoc(antes.id), { method: 'PUT', body: { v: antes.v, ...cuerpo(contenido, { doc: antes, ...extra }) } })
@@ -266,7 +302,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     S.gen = prop ? { fase: 'propuesta', prop, via, modelo } : { fase: 'sin-bloque', texto: txt, via, modelo };
   }
   async function generar(preferir) {
-    if (!escribe() || !puedeIA || S.gen?.fase === 'corriendo') return;
+    if (!editable() || !puedeIA || S.gen?.fase === 'corriendo') return;
     const ctrl = new AbortController(), mio = () => S.gen?.ctrl === ctrl;
     S.gen = { fase: 'corriendo', texto: '', paso: '', ctrl };
     pintarGen(); pintarActs();
@@ -292,10 +328,14 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     pintarGen(); pintarActs();
   }
   async function usar() {
-    const g = S.gen; if (g?.fase !== 'propuesta' || !escribe()) return;
+    const g = S.gen; if (g?.fase !== 'propuesta' || !editable()) return;
     if (S.sucio && !(await confirmAsk('Tienes cambios sin guardar. ¿Los reemplazo con la propuesta?'))) return;
     if (!alive()) return;
-    await haz(() => guardar(clon(g.prop.contenido), { criterios: g.prop.criterios, ia: { via: g.via, modelo: String(g.modelo || '').slice(0, 80) } }));
+    // alUsar (opcional, del registro): la herramienta decide cómo se aplica la propuesta sobre lo que hay (la diana conserva sus lotes de
+    // calibración; la oferta no toca lo que su nivel bloquea). Si falla, se usa la propuesta tal cual.
+    let nuevo = clon(g.prop.contenido);
+    if (typeof tool.alUsar === 'function') { try { nuevo = clon(tool.alUsar(nuevo, clon(S.contenido), S.ctx) ?? nuevo); } catch { nuevo = clon(g.prop.contenido); } }
+    await haz(() => guardar(nuevo, { criterios: g.prop.criterios, ia: { via: g.via, modelo: String(g.modelo || '').slice(0, 80) } }));
   }
 
   // ---------- Estado ----------
@@ -308,6 +348,25 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
       const d = await api(`${rutaDoc(S.doc.id)}/estado`, { method: 'POST', body: { v: S.doc.v, a, nota: texto } });
       if (!alive()) return;
       aplicarDoc(d); toast(`Ahora está en «${d.estado}»`);
+    });
+  }
+
+  // Offer Architect: aprobar y reabrir van por el bloque de Strategy (solo el CEO). El servidor deja el último entregable Aprobado (con su versión)
+  // o en Borrador en esa misma ruta (aprobar manda la v del entregable que se revisó y el servidor corre sus faltas); después se vuelve a leer la lista.
+  // Nunca POST entregables/:id/estado con «Aprobado» para esta herramienta.
+  async function aprobarBloque(si) {
+    const bloque = tool.aprobarConBloque;
+    if (!bloque || !S.doc || !S.puede.aprobar) return;
+    if (S.sucio) return toast(`Guarda tus cambios antes de ${si ? 'aprobar' : 'reabrir'}.`, true);
+    if (!si && !(await confirmAsk(`Reabrir regresa el bloque ${nombreBloque()} y este entregable a Borrador: se podrá editar otra vez. ¿Confirmas?`))) return;
+    if (!alive()) return;
+    await haz(async () => {
+      await api(`estrategia/${enc(slug)}/${enc(bloque)}/aprobar`, { method: 'POST', body: si ? { aprobar: true, v: S.doc.v } : { aprobar: false } }); // aprobar lleva la v del entregable que se revisó
+      if (!alive()) return;
+      await cargar({ abrir: S.doc?.id || '' });
+      if (!alive()) return;
+      S.k = {}; marcarRuta(); pintarTodo();
+      toast(si ? `Aprobado con el bloque ${nombreBloque()}` : `Reabierto: ${tool.nombre} vuelve a Borrador`);
     });
   }
 
@@ -382,7 +441,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (alive() && S.cmp === c) { c.docs[n] = d; pintarCmp(); }
   }
   function restaurar(n) {
-    const d = S.cmp?.docs[n]; if (!d || !escribe()) return;
+    const d = S.cmp?.docs[n]; if (!d || !editable()) return;
     S.contenido = clon(d.contenido); S.sucio = true; S.cmp = null;
     S.k = {}; pintarVista(); pintarHead(); pintarActs(); pintarCrit(); pintarCmp();
     toast(`Cargué la v${n} en pantalla. Guarda para crear una versión nueva.`);
@@ -429,7 +488,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     'tsh-guardar': () => haz(() => guardar()), 'tsh-descartar-cambios': () => { if (S.doc) { S.contenido = clon(S.doc.contenido); S.sucio = false; } else nuevoLocal(); S.k = {}; pintarHead(); pintarActs(); pintarCrit(); pintarVista(); },
     'tsh-comparar': comparar, 'tsh-cmp-cerrar': () => { S.cmp = null; pintarCmp(); }, 'tsh-restaurar': (el) => restaurar(+el.dataset.v),
     'tsh-enviar-rev': () => cambiarEstado('En revisión'), 'tsh-devolver': () => cambiarEstado('Borrador', { nota: true }),
-    'tsh-aprobar': () => cambiarEstado('Aprobado'), 'tsh-entregado': () => cambiarEstado('Entregado'),
+    'tsh-aprobar': () => (tool.aprobarConBloque ? aprobarBloque(true) : cambiarEstado('Aprobado')), 'tsh-reabrir': () => aprobarBloque(false),
+    'tsh-entregado': () => cambiarEstado('Entregado'),
     'tsh-tareas': tareas, 'tsh-siguiente': (el) => siguiente(el.dataset.tool), 'tsh-resultado': resultado,
     'tsh-exportar': exportar, 'tsh-copiar': copiar, 'tsh-archivar': archivar,
     'tsh-chat': () => abrirEnChat(me.email, { modo, slug }),
@@ -441,7 +501,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   }), 'change');
   root.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.matches?.('.tsh-r-in')) { e.preventDefault(); resultado(); }
-    else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (escribe() && (S.sucio || !S.doc)) haz(() => guardar()); }
+    else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (editable() && (S.sucio || !S.doc)) haz(() => guardar()); }
   });
   marcarRuta();
   pintarTodo();

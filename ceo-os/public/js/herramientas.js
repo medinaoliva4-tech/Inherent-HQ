@@ -4,12 +4,17 @@
 // Los permisos los pone el servidor; puede() y puedeWs() solo reflejan la misma regla (copiada de brandAccess y hasEstrategia).
 // Las herramientas de Consulting traen aquí lo que ya hace su módulo puro (public/js/consulting/<m>.js: prompt, leer, limpiar,
 // faltas, aMd…): con eso el shell, el servidor (que limpia y mide las faltas al aprobar) y las pruebas leen lo mismo.
+// Lo mismo hacen las de Strategy de la Fase 3a (public/js/strategy/<m>.js): la diana, el X-Ray y la oferta van al Tool Shell; el Growth
+// Roadmap tiene su propia hoja (monta 'roadmap': vive en viva.roadmap, no en deliverables) y el Avatar Studio sigue en avatar-ui.js.
 import * as salud from './consulting/salud.js';
 import * as causas from './consulting/causas.js';
 import * as procesos from './consulting/procesos.js';
 import * as escenarios from './consulting/escenarios.js';
 import * as blueprint from './consulting/blueprint.js';
 import * as impacto from './consulting/impacto.js';
+import * as diana from './strategy/diana.js';
+import * as xray from './strategy/xray.js';
+import * as oferta from './strategy/oferta.js';
 
 // ---------- El flujo compartido (7 pasos) ----------
 export const FLUJO = [
@@ -79,19 +84,28 @@ const capacidadRojaDe = (extra = {}) => {
   return d ? salud.capacidadRoja(salud.limpiar(d.contenido)) : false;
 };
 const faltasPlan = (c, extra = {}) => blueprint.faltas(c, { ...extra, capacidadRoja: capacidadRojaDe(extra) });
+// alUsar(nuevo, actual, ctx) (opcional): cómo se aplica una propuesta de la IA sobre lo que hay en pantalla (el shell lo llama al «Usar esta
+// propuesta»). La diana conserva sus lotes de calibración; la oferta no toca lo que su nivel bloquea (el servidor lo rechazaría con 403):
+// Brand Growth solo recibe qué oferta se empuja y su mensaje, y el resto se queda como estaba.
+const alUsarOferta = (nuevo, actual, ctx) => {
+  const nivel = ctx?.cliente?.nivel?.id ?? null, antes = oferta.limpiar(actual);
+  return nivel === 'growth' ? oferta.limpiar({ ...antes, empujar: oferta.limpiar(nuevo).empujar }) : oferta.conservarBloqueado(antes, nuevo, nivel);
+};
 export const HERRAMIENTAS = [
   // Strategy — entender el negocio, encontrar oportunidades, diseñar crecimiento rentable (9)
   H({ id: 'customer-bullseye', ws: 'strategy', pestana: 'research', nombre: 'Customer Bullseye', produce: 'La diana: ICP, segmentos por prioridad y un mensaje por anillo',
-    estado: 'parcial', prioridad: 'P1', icono: 'target', monta: 'bullseye', guarda: { coll: 'sources', nota: 'cfg-<slug>.bullseye + espejo en deliverables' },
+    ...SH(diana, 'diana', { estado: 'lista', alUsar: diana.conLotes }),
+    prioridad: 'P1', icono: 'target', guarda: { coll: 'sources', nota: 'cfg-<slug>.bullseye por PUT estrategia/:slug/bullseye (guard estrategia) + espejo en deliverables (tool customer-bullseye)' },
     va_a: ['customer-avatar-studio', 'offer-architect', 'campaign-architect'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'customer-avatar-studio', ws: 'strategy', pestana: 'research', nombre: 'Customer Avatar Studio', produce: 'Avatares con buyer journey de 5 etapas y pesos que suman 100',
-    estado: 'parcial', prioridad: 'P1', icono: 'user', monta: 'avatar', guarda: { coll: 'avatars', nota: 'por sus rutas (PUT avatares/:id con v); se archiva, no se borra' },
+    estado: 'lista', prioridad: 'P1', icono: 'user', monta: 'avatar', guarda: { coll: 'avatars', nota: 'por sus rutas (PUT avatares/:id con v; guard content o estrategia); se archiva, no se borra' },
     va_a: ['offer-architect', 'copywriting-studio'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'competitor-radar', ws: 'strategy', pestana: 'research', nombre: 'Competitor Radar', produce: 'Panorama de competidores, mapa de posicionamiento y huecos con evidencia',
     prioridad: 'P2', icono: 'radar', guarda: D('un doc por radar; la competencia se escribe por la ruta de content'),
     va_a: ['opportunity-map', 'pricing-packages'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'business-xray', ws: 'strategy', pestana: 'analysis', nombre: 'Business X-Ray', produce: 'La etapa, un tablero de salud de 6 ejes y dónde está trabado',
-    estado: 'parcial', prioridad: 'P1', icono: 'eye', monta: 'strategy', bloque_hz: 'diagnostico', guarda: D('tool business-xray; se refleja en viva.contexto y viva.analisis'),
+    ...SH(xray, 'xray', { estado: 'lista' }),
+    prioridad: 'P1', icono: 'eye', bloque_hz: 'diagnostico', guarda: D('tool business-xray; se refleja en viva.contexto y viva.analisis (la etapa se propone y se confirma en estrategia/:slug/etapa)'),
     va_a: ['opportunity-map', 'customer-bullseye'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'commercial-diagnosis', ws: 'strategy', pestana: 'analysis', nombre: 'Commercial Diagnosis', produce: 'Score comercial, embudo con cuellos de botella y plan de 3 a 5 acciones',
     prioridad: 'P2', icono: 'chart-no-axes-column', guarda: { coll: 'strategy', nota: 'viva.comercial { bottlenecks, acciones }; el score se calcula, no se guarda' },
@@ -100,13 +114,14 @@ export const HERRAMIENTAS = [
     prioridad: 'P2', icono: 'compass', guarda: D('items con origen, puntajes y fuera_alcance'),
     va_a: ['growth-roadmap'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'offer-architect', ws: 'strategy', pestana: 'strategy', nombre: 'Offer Architect', produce: 'La ecuación de valor, el stack Grand Slam y 2 o 3 variaciones de oferta',
-    estado: 'parcial', prioridad: 'P1', icono: 'layers', monta: 'strategy', bloque_hz: 'oferta', guarda: D('espejo; la aprobación sigue en strategy <slug>--oferta y <slug>--modelo'),
+    ...SH(oferta, 'oferta', { estado: 'lista', aprobarConBloque: 'oferta', alUsar: alUsarOferta }), // aprobarConBloque: se aprueba y se reabre con POST estrategia/:slug/oferta/aprobar, nunca con /estado
+    prioridad: 'P1', icono: 'layers', bloque_hz: 'oferta', guarda: D('espejo; la aprobación sigue en strategy <slug>--oferta y <slug>--modelo'),
     va_a: ['pricing-packages', 'campaign-architect', 'growth-roadmap'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'pricing-packages', ws: 'strategy', pestana: 'strategy', nombre: 'Pricing & Packages Builder', produce: 'Matriz de precios, paquetes y simulador de margen',
     prioridad: 'P2', icono: 'tag', guarda: D('los costos del cliente etiquetados; los resultados del simulador no se guardan'),
     va_a: ['campaign-architect'], aprueba: 'ceo', puede: soloEstrategia }),
   H({ id: 'growth-roadmap', ws: 'strategy', pestana: 'roadmap', nombre: 'Growth Roadmap Builder', produce: 'Timeline por área y trimestre, con hitos y tareas',
-    estado: 'parcial', prioridad: 'P1', icono: 'rocket', monta: 'strategy', bloque_hz: 'roadmap', guarda: { coll: 'strategy', nota: 'viva.roadmap + items; los hitos van a accounts.goals' },
+    estado: 'lista', prioridad: 'P1', icono: 'rocket', monta: 'roadmap', bloque_hz: 'roadmap', guarda: { coll: 'strategy', nota: 'viva.roadmap { items, hitos } por PUT estrategia/:slug/viva (aprobar y reabrir: POST estrategia/:slug/viva/aprobar); los hitos van a accounts.goals' },
     va_a: ['content-strategy-studio'], aprueba: 'ceo', puede: soloEstrategia }),
 
   // Marketing — generar demanda, construir audiencias, adquirir y optimizar ingresos (10)
@@ -268,11 +283,13 @@ export const LEGACY_MODULO = {
   tech: 'marketing/campaigns/funnel-builder',
   resultados: 'marketing/analytics/marketing-performance-center',
 };
+// Diagnóstico, Oferta y Roadmap ya tienen su herramienta; Modelo de dinero y Leads no (el Modelo entra en Offer Architect, Leads sale a
+// Marketing): su ruta abre el chat de Strategy de ese bloque (rutaChat).
 export const LEGACY_BLOQUE = {
   diagnostico: 'analysis/business-xray',
   oferta: 'strategy/offer-architect',
-  modelo: 'strategy/offer-architect/modelo',
-  leads: 'strategy/offer-architect/leads',
+  modelo: 'strategy/offer-architect/chat/modelo',
+  leads: 'strategy/offer-architect/chat/leads',
   roadmap: 'roadmap/growth-roadmap',
 };
 // El módulo viejo cuya ruta termina en esta herramienta (el primero), o ''.
@@ -290,6 +307,14 @@ export function rutaHerramienta(ws, slug, toolId, resto = []) {
 }
 // → '#/ws/strategy/<slug>/<pestaña>/<herramienta>[/<bloque>]' para un bloque de la estrategia de hoy.
 export const rutaBloque = (slug, bloque) => (slug ? `#/ws/strategy/${slug}/${LEGACY_BLOQUE[bloque] || 'overview'}` : '#/ws/strategy');
+// → '#/ws/strategy/<slug>/<pestaña>/<herramienta>/chat[/<bloque>]': el chat de Strategy de hoy (puente/Hermes) con ese bloque. Es la única
+// ruta que monta screens/strategy.js; el bloque va al final solo para Modelo de dinero y Leads (viven dentro de Offer Architect).
+export function rutaChat(slug, bloque) {
+  const [pestana, tool] = (LEGACY_BLOQUE[bloque] || '').split('/');
+  if (!slug) return '#/ws/strategy';
+  if (!pestana || !tool) return `#/ws/strategy/${slug}/overview`;
+  return ['#/ws/strategy', slug, pestana, tool, 'chat', ...(bloque === 'modelo' || bloque === 'leads' ? [bloque] : [])].join('/');
+}
 // → '#/ws/<ws>/<slug>/…' para una clave de módulo de Marcas (LEGACY_MODULO); módulo desconocido → el Overview de Marketing.
 export function rutaModulo(slug, modulo, resto = []) {
   const [ws, ...camino] = (LEGACY_MODULO[modulo] || 'marketing/overview').split('/');

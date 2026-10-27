@@ -6,6 +6,8 @@
 // ruta, se monta su módulo (la tabla de montaje que antes vivía en la portada de Marcas; la clave 'shell' monta el Tool Shell con la
 // vista de la herramienta) o, si es «Pronto», su ficha: qué recibe, qué produce, a qué alimenta y su prioridad. Sin cliente, el selector de contexto en grande. Los permisos los pone el servidor:
 // aquí solo se refleja (puedeWs, puede() de cada herramienta y modulesFor de brandlist.js).
+// Strategy (Fase 3a): Customer Bullseye, Business X-Ray y Offer Architect van al Tool Shell (vistas diana, xray y oferta); Growth Roadmap monta su
+// propia hoja (monta 'roadmap'). El chat de Strategy de hoy (screens/strategy.js) ya no es la casa de ninguna: se abre por …/<herramienta>/chat[/<bloque>].
 import { html, mount, col, api, ico, initials, skel, $, fdate, today } from '../core.js';
 import { WORKSPACES, FLUJO, wsDe, pestanaDe, herramientaDe, deWorkspace, cadena, rutaHerramienta, puedeWs } from '../herramientas.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto, selectorHtml } from '../contexto.js';
@@ -15,7 +17,7 @@ import { estadoDe, separar, nombreDe } from '../element.js';
 import { etapaLabel, etapaDe } from '../estrategia.js';
 import { canEdit } from '../roleviews.js';
 import { panelViva } from '../estrategia-viva-ui.js';
-import { render as content, bullseyeTool } from './content.js';
+import { render as content } from './content.js';
 import { render as strategy } from './strategy.js';
 import { consultingOverview } from './consulting.js';
 import { render as meBrand } from './me-brand.js';
@@ -43,6 +45,9 @@ const VISTAS = {
   escenarios: () => import('../consulting/escenarios-ui.js'),
   blueprint: () => import('../consulting/blueprint-ui.js'),
   impacto: () => import('../consulting/impacto-ui.js'),
+  diana: () => import('../strategy/diana-ui.js'),
+  xray: () => import('../strategy/xray-ui.js'),
+  oferta: () => import('../strategy/oferta-ui.js'),
 };
 const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
@@ -53,7 +58,8 @@ const pasoNombre = (p) => (p && typeof p === 'object' ? p.nombre || p.id : FLUJO
 const nomTool = (id) => herramientaDe(id)?.nombre || id;
 const herr = (x) => (typeof x === 'string' ? herramientaDe(x) : x);
 // Qué módulo de Marcas monta cada clave de montaje: modulesFor(me, b) sigue diciendo si el perfil lo abre.
-const MOD_LEGADO = { brandHome: 'inicio', avatar: 'icp', brief: 'brief', research: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', ads: 'ads', analytics: 'resultados', brandBoard: 'marca', ideas: 'ideas', design: 'design', creacion: 'creacion', video: 'video' };
+// (avatar ya no está: el Customer Avatar Studio es de Strategy y el servidor deja entrar a quien edita Contenido o Estrategia.)
+const MOD_LEGADO = { brandHome: 'inicio', brief: 'brief', research: 'investigacion', plan: 'plan', calendario: 'calendario', campanas: 'campanas', tech: 'tech', ads: 'ads', analytics: 'resultados', brandBoard: 'marca', ideas: 'ideas', design: 'design', creacion: 'creacion', video: 'video' };
 // El ciclo de Production (un ciclo por marca y mes): en qué fase cae el día de hoy.
 const CICLO = [[1, 3, 'brief'], [4, 5, 'coordinar'], [6, 10, 'grabar'], [11, 11, 'último día de grabación'], [12, 15, 'editar'], [16, 19, 'cambios'], [20, 20, 'presentar']];
 const diaCiclo = (dia) => (dia > 20 ? 'Ciclo del mes cerrado · se presentó el 20' : `Día ${dia} del ciclo · ${(CICLO.find(([a, z]) => dia >= a && dia <= z) || [])[2] || ''}`);
@@ -94,6 +100,18 @@ export async function render(el, { me, sub = [], alive }) {
   if (ws === 'strategy' || ws === 'consulting') { est = await api(`estrategia/${encodeURIComponent(slug)}`).catch(() => null); if (!alive()) return; }
 
   mount(el, html`${tabs()}${hero()}<div id="ws-cuerpo"></div>`);
+  // Una herramienta que cambia la estrategia (aprobar o reabrir, confirmar la etapa) avisa con window.dispatchEvent(new Event('os:estrategia')):
+  // se lee otra vez y se repintan los chips del hero (etapa y «Estrategia aprobada»). El oyente se quita solo al salir de la pantalla.
+  if (ws === 'strategy' || ws === 'consulting') {
+    const fresca = async () => {
+      if (!alive() || !el.isConnected) return window.removeEventListener('os:estrategia', fresca);
+      const nueva = await api(`estrategia/${encodeURIComponent(slug)}`).catch(() => null);
+      if (!nueva || !alive() || !el.isConnected) return;
+      est = nueva;
+      const chipsEl = $('.ws-hero .ws-chips', el); if (chipsEl) mount(chipsEl, html`${chips()}`);
+    };
+    window.addEventListener('os:estrategia', fresca);
+  }
   el.addEventListener('click', (e) => {
     if (e.target.closest('[data-ws="chat"]')) return abrirEnChat(me.email, { modo: W.modo, slug });
     // La tarjeta entera lleva a la herramienta; los links de adentro (viene de / va a) siguen siendo links.
@@ -141,7 +159,7 @@ export async function render(el, { me, sub = [], alive }) {
       <span class="tool-card-ico">${ico(t.icono || 'target', 18)}</span>
       <div class="tool-card-t"><a href="${rutaHerramienta(ws, slug, t.id)}">${t.nombre}</a><span class="tool-card-est" data-est="${t.estado}">${EST[t.estado] || t.estado}</span></div>
       <p>${t.produce || ''}</p>
-      <div class="tool-card-ult" data-tool="${t.id}"><span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: saldrá de deliverables (Fase 2)</span></div>
+      <div class="tool-card-ult" data-tool="${t.id}"><span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: saldrá de ${t.monta === 'roadmap' ? 'la estrategia en vivo (viva.roadmap)' : 'deliverables (Fase 2)'}</span></div>
       <div class="tool-card-chips">${chipsDe('viene de', t.viene_de)}${chipsDe('va a', t.va_a)}</div></article>`;
   }
   // «Último entregable» de cada tarjeta. Si falla o el cliente no tiene entregables, queda el texto de hoy.
@@ -236,12 +254,23 @@ export async function render(el, { me, sub = [], alive }) {
       <p class="mut sm">Llega en la Fase ${ws === 'consulting' && t.prioridad === 'P1' ? '2' : '3'}. Mientras, lo que ya tengas se trabaja en el Chat.</p>
       <button type="button" class="btn" data-ws="chat">${ico('chat-ia', 14)} Continuar en el Chat</button></section>`;
   }
+  // El bloque del chat de Strategy que pide la ruta, o '' si la ruta no es de un chat: …/chat · …/chat/<bloque> · (Fase 1) offer-architect/modelo|leads.
+  function bloqueChat(t) {
+    if (ws !== 'strategy' || !t.bloque_hz) return '';
+    const viejo = t.id === 'offer-architect' && ['modelo', 'leads'].includes(resto[0]);
+    if (resto[0] !== 'chat' && !viejo) return '';
+    const pide = viejo ? resto[0] : resto[1];
+    return t.id === 'offer-architect' && ['oferta', 'modelo', 'leads'].includes(pide) ? pide : t.bloque_hz;
+  }
   async function herramienta(box, t) {
     const base = `#/ws/${ws}/${slug}/${pestana.id}/${t.id}`;
     mount(box, html`${head(t)}<div id="ws-tool"></div>`);
     const host = $('#ws-tool', box);
     if (!puede(t)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>Pídele al CEO acceso en Equipo → Vistas por rol.</div>`);
     if (t.estado === 'pronto' || !t.monta) return mount(host, ficha(t));
+    // El chat de Strategy de hoy (puente/Hermes), intacto: solo por …/<herramienta>/chat[/<bloque>] (y por las rutas de la Fase 1 de Modelo y Leads).
+    const chat = bloqueChat(t);
+    if (chat) return strategy(host, { me, sub: [slug, chat], alive });
     const mod = t.monta === 'ideas' && resto[0] === 'formatos' ? 'formatos' : MOD_LEGADO[t.monta];
     if (mod && !modulesFor(me, b).includes(mod)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>${b.personal ? 'En la marca personal no aplica.' : 'Pídele al CEO acceso a Contenido o a Clientes en Equipo → Vistas por rol.'}</div>`);
     const common = { me, alive, fixed: b.slug };
@@ -258,12 +287,16 @@ export async function render(el, { me, sub = [], alive }) {
         if (!vista || !toolShell) return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
         return toolShell(host, { me, tool: t, slug, b, alive, vista, resto });
       }
-      case 'bullseye': return bullseyeTool(host, { slug, me, alive });
-      case 'avatar': return avatarUI(host, { me, b, alive });
-      case 'strategy': {
-        const bloque = t.id === 'offer-architect' ? (['oferta', 'modelo', 'leads'].includes(resto[0]) ? resto[0] : 'oferta') : t.bloque_hz || 'diagnostico';
-        return strategy(host, { me, sub: [slug, bloque], alive });
+      // Growth Roadmap: su hoja propia (no usa el shell; su casa es viva.roadmap).
+      case 'roadmap': {
+        mount(host, esqueleto());
+        let roadmapTool = null;
+        try { ({ roadmapTool } = await import('../strategy/roadmap-ui.js')); } catch (e) { console.error(e); }
+        if (!alive() || !host.isConnected) return;
+        if (!roadmapTool) return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        return roadmapTool(host, { me, slug, b, alive, resto });
       }
+      case 'avatar': return avatarUI(host, { me, b, alive });
       case 'research': return embed(host, 'research', { inspo: Boolean(b.personal), plat: resto[0] });
       case 'plan': return planMesUI(host, { me, b, alive, rest: resto });
       case 'calendario': return embed(host, 'calendario');

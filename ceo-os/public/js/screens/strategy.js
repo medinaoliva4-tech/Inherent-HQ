@@ -2,7 +2,8 @@
 // con la pantalla dividida: a la izquierda el CONTEXTO (el entregable, los datos clave y las fuentes citadas) y a la derecha el
 // CHAT con Strategy. El chat corre con el Claude de cada persona en su compu (puente local de Laya, puerto 7357), en solo lectura.
 // Las pestañas de los 5 bloques viven en la barra de abajo de la de arriba (subnav de app.js).
-// Rutas: #/ws/strategy/<cliente>/<pestaña>/<herramienta>[/<bloque>] (la monta screens/workspace.js por bloque); las viejas #/estrategia/… son alias.
+// Ruta: #/ws/strategy/<cliente>/<pestaña>/<herramienta>/chat[/<bloque>] (la monta screens/workspace.js; rutaChat de herramientas.js la arma). Las herramientas
+// de Strategy ya tienen su propia vista: este chat es «Chat de Strategy» dentro de cada una. Las viejas #/estrategia/… son alias.
 import { html, raw, mount, api, col, ask, toast, ico, fdate, md, drawer, closeDrawer, $, $$, esc, events, confirmAsk, initials } from '../core.js';
 import { juzgarLocal } from '../laya-ui.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, sistemaDe, APP_MAC, enApp } from '../laya.js';
@@ -17,7 +18,7 @@ import { tarjetaDoc, barraChat, botonesEnviar, bandeja } from '../artifact.js';
 import { botonVoz, dictar } from '../voz.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, motorDe, esHermes } from '../motor-ui.js';
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
-import { rutaBloque } from '../herramientas.js';
+import { rutaBloque, rutaChat } from '../herramientas.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
@@ -69,7 +70,7 @@ export async function render(el, { me, sub = [], alive }) {
     catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty" style="margin-top:16px"><b>No pude abrir este cliente</b>${e.message}</div>`); }
     if (!alive()) return;
     const bid = BLOQUES.some((b) => b.id === b0) ? b0 : BLOQUES[0].id;
-    if (bid !== b0) { history.replaceState(null, '', rutaBloque(slug, bid)); sync(); }
+    if (bid !== b0) { history.replaceState(null, '', rutaChat(slug, bid)); sync(); }
     const M = BLOQUES.find((b) => b.id === bid);
     const key = `os.estrategia.chat.${me.email}.${slug}.viva`;
     const chat = chatDe(key);
@@ -287,7 +288,7 @@ export async function render(el, { me, sub = [], alive }) {
       const cerrar = (e) => { if (!m.contains(e.target) && !e.target.closest('[data-act="ctx"],[data-act="ctx-c"],[data-act="ctx-m"]')) fuera(); };
       setTimeout(() => document.addEventListener('pointerdown', cerrar));
     }
-    const menuHz = (t) => menu(t, data.bloques.map((x) => ({ href: rutaBloque(slug, x.id), on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
+    const menuHz = (t) => menu(t, data.bloques.map((x) => ({ href: rutaChat(slug, x.id), on: x.id === bid, dot: x.estado === 'aprobado' ? 'ok' : x.estado === 'trabajo' ? 'w' : '', label: `${x.n} · ${x.nombre}`, sub: estadoLabel(x.estado) })));
     function togglePanel() { S.panel = !S.panel; try { localStorage.setItem('os.estrategia.panel', S.panel ? 'on' : 'off'); } catch {} $('#es-split', el).dataset.panel = S.panel ? 'on' : 'off'; requestAnimationFrame(() => div?.ubicar()); $$('[data-act="panel"].es-pick', el).forEach((x) => { x.hidden = S.panel; }); const tg = $('[data-act="panel-tg"]', chatEl); if (tg) { tg.classList.toggle('on', S.panel); tg.setAttribute('aria-pressed', String(S.panel)); } paintHead(); paintMsgs(); }
     function paintChat() {
       const f = fase(), ok = f === 'listo';
