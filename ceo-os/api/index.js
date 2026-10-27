@@ -868,6 +868,8 @@ on('PUT', 'ads/accounts/:slug', async (req, res) => {
   const u = await guard(req, res); if (!u) return;
   if (!(['ceo', 'coo'].includes(u.role) || (u.roles || []).includes('ads'))) return res.status(403).json({ error: 'Solo Ads, el CEO o el COO' });
   const slug = req.params.slug; if (!slugOk(slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  // Con alcance «asignados» o «propio», solo las cuentas de pauta de sus clientes (como ads/report y ads/competitors).
+  { const sc = await scoper(u); if (sc && !sc.client(slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
   const b = body(req), ok = (x) => !x || /^[\w-]{3,30}$/.test(String(x)), txt = (x, n) => String(x || '').trim().slice(0, n);
   const cur = (await db.get('accounts', 'acc-' + slug))?.ads || {};
   // El encargo (objetivo en una métrica, oferta y canales) lo escribe Ads; las cuentas y el presupuesto también.
@@ -907,19 +909,24 @@ on('GET', 'repo/client/:slug/intel', async (req, res) => {
   res.json(await intel.intelFor(slug, { vista: 'equipo', costos: managesAccesos(u) }));
 });
 
-// El tablero de pauta (Windsor) y los anuncios de la competencia (Apify).
+// El tablero de pauta (Windsor) y los anuncios de la competencia (Apify). El rol abre la puerta (Ads, CEO o COO);
+// el alcance (scoper: asignados · propio) decide qué clientes salen: el tablero se filtra y la competencia de un
+// cliente fuera del alcance responde 404, igual que repo/client/:slug/intel.
 const adsGuard = async (req, res) => { const u = await guard(req, res); if (!u) return null; if (['ceo', 'coo'].includes(u.role) || (u.roles || []).includes('ads')) return u; res.status(403).json({ error: 'Solo Ads, el CEO o el COO' }); return null; };
 on('GET', 'ads/report', async (req, res) => {
   const u = await adsGuard(req, res); if (!u) return;
-  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)))), apify: ads.apifyOn() }); }
+  const sc = await scoper(u);
+  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)), { sc })), apify: ads.apifyOn() }); }
   catch (e) { res.status(502).json({ error: e.message }); }
 });
 on('GET', 'ads/competitors/:slug', async (req, res) => {
   const u = await adsGuard(req, res); if (!u) return; if (!slugOk(req.params.slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  { const sc = await scoper(u); if (sc && !sc.client(req.params.slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
   try { res.json((await ads.competitors(req.params.slug, u.email)) || { competitors: [], items: null }); } catch (e) { res.status(502).json({ error: e.message }); }
 });
 on('POST', 'ads/competitors/:slug', async (req, res) => {
   const u = await adsGuard(req, res); if (!u) return; if (!slugOk(req.params.slug)) return res.status(400).json({ error: 'Cliente inválido' });
+  { const sc = await scoper(u); if (sc && !sc.client(req.params.slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' }); }
   const list = Array.isArray(body(req).list) ? body(req).list : [];
   try { res.json(await ads.scrapeCompetitors(req.params.slug, list, u.email)); }
   catch (e) { if (e.status || e.code) return res.status(e.status || 503).json({ error: e.message }); res.status(502).json({ error: e.message }); }

@@ -29,10 +29,13 @@ async function windsor(conn, preset) {
 }
 
 // El tablero: por cliente y plataforma, gasto, impresiones, clics, conversiones, CPA, CTR y ROAS, y el gasto por día.
-export async function report(days = 30) {
+// sc es el alcance de quien pregunta (scoper() en access.js; null = ve todo): solo entran los clientes que pasan
+// sc.client(slug), y con ellos sus cuentas, sus filas de Windsor y su serie. Nada de otro cliente sale de aquí.
+const slugDe = (a) => a.slug || String(a.id).replace(/^acc-/, '');
+export async function report(days = 30, { sc = null } = {}) {
   if (!windsorOn()) return { on: false };
   const preset = days <= 7 ? 'last_7d' : days <= 30 ? 'last_30d' : 'last_90d';
-  const accs = (await db.list('accounts')).filter((a) => a.ads && Object.values(a.ads).some(Boolean));
+  const accs = (await db.list('accounts')).filter((a) => a.ads && Object.values(a.ads).some(Boolean) && (!sc || sc.client(slugDe(a))));
   const out = { on: true, days, clients: [], errors: {} };
   const rowsBy = {};
   for (const [plat, conn] of Object.entries(CONN)) {
@@ -40,7 +43,7 @@ export async function report(days = 30) {
     try { rowsBy[plat] = await windsor(conn, preset); } catch (e) { out.errors[plat] = e.message; }
   }
   for (const a of accs) {
-    const slug = a.slug || a.id.replace(/^acc-/, ''), c = { slug, name: a.name || slug.toUpperCase(), budget: a.ads.budget || null, plats: {}, series: {} };
+    const slug = slugDe(a), c = { slug, name: a.name || slug.toUpperCase(), budget: a.ads.budget || null, plats: {}, series: {} };
     for (const plat of Object.keys(CONN)) {
       const id = digits(a.ads[plat]); if (!id || !rowsBy[plat]) continue;
       const rows = rowsBy[plat].filter((r) => digits(r.account_id) === id);
