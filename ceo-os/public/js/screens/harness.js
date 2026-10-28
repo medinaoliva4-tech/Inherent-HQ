@@ -12,7 +12,8 @@ export const esqueleto = () => skel('pagina');
 
 const ACTUAL = raw('aria-current="page"'); // constante segura: la pestaña abierta
 const PASOS_ENCENDER = TERMINAL.filter(([n]) => /^(Instalar|Actualizar)/.test(n));
-const PASO_LLAVE = TERMINAL.find(([n]) => /llave/.test(n)) || ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'];
+// Exacta: «llave» a secas también encuentra la línea de Kilo Pass («…y pega tu llave»), que es «inherent model».
+const PASO_LLAVE = TERMINAL.find(([n]) => /^Ver la llave/.test(n)) || ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'];
 const pl = (n, uno, otros) => `${n} ${n === 1 ? uno : otros}`;
 const modeloCorto = (m) => String(m || '').split('/').pop().slice(0, 32);
 const limpio = (s) => String(s ?? '').trim();
