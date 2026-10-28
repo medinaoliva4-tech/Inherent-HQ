@@ -66,7 +66,7 @@ export async function render(el, { me, sub = [], alive }) {
   const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
-  // Modo privado: responde un modelo que corre en esta compu (Ollama, LM Studio…). El elegido si es local; si no, el primero que haya.
+  // Modo privado: responde un modelo que corre en esta compu (LM Studio, Ollama…). El elegido si es local; si no, el primero que haya.
   const modeloLocal = () => {
     if (S.modelo?.model && esLocal(S.modelo.provider)) return S.modelo;
     const a = S.modelos?.actual; if (a?.model && esLocal(a.provider)) return { provider: a.provider, model: a.model };
@@ -202,7 +202,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!listo()) return mount(box, vacio() ? heroHtml() : html`<div class="llm-col">${setupHtml()}</div>`);
     const m = modoDe(S.modo), sl = slugAhora();
     mount(box, html`${vacio() ? heroHtml() : ''}<div class="lc-w">
-      ${S.privado && S.modelos && !modeloLocal() ? html`<div class="lc-aviso">${ico('lock', 13)} El modo privado necesita un modelo en tu compu. Con Ollama instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · y para que Hermes lo use: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
+      ${S.privado && S.modelos && !modeloLocal() ? html`<div class="lc-aviso">${ico('lock', 13)} El modo privado necesita un modelo en tu compu. Con LM Studio: baja cualquier modelo, enciende su servidor (<code>lms server start</code> <button type="button" data-a="copiar" data-t="lms server start">Copiar</button>) y elige «LM Studio» en <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
       ${sinModelo() ? html`<div class="lc-aviso">${ico('alert', 13)} Hermes no tiene un modelo conectado. En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo…   «/» para comandos'}" aria-label="Mensaje"></textarea>
@@ -422,13 +422,13 @@ export async function render(el, { me, sub = [], alive }) {
     if (!S.privado && (!ia || iaDe(S.modelos.actual.provider, S.modelos.actual.model) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
     const loc = S.privado ? modeloLocal() : null;
     for (const p of S.modelos.proveedores) for (const x of p.listo ? p.modelos.filter((x) => deIa(p.slug, x)).slice(0, PASARELAS.includes(p.slug) ? 40 : 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, fin: fuertesHtml(x), on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
-    if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con Ollama', off: true });
+    if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con LM Studio', off: true });
     const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
     menu(a, 'Modelo', items, (v) => {
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
       else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider, S.modelo.model)] = S.modelo; ajustarModelo(); }
       persistir(); pintarCaja();
-    }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>Ollama</b> instalado, en la Terminal: <code>ollama pull qwen3-coder:30b</code> <button type="button" data-a="copiar" data-t="ollama pull qwen3-coder:30b">Copiar</button> · luego <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
+    }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>LM Studio</b>: baja cualquier modelo, enciende su servidor (<code>lms server start</code> <button type="button" data-a="copiar" data-t="lms server start">Copiar</button>) y elige «LM Studio» en <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
   }
 
   // ---------- Ajustes: Hermes, la llave, el tema y los comandos de la Terminal ----------

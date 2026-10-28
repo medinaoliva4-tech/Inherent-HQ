@@ -1,7 +1,7 @@
 import { instalarMenu } from './menu-contextual.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
 import { openSearch, searchOpen } from './search.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
@@ -24,6 +24,27 @@ import { SECCIONES } from './guia-secciones.js';
 // abriendo (alias() y el hook de replaceState los canonizan a #/areas/…, #/org/… o #/home). Los permisos los pone el
 // servidor; aquí solo se refleja (sees, puedeVerArea).
 const root = $('#root');
+// ---------- La pantalla de arranque (index.html › #boot) ----------
+// La página nunca queda en blanco: el HTML ya pinta el emblema, una barra fina y la etapa («Conectando…»). Aquí se le cambia
+// la etapa, se saca de #root (mount() lo vaciaría) para que se quede encima mientras se pinta lo de abajo, y se desvanece
+// (fundido + leve escala, 220 ms; con «reducir movimiento», solo el fundido) cuando el cascarón o el login ya están listos.
+const boot = $('#boot');
+let bootSale = !boot; // true: ya se fue (o nunca hubo)
+const bootEtapa = (t) => {
+  const e = $('#boot-t'); if (!e || bootSale || e.textContent === t) return;
+  e.textContent = t; e.classList.remove('cambia'); void e.offsetWidth; e.classList.add('cambia');
+};
+const bootSoltar = () => { if (boot && !bootSale && boot.parentElement !== document.body) document.body.append(boot); };
+function bootSalir() {
+  if (bootSale) return;
+  bootSoltar(); bootSale = true;
+  // Dos cuadros: lo de abajo se pinta con la pantalla de arranque todavía encima, y entonces se desvanece.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    boot.classList.add('fuera'); boot.setAttribute('aria-hidden', 'true');
+    const fin = () => boot.remove();
+    boot.addEventListener('transitionend', fin, { once: true }); setTimeout(fin, 500);
+  }));
+}
 // El botón de día y noche muestra a dónde vas: de noche el sol, de día la luna. El tema lo lleva tema.js.
 const icoTema = () => svgIco(esNoche() ? 'sun' : 'moon', 18);
 export let me = null;
@@ -41,9 +62,10 @@ async function loginView() {
   try { st = await api('status'); } catch {}
   const qs = new URLSearchParams(location.search); const err = qs.get('error'), detail = qs.get('detail');
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
+  bootSoltar(); // la pantalla de arranque se queda encima mientras el login se pinta, y se desvanece (misma salida que el cascarón)
   mount(root, html`<div class="login">
-    <div class="art"><div class="quote"><p>We build cool brands—<br><em>and the growth systems behind them.</em></p></div></div>
-    <div class="side">
+    <div class="art"><div class="quote entra"><p>We build cool brands—<br><em>and the growth systems behind them.</em></p></div></div>
+    <div class="side entra-lista">
       <div class="row" style="gap:18px"><div style="width:52px">${emblem()}</div><div><img src="/brand/wordmark-light.svg" alt="Inherent" style="height:58px;display:block"><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:10px">OPERATING SYSTEM</div></div></div>
       <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
       ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
@@ -59,6 +81,7 @@ async function loginView() {
       </div>
     </div></div>`);
   if (err) history.replaceState(null, '', '/');
+  bootSalir();
 }
 
 // ---------- Quién ve qué (refleja; el permiso lo pone el servidor) ----------
@@ -289,14 +312,39 @@ function latGrupo(n, cur) {
 }
 // El subtítulo de «Ask InherentOS»: el modo con el que abriría el Chat (el área abierta, o Organization).
 const chatSub = (cur) => (cur.key === 'areas' ? areaDe(cur.rest[0])?.nombre : '') || 'Organization';
+// El indicador del ítem activo: dos píldoras (span.lat-ind, app.css) que se deslizan de un ítem al siguiente en vez de apagarse
+// en uno y encenderse en otro: la del ítem de la barra y la de la página abierta dentro de su grupo. paintLat vuelve a pintar
+// la barra entera en cada navegación; los indicadores son los únicos nodos que se conservan (se vuelven a meter y se les da un
+// cuadro para que recuerden dónde estaban: de ahí parte el viaje). `quieto`: acomodarlos sin viaje (la primera vez, o cuando
+// la barra cambia de tamaño). En el cel no hay barra lateral: no hacen nada.
+const latInds = {};
+let latRO = null;
+function latIndicador(nav, quieto = false) {
+  for (const [k, sel] of [['item', '.lat-it.on'], ['pag', '.lat-subs a.on']]) {
+    let ind = latInds[k];
+    if (!ind) { ind = latInds[k] = document.createElement('span'); ind.className = `lat-ind lat-ind-${k}`; ind.setAttribute('aria-hidden', 'true'); }
+    if (ind.parentElement !== nav) { nav.prepend(ind); void ind.offsetWidth; }
+    const on = [...nav.querySelectorAll(sel)].find((x) => x.getClientRects().length);
+    if (!on) { ind.classList.remove('on'); nav.removeAttribute('data-ind-' + k); continue; }
+    const n = nav.getBoundingClientRect(), r = on.getBoundingClientRect();
+    const sinViaje = quieto || !ind.classList.contains('on');
+    ind.classList.toggle('fijo', sinViaje);
+    ind.style.width = r.width + 'px'; ind.style.height = r.height + 'px';
+    ind.style.transform = `translate(${Math.round(r.left - n.left + nav.scrollLeft)}px, ${Math.round(r.top - n.top + nav.scrollTop)}px)`;
+    ind.classList.add('on'); nav.setAttribute('data-ind-' + k, '');
+    if (sinViaje) { void ind.offsetWidth; ind.classList.remove('fijo'); }
+  }
+  if (!latRO && 'ResizeObserver' in window) { latRO = new ResizeObserver(() => { const k = $('#lat-nav'); if (k) latIndicador(k, true); }); latRO.observe(nav); }
+}
 function paintLat(cur = resolve(hashNow())) {
   const lat = $('.lat'), nav = lat && $('#lat-nav', lat); if (!nav) return;
   // Se vuelve a pintar en cada navegación: el foco del teclado se queda en el mismo link o en la misma flecha.
   const act = document.activeElement?.closest?.('#lat-nav a, #lat-nav button'), foco = act ? act.getAttribute('href') || act.dataset.grpTg || '' : '';
   const cab = cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : '';
-  if (me.role === 'client') { mount(nav, html`${cab}${latIt('portal', 'Mi portal', ico('nav-portal', 16), cur.key === 'portal')}`); return; }
+  if (me.role === 'client') { mount(nav, html`${cab}${latIt('portal', 'Mi portal', ico('nav-portal', 16), cur.key === 'portal')}`); latIndicador(nav); return; }
   const pag = paginaDe(cur.url);
   mount(nav, html`${cab}${NAV.filter((n) => n.ve()).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
+  latIndicador(nav);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
   const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = chatSub(cur);
   if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus();
@@ -469,6 +517,17 @@ function shell() {
   $('#themebtn').onclick = () => ponerTema(esNoche() ? 'dia' : 'noche');
 }
 
+// Cuando el esqueleto (o un «Cargando…») cede su lugar a la pantalla, lo que llega entra escalonado (core.js › escalonar:
+// .entra con --i). Se arma por navegación y se apaga solo: al entrar la pantalla, o a los 8 s si nunca llega.
+function entradaAuto(main, alive) {
+  const mo = new MutationObserver(() => {
+    if (!alive()) return mo.disconnect();
+    if (main.querySelector(':scope > .skel, :scope > .loading')) return; // todavía carga
+    mo.disconnect(); escalonar(main);
+  });
+  mo.observe(main, { childList: true }); setTimeout(() => mo.disconnect(), 8000);
+}
+
 async function render() {
   cerrarTodo(); grpCerrado = new Set();
   const cur = resolve(hashNow());
@@ -487,7 +546,8 @@ async function render() {
   // mientras carga la siguiente (antes «Cargando…» la hacía chiquita y el navegador brincaba).
   const old = $('#main'), keep = old.offsetHeight;
   const main = old.cloneNode(false); main.removeAttribute('inert'); main.classList.remove('llm-host'); main.style.minHeight = keep + 'px';
-  const gen = ++renderGen, vt = canTransition(), alive = () => gen === renderGen;
+  // La primera pantalla no usa View Transition: la pantalla de arranque que se desvanece encima ya es su transición.
+  const gen = ++renderGen, vt = canTransition() && bootSale, alive = () => gen === renderGen;
   // El módulo de la pantalla llega ANTES de la transición (después de la primera vez ya está en caché): así la transición
   // nunca espera a la red y la pantalla no se queda congelada en la anterior.
   // Mientras baja, la pantalla vieja ya no se puede tocar (si no, una pestaña tocada a destiempo cambiaría la dirección).
@@ -508,6 +568,8 @@ async function render() {
     if (!vt) { main.classList.add('enter'); setTimeout(() => main.classList.remove('enter'), 900); }
     // La forma de la pantalla mientras llegan los datos (se ve solo si tarda: antes de 160 ms no aparece nada).
     mount(main, mod?.esqueleto?.() || skel('pagina'));
+    bootSalir(); // la primera vez: lo de abajo ya está pintado, la pantalla de arranque se desvanece
+    if (cur.key !== 'chat') entradaAuto(main, alive); // el Chat arma su propia caja: nada de transform encima
     if (err) { fallo(err); return null; }
     lista = Promise.resolve()
       .then(() => mod.render(main, { me, area: cur.key, sub: cur.rest, label: LABEL[cur.key] || cur.key, alive }))
@@ -519,7 +581,8 @@ async function render() {
   if (vt) {
     const rootEl = document.documentElement; rootEl.dataset.vt = 'nav';
     const t = document.startViewTransition(pintar);
-    t.finished.finally(() => { if (rootEl.dataset.vt === 'nav') delete rootEl.dataset.vt; });
+    t.ready.catch(() => {}); // saltada por otra o con la pestaña oculta, `ready` se rechaza: no es un error
+    t.finished.catch(() => {}).finally(() => { if (rootEl.dataset.vt === 'nav') delete rootEl.dataset.vt; }); // una transición saltada por otra no es un error
     await t.updateCallbackDone.catch(() => {});
   } else pintar();
   await lista;
@@ -553,13 +616,16 @@ events.addEventListener('logout', () => { if (me) { me = null; toast('Tu sesión
 
 async function start(u) {
   me = u;
+  bootEtapa('Preparando tu espacio…'); // la sesión ya contestó: ahora van las vistas por rol y los niveles
   if (u.role !== 'client') instalarMenu(u);
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
   if (me.role !== 'client') { let doc = null; const lv = Promise.all([api('db/settings'), me.role === 'ceo' ? api('internos/baseline').catch(() => null) : null]).then(([r, b]) => { if (b) baseDefaults(b.base); applyLevels((r.items || []).find((x) => x.id === LEVELS_ID)); }).catch(() => {}); try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); await lv; }
   if (!hashNow()) history.replaceState(null, '', '#/' + landing());
   const c = pendingConnect();
-  if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
-  shell(); render();
+  if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); bootSoltar(); setTimeout(bootSalir, 80); return consentView(root, me, c, () => { shell(); render(); }); }
+  bootSoltar(); shell(); render();
+  // Por si la primera pantalla no baja (sin internet): el arranque no se queda tapando el cascarón.
+  setTimeout(bootSalir, 2500);
   // Las pantallas de todos los días se bajan en segundo plano: el primer clic ya no espera a que llegue su código.
   if (me.role !== 'client') { const pre = () => { for (const k of ['home', 'calendario', 'work', 'operations', 'sales', 'finanzas', 'clients', 'areas', 'ai', 'chat']) if (SCREENS[k] && sees(k)) import(`./screens/${SCREENS[k]}.js`).catch(() => {}); }; 'requestIdleCallback' in window ? requestIdleCallback(pre, { timeout: 3000 }) : setTimeout(pre, 1500); }
   // El primer día: la primera vez, el recorrido de 6 pasos (se puede pausar; el chip de la barra lo retoma).
@@ -571,6 +637,8 @@ async function start(u) {
   // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.
   if (['ceo', 'coo'].includes(me.role)) { try { const d = new Date().toISOString().slice(0, 10); if (localStorage.getItem('rec.run') !== d) api('recipes/run', { method: 'POST', body: {} }).then(() => { try { localStorage.setItem('rec.run', d); } catch {} }).catch(() => {}); } catch {} }
 }
-api('me').then(start).catch(loginView);
+// «Conectando…» es la primera etapa (ya viene en el HTML); si la sesión tarda, la pantalla de arranque lo dice.
+const bootLento = setTimeout(() => bootEtapa('Sigue conectando…'), 6000);
+api('me').finally(() => clearTimeout(bootLento)).then(start).catch(loginView);
 // La «i» de información se pone sola en cada título que se pinta.
 { let q = false; new MutationObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; infoTips(root); }); }).observe(root, { childList: true, subtree: true }); }

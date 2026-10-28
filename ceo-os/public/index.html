@@ -22,7 +22,15 @@
 <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-<div id="root"></div>
+<!-- La pantalla de arranque: se pinta con el HTML, antes de que baje un solo script. app.js le cambia la etapa y la desvanece
+     cuando el cascarón (o el login) ya está debajo. Estilos en app.css › .boot. -->
+<div id="root"><div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="boot-in">
+    <span class="boot-emb"><img class="emb-dia" src="/brand/emblem-dark.svg" alt="Inherent" width="36" height="46"><img class="emb-noche" src="/brand/emblem.svg" alt="" width="36" height="46"></span>
+    <span class="boot-bar" aria-hidden="true"><i></i></span>
+    <p class="boot-t" id="boot-t">Conectando…</p>
+  </div>
+</div></div>
 <div class="veil" id="veil"></div>
 <aside class="drawer sp-sheet" id="drawer"></aside>
 <div id="toast" role="status"></div>

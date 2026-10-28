@@ -340,8 +340,6 @@ textarea.in{min-height:96px;resize:vertical}
 @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:no-preference){
-  #main.enter>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
-  #main.enter>*:nth-child(2){animation-delay:.05s}#main.enter>*:nth-child(3){animation-delay:.1s}#main.enter>*:nth-child(4){animation-delay:.15s}#main.enter>*:nth-child(5){animation-delay:.2s}#main.enter>*:nth-child(n+6){animation-delay:.24s}
   .card,.btn,.chip,.artifact,.folder,.arrow,.tabs button,.ev,tr.click{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,background-color .2s ease,color .2s ease,opacity .2s ease,outline-color .2s ease}
   .btn:active,.chip:active,.tabs button:active,.artifact:active,.arrow:active,.folder:active{transform:scale(.96)}
   .card[data-act]:hover,a.card:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgb(var(--ink-rgb) / .12)}
@@ -425,7 +423,6 @@ button:focus:not(:focus-visible),a:focus:not(:focus-visible){outline:none}
   .card[data-act]:hover,a.card:hover,.artifact:hover{transform:none}
   .card[data-act]:active,a.card:active,.artifact:active,.folder:active{transform:none;opacity:.85}
   .btn,.chip,.tabs button,.arrow{transition:transform .12s ease,background-color .15s ease,color .15s ease}
-  #main.enter>*{animation-duration:.32s}
   .swap{animation:none}
 }
 .cal .d[data-act]{cursor:pointer}.cal .d[data-act]:hover{background:rgb(var(--surface-rgb) / .85)}.cal button.mut{font-size:11px;padding:0}
@@ -693,9 +690,6 @@ a.btn{text-decoration:none}
 .crop{width:260px;height:260px;margin:6px auto 0;border-radius:50%;overflow:hidden;box-shadow:0 0 0 4px #fdfaf3,0 10px 30px rgb(var(--ink-rgb) / .18);touch-action:none}
 .crop canvas{width:260px;height:260px;display:block;cursor:grab;touch-action:none}.crop canvas:active{cursor:grabbing}
 
-/* En el cel la sección nueva entra solo con fundido: el desliz hacia arriba se sentía como un brinco */
-@media (max-width:760px){#main.enter>*{animation-name:fade}}
-
 .homevids{grid-template-columns:repeat(3,1fr)!important;gap:12px}
 @media (max-width:760px){.homevids{grid-template-columns:1fr 1fr!important}.homevids>*:nth-child(3){display:none}}
 
@@ -749,7 +743,7 @@ a.btn{text-decoration:none}
 .wkgrid>*{min-width:0}
 @media (max-width:760px){.wkbox .wktable{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}}
 /* ⓘ */
-.itip{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1.3px solid currentColor;font:italic 600 10px/1 Georgia,serif;opacity:.45;margin:0 0 0 7px;vertical-align:.2em;position:relative;padding:0;flex:none;cursor:help;transition:opacity .15s}
+.itip{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1.3px solid currentColor;font:600 10px/1 var(--sans);opacity:.45;margin:0 0 0 7px;vertical-align:.2em;position:relative;padding:0;flex:none;cursor:help;transition:opacity .15s}
 .itip:hover,.itip:focus{opacity:1;outline:none}
 .itip:hover::after,.itip:focus::after{content:attr(data-tip);position:absolute;top:22px;left:-8px;width:max-content;max-width:min(260px,72vw);background:var(--ink);color:var(--cream);font:400 12.5px/1.45 var(--sans);letter-spacing:0;text-transform:none;padding:9px 12px;border-radius:12px;z-index:60;box-shadow:0 12px 30px rgb(var(--ink-rgb) / .25);white-space:normal;text-align:left}
 h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
@@ -794,11 +788,6 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
 #main{view-transition-name:vt-main}
 ::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
 ::view-transition-group(vt-main){animation:none}
-@keyframes vtIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes vtOut{to{opacity:0}}
-/* de una sección a otra: sale lo anterior y entra lo nuevo desde abajo (sin estirar) */
-html[data-vt=nav]::view-transition-old(vt-main){animation:vtOut .16s ease both}
-html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn .38s cubic-bezier(.2,.8,.2,1) both}
 ::view-transition-old(vt-main),::view-transition-new(vt-main){height:auto;object-fit:none;object-position:top}
 /* de una pestaña a otra: el cuerpo entra con un fundido corto */
 .tabin{animation:tabIn .3s cubic-bezier(.2,.8,.2,1) both}
@@ -1258,8 +1247,6 @@ td.n,th.n,.wktable td.n,.wktable th.n{text-align:right}
 
 /* ---------- movimiento ---------- */
 @media (prefers-reduced-motion:no-preference){
-  #main.enter>*{animation:rise 240ms var(--ease) both}
-  #main.enter>*:nth-child(2){animation-delay:30ms}#main.enter>*:nth-child(3){animation-delay:60ms}#main.enter>*:nth-child(4){animation-delay:90ms}#main.enter>*:nth-child(n+5){animation-delay:110ms}
   .card,.sp-tile,.sp-cover,.sp-panel,.artifact,.folder,tr.click,.ev,.wkrow{transition:transform var(--t) var(--ease),box-shadow var(--t) var(--ease),background-color 150ms ease,border-color var(--t) ease}
   a.card:hover,.card[data-act]:hover,a.sp-tile:hover,.sp-tile[data-act]:hover,a.sp-panel:hover,.sp-cover[data-act]:hover{transform:translateY(-2px);box-shadow:var(--sh-2)}
   a.card:active,.card[data-act]:active,a.sp-tile:active,.sp-tile[data-act]:active{transform:translateY(0) scale(.99);opacity:1}
@@ -1267,9 +1254,6 @@ td.n,th.n,.wktable td.n,.wktable th.n{text-align:right}
 }
 @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
-@keyframes vtIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-html[data-vt=nav]::view-transition-old(vt-main){animation:vtOut 120ms ease both}
-html[data-vt=nav]::view-transition-new(vt-main){animation:vtIn 240ms var(--ease) both}
 .tabin{animation:tabIn 200ms var(--ease) both}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
@@ -4149,7 +4133,7 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .llm-main.vacio .llm-sug{margin-bottom:auto}
 .llm-main:not(.vacio) .llm-sug{display:none}
 .lh{max-width:768px;margin:0 auto 26px;text-align:center}
-.lh h1{font:400 clamp(28px,3.4vw,38px)/1.15 ui-serif,'New York','Iowan Old Style',Georgia,serif;letter-spacing:-.015em;color:var(--l-ink);text-wrap:balance}
+.lh h1{font:600 clamp(28px,3.4vw,38px)/1.15 var(--sans);letter-spacing:-.02em;font-optical-sizing:auto;color:var(--l-ink);text-wrap:balance}
 .lh p{margin-top:10px;font-size:13.5px;color:var(--l-mut)}
 
 /* La caja */
@@ -4488,26 +4472,26 @@ body::before,body::after,:root[data-theme="dark"] body::before,:root[data-theme=
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* La forma de una pantalla mientras cargan sus datos (skel() de core.js): aparece solo si tarda (160 ms) y brilla suave. */
-.skel{display:grid;gap:12px;padding:6px 0;animation:skAparece 0s linear 160ms both}
-@keyframes skAparece{from{visibility:hidden}to{visibility:visible}}
-.skel i{display:block;border-radius:var(--r-2);background:var(--ui-surf2)}
+.skel{display:grid;gap:12px;padding:6px 0;animation:skAparece 220ms var(--e-ent,ease-out) 160ms backwards}
+@keyframes skAparece{from{opacity:0}}
+.skel i{display:block;position:relative;overflow:hidden;border-radius:var(--r-2);background:var(--ui-surf2)}
 .skel .sk-t{height:30px;width:min(340px,60%)}
 .skel .sk-s{height:14px;width:min(240px,40%);margin-bottom:10px}
 .skel .sk-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:6px}
 .skel .sk-kpis i{height:92px;border-radius:var(--r-3)}
 .skel .sk-row{height:46px}
 @media (max-width:760px){.skel .sk-kpis{grid-template-columns:1fr 1fr}}
+/* El brillo: una franja clara que cruza cada bloque (solo transform: no se repinta) y descansa antes de volver. Todos los
+   bloques arrancan a la vez, así que el barrido va parejo. */
+.skel{--sk-hi:rgb(var(--ui-surf-rgb) / .75)}
+:root[data-theme="dark"] .skel{--sk-hi:rgb(255 240 225 / .06)}
 @media (prefers-reduced-motion:no-preference){
-  .skel i{background:linear-gradient(90deg,var(--ui-surf2) 0%,var(--ui-fill) 50%,var(--ui-surf2) 100%);background-size:200% 100%;animation:skBrillo 1.5s linear infinite}
+  .skel i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,var(--sk-hi) 50%,transparent 80%);transform:translateX(-100%);animation:skBarrido 1.8s cubic-bezier(.4,0,.2,1) infinite}
 }
-@keyframes skBrillo{from{background-position:100% 0}to{background-position:-100% 0}}
+@keyframes skBarrido{0%{transform:translateX(-100%)}65%,100%{transform:translateX(100%)}}
 .ui-fallo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 
-/* Movimiento entre pantallas: lo viejo se va en 120 ms y lo nuevo entra en 200 ms, apenas subiendo. */
-@keyframes vt2Out{to{opacity:0}}
-@keyframes vt2In{from{opacity:0;transform:translateY(4px)}}
-html[data-vt=nav]::view-transition-old(vt-main){animation:vt2Out 120ms var(--e-out) both}
-html[data-vt=nav]::view-transition-new(vt-main){animation:vt2In 200ms var(--e-out) both}
+/* El movimiento entre pantallas (View Transitions) vive en «MOVIMIENTO v3», al final del archivo. */
 /* Lo que se toca responde: un leve hundirse al presionar (solo transform). */
 @media (prefers-reduced-motion:no-preference){
   .btn,.chip,.tile,.ls-row a,.ls-new,.lc-send,.lsg-c{transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
@@ -4531,7 +4515,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 /* De noche, los íconos de color de Ventas y Mis tareas se aclaran para que se lean sobre el fondo oscuro. */
 :root[data-theme="dark"] :is(.vx-v i,.vx-ah i,.mt-ic,.mt-li i)>.lni{color:color-mix(in srgb,currentColor 55%,#fff)}
 /* Sin View Transition, la entrada de la pantalla no le gana a la aparición diferida del esqueleto. */
-#main.enter>.skel{animation:skAparece 0s linear 160ms both}
+#main.enter>.skel{animation:skAparece 220ms var(--e-ent,ease-out) 160ms backwards}
 /* Imprimir o guardar en PDF (Presupuesto, Roadmap): la hoja siempre en papel, de día o de noche. */
 @media print{html,body,:root[data-theme="dark"] body{background:#fcf9f2!important}}
 
@@ -8085,4 +8069,419 @@ select.in.ar-est-sel:focus-visible{outline:2px solid var(--ar-c,var(--ui-focus))
 
 @media (prefers-reduced-motion:reduce){
   .ar-col,.ar-kcard,.ar-vista,.ar-cn,.ar-btn.ar-dia-add{transition:none}
+}
+
+/* ===================== MOVIMIENTO v3 · arranque, pantallas, entradas y respuesta =====================
+   Un solo lugar para el movimiento del OS (las entradas y View Transitions de antes se quitaron de arriba). Reglas:
+   · solo transform y opacity; lo que sale dura ~60% de lo que entra; todo se puede interrumpir (son transiciones, no guiones);
+   · el desplazamiento es siempre de 6 px hacia arriba, la entrada de 200-220 ms, con la curva --e-ent;
+   · bajo «reducir movimiento» nada se desplaza ni escala: queda un fundido corto (160 ms). Los indicadores de estado
+     (la barra del arranque) pulsan en lugar de correr.
+   Utilidades para cualquier pantalla: .entra (con --i: 0…7) y .entra-lista (sus hijos entran solos); .eleva (se levanta al
+   pasar el mouse y se hunde al presionar). Los colores y radios son los de siempre: aquí no hay ninguno nuevo. */
+:root{
+  --e-ent:cubic-bezier(.2,.8,.2,1);   /* entrada: arranca rápido y se asienta, sin rebote */
+  --e-spring:cubic-bezier(.2,.8,.2,1);/* resorte sin rebote (amortiguamiento 1): se reemplaza abajo donde hay linear() */
+  --e-pop:cubic-bezier(.3,1.35,.5,1); /* resorte corto con un rebote mínimo (~4%): toast, diálogos, menús */
+  --mv-y:6px;                         /* cuánto suben las entradas */
+  --mv-paso:35ms;                     /* diferencia entre un bloque y el siguiente en .entra */
+}
+/* Resortes de verdad (linear(): Chrome 113+, Safari 17.2+, Firefox 112+): el mismo movimiento, calculado con física. */
+@supports (transition-timing-function:linear(0,1)){
+  :root{
+    --e-spring:linear(0,.057,.18,.32,.454,.572,.67,.749,.812,.86,.896,.924,.944,.959,.971,.979,.985,.989,.992,.994,1);
+    --e-pop:linear(0,.039,.135,.26,.395,.526,.646,.75,.835,.903,.953,.99,1.014,1.029,1.036,1.038,1.037,1.033,1.029,1.023,1.018,1.014,1.01,1.006,1);
+  }
+}
+@keyframes mvFade{from{opacity:0}}
+@keyframes mvEntra{from{opacity:0;transform:translateY(6px)}}
+@keyframes mvPop{from{opacity:0;transform:translateY(8px) scale(.97)}}
+
+/* ---------- La pantalla de arranque (index.html › #boot): emblema, barra fina y la etapa ---------- */
+.boot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--ui-bg);color:var(--ui-ink);
+  transition:opacity 220ms var(--e-ent),transform 220ms var(--e-ent)}
+.boot.fuera{opacity:0;transform:scale(1.02);pointer-events:none}
+.boot-in{display:grid;justify-items:center;gap:18px;width:min(260px,72vw)}
+.boot-emb{width:36px;height:46px;display:grid;place-items:center}
+.boot-emb img{width:100%;height:auto;display:block}
+.boot-bar{position:relative;width:132px;height:2px;border-radius:2px;background:var(--ui-line2);overflow:hidden}
+.boot-bar i{position:absolute;top:0;bottom:0;left:0;width:46%;border-radius:2px;background:var(--ui-acc);transform:translateX(-110%)}
+.boot-t{margin:0;min-height:1.4em;font-size:12.5px;font-weight:500;letter-spacing:.01em;color:var(--ui-mut);text-align:center}
+@keyframes bootBarra{from{transform:translateX(-110%)}to{transform:translateX(260%)}}
+@keyframes bootEmb{from{opacity:0;transform:scale(.94)}}
+@keyframes bootTxt{from{opacity:0;transform:translateY(3px)}}
+@keyframes bootPulso{50%{opacity:.3}}
+@media (prefers-reduced-motion:no-preference){
+  .boot-emb{animation:bootEmb 420ms var(--e-ent) backwards}
+  .boot-bar,.boot-t{animation:mvFade 300ms linear 140ms backwards}
+  .boot-bar i{animation:bootBarra 1.3s cubic-bezier(.45,0,.25,1) infinite}
+  .boot-t.cambia{animation:bootTxt 240ms var(--e-ent)}
+}
+
+/* ---------- Entre pantallas (View Transitions): sale lo anterior en 130 ms y lo nuevo entra en 210 ms subiendo 6 px ---------- */
+@keyframes vt3Out{to{opacity:0}}
+@keyframes vt3In{from{opacity:0;transform:translateY(6px)}}
+html[data-vt=nav]::view-transition-old(vt-main){animation:vt3Out 130ms var(--e-ent) both}
+html[data-vt=nav]::view-transition-new(vt-main){animation:vt3In 210ms var(--e-ent) both}
+::view-transition-old(vt-main),::view-transition-new(vt-main){mix-blend-mode:normal}
+/* Sin View Transitions (o la primera pantalla): lo que llega entra con .entra (core.js › escalonar); el Chat, con un fundido. */
+@media (prefers-reduced-motion:no-preference){
+  html[data-pantalla="chat"] #main.enter{animation:mvFade 200ms linear backwards}
+}
+
+/* ---------- .entra: la entrada de un bloque (sube 6 px y se aclara). --i (0…7) lo escalona 35 ms por lugar ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .entra{animation:mvEntra 220ms var(--e-ent) backwards;animation-delay:calc(min(var(--i,0),7) * var(--mv-paso))}
+  .entra-lista>*{animation:mvEntra 220ms var(--e-ent) backwards}
+  .entra-lista>:nth-child(2){animation-delay:35ms}.entra-lista>:nth-child(3){animation-delay:70ms}.entra-lista>:nth-child(4){animation-delay:105ms}
+  .entra-lista>:nth-child(5){animation-delay:140ms}.entra-lista>:nth-child(6){animation-delay:175ms}.entra-lista>:nth-child(7){animation-delay:210ms}
+  .entra-lista>:nth-child(n+8){animation-delay:245ms}
+  .login{animation:mvFade 260ms linear backwards}
+}
+
+/* ---------- Esqueletos: mismos bloques, ahora con tarjetas; lo que cargaba con «Cargando…» también espera 160 ms ---------- */
+.skel .sk-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.skel .sk-card{height:148px;border-radius:var(--r-3)}
+@media (prefers-reduced-motion:no-preference){
+  .loading,p.loading{animation:skel 1.3s ease-in-out infinite,skAparece 220ms var(--e-ent) 160ms backwards}
+}
+
+/* ---------- La barra lateral: el indicador se desliza; presionar hunde un poco (0.98) ---------- */
+.lat-nav{position:relative;isolation:isolate}
+.lat-ind{position:absolute;left:0;top:0;width:0;height:0;z-index:-1;opacity:0;pointer-events:none}
+.lat-ind-item{border-radius:10px;background:var(--ui-surf);box-shadow:var(--ui-sh-1)}
+.lat-ind-pag{border-radius:8px;background:var(--ui-surf2)}
+.lat-ind.on{opacity:1}
+/* Con el indicador puesto, el ítem activo deja su fondo (lo da el indicador); sin él, conserva el de siempre. */
+.lat-nav[data-ind-item] .lat-it.on{background:transparent;box-shadow:none}
+.lat-nav[data-ind-pag] .lat-subs a.on{background:transparent}
+@media (prefers-reduced-motion:no-preference){
+  .lat-ind{will-change:transform;transition:transform 340ms var(--e-spring),width 340ms var(--e-spring),height 340ms var(--e-spring),opacity 160ms linear}
+  .lat-ind.fijo{transition:opacity 160ms linear}
+  .lat-it,.lat-subs a,.lat-chat,.lat-yo-b,.lat-ib,.lat-grp-tg,.hoja-it{transition:background-color var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
+  .lat-it:active,.lat-subs a:active,.lat-chat:active,.lat-yo-b:active,.lat-ib:active,.hoja-it:active{transform:scale(.98)}
+  .lat-menu{animation:mvPop 260ms var(--e-pop) backwards;transform-origin:left bottom}
+}
+@media (max-width:760px) and (prefers-reduced-motion:no-preference){
+  .nc-b{transition:color var(--d-2) var(--e-std),transform var(--d-1) var(--e-out)}
+  .nc-b>svg{transition:transform 320ms var(--e-pop),color var(--d-2) var(--e-std)}
+  .nc-b.on>svg{transform:translateY(-1px) scale(1.08)}
+  .nc-b:active{transform:scale(.96)}
+}
+
+/* ---------- Botones y tarjetas: se levantan 1 px y su sombra pasa de --sh-1 a --sh-2; al presionar se hunden (0.98) ---------- */
+@media (prefers-reduced-motion:no-preference){
+  .btn{transition:transform var(--d-2) var(--e-ent),box-shadow var(--d-3) var(--e-ent),filter var(--d-2) linear,background-color var(--d-2) var(--e-std),color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std)}
+  .btn:active{transition-duration:var(--d-1)}
+  :is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva){
+    transition:transform var(--d-3) var(--e-ent),box-shadow var(--d-3) var(--e-ent),background-color var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std)}
+  :is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva):active{
+    transform:translateY(0) scale(.98);box-shadow:var(--sh-1);opacity:1;transition-duration:var(--d-1)}
+}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .btn.ghost:hover{box-shadow:var(--sh-2)}
+  :is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva):hover{
+    transform:translateY(-1px);box-shadow:var(--sh-2)}
+}
+
+/* ---------- Toast, vista grande y diálogos: entran con un resorte corto, salen más rápido ---------- */
+#toast{transform:translate(-50%,-14px) scale(.96)}
+#toast.on{transform:translate(-50%,0) scale(1)}
+@media (prefers-reduced-motion:no-preference){
+  #toast{transition:transform 200ms var(--e-ent),opacity 150ms linear}
+  #toast.on{transition:transform 480ms var(--e-pop),opacity 170ms linear}
+  #drawer.drawer{transition:opacity 150ms linear,transform 220ms var(--e-ent),visibility 0s linear 220ms}
+  #drawer.drawer.on{transition:opacity 200ms var(--e-ent),transform 360ms var(--e-spring),visibility 0s}
+  .dlg[open]{animation:mvPop 340ms var(--e-pop)}
+  .dlg[open]::backdrop{animation:mvFade 200ms linear}
+}
+
+/* ---------- «Reducir movimiento»: nada se desplaza ni escala; queda un fundido corto. El corte global de arriba apaga todo con
+   !important, así que lo que debe verse lo vuelve a pedir con !important y más peso. ---------- */
+@media (prefers-reduced-motion:reduce){
+  .boot{transition:opacity 160ms linear!important}
+  .boot.fuera{transform:none}
+  .boot-bar i{width:100%;transform:none;animation:bootPulso 1.6s ease-in-out infinite!important}
+  #main.enter,.entra,.entra-lista>*{animation:mvFade 160ms linear backwards!important}
+  .skel{animation:skAparece 160ms linear 160ms backwards!important}
+  .lat-ind,.lat-ind.fijo{transition:opacity 120ms linear!important}
+  #toast,#toast.on{transform:translate(-50%,0)!important;transition:opacity 160ms linear!important}
+  #drawer.drawer{transform:none!important;transition:opacity 160ms linear,visibility 0s linear 160ms!important}
+  #drawer.drawer.on{transform:none!important;transition:opacity 160ms linear,visibility 0s!important}
+  .dlg[open]{animation:mvFade 160ms linear!important}
+}
+
+/* ===================== Pulido · cards visuales e Inherent AI =====================
+   Va AL FINAL (después de «MOVIMIENTO v3»): varias reglas pisan a las de antes por orden (.home-imp-card, .ar-sec-pin, .ar-n, .ar-card.ar-big…).
+   Dos partes: (1) la información visual de Home, Áreas y Calendario (helpers de public/js/visual.js, clases .vz-*) y (2) la tarjeta de
+   LM Studio de Inherent AI (public/js/screens/harness.js, clases .iai-lm-*). Solo tokens --ui-* y los de movimiento; día y noche salen solos;
+   en el cel una columna; todo lo que se mueve va dentro de prefers-reduced-motion:no-preference (el corte global apaga el resto). */
+:root{--vz-ease:cubic-bezier(.22,1,.36,1)}
+
+/* ---------- Anillo de avance ---------- */
+.vz-ring{display:block;flex:none;overflow:visible}
+.vz-ring-bg,.vz-ring-off{stroke:var(--ui-line2)}
+.vz-ring-fg{stroke:var(--vz-col,var(--ui-acc))}
+.vz-ring-n{fill:var(--ui-ink);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+@keyframes vzAnillo{from{stroke-dashoffset:var(--vz-c)}}
+@keyframes vzCrece{from{transform:scaleX(0)}}
+@keyframes vzTrazo{from{stroke-dashoffset:1}}
+@keyframes vzPulso{from{transform:scale(1);opacity:.5}to{transform:scale(2.2);opacity:0}}
+@media (prefers-reduced-motion:no-preference){
+  .vz-ring-fg{animation:vzAnillo 700ms var(--vz-ease) backwards}
+}
+
+/* ---------- Barra de avance contra meta ---------- */
+.vz-bar{position:relative;display:block;width:100%;height:6px;border-radius:99px;background:var(--ui-line2)}
+.vz-bar-f{display:block;width:var(--vz-w,0%);height:100%;border-radius:inherit;background:var(--vz-col,var(--ui-acc));transform-origin:left center}
+.vz-bar.is-bajo .vz-bar-f{background:var(--ui-amb-f)}
+.vz-bar.is-meta .vz-bar-f{background:var(--ui-ok)}
+.vz-bar-m{position:absolute;top:-3px;bottom:-3px;left:var(--vz-m);width:2px;margin-left:-1px;border-radius:2px;background:var(--ui-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .vz-bar-f{animation:vzCrece 600ms var(--vz-ease) backwards}
+}
+
+/* ---------- Proporción apilada + leyenda ---------- */
+.vz-prop{display:grid;gap:8px;width:100%;min-width:0}
+.vz-prop-bar{display:flex;gap:2px;height:8px;border-radius:99px;overflow:hidden}
+.vz-seg{flex-basis:0;min-width:6px;border-radius:99px;background:var(--seg,var(--wt-ink,var(--ui-acc)));transform-origin:left center}
+.vz-seg--grupo{display:flex;gap:1px;overflow:hidden;background:none}
+.vz-seg--grupo>i{display:block;flex-basis:0;min-width:3px;background:var(--seg,var(--ui-acc))}
+@media (prefers-reduced-motion:no-preference){
+  .vz-seg{animation:vzCrece 420ms var(--vz-ease) backwards;animation-delay:calc(var(--i,0) * 40ms)}
+}
+.vz-ley{display:flex;flex-wrap:wrap;gap:2px 14px;margin:0;padding:0;list-style:none}
+.vz-ley-i{display:inline-flex;align-items:center;gap:6px;min-height:24px;padding:0;border:0;background:none;color:var(--ui-ink2);font:inherit;font-size:12px;line-height:1.2}
+button.vz-ley-i{padding:0 6px;margin:0 -6px;border-radius:8px;cursor:pointer;transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std)}
+button.vz-ley-i:hover{background:var(--ui-fill);color:var(--ui-ink)}
+button.vz-ley-i:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1px}
+.vz-dot{width:6px;height:6px;flex:none;border-radius:50%;background:var(--seg,var(--wt-ink,var(--ui-acc)))}
+.vz-dot.t-areas{background:conic-gradient(var(--ui-m-strategy),var(--ui-m-marketing),var(--ui-m-creative),var(--ui-m-consulting),var(--ui-m-production),var(--ui-m-strategy))}
+.vz-ley-t{white-space:nowrap}
+.vz-ley-n{font-weight:600;font-variant-numeric:tabular-nums;color:var(--ui-ink)}
+.vz-ley-i.is-off{color:var(--ui-mut)}
+.vz-ley-i.is-off .vz-dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ui-mut2)}
+.vz-ley-i.is-off .vz-ley-n{color:var(--ui-mut)}
+
+/* ---------- Sparkline ---------- */
+.vz-spark{display:block;flex:none;overflow:visible;color:var(--vz-col,var(--ui-acc))}
+.vz-spark-l{stroke:currentColor;stroke-dasharray:1}
+.vz-spark-p{fill:currentColor}
+@media (prefers-reduced-motion:no-preference){
+  .vz-spark-l{animation:vzTrazo 500ms var(--vz-ease) backwards}
+  .vz-spark-a,.vz-spark-p{animation:mvFade 240ms linear 320ms backwards}
+}
+
+/* ---------- Cuánto falta (chip de cuenta regresiva) ---------- */
+.vz-cuenta{--vz-bg:var(--ui-fill);--vz-tx:var(--ui-ink2);display:inline-flex;align-items:center;gap:4px;min-height:20px;padding:0 8px;border-radius:99px;background:var(--vz-bg);color:var(--vz-tx);font-size:11px;font-weight:500;line-height:1;white-space:nowrap}
+.vz-cuenta>svg{width:11px;height:11px;flex:none}
+.vz-t-pronto{--vz-bg:var(--ui-amb-bg);--vz-tx:var(--ui-amb-t)}
+.vz-t-tarde{--vz-bg:var(--ui-bad-bg);--vz-tx:var(--ui-bad-t)}
+.vz-t-hoy{--vz-bg:var(--ui-bad);--vz-tx:var(--ui-acc-ink);font-weight:600}
+.vz-t-hecho{--vz-bg:transparent;--vz-tx:var(--ui-mut);box-shadow:inset 0 0 0 1px var(--ui-line2)}
+
+/* ---------- Grupos por fecha (Atrasado · Hoy · Esta semana · …) ---------- */
+.vz-grupo{display:grid;gap:6px;margin-bottom:12px}
+.vz-gh{display:flex;align-items:center;gap:6px;margin:0 0 2px;font-size:11px;font-weight:600;letter-spacing:.06em;line-height:1.3;text-transform:uppercase;color:var(--ui-mut)}
+.vz-gh b{font-weight:600;font-variant-numeric:tabular-nums}
+.vz-g-tarde>.vz-gh{color:var(--ui-bad-t)}
+.vz-g-hoy>.vz-gh{color:var(--ui-ink)}
+.vz-gh--btn{width:100%;padding:4px 0;border:0;background:none;cursor:pointer;font:inherit;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut);text-align:left}
+.vz-gh--btn:hover{color:var(--ui-ink)}
+.vz-gh--btn:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px;border-radius:6px}
+.vz-gh--btn>svg{margin-left:auto;flex:none}
+.vz-colapsa{display:grid;grid-template-rows:0fr}
+.vz-grupo.is-open>.vz-colapsa{grid-template-rows:1fr}
+.vz-colapsa-in{display:grid;gap:6px;min-height:0;overflow:hidden}
+@media (prefers-reduced-motion:no-preference){
+  .vz-gh--btn>svg{transition:transform 220ms var(--e-ent)}
+  .vz-colapsa{transition:grid-template-rows 240ms var(--e-ent)}
+}
+.vz-grupo.is-open>.vz-gh--btn>svg{transform:rotate(180deg)}
+
+/* ---------- Monogramas de cliente ---------- */
+.vz-mono{--m:var(--ui-m-strategy);display:inline-grid;place-items:center;width:22px;height:22px;flex:none;border-radius:50%;background:color-mix(in srgb,var(--m) 16%,var(--ui-surf));color:color-mix(in srgb,var(--m) 62%,var(--ui-ink));font-size:10px;font-weight:600;letter-spacing:.02em;line-height:1;text-transform:uppercase}
+.vz-mono--sm{width:18px;height:18px;font-size:9px}
+.vz-m-0{--m:var(--ui-m-strategy)}.vz-m-1{--m:var(--ui-info)}.vz-m-2{--m:var(--ui-m-organization)}
+.vz-m-3{--m:var(--ui-m-creative)}.vz-m-4{--m:var(--ui-m-production)}.vz-m-5{--m:var(--ui-m-marketing)}
+.vz-m-mas{--m:var(--ui-mut)}
+.vz-monos{display:inline-flex;align-items:center}
+.vz-monos>.vz-mono{box-shadow:0 0 0 2px var(--vz-ring,var(--ui-surf))}
+.vz-monos>.vz-mono+.vz-mono{margin-left:-6px}
+
+/* ---------- Punto de estado (el verde pulsa solo cuando está vivo) ---------- */
+.vz-punto{position:relative;display:inline-block;width:8px;height:8px;flex:none;border-radius:50%;background:var(--p,var(--ui-mut2))}
+.vz-p-vivo{--p:var(--ui-ok)}.vz-p-medio{--p:var(--ui-amb-f)}.vz-p-caido{--p:var(--ui-bad)}.vz-p-info{--p:var(--ui-info)}
+.vz-p-off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ui-mut2)}
+.vz-p-vivo::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--ui-ok);opacity:0}
+@media (prefers-reduced-motion:no-preference){.vz-p-vivo::after{animation:vzPulso 2s ease-out infinite}}
+.vz-estado{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ui-ink2)}
+
+/* ---------- Cuadrito de ícono (el tipo en un vistazo) ---------- */
+.vz-tipo{display:inline-grid;place-items:center;width:28px;height:28px;flex:none;border-radius:8px;background:color-mix(in srgb,var(--tipo-c,var(--ui-acc)) 14%,transparent);color:color-mix(in srgb,var(--tipo-c,var(--ui-acc)) 82%,var(--ui-ink))}
+.vz-tipo--sm{width:24px;height:24px;border-radius:7px}
+.vz-tipo--lg{width:32px;height:32px}
+
+/* ---------- Estado vacío: círculo discontinuo + ícono + lo que falta + una acción ---------- */
+.vz-vacio{display:grid;justify-items:center;gap:4px;padding:24px 16px;text-align:center}
+.vz-vacio--c{padding:14px 12px}
+.vz-vacio-ic{position:relative;display:grid;place-items:center;width:48px;height:48px;margin-bottom:6px;color:var(--ui-mut)}
+.vz-vacio-ring{position:absolute;inset:0}
+.vz-vacio-ring circle{stroke:var(--ui-mut2)}
+.vz-vacio-t{font-size:14px;font-weight:500;color:var(--ui-ink)}
+.vz-vacio-l{max-width:36ch;font-size:12px;line-height:1.45;color:var(--ui-mut)}
+.vz-vacio-b{margin-top:10px}
+@media (prefers-reduced-motion:no-preference){.vz-vacio--entra{animation:mvEntra 220ms var(--e-ent) backwards}}
+
+/* ---------- Números ---------- */
+.vz-num{font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-.02em}
+.vz-num.is-vacio{font-weight:500;color:var(--ui-mut2)}
+
+/* ---------- La franja de color a la izquierda (área o urgencia): sube a 4 px al pasar el mouse ---------- */
+.home-imp-card,.ar-card2,.hy-urg{position:relative;overflow:hidden}
+.home-imp-card::before,.ar-card2::before,.hy-urg::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--fr-c,var(--ui-acc));transform-origin:left center}
+.home-imp-card{--fr-c:var(--ac,var(--ui-acc))}
+.ar-card2{--fr-c:var(--ar-c,var(--ui-acc))}
+.hy-urg{--fr-c:var(--fr,var(--ui-mut2))}
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .home-imp-card::before,.ar-card2::before,.hy-urg::before{transition:transform var(--d-3) var(--e-ent)}
+  .home-imp-card:hover::before,.ar-card2:hover::before,.hy-urg:hover::before{transform:scaleX(1.34)}
+}
+
+/* ---------- La forma de cada pantalla mientras carga (esqueletos propios de Home, Áreas y Calendario) ---------- */
+.skel .sk-ask{height:76px;border-radius:var(--r)}
+.skel .sk-bar{height:44px;border-radius:var(--r-3)}
+.skel .sk-res{height:76px;border-radius:var(--r-4)}
+.skel .sk-gran{height:420px;border-radius:var(--r-4)}
+.skel-home .sk-kpis i{height:156px;border-radius:20px}
+.skel .sk-dos{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr);gap:16px}
+.skel .sk-dos i{height:300px;border-radius:20px}
+@media (max-width:760px){.skel .sk-dos{grid-template-columns:1fr}}
+
+/* ---------- Home: los 4 stat tiles ---------- */
+.home-kpi{gap:8px}
+.home-kpi-top{gap:8px}
+.home-kpi-main{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:46px}
+.home-kpi .vz-num{font-size:36px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.home-kpi-ring{flex:none}
+.home-kpi-vis{display:flex;align-items:center;margin-top:auto;padding-top:4px;min-height:20px}
+.home-kpi-sub{font-size:12.5px;line-height:1.35}
+@media (max-width:560px){.home-kpi .vz-num{font-size:30px}.home-kpi-main{min-height:40px}}
+
+/* ---------- Home: Recent Activity como línea de tiempo ---------- */
+.home-act-spark{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+.home-act-spark small{font-size:11px}
+.home-tl{position:relative;margin:4px 0 0;padding:0;list-style:none}
+.home-tl::before{content:"";position:absolute;left:11px;top:16px;bottom:16px;width:1px;background:var(--ui-line2)}
+.home-tl-sep{margin:10px 0 2px 34px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut)}
+.home-tl-sep:first-child{margin-top:2px}
+.home-tl-i{position:relative}
+.home-tl-a{display:flex;align-items:center;gap:10px;min-width:0;padding:6px 8px 6px 0;border-radius:10px;color:var(--ui-ink);text-decoration:none}
+.home-tl-a:hover{background:rgb(var(--ink-rgb) / .03)}
+.home-tl-a:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1px}
+.home-tl-n{position:relative;z-index:1;display:grid;place-items:center;width:23px;height:23px;flex:none;border-radius:50%;background:var(--ui-surf);box-shadow:inset 0 0 0 1px var(--ui-line2);color:var(--ui-ink2)}
+.home-tl-i.is-ahora .home-tl-n{background:var(--ui-acc);color:var(--ui-acc-ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-acc) 22%,transparent)}
+.home-tl-t{flex:1;min-width:0;overflow:hidden;font-size:13.5px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
+.home-tl-t small{display:block;overflow:hidden;font-size:11.5px;font-weight:400;color:var(--ui-mut);text-overflow:ellipsis}
+.home-tl-q,.home-tl-h{flex:none;font-size:12px;white-space:nowrap}
+.home-tl-h{min-width:64px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- Home: Importante (tarjeta con la franja de su área) ---------- */
+.home-imp-card{gap:8px;padding:12px 14px 12px 17px;border-left-width:1px}
+.home-imp-top{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.home-imp-top>b{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding-top:3px;font-size:14.5px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.home-imp-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:auto}
+.home-imp-area{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ui-ink2)}
+.home-imp-cli{display:inline-flex;align-items:center;gap:6px;min-width:0;font-size:12px;color:var(--ui-ink2)}
+.home-imp-cli>span:last-child{max-width:14ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-imp-vacio .vz-vacio{padding:6px 0 0}
+.home-imp-vacio .home-imp-links{justify-content:center}
+
+/* ---------- Home: Necesita atención (franja de urgencia + cuánto falta) ---------- */
+.hy-it.hy-urg{gap:12px;margin-bottom:6px;padding:10px 12px 10px 16px;border-top:0;border-radius:12px;background:var(--ui-fill)}
+.hy-urg .vz-cuenta,.hy-urg .hy-tag{flex:none}
+.hy-bh+.hy-it.hy-urg{margin-top:6px}
+
+/* ---------- Áreas: cabecera con el avance ---------- */
+.ar-avance{display:flex;align-items:center;gap:10px;flex:none}
+.ar-avance-t{display:grid;line-height:1.15}
+.ar-avance-t b{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.ar-avance-t small{font-size:12px;color:var(--ui-mut)}
+
+/* ---------- Áreas: la nota, legible de un vistazo ---------- */
+.ar-card2{gap:10px;padding:14px 16px 14px 19px}
+.ar-card.ar-card2.ar-big{padding:18px 20px 18px 23px;border-top:1px solid var(--ui-line)}
+.ar-card.ar-card2.ar-big.is-pin{border-top-color:color-mix(in srgb,var(--ar-c,var(--ui-acc)) 40%,var(--ui-line))}
+.ar-card.ar-card2.is-arch{border-top-width:1px}
+.ar-top{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.ar-top-t{flex:1;min-width:0;display:grid;gap:2px}
+.ar-card2 .ar-t{font-size:15px;font-weight:600;line-height:1.3}
+.ar-card2.ar-big .ar-t{font-size:17px}
+.ar-meta{font-size:12px}
+.ar-acts{display:flex;flex:none;gap:2px;margin:-4px -8px -4px auto}
+.ar-sec-pin{padding-left:0;border-left:0}
+.ar-texto.ar-l2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;max-height:none;overflow:hidden;-webkit-mask-image:none;mask-image:none}
+.ar-texto.ar-l2.ar-l3{-webkit-line-clamp:3}
+.ar-texto.ar-l2.ar-open{display:block;overflow:visible;-webkit-line-clamp:unset}
+.ar-kcard.ar-card2{gap:8px;padding:12px 12px 12px 15px}
+.ar-kcard.ar-card2 .ar-t{font-size:14.5px}
+.ar-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.ar-cliente{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%;font-size:12px;color:var(--ui-ink2)}
+.ar-cliente>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- Áreas: Próximo, agrupado por fecha ---------- */
+.ar-prox{gap:0}
+.ar-prox .vz-grupo:last-child{margin-bottom:0}
+.ar-pr-c{display:flex;flex:0 0 112px;min-width:0}
+@media (max-width:720px){.ar-pr-c{flex:none}}
+.ar-sec-prox .ar-hint{padding-top:2px}
+
+/* ---------- Áreas: Tablero (el reparto arriba y el conteo de cada columna como pastilla) ---------- */
+.ar-resumen{max-width:560px;margin:0 0 14px}
+.ar-n{background:color-mix(in srgb,var(--ar-e,var(--ui-mut)) 14%,transparent);color:var(--ar-et,var(--ui-ink2));font-weight:600}
+.ar-sin .vz-vacio{padding:18px 12px}
+.ar-vacio .vz-vacio{padding:36px 16px}
+
+/* ---------- Calendario: el resumen de arriba ---------- */
+.cal-res{display:grid;gap:10px;margin:0 0 14px;padding:14px 16px;border-radius:var(--r-4);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.cal-res-n{margin:0;font-size:14px;line-height:1.4;color:var(--ui-ink2)}
+.cal-res-n b{font-weight:600;font-variant-numeric:tabular-nums;color:var(--ui-ink)}
+.cal-res--vacio{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.cal-res-areas{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px}
+.cal-res-aviso{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--ui-amb-t)}
+.cal-dot{display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;vertical-align:1px;background:var(--wc-c,currentColor)}
+
+/* ---------- Inherent AI: tarjeta «Modelos abiertos · LM Studio» (screens/harness.js, #iai-lm) ---------- */
+.iai-lm{grid-column:1/-1;min-height:0}
+.iai-lm-st{display:flex;align-items:center}
+.iai-lm-pasos{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.iai-lm-paso{display:flex;gap:12px;min-width:0;padding:14px;border-radius:12px;background:var(--ui-fill)}
+.iai-lm-n{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ui-acc);color:var(--ui-acc-ink);font-size:13px;font-weight:600}
+.iai-lm-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.iai-lm-b>b{font-size:14.5px;font-weight:600}
+.iai-lm-b>p{margin:0}
+.iai-lm-b .iai-cmd{flex-direction:column;align-items:flex-start}
+.iai-lm-b .iai-cmd code{width:100%;flex:none}
+.iai-lm-link{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.iai-lm-estado>.iai-lm-link{margin-top:12px}
+.iai-lm-op{margin-top:12px}
+.iai-lm-modelos{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0}
+.iai-lm-estado .iai-lm-modelos+p{margin-top:12px}
+.iai-lm-modelo{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%;padding:6px 12px;border-radius:99px;border:1px solid var(--ui-line2);background:var(--ui-surf);font-size:13.5px;font-weight:500}
+.iai-lm-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iai-lm-modelo.uso{border-color:color-mix(in srgb,var(--ui-acc) 45%,transparent);background:color-mix(in srgb,var(--ui-acc) 12%,var(--ui-surf))}
+.iai-lm-uso{color:var(--ui-acc)}
+.iai-lm-mas{align-self:center}
+@media (max-width:760px){.iai-lm-pasos{grid-template-columns:minmax(0,1fr)}}
+/* Cuando #iai-lm cambia de «Revisando Hermes…» al estado final, el contenido se vuelve a montar: pasos y modelos entran escalonados
+   (35 ms entre uno y otro, hasta el 8.º). Con «reducir movimiento» no entra este bloque y el corte global deja todo quieto. */
+@media (prefers-reduced-motion:no-preference){
+  .iai-lm-estado>*{animation:mvFade 200ms linear backwards}
+  .iai-lm-paso,.iai-lm-modelo,.iai-lm-mas{animation:mvEntra 220ms var(--e-ent) backwards}
+  .iai-lm-paso:nth-child(2),.iai-lm-modelo:nth-child(2){animation-delay:35ms}
+  .iai-lm-paso:nth-child(3),.iai-lm-modelo:nth-child(3){animation-delay:70ms}
+  .iai-lm-paso:nth-child(4),.iai-lm-modelo:nth-child(4){animation-delay:105ms}
+  .iai-lm-modelo:nth-child(5){animation-delay:140ms}
+  .iai-lm-modelo:nth-child(6){animation-delay:175ms}
+  .iai-lm-mas{animation-delay:210ms}
 }
