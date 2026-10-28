@@ -1,7 +1,7 @@
 // Fase 4 · Marcas: entender. Las reglas puras (sin base ni red): Cliente ideal, candado del brief, etapa del funnel,
 // la mezcla del mes con avatares y los errores de Apify. Uso: node scripts/test-fase4.mjs
 import assert from 'node:assert/strict';
-import { limpiarCampos, limpiarAngulos, reglaX, mercado, sumaPesos, vivos, leerPropuesta, avance, resumenAvatar } from '../public/js/avatares.js';
+import { limpiarCampos, limpiarAngulos, reglaX, mercado, sumaPesos, vivos, leerPropuesta, avance, resumenAvatar, JOURNEY, FILAS_JOURNEY, limpiarJourney, avanceJourney, etiquetarFrase, aMd } from '../public/js/avatares.js';
 import { candado, mesesConBrief, etapaFunnel, mezclaDelMes, filtrar } from '../public/js/calendario-contenido.js';
 import { apifyError } from '../api/_lib/content.js';
 
@@ -56,5 +56,19 @@ ok('Apify · el tope de la cuenta no es «sin crédito»', () => {
   assert.equal(apifyError(403, 'Monthly usage hard limit exceeded').code, 'APIFY_TOPE_CUENTA');
   assert.equal(apifyError(402, 'Not enough credit').code, 'APIFY_CREDIT');
   assert.equal(apifyError(401, '').code, 'APIFY_TOKEN');
+});
+ok('Cliente ideal · Buyer Journey: 5 etapas x 6 filas, celdas acotadas, basura sin lanzar', () => {
+  assert.deepEqual(JOURNEY.map((e) => e.id), ['descubre', 'considera', 'decide', 'compra', 'vuelve']);
+  assert.deepEqual(FILAS_JOURNEY.map((f) => f.id), ['piensa', 'siente', 'hace', 'canal', 'objecion', 'contenido']);
+  const j = limpiarJourney({ descubre: { piensa: 'a', canal: 'x'.repeat(400), zzz: 'no' }, inventada: { piensa: 'no' }, compra: { hace: '   ' } });
+  assert.equal(j.descubre.piensa, 'a'); assert.equal(j.descubre.canal.length, 300); assert.ok(!('zzz' in j.descubre)); assert.ok(!('inventada' in j)); assert.ok(!('compra' in j), 'una celda vacía se cae');
+  assert.deepEqual(limpiarJourney(null), {}); assert.deepEqual(limpiarJourney([1, 2]), {}); assert.deepEqual(limpiarJourney('texto'), {});
+  assert.deepEqual(avanceJourney({ descubre: { piensa: 'a', siente: 'b' } }), { llenas: 2, de: 30 });
+});
+ok('Cliente ideal · una frase sin fuente va como «dice el cliente, sin verificar»; lo vacío del export dice ⚠️ SIN DATOS', () => {
+  assert.equal(etiquetarFrase('Quiero ahorrar tiempo'), 'Quiero ahorrar tiempo [dice el cliente, sin verificar]');
+  assert.equal(etiquetarFrase('Quiero ahorrar (entrevista 2)'), 'Quiero ahorrar (entrevista 2)');
+  const md = aMd({ nombre: 'Ana', campos: {}, angulos: [], journey: {} });
+  assert.match(md, /^# Avatar: Ana/); assert.match(md, /⚠️ SIN DATOS: sale de/);
 });
 console.log(`\n${n} pruebas de la Fase 4 pasaron.`);

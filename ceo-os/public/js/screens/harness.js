@@ -1,95 +1,175 @@
-// AI Harness (#/ai): la portada de la «inteligencia compartida» del OS (plan §3.1 y Fase 4). Una sola inteligencia para
-// todas las herramientas: las acciones rápidas abren el Chat o una herramienta con el cliente del contexto, y Memory &
-// Context dice de dónde saca lo que sabe. Las páginas Agents · Skills · Workflows · Memory · Models · Evaluations son en
-// la Fase 1 una ficha «Pronto» con lo que van a mostrar (Agents ya enseña los modos del Chat, porque MODOS es puro y
-// existe). Sin backend nuevo; nada de costos.
-import { html, raw, mount, acts, ico, skel, $, $$ } from '../core.js';
-import { WORKSPACES, HERRAMIENTAS, rutaHerramienta, puedeWs } from '../herramientas.js';
-import { cargarContexto, contextoLista, contextoActual } from '../contexto.js';
-import { abrirEnChat } from '../areas.js';
-import { MODOS, HARNESS } from '../llm/modos.js';
+// Inherent AI (#/ai): solo dos cosas. El Chat (la IA que conversa) y los MCPs (lo que esa IA puede usar y cómo conectarle más).
+// Portada = estado del Chat y de los MCPs · #/ai/mcps = lo que Hermes puede usar hoy, los comandos para conectar un MCP (se agregan
+// en la Terminal: Hermes no tiene API para eso) y el conector de Inherent OS hacia Claude o ChatGPT (connectai.js, el mismo de siempre).
+// Sin backend nuevo. Lo que viene de una persona (nombre y URL del MCP) pasa por mcp-hermes.js antes de volverse un comando.
+import { html, raw, mount, acts, ico, skel, toast, LOGO, $ } from '../core.js';
+import { saludHermes, modelosHermes, toolsetsHermes, nombreProveedor } from '../hermes.js';
+import { TERMINAL } from '../llm/modos.js';
+import { SUGERIDOS, AUTORIZACIONES, COMANDO_LISTA, nombreValido, errorNombre, errorUrl, comandosAgregar, comandosProbar, comandosAutorizar, comandosQuitar, notaAgregar } from '../mcp-hermes.js';
+import { openConnect } from '../connectai.js';
 
 export const esqueleto = () => skel('pagina');
 
-// Las páginas del Harness: [id, nombre, ícono, qué mostrará (Fase 4)].
-const PAGINAS = [
-  ['agents', 'Agents', 'sparkles', ['Los modos del Chat, cada uno con su rol, cómo trabaja, qué herramientas usa y qué tiene que cumplir lo que entrega.', 'Los 12 agentes del repo (① Strategy … ⑩ Ads), como lista fija: qué hace cada uno y en qué etapa del pipeline corre.']],
-  ['skills', 'Skills', 'puzzle', ['Las skills que Hermes tiene en tu compu, y cómo encenderlo si no está.', 'Las fuentes de hormozi-brain que lee Strategy (ofertas, modelos de dinero, el roadmap de 10 etapas), con su cita exacta.']],
-  ['workflows', 'Workflows', 'git-branch', ['Las recetas: el ciclo por departamentos, Growth, las reuniones y las que guarda el CEO.', 'El flujo lead → cotización → cliente → proyecto, la secuencia de Diseño y las cadenas de herramientas (de dónde viene y a dónde va cada entregable) dibujadas sobre el flujo compartido.']],
-  ['memory', 'Memory', 'layers', ['Organization: la Library y la visión. Client: cuentas, ficha, estrategia, avatares, tableros de marca, sistema visual y sus entregables.', 'Project: proyectos y tareas. Execution history: tareas hechas, sesiones de Hermes, juicios de Laya y el historial de cada entregable.']],
-  ['models', 'Models', 'zap', ['Qué IAs tiene lista tu compu (Claude, ChatGPT, las locales), el modelo de cada una y cuánto piensa.', 'El estado de Hermes y del puente, y qué camino usaría hoy la IA para ti. Sin costos.']],
-  ['evals', 'Evaluations', 'badge-check', ['Las puertas y los últimos juicios de Laya, y los criterios que cada entregable guarda (cumple / falta).', 'Las reglas comunes, el protocolo de bloques y los criterios de cada modo; el alcance de Consulting por nivel.']],
-];
-const paginaDe = (id) => PAGINAS.find((p) => p[0] === id) || null;
 const ACTUAL = raw('aria-current="page"'); // constante segura: la pestaña abierta
+const PASOS_ENCENDER = TERMINAL.filter(([n]) => /^(Instalar|Actualizar)/.test(n));
+// Exacta: «llave» a secas también encuentra la línea de Kilo Pass («…y pega tu llave»), que es «inherent model».
+const PASO_LLAVE = TERMINAL.find(([n]) => /^Ver la llave/.test(n)) || ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'];
+const pl = (n, uno, otros) => `${n} ${n === 1 ? uno : otros}`;
+const modeloCorto = (m) => String(m || '').split('/').pop().slice(0, 32);
+const limpio = (s) => String(s ?? '').trim();
+// El nombre de un toolset sin el emoji o símbolo con que Hermes lo adorna; las herramientas, legibles.
+const etiqueta = (t) => String(t.label || t.name).replace(/^[^\p{L}\p{N}]+/u, '').trim() || t.name;
+const legible = (x) => String(x).replace(/_/g, ' ');
+
+// Piezas de pantalla
+const punto = (estado) => html`<span class="iai-dot ${estado}" aria-hidden="true"></span>`;
+const seccion = (titulo, sub, cuerpo) => html`<div class="hy-bh iai-sec"><h2>${titulo}</h2>${sub ? html`<span>${sub}</span>` : ''}</div>${cuerpo}`;
+const cmd = (c) => html`<div class="iai-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">Copiar</button></div>`;
+const pasos = (xs) => xs.map(([n, c]) => html`<div class="iai-paso"><span class="mut sm">${n}</span>${cmd(c)}</div>`);
+const revisando = (t) => html`<p class="mut sm">${t}</p>`;
+// Qué hacer cuando Hermes no está listo: los pasos para encenderlo o para pasarle la llave (con intro o sin ella).
+const ayuda = (sh) => (!sh.on ? pasos(PASOS_ENCENDER)
+  : html`${cmd(PASO_LLAVE[1])}<p class="mut sm">Pégala una sola vez en el <a href="#/chat">Chat</a> (Hermes › conectar).</p>`);
+const encender = (sh) => (!sh.on
+  ? html`<p class="mut">${punto('off')} Hermes no responde en esta compu. Sin Hermes el Chat no puede usar MCPs. Para encenderlo, en la Terminal:</p>${ayuda(sh)}`
+  : html`<p class="mut">${punto('warn')} Hermes está encendido, pero el OS no tiene su llave. Para verla, en la Terminal:</p>${ayuda(sh)}`);
 
 export async function render(el, { me, sub = [], alive }) {
-  await cargarContexto(me).catch(() => []);
-  if (!alive()) return;
   let pagina = String(sub[0] || '');
-  // Página desconocida → #/ai (se canoniza la ruta y se pinta la portada).
-  if (pagina && !paginaDe(pagina)) { pagina = ''; try { history.replaceState(null, '', '#/ai'); } catch {} }
+  // Cualquier otra página → #/ai (se canoniza la ruta y se pinta la portada).
+  if (pagina && pagina !== 'mcps') { pagina = ''; try { history.replaceState(null, '', '#/ai'); } catch {} }
+  let gen = 0, ultimoForm = '';
 
-  const slug = () => contextoActual(me) || '';
-  const nombre = (s) => (s ? contextoLista().find((c) => c.slug === s)?.name || s : '');
-  const puede = (ws) => puedeWs(me, ws);
-  const wsNombre = (id) => WORKSPACES.find((w) => w.id === id)?.nombre || id;
-  const wsColor = (id) => WORKSPACES.find((w) => w.id === id)?.color || '--ui-m-organizacion';
-  // A una herramienta con el cliente del contexto; sin contexto, al workspace (app.js completa con el selector).
-  const irA = (h) => (slug() ? rutaHerramienta(h.ws, slug(), h.id) : `#/ws/${h.ws}`);
-
-  const cabecera = () => html`<div class="ai-hero sp-hero"><span class="lbl">AI Harness</span><h1>Una sola inteligencia para todas las herramientas</h1>
-    <p>Lo que la IA sabe de Inherent y de cada cliente, cómo trabaja cada modo y con qué reglas se mide lo que entrega. Lo mismo en el Chat y en cada workspace.</p></div>
-    <nav class="ai-tabs" aria-label="Páginas del Harness"><a href="#/ai" ${!pagina ? ACTUAL : ''}>Overview</a>${PAGINAS.map(([id, n, ic]) => html`<a href="#/ai/${id}" ${pagina === id ? ACTUAL : ''}>${ico(ic, 14)} ${n}</a>`)}</nav>`;
+  const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'MCPs' : 'Inherent AI'}</h1>
+    <p>${pagina ? 'Lo que tu IA puede usar hoy y cómo conectarle más.' : 'Habla con ella en el Chat y conéctale herramientas con MCPs.'}</p></div>
+    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
 
   // ---------- Portada ----------
   function portada() {
-    const s = slug(), n = nombre(s);
-    const listas = HERRAMIENTAS.filter((h) => h.estado !== 'pronto' && puede(h.ws));
-    const porWs = WORKSPACES.filter((w) => puede(w.id)).map((w) => [w, listas.filter((h) => h.ws === w.id)]).filter(([, l]) => l.length);
-    const quien = n ? html`con <em>${n}</em>` : html`<span class="mut">sin cliente: elige uno en la barra</span>`;
-    return html`<section class="ai-quick" aria-label="Acciones rápidas">
-      <button type="button" class="ai-card" data-act="research"><span class="ai-card-ic">${ico('radar', 20)}</span><b>Deep Research</b><span class="mut sm">Investiga a fondo ${quien} en el Chat, modo Estrategia.</span><span class="ai-card-go">↗</span></button>
-      <details class="ai-card ai-menu"><summary><span class="ai-card-ic">${ico('layers', 20)}</span><b>Create Deliverable</b><span class="mut sm">Elige la herramienta y ábrela ${n ? html`con <em>${n}</em>` : 'en su workspace'}.</span><span class="ai-card-go">${ico('down', 14)}</span></summary>
-        <div class="ai-menu-list">${porWs.length ? porWs.map(([w, l]) => html`<div class="ai-menu-grp"><span class="lbl" style="--ac:var(${w.color})">${w.nombre}</span>${l.map((h) => html`<a class="ai-menu-it" href="${irA(h)}">${ico(h.icono || 'doc', 14)}<span class="grow">${h.nombre}<small class="mut">${h.produce || ''}</small></span><span class="chip sm2">${h.estado === 'lista' ? 'Lista' : 'Parcial'}</span></a>`)}</div>`) : html`<div class="mut sm" style="padding:8px 0">Tu perfil no abre ningún workspace todavía.</div>`}</div></details>
-      <a class="ai-card" href="#/ai/workflows"><span class="ai-card-ic">${ico('git-branch', 20)}</span><b>Run Workflow</b><span class="mut sm">Las recetas y las cadenas de herramientas sobre el flujo compartido.</span><span class="ai-card-go">↗</span></a>
-      ${puede('marketing') ? html`<a class="ai-card" href="${s ? rutaHerramienta('marketing', s, 'marketing-performance-center') : '#/ws/marketing'}"><span class="ai-card-ic">${ico('trending-up', 20)}</span><b>Analyze Performance</b><span class="mut sm">El Performance Center ${quien}.</span><span class="ai-card-go">↗</span></a>`
-        : html`<div class="ai-card off"><span class="ai-card-ic">${ico('trending-up', 20)}</span><b>Analyze Performance</b><span class="mut sm">El Performance Center de Marketing. Tu perfil no abre Marketing: lo decide el CEO en Vistas por rol.</span></div>`}
-    </section>
-    <div class="hy-bh" style="margin-top:28px"><h2>Memory &amp; Context</h2><span>De dónde saca la IA lo que sabe</span></div>
-    <section class="ai-memoria">
-      <div class="ai-mem"><span class="ai-mem-ic">${ico('building-2', 18)}</span><b>Organization</b><span class="mut sm">Lo de Inherent: los SOPs y playbooks de la Library y la visión y misión.</span><div class="ai-mem-links"><a href="#/org/library">Library</a><a href="#/org/vision">Visión</a></div></div>
-      <div class="ai-mem"><span class="ai-mem-ic">${ico('briefcase', 18)}</span><b>Client</b>${n ? html`<span class="mut sm">El contexto de ahora: <em>${n}</em>. Su ficha, estrategia, avatares, marca y contenido.</span><div class="ai-mem-links">${puede('strategy') ? html`<a href="#/ws/strategy/${s}/overview">Strategy</a>` : ''}${puede('marketing') ? html`<a href="#/ws/marketing/${s}/overview">Marketing</a>` : ''}</div>`
-        : html`<span class="mut sm">Sin cliente en el contexto. Elige uno en la barra y la IA trabaja con su ficha, estrategia y marca.</span><div class="ai-mem-links">${puede('strategy') ? html`<a href="#/ws/strategy">Strategy</a>` : ''}${puede('marketing') ? html`<a href="#/ws/marketing">Marketing</a>` : ''}</div>`}</div>
-      <div class="ai-mem"><span class="ai-mem-ic">${ico('kanban', 18)}</span><b>Project</b><span class="mut sm">Los proyectos y sus tareas: qué está en curso, qué venció y quién lo lleva.</span><div class="ai-mem-links"><a href="#/org/operations">Proyectos</a><a href="#/org/work">Mis tareas</a></div></div>
-      <div class="ai-mem pronto"><span class="ai-mem-ic">${ico('clock', 18)}</span><b>Execution history</b><span class="mut sm">Pronto: el historial de entregables (versiones, quién aprobó, resultados). Llega en la Fase 2.</span><div class="ai-mem-links"><a href="#/ai/memory">Memory</a></div></div>
-    </section>`;
+    return {
+      cuerpo: html`<section class="iai-cards" aria-label="Inherent AI">
+        <article class="card iai-card"><div class="iai-card-h"><span class="iai-ic">${ico('chat', 20)}</span><b>Chat</b></div>
+          <p class="mut sm">Conversa con tu IA con el contexto de Inherent y de cada cliente.</p>
+          <div class="iai-estado" id="iai-chat">${revisando('Revisando Hermes…')}</div>
+          <a class="btn iai-go" href="#/chat">Abrir el Chat</a></article>
+        <article class="card iai-card"><div class="iai-card-h"><span class="iai-ic">${ico('puzzle', 20)}</span><b>MCPs</b></div>
+          <p class="mut sm">Lo que tu IA puede usar y cómo conectarle más.</p>
+          <div class="iai-estado" id="iai-mcps">${revisando('Revisando Hermes…')}</div>
+          <a class="btn iai-go" href="#/ai/mcps">Ver los MCPs</a></article></section>`,
+      despues: async (g) => {
+        const vivo = () => alive() && g === gen;
+        const sh = await saludHermes(me).catch(() => ({ on: false }));
+        if (!vivo()) return;
+        const chat = $('#iai-chat', el), mcp = $('#iai-mcps', el);
+        if (!sh.on || !sh.auth) {
+          if (chat) mount(chat, html`<p class="sm">${punto(sh.on ? 'warn' : 'off')} <b>${sh.on ? 'Falta la llave' : 'Apagado'}</b>${sh.on ? ' · Hermes está encendido' : ' · Hermes no responde en esta compu'}</p><details class="iai-det"><summary>${sh.on ? 'Cómo conectar la llave' : 'Cómo encenderlo, en la Terminal'}</summary>${ayuda(sh)}</details>`);
+          if (mcp) mount(mcp, html`<p class="sm mut">Sin Hermes listo no se ven. Cuando esté, aquí sale cuántas capacidades tiene activas.</p>`);
+          return;
+        }
+        if (chat) mount(chat, html`<p class="sm">${punto('ok')} <b>Encendido</b>${sh.version ? html` <span class="mut">· Hermes v${sh.version}</span>` : ''}</p><p class="mut sm" id="iai-modelo"></p>`);
+        const [ts, m] = await Promise.all([toolsetsHermes(me), modelosHermes(me).catch(() => null)]);
+        if (!vivo()) return;
+        const modelo = $('#iai-modelo', el);
+        if (modelo && m?.actual.model) mount(modelo, html`Modelo: <b>${modeloCorto(m.actual.model)}</b>${m.actual.provider ? html` · ${nombreProveedor(m.actual.provider)}` : ''}`);
+        if (mcp) mount(mcp, ts.length ? html`<p class="sm">${punto('ok')} <b>${pl(ts.filter((t) => t.enabled).length, 'capacidad activa', 'capacidades activas')}</b> <span class="mut">· de ${ts.length}</span></p>` : html`<p class="sm">${punto('warn')} No pude leer las capacidades de Hermes.</p>`);
+      },
+    };
   }
 
-  // ---------- Páginas (Fase 1: la ficha «Pronto» con lo que mostrará) ----------
-  function ficha(p) {
-    const [id, n, ic, lineas] = p;
-    return html`<section class="ai-pronto card"><div class="ai-pronto-h"><span class="ai-card-ic">${ico(ic, 22)}</span><div><span class="chip sm2 amber">Pronto</span><h2>${n}</h2></div></div>
-      <p class="mut">Esta página llega en la Fase 4 del Harness. Va a mostrar:</p><ul>${lineas.map((l) => html`<li>${l}</li>`)}</ul>
-      ${id === 'workflows' ? html`<div class="ai-pronto-foot mut sm">Hoy las recetas viven en <a href="#/org/services/responsabilidades">Servicios › Responsabilidades</a> y las cadenas en cada workspace.</div>` : ''}
-      ${id === 'evals' ? html`<div class="ai-pronto-foot mut sm">Hoy las puertas y los juicios de Laya están en <a href="#/org/team/laya">Equipo › Laya</a>.</div>` : ''}</section>`;
-  }
-  function agentes() {
-    const s = slug(), n = nombre(s);
-    return html`<div class="hy-bh" style="margin-top:22px"><h2>Los modos del Chat</h2><span>Cada uno es un agente con su rol y sus reglas · se abre ${n ? html`con <em>${n}</em>` : 'con el cliente del contexto'}</span></div>
-      <section class="ai-agentes">${MODOS.map((m) => { const h = HARNESS[m.id] || {}; return html`<div class="ai-agente" style="--ac:var(--ui-m-${m.id})"><div class="ai-agente-h"><span class="ai-card-ic">${ico(m.icono, 18)}</span><div><b>${m.nombre}</b><span class="mut sm">${m.depto || ''}</span></div></div>
-        <p class="sm">${h.rol || m.sub}</p>
-        <div class="ai-agente-f"><span class="mut sm">${m.pide === 'cliente' ? 'Pide un cliente' : m.pide === 'marca' ? 'Pide una marca' : 'Sin cliente'}${(h.como || []).length ? ` · ${h.como.length} reglas de trabajo` : ''}</span><button type="button" class="btn ghost xs" data-act="modo" data-modo="${m.id}">Abrir en el Chat</button></div></div>`; })}</section>`;
+  // ---------- MCPs ----------
+  const filaToolset = (t) => {
+    const [e, texto] = t.enabled ? (t.configured ? ['ok', 'Activa'] : ['warn', 'Activa, falta configurarla']) : ['off', t.configured ? 'Apagada' : 'Sin configurar'];
+    return html`<li class="iai-ts ${t.enabled ? 'on' : 'off'}"><div class="iai-ts-h">${punto(e)}<b>${etiqueta(t)}</b><span class="chip sm2">${texto}</span><span class="mut sm">${pl(t.tools.length, 'herramienta', 'herramientas')}</span></div>
+      ${t.tools.length ? html`<div class="iai-chips">${t.tools.slice(0, 14).map((x) => html`<span class="chip sm2">${legible(x)}</span>`)}${t.tools.length > 14 ? html`<span class="mut sm">+${t.tools.length - 14}</span>` : ''}</div>` : ''}</li>`;
+  };
+  async function cargarToolsets(g) {
+    const vivo = () => alive() && g === gen, box = () => (vivo() ? $('#iai-ts', el) : null);
+    const sh = await saludHermes(me).catch(() => ({ on: false }));
+    if (!box()) return;
+    if (!sh.on || !sh.auth) return mount(box(), encender(sh));
+    const ts = await toolsetsHermes(me);
+    if (!box()) return;
+    if (!ts.length) return mount(box(), html`<p class="mut">${punto('warn')} Hermes está encendido pero no devolvió capacidades. Revisa, en la Terminal:</p>${cmd(TERMINAL.find(([n]) => /^Revisar/.test(n))?.[1] || 'inherent doctor')}`);
+    const orden = [...ts].sort((a, b) => Number(b.enabled) - Number(a.enabled) || Number(b.configured) - Number(a.configured) || etiqueta(a).localeCompare(etiqueta(b), 'es'));
+    mount(box(), html`<p class="sm">${punto('ok')} Hermes ${sh.version ? `v${sh.version} ` : ''}encendido · <b>${pl(ts.filter((t) => t.enabled).length, 'capacidad activa', 'capacidades activas')}</b> de ${ts.length}</p>
+      <ul class="iai-tslist">${orden.map(filaToolset)}</ul>`);
   }
 
-  const paint = () => { if (!alive()) return; const p = paginaDe(pagina); mount(el, html`${cabecera()}${p ? html`${ficha(p)}${p[0] === 'agents' ? agentes() : ''}` : portada()}`); };
+  const sugerido = (s) => html`<article class="card iai-sug"><div class="iai-sug-h"><b>${s.nombre}</b><span class="chip sm2">${(AUTORIZACIONES.find(([k]) => k === s.auth) || [])[1] || s.auth}</span></div>
+    <p class="sm">${s.que}</p><pre class="iai-code">${comandosAgregar(s).join('\n')}</pre><p class="mut sm">${notaAgregar(s.auth)}</p>
+    <button type="button" class="btn xs" data-act="copiar-sug" data-n="${s.nombre}">Copiar comandos</button></article>`;
 
-  // El menú de «Create Deliverable» se cierra con Escape y con clic afuera (al navegar, la pantalla se va con él).
-  el.addEventListener('click', (e) => { for (const d of $$('.ai-menu[open]', el)) if (!d.contains(e.target)) d.removeAttribute('open'); });
-  el.addEventListener('keydown', (e) => { if (e.key === 'Escape') for (const d of $$('.ai-menu[open]', el)) { d.removeAttribute('open'); $('summary', d)?.focus(); } });
+  const conectar = () => html`<p class="iai-nota">${ico('info', 15)} <span>Los MCPs viven en Hermes, en tu compu: se agregan en la Terminal con estos comandos.</span></p>
+    <div class="lbl">Sugeridos</div><div class="iai-sugs">${SUGERIDOS.map(sugerido)}</div>
+    <div class="lbl">Otro MCP</div>
+    <section class="card iai-formcard"><div class="form iai-form">
+      <div class="two"><div><label class="f" for="iai-n">Nombre</label><input class="in" id="iai-n" data-act="armar" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40" placeholder="mi-mcp"></div>
+        <div><label class="f" for="iai-a">Autorización</label><select class="in" id="iai-a" data-act="armar">${AUTORIZACIONES.map(([k, n, d]) => html`<option value="${k}">${n} · ${d}</option>`)}</select></div></div>
+      <div><label class="f" for="iai-u">URL del MCP</label><input class="in" id="iai-u" data-act="armar" type="url" inputmode="url" autocomplete="off" spellcheck="false" maxlength="300" placeholder="https://…/mcp"></div>
+      <div class="iai-out" id="iai-out" aria-live="polite"><p class="mut sm">Llena el nombre y la URL: aquí salen los comandos.</p></div></div></section>
+    <div class="lbl">Quitar o probar un MCP</div>
+    <section class="card iai-formcard"><div class="form iai-form">
+      <div><label class="f" for="iai-g">Nombre del MCP</label><input class="in" id="iai-g" data-act="gestion" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40" placeholder="el que pusiste al agregarlo"></div>
+      <div class="iai-out" id="iai-gout" aria-live="polite">${gestion('')}</div></div></section>`;
+
+  // «Quitar o probar»: los comandos de ese MCP; con el nombre vacío, solo cómo ver cuáles hay.
+  function gestion(nombre) {
+    const n = limpio(nombre).toLowerCase(), lista = html`<div class="iai-paso"><span class="mut sm">Ver los que tienes</span>${cmd(COMANDO_LISTA)}</div>`;
+    if (!n) return lista;
+    if (!nombreValido(n)) return html`${lista}<p class="iai-err">${errorNombre(n)}</p>`;
+    return html`${lista}<div class="iai-paso"><span class="mut sm">Probarlo</span>${cmd(comandosProbar(n)[0])}</div>
+      <div class="iai-paso"><span class="mut sm">Darle permiso otra vez (OAuth)</span>${cmd(comandosAutorizar(n)[0])}</div>
+      <div class="iai-paso"><span class="mut sm">Quitarlo</span>${cmd(comandosQuitar(n)[0])}<span class="mut sm">Solo lo desconecta de Hermes; no borra nada del OS.</span></div>`;
+  }
+
+  const conexion = () => html`<section class="card iai-conn"><span class="ailogos">${['claude', 'chatgpt', 'claudecode', 'codex'].map((k) => html`<span class="ailogo sm">${LOGO[k]}</span>`)}</span>
+    <div class="grow"><b>Habla con Inherent OS desde tu IA</b><div class="mut sm">Conéctalo a Claude o ChatGPT: pregúntale tus pendientes, pídele una cotización o que arme un proyecto.</div></div>
+    <span class="mut sm">${me.mcp ? html`Conectado ${ico('check', 13)}` : 'Sin conectar'}</span><button type="button" class="btn" data-act="conectar">${me.mcp ? 'Ver conexiones' : 'Conectar'}</button></section>`;
+
+  function paginaMcps() {
+    return {
+      cuerpo: html`${seccion('Lo que tu Inherent AI puede usar hoy', 'Las capacidades que Hermes tiene en tu compu · las activas primero', html`<section class="card iai-panel" id="iai-ts">${revisando('Revisando Hermes…')}</section>`)}
+        ${seccion('Conectar un MCP a tu Inherent AI', 'Se agregan en la Terminal', conectar())}
+        ${seccion('Conecta Inherent OS a otra IA (Claude, ChatGPT)', 'El conector de Inherent OS hacia tu Claude o ChatGPT', html`<div id="iai-conn">${conexion()}</div>`)}`,
+      despues: cargarToolsets,
+    };
+  }
+
+  function paint() {
+    const g = ++gen, pg = pagina === 'mcps' ? paginaMcps() : portada();
+    mount(el, html`${cabecera()}${pg.cuerpo}`);
+    pg.despues?.(g);
+  }
+
+  // ---------- Acciones ----------
+  // Copiar: portapapeles y, si el navegador no deja, se selecciona el texto para copiarlo a mano.
+  async function copiarTexto(texto, nodo) {
+    try { await navigator.clipboard.writeText(texto); toast('Copiado'); return; } catch {}
+    try { if (nodo) { const r = document.createRange(); r.selectNodeContents(nodo); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } } catch {}
+    toast('No pude copiar: ya está seleccionado, cópialo con Cmd+C', true);
+  }
   acts(el, {
-    research: () => { const s = slug(), n = nombre(s); abrirEnChat(me.email, { modo: 'estrategia', slug: s, borrador: `Investiga a fondo ${n ? `a ${n}` : 'a este cliente'}: su mercado, la competencia, el cliente ideal y las oportunidades. Cita cada fuente; lo que no tenga fuente va como ⚠️ SIN DATOS.` }); },
-    modo: (b) => { const m = MODOS.find((x) => x.id === b.dataset.modo); if (!m) return; abrirEnChat(me.email, { modo: m.id, slug: m.pide ? slug() : '' }); },
+    copiar: (b) => copiarTexto(b.dataset.t || '', b.closest('.iai-cmd')?.querySelector('code')),
+    'copiar-sug': (b) => { const s = SUGERIDOS.find((x) => x.nombre === b.dataset.n); if (s) copiarTexto(comandosAgregar(s).join('\n'), b.closest('.iai-sug')?.querySelector('.iai-code')); },
+    'copiar-form': (b) => { if (ultimoForm) copiarTexto(ultimoForm, b.closest('.iai-out')?.querySelector('.iai-code')); },
+    conectar: () => openConnect(me, () => { const c = $('#iai-conn', el); if (c) mount(c, conexion()); }),
   });
+  // Los formularios arman los comandos al escribir; solo se repinta el resultado, para no perder el foco.
+  acts(el, {
+    armar: () => {
+      const out = $('#iai-out', el); if (!out) return;
+      const nombre = limpio($('#iai-n', el)?.value).toLowerCase(), url = limpio($('#iai-u', el)?.value), auth = $('#iai-a', el)?.value;
+      ultimoForm = '';
+      if (!nombre && !url) return mount(out, html`<p class="mut sm">Llena el nombre y la URL: aquí salen los comandos.</p>`);
+      const errores = [errorNombre(nombre), errorUrl(url)].filter(Boolean);
+      if (errores.length) return mount(out, html`<ul class="iai-err">${errores.map((e) => html`<li>${e}</li>`)}</ul>`);
+      const cmds = comandosAgregar({ nombre, url, auth });
+      if (!cmds.length) return mount(out, html`<p class="iai-err">Elige cómo se autoriza.</p>`);
+      ultimoForm = cmds.join('\n');
+      mount(out, html`<pre class="iai-code">${ultimoForm}</pre><p class="mut sm">${notaAgregar(auth)}</p><button type="button" class="btn" data-act="copiar-form">Copiar comandos</button>`);
+    },
+    gestion: (inp) => { const out = $('#iai-gout', el); if (out) mount(out, gestion(inp.value)); },
+  }, 'input');
+
   paint();
 }

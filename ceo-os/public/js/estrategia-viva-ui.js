@@ -4,6 +4,7 @@
 import { html } from './core.js';
 import { PASOS, cascada, avance } from './estrategia-viva.js';
 import { rutaBloque } from './herramientas.js';
+import { aFilas } from './strategy/roadmap.js';
 
 const RECIENTE = 3 * 60_000;
 const DIAS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -14,6 +15,13 @@ const dinero = (n, m = 'Q') => (n == null ? '—' : `${m}${n >= 1e4 ? corto(n) :
 const pct = (x) => (x == null ? null : `${+(x * 100).toFixed(1)}%`);
 const unoDe = (x) => (x == null ? null : x >= 0.1 ? `1 de cada ${Math.round(1 / x)}` : `${+(x * 100).toFixed(1)} de cada 100`);
 
+// Las tres tarjetas del análisis (MUST BE TRUE · UNFAIR · GO GET), sacadas del panel para reusarlas (Business X-Ray las pinta con el mismo
+// diseño). a = viva.analisis; vacio = lo que dice una tarjeta sin dato (por defecto «Falta»). Todo lo que entra se escapa.
+export function tarjetasAnalisis(a, { vacio = 'Falta' } = {}) {
+  const x = a && typeof a === 'object' ? a : {};
+  return html`<div class="ev-g3">${[['MUST BE TRUE', x.mbt], ['UNFAIR', x.unfair], ['GO GET', x.goget]].map(([l, t]) => html`<div class="ev-c ${t ? '' : 'vac'}"><span class="lbl">${l}</span>${t || vacio}</div>`)}</div>`;
+}
+
 export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
   const M = v.meta?.moneda || 'Q', c = cascada(v), { listo, ahora, n } = avance(v);
   const nuevo = (k) => { const t = v.actualizado?.[k]; return t && Date.now() - Date.parse(t) < RECIENTE ? 'fresh' : ''; };
@@ -23,6 +31,10 @@ export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
     return html`<a class="ev-tool ${b.id === bid ? 'on' : ''} ${off ? 'off' : ''}" href="${rutaBloque(data.slug, b.id)}" title="${b.limite ? `${b.limite.titulo}: ${b.limite.texto}` : `Hormozi · ${b.pide}`}"><i class="${b.estado === 'aprobado' ? 'ok' : b.estado === 'trabajo' ? 'w' : ''}"></i>Hormozi · ${b.nombre}</a>`; })}</div>`;
   const sec = (p, cuerpo, k = p.id) => html`<section class="ev-sec ${nuevo(k)} ${ahora === p.id ? 'now' : ''}"><header><span class="lbl">${p.n} · ${p.largo}</span>${listo[p.id] ? html`<span class="ev-ok">✓</span>` : ''}</header>${cuerpo}${p.hz.length ? hz(p.hz) : ''}</section>`;
   const max = c.ventas || 1, i = v.inversa || {}, a = v.analisis || {}, m = v.metodologia || {}, ct = v.contenido || {}, pa = v.pauta || {}, rm = v.roadmap || {};
+  // El roadmap: las filas de siempre (plan de 90 días) o, si solo hay filas de Growth Roadmap Builder (items), esas en el mismo formato.
+  // Los hitos del panel son 4 metas en dinero; los hitos con título y fecha de la herramienta se ven en Growth Roadmap Builder.
+  const filasRm = rm.filas?.length ? rm.filas : aFilas(rm.items || []);
+  const metasRm = Array.isArray(rm.hitos) && rm.hitos.every((x) => x == null || typeof x === 'number') && rm.hitos.some((x) => x != null) ? rm.hitos : null;
   const fila = (num, w, txt, cls = '') => html`<div class="ev-fr"><b>${num}</b><div class="ev-bar ${cls}" style="width:${Math.max(18, Math.min(100, w))}%">${txt}</div></div>`;
   const P = Object.fromEntries(PASOS.map((p) => [p.id, p]));
 
@@ -33,7 +45,7 @@ export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
 
     ${sec(P.contexto, v.contexto?.conclusion ? html`<p class="ev-concl"><b>${v.contexto.conclusion}</b>${v.contexto.detalle ? html` ${v.contexto.detalle}` : ''}</p>` : html`<p class="ev-vacio">Cuéntale a Strategy del negocio o adjunta documentos de la Library: aquí queda la conclusión y la etapa.</p>`)}
 
-    ${sec(P.analisis, html`<div class="ev-g3">${[['MUST BE TRUE', a.mbt], ['UNFAIR', a.unfair], ['GO GET', a.goget]].map(([l, t]) => html`<div class="ev-c ${t ? '' : 'vac'}"><span class="lbl">${l}</span>${t || 'Falta'}</div>`)}</div>
+    ${sec(P.analisis, html`${tarjetasAnalisis(a)}
       ${a.trabado ? html`<p class="ev-note"><b>Dónde está trabado: ${a.trabado}.</b> ${a.porque || ''}</p>` : ''}`)}
 
     ${sec(P.inversa, html`<div class="ev-fun">
@@ -53,9 +65,9 @@ export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
       <div class="ev-g4">${[['Atracción', 'atraccion'], ['Upsell', 'upsell'], ['Downsell', 'downsell'], ['Continuidad', 'continuidad']].map(([l, k]) => html`<div class="ev-c ${m.modelo?.[k] ? '' : 'vac'}"><span class="lbl">${l}</span>${m.modelo?.[k] || 'Falta'}</div>`)}</div>
       ${m.canales?.length ? html`<div class="ev-chips">${m.canales.map((x) => html`<span>${x}</span>`)}</div>` : ''}`)}
 
-    ${sec(P.entrega, rm.filas?.length ? html`<div class="ev-rm"><div></div>${['Mes 1–3', '4–6', '7–9', '10–12'].map((t) => html`<div class="h">${t}</div>`)}
-        ${rm.filas.map((f) => html`<div class="d">${f.area}</div>${f.celdas.map((x, k) => html`<div>${x ? html`<span class="${k === 0 && f.area === rm.filas[0].area ? 'k' : ''}">${x}</span>` : ''}</div>`)}`)}
-        ${rm.hitos?.some((x) => x != null) ? html`<div class="d">Meta</div>${rm.hitos.map((x) => html`<div><b>${x != null ? dinero(x, M) : ''}</b></div>`)}` : ''}</div>
+    ${sec(P.entrega, filasRm.length ? html`<div class="ev-rm"><div></div>${['Mes 1–3', '4–6', '7–9', '10–12'].map((t) => html`<div class="h">${t}</div>`)}
+        ${filasRm.map((f) => html`<div class="d">${f.area}</div>${f.celdas.map((x, k) => html`<div>${x ? html`<span class="${k === 0 && f.area === filasRm[0].area ? 'k' : ''}">${x}</span>` : ''}</div>`)}`)}
+        ${metasRm ? html`<div class="d">Meta</div>${metasRm.map((x) => html`<div><b>${x != null ? dinero(x, M) : ''}</b></div>`)}` : ''}</div>
         <div class="ev-end">${aprobada ? html`<span class="ev-aprob">✓ Aprobada por el CEO</span>${esCeo ? html`<button type="button" class="btn ghost xs" data-act="viva-aprobar" data-no="1">Reabrir</button>` : ''}` : esCeo ? html`<button type="button" class="btn xs" data-act="viva-aprobar">Aprobar la estrategia</button>` : html`<span class="mut sm">El CEO la aprueba antes de pasar a los departamentos.</span>`}</div>`
       : html`<p class="ev-vacio">Cuando los pasos estén listos, Strategy arma el roadmap por trimestres (en el Tablero de Estrategia: «✦ Agregar roadmap»).</p>`, 'roadmap')}
   </div>`;

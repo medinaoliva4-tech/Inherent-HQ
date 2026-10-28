@@ -1,5 +1,5 @@
 import { upcoming, isMine as meetIsMine } from '../meetings.js';
-import { LOGO, lineChart, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico, md } from '../core.js';
+import { LOGO, html, raw, mount, col, api, acts, toast, fdate, today, initials, IC, $, $$, ask, confirmAsk, drawer, closeDrawer, teamList, uploadToDrive, WORK_ROLES, roleName , calQ, calAll, setCalAll , openClaude, ICON, iconFor, swap, ico, md } from '../core.js';
 import { editPost, loadPosts, PSTATUS } from '../posts.js';
 import { estadoDe } from '../element.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink, tipoChips, tipoMatch, tipoBadge } from '../tasktype.js';
@@ -17,7 +17,8 @@ import { keyOf, cadenaDe, okOf as okDelMes } from '../tareas-cadena.js';
 // El cliente de una tarea sin proyecto (un encargo de Estrategia lo trae en client_slug).
 const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow().find((c) => c.slug === s)?.nombre || s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, ' ') : ''; };
 import { PURPOSE } from '../roleviews.js';
-import { rutaModulo } from '../herramientas.js';
+import { rutaModulo, rutaHerramienta } from '../herramientas.js';
+import { competenciaUI } from '../marketing/competencia-ui.js';
 // Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
 const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
 
@@ -350,7 +351,7 @@ export async function render(el, { me, sub, alive }) {
     return panel(html`<div class="row" style="gap:10px;margin-bottom:6px;flex-wrap:wrap"><select class="in" id="clientSel" style="width:auto;min-width:140px">${slugs.map((x) => html`<option value="${x}" ${x === clientSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select><span class="mut sm">Assets y prompts de cada marca</span></div>
       ${!clientSel ? empty('Sin clientes con proyecto.') : html`
       ${assets ? html`<a class="wsrow" href="${assets}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow">Assets<span class="mut sm"> · logos, fotos, videos crudos</span></span><span class="mut">↗</span></a>` : html`<div class="wsrow static"><span class="fi">${IC.drive}</span><span class="grow mut sm">Sin carpeta de assets. Se agrega en Clientes → ${clientSel.toUpperCase()} → Editar datos.</span></div>`}
-      ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('cal'), 'Calendario', 'Planner del mes', rutaModulo(clientSel, 'calendario')]] : [])].map(([i, t, sub, h]) => h
+      ${[[ico('doc'), 'Guiones', 'en Drive', guionesLink(clientSel)], [ico('video'), 'Videos por postear', 'carpeta de Drive', driveOf(clientSel).postear_drive], ...(canContent ? [[ico('video'), 'Post-production', 'pipeline por capas, versiones y QA', rutaHerramienta('production', clientSel, 'post-production-workspace')], [ico('cal'), 'Calendario', 'Planner del mes', rutaModulo(clientSel, 'calendario')]] : [])].map(([i, t, sub, h]) => h
         ? html`<a class="wsrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
         : html`<div class="wsrow static"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
       <h4 class="wsh4">Prompts de ${clientSel.toUpperCase()}</h4>
@@ -537,12 +538,11 @@ export async function render(el, { me, sub, alive }) {
       const { slugs, withAds, loading } = adsState();
       const chips = withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}<div class="sp"></div><button class="btn ghost xs" data-act="adsTask" data-s="${adsSel}">+ Tarea de ⑩</button></div>` : '';
       const none = html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}</div>`;
-      if (k === 'camps') mount(z, html`${chips}${adsSel ? campsBox(adsSel) : ''}<div class="wsgrid2" style="margin-top:12px">${adsReport()}${cuentasBox(slugs)}</div>`);
+      if (k === 'camps') mount(z, html`${chips}${adsSel ? campsBox(adsSel) : ''}<div class="wsgrid2" style="margin-top:12px">${pautaBox(withAds)}${cuentasBox(slugs)}</div>`);
       else if (!adsSel) mount(z, none);
-      else if (k === 'learn') mount(z, html`${chips}<div class="wsgrid2">${learnBox(adsSel)}${adsComp(slugs)}</div>`);
+      else if (k === 'learn') mount(z, html`${chips}<div class="wsgrid2">${learnBox(adsSel)}<div id="adscomp"></div></div>`);
       else mount(z, html`${chips}<div class="wsgrid2 wsads">${encargoBox(adsSel)}${stepsBox(adsSel)}</div>`);
-      const cs = $('#compSel', z); if (cs) cs.onchange = () => { compSel = cs.value; comp = null; paint(); };
-      const ch = $('#adsch', z); if (ch && adsRep?.on) { const days = {}; adsRep.clients.forEach((c) => c.series.forEach((x) => (days[x.date] = (days[x.date] || 0) + x.spend))); const ks = Object.keys(days).sort(); if (ks.length > 1) lineChart(ch, ks.map((d) => fdate(d)), [{ name: 'Gasto', v: ks.map((d) => days[d]), c: '#2c1f16', fill: true }], { fmt: (v) => 'Q' + Math.round(v).toLocaleString('en-US') }); else ch.remove(); }
+      const cd = $('#adscomp', z); if (cd) competenciaUI(cd, { me, slugs, alive: () => alive() && role === 'ads' });
     },
     more: () => html`${checklist('ads')}${uploader('Entregar trabajo')}${sops('ads')}`,
   };
@@ -569,44 +569,9 @@ export async function render(el, { me, sub, alive }) {
       paint();
     } catch (e) { toast(e.message, true); }
   }
-  // Cómo va la pauta (Windsor lee Meta, Google Ads y LinkedIn de las cuentas conectadas).
-  let adsRep, adsDays = 30, compSel = null, comp = null;
-  function adsReport() {
-    if (adsRep === undefined) { adsRep = null; api('ads/report?days=' + adsDays).then((r) => { adsRep = r; if (alive() && role === 'ads') paint(); }).catch((e) => { adsRep = { error: e.message }; if (alive()) paint(); }); }
-    const head = html`<div class="tabs mini" style="margin:0 0 10px">${[7, 30, 90].map((d) => html`<button class="${d === adsDays ? 'on' : ''}" data-act="adsDays" data-d="${d}">${d} días</button>`)}</div>`;
-    if (!adsRep) return box('Cómo va la pauta', 'Gasto y resultados reales', html`${head}<div class="mut sm">Cargando…</div>`);
-    if (adsRep.error) return box('Cómo va la pauta', '', html`<div class="warnbox">${adsRep.error}</div>`);
-    if (!adsRep.on) return box('Cómo va la pauta', 'Se lee de Windsor', html`<div class="mut sm">Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app.</div>`);
-    const Qn = (v) => (v == null ? '—' : 'Q' + Math.round(v).toLocaleString('en-US'));
-    const cs = adsRep.clients.filter((c) => Object.keys(c.plats).length);
-    const errs = Object.entries(adsRep.errors || {});
-    return box('Cómo va la pauta', `Últimos ${adsRep.days} días · Meta, Google Ads y LinkedIn vía Windsor`, html`${head}
-      ${errs.length ? html`<div class="warnbox sm" style="margin-bottom:8px">${errs.map(([p, e]) => html`<div><b>${p}</b>: ${/no .*accounts? .*configured|not configured|401|403/i.test(e) ? 'conecta la cuenta en Windsor' : e}</div>`)}</div>` : ''}
-      ${cs.length ? html`<div class="chart" id="adsch" style="height:170px;margin-bottom:6px"></div>
-        <table class="wktable"><thead><tr><th>Cliente</th><th class="n">Gasto</th><th class="n">Conv.</th><th class="n">CPA</th><th class="n">ROAS</th><th>Plataformas</th></tr></thead><tbody>
-        ${cs.map((c) => { const pct = c.budget ? Math.round((c.total.spend / c.budget) * 100) : null;
-          return html`<tr><td><b style="font-weight:500">${c.name}</b>${pct != null ? html`<div class="ctlbar" style="margin:6px 0 0;width:120px"><i style="width:${Math.min(100, pct)}%;${pct > 100 ? 'background:#654c38' : ''}"></i></div><div class="mut sm">${pct}% de ${Qn(c.budget)}</div>` : ''}</td>
-          <td class="n">${Qn(c.total.spend)}</td><td class="n">${c.total.conv || '—'}</td><td class="n">${Qn(c.total.cpa)}</td><td class="n">${c.total.roas ? c.total.roas + 'x' : '—'}</td>
-          <td>${Object.entries(c.plats).map(([k, p]) => html`<span class="adsp" title="CTR ${p.ctr ?? '—'}% · ${p.clicks} clics"><span class="ailogo sm">${LOGO[k]}</span>${p.found ? Qn(p.spend) : 'sin datos'}</span>`)}</td></tr>`; })}</tbody></table>`
-      : html`<div class="mut sm">Todavía no hay datos. Pon las cuentas de cada cliente arriba y conéctalas en Windsor.</div>`}`);
-  }
-  // Lo que anuncia la competencia en Meta (Apify · biblioteca de anuncios).
-  function adsComp(slugs) {
-    compSel ||= slugs[0] || null;
-    if (compSel && (!comp || comp.slug !== compSel)) { comp = { slug: compSel, loading: true }; api('ads/competitors/' + encodeURIComponent(compSel)).then((r) => { comp = { slug: compSel, ...r }; if (alive() && role === 'ads') paint(); }).catch((e) => { comp = { slug: compSel, error: e.message }; if (alive()) paint(); }); }
-    const running = comp?.run && !comp.items && !['FAILED', 'ABORTED', 'TIMED-OUT'].includes(comp.run.status);
-    return box('Anuncios de la competencia', 'Lo que tienen activo en Meta ahora · Apify', !compSel ? html`<div class="mut sm">Sin clientes.</div>` : html`
-      <div class="row" style="gap:8px;flex-wrap:wrap"><select class="in" id="compSel" style="width:auto">${slugs.map((x) => html`<option value="${x}" ${x === compSel ? raw('selected') : ''}>${x.toUpperCase()}</option>`)}</select>
-        <textarea class="in" id="compList" rows="2" style="flex:1;min-width:220px" placeholder="Una por línea: página de Facebook (https://facebook.com/marca) o el nombre de la marca">${(comp?.competitors || []).join('\n')}</textarea>
-        <button class="btn" data-act="compRun" ${running ? raw('disabled') : ''}>${running ? 'Scrapeando…' : 'Buscar anuncios'}</button></div>
-      ${comp?.error ? html`<div class="warnbox sm" style="margin-top:8px">${comp.error}</div>` : ''}
-      ${running ? html`<div class="mut sm" style="margin-top:8px">Apify está leyendo la biblioteca de anuncios (1-3 min). <button class="sm linkish" data-act="compRefresh">Ver si ya terminó</button></div>` : ''}
-      ${comp?.items?.length ? html`<div class="adsgrid">${comp.items.slice(0, 24).map((a) => html`<a class="adcard" href="${a.id ? `https://www.facebook.com/ads/library/?id=${a.id}` : a.link || '#'}" target="_blank" rel="noopener noreferrer">
-          ${a.img ? html`<img src="${a.img}" alt="" loading="lazy" referrerpolicy="no-referrer">` : html`<div class="adnoimg">${a.video ? ico('play', 13) : 'Aa'}</div>`}
-          <div class="adbody"><b>${a.page}</b>${a.since ? html`<span class="mut sm"> · desde ${fdate(a.since)}</span>` : ''}<div class="sm">${(a.title ? a.title + ' — ' : '') + a.text.slice(0, 160)}</div>${a.cta ? html`<span class="chip sm2">${a.cta}</span>` : ''}</div></a>`)}</div>`
-        : comp?.items ? html`<div class="mut sm" style="margin-top:8px">No encontré anuncios activos de esas marcas.</div>` : ''}
-      <div class="mut sm" style="margin-top:10px">Google y LinkedIn: <a href="https://adstransparency.google.com/" target="_blank" rel="noopener noreferrer">Google Ads Transparency ↗</a> · <a href="https://www.linkedin.com/ad-library/" target="_blank" rel="noopener noreferrer">LinkedIn Ad Library ↗</a></div>`);
-  }
+  // Cómo va la pauta y la competencia ya no se pintan aquí: la pauta vive en Marketing › Ads Intelligence (un link por cliente) y los
+  // anuncios de la competencia son el componente compartido de marketing/competencia-ui.js.
+  const pautaBox = (slugs) => box('Cómo va la pauta', 'Gasto, CTR, CPA y ROAS están en Marketing › Ads Intelligence', slugs.length ? html`${slugs.map((sl) => html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="sp"></div><a class="btn ghost xs" href="${rutaHerramienta('marketing', sl, 'ads-intelligence')}">Ver la pauta ${ico('arrow-right', 13)}</a></div>`)}` : html`<div class="mut sm">Ningún cliente con pauta todavía.</div>`);
   const ZONES = { ceo: ceoZ, coo: cooZ, content: contentZ, video: videoZ, ads: adsZ, ventas: ventasZ, finance: financeZ, cobros: cobrosZ };
 
   // ---------- conexiones de las piezas ----------
@@ -706,12 +671,6 @@ export async function render(el, { me, sub, alive }) {
     role: (t) => { role = t.dataset.r; tab = 'zona'; if (!asP) try { localStorage.setItem('work.role', role); } catch {} history.replaceState(null, '', `#/work/zona/${role}${asP ? '/' + who : ''}`); paint(); },
     tab: (t) => { tab = t.dataset.t; history.replaceState(null, '', `#/work/${tab}/${role || '_'}${asP ? '/' + who : ''}`); swap(el, paint); },
     lane: (t) => { ceoLane = t.dataset.l; paint(); },
-    adsDays: (t) => { adsDays = +t.dataset.d; adsRep = undefined; paint(); },
-    compRefresh: () => { comp = null; paint(); },
-    compRun: async () => {
-      const list = $('#compList').value.split('\n').map((x) => x.trim()).filter(Boolean);
-      try { const r = await api('ads/competitors/' + encodeURIComponent(compSel), { method: 'POST', body: { list } }); comp = { slug: compSel, ...r }; toast('Buscando anuncios… 1-3 min'); paint(); } catch (e) { toast(e.message, true); }
-    },
     adsCli: (t) => { adsSel = t.dataset.s; paint(); },
     encargoEdit: async (t) => {
       const sl = t.dataset.s, a = adsAcc(sl);

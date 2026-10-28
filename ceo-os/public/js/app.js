@@ -8,18 +8,21 @@ import { primerDia } from './primer-dia.js';
 import { svgIco } from './iconos.js';
 import { ponerTema, esNoche, temaElegido } from './tema.js';
 import { abrirEnChat } from './areas.js';
-import { WORKSPACES, wsDe, moduloDe, wsDeRuta, puedeWs } from './herramientas.js';
-import { cargarContexto, contextoLista, contextoActual, contextoDe, ponerContexto, selectorHtml, instalarContexto, cerrarPopovers } from './contexto.js';
+import { WORKSPACES, wsDe, wsDeRuta, puedeWs } from './herramientas.js';
+import { SECCIONES } from './guia-secciones.js';
 
-// La entrada del OS: el router, la única barra y el dueño de lo que comparten las pantallas (PLAN-WORKSPACES §3).
-// Tres capas: HOME (#/home: tu día, Ask y los accesos) · ORGANIZATION (#/org/…: cómo se maneja Inherent) · AI HARNESS
-// (#/ai y #/chat). Debajo, los cinco WORKSPACES de herramientas.js (#/ws/<ws>/<cliente>/<pestaña>[/<herramienta>/…]),
-// que trabajan sobre el cliente del contexto (contexto.js: el selector arriba de la barra, guardado por persona).
-// Una sola barra: lateral en la compu (⌘B la deja en íconos); en el cel, el chip del cliente arriba y la barra de abajo
-// con sus hojas. Los nombres viven en NAV (inglés, como los puso el CEO: se cambian en un solo lugar).
-// Alias, nunca 404: #/marcas/…, #/estrategia/…, #/consulting/…, #/content/…, #/mimarca/…, #/<pantalla>/… siguen
-// abriendo (alias() y el hook de replaceState los canonizan a #/ws/…, #/org/… o #/home). Los permisos los pone el servidor;
-// aquí solo se refleja (sees, puedeWs). Ya no existen el dock, los espacios, el switch de áreas ni la subnav.
+// La entrada del OS: el router, la única barra y el dueño de lo que comparten las pantallas.
+// Seis cosas, nada más: HOME (#/home: tu día, Ask y lo importante) · CALENDARIO (#/calendario/trabajo: el de trabajo; y
+// #/calendario/contenido/<marca>: el de contenido de una marca) · LIBRARY (#/org/library) · ORGANIZATION (#/org/…: cómo se
+// maneja Inherent) · INHERENT AI (#/chat el Chat, #/ai/mcps los MCPs; #/ai es su portada) · ÁREAS (#/areas/<área>: Strategy,
+// Marketing, Creative, Consulting y Production, donde cada una guarda su información y despliega lo importante).
+// Las herramientas de los workspaces (herramientas.js, screens/workspace.js) están escondidas, no borradas: #/ws/… y las rutas
+// viejas (#/marcas/…, #/estrategia/…, #/consulting/…) abren la página de su área. El cliente ya no se elige en la barra: el
+// Chat lo elige en su caja. Una sola barra: lateral en la compu (⌘B la deja en íconos); en el cel, la barra de abajo con sus
+// hojas. Los nombres viven en NAV (inglés, como los puso el CEO, salvo «Áreas»: se cambian en un solo lugar).
+// Alias, nunca 404: #/marcas/…, #/estrategia/…, #/consulting/…, #/content/…, #/mimarca/…, #/ws/…, #/<pantalla>/… siguen
+// abriendo (alias() y el hook de replaceState los canonizan a #/areas/…, #/org/… o #/home). Los permisos los pone el
+// servidor; aquí solo se refleja (sees, puedeVerArea).
 const root = $('#root');
 // El botón de día y noche muestra a dónde vas: de noche el sol, de día la luna. El tema lo lleva tema.js.
 const icoTema = () => svgIco(esNoche() ? 'sun' : 'moon', 18);
@@ -63,26 +66,36 @@ const full = (a) => me.areas.includes(a) && me.views?.[a] !== 'resumen';
 const area = (a) => () => me.areas.includes(a);
 const ceo = () => me.role === 'ceo';
 const equipo = () => me.role !== 'client';
-// Las pantallas de Organization (lo que vive en #/org/…: Mi perfil, el portal del cliente y Home van aparte).
+// Las 5 áreas (las mismas de herramientas.js): id, nombre, ícono, color (--ui-m-<id>) y el modo del Chat que abre cada una.
+const AREAS = WORKSPACES.map((w) => ({ id: w.id, nombre: w.nombre, icono: w.icono, color: w.color, modo: w.modo }));
+const areaDe = (id) => AREAS.find((a) => a.id === id) || null;
+// Strategy y Consulting las ve quien ve Estrategia; Marketing, Creative y Production, quien ve marcas (brandAccess.any).
+// puedeWs ya es esa regla; aquí solo se le pone nombre de área.
+const puedeVerArea = (m, id) => Boolean(m) && puedeWs(m, id);
+// Las pantallas que viven en #/org/… (Mi perfil, el portal del cliente, Home y el Calendario van aparte). Library sigue en
+// #/org/library, pero ya no es una página de Organization: tiene su lugar en la barra.
 const ORG_SCREENS = ['work', 'setup', 'clients', 'operations', 'portal', 'sales', 'services', 'finanzas', 'vision', 'team', 'roadmap', 'library'];
-// Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo: no cuentan).
-const ORG_AREAS = ['home', 'work', 'control', 'resultados', 'clients', 'operations', 'sales', 'finanzas', 'roadmap', 'library'];
+// Las áreas que cuentan como «ve algo de Organization» (Equipo y Visión los ve todo el equipo, y Library va aparte: no cuentan).
+const ORG_AREAS = ['home', 'work', 'control', 'resultados', 'clients', 'operations', 'sales', 'finanzas', 'roadmap'];
 const hasOrg = () => me.role !== 'client' && ORG_AREAS.some((a) => me.areas.includes(a));
 const sees = (k) => {
   if (k === 'me') return true;
   if (me.role === 'client') return k === 'portal';
-  if (['avisos', 'home', 'chat', 'ai', 'vision'].includes(k)) return true;
+  if (['avisos', 'home', 'calendario', 'chat', 'ai', 'vision'].includes(k)) return true;
   if (k === 'setup') return me.role === 'ceo';
   if (k === 'services') return me.areas.includes('sales');
-  if (k === 'ws') return WORKSPACES.some((w) => puedeWs(me, w.id));
+  if (k === 'areas') return me.role !== 'client' && AREAS.some((a) => puedeVerArea(me, a.id));
   return me.areas.includes(k);
 };
 
-// ---------- La barra: el árbol de §3.2 en una sola constante ----------
-// Un ítem: { id, nombre, ruta, icono, ve() }. Los grupos (Organization, AI Harness) traen `items` (y Company) como
-// [id, nombre, ruta, ve?, ícono]; sin `ve`, la página la ve todo el equipo. Los workspaces salen de herramientas.js.
+// ---------- La barra: el árbol en una sola constante ----------
+// Un ítem: { id, nombre, ruta, icono, ve() }. Los grupos (Organization, Inherent AI, Áreas) traen `items` (y Company) como
+// [id, nombre, ruta, ve?, ícono, color?]; sin `ve`, la página la ve todo el equipo; con `color`, el ítem lleva el de su área.
+// Home, Calendario y Library son ítems de primer nivel (sin flecha). Library conserva su regla de siempre (area('library')).
 const NAV = [
   { id: 'home', nombre: 'Home', ruta: 'home', icono: 'nav-home', ve: equipo },
+  { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo },
+  { id: 'library', nombre: 'Library', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
   { id: 'org', nombre: 'Organization', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
     items: [
       ['operations', 'Projects', 'org/operations', area('operations'), 'kanban'],
@@ -91,6 +104,7 @@ const NAV = [
       ['cal', 'Deadlines', 'org/operations/cal', area('operations'), 'calendar-days'],
       ['clients', 'Clients', 'org/clients', area('clients'), 'folder-open'],
       ['services', 'Services', 'org/services', () => full('sales'), 'briefcase'],
+      ['finances', 'Finances', 'org/finanzas', area('finanzas'), 'nav-finances'],
     ],
     company: [
       ['team', 'Team', 'org/team', area('team'), 'users'],
@@ -99,11 +113,10 @@ const NAV = [
       ['laya', 'Laya', 'org/team/laya', ceo, 'message-square'],
       ['setup', 'Setup', 'org/setup', ceo, 'settings'],
     ] },
-  { id: 'ai', nombre: 'AI Harness', ruta: 'ai', icono: 'nav-ai', ve: equipo, portada: 'ai',
-    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['agents', 'Agents', 'ai/agents', null, 'agents'], ['skills', 'Skills', 'ai/skills', null, 'skills'], ['workflows', 'Workflows', 'ai/workflows', null, 'workflows'], ['memory', 'Memory', 'ai/memory', null, 'memory'], ['models', 'Models', 'ai/models', null, 'models'], ['evals', 'Evaluations', 'ai/evals', null, 'evals']] },
-  ...WORKSPACES.map((w) => ({ id: w.id, nombre: w.nombre, ruta: 'ws/' + w.id, icono: w.icono, color: w.color, ws: w, ve: () => puedeWs(me, w.id) })),
-  { id: 'library', nombre: 'Library', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
-  { id: 'finances', nombre: 'Finances', ruta: 'org/finanzas', icono: 'nav-finances', ve: area('finanzas') },
+  { id: 'ai', nombre: 'Inherent AI', ruta: 'ai', icono: 'nav-ai', ve: equipo, portada: 'ai',
+    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['mcps', 'MCPs', 'ai/mcps', null, 'link']] },
+  { id: 'areas', nombre: 'Áreas', ruta: 'areas', icono: 'layout-grid', ve: () => sees('areas'),
+    items: AREAS.map((a) => [a.id, a.nombre, 'areas/' + a.id, () => puedeVerArea(me, a.id), a.icono, a.color]) },
 ];
 const navDe = (id) => NAV.find((n) => n.id === id);
 const esGrupo = (n) => Boolean(n.items || n.company);
@@ -121,16 +134,16 @@ function paginaDe(url) {
   return mejor;
 }
 const enCompany = (url) => itemsDe(navDe('org'), 'company').some((it) => enRuta(url, it[2]));
-// Un grupo está en su ruta cuando la página abierta es suya; sin página (la portada del Harness, el portal visto por el
-// equipo) vale el prefijo de su ruta (Library y Finances viven en org/… pero son ítems de primer nivel: no cuentan).
+// Un grupo está en su ruta cuando la página abierta es suya; sin página (la portada de Inherent AI, el portal visto por el
+// equipo) vale el prefijo de su ruta.
 const grupoEnRuta = (n, url) => { const pag = paginaDe(url); return pag ? pag[1] === n : enRuta(url, n.ruta); };
 
-const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', ws: 'workspace' };
+const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', areas: 'areas', calendario: 'calendario' };
 // El nombre de cada pantalla (lo que recibe en `label`): los de NAV, más las que no están en la barra.
-const LABEL = { me: 'Mi perfil', avisos: 'Avisos', portal: 'Mi portal', chat: 'Chat', ai: 'AI Harness', ws: 'Workspaces', home: 'Home' };
+const LABEL = { me: 'Mi perfil', avisos: 'Avisos', portal: 'Mi portal', chat: 'Chat', ai: 'Inherent AI', areas: 'Áreas', home: 'Home', calendario: 'Calendario' };
 for (const n of NAV) for (const [, nombre, ruta] of todasDe(n)) { const m = /^org\/([\w-]+)$/.exec(ruta); if (m && !LABEL[m[1]]) LABEL[m[1]] = nombre; }
-// La capa de cada pantalla (html[data-capa]): home · org · ai · ws · '' (Mi perfil, Avisos, el portal).
-const capaDe = (k) => (k === 'home' ? 'home' : k === 'ws' ? 'ws' : k === 'chat' || k === 'ai' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
+// La capa de cada pantalla (html[data-capa]): home · calendario · org · ai · areas · '' (Mi perfil, Avisos, el portal).
+const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' ? 'areas' : k === 'chat' || k === 'ai' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
 
 // ---------- Alias de rutas viejas (PLAN §3.6) ----------
 const HUB_MAP = { control: 'home', operations: 'org/operations', work: 'org/work', sales: 'org/sales', finanzas: 'org/finanzas', resultados: 'home', responsabilidades: 'org/services/responsabilidades', vistas: 'org/team/vistas', setup: 'org/setup' };
@@ -149,7 +162,9 @@ const desk = matchMedia('(min-width: 761px)');
 function alias(parts) {
   const mv = movedRoute(parts); if (mv) return mv; // lo que se mudó de sección (Ventas → Servicios…): roleviews.js → MOVED
   const [a, ...r] = parts;
-  const deWs = (ruta) => (ruta === 'home' ? ['home'] : ruta.split('/'));
+  // Una ruta de workspace de antes (ws/<ws>/…) abre la página de su área; cualquier otra se queda como viene.
+  const deWs = (ruta) => { const p = String(ruta || 'home').split('/'); return p[0] === 'ws' ? (wsDe(p[1]) ? ['areas', p[1]] : ['home']) : p; };
+  if (a === 'ws') return deWs(parts.join('/'));
   if (a === 'control-hub') { const to = r[0] && HUB_MAP[r[0]]; return to ? [...to.split('/'), ...r.slice(1)] : ['home']; }
   if (a === 'org' && (!r.length || r[0] === 'home')) return ['home'];
   if (a === 'mimarca') {
@@ -160,15 +175,18 @@ function alias(parts) {
   }
   if (a === 'content') {
     let slug = r[1] || ''; if (!slug) { try { slug = localStorage.getItem('content.profile') || ''; } catch { slug = ''; } }
-    // Las fuentes son el Customer Bullseye (Strategy › Research), con el slug tal cual (la marca personal también).
-    if (r[0] === 'fuentes') { const s = slug || contextoActual(me); return s ? ['ws', 'strategy', s, 'research', 'customer-bullseye'] : ['ws', 'strategy']; }
+    // Las fuentes eran el Customer Bullseye de Strategy: ahora abren el área.
+    if (r[0] === 'fuentes') return ['areas', 'strategy'];
     if (!slug || slug === 'personal' || /-personal$/.test(slug)) slug = 'inherent';
+    // El calendario de contenido de una marca ahora es Calendario › Contenido.
+    if (r[0] === 'calendario') return ['calendario', 'contenido', slug];
     return ['marcas', slug, ...(CT_MOD[r[0]] || 'investigacion').split('/')];
   }
   if (a === 'clients' && r[0] && r[1] === 'marca') return ['marcas', r[0], ...(r[2] === 'inspo' ? ['investigacion'] : ['marca'])];
   if (a === 'contenido') return ['home'];
-  // Marcas, Estrategia y Consulting de antes → su workspace (herramientas.js sabe la tabla; el contexto llena el cliente que falte).
-  if (a === 'marcas' || a === 'estrategia' || a === 'consulting') { const w = wsDeRuta(parts.join('/'), { contexto: contextoActual(me) }); return w?.ruta ? deWs(w.ruta) : ['home']; }
+  // Marcas, Estrategia y Consulting de antes → el área de su workspace (herramientas.js sabe la tabla; el cliente se descarta).
+  if (a === 'marcas' && r[0] && r[1] === 'calendario') return ['calendario', 'contenido', r[0] === 'personal' || /-personal$/.test(r[0]) ? 'inherent' : r[0]];
+  if (a === 'marcas' || a === 'estrategia' || a === 'consulting') return deWs(wsDeRuta(parts.join('/'))?.ruta);
   if (a === 'org' && r[0] && !SCREENS[r[0]] && OLD_SECTION[r[0]]) { const k = OLD_SECTION[r[0]].find((x) => sees(x)); return !k || k === 'home' ? ['home'] : ['org', k]; }
   if (!SCREENS[a] && OLD_SECTION[a]) return ['org', a];
   return null;
@@ -184,15 +202,21 @@ function resolve(path) {
   if (a === 'me') return { key: 'me', rest: parts.slice(1), url: parts.join('/') };
   if (a === 'avisos') return sees('avisos') ? { key: 'avisos', rest: [], url: 'avisos' } : fallback();
   if (a === 'home') return sees('home') ? { key: 'home', rest: [], url: 'home' } : fallback();
+  // Calendario: #/calendario/trabajo (el de trabajo) o #/calendario/contenido[/<marca>]; sin vista abre Trabajo. La pantalla recibe
+  // sub[0] = la vista y sub[1] = la marca (si viene).
+  if (a === 'calendario') {
+    if (!sees('calendario')) return fallback();
+    const v = parts[1] === 'contenido' ? 'contenido' : 'trabajo', rest = v === 'contenido' && /^[\w.-]+$/.test(parts[2] || '') ? [v, parts[2]] : [v];
+    return { key: 'calendario', rest, url: 'calendario/' + rest.join('/') };
+  }
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
-  if (a === 'ai') return sees('ai') ? { key: 'ai', rest: parts.slice(1, 2), url: parts.slice(0, 2).join('/') } : fallback();
-  if (a === 'ws') {
-    const w = wsDeRuta(parts.join('/'), { contexto: contextoActual(me) });
-    if (!w?.ws || !puedeWs(me, w.ws)) return fallback();
-    let url = w.ruta;
-    // Sin cliente: el del contexto, si esta persona lo ve; si no, el workspace solo (workspace.js muestra el selector en grande).
-    if (!w.slug) { const ctx = contextoActual(me); if (ctx && contextoDe(ctx)) url = `ws/${w.ws}/${ctx}/overview`; }
-    return { key: 'ws', rest: url.split('/').slice(1), url };
+  // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
+  if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
+  // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
+  if (a === 'areas') {
+    const ver = AREAS.filter((x) => puedeVerArea(me, x.id)), id = parts[1];
+    if (id && areaDe(id)) return puedeVerArea(me, id) ? { key: 'areas', rest: [id], url: 'areas/' + id } : fallback();
+    return ver.length ? { key: 'areas', rest: [ver[0].id], url: 'areas/' + ver[0].id } : fallback();
   }
   const org = a === 'org' ? parts.slice(1) : parts;
   if (!org.length) return fallback();
@@ -204,24 +228,23 @@ function resolve(path) {
   return { key, rest: org.slice(1), url: 'org/' + org.join('/') };
 }
 // Una ruta guardada que todavía puede abrir (solo la forma; el permiso lo revisa resolve, sin volver a landing).
-const esRutaViva = (r) => /^(home|ai|chat|avisos|me)(\/|$)|^(org|ws)\/./.test(r || '');
-// Dónde abre la app: la última ruta, o lo que el CEO decidió para el perfil (me.start) → Home, una sección o un workspace.
+const esRutaViva = (r) => /^(home|calendario|ai|chat|avisos|me|areas)(\/|$)|^(org|ws)\/./.test(r || '');
+// Dónde abre la app: la última ruta, o lo que el CEO decidió para el perfil (me.start) → Home, una sección o un área.
 function landing(useLast = true) {
   if (me.role === 'client') return 'portal';
   const last = useLast ? lsGet('last.route') : null;
   if (last && esRutaViva(last)) return last;
   const st = me.start || 'home';
-  if (st === 'content') return puedeWs(me, 'marketing') ? 'ws/marketing' : puedeWs(me, 'strategy') ? 'ws/strategy' : 'home';
+  if (st === 'content') return puedeVerArea(me, 'marketing') ? 'areas/marketing' : puedeVerArea(me, 'strategy') ? 'areas/strategy' : 'home';
   if (st === 'home') return 'home';
   if (SCREENS[st] && ORG_SCREENS.includes(st) && sees(st)) return 'org/' + st;
-  if (!hasOrg()) { if (puedeWs(me, 'marketing')) return 'ws/marketing'; if (puedeWs(me, 'strategy')) return 'ws/strategy'; }
+  if (!hasOrg()) { if (puedeVerArea(me, 'marketing')) return 'areas/marketing'; if (puedeVerArea(me, 'strategy')) return 'areas/strategy'; }
   return 'home';
 }
-// El nombre de donde estás, para la vista grande («← Projects / Inherent»): la página de la barra, o el cliente en un workspace.
+// El nombre de donde estás, para la vista grande («← Projects / Inherent»): la página de la barra (un área incluida).
 setViewSection(() => {
   if (!me) return '';
   const cur = resolve(hashNow());
-  if (cur.key === 'ws') return contextoDe(cur.rest[1])?.name || wsDe(cur.rest[0])?.nombre || 'Workspaces';
   return paginaDe(cur.url)?.[0]?.[1] || LABEL[cur.key] || '';
 });
 
@@ -230,13 +253,10 @@ const SECCION_ORG = { work: 'hoy', clients: 'proyectos', operations: 'proyectos'
 function seccionGuia(cur) {
   if (cur.key === 'me') return 'me';
   if (cur.key === 'home') return 'home';
+  if (cur.key === 'calendario') return 'calendario';
   if (cur.key === 'ai') return 'ai';
-  if (cur.key === 'ws') {
-    const [ws, , , tool, resto] = cur.rest;
-    // La herramienta abierta por su clave de módulo de antes (los videos ya grabados siguen calzando); si no, el workspace.
-    const mod = !tool ? '' : tool === 'design-studio' ? 'diseno' : tool === 'creative-direction-lab' && resto === 'formatos' ? 'formatos' : moduloDe(tool);
-    return mod || `ws-${ws}`;
-  }
+  // Un área usa la clave de su video (ws-<área>: los ya grabados siguen calzando); si no existe, la de Áreas.
+  if (cur.key === 'areas') { const k = `ws-${cur.rest[0]}`; return SECCIONES.some(([x]) => x === k) ? k : 'areas'; }
   return SECCION_ORG[cur.key] || null;
 }
 
@@ -256,60 +276,43 @@ function toggleGrp(id) {
 
 // ---------- La barra lateral (compu) ----------
 const latMini = () => lsGet('barra.mini') === '1';
-const latIt = (ruta, label, icon, on, { sub = '', style = '' } = {}) => html`<a class="lat-it${on ? ' on' : ''}" href="#/${ruta}" title="${label}"${on ? raw(' aria-current="page"') : ''}${style ? raw(` style="${style}"`) : ''}>${icon}<span class="lat-t">${label}</span></a>${sub}`;
-const latSubs = (xs) => (xs.length ? html`<div class="lat-subs">${xs.map(([ruta, label, on, icon]) => html`<a class="${on ? 'on' : ''}" href="#/${ruta}"${on ? raw(' aria-current="page"') : ''}>${icon || ''}${label}</a>`)}</div>` : '');
-// Organization y AI Harness: el ítem abre su portada (el Harness) o su primera página visible (Organization no tiene portada);
-// la flecha solo abre o cierra; Company va colapsado adentro.
+const latIt = (ruta, label, icon, on) => html`<a class="lat-it${on ? ' on' : ''}" href="#/${ruta}" title="${label}"${on ? raw(' aria-current="page"') : ''}>${icon}<span class="lat-t">${label}</span></a>`;
+// Organization, Inherent AI y Áreas: el ítem abre su portada (Inherent AI) o su primera página visible; la flecha solo abre
+// o cierra; Company va colapsado adentro de Organization. Un ítem con color (cada área) lleva su ícono con el color del área.
 function latGrupo(n, cur) {
   const items = itemsDe(n), comp = itemsDe(n, 'company'), pag = paginaDe(cur.url), enEste = grupoEnRuta(n, cur.url), enComp = n.id === 'org' && enCompany(cur.url);
   const abierto = grpAbierto(n.id, enEste), compAbierto = grpAbierto('company', enComp);
   const primera = n.portada || (items[0] || comp[0])?.[2] || n.ruta, esOn = (it) => pag?.[0] === it;
-  const link = (it) => html`<a class="${esOn(it) ? 'on' : ''}" href="#/${it[2]}"${esOn(it) ? raw(' aria-current="page"') : ''}>${it[1]}</a>`;
+  const link = (it) => html`<a class="${esOn(it) ? 'on' : ''}${it[5] ? ' lat-area' : ''}" href="#/${it[2]}"${esOn(it) ? raw(' aria-current="page"') : ''}${it[5] ? raw(` style="--ac:var(${it[5]})"`) : ''}>${it[5] ? ico(it[4], 14) : ''}${it[1]}</a>`;
   return html`<div class="lat-grp" data-grp="${n.id}"${abierto ? raw(' open') : ''}>${latIt(primera, n.nombre, ico(n.icono, 16), enEste)}<button type="button" class="lat-grp-tg" data-grp-tg="${n.id}" aria-expanded="${abierto ? 'true' : 'false'}" aria-label="${abierto ? 'Cerrar' : 'Abrir'} ${n.nombre}">${ico('chevron-down', 14)}</button>
     <div class="lat-subs">${items.map(link)}${comp.length ? html`<div class="lat-sub-grp" data-grp="company"${compAbierto ? raw(' open') : ''}><button type="button" class="lat-sub-tg" data-grp-tg="company" aria-expanded="${compAbierto ? 'true' : 'false'}">Company ${ico('chevron-down', 12)}</button><div class="lat-subs">${comp.map(link)}</div></div>` : ''}</div></div>`;
 }
-// Un workspace: su ítem con su color; el abierto muestra sus pestañas debajo (con el cliente de la ruta).
-function latWs(n, cur) {
-  const on = cur.key === 'ws' && cur.rest[0] === n.id, slug = on ? cur.rest[1] || '' : '';
-  const sub = slug ? latSubs(n.ws.pestanas.map((p) => [`ws/${n.id}/${slug}/${p.id}`, p.nombre, p.id === cur.rest[2]])) : '';
-  return latIt(n.ruta, n.nombre, ico(n.icono, 16), on, { sub, style: `--ac:var(${n.color})` });
-}
-// El subtítulo de «Ask InherentOS»: el modo con el que abriría el Chat y el cliente.
-const chatSub = (cur) => { const w = cur.key === 'ws' ? wsDe(cur.rest[0]) : null, c = contextoDe((cur.key === 'ws' && cur.rest[1]) || contextoActual(me)); return `${w ? w.nombre : 'Organization'}${c ? ' · ' + c.name : ''}`; };
+// El subtítulo de «Ask InherentOS»: el modo con el que abriría el Chat (el área abierta, o Organization).
+const chatSub = (cur) => (cur.key === 'areas' ? areaDe(cur.rest[0])?.nombre : '') || 'Organization';
 function paintLat(cur = resolve(hashNow())) {
   const lat = $('.lat'), nav = lat && $('#lat-nav', lat); if (!nav) return;
   // Se vuelve a pintar en cada navegación: el foco del teclado se queda en el mismo link o en la misma flecha.
   const act = document.activeElement?.closest?.('#lat-nav a, #lat-nav button'), foco = act ? act.getAttribute('href') || act.dataset.grpTg || '' : '';
   const cab = cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : '';
   if (me.role === 'client') { mount(nav, html`${cab}${latIt('portal', 'Mi portal', ico('nav-portal', 16), cur.key === 'portal')}`); return; }
-  const pag = paginaDe(cur.url); let rotulo = false;
-  mount(nav, html`${cab}${NAV.filter((n) => n.ve()).map((n) => {
-    if (n.ws) { const k = rotulo ? '' : html`<span class="lat-k">Workspaces</span>`; rotulo = true; return html`${k}${latWs(n, cur)}`; }
-    if (esGrupo(n)) return latGrupo(n, cur);
-    return latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta);
-  })}`);
+  const pag = paginaDe(cur.url);
+  mount(nav, html`${cab}${NAV.filter((n) => n.ve()).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
   const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = chatSub(cur);
   if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus();
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
-// El selector de cliente (arriba de la barra; en el cel, el chip de arriba). Se repinta cuando llega la lista o cambia el elegido.
-function pintarSelector() {
-  if (me.role === 'client') return;
-  for (const el of [$('#lat-ctx'), $('#top-ctx')]) if (el) { mount(el, selectorHtml(me)); if ($('.ctx-pop')) $('[data-ctx-menu]', el)?.setAttribute('aria-expanded', 'true'); }
-}
 function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); }
-// «Ask InherentOS»: abre el Chat en el modo del workspace abierto (o Organización) con el cliente del contexto.
+// «Ask InherentOS»: abre el Chat en el modo del área abierta (strategy → estrategia, creative → diseno…) o en Organización;
+// el cliente lo elige el Chat en su caja.
 function preguntarAlChat() {
-  const cur = resolve(hashNow()), w = cur.key === 'ws' ? wsDe(cur.rest[0]) : null;
-  const slug = (cur.key === 'ws' && cur.rest[1]) || contextoActual(me);
-  const mes = cur.key === 'ws' && cur.rest[3] === 'content-strategy-studio' && /^\d{4}-\d{2}$/.test(cur.rest[4] || '') ? cur.rest[4] : '';
-  abrirEnChat(me.email, { modo: w?.modo || 'organizacion', slug, mes });
+  const cur = resolve(hashNow());
+  abrirEnChat(me.email, { modo: (cur.key === 'areas' ? areaDe(cur.rest[0])?.modo : '') || 'organizacion' });
 }
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = desk.matches ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
-// Todo popover propio lleva data-popover: cerrarPopovers (contexto.js) los quita; aquí además se apagan sus botones.
-function cerrarTodo() { cerrarPopovers(); for (const b of $$('[data-hoja], [data-lat="yo"]')) b.setAttribute('aria-expanded', 'false'); }
+// Todo popover propio (el menú de «tú», las hojas del cel) lleva data-popover: aquí se quitan y se apagan sus botones.
+function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (const b of $$('[data-hoja], [data-lat="yo"]')) b.setAttribute('aria-expanded', 'false'); }
 function menuYo(btn) {
   const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
   const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
@@ -326,8 +329,7 @@ function latHtml(mac) {
   const cliente = me.role === 'client';
   return html`<aside class="lat" aria-label="Barra lateral">
     <a class="lat-marca" href="#/${cliente ? 'portal' : 'home'}" aria-label="Inherent OS"><span class="lat-emb">${emblemaTema()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
-    ${cliente ? '' : html`<div class="lat-ctx" id="lat-ctx">${selectorHtml(me)}</div>
-    <button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
+    ${cliente ? '' : html`<button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>`}
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
     <div class="lat-pie">
@@ -362,14 +364,21 @@ document.addEventListener('keydown', (e) => {
   e.preventDefault(); ponerMini(!latMini());
 });
 
-// ---------- El cel: el chip del cliente arriba, la barra de abajo y sus hojas ----------
+// ---------- El cel: la barra de abajo (Home · Calendario · Áreas · Inherent AI · Más) y sus hojas ----------
+// Más trae Organization con sus páginas, Library, Avisos, Buscar, Mi perfil y Cómo se usa.
 function celHtml() {
   const b = (id, label, icon, hoja = true) => (hoja ? html`<button type="button" class="nc-b" data-nc="${id}" data-hoja="${id}" aria-haspopup="dialog" aria-expanded="false">${ico(icon, 20)}<span>${label}</span></button>` : html`<a class="nc-b" href="#/${id}" data-nc="${id}">${ico(icon, 20)}<span>${label}</span></a>`);
   if (me.role === 'client') return html`<nav class="nav-cel" aria-label="Secciones">${b('portal', 'Mi portal', 'nav-portal', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
-  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Home', 'nav-home', false)}${hasOrg() ? b('org', 'Organization', 'nav-organization') : ''}${b('ai', 'AI', 'nav-ai')}${sees('ws') ? b('ws', 'Workspaces', 'layout-grid') : ''}${b('mas', 'Más', 'ellipsis')}</nav>`;
+  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Home', 'nav-home', false)}${b('calendario', 'Calendario', 'calendar', false)}${sees('areas') ? b('areas', 'Áreas', 'layout-grid') : ''}${b('ai', 'Inherent AI', 'nav-ai')}${b('mas', 'Más', 'ellipsis')}</nav>`;
 }
-// El botón de abajo que corresponde a la ruta.
-const celKey = (cur) => (cur.key === 'home' ? 'home' : cur.key === 'ws' ? 'ws' : cur.key === 'chat' || cur.key === 'ai' ? 'ai' : ['library', 'finanzas', 'avisos', 'me'].includes(cur.key) ? 'mas' : cur.key === 'portal' && me.role === 'client' ? 'portal' : ORG_SCREENS.includes(cur.key) ? 'org' : '');
+// El botón de abajo que corresponde a la ruta (Organization y Library viven en la hoja «Más», con Avisos y Mi perfil).
+const celKey = (cur) => {
+  const k = cur.key;
+  if (k === 'home' || k === 'calendario' || k === 'areas') return k;
+  if (k === 'chat' || k === 'ai') return 'ai';
+  if (k === 'portal' && me.role === 'client') return 'portal';
+  return ['avisos', 'me'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
+};
 function paintCel(cur = resolve(hashNow())) {
   const k = celKey(cur);
   for (const b of $$('.nav-cel [data-nc]')) { const on = b.dataset.nc === k; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); }
@@ -380,18 +389,19 @@ function abrirHoja(id, btn) {
   const cur = resolve(hashNow()), pag = paginaDe(cur.url);
   const it = (ruta, label, icon, on, style = '') => html`<a class="hoja-it${on ? ' on' : ''}" href="#/${ruta}"${on ? raw(' aria-current="page"') : ''}${style ? raw(` style="${style}"`) : ''}>${icon}<span>${label}</span></a>`;
   const bt = (k, label, icon) => html`<button type="button" class="hoja-it" data-lat="${k}">${icon}<span>${label}</span></button>`;
-  const deNav = (xs) => xs.map((x) => it(x[2], x[1], ico(x[4] || 'dot', 18), pag?.[0] === x));
+  // x[5] es el color del área (un token --ui-m-<id> propio, nunca texto de usuario).
+  const deNav = (xs) => xs.map((x) => it(x[2], x[1], ico(x[4] || 'dot', 18), pag?.[0] === x, x[5] ? `--ac:var(${x[5]})` : ''));
   let titulo = '', cuerpo = '';
-  if (id === 'org') { const n = navDe('org'), comp = itemsDe(n, 'company'); titulo = n.nombre; cuerpo = html`${deNav(itemsDe(n))}${comp.length ? html`<span class="lat-k">Company</span>${deNav(comp)}` : ''}`; }
-  else if (id === 'ai') { const n = navDe('ai'); titulo = n.nombre; cuerpo = html`${it(n.portada, n.nombre, ico(n.icono, 18), cur.url === n.portada)}${deNav(itemsDe(n))}`; }
-  else if (id === 'ws') {
-    titulo = 'Workspaces';
-    cuerpo = html`${NAV.filter((n) => n.ws && n.ve()).map((n) => { const on = cur.key === 'ws' && cur.rest[0] === n.id, slug = on ? cur.rest[1] || '' : ''; return html`${it(n.ruta, n.nombre, ico(n.icono, 18), on, `--ac:var(${n.color})`)}${slug ? html`<div class="hoja-subs">${n.ws.pestanas.map((p) => it(`ws/${n.id}/${slug}/${p.id}`, p.nombre, '', p.id === cur.rest[2]))}</div>` : ''}`; })}`;
-  } else {
+  if (id === 'ai') { const n = navDe('ai'); titulo = n.nombre; cuerpo = deNav(itemsDe(n)); }
+  else if (id === 'areas') { const n = navDe('areas'); titulo = n.nombre; cuerpo = deNav(itemsDe(n)); }
+  else {
     titulo = 'Más';
-    const lib = navDe('library'), fin = navDe('finances'), guia = $('#guiabtn');
-    cuerpo = me.role === 'client' ? html`${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}` : html`${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${fin.ve() ? it(fin.ruta, fin.nombre, ico(fin.icono, 18), pag?.[0]?.[2] === fin.ruta) : ''}
-      ${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${bt('buscar', 'Buscar', ico('search', 18))}${bt('chat', 'Ask InherentOS', ico('chat-ia', 18))}${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
+    const guia = $('#guiabtn');
+    if (me.role === 'client') cuerpo = html`${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}`;
+    else {
+      const org = navDe('org'), comp = itemsDe(org, 'company'), lib = navDe('library'), conOrg = org.ve();
+      cuerpo = html`${conOrg ? html`<span class="lat-k">${org.nombre}</span>${deNav(itemsDe(org))}${comp.length ? html`<span class="lat-k">Company</span>${deNav(comp)}` : ''}<span class="lat-k">Más</span>` : ''}${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${bt('buscar', 'Buscar', ico('search', 18))}${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
+    }
   }
   const h = document.createElement('div'); h.className = 'hoja'; h.dataset.hoja = id; h.setAttribute('data-popover', ''); h.setAttribute('role', 'dialog'); h.setAttribute('aria-label', titulo);
   mount(h, html`<div class="hoja-h"><b>${titulo}</b><button type="button" class="lat-ib" data-hoja-x aria-label="Cerrar">${ico('x', 16)}</button></div><div class="hoja-lista">${cuerpo}</div>`);
@@ -412,22 +422,20 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ---------- El buscador: «Ir a» con lo que ve este perfil ----------
+// Chat, MCPs, Calendario, Library, las áreas, Home, las páginas de Organization y Avisos (solo lo que esta persona ve).
 function jumpItems() {
   if (me.role === 'client') return [];
-  const out = [], ctx = contextoActual(me), ctxN = contextoDe(ctx)?.name || '';
+  const out = [];
   const push = (title, sub, route, icon) => out.push({ title, sub, route, icon: String(icon) });
-  push('Chat', 'AI Harness · Inherent LLM', '#/chat', svgIco('chat-ia', 16));
-  push('Avisos', 'Lo que pide atención: tu trabajo, cada cliente y la plataforma', '#/avisos', svgIco('bell', 16));
-  push('Home', 'Tu día, tus accesos y lo que necesita tu decisión', '#/home', svgIco('nav-home', 16));
+  // Primero lo de todos los días (la lista vacía muestra 12): Chat, MCPs, Calendario, Library y las áreas; luego Home y Organization.
+  for (const it of itemsDe(navDe('ai'))) push(it[1], it[0] === 'chat' ? 'Inherent AI · el Chat con tu información' : 'Inherent AI · conecta tus MCPs', '#/' + it[2], svgIco(it[4], 16));
+  push('Calendario', 'Trabajo y contenido: reuniones, entregas, facturas y publicaciones', '#/calendario', svgIco('calendar', 16));
+  const lib = navDe('library'); if (lib.ve()) push(lib.nombre, 'SOPs, playbooks y prompts del equipo', '#/' + lib.ruta, svgIco(lib.icono, 16));
+  for (const it of itemsDe(navDe('areas'))) push(it[1], 'Áreas', '#/' + it[2], svgIco(it[4], 16));
+  push('Home', 'Tu día, lo importante y lo que necesita tu decisión', '#/home', svgIco('nav-home', 16));
   const org = navDe('org');
   if (org.ve()) { for (const it of itemsDe(org)) push(it[1], 'Organization', '#/' + it[2], svgIco(it[4], 16)); for (const it of itemsDe(org, 'company')) push(it[1], 'Organization · Company', '#/' + it[2], svgIco(it[4], 16)); }
-  for (const it of itemsDe(navDe('ai')).slice(1)) push(it[1], 'AI Harness', '#/' + it[2], svgIco(it[4], 16));
-  for (const n of NAV) if (n.ws && n.ve()) { push(n.nombre, ctxN ? `Workspace · ${ctxN}` : 'Workspace', '#/' + n.ruta, svgIco(n.icono, 16)); if (ctx) for (const p of n.ws.pestanas) push(`${n.nombre} · ${p.nombre}`, ctxN, `#/ws/${n.id}/${ctx}/${p.id}`, svgIco(n.icono, 16)); }
-  for (const id of ['library', 'finances']) { const n = navDe(id); if (n.ve()) push(n.nombre, 'Organization', '#/' + n.ruta, svgIco(n.icono, 16)); }
-  // Cada cliente abre en el último workspace que usaste (o Marketing; la marca personal en Creative), en su Overview.
-  const ult = lsGet('ws.ultimo');
-  const wsPara = (c) => [...(c.personal ? ['creative', 'production'] : []), ult, 'marketing', 'strategy', 'creative', 'consulting', 'production'].find((w) => w && puedeWs(me, w));
-  for (const c of contextoLista()) { const w = wsPara(c); if (w) push(c.name, c.personal ? 'Cliente · privada' : `Cliente · ${wsDe(w).nombre}`, `#/ws/${w}/${c.slug}/overview`, c.personal ? svgIco('lock', 16) : html`<span class="nav-mono sm">${initials(c.name)}</span>`); }
+  push('Avisos', 'Lo que pide atención: tu trabajo, cada cliente y la plataforma', '#/avisos', svgIco('bell', 16));
   return out;
 }
 const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };
@@ -441,7 +449,6 @@ function shell() {
   mount(root, html`${latHtml(mac)}<div class="app">
     <header class="top">
       <div class="brand"><div class="emb">${emblemaTema()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
-      ${cliente ? '' : html`<div class="top-ctx" id="top-ctx">${selectorHtml(me)}</div>`}
       <div class="sp"></div>
       ${cliente ? '' : html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>`}
       ${cliente ? '' : html`<span class="top-ayuda" id="top-ayuda"><button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button></span>`}
@@ -460,18 +467,6 @@ function shell() {
   $('#avatar').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '/me'; } };
   // Modo noche: se guarda en este navegador.
   $('#themebtn').onclick = () => ponerTema(esNoche() ? 'dia' : 'noche');
-  if (cliente) return;
-  // El selector de cliente: elegir dentro de un workspace mantiene workspace y pestaña (sin la herramienta: el otro cliente
-  // puede no tenerla); en Home y el Harness se queda donde estás y la pantalla vuelve a leer el contexto.
-  instalarContexto(me, { alElegir: (slug) => {
-    const cur = resolve(hashNow());
-    const to = cur.key === 'ws' ? '/' + ['ws', cur.rest[0], slug, cur.rest[2] || 'overview'].join('/') : location.hash.slice(1) || '/home';
-    if (to !== location.hash.slice(1)) location.hash = to;
-    else if (cur.key === 'home' || cur.key === 'ai') render();
-    else markNav();
-  } });
-  // La lista de clientes llega después: la barra, el chip y ⌘K se enteran.
-  cargarContexto(me).then(() => { if (me) { pintarSelector(); markNav(); } });
 }
 
 async function render() {
@@ -480,12 +475,8 @@ async function render() {
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
   const H = document.documentElement; H.dataset.pantalla = cur.key; H.dataset.capa = capaDe(cur.key);
-  if (cur.key === 'ws') {
-    const [ws, slug] = cur.rest;
-    // El cliente de la ruta pasa a ser el contexto; y se recuerda el último workspace y su cliente (home.js los lee).
-    if (slug && slug !== contextoActual(me)) ponerContexto(me, slug);
-    lsSet('ws.ultimo', ws); if (slug) { try { localStorage.setItem(`os.ws.ultimo.${me.email}.${ws}`, slug); } catch {} }
-  }
+  // Se recuerda la última área abierta (home.js la lee para abrir el Chat en su modo desde «Ask»).
+  if (cur.key === 'areas') lsSet('ws.ultimo', cur.rest[0]);
   if (!['me', 'avisos'].includes(cur.key)) lsSet('last.route', cur.url);
   markNav(cur);
   if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
@@ -540,15 +531,13 @@ window.addEventListener('tema', () => { const b = $('#themebtn'); if (b) { b.inn
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola: la barra se pone al día.
 events.addEventListener('navsync', () => { if (me) { markNav(); if (me.role !== 'client') marcarSeccion(seccionGuia(resolve(hashNow()))); } });
-// Cambió el cliente del contexto (el selector, un workspace o el Chat): el chip, la barra y «Ask InherentOS» lo reflejan.
-events.addEventListener('contexto', () => { if (me) { pintarSelector(); markNav(); } });
-// Las pantallas siguen escribiendo su ruta de siempre (#/sales/quotes, #/estrategia/<c>/<bloque>, #/content/…): aquí se
-// canoniza (#/org/…, #/ws/…) para que recargar, compartir el link y la barra queden en sincronía. Adentro se llama al original.
+// Las pantallas siguen escribiendo su ruta de siempre (#/sales/quotes, #/estrategia/<c>/<bloque>, #/content/…, #/ws/…): aquí se
+// canoniza (#/org/…, #/areas/…) para que recargar, compartir el link y la barra queden en sincronía. Adentro se llama al original.
 { const rs = history.replaceState.bind(history);
   history.replaceState = (st, t, url) => {
     if (me && typeof url === 'string' && url.startsWith('#/')) {
       const h = url.slice(2), m = /^([\w-]+)(.*)$/.exec(h);
-      if (m && ['estrategia', 'marcas', 'consulting', 'content', 'mimarca'].includes(m[1])) { const c = resolve(h); if (c.url !== h) url = '#/' + c.url; }
+      if (m && ['estrategia', 'marcas', 'consulting', 'content', 'mimarca', 'ws'].includes(m[1])) { const c = resolve(h); if (c.url !== h) url = '#/' + c.url; }
       else if (m && ORG_SCREENS.includes(m[1]) && location.hash.startsWith('#/org/')) url = '#/org/' + h;
     }
     const out = rs(st, t, url);
@@ -572,7 +561,7 @@ async function start(u) {
   if (c && me.role !== 'client') { try { sessionStorage.removeItem('connect'); } catch {} const { consentView } = await import('./connectai.js'); return consentView(root, me, c, () => { shell(); render(); }); }
   shell(); render();
   // Las pantallas de todos los días se bajan en segundo plano: el primer clic ya no espera a que llegue su código.
-  if (me.role !== 'client') { const pre = () => { for (const k of ['home', 'work', 'operations', 'sales', 'finanzas', 'clients', 'ws', 'ai', 'chat']) if (SCREENS[k] && sees(k)) import(`./screens/${SCREENS[k]}.js`).catch(() => {}); }; 'requestIdleCallback' in window ? requestIdleCallback(pre, { timeout: 3000 }) : setTimeout(pre, 1500); }
+  if (me.role !== 'client') { const pre = () => { for (const k of ['home', 'calendario', 'work', 'operations', 'sales', 'finanzas', 'clients', 'areas', 'ai', 'chat']) if (SCREENS[k] && sees(k)) import(`./screens/${SCREENS[k]}.js`).catch(() => {}); }; 'requestIdleCallback' in window ? requestIdleCallback(pre, { timeout: 3000 }) : setTimeout(pre, 1500); }
   // El primer día: la primera vez, el recorrido de 6 pasos (se puede pausar; el chip de la barra lo retoma).
   if (me.role !== 'client') primerDia(me);
   // Avisos: la campanita cuenta lo que pide atención (servidor + tu compu) y se pone al día sola.

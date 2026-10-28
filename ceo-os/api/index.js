@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
+import { seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -20,6 +20,7 @@ import * as laya from './_lib/laya.js';
 import * as intel from './_lib/intel.js';
 import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
+import * as entregables from './_lib/entregables.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
 import * as campanas from './_lib/campanas.js';
@@ -31,6 +32,7 @@ import * as internos from './_lib/internos.js';
 import * as video from './_lib/video.js';
 import * as adsStudio from './_lib/ads-studio.js';
 import * as tech from './_lib/tech.js';
+import * as marketing from './_lib/marketing.js';
 import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
 import * as avisos from './_lib/avisos.js';
@@ -40,6 +42,9 @@ import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
+import { reglaDia11, reglaHistorial, veMontos, sinMontos, conMontos } from '../public/js/production/planner.js';
+// Los montos de los recursos de una jornada (content kind:'shoot') solo salen para el CEO y el COO.
+const shapeC = (u, coll, d, ...r) => { const o = shape(u, coll, d, ...r); return coll === 'content' && o?.kind === 'shoot' && !veMontos(u.role) ? sinMontos(o) : o; };
 import { estadoDe, archivado, nombreAuto, marcaDe } from '../public/js/element.js';
 import { leerSistema } from '../public/js/sistema-visual.js';
 import { parseEconomia, parseOperacion, parsePlanContratado } from './_lib/parse.js';
@@ -125,6 +130,8 @@ async function collGuard(req, res, write) {
   // El estado y los borradores de Estrategia solo se escriben por /api/estrategia/* (ahí vive la regla: solo el CEO aprueba).
   if (coll === 'strategy') { res.status(404).json({ error: 'La estrategia está en /api/estrategia' }); return null; }
   if (coll === 'avatars') { res.status(404).json({ error: 'Los avatares están en /api/avatares' }); return null; }
+  // Los entregables de las herramientas y sus versiones: solo por sus rutas (ahí viven el alcance, la ficha y quién aprueba).
+  if (coll === 'deliverables' || coll === 'deliverable_versions') { res.status(404).json({ error: 'Los entregables están en /api/entregables' }); return null; }
   if (coll === 'formats' || coll === 'scripts') { res.status(404).json({ error: 'Formatos y guiones están en /api/formatos y /api/guiones' }); return null; }
   // El plan del mes pide la estrategia aprobada: solo por /api/plan, que lo revisa.
   if (coll === 'plans') { res.status(404).json({ error: 'El plan del mes está en /api/plan' }); return null; }
@@ -155,6 +162,13 @@ async function reglasPieza(b, cur) {
   if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
   return `Sin brief del ciclo de ${mes}: guárdala como idea sin fecha, pide el brief a ④ Creatividad o que el CEO abra el mes.`;
 }
+// Production Planner: una jornada (kind:'shoot') con fecha después del día 11 del ciclo da 423 salvo el CEO (los shoots se escriben por
+// /api/db/content, así que la regla va aquí y no solo en la pantalla); el historial de cumplimiento de una pieza solo se agrega (400).
+function reglasShoot(u, b, cur) {
+  const h = reglaHistorial(b, cur); if (h) return { status: 400, error: h, code: 'HISTORIAL' };
+  const d = reglaDia11(b, cur, u.role); if (d) return { status: 423, error: d, code: 'DIA_11' };
+  return null;
+}
 // El tipo de una tarea es uno de cuatro; el SOP es el id de un doc de la Library o un link https.
 const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
 const cleanTask = (b) => {
@@ -180,13 +194,13 @@ const cleanLevels = (b) => ({ ...b, id: 'levels', levels: Object.fromEntries(LEV
 on('GET', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
   const coll = req.params.coll, sc = await scopeOf(u, coll), sum = summaryOf(u, coll);
-  res.json({ items: (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shape(u, coll, d, sc, sum)).filter(Boolean) });
+  res.json({ items: (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shapeC(u, coll, d, sc, sum)).filter(Boolean) });
 });
 on('GET', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res); if (!u) return;
   const d = await db.get(req.params.coll, req.params.id);
   const sc = d ? await scopeOf(u, req.params.coll) : null;
-  const out = d && visible(u, req.params.coll, d) && inScope(sc, req.params.coll, d) && profInScope(sc, req.params.coll, d) ? shape(u, req.params.coll, d, sc) : null;
+  const out = d && visible(u, req.params.coll, d) && inScope(sc, req.params.coll, d) && profInScope(sc, req.params.coll, d) ? shapeC(u, req.params.coll, d, sc) : null;
   out ? res.json(out) : res.status(404).json({ error: 'No existe' });
 });
 // Una tarea solo cae en un proyecto del alcance de quien la crea o la mueve; una cotización, en un lead de su alcance.
@@ -241,6 +255,7 @@ on('POST', 'db/:coll', async (req, res) => {
   { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
   if (req.params.coll === 'content') { const why = await reglasPieza(b, null); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
+  if (req.params.coll === 'content') { const r = reglasShoot(u, b, null); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = sinMontos(b); }
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
   if (req.params.coll === 'budgets') { if (!b.client_slug) return res.status(400).json({ error: 'Falta el cliente del presupuesto' }); b = cleanBudget(b); }
   if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
@@ -251,7 +266,7 @@ on('POST', 'db/:coll', async (req, res) => {
   const id = typeof b.id === 'string' && /^[\w.@+-]{3,120}$/.test(b.id) ? b.id.toLowerCase() : undefined;
   if (req.params.coll === 'settings' && (id === 'role_views' || b.id === 'role_views')) forgetViews();
   if (req.params.coll === 'settings' && id === 'levels') b = cleanLevels(b);
-  try { const creado = await db.create(req.params.coll, b, u.email, id); if (req.params.coll === 'leads') avisos.nuevoLead(creado); res.json(shape(u, req.params.coll, creado, null, null)); }
+  try { const creado = await db.create(req.params.coll, b, u.email, id); if (req.params.coll === 'leads') avisos.nuevoLead(creado); res.json(shapeC(u, req.params.coll, creado, null, null)); }
   catch (e) { if (/duplicate|unique/i.test(e.message)) return res.status(409).json({ error: 'Ya existe' }); throw e; }
 });
 on('PUT', 'db/:coll/:id', async (req, res) => {
@@ -268,6 +283,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   if (['tasks', 'quotes', 'budgets'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
   if (req.params.coll === 'content') { const why = await reglasPieza(b, await db.get('content', req.params.id)); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
+  if (req.params.coll === 'content') { const cur = await db.get('content', req.params.id), r = reglasShoot(u, b, cur); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = conMontos(cur, b); }
   // El PUT reemplaza el doc: el cliente de un presupuesto no cambia y, si la persona no ve los costos, se conservan los guardados.
   if (req.params.coll === 'budgets') { const cur = await db.get('budgets', req.params.id); if (cur) { b.client_slug = cur.client_slug; if (b.costs_hidden || b.lines === undefined) b.lines = cur.lines; } delete b.costs_hidden; b = cleanBudget(b); }
   if (req.params.coll === 'leads') {
@@ -292,12 +308,13 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
     }
   }
   const d = await db.update(req.params.coll, req.params.id, b, Number(b.v), u.email);
-  d ? res.json(shape(u, req.params.coll, d, await scopeOf(u, req.params.coll), null)) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
+  d ? res.json(shapeC(u, req.params.coll, d, await scopeOf(u, req.params.coll), null)) : res.status(409).json({ error: 'Alguien más cambió esto. Recarga para ver la última versión.' });
 });
 on('DELETE', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
   const cur = await db.get(req.params.coll, req.params.id);
   if (cur && (!visible(u, req.params.coll, cur) || !inScope(await scopeOf(u, req.params.coll), req.params.coll, cur))) return res.status(404).json({ error: 'No existe' });
+  if (req.params.coll === 'content' && cur?.cumplimiento?.historial?.length) return res.status(400).json({ error: 'Esta pieza tiene historial de cumplimiento: el historial solo se agrega, no se borra. Archívala.', code: 'HISTORIAL' });
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
   res.json({ ok: await db.remove(req.params.coll, req.params.id, u.email) });
 });
@@ -916,7 +933,7 @@ const adsGuard = async (req, res) => { const u = await guard(req, res); if (!u) 
 on('GET', 'ads/report', async (req, res) => {
   const u = await adsGuard(req, res); if (!u) return;
   const sc = await scoper(u);
-  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)), { sc })), apify: ads.apifyOn() }); }
+  try { res.json({ ...(await ads.report(Math.min(90, Math.max(7, +req.query.days || 30)), { sc, costos: seesCosts(u) })), apify: ads.apifyOn() }); }
   catch (e) { res.status(502).json({ error: e.message }); }
 });
 on('GET', 'ads/competitors/:slug', async (req, res) => {
@@ -1091,7 +1108,7 @@ export async function search(u, q) {
   const sc = await scoper(u), lists = {};
   const list = async (coll) => {
     if (!readsColl(u, coll)) return [];
-    if (!lists[coll]) { const sum = summaryOf(u, coll); lists[coll] = (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shape(u, coll, d, sc, sum)).filter(Boolean); }
+    if (!lists[coll]) { const sum = summaryOf(u, coll); lists[coll] = (await db.list(coll)).filter((d) => visible(u, coll, d) && inScope(sc, coll, d) && profInScope(sc, coll, d)).map((d) => shapeC(u, coll, d, sc, sum)).filter(Boolean); }
     return lists[coll];
   };
   const has = (a) => u.areas.includes(a);
@@ -1146,6 +1163,8 @@ laya.rutas(on);
 estrategia.rutas(on);
 // ---------- App 01 · Marca › Cliente ideal: los avatares de cada marca, con su peso y el OK del CEO ----------
 avatares.rutas(on);
+// ---------- Los entregables de las herramientas del OS: versiones, estados y quién aprueba ----------
+entregables.rutas(on, { cleanTask });
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);
@@ -1158,8 +1177,12 @@ escritorio.rutas(on);
 internos.rutas(on);
 // ---------- App 01 · Marca › Video, Ads y Tech ----------
 video.rutas(on);
+// El portal del cliente: sus videos en revisión, comentarios y aprobar o pedir cambios (solo el cliente actúa, con su client_slug).
+portal.rutasVideo({ on, guard, body, slugOk });
 adsStudio.rutas(on);
 tech.rutas(on);
+// ---------- Marketing Performance Center: los KPIs del mes de un cliente (solo lectura) ----------
+marketing.rutas(on);
 // ---------- El ojo visual: el contexto de la marca para el puente ----------
 ojo.rutas(on);
 guia.rutas(on);
