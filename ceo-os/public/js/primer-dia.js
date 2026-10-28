@@ -59,7 +59,8 @@ export async function abrirPrimerDia(me) {
   let ok = Object.fromEntries(PASOS.map(([k]) => [k, Boolean(me.primer_dia?.hechos?.[k])])), paso = PASOS.findIndex(([k]) => !ok[k]), revisando = false;
   if (paso < 0) paso = PASOS.length - 1;
   const [primero] = me.name.split(' ');
-  const espacios = [me.areas?.some((a) => ['home', 'work', 'clients', 'operations', 'sales', 'finanzas'].includes(a)) && 'Organization', 'Inherent AI', (me.areas?.includes('estrategia') || me.areas?.includes('content') || me.areas?.includes('clients') || me.areas?.includes('marcas')) && 'Áreas'].filter(Boolean);
+  // La barra, en su orden: Home · Calendario · Library · Organization · Inherent AI · Áreas (cada quien ve las que su puesto abre).
+  const espacios = ['Home', 'Calendario', me.areas?.includes('library') && 'Library', me.areas?.some((a) => ['home', 'work', 'clients', 'operations', 'sales', 'finanzas'].includes(a)) && 'Organization', 'Inherent AI', (me.areas?.includes('estrategia') || me.areas?.includes('content') || me.areas?.includes('clients') || me.areas?.includes('marcas')) && 'Áreas'].filter(Boolean);
   const cuerpo = (k) => {
     if (k === 'quien') return html`<p>Hola, ${primero}. En Inherent eres <b>${me.title || (me.roles || []).map(roleName).join(' · ') || (me.role === 'ceo' ? 'el CEO' : 'parte del equipo')}</b>.</p>
       <p>Vas a ver ${espacios.length ? html`<b>${espacios.join(' · ')}</b>` : 'tu espacio de trabajo'}: lo que tu puesto necesita, nada más. Si te falta algo, el CEO lo abre en Vistas por rol.</p>

@@ -7927,3 +7927,162 @@ ul.hk-lista,ul.cp-lista,ul.cp-vars{list-style:none;margin:0;padding:0;display:gr
 @media (prefers-reduced-motion:reduce){
   .home-imp-card,.home-imp-ws,.ar-btn,.iai-tabs a{transition:none}
 }
+
+
+/* ===================== OS simple · Calendario y vistas de las áreas =====================
+   Calendario (screens/calendario.js: .cal-*, y el tipo «Áreas» del calendario de trabajo: .t-areas) y las tres formas de ver
+   las notas de cada área (screens/areas.js: Lista · Tablero · Calendario, con fecha y estado: .ar-*). Solo tokens --ui-*;
+   el color del área llega en --ar-c (var(--ui-m-<área>)) y el del estado en --ar-e (lo pone la clase .ar-e-<estado>). Día y noche salen solos. */
+
+/* ---------- Calendario: la barra Trabajo · Contenido y el selector de marca ---------- */
+.cal-bar{margin:6px 0 16px;flex-wrap:wrap;gap:10px}
+.cal-bar .tabs{margin:0}
+.cal-marcas{gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.cal-marca-l{font-size:12.5px;font-weight:500;color:var(--ui-mut)}
+.cal-marcas select.in.cal-sel{width:auto;min-width:220px;max-width:100%}
+
+/* ---------- Calendario de trabajo: el tipo «Áreas» (las notas de las áreas que tienen fecha) ---------- */
+.t-areas{--wt:var(--wt-entregas);--wt-ink:var(--wt-entregas-ink)}
+.wc-chip.t-areas:not(.off) i{background:conic-gradient(var(--ui-m-strategy),var(--ui-m-marketing),var(--ui-m-creative),var(--ui-m-consulting),var(--ui-m-production),var(--ui-m-strategy));opacity:1}
+
+/* ---------- Áreas: el estado de cada nota (la misma clase tiñe chip, columna, selector y nota del calendario) ---------- */
+.ar-e-por{--ar-e:var(--ui-mut2);--ar-et:var(--ui-ink2)}
+.ar-e-curso{--ar-e:var(--ui-info);--ar-et:var(--ui-info-t)}
+.ar-e-hecho{--ar-e:var(--ui-ok);--ar-et:var(--ui-ok-t)}
+.ar-e-sin{--ar-e:var(--ui-mut2);--ar-et:var(--ui-mut)}
+
+/* Selector de vista: Lista · Tablero · Calendario */
+#ar-datos{min-width:0}
+.ar-vs{display:inline-flex;margin-left:auto}
+.ar-vistas{display:inline-flex;gap:2px;padding:3px;border-radius:99px;background:var(--ui-fill);border:1px solid var(--ui-line)}
+.ar-vista{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;border:0;border-radius:99px;background:transparent;color:var(--ui-mut);font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;
+  transition:background var(--d-2) var(--e-std),color var(--d-2) var(--e-std),box-shadow var(--d-2) var(--e-std)}
+.ar-vista>svg{width:14px;height:14px;flex:none}
+.ar-vista:hover{color:var(--ui-ink)}
+.ar-vista.on{background:color-mix(in srgb,var(--ar-c,var(--ui-acc)) 14%,var(--ui-surf));color:var(--ui-ink);box-shadow:0 0 0 1px color-mix(in srgb,var(--ar-c,var(--ui-acc)) 32%,transparent)}
+.ar-vista.on>svg{color:var(--ar-c,var(--ui-acc))}
+
+/* Fecha y estado en cada nota */
+.ar-due{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ui-mut);white-space:nowrap}
+.ar-due>svg{width:12px;height:12px;flex:none}
+.ar-due.is-late{color:var(--ui-bad-t)}
+.ar-due.is-hoy{color:var(--ar-t,var(--ar-c,var(--ui-acc)));font-weight:700}
+.ar-est{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--ar-e) 12%,transparent);color:var(--ar-et);font-size:11.5px;font-weight:500;line-height:1.5;white-space:nowrap}
+.ar-est::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--ar-e)}
+.ar-est.ar-e-sin{background:transparent;border:1px dashed var(--ui-line2);padding:1px 7px}
+.ar-card.is-hecho .ar-t{opacity:.6;text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent)}
+
+/* Próximo: lo que vence en los próximos días */
+.ar-sec-prox{margin-bottom:22px}
+.ar-sec-prox .ar-sec-h h2>svg{color:var(--ar-c,var(--ui-acc))}
+.ar-prox{display:flex;flex-direction:column;gap:6px}
+.ar-pr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-width:0;padding:8px 12px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.ar-pr .ar-due{min-width:64px}
+.ar-pr-t{flex:1 1 160px;min-width:0;padding:0;border:0;background:none;color:var(--ui-ink);font-size:14px;font-weight:500;line-height:1.4;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button.ar-pr-t{cursor:pointer}
+button.ar-pr-t:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* Tablero: una columna por estado */
+.ar-sec-tab,.ar-sec-cal{min-width:0}
+.ar-board{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px;max-width:100%;padding-bottom:8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity}
+.ar-col{display:flex;flex-direction:column;min-width:0;min-height:160px;padding:10px;border-radius:var(--r-4);background:var(--ui-fill);border:1px solid transparent;border-top:3px solid var(--ar-e);scroll-snap-align:start;
+  transition:background var(--d-2) var(--e-std),border-color var(--d-2) var(--e-std)}
+.ar-col.over{border-style:dashed;border-color:var(--ar-c,var(--ui-acc));border-top-style:solid;border-top-color:var(--ar-e);background:color-mix(in srgb,var(--ar-c,var(--ui-acc)) 8%,var(--ui-fill))}
+.ar-col-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ar-col-h h3{margin:0;font-size:14px;font-weight:600}
+.ar-n{padding:1px 8px;border-radius:99px;background:var(--ui-fill2);color:var(--ui-mut);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.ar-col-b{display:flex;flex-direction:column;gap:10px;min-width:0;flex:1}
+.ar-col-vacia{padding:18px 12px;border:1px dashed var(--ui-line2);border-radius:var(--r-3);text-align:center}
+.ar-kcard{gap:8px;padding:12px;box-shadow:0 1px 1px rgb(0 0 0 / .04);transition:opacity var(--d-2) var(--e-std)}
+.ar-kcard[draggable="true"]{cursor:grab}
+.ar-kcard[draggable="true"]:active{cursor:grabbing}
+.ar-kcard.is-drag{opacity:.45}
+.ar-kcard .ar-card-h{gap:4px 6px}
+.ar-kcard .ar-t{font-size:14.5px;overflow-wrap:anywhere}
+.ar-kcard .ar-texto.ar-clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;max-height:4.6em;overflow:hidden;-webkit-mask-image:none;mask-image:none}
+.ar-est-wrap{display:block;margin-top:2px}
+select.in.ar-est-sel{height:36px;padding:0 34px 0 10px;border-left:3px solid var(--ar-e);border-radius:var(--r-2);background-color:color-mix(in srgb,var(--ar-e) 8%,var(--ui-surf));font-size:13px}
+
+/* Calendario del mes */
+.ar-cal{padding:12px;border-radius:var(--r-4);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.ar-cal-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ar-cal-mes{min-width:170px;margin:0;font-size:16px;font-weight:600;text-align:center}
+.ar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--ui-line2);border:1px solid var(--ui-line2);border-radius:var(--r-3);overflow:hidden}
+.ar-dh{padding:6px;background:var(--ui-surf2);color:var(--ui-mut);font-size:11px;font-weight:600;letter-spacing:.06em;text-align:center;text-transform:uppercase}
+.ar-dia{position:relative;display:flex;flex-direction:column;gap:4px;min-width:0;min-height:112px;padding:6px;background:var(--ui-surf)}
+.ar-dia.fuera{background:var(--ui-fill)}
+.ar-dia.fuera .ar-dia-n{color:var(--ui-mut2);opacity:.55}
+.ar-dia.hoy{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ar-c,var(--ui-acc)) 60%,transparent)}
+.ar-dia.hoy .ar-dia-n{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:99px;background:var(--ar-c,var(--ui-acc));color:var(--ui-bg)}
+.ar-dia-h{display:flex;align-items:center;justify-content:space-between;gap:4px;min-height:24px}
+.ar-dia-n{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.ar-dia-s{display:none}
+.ar-btn.ar-dia-add{width:22px;height:22px;opacity:0;transition:opacity var(--d-2) var(--e-std),background var(--d-2) var(--e-std),color var(--d-2) var(--e-std)}
+.ar-dia:hover .ar-dia-add,.ar-dia:focus-within .ar-dia-add,.ar-btn.ar-dia-add:focus-visible{opacity:1}
+@media (hover:none){.ar-btn.ar-dia-add{opacity:.6}}
+.ar-cn{display:flex;align-items:center;gap:4px;width:100%;min-width:0;padding:3px 6px;border:0;border-left:3px solid var(--ar-e);border-radius:6px;background:color-mix(in srgb,var(--ar-e) 10%,transparent);color:var(--ui-ink);font-size:12px;line-height:1.3;text-align:left;
+  transition:background var(--d-2) var(--e-std)}
+button.ar-cn{cursor:pointer}
+button.ar-cn:hover{background:color-mix(in srgb,var(--ar-e) 20%,transparent)}
+.ar-cn>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ar-cn>svg{width:11px;height:11px;flex:none;color:var(--ui-amb-f);fill:currentColor}
+.ar-cn.ar-e-hecho{opacity:.6}
+.ar-cn.ar-e-hecho>span{text-decoration:line-through}
+
+/* Sin fecha */
+.ar-sin-fecha{margin-top:18px}
+.ar-sin-fecha .ar-sec-h h2{font-size:15px}
+.ar-minis{display:flex;flex-direction:column;gap:6px}
+.ar-mini{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 12px;border-radius:var(--r-3);background:var(--ui-surf);border:1px solid var(--ui-line)}
+.ar-mini .ar-tipo{padding:5px;border-radius:50%}
+.ar-mini-t{flex:1 1 0;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Foco visible, en el color del área */
+.ar-vista:focus-visible,.ar-cn:focus-visible,.ar-pr-t:focus-visible,.ar-btn:focus-visible{outline:2px solid var(--ar-c,var(--ui-focus));outline-offset:2px}
+.ar-cn:focus-visible{outline-offset:1px}
+select.in.ar-est-sel:focus-visible{outline:2px solid var(--ar-c,var(--ui-focus));outline-offset:2px}
+
+/* En la compu angosta (721–760px) el «+» de cada día sigue chico aunque .ar-btn crezca para el dedo */
+@media (max-width:760px) and (min-width:721px){
+  .ar-btn.ar-dia-add{width:22px;height:22px}
+}
+
+@media (max-width:720px){
+  /* Barra: las tres vistas ocupan la fila completa */
+  .ar-vs{flex:1 1 100%;margin-left:0}
+  .ar-vistas{display:flex;width:100%}
+  .ar-vista{flex:1 1 0;min-height:40px}
+
+  /* Próximo: la fila se parte en dos (fecha y estado arriba, el título completo abajo) */
+  .ar-pr-t{flex:1 1 100%;order:3;padding:4px 0;white-space:normal}
+
+  /* Tablero: columnas de ~82% del ancho con su propio scroll horizontal (la página no se mueve) */
+  .ar-board{grid-template-columns:repeat(4,82vw);gap:12px}
+  select.in.ar-est-sel{height:44px;font-size:16px}
+
+  /* Calendario: la grilla pasa a lista de días (solo los que tienen algo, y hoy) */
+  .ar-cal{padding:10px}
+  .ar-cal-mes{min-width:0;flex:1 1 auto}
+  .ar-grid{display:block;background:none;border:0;border-radius:0;overflow:visible}
+  .ar-dh,.ar-dia.fuera,.ar-dia.vacio:not(.hoy){display:none}
+  .ar-dia{min-height:0;margin-bottom:8px;padding:10px 12px;border:1px solid var(--ui-line);border-radius:var(--r-3)}
+  .ar-dia.hoy{border-color:color-mix(in srgb,var(--ar-c,var(--ui-acc)) 60%,transparent)}
+  .ar-dia-h{justify-content:flex-start;gap:6px}
+  .ar-dia-s{display:inline;order:-1;color:var(--ui-mut);font-size:12px}
+  .ar-btn.ar-dia-add{width:40px;height:40px;margin-left:auto;opacity:.7}
+  .ar-cn{min-height:40px;padding:6px 8px;font-size:13px}
+  .ar-cn>span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal}
+
+  /* Sin fecha */
+  .ar-mini{flex-wrap:wrap}
+  .ar-mini-t{flex-basis:calc(100% - 80px);white-space:normal}
+}
+
+/* Solo el icono (el texto queda para quien usa lector de pantalla) */
+@media (max-width:520px){
+  .ar-vista span{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .ar-col,.ar-kcard,.ar-vista,.ar-cn,.ar-btn.ar-dia-add{transition:none}
+}
