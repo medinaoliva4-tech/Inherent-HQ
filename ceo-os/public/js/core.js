@@ -146,6 +146,33 @@ export function drawer(content, map = {}, opts = {}) {
 // Al cambiar de pestaña quedan quietos el título y las pestañas; solo se anima lo de abajo.
 // El modo noche usa sus propios colores (no un filtro), así que la transición se ve igual de día y de noche.
 export const canTransition = () => typeof document.startViewTransition === 'function' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+// La entrada escalonada de lo que llega (app.css › .entra): los bloques de `raiz` suben 6 px y se aclaran de uno en uno
+// (35 ms de diferencia, los primeros 8; los demás entran juntos con el último). Sin `sel`, son los hijos de `raiz`; un envoltorio
+// solo se atraviesa, y una rejilla de tarjetas entra tarjeta por tarjeta. Devuelve cuántos bloques animó.
+// Se llama una vez cuando llegan los datos, no en cada refresco; si `raiz` ya trae algo con .entra, la pantalla maneja su
+// propia entrada y esto no hace nada. Usa solo la clase y --i (CSSOM, sin estilos en línea): cumple la CSP.
+export function escalonar(raiz, { sel = '', max = 8 } = {}) {
+  if (!raiz || raiz.querySelector('.entra')) return 0;
+  let host = raiz;
+  for (let d = 0; d < 3 && host.children.length === 1 && !sel; d++) host = host.firstElementChild;
+  const visible = (el) => !el.hidden && el.getClientRects().length > 0;
+  const bloques = [];
+  if (sel) bloques.push(...host.querySelectorAll(sel));
+  else for (const h of host.children) {
+    // Una rejilla con 3 o más tarjetas altas entra tarjeta por tarjeta; lo demás, como un bloque.
+    const hijos = [...h.children].filter(visible);
+    if (hijos.length >= 3 && getComputedStyle(h).display.includes('grid') && hijos.every((k) => k.offsetHeight >= 56)) bloques.push(...hijos); else bloques.push(h);
+    if (bloques.length >= max) break;
+  }
+  const puestos = bloques.filter(visible).slice(0, max);
+  puestos.forEach((el, i) => {
+    el.style.setProperty('--i', String(i)); el.classList.add('entra');
+    const quitar = () => { el.classList.remove('entra'); el.style.removeProperty('--i'); el.removeEventListener('animationend', fin); };
+    const fin = (e) => { if (e.target === el) quitar(); }; // las animaciones de adentro también suben por aquí
+    el.addEventListener('animationend', fin); setTimeout(quitar, 1000);
+  });
+  return puestos.length;
+}
 // Pestañas: se cambia el contenido y solo el cuerpo entra con un fundido corto (sin fotos ni estiramientos).
 export function swap(el, update) {
   // La página no salta: se guarda la altura y el scroll mientras la pestaña nueva carga.
@@ -231,9 +258,10 @@ export const IC = {
   cal: raw('<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="19" rx="4" fill="#fff" stroke="#4285F4" stroke-width="1.6"/><rect x="2" y="3" width="20" height="6" rx="3" fill="#4285F4"/><text x="12" y="19" text-anchor="middle" font-size="9" font-weight="700" fill="#1a73e8" font-family="Arial">31</text></svg>'),
   ring: (d = 78) => raw(`<svg class="ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18.5" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/><circle cx="20" cy="20" r="18.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-dasharray="${d} 117" stroke-linecap="round" transform="rotate(-90 20 20)"/></svg>`),
 };
-// La forma de una pantalla mientras cargan sus datos: título, una franja de números y filas. Aparece solo si tarda más de
-// 160 ms (app.css · .skel) y brilla suave; con «reducir movimiento», quieta. El texto «Cargando…» queda para lectores de pantalla.
-export const skel = (tipo = 'pagina', n = 6) => html`<div class="skel skel-${tipo}" aria-busy="true"><span class="sr-only">Cargando…</span>${tipo === 'pagina' ? html`<i class="sk-t"></i><i class="sk-s"></i><div class="sk-kpis"><i></i><i></i><i></i><i></i></div>` : ''}${Array.from({ length: n }, () => html`<i class="sk-row"></i>`)}</div>`;
+// La forma de una pantalla mientras cargan sus datos. Aparece solo si tarda más de 160 ms (se aclara en 220 ms: app.css · .skel)
+// y un brillo suave lo recorre; con «reducir movimiento», quieto. El texto «Cargando…» queda para lectores de pantalla.
+// Tipos: 'pagina' (título, franja de números y n filas) · 'fila' (n filas) · 'tarjetas' (una rejilla de n tarjetas).
+export const skel = (tipo = 'pagina', n = 6) => html`<div class="skel skel-${tipo}" aria-busy="true"><span class="sr-only">Cargando…</span>${tipo === 'pagina' ? html`<i class="sk-t"></i><i class="sk-s"></i><div class="sk-kpis"><i></i><i></i><i></i><i></i></div>` : ''}${tipo === 'tarjetas' ? html`<div class="sk-cards">${Array.from({ length: n }, () => html`<i class="sk-card"></i>`)}</div>` : Array.from({ length: n }, () => html`<i class="sk-row"></i>`)}</div>`;
 // Íconos de línea (sin emojis): toman el color del texto. Uso: ${ico('lock')} o ${ico('cal', 18)} (o 'sm' · 'md' · 'lg' · 'xl').
 // El set vive en iconos.js (Lucide + los propios); los nombres de antes siguen como alias.
 export const ico = (n, s = 15) => raw(svgIco(n, s));

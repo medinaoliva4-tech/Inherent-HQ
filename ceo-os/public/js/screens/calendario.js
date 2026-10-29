@@ -3,13 +3,17 @@
 //                                              que Organization › Deadlines, MÁS las notas de las áreas que tienen fecha.
 //   Contenido (#/calendario/contenido[/<marca>]) el calendario de contenido de una marca (el embed de content.js), eligiéndola arriba.
 // Sin sub abre Trabajo. Nada se escribe aquí salvo los eventos de Google Calendar (como en Deadlines); las notas se editan en su área.
-import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, skel, teamList, calQ, calAll, setCalAll, swap, ico, $, IC } from '../core.js';
+// Arriba del calendario de Trabajo va un resumen («Esta semana: 5 entregas · 3 reuniones · 4 notas») con una barra de proporción
+// cuya leyenda filtra, y las notas de las áreas llevan el punto del color de su área (y su nombre para lectores de pantalla).
+import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, teamList, calQ, calAll, setCalAll, swap, ico, escalonar, $, IC } from '../core.js';
 import { juntarEventos, filtrarPorRol, tiposVisibles, rango, porDia, calendarioHtml, diaHtml, hitoHtml, TIPOS } from '../calendario-trabajo.js';
 import { loadBrands, brandAccess, modulesFor } from '../brandlist.js';
 import { areaInfo, leerNota } from '../areas-notas.js';
 import { puedeWs } from '../herramientas.js';
+import { proporcion, leyenda, resumenEventos, semanaDe } from '../visual.js';
 
-export const esqueleto = () => skel('pagina');
+// La forma de Calendario mientras carga: título, pestañas, el resumen y el calendario (cero salto de layout).
+export const esqueleto = () => html`<div class="skel skel-cal" aria-busy="true"><span class="sr-only">Cargando…</span><i class="sk-t"></i><i class="sk-s"></i><i class="sk-bar"></i><i class="sk-res"></i><i class="sk-gran"></i></div>`;
 
 // ---------- Puro: las notas de las áreas como eventos del calendario de trabajo ----------
 // Un tipo más junto a los de siempre: «Áreas». Cada nota con fecha sale con el color de su área y lleva a #/areas/<área>.
@@ -23,7 +27,7 @@ export function eventosNotas(docs = [], { from, to, hoy, puede = () => true } = 
   for (const d of Array.isArray(docs) ? docs : []) {
     const n = leerNota(d); if (!n.fecha || n.fecha < from || n.fecha > to || n.archivado || !n.titulo || n.estado === 'Hecho') continue;
     const a = areaInfo(n.area); if (!puede(a.id)) continue;
-    out.push({ k: `a-${d.id}`, tipo: TIPO_AREAS[0], date: n.fecha, time: '', title: n.titulo, sub: n.estado ? `${a.nombre} · ${n.estado}` : a.nombre, color: `var(${a.color})`, late: n.fecha < hoy, go: { href: `#/areas/${a.id}` } });
+    out.push({ k: `a-${d.id}`, tipo: TIPO_AREAS[0], date: n.fecha, time: '', title: n.titulo, sub: n.estado ? `${a.nombre} · ${n.estado}` : a.nombre, color: `var(${a.color})`, area: a.id, late: n.fecha < hoy, go: { href: `#/areas/${a.id}` } });
   }
   return out;
 }
@@ -86,7 +90,44 @@ export async function render(el, { me, sub, alive }) {
     const evs = [...filtrarPorRol(juntarEventos({ google: events, tasks: datos.tasks, projects: datos.projects, shoots: extra.shoots, leads: extra.leads, invoices: extra.invoices, from: R.from, to: R.to, hoy: T }), me),
       ...(datos.notasOk ? eventosNotas(datos.notas, { from: R.from, to: R.to, hoy: T, puede: (id) => puedeWs(me, id) }) : [])].sort(orden);
     dayMap = porDia(evs.filter((e) => !calOff.has(e.tipo)));
-    mount(b, calendarioHtml({ vista: calView, fecha: calDate, eventos: evs, off: calOff, tipos: [...tiposVisibles(me), ...(datos.notasOk ? [TIPO_AREAS[0]] : [])], lista: LISTA, info: calInfo, err: evErr, ceo: me.role === 'ceo', hoy: T, all: calAll() }));
+    mount(b, html`${resumen(evs, R, T)}${calendarioHtml({ vista: calView, fecha: calDate, eventos: evs, off: calOff, tipos: [...tiposVisibles(me), ...(datos.notasOk ? [TIPO_AREAS[0]] : [])], lista: LISTA, info: calInfo, err: evErr, ceo: me.role === 'ceo', hoy: T, all: calAll() })}`);
+    puntosAreas(b);
+    // Lo que llega por primera vez entra escalonado (una vez; los repintados de cada minuto o de cada filtro no lo repiten).
+    if (!entro) { entro = true; escalonar(b, { sel: '.cal-res, .wc' }); }
+  }
+  let entro = false;
+
+  // ---------- El resumen: cuánto hay y de qué, de un vistazo ----------
+  // «Esta semana» cuando la semana de hoy cabe en lo cargado; en la vista de semana, esa semana; si no (el mes en que la semana de hoy
+  // cruza al siguiente, u otro mes), el mes. Los tipos salen como chips de la barra de abajo: la leyenda también los prende y apaga.
+  const ORDEN_RES = ['entregas', 'reuniones', 'areas', 'produccion', 'ventas', 'facturas'];
+  const UNO = { entregas: ['entrega', 'entregas'], reuniones: ['reunión', 'reuniones'], areas: ['nota', 'notas'], produccion: ['de producción', 'de producción'], ventas: ['seguimiento', 'seguimientos'], facturas: ['factura', 'facturas'] };
+  const NOMBRE = { entregas: 'Entregas', reuniones: 'Reuniones', areas: 'Notas', produccion: 'Producción', ventas: 'Ventas', facturas: 'Facturas' };
+  function resumen(evs, R, T) {
+    const sem = semanaDe(T), mes = (d) => { const s = new Date(`${d}T12:00:00`).toLocaleDateString('es-GT', { month: 'long' }); return s.charAt(0).toUpperCase() + s.slice(1); };
+    const alc = calView === 'semana' ? { from: R.from, to: R.to, t: sem && R.from === sem.from ? 'Esta semana' : `Semana del ${fdate(R.from)}` }
+      : sem && sem.from >= R.from && sem.to <= R.to ? { ...sem, t: 'Esta semana' } : { from: R.from, to: R.to, t: mes(R.from) };
+    const r = resumenEventos(evs, { from: alc.from, to: alc.to });
+    const aviso = evErr ? html`<p class="cal-res-aviso">${ico('triangle-alert', 13)} Faltan las reuniones: Google Calendar no respondió.</p>` : '';
+    if (!r.total) return html`<section class="cal-res cal-res--vacio" aria-label="Resumen"><p class="cal-res-n"><b>${alc.t}</b>: nada con fecha</p><button class="btn ghost xs" type="button" data-act="newEvent">+ Evento</button>${aviso}</section>`;
+    const tipos = ORDEN_RES.filter((k) => r.porTipo[k]), texto = tipos.map((k) => { const n = r.porTipo[k], [uno, varios] = UNO[k]; return html`<b>${n}</b> ${n === 1 ? uno : varios}`; });
+    const areas = Object.entries(r.porArea).sort((a, z) => z[1] - a[1]).map(([id, n]) => { const a = areaInfo(id); return { valor: n, label: a.nombre, color: `var(${a.color})` }; });
+    const items = tipos.map((k) => ({ valor: r.porTipo[k], label: NOMBRE[k], clase: `t-${k}${calOff.has(k) ? ' is-off' : ''}`, attrs: { 'data-act': 'ctipo', 'data-t': k, 'aria-pressed': calOff.has(k) ? 'false' : 'true' }, partes: k === TIPO_AREAS[0] ? areas : undefined }));
+    return html`<section class="cal-res" aria-label="Resumen"><p class="cal-res-n"><b class="cal-res-t">${alc.t}:</b> ${texto.map((x, i) => html`${i ? ' · ' : ''}${x}`)}</p>
+      ${tipos.length > 1 ? proporcion(items, { label: `${alc.t}: ${tipos.map((k) => `${r.porTipo[k]} ${NOMBRE[k].toLowerCase()}`).join(', ')}` }) : leyenda(items)}
+      ${areas.length ? html`<div class="cal-res-areas"><span class="mut sm">Notas por área</span>${leyenda(areas)}</div>` : ''}${aviso}</section>`;
+  }
+
+  // Las notas de las áreas llevan el punto del color de su área (--wc-c, por CSSOM: la CSP no deja style en línea nuevo) y, para quien
+  // no ve el color, el nombre del área escondido en el texto. El link ya dice a qué área lleva (#/areas/<área>).
+  function puntosAreas(root) {
+    for (const a of root.querySelectorAll('a.wc-ev.t-areas[href^="#/areas/"]')) {
+      const info = areaInfo(a.getAttribute('href').slice('#/areas/'.length));
+      a.style.setProperty('--wc-c', `var(${info.color})`); a.dataset.area = info.id;
+      const nom = document.createElement('span'); nom.className = 'sr-only'; nom.textContent = `${info.nombre}: `;
+      const dot = document.createElement('i'); dot.className = 'cal-dot'; dot.setAttribute('aria-hidden', 'true');
+      a.prepend(dot, nom);
+    }
   }
   const calMove = (n) => { const d = new Date(calDate + 'T12:00:00Z'); if (calView === 'semana') d.setUTCDate(d.getUTCDate() + 7 * n); else d.setUTCMonth(d.getUTCMonth() + n, 1); calDate = d.toISOString().slice(0, 10); events = null; const b = $('#wbody', el); if (b) trabajo(b); };
   const repintar = () => { const b = $('#wbody', el); if (b && tab === 'trabajo') trabajo(b); };

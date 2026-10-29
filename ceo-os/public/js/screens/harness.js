@@ -1,5 +1,5 @@
 // Inherent AI (#/ai): solo dos cosas. El Chat (la IA que conversa) y los MCPs (lo que esa IA puede usar y cómo conectarle más).
-// Portada = estado del Chat y de los MCPs · #/ai/mcps = lo que Hermes puede usar hoy, los comandos para conectar un MCP (se agregan
+// Portada = estado del Chat y de los MCPs, más la tarjeta de los modelos abiertos con LM Studio (conectado, o los 4 pasos) · #/ai/mcps = lo que Hermes puede usar hoy, los comandos para conectar un MCP (se agregan
 // en la Terminal: Hermes no tiene API para eso) y el conector de Inherent OS hacia Claude o ChatGPT (connectai.js, el mismo de siempre).
 // Sin backend nuevo. Lo que viene de una persona (nombre y URL del MCP) pasa por mcp-hermes.js antes de volverse un comando.
 import { html, raw, mount, acts, ico, skel, toast, LOGO, $ } from '../core.js';
@@ -14,6 +14,14 @@ const ACTUAL = raw('aria-current="page"'); // constante segura: la pestaña abie
 const PASOS_ENCENDER = TERMINAL.filter(([n]) => /^(Instalar|Actualizar)/.test(n));
 // Exacta: «llave» a secas también encuentra la línea de Kilo Pass («…y pega tu llave»), que es «inherent model».
 const PASO_LLAVE = TERMINAL.find(([n]) => /^Ver la llave/.test(n)) || ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'];
+// Modelos abiertos con LM Studio (lmstudio.ai: baja y corre cualquier modelo; Hermes lo trae como el proveedor «lmstudio», puerto 1234).
+// Los comandos salen de TERMINAL (la misma fuente que la Terminal del Chat); aquí solo se cuentan los pasos.
+const LM_WEB = 'https://lmstudio.ai', LM_MAX = 6;
+const comandoLM = (re, otro) => (TERMINAL.find(([n]) => re.test(n)) || ['', otro])[1];
+const LM_SERVIDOR = comandoLM(/^Modelos abiertos con LM Studio/, 'lms server start');
+const LM_CARGAR = comandoLM(/^Cargar un modelo/, 'lms load <modelo> --context-length 64000');
+const LM_CONECTAR = comandoLM(/^Conectar LM Studio/, 'inherent model');
+const LM_JIT = comandoLM(/^Opcional: que LM Studio/, 'inherent config set model.lmstudio_load_mode jit');
 const pl = (n, uno, otros) => `${n} ${n === 1 ? uno : otros}`;
 const modeloCorto = (m) => String(m || '').split('/').pop().slice(0, 32);
 const limpio = (s) => String(s ?? '').trim();
@@ -33,6 +41,36 @@ const ayuda = (sh) => (!sh.on ? pasos(PASOS_ENCENDER)
 const encender = (sh) => (!sh.on
   ? html`<p class="mut">${punto('off')} Hermes no responde en esta compu. Sin Hermes el Chat no puede usar MCPs. Para encenderlo, en la Terminal:</p>${ayuda(sh)}`
   : html`<p class="mut">${punto('warn')} Hermes está encendido, pero el OS no tiene su llave. Para verla, en la Terminal:</p>${ayuda(sh)}`);
+
+// ---------- Modelos abiertos · LM Studio (tarjeta de la portada) ----------
+const lmPaso = (n, titulo, detalle, extra) => html`<li class="iai-lm-paso"><span class="iai-lm-n" aria-hidden="true">${n}</span><div class="iai-lm-b"><b>${titulo}</b><p class="mut sm">${detalle}</p>${extra}</div></li>`;
+const lmBajar = () => html`<a class="btn xs iai-lm-link" href="${LM_WEB}" target="_blank" rel="noopener">Bajar LM Studio ${ico('external-link', 13)}</a>`;
+// Los 4 pasos con sus comandos para copiar. aviso: la línea de estado que va arriba (por qué se ven los pasos).
+const lmPasos = (aviso) => html`${aviso}<ol class="iai-lm-pasos" aria-label="Cómo conectar LM Studio">
+  ${lmPaso(1, 'Baja LM Studio y un modelo', 'Instálalo y, adentro, busca y descarga el que quieras: Qwen, Llama, Gemma, Mistral… Los que traen tool calling (llamar herramientas) funcionan mejor: Qwen 2.5 o 3, Llama 3.x, Mistral, Hermes.', lmBajar())}
+  ${lmPaso(2, 'Enciende su servidor', 'En la app: pestaña Developer › Start Server (puerto 1234). O en la Terminal:', cmd(LM_SERVIDOR))}
+  ${lmPaso(3, 'Cárgalo con 64K de contexto', 'Hermes pide 64K de contexto como mínimo (cuánto texto recuerda a la vez). Cambia «modelo» por el nombre que ves en LM Studio. O en la app: el engrane junto al modelo › Context Length de 64000 o más › recargar.', cmd(LM_CARGAR))}
+  ${lmPaso(4, 'Conéctalo a tu Inherent AI', 'Corre esto, elige «LM Studio», dale Enter a la dirección (http://localhost:1234/v1) y elige el modelo:', cmd(LM_CONECTAR))}</ol>
+  <details class="iai-det iai-lm-op"><summary>Opcional: que LM Studio cargue y descargue el modelo solo</summary>${cmd(LM_JIT)}</details>`;
+// Hermes apagado o sin llave: no se puede ver qué modelos hay, pero los pasos 1 a 3 se hacen igual.
+const lmSinHermes = (sh) => lmPasos(html`<p class="sm">${punto(sh.on ? 'warn' : 'off')} <b>Sin conectar</b> · ${sh.on ? 'el OS no tiene la llave de Hermes' : 'Hermes no responde en esta compu'}, así que no se ve el estado de LM Studio. Los pasos 1 a 3 ya puedes hacerlos.</p>`);
+// Conectado: cuántos modelos y sus nombres (máximo 6, el que está en uso primero).
+function lmConectado(p, actual) {
+  const uso = actual?.provider === 'lmstudio' ? String(actual.model || '') : '';
+  const nombres = [...p.modelos].sort((a, b) => Number(Boolean(uso) && b === uso) - Number(Boolean(uso) && a === uso)).slice(0, LM_MAX), resto = p.modelos.length - nombres.length;
+  return html`<p class="sm iai-lm-st">${punto('ok')} <b>Conectado · ${pl(p.modelos.length, 'modelo', 'modelos')}</b></p>
+    <ul class="iai-lm-modelos" aria-label="Modelos de LM Studio">${nombres.map((x) => html`<li class="iai-lm-modelo${uso && x === uso ? ' uso' : ''}" title="${x}"><span class="iai-lm-nm">${modeloCorto(x)}</span>${uso && x === uso ? html`<span class="chip sm2 iai-lm-uso" title="El que Hermes usa por defecto">En uso</span>` : ''}</li>`)}${resto > 0 ? html`<li class="iai-lm-mas mut sm">+${resto} más</li>` : ''}</ul>
+    <p class="mut sm">Salen de LM Studio, por tu Hermes. Para usarlos, prende el modo privado («En tu compu») en el Chat.</p>
+    <a class="btn iai-lm-link" href="#/chat">Abrir el Chat</a>`;
+}
+// m = lo que devuelve modelosHermes(me) (o null si no se pudo leer).
+function lmEstado(m) {
+  const p = (m?.proveedores || []).find((x) => x.slug === 'lmstudio');
+  if (p?.listo && p.modelos.length) return lmConectado(p, m.actual);
+  return lmPasos(!m ? html`<p class="sm mut">${punto('warn')} No pude leer los modelos de Hermes. Estos son los pasos:</p>`
+    : p?.listo ? html`<p class="sm">${punto('warn')} <b>LM Studio está conectado, pero sin modelos</b> · baja uno y cárgalo (pasos 1 a 3).</p>`
+      : html`<p class="sm">${punto('off')} <b>Sin conectar</b> · LM Studio todavía no aparece en tu Hermes.</p>`);
+}
 
 export async function render(el, { me, sub = [], alive }) {
   let pagina = String(sub[0] || '');
@@ -55,13 +93,17 @@ export async function render(el, { me, sub = [], alive }) {
         <article class="card iai-card"><div class="iai-card-h"><span class="iai-ic">${ico('puzzle', 20)}</span><b>MCPs</b></div>
           <p class="mut sm">Lo que tu IA puede usar y cómo conectarle más.</p>
           <div class="iai-estado" id="iai-mcps">${revisando('Revisando Hermes…')}</div>
-          <a class="btn iai-go" href="#/ai/mcps">Ver los MCPs</a></article></section>`,
+          <a class="btn iai-go" href="#/ai/mcps">Ver los MCPs</a></article>
+        <article class="card iai-card iai-lm"><div class="iai-card-h"><span class="iai-ic">${ico('lock', 20)}</span><b>Modelos abiertos · LM Studio</b></div>
+          <p class="mut sm">Baja cualquier modelo abierto (Qwen, Llama, Gemma, Mistral…) y úsalo en el Chat: gratis, en tu compu y privado.</p>
+          <div class="iai-estado iai-lm-estado" id="iai-lm">${revisando('Revisando Hermes…')}</div></article></section>`,
       despues: async (g) => {
         const vivo = () => alive() && g === gen;
         const sh = await saludHermes(me).catch(() => ({ on: false }));
         if (!vivo()) return;
-        const chat = $('#iai-chat', el), mcp = $('#iai-mcps', el);
+        const chat = $('#iai-chat', el), mcp = $('#iai-mcps', el), lm = $('#iai-lm', el);
         if (!sh.on || !sh.auth) {
+          if (lm) mount(lm, lmSinHermes(sh));
           if (chat) mount(chat, html`<p class="sm">${punto(sh.on ? 'warn' : 'off')} <b>${sh.on ? 'Falta la llave' : 'Apagado'}</b>${sh.on ? ' · Hermes está encendido' : ' · Hermes no responde en esta compu'}</p><details class="iai-det"><summary>${sh.on ? 'Cómo conectar la llave' : 'Cómo encenderlo, en la Terminal'}</summary>${ayuda(sh)}</details>`);
           if (mcp) mount(mcp, html`<p class="sm mut">Sin Hermes listo no se ven. Cuando esté, aquí sale cuántas capacidades tiene activas.</p>`);
           return;
@@ -72,6 +114,7 @@ export async function render(el, { me, sub = [], alive }) {
         const modelo = $('#iai-modelo', el);
         if (modelo && m?.actual.model) mount(modelo, html`Modelo: <b>${modeloCorto(m.actual.model)}</b>${m.actual.provider ? html` · ${nombreProveedor(m.actual.provider)}` : ''}`);
         if (mcp) mount(mcp, ts.length ? html`<p class="sm">${punto('ok')} <b>${pl(ts.filter((t) => t.enabled).length, 'capacidad activa', 'capacidades activas')}</b> <span class="mut">· de ${ts.length}</span></p>` : html`<p class="sm">${punto('warn')} No pude leer las capacidades de Hermes.</p>`);
+        if (lm) mount(lm, lmEstado(m));
       },
     };
   }

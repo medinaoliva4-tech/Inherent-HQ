@@ -249,8 +249,15 @@ export const TERMINAL = [
   ['Conectar Claude', 'inherent auth add anthropic'],
   ['Conectar Kilo Pass (Claude, ChatGPT y Gemini con una sola suscripción): elige «Kilo Code» y pega tu llave', 'inherent model'],
   ['Autorizar el conector de Inherent OS', 'inherent mcp login inherent'],
-  ['Modelo local, gratis y privado (con Ollama instalado)', 'ollama pull qwen3-coder:30b'],
-  ['Darle al modelo local la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],
+  // Modelos abiertos, gratis y privados: LM Studio (lmstudio.ai) baja y corre cualquier modelo; Hermes lo trae como el
+  // proveedor «lmstudio» (puerto 1234). Los pasos de la portada de Inherent AI (screens/harness.js) salen de estas líneas.
+  ['Modelos abiertos con LM Studio: enciende su servidor', 'lms server start'],
+  ['Cargar un modelo con la memoria que Hermes necesita (64K)', 'lms load <modelo> --context-length 64000'],
+  ['Conectar LM Studio a tu Inherent AI: elige «LM Studio»', 'inherent model'],
+  ['Opcional: que LM Studio cargue y descargue el modelo solo', 'inherent config set model.lmstudio_load_mode jit'],
+  // Ollama queda como alternativa.
+  ['Alternativa: modelo local con Ollama instalado', 'ollama pull qwen3-coder:30b'],
+  ['Alternativa: darle a Ollama la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],
   ['Ver las skills que tiene', 'inherent skills list'],
   ['Revisar que todo esté bien', 'inherent doctor'],
   ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'],
