@@ -80,7 +80,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'MCPs' : 'Inherent AI'}</h1>
     <p>${pagina ? 'Lo que tu IA puede usar hoy y cómo conectarle más.' : 'Habla con ella en el Chat y conéctale herramientas con MCPs.'}</p></div>
-    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
+    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agent Area</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
 
   // ---------- Portada ----------
   function portada() {

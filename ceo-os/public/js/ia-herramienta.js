@@ -87,6 +87,13 @@ export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTo
   return { texto: pegado, via: 'claude-web', modelo: 'Claude · claude.ai' };
 }
 
+// ---------- Correr un pedido que no es de una herramienta (Agent Area) ----------
+// Mismo orden y mismas vías que correrIA (Hermes → puente → claude.ai): el Agent Area no habla con una IA por su cuenta.
+// → { texto, via, modelo }. `bloque` es el nombre del bloque que se pide en la respuesta (para pegar desde claude.ai).
+export async function correrPedido(me, { modo = 'estrategia', slug = '', nombre = 'Agent Area', bloque = 'etapa', mensaje, signal, onDelta = () => {}, onTool = () => {}, preferir } = {}) {
+  return correrIA(me, { tool: { ws: WORKSPACES.find((w) => w.modo === modo)?.id || 'strategy', nombre, bloque, prompt: () => mensaje }, ctx: { cliente: slug ? { slug } : null, hoy: today() }, signal, onDelta, onTool, preferir });
+}
+
 // ---------- El contexto de una herramienta ----------
 const TRABADO = ['oferta', 'modelo', 'leads', 'capacidad'];
 const num = (n) => Number(n).toLocaleString('en-US');

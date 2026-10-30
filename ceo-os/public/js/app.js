@@ -104,7 +104,7 @@ const hasOrg = () => me.role !== 'client' && ORG_AREAS.some((a) => me.areas.incl
 const sees = (k) => {
   if (k === 'me') return true;
   if (me.role === 'client') return k === 'portal';
-  if (['avisos', 'home', 'calendario', 'chat', 'ai', 'vision'].includes(k)) return true;
+  if (['avisos', 'home', 'calendario', 'chat', 'ai', 'agentes', 'vision'].includes(k)) return true;
   if (k === 'setup') return me.role === 'ceo';
   if (k === 'services') return me.areas.includes('sales');
   if (k === 'areas') return me.role !== 'client' && AREAS.some((a) => puedeVerArea(me, a.id));
@@ -137,7 +137,7 @@ const NAV = [
       ['setup', 'Setup', 'org/setup', ceo, 'settings'],
     ] },
   { id: 'ai', nombre: 'Inherent AI', ruta: 'ai', icono: 'nav-ai', ve: equipo, portada: 'ai',
-    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['mcps', 'MCPs', 'ai/mcps', null, 'link']] },
+    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['agentes', 'Agent Area', 'ai/agentes', null, 'agents'], ['mcps', 'MCPs', 'ai/mcps', null, 'link']] },
   { id: 'areas', nombre: 'Áreas', ruta: 'areas', icono: 'layout-grid', ve: () => sees('areas'),
     items: AREAS.map((a) => [a.id, a.nombre, 'areas/' + a.id, () => puedeVerArea(me, a.id), a.icono, a.color]) },
 ];
@@ -161,12 +161,12 @@ const enCompany = (url) => itemsDe(navDe('org'), 'company').some((it) => enRuta(
 // equipo) vale el prefijo de su ruta.
 const grupoEnRuta = (n, url) => { const pag = paginaDe(url); return pag ? pag[1] === n : enRuta(url, n.ruta); };
 
-const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', areas: 'areas', calendario: 'calendario' };
+const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', agentes: 'agentes', areas: 'areas', calendario: 'calendario' };
 // El nombre de cada pantalla (lo que recibe en `label`): los de NAV, más las que no están en la barra.
 const LABEL = { me: 'Mi perfil', avisos: 'Avisos', portal: 'Mi portal', chat: 'Chat', ai: 'Inherent AI', areas: 'Áreas', home: 'Home', calendario: 'Calendario' };
 for (const n of NAV) for (const [, nombre, ruta] of todasDe(n)) { const m = /^org\/([\w-]+)$/.exec(ruta); if (m && !LABEL[m[1]]) LABEL[m[1]] = nombre; }
 // La capa de cada pantalla (html[data-capa]): home · calendario · org · ai · areas · '' (Mi perfil, Avisos, el portal).
-const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' ? 'areas' : k === 'chat' || k === 'ai' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
+const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' ? 'areas' : k === 'chat' || k === 'ai' || k === 'agentes' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
 
 // ---------- Alias de rutas viejas (PLAN §3.6) ----------
 const HUB_MAP = { control: 'home', operations: 'org/operations', work: 'org/work', sales: 'org/sales', finanzas: 'org/finanzas', resultados: 'home', responsabilidades: 'org/services/responsabilidades', vistas: 'org/team/vistas', setup: 'org/setup' };
@@ -234,6 +234,7 @@ function resolve(path) {
   }
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
   // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
+  if (a === 'ai' && parts[1] === 'agentes') return sees('agentes') ? { key: 'agentes', rest: /^[\w-]{4,60}$/.test(parts[2] || '') ? [parts[2]] : [], url: parts.slice(0, /^[\w-]{4,60}$/.test(parts[2] || '') ? 3 : 2).join('/') } : fallback();
   if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {
@@ -277,7 +278,7 @@ function seccionGuia(cur) {
   if (cur.key === 'me') return 'me';
   if (cur.key === 'home') return 'home';
   if (cur.key === 'calendario') return 'calendario';
-  if (cur.key === 'ai') return 'ai';
+  if (cur.key === 'ai' || cur.key === 'agentes') return 'ai';
   // Un área usa la clave de su video (ws-<área>: los ya grabados siguen calzando); si no existe, la de Áreas.
   if (cur.key === 'areas') { const k = `ws-${cur.rest[0]}`; return SECCIONES.some(([x]) => x === k) ? k : 'areas'; }
   return SECCION_ORG[cur.key] || null;
@@ -423,7 +424,7 @@ function celHtml() {
 const celKey = (cur) => {
   const k = cur.key;
   if (k === 'home' || k === 'calendario' || k === 'areas') return k;
-  if (k === 'chat' || k === 'ai') return 'ai';
+  if (k === 'chat' || k === 'ai' || k === 'agentes') return 'ai';
   if (k === 'portal' && me.role === 'client') return 'portal';
   return ['avisos', 'me'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };

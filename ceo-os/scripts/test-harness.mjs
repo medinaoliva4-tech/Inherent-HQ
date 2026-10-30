@@ -35,12 +35,12 @@ await t('una línea por agente: lo que hace cabe en una frase corta', () => { fo
 
 // ---------- El menú (app.js) y el router de harness.js (se leen como texto) ----------
 const APP = leer('public/js/app.js');
-await t('el menú de Inherent AI en app.js trae solo Chat y MCPs, y ninguna de las seis páginas viejas', () => {
+await t('el menú de Inherent AI en app.js trae Chat, Agent Area y MCPs, y ninguna de las seis páginas viejas', () => {
   assert.match(APP, /Inherent AI/);
   assert.ok(!/AI Harness/.test(APP), 'app.js ya no dice «AI Harness»');
   assert.match(APP, /#\/chat/); assert.match(APP, /#\/ai\/mcps/);
   const ids = [...APP.matchAll(/'ai\/([a-z]+)'/g)].map((m) => m[1]);
-  assert.deepEqual([...new Set(ids)], ['mcps']);
+  assert.deepEqual([...new Set(ids)], ['agentes', 'mcps']);
   for (const v of ['agents', 'skills', 'workflows', 'memory', 'models', 'evals']) assert.ok(!APP.includes(`'ai/${v}'`), `ai/${v} sigue en el menú`);
 });
 await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se canoniza a #/ai; sus íconos existen', () => {
