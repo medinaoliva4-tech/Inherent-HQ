@@ -116,15 +116,88 @@ export const ESTRATEGIA_GUIADA = {
   ],
 };
 
-// ---------- El run ----------
-export const ESTADOS = { pendiente: 'Pendiente', trabajando: 'Trabajando', revision: 'Esperando revisión', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada' };
+// ---------- Los workflows del OS ----------
+// Un workflow es del OS (colección agent_workflows): se crea en blanco o se IMPORTA de una plantilla (un WORKFLOW.md del repo o
+// el flujo del PDF) y desde ahí es independiente: editarlo no toca el repo y cambiar el repo no lo cambia. La plantilla aporta
+// la ESTRUCTURA (qué etapas, qué se entrega, qué criterios), nunca el conocimiento: las respuestas salen de fuentes reales que
+// el agente consulta con sus herramientas (MCPs de Hermes, la web, el OS) o quedan como hipótesis.
+
+// Los tipos de nodo (la paleta del editor). color = token --ui-* del sistema.
+export const TIPOS = [
+  { id: 'investigacion', nombre: 'Investigación', grupo: 'Entender', icono: 'search', color: '--ui-m-strategy', sub: 'Busca y lee fuentes reales con sus conexiones', herramientas: ['web', 'inherent'], fuentes_min: 2 },
+  { id: 'analisis', nombre: 'Análisis', grupo: 'Entender', icono: 'sparkles', color: '--ui-m-marketing', sub: 'Interpreta lo aprobado y lo que encontró', herramientas: ['inherent'], fuentes_min: 1 },
+  { id: 'decision', nombre: 'Decisión', grupo: 'Decidir', icono: 'git-branch', color: '--ui-m-creative', sub: 'Propone una decisión con opciones y por qué', herramientas: [], fuentes_min: 0 },
+  { id: 'entregable', nombre: 'Entregable', grupo: 'Entregar', icono: 'file-text', color: '--ui-m-consulting', sub: 'Arma la pieza o el documento final', herramientas: ['inherent'], fuentes_min: 0 },
+  { id: 'validacion', nombre: 'Validación (QA)', grupo: 'Entregar', icono: 'check', color: '--ui-ok', sub: 'Revisa contra los criterios antes de entregar', herramientas: [], fuentes_min: 0 },
+];
+export const tipoDe = (id) => TIPOS.find((t) => t.id === id) || TIPOS[1];
+
+// Las conexiones que un nodo puede pedir. Las reales viven en Hermes (sus toolsets y MCPs): la pantalla suma las que la compu
+// tenga; estas son las que el OS conoce aunque Hermes no conteste.
+export const CONEXIONES = [
+  { id: 'web', nombre: 'Búsqueda web', sub: 'web_search · web_extract (Hermes)' },
+  { id: 'inherent', nombre: 'Inherent OS', sub: 'clientes, proyectos, Library y notas (el MCP del OS)' },
+  { id: 'drive', nombre: 'Google Drive', sub: 'documentos del cliente' },
+  { id: 'browser', nombre: 'Navegador', sub: 'leer páginas que piden JS' },
+];
+
+const corto = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
+const lista = (xs, n = 12, m = 300) => (Array.isArray(xs) ? xs : String(xs || '').split('\n')).map((x) => corto(x, m)).filter(Boolean).slice(0, n);
+const nid = () => Math.random().toString(36).slice(2, 9);
 
 // «Business Diagnosis: Situación actual | Problemas» → { titulo, campos }
 export function leerOutput(output, nombre = '') {
+  if (output && typeof output === 'object') return { titulo: output.titulo || nombre, campos: output.campos || [] };
   const [t, resto] = String(output || '').split(':');
   const campos = String(resto || '').split('|').map((x) => x.trim()).filter(Boolean);
   return { titulo: (output ? t.trim() : '') || nombre, campos };
 }
+
+// Un nodo limpio (lo que guarda el servidor; lo que llega del editor es dato no confiable).
+export function normalizarEtapa(e = {}) {
+  const tipo = tipoDe(e.tipo).id;
+  const ent = e.entrega && typeof e.entrega === 'object' ? e.entrega : leerOutput(e.output, e.nombre);
+  return {
+    id: /^[\w-]{3,20}$/.test(e.id || '') ? e.id : nid(),
+    tipo, nombre: corto(e.nombre, 80) || tipoDe(tipo).nombre, proposito: corto(e.proposito, 400),
+    inputs: lista(e.inputs), tareas: lista(e.tareas), criterios: lista(e.criterios),
+    herramientas: lista(e.herramientas, 12, 60),
+    entrega: { titulo: corto(ent.titulo, 120) || corto(e.nombre, 80), campos: lista(ent.campos, 14, 80) },
+    fuentes_min: Math.max(0, Math.min(10, Number(e.fuentes_min) || 0)),
+    gate: Boolean(e.gate), nota_gate: corto(e.nota_gate, 200),
+    metodo: corto(e.metodo || e.skill, 80),
+  };
+}
+export function normalizarWorkflow(w = {}) {
+  return {
+    nombre: corto(w.nombre, 100) || 'Workflow sin nombre', agente: corto(w.agente, 80), depto: corto(w.depto, 60),
+    descripcion: corto(w.descripcion, 600), limites: lista(w.limites, 10),
+    etapas: (Array.isArray(w.etapas) ? w.etapas : []).slice(0, 20).map(normalizarEtapa),
+    estado: w.estado === 'activo' ? 'activo' : 'borrador',
+  };
+}
+
+// Qué tipo de nodo es una etapa de plantilla (por su nombre/propósito).
+function adivinarTipo(e) {
+  const t = `${e.nombre} ${e.proposito}`.toLowerCase();
+  if (e.loop || /qa|guardian|valid|revis|verific|auditor/.test(t)) return 'validacion';
+  if (/entrega|brief|deliver|plan de ejecuci|pieza|gu[ií]a|manual|reporte/.test(t)) return 'entregable';
+  if (/decid|posicion|oferta|elegir|priori|estrategia de/.test(t)) return 'decision';
+  if (/context|diagn|investig|research|escucha|mercado|competen|ficha|auditor[ií]a/.test(t)) return 'investigacion';
+  return 'analisis';
+}
+// Una plantilla (flujo leído del repo o del PDF) → un workflow nuevo del OS, desacoplado de su fuente.
+export function desdePlantilla(f) {
+  const etapas = (f.etapas || []).filter((e) => !e.loop).map((e) => {
+    const tipo = adivinarTipo(e), t = tipoDe(tipo);
+    const ent = leerOutput(e.output, e.nombre);
+    return normalizarEtapa({ ...e, tipo, herramientas: t.herramientas, fuentes_min: t.fuentes_min, entrega: { titulo: ent.titulo, campos: ent.campos.length ? ent.campos : e.criterios.slice(0, 4) }, metodo: e.skill });
+  });
+  return { ...normalizarWorkflow({ nombre: f.nombre, agente: f.nombre, depto: f.depto, descripcion: f.hace, limites: f.limites, etapas }), origen: { tipo: f.fuente === 'AGENTS IN OS.pdf' ? 'pdf' : 'repo', id: f.id, fuente: f.fuente } };
+}
+
+// ---------- El run ----------
+export const ESTADOS = { pendiente: 'Pendiente', trabajando: 'Trabajando', revision: 'Esperando aprobación', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada' };
 
 // La etapa activa: la primera que no está aprobada (o la última si todas lo están).
 export function activa(run) {
@@ -132,87 +205,95 @@ export function activa(run) {
   return i === -1 ? Math.max(0, (run?.etapas || []).length - 1) : i;
 }
 export const completo = (run) => (run?.etapas || []).length > 0 && run.etapas.every((e) => e.estado === 'aprobada');
+export const progreso = (run) => { const t = (run?.etapas || []).length, h = (run?.etapas || []).filter((e) => e.estado === 'aprobada').length; return { hechas: h, total: t, pct: t ? Math.round((h / t) * 100) : 0 }; };
 
 // ¿Qué puede pasar con esta etapa? → null si se puede, o el motivo (texto para la persona).
 export function puede(run, n, accion, { rol = '' } = {}) {
   const e = run?.etapas?.[n];
   if (!e) return 'Esa etapa no existe';
   if (run.archivado) return 'El run está archivado';
-  if (n !== activa(run) && accion !== 'evidencia') return 'Solo se trabaja la etapa activa: primero se aprueban las anteriores';
+  if (accion === 'evidencia' || accion === 'input') return null;
+  if (run.pausado && accion === 'resultado') return 'El agente está en pausa: reanúdalo para ejecutar';
+  if (n !== activa(run)) return 'Solo se trabaja la etapa activa: primero se aprueban las anteriores';
   if (accion === 'resultado') return ['pendiente', 'ajuste', 'trabajando'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
   if (accion === 'aprobar') {
-    if (e.estado !== 'revision') return 'Solo se aprueba una etapa que espera revisión';
+    if (e.estado !== 'revision') return 'Solo se aprueba una etapa que espera aprobación';
     if (e.gate && rol !== 'ceo') return '🚦 Gate del CEO: solo el CEO aprueba esta etapa';
     if (!['ceo', 'coo'].includes(rol)) return 'Aprueban el CEO o el COO';
     return null;
   }
-  if (accion === 'corregir') return ['revision'].includes(e.estado) ? (['ceo', 'coo'].includes(rol) ? null : 'Corrigen el CEO o el COO') : 'No hay resultado para corregir todavía';
+  if (accion === 'corregir') return e.estado === 'revision' ? (['ceo', 'coo'].includes(rol) ? null : 'Corrigen el CEO o el COO') : 'No hay resultado para corregir todavía';
   if (accion === 'ajuste') return e.estado === 'revision' ? null : 'Solo se pide ajuste sobre un resultado en revisión';
-  if (accion === 'evidencia') return null;
   return 'Acción desconocida';
 }
 
-// Lo que se le pide a cualquier IA (agnóstico: viaja igual a Hermes, al puente o a claude.ai).
+// Lo que se le pide a cualquier IA (agnóstico: viaja igual a Hermes con cualquier modelo, al puente o a claude.ai).
 export function pedido(run, n) {
-  const e = run.etapas[n], f = run.flujo || {}, o = leerOutput(e.output, e.nombre);
+  const e = run.etapas[n], f = run.flujo || {}, o = leerOutput(e.entrega || e.output, e.nombre);
   const previas = run.etapas.slice(0, n).filter((x) => x.estado === 'aprobada');
+  const inputs = (run.inputs || []).filter((x) => !x.archivado);
+  const con = (e.herramientas || []).map((h) => CONEXIONES.find((c) => c.id === h)?.nombre || h);
   return [
-    `Eres el agente «${f.nombre}» de Inherent (${f.depto || ''}). Trabajas la etapa ${e.codigo} · ${e.nombre} del run «${run.titulo}».`,
-    'Reglas que no se rompen: propones, no cierras (un humano aprueba) · evidencia o etiqueta: sin fuente va [dice el cliente, sin verificar] o ⚠️ SIN DATOS · nunca inventes · no digas que hiciste algo que no puedes hacer.',
+    `Eres el agente «${f.agente || f.nombre}» de Inherent${f.depto ? ` (${f.depto})` : ''}. Trabajas la etapa ${n + 1} de ${run.etapas.length} · «${e.nombre}» (${tipoDe(e.tipo).nombre}) del run «${run.titulo}».`,
+    'Reglas que no se rompen: propones, no cierras (un humano aprueba) · NUNCA inventes: cada afirmación lleva su fuente (URL, documento o input) o se marca como hipótesis · no digas que hiciste algo que no hiciste.',
+    'La estructura de esta etapa viene de una plantilla de método: úsala como guía de QUÉ entregar, no como fuente. Las respuestas salen de fuentes reales.',
+    con.length ? `Conexiones que debes usar para investigar: ${con.join(', ')}. Usa tus herramientas (búsqueda web, MCPs, el OS) de verdad; si una no está disponible, dilo en «faltantes».` : 'Esta etapa trabaja con los inputs y lo ya aprobado; no necesita salir a buscar.',
+    e.fuentes_min ? `Mínimo ${e.fuentes_min} fuente(s) externa(s) verificable(s). Si no las alcanzas, dilo en «faltantes».` : '',
     f.limites?.length ? `Lo que este agente NO hace: ${f.limites.join(' · ')}` : '',
     run.objetivo ? `Objetivo del run: ${run.objetivo}` : '',
-    run.cliente ? `Cliente: ${run.cliente_nombre || run.cliente} (carpeta clients/${run.cliente}/)` : '',
+    run.cliente ? `Cliente: ${run.cliente_nombre || run.cliente}. Puedes leer su información en el OS (MCP inherent).` : '',
     e.proposito ? `Propósito de la etapa: ${e.proposito}` : '',
-    e.inputs.length ? `Inputs requeridos: ${e.inputs.join(', ')}` : '',
-    e.tareas.length ? `Tareas: ${e.tareas.join('; ')}` : '',
-    `Output esperado: ${o.titulo}${o.campos.length ? ` (${o.campos.join(', ')})` : ''}`,
-    e.criterios.length ? `Criterios de éxito: ${e.criterios.join('; ')}` : '',
+    e.inputs?.length ? `Inputs que necesita: ${e.inputs.join(', ')}` : '',
+    e.tareas?.length ? `Tareas: ${e.tareas.join('; ')}` : '',
+    `Entrega: ${o.titulo}${o.campos.length ? ` con estos campos: ${o.campos.join(', ')}` : ''}`,
+    e.criterios?.length ? `Criterios de éxito: ${e.criterios.join('; ')}` : '',
+    inputs.length ? `Inputs y evidencia que dio el equipo (id entre corchetes):\n${inputs.map((x) => `[${x.id}] ${x.titulo}${x.url ? ` — ${x.url}` : ''}${x.texto ? `\n${String(x.texto).slice(0, 4000)}` : ''}`).join('\n\n')}` : '',
     previas.length ? `Resultados aprobados de etapas anteriores:\n${previas.map((x) => `### ${x.nombre}\n${x.salida || ''}`).join('\n\n')}` : '',
     e.estado === 'ajuste' && e.ajuste ? `AJUSTE QUE PIDIÓ EL HUMANO: ${e.ajuste}` : '',
     '',
-    'Responde con un bloque ```etapa con JSON: {"actividades":["qué hiciste, paso a paso"],"salida":"el resultado en markdown","evidencia":[{"titulo":"…","url":"…","extracto":"…"}]}',
+    'Responde SOLO con un bloque ```etapa con este JSON:',
+    '{"actividades":[{"titulo":"qué hiciste","detalle":"cómo y con qué"}],"campos":[{"campo":"nombre del campo","valor":"resumen","items":["punto"],"fuentes":["id de evidencia"],"estado":"evidencia|hipotesis"}],"confianza":0-100,"evidencia":[{"id":"e1","titulo":"…","url":"…","extracto":"cita breve"}],"faltantes":["lo que no se pudo verificar"],"salida":"el resultado completo en markdown"}',
+    'Un campo es «evidencia» solo si cita al menos una fuente de «evidencia» o un input; si no, es «hipotesis».',
   ].filter(Boolean).join('\n');
 }
 
-// La respuesta de una IA → { actividades, salida, evidencia }. Lo que dice un modelo es dato no confiable: la evidencia nunca sale verificada.
+const txtDe = (x) => (typeof x === 'string' ? x : x?.titulo || x?.texto || x?.text || '');
+// La respuesta de una IA → { actividades, campos, confianza, evidencia, faltantes, salida }. Lo que dice un modelo es dato no confiable:
+// la evidencia nunca sale verificada y un campo sin fuente baja a hipótesis aunque diga lo contrario.
 export function leerRespuesta(texto) {
   const t = String(texto || '');
-  const m = t.match(/```etapa\s*([\s\S]*?)```/) || t.match(/(\{[\s\S]*"salida"[\s\S]*\})/);
+  const m = t.match(/```etapa\s*([\s\S]*?)```/) || t.match(/(\{[\s\S]*"(?:salida|campos)"[\s\S]*\})/);
   let j = null; try { j = m ? JSON.parse(m[1]) : null; } catch {}
-  if (!j) return { actividades: ['La IA respondió sin el bloque pedido: se guardó su texto tal cual'], salida: t.trim(), evidencia: [] };
+  if (!j) return { actividades: [{ titulo: 'La IA respondió sin el formato pedido', detalle: 'Se guardó su texto tal cual', aviso: true }], campos: [], confianza: 0, evidencia: [], faltantes: ['Respuesta sin estructura: revisar a mano'], salida: t.trim() };
+  const evidencia = (Array.isArray(j.evidencia) ? j.evidencia : []).slice(0, 30).map((x, k) => ({ id: corto(x?.id, 20) || `e${k + 1}`, titulo: corto(x?.titulo || x?.url || 'Fuente', 200), url: corto(x?.url, 500), extracto: corto(x?.extracto, 600), verificada: false }));
+  const ids = new Set(evidencia.map((x) => x.id));
+  const campos = (Array.isArray(j.campos) ? j.campos : []).slice(0, 20).map((c) => {
+    const fuentes = lista(c?.fuentes, 10, 20);
+    return { campo: corto(c?.campo, 80), valor: corto(c?.valor, 1200), items: lista(c?.items, 12, 300), fuentes, estado: c?.estado === 'evidencia' && fuentes.length && (fuentes.some((f) => ids.has(f)) || fuentes.some((f) => /^i-/.test(f))) ? 'evidencia' : 'hipotesis' };
+  }).filter((c) => c.campo);
   return {
-    actividades: (Array.isArray(j.actividades) ? j.actividades : []).map((x) => limpiar(typeof x === 'string' ? x : x?.texto || x?.text)).filter(Boolean).slice(0, 30),
-    salida: String(j.salida || '').slice(0, 60000),
-    evidencia: (Array.isArray(j.evidencia) ? j.evidencia : []).slice(0, 30).map((x) => ({ titulo: limpiar(x?.titulo || x?.url || 'Fuente').slice(0, 200), url: String(x?.url || '').slice(0, 500), extracto: limpiar(x?.extracto).slice(0, 600), verificada: false })),
+    actividades: (Array.isArray(j.actividades) ? j.actividades : []).slice(0, 30).map((x) => ({ titulo: corto(txtDe(x), 160), detalle: corto(x?.detalle, 400) })).filter((x) => x.titulo),
+    campos, confianza: Math.max(0, Math.min(100, Math.round(Number(j.confianza) || 0))), evidencia,
+    faltantes: lista(j.faltantes, 10, 300),
+    salida: String(j.salida || '').slice(0, 60000) || campos.map((c) => `### ${c.campo}\n${c.valor}${c.items.length ? '\n' + c.items.map((i) => `- ${i}`).join('\n') : ''}`).join('\n\n'),
   };
 }
 
-// STUB · el runner simulado: recorre la etapa con su definición real, sin llamar a ningún modelo. Todo campo sale ⚠️ SIN DATOS.
+// STUB · el runner simulado: recorre la etapa con su definición, sin llamar a ningún modelo. Todo sale como hipótesis ⚠️ SIN DATOS.
 export function simular(run, n) {
-  const e = run.etapas[n], f = run.flujo || {}, o = leerOutput(e.output, e.nombre);
+  const e = run.etapas[n], o = leerOutput(e.entrega || e.output, e.nombre);
   const previas = run.etapas.slice(0, n).filter((x) => x.estado === 'aprobada');
+  const inputs = (run.inputs || []).filter((x) => !x.archivado);
+  const con = (e.herramientas || []).map((h) => CONEXIONES.find((c) => c.id === h)?.nombre || h);
   const actividades = [
-    `Leyendo la definición de la etapa (${f.fuente || 'el flujo'})`,
-    e.skill ? `Cargando la lógica de la skill ${e.skill}` : '',
-    run.cliente ? `Abriendo la carpeta del cliente clients/${run.cliente}/` : '',
-    previas.length ? `Tomando como input lo aprobado: ${previas.map((x) => x.nombre).join(' → ')}` : '',
-    ...e.inputs.map((x) => `Verificando input: ${x}`),
-    e.estado === 'ajuste' && e.ajuste ? `Aplicando el ajuste: «${e.ajuste}»` : '',
-    ...(e.tareas.length ? e.tareas : [e.proposito || `Trabajar ${e.nombre}`]).slice(0, 6),
-    '⚠️ Simulado: no se consultaron fuentes. Lo que no tiene fuente queda ⚠️ SIN DATOS',
-    ...e.criterios.slice(0, 4).map((x) => `Criterio: ${x}`),
-    'Armando el resultado parcial para tu revisión',
+    { titulo: inputs.length ? `Leyendo ${inputs.length} input(s)` : 'Revisando inputs', detalle: inputs.length ? inputs.map((x) => x.titulo).slice(0, 4).join(' · ') : 'No hay inputs cargados todavía' },
+    previas.length ? { titulo: 'Tomando lo aprobado', detalle: previas.map((x) => x.nombre).join(' → ') } : null,
+    ...(e.tareas?.length ? e.tareas : [e.proposito || `Trabajar ${e.nombre}`]).slice(0, 4).map((t) => ({ titulo: t, detalle: 'Simulado: sin consultar fuentes' })),
+    con.length ? { titulo: 'Sin conexiones (simulado)', detalle: `Debería usar: ${con.join(', ')}`, aviso: true } : null,
+    e.fuentes_min ? { titulo: 'Falta evidencia', detalle: `Pide ${e.fuentes_min} fuente(s) externa(s) y el simulado no investiga`, aviso: true } : null,
   ].filter(Boolean);
-  const campos = o.campos.length ? o.campos : e.criterios.length ? e.criterios : ['Hallazgos', 'Decisión propuesta', 'Preguntas abiertas'];
-  const salida = [`## ${o.titulo}`, '', `> Etapa ${e.codigo} · ${e.nombre}${e.proposito ? ` — ${e.proposito}` : ''}`, run.objetivo ? `> Objetivo: ${run.objetivo}` : '', '',
-    ...campos.flatMap((c) => [`### ${c}`, '⚠️ SIN DATOS — completar con una IA conectada o corregir a mano.', '']),
-    e.estado === 'ajuste' && e.ajuste ? `### Ajuste aplicado\n- ${e.ajuste}\n` : '',
-    e.gate ? `> 🚦 Gate del CEO: ${e.nota_gate || 'requiere su aprobación'}` : ''].filter((x) => x !== '').join('\n');
-  const evidencia = [
-    f.fuente ? { titulo: `Workflow · ${f.nombre}`, url: f.fuente, extracto: e.proposito, verificada: true } : null,
-    e.skill && /^agents\//.test(f.fuente || '') ? { titulo: `Skill · ${e.skill}`, url: f.fuente.replace(/WORKFLOW\.md$/, `skills/${e.skill}/SKILL.md`), extracto: '', verificada: true } : null,
-    run.cliente ? { titulo: `Carpeta del cliente · ${run.cliente_nombre || run.cliente}`, url: `clients/${run.cliente}/`, extracto: '', verificada: true } : null,
-    { titulo: 'Sin fuentes externas (simulado)', url: '', extracto: 'Conecta tu IA (Hermes o el puente) para investigar con fuentes.', verificada: false },
-  ].filter(Boolean);
-  return { actividades, salida, evidencia };
+  const nombres = o.campos.length ? o.campos : e.criterios?.length ? e.criterios.slice(0, 4) : ['Hallazgos', 'Decisión propuesta', 'Preguntas abiertas'];
+  const campos = nombres.map((c) => ({ campo: c, valor: '⚠️ SIN DATOS — conecta tu IA (Hermes) para investigarlo o corrígelo a mano.', items: [], fuentes: [], estado: 'hipotesis' }));
+  const salida = [`## ${o.titulo}`, run.objetivo ? `> Objetivo: ${run.objetivo}` : '', '', ...campos.flatMap((c) => [`### ${c.campo}`, c.valor, ''])].filter((x) => x !== '').join('\n');
+  return { actividades, campos, confianza: 0, evidencia: [], faltantes: ['Simulado: ninguna afirmación tiene fuente'], salida };
 }

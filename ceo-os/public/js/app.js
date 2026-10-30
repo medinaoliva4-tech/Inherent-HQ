@@ -234,7 +234,7 @@ function resolve(path) {
   }
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
   // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
-  if (a === 'ai' && parts[1] === 'agentes') return sees('agentes') ? { key: 'agentes', rest: /^[\w-]{4,60}$/.test(parts[2] || '') ? [parts[2]] : [], url: parts.slice(0, /^[\w-]{4,60}$/.test(parts[2] || '') ? 3 : 2).join('/') } : fallback();
+  if (a === 'ai' && parts[1] === 'agentes') { const ID = /^[\w-]{4,60}$/, rest = parts[2] === 'flujo' && ID.test(parts[3] || '') ? ['flujo', parts[3]] : ID.test(parts[2] || '') ? [parts[2]] : []; return sees('agentes') ? { key: 'agentes', rest, url: ['ai', 'agentes', ...rest].join('/') } : fallback(); }
   if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {
