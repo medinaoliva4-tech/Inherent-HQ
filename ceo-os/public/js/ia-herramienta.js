@@ -48,7 +48,7 @@ async function pegarDeClaude(tool, prompt) {
 
 // ---------- Correr la IA ----------
 // → { texto, via: 'hermes'|'puente'|'claude-web', modelo }. preferir fuerza un camino (y falla si no está listo).
-export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTool = () => {}, preferir } = {}) {
+export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTool = () => {}, preferir, modelo } = {}) {
   if (typeof tool?.prompt !== 'function') throw new Error('Esta herramienta todavía no sabe pedirle algo a la IA');
   const c = ctx || {}, slug = c.cliente?.slug || '';
   const sistema = sistemaDe(modoDe(tool), { cliente: c.cliente?.nombre, carpeta: carpetaDe(slug), nivel: c.cliente?.nivel?.nombre, fecha: c.hoy });
@@ -60,7 +60,8 @@ export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTo
   if (!forzado || forzado === 'hermes') {
     const listo = hermesDe(me) && (await saludHermes(me)).auth;
     if (listo) {
-      const mo = motorDe(me), elegido = mo.motor === 'hermes' ? mo : null;
+      // `modelo` ({ provider, model }) fuerza un modelo de Hermes (Agent Area); si no, el que la persona eligió en el Chat.
+      const mo = modelo?.model ? { motor: 'hermes', modelo: modelo.model, provider: modelo.provider || '' } : motorDe(me), elegido = mo.motor === 'hermes' ? mo : null;
       const out = await chatHermes(me, { sesion: idSesion(modoDe(tool), slug), sistema, mensaje, modelo: elegido ? { model: elegido.modelo, provider: elegido.provider } : {}, signal, onDelta, onTool: (n) => onTool(pasoHermes(n)) });
       if (!String(out || '').trim()) throw vacio();
       return { texto: out, via: 'hermes', modelo: (elegido?.modelo ? nombreMotor(elegido) : 'Hermes').slice(0, 80) };
@@ -90,8 +91,8 @@ export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTo
 // ---------- Correr un pedido que no es de una herramienta (Agent Area) ----------
 // Mismo orden y mismas vías que correrIA (Hermes → puente → claude.ai): el Agent Area no habla con una IA por su cuenta.
 // → { texto, via, modelo }. `bloque` es el nombre del bloque que se pide en la respuesta (para pegar desde claude.ai).
-export async function correrPedido(me, { modo = 'estrategia', slug = '', nombre = 'Agent Area', bloque = 'etapa', mensaje, signal, onDelta = () => {}, onTool = () => {}, preferir } = {}) {
-  return correrIA(me, { tool: { ws: WORKSPACES.find((w) => w.modo === modo)?.id || 'strategy', nombre, bloque, prompt: () => mensaje }, ctx: { cliente: slug ? { slug } : null, hoy: today() }, signal, onDelta, onTool, preferir });
+export async function correrPedido(me, { modo = 'estrategia', slug = '', nombre = 'Agent Area', bloque = 'etapa', mensaje, signal, onDelta = () => {}, onTool = () => {}, preferir, modelo } = {}) {
+  return correrIA(me, { tool: { ws: WORKSPACES.find((w) => w.modo === modo)?.id || 'strategy', nombre, bloque, prompt: () => mensaje }, ctx: { cliente: slug ? { slug } : null, hoy: today() }, signal, onDelta, onTool, preferir, modelo });
 }
 
 // ---------- El contexto de una herramienta ----------

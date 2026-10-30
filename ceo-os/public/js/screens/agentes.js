@@ -8,11 +8,13 @@ import { html, raw, mount, acts, ico, skel, toast, api, ask, md, $, esc } from '
 import { ESTADOS, activa, completo, puede, pedido, leerRespuesta, simular, leerOutput } from '../agentes-flujos.js';
 import { AGENTES } from '../harness/agentes.js';
 import { correrPedido, caminoIA } from '../ia-herramienta.js';
+import { hermesDe, modelosHermes, nombreProveedor, esLocal } from '../hermes.js';
+import { motorDe, nombreMotor } from '../motor-ui.js';
 import { cargarContexto } from '../contexto.js';
 
 export const esqueleto = () => skel('pagina');
 const enc = encodeURIComponent;
-const VIA = { hermes: 'Hermes', puente: 'Claude · puente', 'claude-web': 'claude.ai', simulado: 'Simulado' };
+const VIA = { hermes: 'Hermes', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
 const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', fuente: 'agregó una fuente', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', archivar: 'archivó el run', restaurar: 'restauró el run' };
 const quien = (e) => String(e || '').split('@')[0];
 const cuando = (iso) => (iso ? new Date(iso).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
@@ -83,9 +85,20 @@ async function pintarRun(el, me, id, alive) {
   if (!alive()) return;
   const flujoAg = AGENTES.find((a) => a.id === run.flujo.id);
   const modo = flujoAg?.modo || 'estrategia';
+  // Con qué corre: la IA nunca se elige aquí por proveedor fijo. Va por el harness (Hermes) con los proveedores y modelos que
+  // esta compu tiene conectados —pasarelas como Kilo u OpenRouter, modelos locales o en un VPS (endpoint propio)—, o por una
+  // conexión directa a la suscripción (Claude por el puente, claude.ai a mano), o simulado.
   const camino = await caminoIA(me).catch(() => 'claude-web');
-  const runnerGuardado = localStorage.getItem(prefRunner(me)) || 'auto';
-  let runner = runnerGuardado;
+  const modelos = hermesDe(me) ? await modelosHermes(me).catch(() => null) : null;
+  const delChat = motorDe(me);
+  const opciones = [
+    ['auto', `Automático · ${camino === 'hermes' ? `Hermes (${delChat.motor === 'hermes' ? nombreMotor(delChat) : 'modelo del Chat'})` : VIA[camino]}`],
+    ...((modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length).map((p) => [`${nombreProveedor(p.slug)}${esLocal(p.slug) ? ' · en tu compu' : p.slug === 'custom' ? ' · endpoint propio' : ''}`, p.modelos.slice(0, 40).map((m) => [`hermes|${p.slug}|${m}`, m])])),
+    ['puente', VIA.puente], ['claude-web', VIA['claude-web']], ['simulado', 'Simulado (stub, sin IA)'],
+  ];
+  const valores = opciones.flatMap((o) => (Array.isArray(o[1]) ? o[1].map((x) => x[0]) : [o[0]]));
+  let runner = localStorage.getItem(prefRunner(me)) || 'auto';
+  if (!valores.includes(runner)) runner = 'auto';
 
   const pinta = () => {
     const act = activa(run), n = sel ?? act, e = run.etapas[n], siguiente = run.etapas[n + 1];
@@ -111,10 +124,10 @@ async function pintarRun(el, me, id, alive) {
           ${run.objetivo ? html`<p class="sm ag-obj">Objetivo: ${run.objetivo}</p>` : ''}</div>
         <div class="ag-head-a">
           <label class="sm mut">Con qué corre
-            <select class="in sm" data-ch="runner">
-              <option value="auto" ${runner === 'auto' ? raw('selected') : ''}>Tu IA (${VIA[camino] || camino})</option>
-              <option value="simulado" ${runner === 'simulado' ? raw('selected') : ''}>Simulado (stub)</option>
-            </select></label>
+            <select class="in sm" data-ch="runner">${opciones.map(([k, v]) => (Array.isArray(v)
+              ? html`<optgroup label="Hermes · ${k}">${v.map(([val, txt]) => html`<option value="${val}" ${runner === val ? raw('selected') : ''}>${txt}</option>`)}</optgroup>`
+              : html`<option value="${k}" ${runner === k ? raw('selected') : ''}>${v}</option>`))}</select>
+            ${modelos ? '' : html`<span class="xs mut">${hermesDe(me) ? 'Hermes no respondió: enciéndelo para ver tus modelos' : html`Conecta Hermes en el <a href="#/chat">Chat</a> para usar tus proveedores y modelos`}</span>`}</label>
           ${!run.archivado ? html`<button class="btn ghost sm" data-act="archivar">Archivar</button>` : html`<button class="btn ghost sm" data-act="restaurar">Restaurar</button>`}
         </div>
       </header>
@@ -186,7 +199,9 @@ async function pintarRun(el, me, id, alive) {
     try {
       if (runner === 'simulado') res = { ...simular(run, n), via: 'simulado', modelo: '' };
       else {
-        const out = await correrPedido(me, { modo, slug: run.cliente, nombre: `${run.flujo.nombre} · ${run.etapas[n].nombre}`, mensaje: pedido(run, n) });
+        const [tipo, provider, ...m] = runner.split('|');
+        const elegido = tipo === 'hermes' ? { preferir: 'hermes', modelo: { provider, model: m.join('|') } } : ['puente', 'claude-web'].includes(runner) ? { preferir: runner } : {};
+        const out = await correrPedido(me, { modo, slug: run.cliente, nombre: `${run.flujo.nombre} · ${run.etapas[n].nombre}`, mensaje: pedido(run, n), ...elegido });
         res = { ...leerRespuesta(out.texto), via: out.via, modelo: out.modelo };
       }
     } catch (e) {

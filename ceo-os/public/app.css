@@ -8529,7 +8529,7 @@ button.vz-ley-i:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1
 .ag-step-t b{font-size:12.5px;font-weight:600;white-space:nowrap}
 .ag-step-t span{font-size:11px;color:var(--ui-mut);white-space:nowrap}
 .ag-dot{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--ui-line2);font-size:11px;font-weight:600;color:var(--ui-mut);flex:none}
-.ag-step.aprobada .ag-dot{background:var(--ui-ok);border-color:var(--ui-ok);color:#fff}
+.ag-step.aprobada .ag-dot{background:var(--ui-ok);border-color:var(--ui-ok);color:var(--ui-surf)}
 .ag-step.revision .ag-dot,.ag-step.ajuste .ag-dot{background:color-mix(in srgb,var(--ui-warn) 18%,transparent);border-color:var(--ui-warn);color:var(--ui-warn)}
 .ag-step.trabajando .ag-dot svg{animation:llmGira 1s linear infinite}
 .ag-sep{color:var(--ui-mut2);display:flex}
