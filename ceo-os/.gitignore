@@ -2,3 +2,4 @@ node_modules
 .devdb
 api/_data
 .capturas/
+public/workflows

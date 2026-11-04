@@ -137,7 +137,7 @@ const NAV = [
       ['setup', 'Setup', 'org/setup', ceo, 'settings'],
     ] },
   { id: 'ai', nombre: 'Inherent AI', ruta: 'ai', icono: 'nav-ai', ve: equipo, portada: 'ai',
-    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['mcps', 'MCPs', 'ai/mcps', null, 'link']] },
+    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['mcps', 'MCPs', 'ai/mcps', null, 'link'], ['workflows', 'Workflows', 'ai/workflows', null, 'git-branch']] },
   { id: 'areas', nombre: 'Áreas', ruta: 'areas', icono: 'layout-grid', ve: () => sees('areas'),
     items: AREAS.map((a) => [a.id, a.nombre, 'areas/' + a.id, () => puedeVerArea(me, a.id), a.icono, a.color]) },
 ];
@@ -234,7 +234,7 @@ function resolve(path) {
   }
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
   // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
-  if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
+  if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' || parts[1] === 'workflows' ? { key: 'ai', rest: [parts[1]], url: 'ai/' + parts[1] } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {
     const ver = AREAS.filter((x) => puedeVerArea(me, x.id)), id = parts[1];

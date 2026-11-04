@@ -143,3 +143,40 @@ Cada fase termina con algo que se puede probar. No se empieza una sin cerrar la 
 - Si el VPS de Contabo alcanza: más de un agente a la vez necesita más que 1 vCPU.
 - Términos de uso de cada proveedor si alguien conecta su suscripción personal.
 - Cuál es el OS oficial entre `inherent-work` y `inherente-os-app`.
+
+## 13 · El orquestador: de un prompt en lenguaje natural a un workflow multimodelo
+
+**Lo que promete la web (inherentglobal.com, leída el 2026-11-04):** cuatro pilares (Growth, Conversion, Operations y Money System) y tres planes (Brand Foundation, Brand Growth, Growth Partnership) que entregan *marca, plan y ejecución*, no piezas sueltas. Promesas operativas concretas: contenido aprobado por el cliente antes de publicar (*«nada se publica sin tu OK»*), piezas a tiempo, revisión mensual y presentación el día 20, metas medibles, y un portal donde cliente y equipo leen los mismos números. El OS es la fábrica que cumple eso.
+
+**Principio:** el LLM *decide qué workflow* y *produce el contenido de cada paso*; **un ejecutor determinista lleva el flujo**. Un solo agente que planea y ejecuta todo en un bucle largo es lo que falló en el spike (ver 14).
+
+```
+Prompt en lenguaje natural («arma el mes de AKAI», «lanza la campaña de X»)
+  → 1. ENRUTADOR (modelo barato): intención + cliente + ficha → qué plantilla de workflow
+  → 2. PLANIFICADOR (modelo fuerte): llena la plantilla (pasos, entradas, fechas)
+  → 3. EJECUTOR (código, no LLM): corre cada paso en orden/paralelo, con cola y candados
+        paso = { skill del agente, modelo por etapa, MCP permitidos, entrada, salida esperada, gate? }
+  → 4. REVISOR (modelo distinto al que escribió): contra 08-CRITERIOS-DE-ACEPTACION
+  → 5. GATE humano (CEO/COO/cliente) → publicar o devolver
+```
+
+- **Workflows como plantillas versionadas en el repo** (una por entregable: estrategia, mes de contenido, campaña, reporte del 20). El LLM las elige y las llena; no las inventa.
+- **Un paso = una llamada acotada** (una skill, un modelo, pocas herramientas). Los MCP se llaman *dentro* del paso que los necesita y solo los que su perfil permite.
+- **Modelo por paso** según la tabla de la sección 9. El revisor siempre es otro modelo.
+- **Todo paso escribe su salida y su costo en la base del OS** (`agent_runs`), así Agent Area y el costo por cliente salen solos.
+- **El cliente ve su avance en el portal** (misma fuente de datos), con aprobación pieza por pieza.
+
+## 14 · Hallazgos del spike (2026-11-04)
+
+| Hallazgo | Consecuencia |
+|---|---|
+| Servidor: 4 vCPU, 7.8 GB, 94 GB libres. Hermes y LiteLLM viejos retirados (respaldo en el servidor) | Alcanza para el spike |
+| **Featherless `feather_pro_plus`: 4 unidades de concurrencia y Kimi K3 cuesta 4 → una sola petición de Kimi K3 a la vez en toda la cuenta** | La cola global del Gateway es obligatoria, no opcional. Para paralelismo hay que usar modelos de menos unidades, NVIDIA o la API de frontier |
+| **Featherless limita Kimi K3 a 32,768 tokens de contexto en tu plan (no 262k).** Error real: «prompt de 32,922 tokens excede el máximo de 32,768». Era la causa de que las tareas largas se cortaran | La rotación de sesiones con resumen de traspaso es obligatoria, no un extra. OpenCode debe declarar `context: 32768` para que compacte a tiempo. Cada paso del workflow debe caber en ~20k tokens de entrada |
+| **Kimi K3, GLM 5.3 y MiniMax razonan en oculto y ese razonamiento cuenta contra `max_tokens`**: Kimi gastó 4,500 tokens pensando y devolvió 0 caracteres (`finish=length`). DeepSeek V4 Flash (~25 tok/s) y V4 Pro (~13 tok/s) no lo hacen | Los pasos de redacción usan DeepSeek; Kimi/GLM quedan para después de medirlos con presupuesto de razonamiento explícito |
+| **Prueba hecha (2026-11-04):** workflow de Strategy (método → contexto → análisis → revisión → gate) corrió de punta a punta con un ejecutor en código: ~7 min, ~25k tokens, se detuvo en el gate del CEO. El revisor detectó una inconsistencia real de la ficha de prueba (2,990 tickets × $145 = $433k ≠ $330k declarados) | Valida la sección 13: pasos acotados, modelo por paso, revisor, gate. Pendiente comparar la calidad contra Claude por API |
+| OpenCode + Kimi K3: tareas cortas con herramientas funcionan (leyó y escribió archivos) | D3 sigue en pie para tareas acotadas |
+| OpenCode + Kimi K3 en la tarea larga de Strategy: leyó los archivos y cerró el turno sin escribir (varios intentos); además arranques colgados por IPv6 (corregido con `gai.conf`) | **No usar un agente de bucle largo.** Valida el diseño de la sección 13: pasos acotados con ejecutor determinista |
+| NVIDIA gratuito: solo MiniMax M3.1 Flash respondió; Kimi K2.6 no habilitado; DeepSeek/GLM Flash con cola | Sirve para tareas menores (títulos, triage), no como motor base |
+| Claude Code CLI no corre en segundo plano en la Mac («Not logged in») | La comparación con Claude se hace por API con llave de la empresa |
+| Firewall activo (solo Tailscale), login root y por contraseña cerrados | Servidor ya endurecido |

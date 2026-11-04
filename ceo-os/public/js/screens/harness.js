@@ -74,6 +74,7 @@ function lmEstado(m) {
 
 export async function render(el, { me, sub = [], alive }) {
   let pagina = String(sub[0] || '');
+  if (pagina === 'workflows') return (await import('./workflows.js')).render(el, { me, alive });
   // Cualquier otra página → #/ai (se canoniza la ruta y se pinta la portada).
   if (pagina && pagina !== 'mcps') { pagina = ''; try { history.replaceState(null, '', '#/ai'); } catch {} }
   let gen = 0, ultimoForm = '';

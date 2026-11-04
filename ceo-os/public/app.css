@@ -8485,3 +8485,17 @@ button.vz-ley-i:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1
   .iai-lm-modelo:nth-child(6){animation-delay:175ms}
   .iai-lm-mas{animation-delay:210ms}
 }
+
+/* Workflows (#/ai/workflows): el editor básico de los pasos de cada agente */
+.wf-grid{display:grid;grid-template-columns:minmax(200px,260px) 1fr;gap:18px;margin-top:14px;align-items:start}
+.wf-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.wf-paso{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line,rgba(0,0,0,.12));border-radius:10px;background:transparent;color:inherit;cursor:pointer;font:inherit}
+.wf-paso.on{border-color:currentColor;background:rgba(127,150,49,.12)}
+.wf-n{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;border:1px solid currentColor;opacity:.7}
+.wf-sub{display:block}
+.wf-ed,.wf-aj{margin-bottom:14px}
+.wf-fila{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:8px 0}
+.wf-ta{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:13px;line-height:1.45;resize:vertical}
+.wf-sug{margin:8px 0}
+.wf-acc,.wf-pie{margin-top:12px;gap:8px;flex-wrap:wrap}
+@media(max-width:760px){.wf-grid{grid-template-columns:1fr}}

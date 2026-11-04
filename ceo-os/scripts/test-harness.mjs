@@ -40,14 +40,14 @@ await t('el menú de Inherent AI en app.js trae solo Chat y MCPs, y ninguna de l
   assert.ok(!/AI Harness/.test(APP), 'app.js ya no dice «AI Harness»');
   assert.match(APP, /#\/chat/); assert.match(APP, /#\/ai\/mcps/);
   const ids = [...APP.matchAll(/'ai\/([a-z]+)'/g)].map((m) => m[1]);
-  assert.deepEqual([...new Set(ids)], ['mcps']);
-  for (const v of ['agents', 'skills', 'workflows', 'memory', 'models', 'evals']) assert.ok(!APP.includes(`'ai/${v}'`), `ai/${v} sigue en el menú`);
+  assert.deepEqual([...new Set(ids)], ['mcps', 'workflows']);
+  for (const v of ['agents', 'skills', 'memory', 'models', 'evals']) assert.ok(!APP.includes(`'ai/${v}'`), `ai/${v} sigue en el menú`);
 });
 await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se canoniza a #/ai; sus íconos existen', () => {
   assert.match(SRC, /pagina !== 'mcps'/);
   assert.match(SRC, /replaceState\(null, '', '#\/ai'\)/);
   assert.ok(!/AI Harness/.test(SRC), 'la pantalla ya no dice «AI Harness»');
-  for (const v of ['agents', 'skills', 'workflows', 'memory', 'models', 'evals']) assert.ok(!new RegExp(`['"]${v}['"]`).test(SRC), `${v} sigue en el router`);
+  for (const v of ['agents', 'skills', 'memory', 'models', 'evals']) assert.ok(!new RegExp(`['"]${v}['"]`).test(SRC), `${v} sigue en el router`);
   assert.match(SRC, /href="#\/chat"/); assert.match(SRC, /href="#\/ai\/mcps"/);
   for (const m of SRC.matchAll(/\bico\(\s*'([\w-]+)'/g)) assert.ok(tieneIco(m[1]), `ícono ${m[1]}`);
 });

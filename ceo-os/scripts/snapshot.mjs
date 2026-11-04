@@ -50,7 +50,9 @@ for (const f of Object.keys(files)) {
   const ref = path.join(repo, 'agents/01-strategy/brain/skills/hormozi-brain/references'), fuentes = {};
   const rd = (rel) => { let ents = []; try { ents = fs.readdirSync(path.join(ref, rel), { withFileTypes: true }); } catch {} for (const e of ents) { const q = rel ? rel + '/' + e.name : e.name; if (e.isDirectory()) rd(q); else if (/\.md$/i.test(q)) fuentes[q] = fs.readFileSync(path.join(ref, q), 'utf8'); } };
   rd('');
-  fs.mkdirSync(path.dirname(out), { recursive: true });
+  // Los workflows de los agentes (ceo-os/workflows/*.json) viajan a public/workflows/ para que el editor del OS los lea.
+try { const wd = path.join(here, '..', 'workflows'), pd = path.join(here, '..', 'public', 'workflows'); fs.mkdirSync(pd, { recursive: true }); for (const f of fs.readdirSync(wd)) if (f.endsWith('.json')) fs.copyFileSync(path.join(wd, f), path.join(pd, f)); } catch {}
+fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(path.join(path.dirname(out), 'fuentes.json'), JSON.stringify({ at: new Date().toISOString(), files: fuentes }));
   console.log(`snapshot: ${Object.keys(fuentes).length} fuentes de hormozi-brain`);
 }
