@@ -36,6 +36,9 @@ for (const p of profiles) {
   walk(`${p}/02-marca/logos`, (q) => /\.svg$/i.test(q));
 }
 
+// Agent Area: el WORKFLOW.md de cada agente (las etapas de cada flujo los lee api/_lib/agentes.js con agentes-flujos.js).
+try { for (const d of fs.readdirSync(path.join(repo, 'agents'), { withFileTypes: true })) if (d.isDirectory() && /^\d/.test(d.name)) take(`agents/${d.name}/brain/WORKFLOW.md`); } catch {}
+
 // Intel: solo los archivos del mapa de entregables (public/js/intel-mapa.js), de cada cliente y de Inherent. Nada más del folder
 // (nada de 10-finanzas ni de lo que no es un entregable). Su fecha es la del último commit, si git está disponible en el build.
 for (const p of profiles) walk(p, (q) => text(q) && esIntel(q.slice(p.length + 1)));

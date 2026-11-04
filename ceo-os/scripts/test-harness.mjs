@@ -1,6 +1,6 @@
 // Pruebas de Inherent AI (#/ai, antes «AI Harness»): la lista fija de los 12 agentes del repo (public/js/harness/agentes.js, ya sin
-// pantalla), el menú de app.js solo trae Chat y MCPs, el router de harness.js solo conoce la portada y «mcps», la pantalla es de solo
-// lectura (sin backend, sin costos, sin mostrar la llave de Hermes) y las dos páginas cargan sin errores con y sin Hermes (con un
+// pantalla), el menú de app.js trae Chat, Agent Area y MCPs, el router de harness.js solo conoce la portada y «mcps»; al cargar solo
+// lee el estado de conectores (sin escrituras, costos ni mostrar la llave de Hermes). Ambas páginas cargan con y sin Hermes (con un
 // navegador de mentira). La portada trae la tarjeta «Modelos abiertos · LM Studio»: conectado (con sus modelos) o los 4 pasos.
 // npm run test:harness
 import assert from 'node:assert/strict';
@@ -35,12 +35,12 @@ await t('una línea por agente: lo que hace cabe en una frase corta', () => { fo
 
 // ---------- El menú (app.js) y el router de harness.js (se leen como texto) ----------
 const APP = leer('public/js/app.js');
-await t('el menú de Inherent AI en app.js trae solo Chat y MCPs, y ninguna de las seis páginas viejas', () => {
+await t('el menú de Inherent AI en app.js trae Chat, Agent Area y MCPs, y ninguna de las seis páginas viejas', () => {
   assert.match(APP, /Inherent AI/);
   assert.ok(!/AI Harness/.test(APP), 'app.js ya no dice «AI Harness»');
   assert.match(APP, /#\/chat/); assert.match(APP, /#\/ai\/mcps/);
   const ids = [...APP.matchAll(/'ai\/([a-z]+)'/g)].map((m) => m[1]);
-  assert.deepEqual([...new Set(ids)], ['mcps']);
+  assert.deepEqual([...new Set(ids)], ['agentes', 'mcps']);
   for (const v of ['agents', 'skills', 'workflows', 'memory', 'models', 'evals']) assert.ok(!APP.includes(`'ai/${v}'`), `ai/${v} sigue en el menú`);
 });
 await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se canoniza a #/ai; sus íconos existen', () => {
@@ -51,11 +51,11 @@ await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se
   assert.match(SRC, /href="#\/chat"/); assert.match(SRC, /href="#\/ai\/mcps"/);
   for (const m of SRC.matchAll(/\bico\(\s*'([\w-]+)'/g)) assert.ok(tieneIco(m[1]), `ícono ${m[1]}`);
 });
-await t('Inherent AI es de solo lectura, sin backend y sin costos', () => {
+await t('harness.js delega el directorio; no tiene escrituras directas ni costos', () => {
   assert.ok(!/method\s*:\s*'(POST|PUT|PATCH|DELETE)'/.test(SRC) && !/\bbody\s*:/.test(SRC), 'sin escrituras');
   assert.ok(!/\.(save|create|remove)\(/.test(SRC), 'sin col().save/create/remove');
   assert.ok(!/client:\s*true/.test(SRC), 'sin { client: true }');
-  assert.ok(!/\bapi\(|\bcol\(/.test(SRC), 'no habla con el servidor del OS (solo con Hermes y connectai)');
+  assert.ok(!/\bapi\(|\bcol\(/.test(SRC), 'las llamadas al OS se delegan al directorio, no se duplican aquí');
   for (const x of ['BASELINE', 'baseline', 'internos', 'payroll', 'finanzas', "'audit'", 'audit/', 'rates', 'seesCosts', 'USD_GTQ']) assert.ok(!SRC.includes(x), `no debe nombrar ${x}`);
 });
 
@@ -94,10 +94,12 @@ const OPCIONES = {
 let escenario = 'claude';
 let hermesOn = false, llamadasOS = [];
 const resp = (ok, status, data) => ({ ok, status, json: async () => data });
-globalThis.fetch = async (url) => {
+globalThis.fetch = async (url, opts = {}) => {
   const u = String(url);
   if (u.startsWith('http://127.0.0.1:8642')) { let r = hermesOn ? HERMES[u.slice('http://127.0.0.1:8642'.length).split('?')[0]] : null; if (typeof r === 'function') r = r(); if (!r) throw new Error('sin Hermes'); return resp(true, 200, r); }
-  llamadasOS.push(u); return resp(false, 404, { error: 'no' });
+  llamadasOS.push({ url: u, method: opts.method || 'GET', body: opts.body });
+  if (u === '/api/conectores/estado') return resp(true, 200, { conectores: [], puente: false });
+  return resp(false, 404, { error: 'no' });
 };
 
 const { render } = await import('../public/js/screens/harness.js');
@@ -109,7 +111,7 @@ async function pagina(me, id, conHermes, esc = 'claude', sinLlave = false) {
   globalThis.inherentEscritorio = conHermes && !sinLlave ? { hermes: { key: LLAVE } } : undefined;
   const nodos = {};
   const todo = () => el.innerHTML + Object.values(nodos).map((n) => n.innerHTML).join('');
-  const el = { innerHTML: '', addEventListener: noop, querySelectorAll: () => [], contains: () => true, querySelector(sel) { return /^#iai-[\w-]+$/.test(sel) && todo().includes(`id="${sel.slice(1)}"`) ? (nodos[sel] ||= { innerHTML: '' }) : null; } };
+  const el = { innerHTML: '', addEventListener: noop, querySelectorAll: () => [], contains: () => true, querySelector(sel) { return /^#iai-[\w-]+$/.test(sel) && todo().includes(`id="${sel.slice(1)}"`) ? (nodos[sel] ||= { innerHTML: '', addEventListener: noop, contains: () => true, querySelector: () => null, querySelectorAll: () => [] }) : null; } };
   await render(el, { me, sub: id ? [id] : [], alive: () => true });
   await new Promise((r) => setTimeout(r, 80)); // lo que se llena después (Hermes)
   return todo();
@@ -132,7 +134,7 @@ for (const conHermes of [false, true]) for (const [me, quien] of [[ceo, 'CEO'], 
     limpio(s, c);
     assert.match(s, /Inherent AI/); assert.ok(!/AI Harness/.test(s), `${c}: dice «AI Harness»`);
     assert.match(s, /href="#\/chat"/); assert.match(s, /href="#\/ai\/mcps"/);
-    assert.deepEqual(llamadasOS, [], `${c}: llamó al servidor del OS`);
+    assert.deepEqual(llamadasOS, id === 'mcps' ? [{ url: '/api/conectores/estado', method: 'GET', body: undefined }] : [], `${c}: solo el directorio consulta su estado, sin escrituras ni llamadas extra`);
     if (id === '') {
       assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los MCPs/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
       if (conHermes) { assert.match(s, /Encendido/); assert.match(s, /Hermes v1\.2/); assert.match(s, /claude-opus-5-5/); assert.match(s, /2 capacidades activas/); assert.match(s, /de 3/); }
@@ -141,6 +143,9 @@ for (const conHermes of [false, true]) for (const [me, quien] of [[ceo, 'CEO'], 
       assert.match(s, /Modelos abiertos · LM Studio/); assert.match(s, /id="iai-lm"/); pasosLM(s, c);
       assert.match(s, conHermes ? /Sin conectar<\/b> · LM Studio todavía no aparece en tu Hermes/ : /Sin conectar<\/b> · Hermes no responde en esta compu/);
     } else {
+      assert.match(s, /<h2>Conectores<\/h2>/);
+      assert.match(s, /class="mcd-card /);
+      assert.match(s, /Avanzado · MCPs en Hermes/);
       assert.match(s, /aria-current="page"/);
       for (const x of ['Lo que tu Inherent AI puede usar hoy', 'Conectar un MCP a tu Inherent AI', 'Los MCPs viven en Hermes', 'Quitar o probar un MCP', 'Habla con Inherent OS desde tu IA', 'inherent mcp list', 'https://inherent-work.vercel.app/mcp']) assert.ok(s.includes(x), `${c}: falta «${x}»`);
       assert.match(s, /id="iai-n"/); assert.match(s, /id="iai-u"/); assert.match(s, /id="iai-a"/);

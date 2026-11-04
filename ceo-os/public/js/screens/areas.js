@@ -25,7 +25,16 @@ const COLOR_ESTADO = { 'Por hacer': 'var(--ui-mut2)', 'En curso': 'var(--ui-info
 // Qué entra escalonado en cada forma de verlas (solo lo de la hoja: nada anidado, para que no suba dos veces).
 const SEL_DATOS = { lista: '.ar-pr, .ar-card', tablero: '.ar-resumen, .ar-col', calendario: '.ar-cal' };
 
+// Las pestañas de un área: lo que sabe (Notas) y quién trabaja en ella (Agents).
+const tabsArea = (a, on) => html`<nav class="iai-tabs ar-tabs" aria-label="${a.nombre}"><a href="#/areas/${a.id}" ${on === 'notas' ? raw('aria-current="page"') : ''}>${ico('file-text', 14)} Notas</a><a href="#/areas/${a.id}/agents" ${on === 'agents' ? raw('aria-current="page"') : ''}>${ico('agents', 14)} Agentes</a></nav>`;
+
 export async function render(el, { me, sub, alive }) {
+  // Agents del área (#/areas/<área>/agents): los mismos agentes del Agent Area, filtrados por esta área.
+  if (sub?.[1] === 'agents') {
+    const a = areaInfo(sub[0]), { pintarAgentes } = await import('../agentes-ui.js');
+    mount(el, html`<div class="hello sp-hero ar-head" style="--ar-c:var(${a.color})"><span class="ar-ico">${ico(a.icono, 22)}</span><div class="ar-tit"><h1>${a.nombre}</h1><p>Los agentes que trabajan en ${a.nombre}.</p></div></div>${tabsArea(a, 'agents')}<div class="ar-agents"></div>`);
+    return pintarAgentes(el.querySelector('.ar-agents'), me, alive, { area: a.id, cabecera: false });
+  }
   const area = areaInfo(sub?.[0]), C = col('area_notes');
   const puede = canEdit(me, 'library'), drive = Boolean(me.google?.drive);
   const f = { q: '', cliente: '', tipo: '' };
@@ -177,6 +186,7 @@ export async function render(el, { me, sub, alive }) {
     mount(el, html`<div class="hello sp-hero ar-head" style="--ar-c:var(${area.color})"><span class="ar-ico">${ico(area.icono, 22)}</span>
         <div class="ar-tit"><h1>${area.nombre}</h1><p>Lo que esta área sabe y lo importante, en un solo lugar.</p></div>
         ${avance}<div class="ar-acc"><button class="btn ghost" type="button" data-act="chat">${ico('sparkles', 14)} Hablar con Inherent AI</button>${puede ? html`<button class="btn" type="button" data-act="nueva">${ico('plus', 14)} Agregar</button>` : ''}</div></div>
+      ${tabsArea(area, 'notas')}
       ${!hay ? html`<div class="ar-vacio" style="--ar-c:var(${area.color})">${vacio({ icono: area.icono, titulo: `Aquí va lo que ${area.nombre} sabe`, linea: puede ? 'Una nota, un link, un archivo o una decisión. Lo importante se fija arriba.' : 'Una nota, un link, un archivo o una decisión. Tu perfil solo puede leer esto.', boton: puede ? { texto: 'Agregar la primera', act: 'nueva' } : null })}</div>`
       : html`<div class="ar-bar" style="--ar-c:var(${area.color})"><label class="ar-search">${ico('search', 14)}<input class="in" id="ar-q" type="search" value="${f.q}" placeholder="Buscar en ${area.nombre}…" aria-label="Buscar"></label>
           <span class="ar-cl" id="ar-cl">${selCliente()}</span>
