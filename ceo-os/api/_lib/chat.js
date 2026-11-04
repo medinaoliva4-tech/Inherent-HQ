@@ -12,7 +12,7 @@ import { guard } from './access.js';
 import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
-import { PROPONIBLES_CHAT } from './agentes.js';
+import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
 
 export const COLL = 'chat_sesiones';
 const GW = 'gateway_estado';
@@ -71,7 +71,33 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const s = await mia(req, res, u); if (!s) return;
     const desde = Math.max(0, Number(req.query.desde) || 0);
-    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at } : null });
+    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at } : null });
+  });
+
+  // F4.5 · los trabajos que nacieron (o se abrieron) en esta conversación: su pestaña y sus eventos en el hilo.
+  on('POST', 'chat/sesiones/:id/agentes', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    const run = await db.get(RUNS, txt(body(req).run, 80));
+    if (!run || !(await verRun(u, run))) return res.status(404).json({ error: 'Ese trabajo no existe' });
+    if ((s.agentes || []).some((x) => x.run === run.id)) return res.json({ agentes: s.agentes });
+    const d = await guardar(res, u, s, { agentes: [...(s.agentes || []), { run: run.id, flujo: run.flujo?.id || '', at: ahora() }].slice(-20) });
+    if (d) res.json({ agentes: d.agentes });
+  });
+
+  // F4.5 · el CEO y el COO pueden leer (no escribir) la conversación ligada a un trabajo que ven. No sale en su lista del Chat.
+  on('GET', 'chat/sesiones/:id/lectura', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (!['ceo', 'coo'].includes(u.role)) return res.status(403).json({ error: 'Solo el CEO y el COO' });
+    const s = await db.get(COLL, txt(req.params.id, 120));
+    if (!s || s.archivado) return res.status(404).json({ error: 'Esa conversación no existe' });
+    const runId = txt(req.query.run, 80), run = runId ? await db.get(RUNS, runId) : null;
+    const ligada = run && run.chat?.sesion === s.id && (await verRun(u, run));
+    if (!ligada) return res.status(404).json({ error: 'Esa conversación no está ligada a un trabajo que puedas ver' });
+    // Queda en el registro del trabajo quién la leyó.
+    const { id, v, _meta, ...data } = run;
+    await db.update(RUNS, id, { ...data, historial: [...(data.historial || []), { at: ahora(), quien: u.email, accion: 'leer-chat' }].slice(-500) }, v, u.email).catch(() => null);
+    res.json({ owner: s.owner, title: s.title, messages: (s.mensajes || []).filter((m) => m.content && !m.parcial).map((m) => ({ role: m.role, content: m.content, at: m.at })) });
   });
 
   on('DELETE', 'chat/sesiones/:id', async (req, res) => {

@@ -224,6 +224,9 @@ export function siguienteAuto(run, n) {
   if (!e || e.estado !== 'pendiente' || run.pausado || run.archivado) return null;
   return Number.isInteger(run.plan_ok?.hasta) && run.plan_ok.hasta >= k ? k : null;
 }
+// Una etapa puesta en cola para el servidor (la ruta «encolar» y el avance automático al aprobar usan lo mismo).
+export const enCola = (x, modelo, por, at, origen = '') => ({ ...x, estado: 'en_cola', via: 'gateway', modelo, cola: { at, por, antes: x.estado, modelo },
+  actividades: [...(x.estado === 'ajuste' ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · ${origen === 'auto' ? 'sigue sola: está dentro de lo platicado' : 'espera su turno'}`, at }].slice(-150) });
 export const completo = (run) => (run?.etapas || []).length > 0 && run.etapas.every((e) => e.estado === 'aprobada');
 export const progreso = (run) => { const t = (run?.etapas || []).length, h = (run?.etapas || []).filter((e) => e.estado === 'aprobada').length; return { hechas: h, total: t, pct: t ? Math.round((h / t) * 100) : 0 }; };
 

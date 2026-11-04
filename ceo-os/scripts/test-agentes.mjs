@@ -10,7 +10,7 @@ import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
 import { leerMencion, modeloDeEtapa, planDe, contextoChat } from '../public/js/chat-agentes.js';
-import { siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
+import { enCola, siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -206,6 +206,14 @@ t('F4.5: la siguiente etapa avanza sola solo dentro de lo platicado', () => {
   assert.equal(siguienteAuto(r(2), 1), 2); assert.equal(siguienteAuto(r(1), 1), null);
   assert.equal(siguienteAuto(r(3, { pausado: true }), 1), null); assert.equal(siguienteAuto({ etapas: r(3).etapas }, 1), null);
   assert.equal(siguienteAuto(r(3), 3), null);
+});
+t('F4.5: encolar una etapa deja su modelo, quién y de dónde venía (lo usan la ruta y el avance solo)', () => {
+  const e = enCola({ nombre: 'B', estado: 'ajuste', actividades: [{ titulo: 'viejo' }] }, 'deepseek-v4-pro', 'ceo@x', '2026-11-04T10:00:00Z', 'auto');
+  assert.equal(e.estado, 'en_cola'); assert.equal(e.via, 'gateway'); assert.equal(e.modelo, 'deepseek-v4-pro');
+  assert.deepEqual(e.cola, { at: '2026-11-04T10:00:00Z', por: 'ceo@x', antes: 'ajuste', modelo: 'deepseek-v4-pro' });
+  assert.equal(e.actividades.length, 2, 'un ajuste conserva la actividad anterior');
+  assert.match(e.actividades.at(-1).detalle, /sigue sola/);
+  assert.equal(enCola({ estado: 'pendiente', actividades: [{ titulo: 'x' }] }, 'm', 'a', 't').actividades.length, 1);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

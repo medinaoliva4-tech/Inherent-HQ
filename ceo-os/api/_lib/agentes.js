@@ -19,7 +19,8 @@ import { toolsDe, llamarTool } from './conectores.js';
 import { conectorDe } from '../../public/js/conectores.js';
 import * as mcpOS from './mcp.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
-import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado } from '../../public/js/agentes-flujos.js';
+import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto } from '../../public/js/agentes-flujos.js';
+import { modeloDeEtapa, MAX_CONTEXTO } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
@@ -49,7 +50,7 @@ export async function plantillas() {
 }
 
 // ---------- Quién ve qué ----------
-async function ver(u, run, sc) {
+export async function ver(u, run, sc) {
   if (!run) return false;
   if (run.cliente === 'personal') return u.role === 'ceo';
   if (!run.cliente || run.cliente === 'inherent') return true;
@@ -78,11 +79,13 @@ async function cargar(req, res, u) {
 }
 async function guardar(res, u, r, cambio, nota = {}, coll = COLL) {
   const { id, v, _meta, ...data } = r;
-  const nuevo = { ...data, ...cambio, historial: [...(data.historial || []), { at: ahora(), quien: u.email, ...nota }].slice(-500) };
+  const notas = (Array.isArray(nota) ? nota : [nota]).map((x) => ({ at: ahora(), quien: u.email, ...x }));
+  const nuevo = { ...data, ...cambio, historial: [...(data.historial || []), ...notas].slice(-500) };
   const d = await db.update(coll, id, nuevo, v, u.email);
   if (!d) { res.status(409).json({ error: 'Alguien lo cambió mientras lo veías. Recarga.', code: 'CONFLICTO' }); return null; }
   return d;
 }
+const latido = async () => { const g = await db.get(GW, 'vps').catch(() => null); return g?.at && Date.now() - Date.parse(g.at) < 90 * 1000 ? g : null; };
 const motivo = (res, m) => res.status(m.startsWith('🚦') || /Aprueban|Corrigen/.test(m) ? 403 : 409).json({ error: m });
 
 export function rutas(on) {
@@ -174,6 +177,14 @@ export function rutas(on) {
       inputs: [], evidencia: [], creado_por: u.email, archivado: false, pausado: false,
       historial: [{ at: ahora(), quien: u.email, accion: 'crear' }],
     };
+    // F4.5: el trabajo que nace en el Chat queda ligado a esa conversación, con lo platicado y lo hablado como contexto.
+    if (b.chat?.sesion) {
+      run.chat = { sesion: txt(b.chat.sesion, 120), owner: lc(u.email) };
+      const hasta = Number(b.plan_ok?.hasta);
+      if (Number.isInteger(hasta) && hasta >= 0) run.plan_ok = { hasta: Math.min(hasta, run.etapas.length - 1), por: u.email, at: ahora() };
+      const ctx = txt(b.contexto, MAX_CONTEXTO);
+      if (ctx) run.inputs.push({ id: 'i-chat', tipo: 'texto', titulo: 'Lo hablado en el Chat', texto: ctx, interna: true, por: u.email, at: ahora(), archivado: false });
+    }
     res.json({ run: await db.create(COLL, run, u.email) });
   });
 
@@ -202,10 +213,10 @@ export function rutas(on) {
     if (r.pausado) return res.status(409).json({ error: 'El agente está en pausa: reanúdalo para ejecutar' });
     const g = await db.get(GW, 'vps').catch(() => null);
     if (!g?.at || Date.now() - Date.parse(g.at) > 90 * 1000) return res.status(503).json({ error: 'El servidor no está en línea: elige otra IA para esta etapa', code: 'GATEWAY_OFF' });
-    const modelo = txt(body(req).modelo, 120);
+    // Sin modelo, el de la etapa según el flujo (F4.5 · §20.11).
+    const modelo = txt(body(req).modelo, 120) || modeloDeEtapa(r.etapas[n], g.modelos || []);
     if (!modelo || !(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
-    const e = r.etapas[n], antes = e.estado;
-    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'en_cola', via: 'gateway', modelo, cola: { at: ahora(), por: u.email, antes, modelo }, actividades: [...(antes === 'ajuste' ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · espera su turno`, at: ahora() }].slice(-150) }));
+    const etapas = r.etapas.map((x, i) => (i !== n ? x : enCola(x, modelo, u.email, ahora())));
     const d = await guardar(res, u, r, { etapas }, { accion: 'encolar', etapa: n, nota: modelo });
     if (d) res.json({ run: d });
   });
@@ -280,9 +291,32 @@ export function rutas(on) {
   on('POST', 'agentes/runs/:id/etapa/:n/aprobar', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const r = await cargar(req, res, u); if (!r) return;
-    const n = Number(req.params.n), m = puede(r, n, 'aprobar', { rol: u.role }); if (m) return motivo(res, m);
-    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'aprobada', aprobada_por: u.email, aprobada_en: ahora() }));
-    const d = await guardar(res, u, r, { etapas }, { accion: 'aprobar', etapa: n, nota: txt(body(req).nota, 500) });
+    const n = Number(req.params.n), m = puede(r, n, 'aprobar', { rol: u.role, email: u.email }); if (m) return motivo(res, m);
+    let etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'aprobada', aprobada_por: u.email, aprobada_en: ahora() }));
+    const notas = [{ accion: 'aprobar', etapa: n, nota: txt(body(req).nota, 500) }];
+    // F4.5: la que sigue se encola sola si está dentro de lo platicado y el servidor está en línea (si no, queda para «Continuar»).
+    const k = siguienteAuto({ ...r, etapas }, n), g = k === null ? null : await latido();
+    if (g) { const modelo = modeloDeEtapa(etapas[k], g.modelos || []); etapas = etapas.map((x, i) => (i !== k ? x : enCola(x, modelo, u.email, ahora(), 'auto'))); notas.push({ accion: 'encolar', etapa: k, nota: `auto · ${modelo}` }); }
+    const d = await guardar(res, u, r, { etapas }, notas);
+    if (d) res.json({ run: d });
+  });
+  // F4.5 · abrir el documento de una etapa cuenta como leerlo (el OK se activa después). Se guarda quién y cuándo.
+  on('POST', 'agentes/runs/:id/etapa/:n/leida', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n); if (!r.etapas[n]?.salida) return res.status(409).json({ error: 'Esa etapa no tiene documento todavía' });
+    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, leida_por: [...(x.leida_por || []).filter((y) => lc(y.email) !== lc(u.email)), { email: lc(u.email), at: ahora() }].slice(-20) }));
+    const d = await guardar(res, u, r, { etapas }, { accion: 'leer', etapa: n });
+    if (d) res.json({ run: d });
+  });
+  // F4.5 · lo platicado: hasta qué etapa sigue solo el flujo al aprobar.
+  on('POST', 'agentes/runs/:id/plan', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    if (r.archivado) return res.status(409).json({ error: 'El trabajo está archivado' });
+    const hasta = Number(body(req).hasta);
+    if (!Number.isInteger(hasta) || hasta < activa(r) || hasta >= r.etapas.length) return res.status(400).json({ error: 'Elige una etapa de las que faltan' });
+    const d = await guardar(res, u, r, { plan_ok: { hasta, por: u.email, at: ahora() } }, { accion: 'plan', etapa: hasta, nota: `hasta ${r.etapas[hasta].nombre}` });
     if (d) res.json({ run: d });
   });
   on('POST', 'agentes/runs/:id/etapa/:n/corregir', async (req, res) => {
