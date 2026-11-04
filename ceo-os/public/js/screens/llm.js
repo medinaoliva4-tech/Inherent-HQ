@@ -20,6 +20,7 @@ import { botonVoz, dictar } from '../voz.js';
 import { PUENTE, enApp } from '../laya.js';
 import { tokenDe } from '../puente-chat.js';
 import { svgIco } from '../iconos.js';
+import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { ponerTema, temaElegido, esNoche } from '../tema.js';
 import { rutaModulo } from '../herramientas.js';
@@ -80,6 +81,23 @@ export async function render(el, { me, sub = [], alive }) {
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider, S.modelo.model) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider, S.modelos.actual.model) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
   const listo = () => Boolean(S.salud?.on && S.salud?.auth);
+  // Dónde corre el Chat (PLAN-GATEWAY F3): «servidor» (el VPS, siempre encendido; las conversaciones viven en el OS) o
+  // «hermes» (en tu compu). Por defecto el servidor si está en línea. Todo lo demás de la pantalla es igual para los dos.
+  const KM = `os.chat.motor.${me.email}`;
+  const motorPref = () => { try { return localStorage.getItem(KM) || ''; } catch { return ''; } };
+  let enServidor = false;
+  const B = {
+    salud: () => (enServidor ? saludServidor() : saludHermes(me)),
+    modelos: (o) => (enServidor ? modelosServidor() : modelosHermes(me, o)),
+    sesiones: () => (enServidor ? sesionesServidor() : sesionesHermes(me)),
+    crear: (o) => (enServidor ? crearSesionServidor(o) : crearSesion(me, o)),
+    mensajes: (id) => (enServidor ? mensajesServidor(id) : mensajesSesion(me, id)),
+    turno: (id, o) => (enServidor ? turnoServidor(id, o) : turnoSesion(me, id, o)),
+    borrar: (id) => (enServidor ? borrarSesionServidor(id) : borrarSesion(me, id)),
+    ramificar: (id, o) => (enServidor ? ramificarServidor(id, o) : ramificarSesion(me, id, o)),
+    skills: () => (enServidor ? Promise.resolve([]) : skillsHermes(me)),
+  };
+  const quien = () => (enServidor ? 'el servidor' : 'Hermes');
 
   mount(el, html`<div class="llm" data-tema="${esNoche() ? 'noche' : 'dia'}" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
@@ -108,13 +126,13 @@ export async function render(el, { me, sub = [], alive }) {
     const lista = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo) && (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : leerIdSesion(s.id).modo === S.modo));
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
-    const estado = !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
+    const estado = enServidor ? (S.salud?.on ? ['on', 'Servidor · siempre encendido'] : ['off', 'Servidor fuera de línea']) : !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
     // El logo ya está en la barra lateral del shell: aquí solo el nombre del Chat. El modo se cambia con el selector (o con «/»).
     mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${ico('chat-ia', 20)}</span><b class="ls-ttl">Inherent LLM</b></div>
       <div class="ls-area" data-m="${S.modo}">${modos.length > 1 ? html`<b><select class="ls-modo" aria-label="Modo del Chat">${modos.map((x) => html`<option value="${x.id}" ${x.id === S.modo ? raw('selected') : ''}>${x.nombre}</option>`)}</select></b>` : html`<b>${m.nombre}</b>`}<small>${m.sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
       <div class="ls-k ls-kr">${q ? 'Todos los modos' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
-      <div class="ls-list">${!listo() ? html`<p class="ls-mut">Las conversaciones viven en Hermes, en tu compu.</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
+      <div class="ls-list">${!listo() ? html`<p class="ls-mut">${enServidor ? 'El servidor no está en línea ahora.' : 'Las conversaciones viven en Hermes, en tu compu.'}</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
       <footer class="ls-foot"><button type="button" class="ls-me" data-a="ajustes" title="Hermes y ajustes">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
     const qi = C('ls-q'); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = C('ls-q'); n.focus(); n.setSelectionRange(pos, pos); };
   }
@@ -413,7 +431,7 @@ export async function render(el, { me, sub = [], alive }) {
   // Los íconos de las áreas donde el modelo rinde mejor (llm/ias.js · FUERTES).
   const fuertesHtml = (x) => { const as = fuertesDe(x).map(areaDe).filter(Boolean); return as.length ? html`<span class="lmn-fu" title="${'Rinde mejor en ' + as.map((a) => a.nombre).join(' y ')}">${as.map((a) => html`<i style="color:var(--ui-m-${a.id})">${ico(a.icono, 13)}</i>`)}</span>` : ''; };
   async function menuModelo(a) {
-    if (!S.modelos) { try { S.modelos = await modelosHermes(me); ajustarModelo(); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
+    if (!S.modelos) { try { S.modelos = await B.modelos(); ajustarModelo(); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
     // Con el switch de IA, aquí van solo los modelos de esa IA (sin IA conocida, todos).
     // Si la IA de ahora ya no está lista en Hermes, no se filtra: que siempre haya algo que elegir.
     const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug, x) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug, x) === ia));
@@ -437,6 +455,8 @@ export async function render(el, { me, sub = [], alive }) {
     const d = document.createElement('div'); d.className = 'llm-sheet'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Hermes y ajustes');
     const h = S.salud || {}, cx = hermesDe(me);
     mount(d, html`<div class="lsh"><header><b>Hermes y ajustes</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
+      <section><span class="lp-k">Dónde corre el Chat</span><div class="lsh-tema">${[['servidor', 'Servidor · siempre encendido'], ['hermes', 'Hermes · en tu compu']].map(([k, l]) => html`<button type="button" class="${(enServidor ? 'servidor' : 'hermes') === k ? 'on' : ''}" data-a="motor-chat" data-v="${k}">${l}</button>`)}</div>
+        <p class="lp-mut">${enServidor ? 'Responde el servidor de Inherent aunque tu compu esté apagada, y tus conversaciones quedan guardadas en el OS: las abres desde cualquier compu.' : 'Responde Hermes en esta compu, con sus modelos, skills y memoria. Las conversaciones viven en esta compu.'}</p></section>
       <section><span class="lp-k">Hermes en esta compu</span><p><i class="ls-dot ${h.on && h.auth ? 'on' : 'off'}"></i>${h.on ? `Encendido${h.version ? ` · versión ${h.version}` : ''}` : 'Apagado o no instalado'} · ${h.auth ? 'llave conectada' : 'sin llave'}${enApp() ? ' (la da la app)' : ''}</p>
         ${cx && !enApp() ? html`<button type="button" class="lsu-btn ghost" data-a="olvidar-llave">Olvidar la llave en este navegador</button>` : ''}
         <p class="lp-mut">El modelo, las suscripciones, las skills y la memoria viven en Hermes. Aquí se ven; se cambian con estos comandos (perfil «inherent»):</p>
@@ -448,7 +468,7 @@ export async function render(el, { me, sub = [], alive }) {
     R.append(d);
     if (listo()) skills().then((xs) => { const b = d.querySelector('#lsh-skills'); if (b) mount(b, xs.length ? html`<div class="lsh-sk">${xs.slice(0, 60).map((s) => html`<span title="${s.description || ''}">${s.name}</span>`)}</div><p class="lp-mut">Úsalas con «/skill» en la caja.</p>` : html`<p class="lp-mut">Sin skills instaladas.</p>`); }).catch(() => {});
   }
-  const skills = async () => (S.skills ||= await skillsHermes(me).catch(() => []));
+  const skills = async () => (S.skills ||= await B.skills().catch(() => []));
 
   // ---------- Cambiar de modo, de conversación, empezar una nueva ----------
   function cambiarModo(id) {
@@ -473,7 +493,7 @@ export async function render(el, { me, sub = [], alive }) {
     S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     pintarSide(); pintarCentro(); pintarPanel();
     try {
-      const rows = await mensajesSesion(me, id);
+      const rows = await B.mensajes(id);
       const out = []; let pend = [];
       for (const r of rows) {
         if (r.role === 'user') { const t = textoDe(r.content).trim(); if (t) { out.push({ r: 'u', t }); if (!S.titulo) S.titulo = tituloDe(t); } }
@@ -491,7 +511,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Modo privado y ramificar ----------
   // Prender o apagar el privado es lo mismo que elegir «En tu compu» o volver a otra IA en el switch.
   async function alternarPrivado() {
-    if (!S.modelos && listo()) { try { S.modelos = await modelosHermes(me); ajustarModelo(); } catch {} }
+    if (!S.modelos && listo()) { try { S.modelos = await B.modelos(); ajustarModelo(); } catch {} }
     if (!S.privado) return ponerIa('local');
     const otra = (S.modelos ? iasListas(S.modelos) : []).find(([k]) => k !== 'local')?.[0];
     if (S.modelos && !otra) return toast('En esta compu solo hay modelos locales: el privado se queda prendido', true);
@@ -502,7 +522,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (S.enVuelo) return toast('Espera a que termine la respuesta', true);
     if (!S.sesion) return toast('Primero escribe algo en esta conversación', true);
     const nuevoId = idSesion(S.modo, slugAhora()), titulo = `${(S.titulo || 'Conversación').slice(0, 48)} · rama`;
-    try { await ramificarSesion(me, S.sesion, { nuevoId, titulo }); } catch (e) { return toast(`No pude ramificar: ${e.message}`, true); }
+    try { await B.ramificar(S.sesion, { nuevoId, titulo }); } catch (e) { return toast(`No pude ramificar: ${e.message}`, true); }
     toast('Rama nueva: sigue desde aquí; la original queda guardada');
     location.hash = '#/chat/' + nuevoId;
   }
@@ -544,7 +564,7 @@ export async function render(el, { me, sub = [], alive }) {
   async function enviar(texto, { reintento = false, sinGiro = false } = {}) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
     const cm = leerComando(texto); if (cm && !reintento) return comando(cm);
-    if (!listo()) return toast('Primero conecta Hermes', true);
+    if (!listo()) return toast(enServidor ? 'El servidor no está en línea' : 'Primero conecta Hermes', true);
     const m = modoDe(S.modo);
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
@@ -557,11 +577,11 @@ export async function render(el, { me, sub = [], alive }) {
     try {
       if (!S.sesion) {
         const id = idSesion(S.modo, slugAhora());
-        await crearSesion(me, { id, titulo: tituloDe(texto) });
+        await B.crear({ id, titulo: tituloDe(texto) });
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
       }
-      const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), repoAlDia()]);
-      const r = await turnoSesion(me, S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+      const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), enServidor ? null : repoAlDia()]);
+      const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); },
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
@@ -572,7 +592,7 @@ export async function render(el, { me, sub = [], alive }) {
     } catch (e) {
       if (e.name === 'AbortError') msg.err = msg.t ? 'Detenido.' : 'Detenido antes de responder.';
       else if (e.status === 401) { if (!enApp()) setHermes(me, null); S.salud = { ...(S.salud || {}), auth: false }; msg.err = 'Hermes no reconoció la llave. Vuelve a conectarla.'; }
-      else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : 'No pude hablar con Hermes. ¿Sigue encendido?';
+      else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : `No pude hablar con ${quien()}. ¿Sigue encendido?`;
     } finally { S.enVuelo = null; msg.stream = false; msg.aprob = null; }
     // Lo que Strategy concretó va a la estrategia en vivo (si se puede editar y no está aprobada).
     if (S.modo === 'estrategia' && msg.raw && slugAhora()) {
@@ -590,7 +610,7 @@ export async function render(el, { me, sub = [], alive }) {
     delete msg.raw;
     if (!alive()) return;
     pintarCentro(); pintarPanel();
-    sesionesHermes(me).then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
   }
   async function comando({ cmd, arg }) {
     const ta = $('#llm-in', el); if (ta) { ta.value = ''; crecer(ta); comandos(''); }
@@ -624,7 +644,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'menu-modo') return menuModo(t);
     if (a === 'menu-slug') return menuSlug(t);
     if (a === 'menu-modelo') return menuModelo(t);
-    if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await modelosHermes(me, { fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
+    if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await B.modelos({ fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
     if (a === 'sugerencia') return enviar(t.dataset.t);
     if (a === 'opcion') return enviar(t.dataset.t);
     if (a === 'comando') return comando({ cmd: t.dataset.c, arg: '' });
@@ -664,12 +684,13 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'borrar') {
       e.preventDefault();
-      if (!(await confirmAsk('¿Borrar esta conversación? Se borra de Hermes.'))) return;
-      try { await borrarSesion(me, t.dataset.id); S.sesiones = S.sesiones.filter((s) => s.id !== t.dataset.id); if (S.sesion === t.dataset.id) nuevo(); else pintarSide(); } catch (er) { toast(er.message, true); }
+      if (!(await confirmAsk(enServidor ? '¿Quitar esta conversación de tu lista? Queda archivada en el OS.' : '¿Borrar esta conversación? Se borra de Hermes.'))) return;
+      try { await B.borrar(t.dataset.id); S.sesiones = S.sesiones.filter((s) => s.id !== t.dataset.id); if (S.sesion === t.dataset.id) nuevo(); else pintarSide(); } catch (er) { toast(er.message, true); }
       return;
     }
     if (a === 'ajustes') return ajustes();
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
+    if (a === 'motor-chat') { try { localStorage.setItem(KM, t.dataset.v); } catch {} el.querySelector('.llm-sheet')?.remove(); S.sesion = null; S.msgs = []; S.titulo = ''; S.sesiones = []; S.modelos = null; S.modelo = null; S.skills = null; if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat'); toast(t.dataset.v === 'servidor' ? 'El Chat corre en el servidor' : 'El Chat corre en Hermes, en tu compu'); return revisar(); }
     if (a === 'olvidar-llave') { setHermes(me, null); el.querySelector('.llm-sheet')?.remove(); return revisar(); }
     if (a === 'tema') { ponerTema(t.dataset.t); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
     if (a === 'revisar') return revisar();
@@ -699,10 +720,12 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Arranque: Hermes, las listas y la conversación de la ruta ----------
   async function revisar() {
-    S.salud = await saludHermes(me);
+    const srv = await saludServidor();
+    enServidor = motorPref() === 'hermes' ? false : motorPref() === 'servidor' ? true : srv.on;
+    S.salud = enServidor ? srv : await saludHermes(me);
     if (!alive()) return;
     if (listo()) {
-      const [xs, mods] = await Promise.all([sesionesHermes(me).catch(() => []), modelosHermes(me).catch(() => null)]);
+      const [xs, mods] = await Promise.all([B.sesiones().catch(() => []), B.modelos().catch(() => null)]);
       S.sesiones = xs; S.modelos = mods; ajustarModelo();
     }
     if (!alive()) return;

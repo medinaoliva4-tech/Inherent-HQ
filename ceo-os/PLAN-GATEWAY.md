@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 en curso** (ver §10, §14, §15 y §16): la web y los MCP por persona ya corren en el servidor; sigue el Chat (y apagar Hermes).
+**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 en curso** (ver §10, §14, §15 y §16): la web, los MCP por persona y el Chat ya corren en el servidor (§16, §17); sigue apagar Hermes cuando el equipo lo valide.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -135,7 +135,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Cerrada (2026-11-04).** OS oficial: `inherent-work.vercel.app`. Base de pruebas: la rama `ceo-os-staging` de Neon (endpoint `ep-sweet-wind`, vacía, separada de `main`); conexión en `~/.config/inherent/neon-staging.env` (Mac) y `~/gateway/neon-staging.env` (VPS); en local se usa con la configuración `ceo-os-staging`. PR #209 unido a `main`; #207 y #208 cerrados |
 | **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales; calidad contra Claude; Figwright | **Cerrada (2026-11-04)** (§14): la calidad de DeepSeek V4 Pro alcanza para Strategy; Figwright funciona desde el VPS con un túnel que abre la Mac |
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
-| **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; el Chat y los modos pasan al Gateway; apagar Hermes | En curso. Hecho cuando todos los modos funcionan sin Hermes |
+| **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; apagar Hermes | Casi hecha: falta que el equipo use el Chat en el servidor unos días y retirar Hermes (F7) |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
@@ -158,6 +158,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F0 y F1 cerradas: base de pruebas `ceo-os-staging`, #209 a `main`, comparación contra Claude, Figwright desde el VPS | CEO + Claude |
 | 2026-11-04 | F3 · web: SearXNG propio en el VPS y lectura de páginas en el trabajador | CEO + Claude |
 | 2026-11-04 | F3 · MCP por persona a través del OS con `GATEWAY_TOKEN`; el VPS nunca recibe `SESSION_SECRET` | CEO + Claude |
+| 2026-11-04 | F3 · el Chat en el servidor: conversaciones guardadas en el OS, respondidas por el VPS en vivo; Hermes queda como opción en Ajustes | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -261,4 +262,20 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging, con el MCP público de documentación de Cloudflare):** el servidor listó 2 herramientas, el modelo buscó dos veces en la documentación y entregó la etapa en 138 s con 7 páginas oficiales como evidencia. La primera vuelta descartó por error esas URLs (venían dentro del resultado de la herramienta); se corrigió y hay una prueba para eso. Para probar en local hay un token aparte (`~/.config/inherent/gateway-staging.env`) y la configuración `ceo-os-staging` lo carga.
 
-**Para que funcione en producción** falta el merge del #210: la ruta del OS y el `GATEWAY_TOKEN` de Vercel entran con ese despliegue. Mientras tanto, el servidor ya corre `f3-2` y, si una etapa pide un MCP, avisa «No pude abrir las conexiones» y sigue sin ellas. Nadie tiene MCP conectados todavía en producción.
+**En producción desde el 2026-11-04** (merge del #210): verificado que la ruta rechaza llamadas sin token o con token falso y que, con el token real, solo atiende etapas que el servidor está trabajando. Nadie tiene MCP conectados todavía en producción: se conectan en Inherent AI → MCPs.
+
+## 17 · F3 · el Chat en el servidor (2026-11-04)
+
+**Qué cambia para el equipo:** en el Chat (#/chat), Ajustes → «Dónde corre el Chat» trae dos opciones: **Servidor · siempre encendido** (por defecto si está en línea) o **Hermes · en tu compu**. Con el servidor:
+- las conversaciones **se guardan en el OS** (`chat_sesiones`, una por persona; nadie más las ve) y se abren desde cualquier compu;
+- responde el VPS aunque la compu esté apagada; la respuesta se ve escribir (la pantalla relee cada ~0.7 s);
+- «Detener» corta la respuesta y deja lo que alcanzó a escribir; ramificar copia la conversación; quitar una conversación la archiva (no se borra);
+- el modelo por defecto es DeepSeek V4 Flash; se puede elegir otro de los del servidor.
+
+**Cómo funciona (D13):** el OS guarda el mensaje y deja el turno «en cola»; el trabajador del VPS lo toma (consulta solo los ids pendientes, no lee todas las conversaciones), arma la conversación dentro del contexto y escribe la respuesta en vivo en la misma conversación. **Rotación (D7):** si la conversación ya no cabe en 32k, lo viejo se resume por bloques (sin descartar nada, copiando literal códigos, cifras, nombres y fechas) y se guarda; la siguiente vez ya no se manda entero. Al modelo se le indica que diga cuando algo no está ni en el resumen ni en los mensajes.
+
+**Piezas:** `api/_lib/chat.js` (rutas `chat/servidor`, `chat/sesiones…`: listar, crear, leer, turno, detener, ramificar, archivar) · `public/js/chat-gateway.js` (las mismas funciones que la pantalla usa con Hermes) · `screens/llm.js` elige el motor en un solo punto · `worker.mjs` (f3-3) toma los turnos del Chat.
+
+**Probado (staging):** respuesta en 9 s guardada; el segundo turno recordó el primero; «Detener» cortó en 749 caracteres y no siguió; una conversación de ~54k tokens se resumió y el turno corrió con ~7k. **Hallazgo:** la primera versión del resumen tiraba el principio de lo viejo cuando era enorme y el modelo inventó un dato que no tenía; se corrigió (resumen por bloques y aviso de no inventar) y la prueba repetida recordó el dato exacto.
+
+**Pendiente:** el Chat en el servidor todavía no usa herramientas (web, MCP, el OS): responde con el contexto que le da cada modo. Se le agregan con lo de §16. Retirar Hermes (F7) cuando el equipo lo haya usado unos días.

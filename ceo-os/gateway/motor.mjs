@@ -32,15 +32,17 @@ export async function acquire(m, onEspera = () => {}) {
   }
 }
 
-// onAvance({ caracteres, razonando }) se llama cada ~20 s mientras el modelo trabaja.
-export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {} } = {}) {
+// onAvance({ caracteres, razonando, texto }) se llama cada `cadaMs` (20 s por defecto) mientras el modelo trabaja.
+// messages: si se pasa, reemplaza [system, user] (el Chat manda la conversación completa). signal: para detenerlo.
+export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal } = {}) {
   const release = await acquire(m, onEspera);
   try {
     for (let intento = 1; intento <= 4; intento++) {
       const t0 = Date.now();
       const r = await fetch(`${BASE}/chat/completions`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
-        body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] }),
+        body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }] }),
+        signal,
       });
       if (r.status === 429 || r.status >= 500) { await r.text().catch(() => {}); log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
       if (!r.ok) throw new Error(`${m}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
@@ -61,7 +63,7 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
             if (j.usage) usage = j.usage;
           } catch {}
         }
-        if (Date.now() - ultimo > 20000) { ultimo = Date.now(); try { await onAvance({ caracteres: content.length, razonando: thinking }); } catch {} }
+        if (Date.now() - ultimo > cadaMs) { ultimo = Date.now(); try { await onAvance({ caracteres: content.length, razonando: thinking, texto: content }); } catch {} }
       }
       if (!content.trim()) throw new Error(`${m} devolvió vacío (finish=${finish}). Sube la salida máxima o usa otro modelo.`);
       return { content, usage, seg: Math.round((Date.now() - t0) / 1000) };
@@ -77,7 +79,7 @@ export async function condense(text, target, prepModel, opts = {}) {
   const out = [];
   for (const [i, c] of chunks.entries()) {
     log(`  condensando bloque ${i + 1}/${chunks.length} -> ~${each} tokens`);
-    const r = await chat(prepModel, 'Condensas texto sin inventar nada. Conservas reglas, cifras, nombres y condiciones. Español.', `Condensa a un máximo de ${each} tokens, conservando lo operativo:\n\n${c}`, each + 300, opts);
+    const r = await chat(prepModel, 'Condensas texto sin inventar nada. Conservas literal reglas, cifras, códigos, nombres, fechas y condiciones. Español.', `Condensa a un máximo de ${each} tokens, conservando lo operativo:\n\n${c}`, each + 300, opts);
     out.push(r.content);
   }
   return out.join('\n\n');
