@@ -24,6 +24,9 @@ import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, pu
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
 export const GW = 'gateway_estado'; // el latido del trabajador del VPS: { at, modelos, trabajando, version }
+// Lo que el Chat del servidor puede PROPONER escribir en el OS (la persona aprueba cada una). Solo el trabajo diario: nada de
+// roles, paquetes, facturas, pagos, borrar ni importar en bloque desde una conversación.
+export const PROPONIBLES_CHAT = new Set(['crear_tarea', 'actualizar_tarea', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'crear_idea', 'actualizar_idea', 'agendar', 'crear_proyecto', 'crear_cotizacion', 'subir_documento']);
 const lc = (x) => String(x || '').toLowerCase();
 const txt = (s, n) => String(s ?? '').trim().slice(0, n);
 const ahora = () => new Date().toISOString();
@@ -236,11 +239,14 @@ export function rutas(on) {
     // El MCP del propio OS: corre aquí mismo, como esa persona (sus áreas, «solo ver», lo que es solo del CEO) y solo lo
     // que lee. Lo que escribe (crear tareas, mover leads, subir documentos…) no se da al servidor hasta que haya confirmación.
     const usuarioOS = pide.includes('inherent') ? await mcpOS.userOf(persona) : null;
-    const delOS = async () => (usuarioOS ? ((await mcpOS.run(usuarioOS, { jsonrpc: '2.0', id: 1, method: 'tools/list' })).json?.result?.tools || []).filter((t) => !mcpOS.esEscritura(t.name)) : []);
+    const todasOS = async () => (usuarioOS ? (await mcpOS.run(usuarioOS, { jsonrpc: '2.0', id: 1, method: 'tools/list' })).json?.result?.tools || [] : []);
     if (q.accion === 'listar') {
-      const ts = await toolsDe(persona, pide.filter((id) => id !== 'inherent')), os = await delOS();
+      const ts = await toolsDe(persona, pide.filter((id) => id !== 'inherent')), os = await todasOS();
+      // En el Chat, las que escriben también van, pero marcadas «confirmar»: el servidor solo las PROPONE y la persona las
+      // aprueba en la pantalla (chat/sesiones/:id/propuestas/:pid). En las etapas no van.
+      const deOS = os.filter((t) => !mcpOS.esEscritura(t.name) || (q.chat && PROPONIBLES_CHAT.has(t.name)));
       return res.json({ tools: [
-        ...os.map((t) => ({ conector: 'inherent', nombre: t.name, descripcion: String(t.description || '').slice(0, 500), esquema: t.inputSchema || { type: 'object', properties: {} } })),
+        ...deOS.map((t) => ({ conector: 'inherent', nombre: t.name, descripcion: String(t.description || '').slice(0, 500), esquema: t.inputSchema || { type: 'object', properties: {} }, ...(mcpOS.esEscritura(t.name) ? { confirmar: true } : {}) })),
         ...ts.map((t) => ({ conector: t.conector, nombre: t.tool.name, descripcion: String(t.tool.description || '').slice(0, 500), esquema: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } })),
       ], sin_conectar: pide.filter((id) => id !== 'inherent' && !ts.some((t) => t.conector === id)) });
     }

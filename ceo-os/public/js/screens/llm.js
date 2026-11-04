@@ -20,7 +20,7 @@ import { botonVoz, dictar } from '../voz.js';
 import { PUENTE, enApp } from '../laya.js';
 import { tokenDe } from '../puente-chat.js';
 import { svgIco } from '../iconos.js';
-import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor } from '../chat-gateway.js';
+import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { ponerTema, temaElegido, esNoche } from '../tema.js';
 import { rutaModulo } from '../herramientas.js';
@@ -264,9 +264,17 @@ export async function render(el, { me, sub = [], alive }) {
     const preg = t.pregunta ? html`<div class="lm-preg ${ult ? '' : 'hecha'}"><span class="lm-k">Una pregunta antes de seguir</span><b>${t.pregunta.texto}</b>${t.pregunta.por_que ? html`<small>${t.pregunta.por_que}</small>` : ''}${t.pregunta.opciones.length ? html`<div class="lm-ops">${t.pregunta.opciones.map((o) => html`<button type="button" data-a="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : '';
     const apr = x.aprob ? html`<div class="lm-apr"><span class="lm-k">${ico('alert', 12)} Hermes pide permiso</span>${x.aprob.description ? html`<p>${x.aprob.description}</p>` : ''}${x.aprob.command ? html`<code>${x.aprob.command}</code>` : ''}
       <div class="lm-ops">${(x.aprob.choices || ['once', 'deny']).map((c) => html`<button type="button" class="${c === 'deny' ? 'no' : c === 'once' ? 'si' : ''}" data-a="aprobar" data-c="${c}" data-i="${i}">${ELECCION[c] || c}</button>`)}</div></div>` : '';
+    // Lo que el servidor propone cambiar en el OS: no pasa nada hasta que la persona lo aprueba (lo ejecuta el OS con su sesión).
+    const props = (x.propuestas || []).map((p, k) => {
+      const datos = Object.entries(p.args || {}).filter(([, v]) => v !== '' && v != null).slice(0, 10);
+      const estado = p.estado === 'aprobada' ? html`<span class="lm-meta-ok">${ico('check', 13)} Hecho</span>` : p.estado === 'rechazada' ? html`<span class="lm-enc-no">Rechazada</span>` : p.estado === 'fallo' ? html`<span class="lm-enc-no">${ico('alert', 13)} No se pudo: ${p.error || ''}</span>` : p.decidiendo ? html`<span class="lm-meta-ok">Haciéndolo…</span>`
+        : html`<div class="lm-ops"><button type="button" class="si" data-a="propuesta" data-d="aprobar" data-i="${i}" data-k="${k}" ${busy ? raw('disabled') : ''}>Aprobar</button><button type="button" class="no" data-a="propuesta" data-d="rechazar" data-i="${i}" data-k="${k}" ${busy ? raw('disabled') : ''}>Rechazar</button></div>`;
+      return html`<div class="lm-apr lm-prop"><span class="lm-k">${ico('alert', 12)} Propuesta · necesita tu OK</span><b>${p.titulo || p.tool}</b><code>${p.tool}</code>
+        ${datos.length ? html`<dl class="lm-prop-d">${datos.map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v) : String(v)}</dd>`)}</dl>` : ''}${estado}</div>`;
+    });
     const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
-      ${apr}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
+      ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
@@ -500,7 +508,7 @@ export async function render(el, { me, sub = [], alive }) {
         else if (r.role === 'assistant') {
           for (const tc of r.tool_calls || []) pend.push({ fase: 'fin', nombre: String(tc.function?.name || tc.name || 'herramienta'), detalle: '' });
           const raw0 = textoDe(r.content); if (!raw0.trim()) continue;
-          out.push({ r: 'a', modo: S.modo, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend }); pend = [];
+          out.push({ r: 'a', modo: S.modo, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend, propuestas: r.propuestas || [] }); pend = [];
         }
       }
       S.msgs = out;
@@ -587,6 +595,7 @@ export async function render(el, { me, sub = [], alive }) {
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
         nota: (n) => { msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
+        propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
       } });
       msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
     } catch (e) {
@@ -691,6 +700,13 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'ajustes') return ajustes();
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
     if (a === 'motor-chat') { try { localStorage.setItem(KM, t.dataset.v); } catch {} el.querySelector('.llm-sheet')?.remove(); S.sesion = null; S.msgs = []; S.titulo = ''; S.sesiones = []; S.modelos = null; S.modelo = null; S.skills = null; if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat'); toast(t.dataset.v === 'servidor' ? 'El Chat corre en el servidor' : 'El Chat corre en Hermes, en tu compu'); return revisar(); }
+    if (a === 'propuesta') {
+      const x = S.msgs[+t.dataset.i], p = x?.propuestas?.[+t.dataset.k]; if (!p || p.estado !== 'pendiente' || p.decidiendo || !S.sesion) return;
+      p.decidiendo = true; pintarHilo();
+      try { const { propuesta } = await decidirPropuesta(S.sesion, p.id, t.dataset.d); Object.assign(p, propuesta); toast(propuesta.estado === 'aprobada' ? 'Hecho en el OS' : propuesta.estado === 'rechazada' ? 'Propuesta rechazada' : 'No se pudo hacer', propuesta.estado === 'fallo'); }
+      catch (er) { toast(er.message, true); }
+      p.decidiendo = false; pintarHilo(); return;
+    }
     if (a === 'olvidar-llave') { setHermes(me, null); el.querySelector('.llm-sheet')?.remove(); return revisar(); }
     if (a === 'tema') { ponerTema(t.dataset.t); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
     if (a === 'revisar') return revisar();

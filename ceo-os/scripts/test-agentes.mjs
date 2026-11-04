@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
 import { leer, aTexto } from '../gateway/web.mjs';
 import { esEscritura } from '../api/_lib/mcp.js';
+import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -120,6 +121,10 @@ t('una URL que viene dentro del resultado de un MCP cuenta como evidencia; una i
 t('el servidor solo lee el OS: las herramientas que escriben quedan fuera', () => {
   for (const n of ['crear_tarea', 'actualizar_lead', 'subir_documento', 'marcar_pagada', 'asignar_rol']) assert.equal(esEscritura(n), true, n);
   for (const n of ['mis_pendientes', 'tareas', 'clientes', 'leads', 'resultados', 'leer_documento']) assert.equal(esEscritura(n), false, n);
+});
+t('el Chat solo puede PROPONER acciones del trabajo diario (nada de roles, pagos, facturas ni borrar)', () => {
+  for (const n of PROPONIBLES_CHAT) assert.equal(esEscritura(n), true, `${n} debería ser de las que escriben`);
+  for (const n of ['asignar_rol', 'marcar_pagada', 'registrar_factura', 'borrar_idea', 'borrar_research', 'activar_paquete', 'importar_prospectos']) assert.equal(PROPONIBLES_CHAT.has(n), false, n);
 });
 t('web: el texto de una página sale limpio (sin scripts ni menús, con acentos)', () => {
   const r = aTexto('<title>T &amp; Co</title><script>x()</script><nav>menú</nav><p>Hola&nbsp;mundo &#233;xito</p>');
