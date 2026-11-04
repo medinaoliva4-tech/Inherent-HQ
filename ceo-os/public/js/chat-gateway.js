@@ -21,7 +21,8 @@ export async function modelosServidor() {
 }
 export async function sesionesServidor() { return (await api('chat/sesiones')).sessions || []; }
 export const crearSesionServidor = ({ id, titulo }) => api('chat/sesiones', { method: 'POST', body: { id, titulo } });
-export async function mensajesServidor(id) { return ((await api('chat/sesiones/' + enc(id))).messages || []).filter((m) => m.content); }
+// Los pasos que usó el servidor (buscar en la web, leer una página, un MCP) salen como tool_calls, igual que en Hermes.
+export async function mensajesServidor(id) { return ((await api('chat/sesiones/' + enc(id))).messages || []).filter((m) => m.content).map((m) => ({ ...m, tool_calls: (m.pasos || []).map((p) => ({ name: p.nombre })) })); }
 export const borrarSesionServidor = (id) => api('chat/sesiones/' + enc(id), { method: 'DELETE' });
 export const ramificarServidor = (id, { nuevoId, titulo }) => api(`chat/sesiones/${enc(id)}/fork`, { method: 'POST', body: { id: nuevoId, titulo } });
 
@@ -34,6 +35,7 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
   const detener = () => api(`chat/sesiones/${enc(id)}/detener`, { method: 'POST' }).catch(() => {});
   signal?.addEventListener('abort', detener, { once: true });
   let texto = '', avisoCola = false;
+  const vistos = []; // pasos ya avisados a la pantalla (por posición y fase)
   for (let fallos = 0; ;) {
     if (signal?.aborted) throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
     await espera(texto ? 700 : 900);
@@ -41,6 +43,7 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
     try { j = await api(`chat/sesiones/${enc(id)}?desde=${desde}`); fallos = 0; }
     catch (e) { if (++fallos > 8) throw e; continue; } // un corte de red no tumba la respuesta
     const a = (j.messages || []).find((m) => m.role === 'assistant');
+    (a?.pasos || []).forEach((p, i) => { if (vistos[i] !== p.fase) { vistos[i] = p.fase; on.tool?.({ fase: p.fase, nombre: p.nombre, detalle: p.detalle || '' }); } });
     if (a?.content && a.content !== texto) { texto = a.content; on.delta?.(texto); }
     const estado = j.turno?.estado;
     if (estado === 'en_cola' && !avisoCola) { avisoCola = true; on.nota?.('En cola en el servidor…'); }
