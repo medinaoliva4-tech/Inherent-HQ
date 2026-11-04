@@ -1,0 +1,116 @@
+{
+  "id": "estrategia-contexto-analisis",
+  "nombre": "Strategy · Contexto y análisis",
+  "descripcion": "Bloques 01 CONTEXTO y 02 ANÁLISIS del agente Strategy. El alcance contratado (ficha de oferta) es el techo.",
+  "version": 1,
+  "agente": "01-strategy",
+  "variables": [
+    "cliente"
+  ],
+  "umbral": {
+    "max_input_tokens": 20000,
+    "max_output_tokens": 6000
+  },
+  "modelos": {
+    "prep": "nv-minimax-m3.1-flash",
+    "medio": "deepseek-v4-flash",
+    "fuerte": "deepseek-v4-pro",
+    "revisor": "deepseek-v4-flash"
+  },
+  "system": "Eres el agente Strategy de Inherent. Escribes en español, claro y sin relleno. No inventas cifras, competidores ni datos: lo que falte lo marcas como «por validar». Respetas el alcance de la ficha de oferta como techo.",
+  "steps": [
+    {
+      "id": "metodo",
+      "nombre": "Preparar el método (condensar reglas)",
+      "tipo": "prep",
+      "modelo": "prep",
+      "sugerencia": "Modelo gratuito: solo resume reglas, no decide nada.",
+      "inputs": [
+        {
+          "file": "agents/01-strategy/brain/WORKFLOW.md",
+          "secciones": [
+            "0 ",
+            "1 ",
+            "2 "
+          ]
+        },
+        {
+          "file": "agents/01-strategy/brain/skills/context/SKILL.md"
+        },
+        {
+          "file": "agents/01-strategy/brain/skills/analysis/SKILL.md"
+        }
+      ],
+      "instruccion": "Resume en un máximo de 2,500 tokens el método de trabajo de Strategy para los bloques 01 CONTEXTO y 02 ANÁLISIS: qué se anota primero (alcance contratado), qué debe contener cada bloque, las 3 preguntas del análisis (MUST BE TRUE · UNFAIR · GO GET), qué NO hace Strategy y las reglas duras. Conserva los nombres exactos de los conceptos. No agregues nada que no esté en el texto.",
+      "salida": "{cliente}/01-estrategia/_metodo.md",
+      "max_output_tokens": 3000
+    },
+    {
+      "id": "contexto",
+      "nombre": "01 · Contexto",
+      "tipo": "llm",
+      "modelo": "medio",
+      "sugerencia": "DeepSeek V4 Flash: rápido (~25 tok/s) y sin razonamiento oculto. Kimi K3 gasta el presupuesto pensando.",
+      "inputs": [
+        {
+          "file": "{cliente}/01-estrategia/_metodo.md"
+        },
+        {
+          "file": "{cliente}/00-onboarding/FICHA.md"
+        }
+      ],
+      "instruccion": "Escribe contexto.md siguiendo el método. Estructura: Alcance contratado (techo) · Negocio y números · Audiencia actual · Cómo se compra y cómo se descubre · Qué sabemos / qué NO sabemos (lista «por validar») · Arquetipo preliminar. Describe, no decidas. Usa solo la ficha.",
+      "salida": "{cliente}/01-estrategia/contexto.md",
+      "max_output_tokens": 4500
+    },
+    {
+      "id": "analisis",
+      "nombre": "02 · Análisis",
+      "tipo": "llm",
+      "modelo": "fuerte",
+      "sugerencia": "DeepSeek V4 Pro: mejor razonamiento sin quemar tokens pensando. Medir contra Claude.",
+      "inputs": [
+        {
+          "file": "{cliente}/01-estrategia/_metodo.md"
+        },
+        {
+          "file": "{cliente}/01-estrategia/contexto.md"
+        }
+      ],
+      "instruccion": "Escribe analisis.md con: diagnóstico; audiencia prioritaria; las 3 preguntas (MUST BE TRUE · UNFAIR · GO GET) con sus pasos; 3 hipótesis de posicionamiento ordenadas con su razón; e ingeniería inversa de la meta financiera (cuántos tickets/día o qué ticket promedio hacen falta para llegar a la meta del contexto, mostrando la cuenta). Respeta el techo del alcance y marca todo supuesto.",
+      "salida": "{cliente}/01-estrategia/analisis.md",
+      "max_output_tokens": 6000
+    },
+    {
+      "id": "revision",
+      "nombre": "Revisión (otro modelo)",
+      "tipo": "revision",
+      "modelo": "revisor",
+      "sugerencia": "Idealmente un modelo distinto al que escribió (aquí Flash revisa lo de Pro). Los modelos que razonan en oculto (Kimi, GLM, MiniMax) agotan el presupuesto pensando.",
+      "inputs": [
+        {
+          "file": "{cliente}/00-onboarding/FICHA.md"
+        },
+        {
+          "file": "{cliente}/01-estrategia/contexto.md"
+        },
+        {
+          "file": "{cliente}/01-estrategia/analisis.md"
+        }
+      ],
+      "instruccion": "Revisa contexto.md y analisis.md contra la ficha. Lista: (1) cifras o datos que NO estén en la ficha y deban marcarse «por validar»; (2) cuentas mal hechas; (3) promesas que superen el nivel contratado; (4) lo que falta. Responde en viñetas, máximo 300 palabras. Si todo está bien, dilo.",
+      "salida": "{cliente}/01-estrategia/revision.md",
+      "max_output_tokens": 2000
+    },
+    {
+      "id": "gate-ceo",
+      "nombre": "Gate del CEO",
+      "tipo": "gate",
+      "gate": "El CEO aprueba la estrategia antes de pasar a Branding y Creative",
+      "modelo": "revisor",
+      "inputs": [],
+      "instruccion": "-",
+      "salida": "{cliente}/01-estrategia/_gate.md"
+    }
+  ]
+}
