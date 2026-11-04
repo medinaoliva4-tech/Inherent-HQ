@@ -111,6 +111,11 @@ t('sin herramientas: la evidencia que no viene de los inputs se descarta y su ca
   assert.match(r.faltantes[0], /no está en los inputs/); assert.equal(r.confianza, 40);
   assert.match(pedido({ ...nuevo(), inputs: [] }, 0, { sinHerramientas: true }), /NO tienes internet/);
 });
+t('una URL que viene dentro del resultado de un MCP cuenta como evidencia; una inventada no', () => {
+  const run = { inputs: [{ id: 'm1', titulo: 'Cloudflare · search', texto: 'Límite de CPU: 30 s. Fuente: https://developers.cloudflare.com/workers/platform/limits/' }] };
+  const r = soloEvidenciaDeInputs(run, { evidencia: [{ id: 'e1', titulo: 'Límites', url: 'https://developers.cloudflare.com/workers/platform/limits/' }, { id: 'e2', titulo: 'Blog', url: 'https://blog.inventado.com/x' }], campos: [], faltantes: [], confianza: 80 });
+  assert.deepEqual(r.evidencia.map((x) => x.id), ['e1']); assert.equal(r.faltantes.length, 1);
+});
 t('web: el texto de una página sale limpio (sin scripts ni menús, con acentos)', () => {
   const r = aTexto('<title>T &amp; Co</title><script>x()</script><nav>menú</nav><p>Hola&nbsp;mundo &#233;xito</p>');
   assert.equal(r.titulo, 'T & Co'); assert.equal(r.texto, 'T & Co Hola mundo éxito');

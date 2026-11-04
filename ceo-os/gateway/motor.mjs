@@ -82,3 +82,23 @@ export async function condense(text, target, prepModel, opts = {}) {
   }
   return out.join('\n\n');
 }
+
+// Una vuelta con herramientas (sin streaming: hace falta el mensaje completo con sus tool_calls).
+// messages y tools en el formato de chat/completions. → { message, usage, seg }
+export async function chatTools(m, messages, tools, maxOut, { onEspera = () => {} } = {}) {
+  const release = await acquire(m, onEspera);
+  try {
+    for (let intento = 1; intento <= 4; intento++) {
+      const t0 = Date.now();
+      const r = await fetch(`${BASE}/chat/completions`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
+        body: JSON.stringify({ model: m, max_tokens: maxOut, messages, ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
+      });
+      if (r.status === 429 || r.status >= 500) { await r.text().catch(() => {}); log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
+      if (!r.ok) throw new Error(`${m}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
+      const j = await r.json();
+      return { message: j.choices?.[0]?.message || {}, finish: j.choices?.[0]?.finish_reason || '', usage: j.usage || {}, seg: Math.round((Date.now() - t0) / 1000) };
+    }
+    throw new Error(`${m}: sin respuesta tras reintentos`);
+  } finally { release(); }
+}

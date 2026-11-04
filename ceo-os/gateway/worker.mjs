@@ -16,13 +16,16 @@ import * as db from '../api/_lib/db.js';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
-const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)) });
+const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)), conMcp: run._conMcp || '' });
 import { investigar } from './web.mjs';
 const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
-import { limits, BASE, est, log, chat, condense, contextoDe } from './motor.mjs';
+import { limits, BASE, est, log, chat, chatTools, condense, contextoDe } from './motor.mjs';
+import { conectorDe } from '../public/js/conectores.js';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', YO = 'gateway';
-const VERSION = 'f3-1';
+const VERSION = 'f3-2';
+const OS_URL = String(process.env.GW_OS_URL || '').replace(/\/+$/, ''), GW_TOKEN = process.env.GATEWAY_TOKEN || '';
+const MAX_VUELTAS = 8, MAX_RESULTADO = 6000;
 const PREP = process.env.GW_PREP_MODEL || 'nv-minimax-m3.1-flash';
 const MAX_IN = Number(process.env.GW_MAX_IN || 20000), MAX_OUT = Number(process.env.GW_MAX_OUT || 6000);
 const PARALELO = Number(process.env.GW_PARALELO || 3);
@@ -104,6 +107,65 @@ async function conWeb(run, n, paso) {
   return r;
 }
 
+// ---------- MCP por persona (F3): el servidor no tiene los permisos; se los pide al OS en cada llamada ----------
+async function os(cuerpo) {
+  const r = await fetch(`${OS_URL}/api/agentes/gateway/mcp`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GW_TOKEN}` }, body: JSON.stringify(cuerpo), signal: AbortSignal.timeout(90000) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || `El OS respondió ${r.status}`);
+  return j;
+}
+async function herramientasMcp(run, n, paso) {
+  const pide = (run.etapas[n].herramientas || []).filter((h) => ['mcp', 'token'].includes(conectorDe(h)?.tipo));
+  if (!pide.length) return { tools: [] };
+  if (!OS_URL || GW_TOKEN.length < 32) { await paso({ titulo: 'Conexiones sin usar', detalle: `El servidor no tiene acceso al OS para usar ${pide.join(', ')}`, aviso: true }); return { tools: [] }; }
+  try {
+    const { tools, sin_conectar: sin } = await os({ run: run.id, etapa: n, accion: 'listar' });
+    if (sin?.length) await paso({ titulo: 'Conexiones sin conectar', detalle: `${sin.map((id) => conectorDe(id)?.nombre || id).join(', ')}: conéctalas en Inherent AI → MCPs`, aviso: true });
+    if (tools.length) await paso({ titulo: 'Conexiones listas', detalle: `${tools.length} herramientas de ${[...new Set(tools.map((t) => conectorDe(t.conector)?.nombre || t.conector))].join(', ')}` });
+    return { tools: tools.slice(0, 30) };
+  } catch (e) { await paso({ titulo: 'No pude abrir las conexiones', detalle: e.message, aviso: true }); return { tools: [] }; }
+}
+// Hasta MAX_VUELTAS de «el modelo pide una herramienta → el OS la llama → el resultado vuelve como fuente [mN]».
+async function conHerramientas(modelo, texto, tools, runId, n, base, paso, onEspera) {
+  const nombre = (t) => `${t.conector}__${t.nombre}`.replace(/[^\w-]/g, '_').slice(0, 64);
+  const mapa = new Map(tools.map((t) => [nombre(t), t]));
+  const defs = tools.map((t) => ({ type: 'function', function: { name: nombre(t), description: `[${conectorDe(t.conector)?.nombre || t.conector}] ${t.descripcion}`.slice(0, 400), parameters: t.esquema } }));
+  const messages = [{ role: 'system', content: SISTEMA }, { role: 'user', content: texto }];
+  const cap = contextoDe(modelo) - MAX_OUT - 1500, usadas = [];
+  let usage = { prompt_tokens: 0, completion_tokens: 0 }, seg = 0, k = 0;
+  base.inputs = base.inputs || [];
+  for (let vuelta = 0; vuelta <= MAX_VUELTAS; vuelta++) {
+    const lleno = est(JSON.stringify(messages)) + est(JSON.stringify(defs)) > cap - 2500;
+    const ultima = vuelta === MAX_VUELTAS || lleno;
+    if (ultima && vuelta) messages.push({ role: 'user', content: 'Ya no hay más herramientas. Entrega la etapa ahora con lo que tienes, en el bloque pedido.' });
+    const r = await chatTools(modelo, messages, ultima ? [] : defs, MAX_OUT, { onEspera });
+    usage = { prompt_tokens: usage.prompt_tokens + (r.usage.prompt_tokens || 0), completion_tokens: usage.completion_tokens + (r.usage.completion_tokens || 0) }; seg += r.seg;
+    const m = r.message;
+    if (!m.tool_calls?.length) {
+      if (!String(m.content || '').trim()) throw new Error(`${modelo} devolvió vacío después de usar herramientas`);
+      return { content: m.content, usage, seg, usadas };
+    }
+    messages.push({ role: 'assistant', content: m.content || null, tool_calls: m.tool_calls });
+    for (const call of m.tool_calls.slice(0, 4)) {
+      const t = mapa.get(call.function?.name);
+      let salida = 'Herramienta desconocida';
+      if (t) {
+        let args = {}; try { args = JSON.parse(call.function.arguments || '{}'); } catch {}
+        const quien = `${conectorDe(t.conector)?.nombre || t.conector} · ${t.nombre}`;
+        await paso({ titulo: 'Usando sus conexiones', detalle: quien });
+        try {
+          const o = await os({ run: runId, etapa: n, accion: 'llamar', conector: t.conector, tool: t.nombre, args });
+          const id = `m${++k}`; usadas.push(quien);
+          salida = `[${id}] Resultado de ${quien}${o.error ? ' (con error)' : ''}:\n${String(o.texto || '').slice(0, MAX_RESULTADO)}`;
+          base.inputs.push({ id, tipo: 'texto', titulo: quien, texto: String(o.texto || '').slice(0, MAX_RESULTADO), interna: true });
+        } catch (e) { salida = `ERROR: ${e.message}`; await paso({ titulo: 'Una herramienta falló', detalle: `${quien}: ${e.message}`, aviso: true }); }
+      }
+      messages.push({ role: 'tool', tool_call_id: call.id, content: salida });
+    }
+  }
+  throw new Error('Demasiadas vueltas de herramientas sin terminar');
+}
+
 // ---------- Correr una etapa ----------
 async function correr(id, n) {
   const run = await db.get(RUNS, id), e = run.etapas[n], modelo = e.modelo || e.cola?.modelo;
@@ -113,12 +175,16 @@ async function correr(id, n) {
     if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
     await paso({ titulo: 'Tomada por el servidor', detalle: `${modelo} · contexto ${contextoDe(modelo).toLocaleString('es-MX')} tokens` });
     const base = await conWeb(run, n, paso);
+    const mcp = await herramientasMcp(run, n, paso);
+    if (mcp.tools.length) base._conMcp = [...new Set(mcp.tools.map((t) => conectorDe(t.conector)?.nombre || t.conector))].join(', ');
     const texto = await pedidoQueCabe(base, n, modelo, paso);
     await paso({ titulo: 'Trabajando la etapa', detalle: `~${est(texto).toLocaleString('es-MX')} tokens de entrada` });
-    const out = await chat(modelo, SISTEMA, texto, MAX_OUT, {
-      onEspera: (cap) => paso({ titulo: 'Esperando turno del proveedor', detalle: `${limits.modelos[modelo]?.proveedor || 'proveedor'}: ${cap} a la vez con este modelo` }),
-      onAvance: ({ caracteres, razonando }) => paso({ titulo: caracteres ? 'Redactando el resultado' : 'Pensando', detalle: caracteres ? `${caracteres.toLocaleString('es-MX')} caracteres` : `${razonando} fragmentos de razonamiento` }),
-    });
+    const onEspera = (cap) => paso({ titulo: 'Esperando turno del proveedor', detalle: `${limits.modelos[modelo]?.proveedor || 'proveedor'}: ${cap} a la vez con este modelo` });
+    const out = mcp.tools.length ? await conHerramientas(modelo, texto, mcp.tools, run.id, n, base, paso, onEspera)
+      : await chat(modelo, SISTEMA, texto, MAX_OUT, {
+        onEspera,
+        onAvance: ({ caracteres, razonando }) => paso({ titulo: caracteres ? 'Redactando el resultado' : 'Pensando', detalle: caracteres ? `${caracteres.toLocaleString('es-MX')} caracteres` : `${razonando} fragmentos de razonamiento` }),
+      });
     const r = soloEvidenciaDeInputs(base, leerRespuesta(out.content));
     const b = { ...r, via: 'gateway', modelo, costo: { entrada: out.usage.prompt_tokens || 0, salida: out.usage.completion_tokens || 0, seg: out.seg },
       actividades: [...r.actividades, ...r.faltantes.map((f) => ({ titulo: 'Falta evidencia', detalle: f, aviso: true })), { titulo: 'Listo para revisar', detalle: `${out.seg}s · ${out.usage.prompt_tokens ?? '?'} de entrada · ${out.usage.completion_tokens ?? '?'} de salida` }] };
