@@ -10,11 +10,11 @@ import { ESTADOS, activa, completo, progreso, puede, pedido, leerRespuesta, simu
 import { correrPedido, caminoIA } from './ia-herramienta.js';
 import { correrOS } from './ia-os.js';
 import { proveedorDe, iaDeUso } from './ia-proveedores.js';
-import { rutaAgente } from './agentes-ui.js';
+import { rutaAgente, rutaTrabajo } from './agentes-ui.js';
 
 const enc = encodeURIComponent;
 const VIA = { gateway: 'Servidor', servidor: 'Servidor', os: 'IA del OS', hermes: 'Hermes (retirado)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
-const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', input: 'agregó un input', 'quitar-input': 'quitó un input', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', archivar: 'archivó el run', restaurar: 'restauró el run', pausar: 'pausó el agente', reanudar: 'reanudó el agente', encolar: 'mandó la etapa al servidor', cancelar: 'la sacó de la cola', tomar: 'la tomó', fallo: 'falló en' };
+const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', input: 'agregó un input', 'quitar-input': 'quitó un input', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', 'quitar-fuente': 'quitó una fuente', archivar: 'archivó el run', restaurar: 'restauró el run', pausar: 'pausó el agente', reanudar: 'reanudó el agente', encolar: 'mandó la etapa al servidor', cancelar: 'la sacó de la cola', tomar: 'la tomó', fallo: 'falló en' };
 const quien = (e) => String(e || '').split('@')[0];
 const hora = (iso) => (iso ? new Date(iso).toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' }) : '');
 const cuando = (iso) => (iso ? new Date(iso).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
@@ -56,7 +56,7 @@ export async function pintarRun(el, me, id, alive) {
     const act = activa(run), n = sel ?? act, e = run.etapas[n], sig = run.etapas[act + 1];
     const esActiva = n === act && !run.archivado && !completo(run);
     const o = leerOutput(e.entrega || e.output, e.nombre);
-    const evi = (run.evidencia || []).filter((x) => x.etapa === n);
+    const evi = (run.evidencia || []).filter((x) => x.etapa === n && !x.quitada);
     const inputs = (run.inputs || []).filter((x) => !x.archivado);
     const pr = progreso(run);
     const no = (a) => puede(run, n, a, { rol });
@@ -86,7 +86,7 @@ export async function pintarRun(el, me, id, alive) {
           <h1>${run.titulo}</h1>
           <span class="mut sm">${run.cliente ? run.cliente_nombre || run.cliente : 'Inherent'} · ${run.objetivo || run.flujo.nombre}</span>
           <span class="mut sm xs">${ico('play', 12)} Run: una ejecución concreta del agente, etapa por etapa, con tu aprobación en cada gate.</span></div>
-        <div class="ag-head-a">${selector()}
+        <div class="ag-head-a"><a class="btn ghost sm" href="${rutaTrabajo(run.flujo.id, run.id)}">${ico('chat', 13)} Chat de trabajo</a>${selector()}
           ${run.archivado ? html`<button class="btn ghost sm" data-act="restaurar">Restaurar</button>` : html`<button class="btn sm ${run.pausado ? '' : 'ag-dark'}" data-act="pausa">${ico(run.pausado ? 'play' : 'pause', 13)} ${run.pausado ? 'Reanudar agente' : 'Pausar agente'}</button>
           <button class="btn ghost sm" data-act="mas" aria-label="Más">${ico('more', 14)}</button>`}</div>
       </header>

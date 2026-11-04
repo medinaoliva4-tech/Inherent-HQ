@@ -235,8 +235,8 @@ function resolve(path) {
   }
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
   // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
-  // Agents: #/ai/agentes[/<agente>[/<pestaña>|/trabajos/<trabajo>]].
-  if (a === 'ai' && parts[1] === 'agentes') { const ID = /^[\w-]{4,60}$/, [ag, tab, tr] = parts.slice(2); const rest = !ID.test(ag || '') ? [] : tab === 'trabajos' && ID.test(tr || '') ? [ag, 'trabajos', tr] : ['workflow', 'trabajos', 'settings'].includes(tab) ? [ag, tab] : [ag]; return sees('agentes') ? { key: 'agentes', rest, url: ['ai', 'agentes', ...rest].join('/') } : fallback(); }
+  // Agents: #/ai/agentes[/<agente>[/<pestaña>|/trabajos/<trabajo>[/etapas]]] (el trabajo abre su chat; /etapas, la vista por etapas).
+  if (a === 'ai' && parts[1] === 'agentes') { const ID = /^[\w-]{4,60}$/, [ag, tab, tr, vista] = parts.slice(2); const rest = !ID.test(ag || '') ? [] : tab === 'trabajos' && ID.test(tr || '') ? [ag, 'trabajos', tr, ...(vista === 'etapas' ? ['etapas'] : [])] : ['workflow', 'trabajos', 'settings'].includes(tab) ? [ag, tab] : [ag]; return sees('agentes') ? { key: 'agentes', rest, url: ['ai', 'agentes', ...rest].join('/') } : fallback(); }
   // Ajustes: #/ajustes[/ia]. Todo el equipo lo abre; conectar lo hacen el CEO y el COO (el servidor lo hace cumplir).
   if (a === 'ajustes') return sees('ajustes') ? { key: 'ajustes', rest: ['ia'], url: 'ajustes/ia' } : fallback();
   if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();

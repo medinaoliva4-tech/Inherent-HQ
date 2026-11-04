@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1, F2 y F3 cerradas** (ver §10, §14–§18): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, y **Hermes se retiró** (§18). Sigue F4.
+**Estado (2026-11-04):** consolidado. **F0, F1, F2, F3 y F4 cerradas** (ver §10, §14–§19): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, **Hermes se retiró** (§18) y **cada trabajo del Agent Area se lleva desde su chat de trabajo** (§19). Sigue F5.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -100,7 +100,7 @@ El contexto real de Featherless en el plan actual es **32,768 tokens** (no 262k)
 - **Portal:** Resumen (qué hace, Por aprobar / En curso / Completados, etapas numeradas, ficha), Flujo, Trabajos (filtros y avance), Configuración (secciones con su explicación; se guarda sola).
 - **Flujo (estilo Kargul):** lienzo con rejilla, zoom y ajustar, pantalla completa (F / Esc), tarjetas por tipo con su modelo, «+» entre etapas, Acciones e inspector flotantes.
 
-**Chat de trabajo (por construir, F4):** cuando un Trabajo entra a su fase, se trabaja como en Claude: una conversación que **se guarda** (el valor queda en la base, no en la sesión). Piezas, inspiradas en AI Elements:
+**Chat de trabajo (hecho, F4 · §19):** cuando un Trabajo entra a su fase, se trabaja como en Claude: una conversación que **se guarda** (el valor queda en la base, no en la sesión). Piezas, inspiradas en AI Elements:
 
 | Pieza | Para qué |
 |---|---|
@@ -136,7 +136,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales; calidad contra Claude; Figwright | **Cerrada (2026-11-04)** (§14): la calidad de DeepSeek V4 Pro alcanza para Strategy; Figwright funciona desde el VPS con un túnel que abre la Mac |
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
-| **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
+| **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -163,6 +163,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · el MCP del propio OS desde el servidor, como la persona y solo lectura | CEO + Claude |
 | 2026-11-04 | F3 · escrituras en el OS desde el Chat solo como propuestas que la persona aprueba | CEO + Claude |
 | 2026-11-04 | F3 · Hermes retirado: el Chat, Strategy, las herramientas y el Agent Area corren en el servidor | CEO + Claude |
+| 2026-11-04 | F4 · chat de trabajo: cada trabajo abre en su chat (una conversación por persona y trabajo, guardada en el OS); la vista por etapas queda en `/etapas` | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -310,3 +311,25 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 - Los trabajos viejos con vía «hermes» se siguen leyendo (como «Hermes (retirado)»).
 
 **Probado (staging):** el Chat responde por el servidor; una conversación oculta de Strategy responde y no aparece en la lista; la portada de Inherent AI lee el servidor, los trabajos y las conexiones; todas las pruebas pasan.
+
+## 19 · F4 · el chat de trabajo (2026-11-04)
+
+**Qué cambia para el equipo:** al abrir un trabajo del Agent Area se abre su **chat**. Se conversa con el agente como en Claude, se ejecuta la etapa, llega el resultado en una tarjeta y se aprueba o se pide un ajuste ahí mismo. La vista de tres columnas sigue en «Vista por etapas» (ahí siguen las otras IAs y el simulado).
+
+**Las piezas (§8):**
+- **Agent** (cabecera): el agente, el trabajo, el cliente, la etapa en curso, sus conexiones, el modelo del servidor y el avance.
+- **Hilo:** tus mensajes, los del agente (con los pasos que usó: web, MCP) y lo que pasa en el trabajo (etapa enviada, resultado listo, aprobada, ajuste, falla). El resultado vigente de cada etapa sale como **tarjeta** con su confianza, lo que faltó y los botones. Mientras el servidor trabaja una etapa se ve su actividad en vivo; se puede seguir conversando o cerrar la pantalla.
+- **Queue:** las etapas en orden, la activa marcada; se ejecutan, se sacan de la cola y se aprueban desde ahí.
+- **Sources:** las fuentes que usó cada etapa; se **verifican** o se **quitan** (quitar no borra: la marca `quitada` queda en la base con quién lo hizo).
+- **File tree:** **Inputs** (lo que dio el equipo; «+» agrega uno) y **Producido** (un `.md` por etapa con resultado: se abre, se descarga y se corrige).
+
+**Cómo funciona:**
+- La conversación es de `chat_sesiones`, **oculta** y **una por persona y trabajo**, con id fijo `inh-<modo>-t<trabajo>-<huella del correo>` (el correo no queda en la base): la misma persona la retoma desde cualquier compu. Las etapas, aprobaciones y fuentes son del trabajo y las ve todo el equipo.
+- En cada mensaje la pantalla relee el trabajo y le manda al servidor el **contexto al día** (etapa activa, resultado en revisión, inputs, lo aprobado), recortado para caber en los 32k (§4).
+- El agente **no ejecuta ni aprueba**: propone y redacta; la persona decide con los botones. «Pedirlo como ajuste» convierte una respuesta del agente en el ajuste de la etapa y la re-ejecuta en el servidor.
+- El VPS no cambió (sigue `f3-7`): todo sale de lo que ya existía (D13).
+
+**Archivos:** `public/js/agentes-chat.js` (pantalla), `public/js/agentes-chat-datos.js` (lo puro: id, contexto, hilo, fuentes, archivos; lo prueba `npm run test:agentes`). Ruta: `#/ai/agentes/<agente>/trabajos/<trabajo>` (chat) y `…/etapas` (vista por etapas).
+
+**Probado (staging):** un trabajo nuevo de Strategy: conversación con el servidor, input agregado, la etapa Contexto ejecutada en el servidor con su actividad en vivo, el resultado en tarjeta, la conversación sobre el resultado y la aprobación desde el chat.
+
