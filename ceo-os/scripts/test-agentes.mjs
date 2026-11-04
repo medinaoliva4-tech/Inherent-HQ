@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
 import { leer, aTexto } from '../gateway/web.mjs';
+import { esEscritura } from '../api/_lib/mcp.js';
 import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -115,6 +116,10 @@ t('una URL que viene dentro del resultado de un MCP cuenta como evidencia; una i
   const run = { inputs: [{ id: 'm1', titulo: 'Cloudflare · search', texto: 'Límite de CPU: 30 s. Fuente: https://developers.cloudflare.com/workers/platform/limits/' }] };
   const r = soloEvidenciaDeInputs(run, { evidencia: [{ id: 'e1', titulo: 'Límites', url: 'https://developers.cloudflare.com/workers/platform/limits/' }, { id: 'e2', titulo: 'Blog', url: 'https://blog.inventado.com/x' }], campos: [], faltantes: [], confianza: 80 });
   assert.deepEqual(r.evidencia.map((x) => x.id), ['e1']); assert.equal(r.faltantes.length, 1);
+});
+t('el servidor solo lee el OS: las herramientas que escriben quedan fuera', () => {
+  for (const n of ['crear_tarea', 'actualizar_lead', 'subir_documento', 'marcar_pagada', 'asignar_rol']) assert.equal(esEscritura(n), true, n);
+  for (const n of ['mis_pendientes', 'tareas', 'clientes', 'leads', 'resultados', 'leer_documento']) assert.equal(esEscritura(n), false, n);
 });
 t('web: el texto de una página sale limpio (sin scripts ni menús, con acentos)', () => {
   const r = aTexto('<title>T &amp; Co</title><script>x()</script><nav>menú</nav><p>Hola&nbsp;mundo &#233;xito</p>');

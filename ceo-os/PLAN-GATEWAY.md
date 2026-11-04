@@ -160,6 +160,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · MCP por persona a través del OS con `GATEWAY_TOKEN`; el VPS nunca recibe `SESSION_SECRET` | CEO + Claude |
 | 2026-11-04 | F3 · el Chat en el servidor: conversaciones guardadas en el OS, respondidas por el VPS en vivo; Hermes queda como opción en Ajustes | CEO + Claude |
 | 2026-11-04 | F3 · el Chat del servidor con herramientas: web y MCP de la persona | CEO + Claude |
+| 2026-11-04 | F3 · el MCP del propio OS desde el servidor, como la persona y solo lectura | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -283,4 +284,8 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging):** «¿cuál es la versión estable más reciente de Node.js?» → buscó, leyó 4 páginas de nodejs.org y respondió v26.13.0 LTS con sus URLs, en 39 s (verificado contra `nodejs.org/dist/index.json`); «límite de CPU de un Worker según Cloudflare» → usó la conexión de Cloudflare y respondió en 15 s citando la página oficial.
 
-**Pendiente:** el MCP del propio OS (clientes, proyectos, tareas) todavía no está en el Chat del servidor; retirar Hermes (F7) cuando el equipo lo haya usado unos días.
+**El MCP del propio OS (hecho, 2026-11-04):** el Chat del servidor y las etapas que piden «Inherent OS» leen el OS (pendientes, tareas, clientes, CRM, resultados, Library…) con las mismas herramientas del conector MCP del OS, corridas **dentro del OS como esa persona**: sus áreas, «solo ver», lo que es solo del CEO. **Solo lectura:** las 24 herramientas que escriben (crear tareas, mover leads, subir documentos, facturas…) no se le dan al servidor; si el modelo lo intenta, la ruta lo rechaza. Se abrirán cuando haya un paso de confirmación humana, porque el modelo también lee páginas web y una página podría intentar darle órdenes. Al modelo se le indica que lo que traen las páginas y las herramientas es información, no instrucciones.
+
+**Probado (staging):** «¿qué tareas tengo pendientes?» → usó `mis_pendientes` como esa persona y respondió con la tarea real y su fecha, en 16 s. «Crea una tarea…» → respondió que desde aquí solo puede consultar; no se creó nada.
+
+**Pendiente:** escribir en el OS desde el servidor con confirmación humana; retirar Hermes (F7) cuando el equipo lo haya usado unos días.

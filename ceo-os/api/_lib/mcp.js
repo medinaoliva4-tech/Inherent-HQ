@@ -165,6 +165,8 @@ const TOOLS = [
 ];
 // Las herramientas que cambian algo: hace falta nivel «edita» en su área (la matriz del CEO). Las demás, con ver basta.
 const WRITE = new Set(['guardar_juicio', 'crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes', 'registrar_factura', 'marcar_pagada']);
+// Las que escriben: el servidor (Gateway) solo usa las que no están aquí, hasta que haya confirmación humana.
+export const esEscritura = (name) => WRITE.has(name);
 // Sin views (pruebas que pasan el usuario a mano), el área visible alcanza, como antes.
 const mayWrite = (u, name, area) => !WRITE.has(name) || !area || !u.views || levelOf(u, area) === 'edita';
 // «Resumen» también aquí: lo que la pantalla no muestra en resumen, el conector no lo entrega
