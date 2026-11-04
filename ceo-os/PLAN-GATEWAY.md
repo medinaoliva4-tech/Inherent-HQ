@@ -1,182 +1,209 @@
-# PLAN-GATEWAY — el puente entre Inherent OS y los motores de IA
+# PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado:** propuesto, pendiente del OK del CEO. Nada de esto está construido todavía.
-**Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en cualquier cosa del Gateway se lee, y todo cambio de rumbo se anota aquí (sección 11) en vez de resolverse de palabra.
+**Estado (2026-11-04):** consolidado. F0 y F1 hechas en lo esencial (ver §10). Lo siguiente es **F2 · Gateway mínimo**.
+**Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
+**Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
-> **Qué es y qué no es.** El Gateway no inventa nada nuevo: **organiza y pone en un solo lugar lo que Inherent ya usa** (el chat con modos, Agent Area, el conector MCP, el repo como conocimiento). No reemplaza el OS ni los workflows; reemplaza **Hermes en la compu de cada persona** por un puente central en el VPS.
+> **Qué es y qué no es.** El Gateway no inventa nada: **pone en un solo lugar lo que Inherent ya usa** (el chat con modos, el Agent Area, el conector MCP, el repo como conocimiento) y **reemplaza a Hermes en la compu de cada persona** por un trabajador central en el VPS. El OS sigue siendo la cara; el VPS hace el trabajo pesado.
 
 ---
 
-## 1 · Decisiones tomadas
+## 1 · Decisiones
 
 | # | Decisión | Por qué |
 |---|---|---|
-| D1 | **Todo corre en un VPS (Contabo)**, no en la compu de cada persona | Un solo lugar para llaves, presupuestos, logs, memoria y colas. Nadie depende de tener su Mac encendida |
-| D2 | **Un solo puente (Agent Gateway)**; los motores son enchufables detrás de él | Evita las muchas rutas (Hermes, puente claude.ai, Simulado, chat con Claude Code) |
-| D3 | Motor base: **OpenCode** (sustituye a Hermes) | Más consolidado y sencillo; habla con cualquier proveedor. **Sujeto al spike de la Fase 1** |
-| D4 | Segundo motor: **Claude Code con Opus 5.5**, para video y diseño | Ya funciona bien en esos flujos; no se cambia lo que funciona por teoría |
-| D5 | **LiteLLM** como capa de proveedores | Featherless, NVIDIA, frontier por API; llaves virtuales y presupuesto por persona y por cliente |
-| D6 | **La memoria vive en la base de datos del OS**, no en el motor | El contexto de un motor es desechable; el trabajo no se pierde |
-| D7 | **El usuario ve un solo hilo por Trabajo**; el Gateway rota las sesiones por debajo | El contexto de Featherless es limitado, pero la experiencia es continua |
-| D8 | **MCP por persona, con su propia autenticación** | Cada quien conecta lo que necesita; nadie depende de que el CEO conecte todo |
-| D9 | En el VPS, el motor premium usa **API key de la empresa**, no la suscripción de nadie | Términos de uso de los proveedores |
-| D10 | Frontend: se mejora el chat actual con **componentes de código abierto** para la UI interactiva, sin rehacerlo | Reusar estructuras ya hechas |
+| D1 | **El trabajo pesado corre en el VPS (Contabo)**, no en la compu de cada persona | Llaves, presupuestos, logs y colas en un solo lugar. Nadie depende de tener su Mac encendida |
+| D2 | **Un solo Gateway**; los motores se enchufan detrás | Se acaban las muchas rutas (Hermes, puente, claude.ai pegado, Simulado) |
+| D3 | **El motor base es un ejecutor determinista** (`gateway/runner.mjs`) que llama a LiteLLM **un paso a la vez**. OpenCode queda solo para tareas cortas con herramientas | En el spike, OpenCode con un bucle largo leyó y no escribió; el ejecutor por pasos corrió Strategy de punta a punta (§14). *Cambia la D3 original* |
+| D4 | Segundo motor: **Claude Code con Opus 5.5** para video y diseño | Ya funciona en esos flujos |
+| D5 | **LiteLLM** como capa de proveedores (Featherless, NVIDIA, frontier por API) | Un adaptador; llaves virtuales y presupuesto por persona y cliente |
+| D6 | **La memoria vive en la base del OS (Neon)**, no en el motor | El contexto de un motor es desechable; el trabajo no se pierde |
+| D7 | **Un solo hilo visible por Trabajo**; por debajo se rotan sesiones con resumen de traspaso | El contexto real es de 32k (§14): la rotación es obligatoria |
+| D8 | **MCP por persona**, con su propia autenticación (ya existe: `api/_lib/conectores.js`, OAuth y token cifrados) | Cada quien conecta lo suyo |
+| D9 | En el VPS el motor premium usa **API key de la empresa**, nunca la suscripción de alguien | Términos de uso |
+| D10 | **Los workflows viven en la base del OS** (`agent_workflows`), creados en blanco o importados de una plantilla del repo (`agents/*/brain/WORKFLOW.md`). Importar corta el lazo. *Cambia lo dicho en §13 original («plantillas en el repo»)* | Se editan en el OS sin PR; el repo es fuente de plantillas, no de verdad. `ceo-os/workflows/*.json` queda como prueba del ejecutor |
+| D11 | **Modelo por etapa**, elegido en el Flujo (vacío = el del agente; si no, la «IA para Agents» de Ajustes) | Gratis o barato para preparar, fuerte para decidir. Ya construido |
+| D12 | **Umbral:** cada paso cabe en ~20k tokens de entrada y ~6k de salida; si no cabe, un modelo gratis condensa antes o el OS avisa (413 `UMBRAL`) | Featherless corta en 32,768 |
+| D13 | **El OS no llama al VPS: el VPS saca trabajos de la base.** El OS escribe la etapa a correr como «en cola» en Neon; el trabajador del VPS la toma, la corre y escribe actividad, resultado y costo en la misma fila; la pantalla lee la base | Sin DNS, sin túnel, sin puerto abierto (el firewall solo deja Tailscale) y sin el tope de 300 s de Vercel. *Cierra la pregunta abierta de cómo llega Vercel al VPS* |
+| D14 | **La UI sigue a Apple** (Human Interface Guidelines · Foundations): jerarquía clara, profundidad y vidrio translúcido, nada de «AI slop». Patrones de AI Elements (Queue, Sources, Agent, File tree) adaptados, no copiados | Ver §8 |
 
 ## 2 · La estructura
 
 ```
-Inherent OS (Vercel)
- chat con modos · Agent Area · conector MCP
-          │  una sola API (token + login del OS)
+Inherent OS (Vercel) ── la cara
+ Agent Area (lista · portal · Flujo) · chat de trabajo · conector MCP · Ajustes → IA
+          │  escribe «etapa en cola» y lee resultados          (nunca llama al VPS)
           ▼
-AGENT GATEWAY (VPS)
- · cola y candado por Trabajo        · memoria y resúmenes (en la base del OS)
- · permisos por rol y por cliente    · rotación de sesiones
- · regla de la ficha de oferta       · costos por cliente
+       Neon (base del OS) ── la memoria
+ agent_workflows · agent_runs (etapas, actividad, evidencia, costo) · ia_config · mcp_conexiones
+          ▲  toma trabajos, escribe avance                      (el VPS sale hacia Neon; nada entra)
           │
-   ┌──────┴───────┐
-   ▼              ▼
- OpenCode     Claude Code (Agent SDK)
- (abiertos,   (video, diseño, tareas
-  volumen)     premium)
-   └──────┬───────┘
+AGENT GATEWAY (VPS, solo Tailscale)
+ · cola global y candado por Trabajo       · umbral y condensado (D12)
+ · permisos por rol y cliente              · rotación de sesiones y resumen de traspaso
+ · regla de la ficha de oferta             · costo por cliente
+          │
+   ┌──────┴───────────────┐
+   ▼                      ▼
+ Ejecutor por pasos     Claude Code (Agent SDK)
+ (runner.mjs)           video, diseño, Figma
+   └──────┬───────────────┘
           ▼
        LiteLLM ──► Featherless · NVIDIA · Anthropic · OpenAI · OpenRouter
 ```
 
-El OS **nunca habla con un motor**: le pide al Gateway «corre esto, en este modo, para este cliente». Cambiar de motor o de modelo no toca el OS.
+Mientras F2 no exista, el OS sigue corriendo las etapas desde el navegador con la **IA del OS** (`/api/ia/completar` y `/api/ia/agente`, con tope de 300 s) o con Hermes. F2 mueve eso al VPS sin cambiar la pantalla.
 
 ## 3 · La memoria: tres capas
 
 | Capa | Qué guarda | Dónde | Quién escribe |
 |---|---|---|---|
-| **Conocimiento de la empresa** | Principios, método, ofertas, fichas, clientes | Repo Inherent-HQ | Solo personas, con PR. Los agentes **leen** |
-| **Estado del trabajo** | Trabajos, hilos, resúmenes, decisiones, `agent_runs`, artefactos | Base de datos del OS (Neon) | El Gateway y el OS |
-| **Contexto de una corrida** | La sesión del motor | Disco del VPS | El motor. **Desechable** |
+| **Conocimiento** | Principios, método, ofertas, fichas, plantillas de agentes | Repo Inherent-HQ | Solo personas, con PR. Los agentes leen |
+| **Estado del trabajo** | Agentes, trabajos, etapas, actividad, evidencia, resúmenes, costos | Neon (`agent_workflows`, `agent_runs`) | El OS y el Gateway |
+| **Contexto de una corrida** | La sesión del motor | Disco del VPS | El motor. Desechable |
 
-**Regla:** si se pierde la capa 3, se reconstruye desde la 2. Nada importante vive solo en una sesión.
+**Regla:** si se pierde la capa 3, se reconstruye desde la 2.
 
 ## 4 · Contexto limitado y sesiones
 
-Un **Trabajo** es un hilo continuo para el usuario. Por debajo:
+El contexto real de Featherless en el plan actual es **32,768 tokens** (no 262k). Por eso:
 
-1. El Gateway mide cuánto contexto lleva la sesión.
-2. Al acercarse al límite del modelo (Featherless: 262k según el catálogo; **por verificar el límite efectivo por modelo**), genera un **resumen de traspaso** (decisiones, pendientes, archivos tocados, estado de cada etapa) y lo guarda en la base.
-3. Abre una sesión nueva e inyecta ese resumen.
-4. La pantalla muestra un solo hilo, con el historial por segmentos desplegable.
-
-Se usa la compactación automática de OpenCode como primera línea, y el resumen de traspaso del Gateway como red de seguridad. **Por verificar:** los nombres de configuración cambian entre versiones de la documentación de OpenCode; se confirman contra la versión instalada.
+1. Cada etapa es una llamada acotada: entrada ≤ ~20k, salida ≤ ~6k (D12).
+2. Si las entradas no caben, un modelo gratis (NVIDIA MiniMax) las condensa por bloques, empezando por la más grande (`runner.mjs`, ya construido).
+3. Un Trabajo largo no es una conversación larga: es una cadena de etapas, cada una con su resumen guardado en la base. La siguiente etapa recibe los resúmenes aprobados, no el historial completo.
+4. La pantalla muestra un solo hilo; por debajo cada etapa abre una sesión nueva.
 
 ## 5 · Que no choquen las llamadas
 
-- **Un candado por Trabajo:** una corrida activa a la vez; el resto, en cola.
-- **Una carpeta aislada por workspace y cliente.** Regla del pipeline: *un cliente por sesión, nunca se mezclan dos*.
-- **Llaves virtuales de LiteLLM** por persona y por cliente, con presupuesto.
-- **Featherless es un cuello de botella** (límite de cambios de modelo por minuto y de concurrencia del plan, ya observados): cada flujo fija un modelo y las corridas entran en cola.
-- OpenCode trae una sola credencial para todo el servidor **[por verificar]**, así que **el control de quién puede qué vive en el Gateway y en el OS**, nunca en el motor.
+- **Cola global por proveedor** (ya en `runner.mjs`): Featherless da 4 unidades; Kimi K3 y DeepSeek V4 Pro cuestan 4 (una a la vez en toda la cuenta), DeepSeek V4 Flash 2. Los costos del resto están por medir (`gateway/limits.json`).
+- **Un candado por Trabajo:** una etapa activa a la vez; el resto espera.
+- **Un cliente por sesión**, nunca dos mezclados.
+- **Llaves virtuales de LiteLLM** por persona y por cliente, con presupuesto (F2).
 
 ## 6 · MCP
 
-- Se conserva el **conector MCP de Inherent OS** (OAuth por persona, permisos por rol).
-- El Gateway entrega a cada corrida **solo los MCP que el perfil permite**; cada persona conecta los suyos.
-- **Composio** entra como un MCP más para apps externas, evaluado contra lo que ya hay (Zernio, Apify, Windsor).
+- Ya existe la **conexión directa** de MCPs desde el OS (OAuth por persona, cifrado, con logos en Inherent AI → MCPs) y la IA del OS los usa en `/api/ia/agente` (hasta 8 vueltas de herramientas).
+- El Gateway entrega a cada etapa **solo los MCP que esa etapa pide y que la persona tiene conectados**.
+- **Composio** entra como un MCP más, evaluado contra Zernio, Apify y Windsor.
 
 ## 7 · Figma y video
 
-- **Figwright** es un MCP local (`@figwright/mcp`) que necesita el plugin abierto en Figma. Cualquier motor con MCP puede usarlo. **Pendiente de probar:** cómo se comunica el plugin con el servidor; si es solo local, no llega al VPS y hará falta un túnel o correr esa parte en la Mac del diseñador.
+- **Figwright** es un MCP local que necesita el plugin abierto en Figma. **Pendiente de probar** si llega al VPS; si no, esa etapa corre en la Mac del diseñador.
 - **Video y diseño** corren por Claude Code (Opus 5.5) detrás del mismo Gateway.
 
-## 8 · Cómo el flujo de trabajo gana eficiencia y revenue
+## 8 · La interfaz
 
-El Gateway es un buen lugar para que **las promesas de inherentglobal.com se cumplan por construcción**, no por disciplina. Propuestas, de mayor a menor impacto:
+**Base:** Apple HIG · Foundations (https://developer.apple.com/design/human-interface-guidelines/foundations): jerarquía, profundidad, materiales translúcidos, movimiento con propósito. Paleta de referencia: negros y grises profundos, blanco hueso, gris medio y crema; textura de puntos tenue; vidrio semitransparente con borde de luz. Más integral y en capas (3D), menos tarjetas planas.
 
-| # | Conexión | Qué hace | Por qué importa |
-|---|---|---|---|
-| W1 | **La ficha como contrato ejecutable** | El Gateway rechaza corridas fuera del techo de la ficha (nivel, áreas, volumen, rondas). Hoy cada agente lo respeta por convención | «Entregar de más rompe el margen, de menos rompe la promesa» se vuelve una regla en código |
-| W2 | **Costo real por cliente y por ciclo** | Una llave virtual por cliente da el gasto de IA real; se compara con el rubro de Herramientas/IA de `06-ECONOMIA.md` y avisa si el margen se acerca al piso | Margen visible mes a mes, sin hojas de cálculo |
-| W3 | **Modelo por etapa** | Modelos baratos para volumen (captions, derivadas, triage de comunidad); fuertes para Strategy, Branding y guiones; Claude Code para video y diseño. Tabla inicial en la sección 9 | Baja el costo sin bajar la calidad donde importa |
-| W4 | **El calendario del ciclo como programador** | Días 1–20, con el 11 y el 20 como límites duros: el Gateway agenda las etapas en su ventana y avisa de atrasos (por ejemplo, si a dos días del 11 no hay guiones aprobados) | «Ningún agente corre fuera de su ventana» se cumple solo |
-| W5 | **Calidad medible** | Tasa de aprobación a la primera contra `08-CRITERIOS-DE-ACEPTACION` y rondas usadas vs. las de la ficha | Muestra dónde se pierde margen por retrabajo |
-| W6 | **Una sola bandeja de gates** | «¿Qué necesita de mí?» de Agent Area, con avisos al celular, para CEO y COO | El CEO solo dirige: ve únicamente lo que requiere su gate |
-| W7 | **Señales de subida de nivel** | Con las métricas de la revisión del día 20, Growth propone con evidencia el paso Foundation → Growth → Partnership o módulos aparte (pauta, producción especial) | Revenue desde lo que ya se mide. **Siempre sin prometer resultados garantizados** |
-| W8 | **Onboarding automático** | Cliente nuevo → carpeta de cliente, `plan-contratado` desde la propuesta y arranque de la Estrategia guiada (7 etapas) | Activar una cuenta en horas, no días |
-| W9 | **`00-account` (WhatsApp) en el mismo Gateway** | Hoy corre aparte en el VPS; compartiría la memoria del cliente y escalaría directo a Agent Area | Un solo cerebro por cliente |
+**Agent Area (hecho, PR #209):**
+- **Lista:** búsqueda y filtros en chips; qué hace cada agente, sus etapas como puntos de color, lo que espera aprobación.
+- **Portal:** Resumen (qué hace, Por aprobar / En curso / Completados, etapas numeradas, ficha), Flujo, Trabajos (filtros y avance), Configuración (secciones con su explicación; se guarda sola).
+- **Flujo (estilo Kargul):** lienzo con rejilla, zoom y ajustar, pantalla completa (F / Esc), tarjetas por tipo con su modelo, «+» entre etapas, Acciones e inspector flotantes.
 
-## 9 · Modelo por etapa (borrador, se valida en el spike)
+**Chat de trabajo (por construir, F4):** cuando un Trabajo entra a su fase, se trabaja como en Claude: una conversación que **se guarda** (el valor queda en la base, no en la sesión). Piezas, inspiradas en AI Elements:
 
-| Etapas | Motor | Modelo inicial | Nota |
-|---|---|---|---|
-| 01 Strategy · 01.2 Branding · 02 Growth | OpenCode | Kimi K3 o DeepSeek V4 Pro | Razonamiento largo; medir contra Claude |
-| 03 Marketing · 04 Creative | OpenCode | Kimi K3 / GLM 5.3 | Comparar calidad de ideas |
-| 06 Graphic Design | Claude Code | Opus 5.5 | Con Figma (Figwright), si la prueba funciona |
-| 07 Video Editing | Claude Code | Opus 5.5 | Ya funciona hoy |
-| 08 Community · 09 Posting | OpenCode | DeepSeek V4 Flash | Volumen alto, tarea acotada |
-| 10 Ads | OpenCode | Por definir | Nunca escribe en las plataformas; gate humano |
+| Pieza | Para qué |
+|---|---|
+| **Agent** | La cabecera: qué agente, qué modelo, qué conexiones, en qué etapa va |
+| **Queue** | Las etapas y tareas pendientes en cola, con la activa marcada; se aprueban desde ahí |
+| **Sources** | Las fuentes que usó cada respuesta, con verificar / quitar |
+| **File tree** | Los archivos del cliente y los artefactos que el trabajo produce |
 
-Esta tabla es una hipótesis, no un resultado medido.
+Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Marketing, Creative, Production).
+
+**Mejoras del Flujo para que sea menos manual (backlog, por orden):**
+1. **Generar el flujo desde una descripción**: «quiero un agente que audite la marca y entregue un brief» → el planificador (§13) propone las etapas y la persona las ajusta.
+2. Arrastrar etapas para reordenarlas y arrastrar desde Acciones al lugar exacto.
+3. Atajos (duplicar, borrar, mover) y un mini mapa para flujos largos.
+4. «Probar esta etapa» desde el inspector, con un trabajo de prueba.
+
+## 9 · Modelo por etapa
+
+| Uso | Modelo | Estado |
+|---|---|---|
+| Preparar, condensar, títulos, triage | NVIDIA MiniMax M3.1 Flash (gratis, ~15 tok/s, razona en oculto) | Medido |
+| Redactar etapas de volumen y revisar | DeepSeek V4 Flash (~25 tok/s, sin razonamiento oculto) | Medido |
+| Análisis y decisiones (Strategy, Branding, Growth) | DeepSeek V4 Pro (~13 tok/s) | Medido; falta comparar contra Claude |
+| Kimi K3 / GLM 5.3 | Solo con presupuesto de razonamiento explícito | Por medir |
+| Diseño y video | Claude Code · Opus 5.5 | Ya funciona |
+| Revisor | Otro modelo que el que escribió | Hoy Flash revisa lo de Flash: corregir cuando haya un tercer modelo útil |
 
 ## 10 · Fases
 
-Cada fase termina con algo que se puede probar. No se empieza una sin cerrar la anterior.
-
-| Fase | Qué se hace | Hecho cuando |
+| Fase | Qué se hace | Estado |
 |---|---|---|
-| **F0 · Piso firme** | Cerrar el PR #207 (Agent Area); filtrar notas y runs por cliente asignado; base de pruebas separada de producción; decidir el OS oficial | Nadie ve datos de clientes que no le tocan, y las pruebas no tocan producción |
-| **F1 · Spike (2–3 días)** | OpenCode en el VPS con LiteLLM y Kimi K3; probar un flujo real de Strategy; comparar con Claude Code; probar Figwright desde el VPS | Hay datos medidos de calidad, uso de herramientas y contexto largo; D3 y D4 quedan confirmadas o corregidas |
-| **F2 · Gateway mínimo** | API, cola, candados, memoria en la base, rotación de sesiones; un solo motor | Una corrida completa de punta a punta sin intervención manual |
-| **F3 · Conectar el OS** | El chat y los modos hablan con el Gateway; apagar Hermes | Todos los modos funcionan sin Hermes |
-| **F4 · Agent Area en el Gateway** | Los `agent_runs` corren en el servidor | Una etapa completa se ejecuta con la compu apagada |
+| **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Hecha en lo esencial.** OS oficial: `inherent-work.vercel.app`. Pendiente: confirmar que el endpoint de Neon de pruebas es la rama `staging`; merge del #209 y cierre de #207/#208 |
+| **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales | **Hecha** (§14). Pendiente: comparar calidad contra Claude por API; probar Figwright desde el VPS |
+| **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con `runner.mjs` (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | Siguiente. **Hecho cuando** una etapa encargada desde el OS corre con la compu apagada |
+| **F3 · Conectar el OS** | «Con qué corre» → «Gateway (servidor)» como opción por defecto; la pantalla del trabajo lee el avance de la base; el chat y los modos pasan al Gateway; apagar Hermes | Todos los modos funcionan sin Hermes |
+| **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
-| **F6 · Artefactos y flujo** | Reconectar las herramientas escondidas como artefactos de cada modo; W1–W9 por orden de impacto | El chat y la herramienta muestran lo mismo |
-| **F7 · Limpieza** | Actualizar `CLAUDE.md`, `MAPA.md` y este archivo; retirar Hermes del instalador | Las reglas del repo dicen lo que es cierto |
+| **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
+| **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día; retirar Hermes del instalador | Las reglas del repo dicen lo que es cierto |
 
 ## 11 · Registro de cambios de rumbo
 
 | Fecha | Cambio | Quién |
 |---|---|---|
 | 2026-11-03 | Primer borrador | CEO + Claude |
+| 2026-11-04 | Contexto real de Featherless: 32k (no 262k). Concurrencia: 4 unidades | Spike |
+| 2026-11-04 | D3: el motor base es un ejecutor por pasos, no un agente de bucle largo | Spike |
+| 2026-11-04 | D10: los workflows viven en la base del OS (Agent Area), no como JSON del repo | CEO |
+| 2026-11-04 | Se recuperó el Agent Area perdido en `os-agentes` (editor de flujo, MCPs con logos, IA del OS) y se rediseñó al estilo Kargul | CEO + Claude |
+| 2026-11-04 | D13: el VPS saca trabajos de Neon; el OS no llama al VPS | Claude, para aprobar |
+| 2026-11-04 | D14: la interfaz sigue a Apple HIG, con vidrio y profundidad | CEO |
 
-## 12 · Por verificar antes de construir
+## 12 · Por verificar
 
-- Límite efectivo de salida y de contexto por modelo en Featherless (hoy: 32,768 de salida para Kimi K3).
-- Cómo llega el OS (Vercel) al Gateway: subdominio HTTPS con token y límite de peticiones, o un túnel con control de acceso. Vercel no entra a una red privada.
-- Si el VPS de Contabo alcanza: más de un agente a la vez necesita más que 1 vCPU.
-- Términos de uso de cada proveedor si alguien conecta su suscripción personal.
-- Cuál es el OS oficial entre `inherent-work` y `inherente-os-app`.
+- Que el endpoint de Neon de pruebas sea la rama `staging` (lo confirma el CEO en la consola de Neon).
+- Que el VPS alcance con varios trabajos a la vez (4 vCPU, 7.8 GB: suficiente para el ejecutor; Claude Code puede pedir más).
+- Costo en unidades de Featherless de cada modelo que no es Kimi K3.
+- Si Figwright puede trabajar desde el VPS.
+- Higiene: revocar las llaves de Featherless que se pegaron en el chat y rotar la contraseña de Neon que también se pegó.
 
-## 13 · El orquestador: de un prompt en lenguaje natural a un workflow multimodelo
+## 13 · El orquestador: de un prompt a un workflow multimodelo
 
-**Lo que promete la web (inherentglobal.com, leída el 2026-11-04):** cuatro pilares (Growth, Conversion, Operations y Money System) y tres planes (Brand Foundation, Brand Growth, Growth Partnership) que entregan *marca, plan y ejecución*, no piezas sueltas. Promesas operativas concretas: contenido aprobado por el cliente antes de publicar (*«nada se publica sin tu OK»*), piezas a tiempo, revisión mensual y presentación el día 20, metas medibles, y un portal donde cliente y equipo leen los mismos números. El OS es la fábrica que cumple eso.
+**Lo que promete la web (inherentglobal.com, leída el 2026-11-04):** cuatro pilares (Growth, Conversion, Operations, Money System) y tres planes (Brand Foundation, Brand Growth, Growth Partnership) que entregan *marca, plan y ejecución*. Promesas concretas: nada se publica sin el OK del cliente, piezas a tiempo, revisión mensual y presentación el día 20, metas medibles y un portal con los mismos números para cliente y equipo. El OS es la fábrica que cumple eso.
 
-**Principio:** el LLM *decide qué workflow* y *produce el contenido de cada paso*; **un ejecutor determinista lleva el flujo**. Un solo agente que planea y ejecuta todo en un bucle largo es lo que falló en el spike (ver 14).
+**Principio:** el LLM decide *qué* workflow y escribe *el contenido* de cada paso; **un ejecutor determinista lleva el flujo**.
 
 ```
-Prompt en lenguaje natural («arma el mes de AKAI», «lanza la campaña de X»)
-  → 1. ENRUTADOR (modelo barato): intención + cliente + ficha → qué plantilla de workflow
-  → 2. PLANIFICADOR (modelo fuerte): llena la plantilla (pasos, entradas, fechas)
-  → 3. EJECUTOR (código, no LLM): corre cada paso en orden/paralelo, con cola y candados
-        paso = { skill del agente, modelo por etapa, MCP permitidos, entrada, salida esperada, gate? }
-  → 4. REVISOR (modelo distinto al que escribió): contra 08-CRITERIOS-DE-ACEPTACION
-  → 5. GATE humano (CEO/COO/cliente) → publicar o devolver
+Prompt («arma el mes de AKAI», «lanza la campaña de X»)
+  → 1. ENRUTADOR (modelo barato): intención + cliente + ficha → qué agente (workflow del OS)
+  → 2. PLANIFICADOR (modelo fuerte): llena el trabajo (objetivo, entradas, fechas)
+  → 3. EJECUTOR (código): corre cada etapa con su modelo, sus MCP y su umbral, en cola
+  → 4. REVISOR (otro modelo): contra 08-CRITERIOS-DE-ACEPTACION
+  → 5. GATE humano (CEO/COO/cliente) → seguir, ajustar o devolver
 ```
 
-- **Workflows como plantillas versionadas en el repo** (una por entregable: estrategia, mes de contenido, campaña, reporte del 20). El LLM las elige y las llena; no las inventa.
-- **Un paso = una llamada acotada** (una skill, un modelo, pocas herramientas). Los MCP se llaman *dentro* del paso que los necesita y solo los que su perfil permite.
-- **Modelo por paso** según la tabla de la sección 9. El revisor siempre es otro modelo.
-- **Todo paso escribe su salida y su costo en la base del OS** (`agent_runs`), así Agent Area y el costo por cliente salen solos.
-- **El cliente ve su avance en el portal** (misma fuente de datos), con aprobación pieza por pieza.
+- Los workflows son los agentes del OS (D10). El LLM los elige y los llena; no los inventa.
+- Una etapa = una llamada acotada: una skill, un modelo, pocas herramientas.
+- Toda etapa escribe salida, evidencia y costo en `agent_runs`: el Agent Area, el costo por cliente y el portal salen de ahí.
+
+**Cómo el flujo gana eficiencia y revenue (W1–W9):**
+
+| # | Conexión | Qué hace |
+|---|---|---|
+| W1 | La ficha como contrato ejecutable | El Gateway rechaza trabajos fuera del techo de la ficha |
+| W2 | Costo real por cliente y ciclo | Llave virtual por cliente contra el rubro de IA de `06-ECONOMIA.md` |
+| W3 | Modelo por etapa | §9 |
+| W4 | El calendario del ciclo como programador | Días 1–20, con el 11 y el 20 como límites duros |
+| W5 | Calidad medible | Aprobación a la primera y rondas usadas contra la ficha |
+| W6 | Una sola bandeja de gates | «¿Qué necesita de mí?» con avisos al celular |
+| W7 | Señales de subida de nivel | Growth propone el siguiente plan con evidencia, sin prometer resultados |
+| W8 | Onboarding automático | Cliente nuevo → carpeta, plan contratado y Estrategia guiada |
+| W9 | `00-account` (WhatsApp) en el mismo Gateway | Un solo cerebro por cliente |
 
 ## 14 · Hallazgos del spike (2026-11-04)
 
 | Hallazgo | Consecuencia |
 |---|---|
-| Servidor: 4 vCPU, 7.8 GB, 94 GB libres. Hermes y LiteLLM viejos retirados (respaldo en el servidor) | Alcanza para el spike |
-| **Featherless `feather_pro_plus`: 4 unidades de concurrencia y Kimi K3 cuesta 4 → una sola petición de Kimi K3 a la vez en toda la cuenta** | La cola global del Gateway es obligatoria, no opcional. Para paralelismo hay que usar modelos de menos unidades, NVIDIA o la API de frontier |
-| **Featherless limita Kimi K3 a 32,768 tokens de contexto en tu plan (no 262k).** Error real: «prompt de 32,922 tokens excede el máximo de 32,768». Era la causa de que las tareas largas se cortaran | La rotación de sesiones con resumen de traspaso es obligatoria, no un extra. OpenCode debe declarar `context: 32768` para que compacte a tiempo. Cada paso del workflow debe caber en ~20k tokens de entrada |
-| **Kimi K3, GLM 5.3 y MiniMax razonan en oculto y ese razonamiento cuenta contra `max_tokens`**: Kimi gastó 4,500 tokens pensando y devolvió 0 caracteres (`finish=length`). DeepSeek V4 Flash (~25 tok/s) y V4 Pro (~13 tok/s) no lo hacen | Los pasos de redacción usan DeepSeek; Kimi/GLM quedan para después de medirlos con presupuesto de razonamiento explícito |
-| **Prueba hecha (2026-11-04):** workflow de Strategy (método → contexto → análisis → revisión → gate) corrió de punta a punta con un ejecutor en código: ~7 min, ~25k tokens, se detuvo en el gate del CEO. El revisor detectó una inconsistencia real de la ficha de prueba (2,990 tickets × $145 = $433k ≠ $330k declarados) | Valida la sección 13: pasos acotados, modelo por paso, revisor, gate. Pendiente comparar la calidad contra Claude por API |
-| OpenCode + Kimi K3: tareas cortas con herramientas funcionan (leyó y escribió archivos) | D3 sigue en pie para tareas acotadas |
-| OpenCode + Kimi K3 en la tarea larga de Strategy: leyó los archivos y cerró el turno sin escribir (varios intentos); además arranques colgados por IPv6 (corregido con `gai.conf`) | **No usar un agente de bucle largo.** Valida el diseño de la sección 13: pasos acotados con ejecutor determinista |
-| NVIDIA gratuito: solo MiniMax M3.1 Flash respondió; Kimi K2.6 no habilitado; DeepSeek/GLM Flash con cola | Sirve para tareas menores (títulos, triage), no como motor base |
+| Servidor: 4 vCPU, 7.8 GB, 94 GB libres. Hermes y LiteLLM viejos retirados (respaldo en el servidor). LiteLLM nuevo como servicio en `127.0.0.1:4000` | Alcanza para F2 |
+| Featherless `feather_pro_plus`: 4 unidades; Kimi K3 cuesta 4 → una petición de Kimi a la vez en toda la cuenta | La cola global es obligatoria |
+| Featherless limita el contexto a 32,768 tokens en este plan («prompt de 32,922 excede 32,768») | Umbral por paso y rotación de sesiones obligatorios |
+| Kimi K3, GLM 5.3 y MiniMax razonan en oculto y eso cuenta contra `max_tokens` (Kimi gastó 4,500 pensando y devolvió 0 caracteres). DeepSeek V4 Flash y Pro no | Los pasos de redacción usan DeepSeek |
+| Strategy (método → contexto → análisis → revisión → gate) corrió de punta a punta con el ejecutor: ~7 min, ~25k tokens, se detuvo en el gate. El revisor detectó una inconsistencia real en la ficha de prueba (2,990 × $145 = $433k ≠ $330k) | Valida §13 |
+| OpenCode + Kimi K3: tareas cortas con herramientas, bien; la tarea larga leyó y cerró sin escribir; arranques colgados por IPv6 (corregido con `gai.conf`) | D3 corregida: no usar bucle largo |
+| NVIDIA gratis: solo MiniMax M3.1 Flash responde | Sirve para preparar, no como motor base |
 | Claude Code CLI no corre en segundo plano en la Mac («Not logged in») | La comparación con Claude se hace por API con llave de la empresa |
-| Firewall activo (solo Tailscale), login root y por contraseña cerrados | Servidor ya endurecido |
+| Firewall activo (solo Tailscale), login root y por contraseña cerrados | Servidor endurecido; compatible con D13 (el VPS solo sale) |
