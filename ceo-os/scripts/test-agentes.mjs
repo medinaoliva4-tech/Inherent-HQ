@@ -4,7 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
-import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS } from '../public/js/agentes-flujos.js';
+import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -87,4 +87,27 @@ t('normalizarWorkflow limpia lo que manda el editor', () => {
   assert.equal(w.estado, 'borrador');
 });
 t('en pausa no se ejecuta', () => { const r = nuevo(); r.pausado = true; assert.match(puede(r, 0, 'resultado'), /pausa/); });
+// ---------- El servidor (Gateway, F2) ----------
+t('encolar: solo una etapa pendiente o en ajuste, y no dos veces', () => {
+  const r = nuevo(); assert.equal(puede(r, 0, 'encolar'), null);
+  r.etapas[0] = { ...r.etapas[0], estado: 'en_cola', via: 'gateway' };
+  assert.ok(enServidor(r.etapas[0])); assert.match(puede(r, 0, 'encolar'), /servidor/); assert.match(puede(r, 0, 'resultado'), /servidor/);
+  assert.equal(puede(r, 0, 'cancelar'), null);
+  r.etapas[0].estado = 'trabajando'; assert.match(puede(r, 0, 'cancelar'), /ya la está trabajando/);
+});
+t('aplicarResultado deja la etapa en revisión con su costo y conserva la actividad del servidor', () => {
+  const r = nuevo(); r.etapas[0] = { ...r.etapas[0], estado: 'trabajando', via: 'gateway', actividades: [{ titulo: 'Tomada por el servidor', at: new Date().toISOString() }] };
+  const out = aplicarResultado(r, 0, { via: 'gateway', modelo: 'deepseek-v4-flash', salida: 'ok', campos: [{ campo: 'a', estado: 'evidencia', fuentes: ['i1'] }], costo: { entrada: 10, salida: 20, seg: 3 } });
+  const e = out.etapas[0];
+  assert.equal(e.estado, 'revision'); assert.equal(e.via, 'gateway'); assert.deepEqual(e.costo, { entrada: 10, salida: 20, seg: 3 });
+  assert.equal(e.actividades[0].titulo, 'Tomada por el servidor');
+});
+t('sin herramientas: la evidencia que no viene de los inputs se descarta y su campo baja a hipótesis', () => {
+  const run = { inputs: [{ id: 'i1', titulo: 'Ficha de prueba', texto: 'Ticket promedio Q45.' }] };
+  const r = soloEvidenciaDeInputs(run, { evidencia: [{ id: 'e1', titulo: 'Ficha de prueba (cliente)' }, { id: 'e2', titulo: 'Statista', url: 'https://statista.com' }], campos: [{ campo: 'a', estado: 'evidencia', fuentes: ['e1'] }, { campo: 'b', estado: 'evidencia', fuentes: ['e2'] }], faltantes: [], confianza: 80 });
+  assert.deepEqual(r.evidencia.map((x) => x.id), ['e1']);
+  assert.deepEqual(r.campos.map((c) => c.estado), ['evidencia', 'hipotesis']);
+  assert.match(r.faltantes[0], /no está en los inputs/); assert.equal(r.confianza, 40);
+  assert.match(pedido({ ...nuevo(), inputs: [] }, 0, { sinHerramientas: true }), /NO tienes internet/);
+});
 console.log(`\n${ok} pruebas OK`);

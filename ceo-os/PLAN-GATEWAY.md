@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. F0 y F1 hechas en lo esencial (ver §10). Lo siguiente es **F2 · Gateway mínimo**.
+**Estado (2026-11-04):** consolidado. F0 y F1 hechas en lo esencial; **F2 hecha contra la base de pruebas** (ver §10 y §15). Lo siguiente: conectar el servidor a producción y F3.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -134,7 +134,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 |---|---|---|
 | **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Hecha en lo esencial.** OS oficial: `inherent-work.vercel.app`. Pendiente: confirmar que el endpoint de Neon de pruebas es la rama `staging`; merge del #209 y cierre de #207/#208 |
 | **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales | **Hecha** (§14). Pendiente: comparar calidad contra Claude por API; probar Figwright desde el VPS |
-| **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con `runner.mjs` (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | Siguiente. **Hecho cuando** una etapa encargada desde el OS corre con la compu apagada |
+| **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha contra staging** (§15). Falta apuntarlo a la base de producción (decisión del CEO) y que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Con qué corre» → «Gateway (servidor)» como opción por defecto; la pantalla del trabajo lee el avance de la base; el chat y los modos pasan al Gateway; apagar Hermes | Todos los modos funcionan sin Hermes |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
@@ -152,6 +152,8 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | Se recuperó el Agent Area perdido en `os-agentes` (editor de flujo, MCPs con logos, IA del OS) y se rediseñó al estilo Kargul | CEO + Claude |
 | 2026-11-04 | D13: el VPS saca trabajos de Neon; el OS no llama al VPS | Claude, para aprobar |
 | 2026-11-04 | D14: la interfaz sigue a Apple HIG, con vidrio y profundidad | CEO |
+| 2026-11-04 | D13 aprobada y F2 construida: `gateway/worker.mjs` como servicio `gw-worker` en el VPS | CEO + Claude |
+| 2026-11-04 | En el servidor (sin web ni MCP) la evidencia se limita a los inputs: el modelo inventó una fuente de Statista en la primera prueba | Prueba de F2 |
 
 ## 12 · Por verificar
 
@@ -207,3 +209,25 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 | NVIDIA gratis: solo MiniMax M3.1 Flash responde | Sirve para preparar, no como motor base |
 | Claude Code CLI no corre en segundo plano en la Mac («Not logged in») | La comparación con Claude se hace por API con llave de la empresa |
 | Firewall activo (solo Tailscale), login root y por contraseña cerrados | Servidor endurecido; compatible con D13 (el VPS solo sale) |
+
+## 15 · F2 · lo que quedó construido (2026-11-04)
+
+**Cómo funciona:**
+1. En la pantalla de un trabajo, «Con qué corre» ofrece **Servidor · siempre encendido** con los modelos del VPS (aparece solo si el latido tiene menos de 90 s). Es la opción por defecto cuando está en línea.
+2. «Ejecutar» deja la etapa **en cola** (`POST agentes/runs/:id/etapa/:n/encolar`). Mientras siga en cola se puede **cancelar**.
+3. El trabajador del VPS (`gateway/worker.mjs`, servicio `gw-worker`) revisa la base cada 3 s, toma la etapa con la versión del documento (nadie la toma dos veces), arma el pedido dentro del umbral (condensa con el modelo gratis si no cabe) y la corre en la cola por proveedor.
+4. Mientras trabaja escribe su avance en la misma etapa (tomada, esperando turno, pensando, redactando N caracteres). La pantalla relee cada 2.5 s; se puede cerrar o apagar la compu.
+5. Al terminar guarda el resultado con las mismas reglas que el OS (`aplicarResultado`), con su costo (tokens de entrada, de salida y segundos), y la etapa queda **Esperando aprobación**. Si falla, vuelve a como estaba, con el error a la vista. Si una etapa queda colgada 25 min, se retoma.
+6. Nunca aprueba, nunca publica y nunca toca otra etapa que la que tomó.
+
+**Piezas:** `gateway/motor.mjs` (cola, llamada en vivo, condensado; lo comparten el CLI y el trabajador) · `gateway/worker.mjs` · rutas `agentes/gateway`, `encolar` y `cancelar` en `api/_lib/agentes.js` · `aplicarResultado`, `soloEvidenciaDeInputs` y `enServidor` en `agentes-flujos.js` · la pantalla en `agentes-run.js`. En el VPS: `~/gateway/gw/ceo-os/` (copia de esos archivos) y `/etc/systemd/system/gw-worker.service`.
+
+**Probado (staging):** «Estrategia guiada», etapas 1 y 2 con DeepSeek V4 Flash: 77 s y 81 s, ~800–1,400 tokens de entrada y ~2,000 de salida; el pedido desde la pantalla, el avance en vivo, la cancelación y el resultado en revisión. 14 pruebas puras, 22 de Inherent AI y la prueba de navegador del Agent Area pasan.
+
+**Hallazgo:** sin herramientas, el modelo **inventó una fuente** (una página de Statista con cifras). Ahora el pedido le dice que no tiene internet y toda fuente que no venga de los inputs pasa a «Falta evidencia», su campo baja a hipótesis y la confianza a 40% como máximo. Las etapas que necesitan investigar afuera esperan a que el servidor tenga web y MCP (F3), o se corren con la IA del OS.
+
+**Falta para producción:**
+- El trabajador apunta a la base de **pruebas**. Para `inherent-work` necesita la `DATABASE_URL` de producción en el VPS (`~/gateway/neon-prod.env`, 600) y cambiar el `EnvironmentFile` del servicio. Es decisión del CEO.
+- Que el PR #209 llegue a `main`, para que la pantalla con «Servidor» esté en `inherent-work`.
+- Web y MCP dentro del servidor (búsqueda y conectores por persona), para que las etapas de investigación no dependan de la compu.
+- Actualizar el código del VPS hoy es copiar los archivos (`scp`); conviene un `git pull` de la rama con una llave de solo lectura.

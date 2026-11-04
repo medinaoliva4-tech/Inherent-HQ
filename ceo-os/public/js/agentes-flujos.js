@@ -209,7 +209,9 @@ export function desdePlantilla(f) {
 }
 
 // ---------- El run ----------
-export const ESTADOS = { pendiente: 'Pendiente', trabajando: 'Trabajando', revision: 'Esperando aprobación', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada' };
+export const ESTADOS = { pendiente: 'Pendiente', en_cola: 'En cola en el servidor', trabajando: 'Trabajando', revision: 'Esperando aprobación', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada' };
+// En el servidor (el Gateway del VPS): la etapa espera turno o ya la está trabajando. Mientras tanto no se ejecuta desde otro lado.
+export const enServidor = (e) => e?.estado === 'en_cola' || (e?.estado === 'trabajando' && e?.via === 'gateway');
 
 // La etapa activa: la primera que no está aprobada (o la última si todas lo están).
 export function activa(run) {
@@ -227,7 +229,9 @@ export function puede(run, n, accion, { rol = '' } = {}) {
   if (accion === 'evidencia' || accion === 'input') return null;
   if (run.pausado && accion === 'resultado') return 'El agente está en pausa: reanúdalo para ejecutar';
   if (n !== activa(run)) return 'Solo se trabaja la etapa activa: primero se aprueban las anteriores';
-  if (accion === 'resultado') return ['pendiente', 'ajuste', 'trabajando'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
+  if (accion === 'resultado') return enServidor(e) ? 'Esta etapa la está trabajando el servidor: espera o cancélala' : ['pendiente', 'ajuste', 'trabajando'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
+  if (accion === 'encolar') return enServidor(e) ? 'Esta etapa ya está en el servidor' : ['pendiente', 'ajuste'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
+  if (accion === 'cancelar') return e.estado === 'en_cola' ? null : e.estado === 'trabajando' ? 'El servidor ya la está trabajando: espera a que termine' : 'No está en cola';
   if (accion === 'aprobar') {
     if (e.estado !== 'revision') return 'Solo se aprueba una etapa que espera aprobación';
     if (e.gate && rol !== 'ceo') return '🚦 Gate del CEO: solo el CEO aprueba esta etapa';
@@ -240,7 +244,8 @@ export function puede(run, n, accion, { rol = '' } = {}) {
 }
 
 // Lo que se le pide a cualquier IA (agnóstico: viaja igual a Hermes con cualquier modelo, al puente o a claude.ai).
-export function pedido(run, n) {
+// opts.sinHerramientas: corre donde no hay web ni MCP (el servidor en F2): se le prohíbe citar lo que no está en los inputs.
+export function pedido(run, n, opts = {}) {
   const e = run.etapas[n], f = run.flujo || {}, o = leerOutput(e.entrega || e.output, e.nombre);
   const previas = run.etapas.slice(0, n).filter((x) => x.estado === 'aprobada');
   const inputs = (run.inputs || []).filter((x) => !x.archivado);
@@ -249,7 +254,7 @@ export function pedido(run, n) {
     `Eres el agente «${f.agente || f.nombre}» de Inherent${f.depto ? ` (${f.depto})` : ''}. Trabajas la etapa ${n + 1} de ${run.etapas.length} · «${e.nombre}» (${tipoDe(e.tipo).nombre}) del run «${run.titulo}».`,
     'Reglas que no se rompen: propones, no cierras (un humano aprueba) · NUNCA inventes: cada afirmación lleva su fuente (URL, documento o input) o se marca como hipótesis · no digas que hiciste algo que no hiciste.',
     'La estructura de esta etapa viene de una plantilla de método: úsala como guía de QUÉ entregar, no como fuente. Las respuestas salen de fuentes reales.',
-    con.length ? `Conexiones que debes usar para investigar: ${con.join(', ')}. Usa tus herramientas (búsqueda web, MCPs, el OS) de verdad; si una no está disponible, dilo en «faltantes».` : 'Esta etapa trabaja con los inputs y lo ya aprobado; no necesita salir a buscar.',
+    opts.sinHerramientas ? 'En esta corrida NO tienes internet ni herramientas: trabaja SOLO con los inputs y lo ya aprobado. No cites páginas, estudios ni cifras que no estén en los inputs; si algo hace falta investigarlo afuera, ponlo en «faltantes». La única evidencia válida son los ids de los inputs.' : con.length ? `Conexiones que debes usar para investigar: ${con.join(', ')}. Usa tus herramientas (búsqueda web, MCPs, el OS) de verdad; si una no está disponible, dilo en «faltantes».` : 'Esta etapa trabaja con los inputs y lo ya aprobado; no necesita salir a buscar.',
     e.fuentes_min ? `Mínimo ${e.fuentes_min} fuente(s) externa(s) verificable(s). Si no las alcanzas, dilo en «faltantes».` : '',
     f.limites?.length ? `Lo que este agente NO hace: ${f.limites.join(' · ')}` : '',
     run.objetivo ? `Objetivo del run: ${run.objetivo}` : '',
@@ -308,4 +313,39 @@ export function simular(run, n) {
   const campos = nombres.map((c) => ({ campo: c, valor: '⚠️ SIN DATOS — conecta tu IA (Hermes) para investigarlo o corrígelo a mano.', items: [], fuentes: [], estado: 'hipotesis' }));
   const salida = [`## ${o.titulo}`, run.objetivo ? `> Objetivo: ${run.objetivo}` : '', '', ...campos.flatMap((c) => [`### ${c.campo}`, c.valor, ''])].filter((x) => x !== '').join('\n');
   return { actividades, campos, confianza: 0, evidencia: [], faltantes: ['Simulado: ninguna afirmación tiene fuente'], salida };
+}
+
+// ---------- Guardar el resultado de una etapa (lo usan la ruta del OS y el trabajador del VPS) ----------
+// b = { via, actividades, campos, confianza, faltantes, salida, modelo, evidencia, costo }. Lo que dice un modelo es dato no
+// confiable: la evidencia entra sin verificar y un campo sin fuente queda como hipótesis.
+const VIAS = ['os', 'hermes', 'puente', 'claude-web', 'gateway', 'simulado'];
+const recorte = (s, n) => String(s ?? '').trim().slice(0, n);
+const fechaOk = (x) => (typeof x === 'string' && !Number.isNaN(Date.parse(x)) ? new Date(x).toISOString() : new Date().toISOString());
+export function aplicarResultado(run, n, b = {}) {
+  const e = run.etapas[n], intento = (e.intento || 0) + 1;
+  const via = VIAS.includes(b.via) ? b.via : 'simulado';
+  const acts = (Array.isArray(b.actividades) ? b.actividades : []).slice(0, 60).map((a) => ({ titulo: recorte(a?.titulo ?? a, 160), detalle: recorte(a?.detalle, 400), aviso: Boolean(a?.aviso), pasos: (Array.isArray(a?.pasos) ? a.pasos : []).slice(0, 12).map((p) => recorte(p, 120)), at: fechaOk(a?.at), intento })).filter((a) => a.titulo);
+  const campos = (Array.isArray(b.campos) ? b.campos : []).slice(0, 20).map((c) => ({ campo: recorte(c?.campo, 80), valor: recorte(c?.valor, 1200), items: (Array.isArray(c?.items) ? c.items : []).slice(0, 12).map((x) => recorte(x, 300)), fuentes: (Array.isArray(c?.fuentes) ? c.fuentes : []).slice(0, 10).map((x) => recorte(x, 20)), estado: c?.estado === 'evidencia' && via !== 'simulado' ? 'evidencia' : 'hipotesis' })).filter((c) => c.campo);
+  const previas = e.estado === 'ajuste' || via === 'gateway' ? (e.actividades || []) : [];
+  const costo = b.costo && typeof b.costo === 'object' ? { entrada: Number(b.costo.entrada) || 0, salida: Number(b.costo.salida) || 0, seg: Number(b.costo.seg) || 0 } : null;
+  const etapas = run.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', intento, actividades: [...previas, ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => recorte(x, 300)), salida: recorte(b.salida, 60000), via, modelo: recorte(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '', ...(costo ? { costo } : {}) }));
+  const evi = (Array.isArray(b.evidencia) ? b.evidencia : []).slice(0, 30).map((x, k) => ({ id: recorte(x.id, 20) || `${n}-${intento}-${k}`, etapa: n, titulo: recorte(x.titulo, 200) || 'Fuente', url: recorte(x.url, 500), extracto: recorte(x.extracto, 600), verificada: false, por: via }));
+  return { etapas, evidencia: [...(run.evidencia || []).filter((x) => x.etapa !== n || x.por === 'persona'), ...evi], intento, via };
+}
+
+// Una corrida sin herramientas no puede haber visto nada fuera de los inputs: la evidencia que no sea un input se descarta
+// (pasa a «faltantes») y un campo que solo se apoyaba en ella baja a hipótesis.
+export function soloEvidenciaDeInputs(run, r) {
+  const inputs = (run.inputs || []).filter((x) => !x.archivado);
+  const ids = new Set(inputs.map((x) => x.id)), urls = new Set(inputs.map((x) => x.url).filter(Boolean));
+  const buena = [], falsas = [];
+  const norm = (t) => String(t || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  // Es un input si trae su id o su URL, si su título contiene el de un input, o si su cita aparece tal cual en el texto de uno.
+  const deInput = (x) => ids.has(x.id) || (x.url && urls.has(x.url))
+    || inputs.some((i) => (norm(i.titulo).length > 3 && norm(x.titulo).includes(norm(i.titulo))) || (norm(x.extracto).length > 12 && norm(i.texto).includes(norm(x.extracto).slice(0, 80))));
+  for (const x of r.evidencia || []) (deInput(x) && !(x.url && !urls.has(x.url)) ? buena : falsas).push(x);
+  const validos = new Set([...ids, ...buena.map((x) => x.id)]);
+  const campos = (r.campos || []).map((c) => ({ ...c, estado: c.estado === 'evidencia' && (c.fuentes || []).some((f) => validos.has(f)) ? 'evidencia' : 'hipotesis' }));
+  const faltantes = [...(r.faltantes || []), ...falsas.map((x) => `Citó una fuente que no está en los inputs y no se pudo verificar: ${x.titulo}${x.url ? ` (${x.url})` : ''}`)].slice(0, 10);
+  return { ...r, evidencia: buena, campos, faltantes, confianza: falsas.length ? Math.min(r.confianza || 0, 40) : r.confianza };
 }

@@ -6,7 +6,7 @@
 //   abajo: «Paso N de M», el avance y la acción que toca (Ejecutar · Revisar y aprobar · Continuar a la siguiente).
 // La IA es la de la persona (Hermes con el modelo y los MCPs que tenga, el puente o claude.ai) o el simulado (STUB).
 import { html, raw, mount, ico, skel, toast, api, ask, md, esc, drawer, closeDrawer, uploadToDrive } from './core.js';
-import { ESTADOS, activa, completo, progreso, puede, pedido, leerRespuesta, simular, leerOutput, CONEXIONES } from './agentes-flujos.js';
+import { ESTADOS, activa, completo, progreso, puede, pedido, leerRespuesta, simular, leerOutput, CONEXIONES, enServidor } from './agentes-flujos.js';
 import { correrPedido, caminoIA } from './ia-herramienta.js';
 import { hermesDe, modelosHermes, nombreProveedor, esLocal } from './hermes.js';
 import { motorDe, nombreMotor } from './motor-ui.js';
@@ -15,8 +15,8 @@ import { proveedorDe, iaDeUso } from './ia-proveedores.js';
 import { rutaAgente } from './agentes-ui.js';
 
 const enc = encodeURIComponent;
-const VIA = { os: 'IA del OS', hermes: 'Hermes (tu compu)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
-const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', input: 'agregó un input', 'quitar-input': 'quitó un input', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', archivar: 'archivó el run', restaurar: 'restauró el run', pausar: 'pausó el agente', reanudar: 'reanudó el agente' };
+const VIA = { gateway: 'Servidor', os: 'IA del OS', hermes: 'Hermes (tu compu)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
+const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', input: 'agregó un input', 'quitar-input': 'quitó un input', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', archivar: 'archivó el run', restaurar: 'restauró el run', pausar: 'pausó el agente', reanudar: 'reanudó el agente', encolar: 'mandó la etapa al servidor', cancelar: 'la sacó de la cola', tomar: 'la tomó', fallo: 'falló en' };
 const quien = (e) => String(e || '').split('@')[0];
 const hora = (iso) => (iso ? new Date(iso).toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' }) : '');
 const cuando = (iso) => (iso ? new Date(iso).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
@@ -33,12 +33,16 @@ export async function pintarRun(el, me, id, alive) {
 
   // Con qué corre. Primero la IA del OS (Ajustes → IA: la del agente o la «IA para Agents»), después las demás conectadas,
   // y las de la compu de la persona (Hermes con sus modelos y MCPs, el puente de Claude, claude.ai a mano), y el simulado.
-  const [ia, camino] = await Promise.all([api('ia/estado').catch(() => null), caminoIA(me).catch(() => 'claude-web')]);
+  const [ia, camino, gw] = await Promise.all([api('ia/estado').catch(() => null), caminoIA(me).catch(() => 'claude-web'), api('agentes/gateway').catch(() => null)]);
+  // El servidor (Gateway del VPS): corre aunque tu compu esté apagada. Va primero si está en línea.
+  const PREF_GW = ['deepseek-v4-flash', 'deepseek-v4-pro'];
+  const gwModelos = gw?.en_linea ? [...gw.modelos].sort((a, b) => (PREF_GW.indexOf(a) + 1 || 9) - (PREF_GW.indexOf(b) + 1 || 9)) : [];
   const modelos = hermesDe(me) ? await modelosHermes(me).catch(() => null) : null;
   const delChat = motorDe(me);
   const porDefecto = run.flujo?.ia?.proveedor ? run.flujo.ia : iaDeUso(ia, 'agents');
   const conectados = (ia?.proveedores || []).filter((p) => p.conectado);
   const opciones = [
+    ...(gwModelos.length ? [['Servidor · siempre encendido', gwModelos.map((m) => [`gw|${m}`, m])]] : []),
     ...(porDefecto?.proveedor ? [['os', `IA del OS · ${proveedorDe(porDefecto.proveedor)?.nombre || porDefecto.proveedor}${porDefecto.modelo ? ` · ${porDefecto.modelo}` : ''}`]] : []),
     ...conectados.map((p) => [`IA del OS · ${proveedorDe(p.id)?.nombre || p.id}`, (p.modelos || []).slice(0, 60).map((m) => [`os|${p.id}|${m}`, m])]),
     ...((modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length).map((p) => [`Hermes · ${nombreProveedor(p.slug)}${esLocal(p.slug) ? ' · en tu compu' : p.slug === 'custom' ? ' · endpoint propio' : ''}`, p.modelos.slice(0, 40).map((m) => [`hermes|${p.slug}|${m}`, m])])),
@@ -46,9 +50,9 @@ export async function pintarRun(el, me, id, alive) {
     ['puente', VIA.puente], ['claude-web', VIA['claude-web']], ['simulado', 'Simulado (stub, sin IA)'],
   ];
   const valores = opciones.flatMap((o) => (Array.isArray(o[1]) ? o[1].map((x) => x[0]) : [o[0]]));
-  let runner = localStorage.getItem(prefRunner(me)) || (porDefecto?.proveedor ? 'os' : camino === 'hermes' ? 'hermes' : 'simulado');
+  let runner = localStorage.getItem(prefRunner(me)) || (gwModelos.length ? `gw|${gwModelos[0]}` : porDefecto?.proveedor ? 'os' : camino === 'hermes' ? 'hermes' : 'simulado');
   if (!valores.includes(runner)) runner = valores[0];
-  const sinIA = !conectados.length && camino !== 'hermes';
+  const sinIA = !conectados.length && camino !== 'hermes' && !gwModelos.length;
 
   const selector = () => html`<label class="ag-runner"><span class="xs mut">Con qué corre</span><select class="in sm" data-ch="runner">${opciones.map(([k, v]) => (Array.isArray(v)
     ? html`<optgroup label="${k}">${v.map(([val, t]) => html`<option value="${val}" ${runner === val ? raw('selected') : ''}>${t}</option>`)}</optgroup>`
@@ -62,18 +66,20 @@ export async function pintarRun(el, me, id, alive) {
     const inputs = (run.inputs || []).filter((x) => !x.archivado);
     const pr = progreso(run);
     const no = (a) => puede(run, n, a, { rol });
+    const srv = esActiva && enServidor(e); // la trabaja el servidor: la actividad llega de la base
     const acts = ocupado && esActiva ? vivo : (e.actividades || []);
     const con = (e.herramientas || []).map((h) => CONEXIONES.find((c) => c.id === h)?.nombre || h);
 
     const paso = (a, i, arr) => {
-      const corriendo = ocupado && esActiva && i === arr.length - 1;
+      const corriendo = (ocupado || srv) && esActiva && i === arr.length - 1;
       return html`<li class="ag-tl ${a.aviso ? 't-warn' : corriendo ? 't-run' : 't-ok'}">
         <span class="ag-tl-dot">${a.aviso ? ico('triangle-alert', 11) : corriendo ? ico('loader-circle', 11) : ico('check', 11)}</span>
         <div class="ag-tl-b"><div class="ag-tl-h"><b>${a.titulo}</b><span class="xs mut">${hora(a.at)}</span></div>${a.detalle ? html`<p class="sm mut">${a.detalle}</p>` : ''}
         ${a.pasos?.length ? html`<ul class="ag-sub">${a.pasos.map((p) => html`<li>${ico('search', 11)} ${p}</li>`)}</ul>` : ''}</div></li>`;
     };
     const finalTl = !esActiva ? (e.estado === 'aprobada' ? html`<li class="ag-tl t-ok"><span class="ag-tl-dot">${ico('check', 11)}</span><div class="ag-tl-b"><div class="ag-tl-h"><b>Aprobada</b><span class="xs mut">${hora(e.aprobada_en)}</span></div><p class="sm mut">Por ${quien(e.aprobada_por)}</p></div></li>` : '')
-      : ocupado ? '' : e.estado === 'revision' ? html`<li class="ag-tl t-wait"><span class="ag-tl-dot"></span><div class="ag-tl-b ag-tl-cta"><div><b>Esperando aprobación</b><p class="sm mut">${e.gate ? `🚦 ${e.nota_gate || 'Gate del CEO'}` : sig ? `Finaliza ${o.titulo} y sigue con ${sig.nombre}.` : 'Es la última etapa.'}</p></div><button class="btn sm ag-cta" data-act="revisar">${ico('file-text', 13)} Revisar y aprobar</button></div></li>`
+      : ocupado ? '' : srv ? html`<li class="ag-tl t-wait"><span class="ag-tl-dot"></span><div class="ag-tl-b ag-tl-cta"><div><b>${e.estado === 'en_cola' ? 'En cola en el servidor' : 'El servidor la está trabajando'}</b><p class="sm mut">${e.modelo || ''} · puedes cerrar esta pantalla o apagar tu compu: el resultado llega aquí.</p></div>${e.estado === 'en_cola' ? html`<button class="btn ghost sm" data-act="cancelar">Cancelar</button>` : ''}</div></li>`
+      : e.estado === 'revision' ? html`<li class="ag-tl t-wait"><span class="ag-tl-dot"></span><div class="ag-tl-b ag-tl-cta"><div><b>Esperando aprobación</b><p class="sm mut">${e.gate ? `🚦 ${e.nota_gate || 'Gate del CEO'}` : sig ? `Finaliza ${o.titulo} y sigue con ${sig.nombre}.` : 'Es la última etapa.'}</p></div><button class="btn sm ag-cta" data-act="revisar">${ico('file-text', 13)} Revisar y aprobar</button></div></li>`
       : html`<li class="ag-tl t-wait"><span class="ag-tl-dot"></span><div class="ag-tl-b ag-tl-cta"><div><b>${e.estado === 'ajuste' ? 'Ajuste pedido' : 'Lista para ejecutar'}</b><p class="sm mut">${e.estado === 'ajuste' ? `«${e.ajuste}»` : con.length ? `Investigará con: ${con.join(', ')}` : 'Trabajará con los inputs y lo aprobado.'}</p></div><button class="btn sm" data-act="ejecutar" ${run.pausado ? raw('disabled title="El agente está en pausa"') : ''}>${ico(e.estado === 'ajuste' ? 'rotate-cw' : 'play', 13)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : 'Ejecutar etapa'}</button></div></li>`;
 
     const filaCampo = (c) => html`<div class="ag-cmp"><div class="ag-cmp-h"><b>${c.campo}</b><span class="chip sm2 ${c.estado === 'evidencia' ? 'ok' : 'warn'}">${c.estado === 'evidencia' ? 'Con evidencia' : 'Hipótesis'}</span></div>
@@ -110,7 +116,7 @@ export async function pintarRun(el, me, id, alive) {
         </section>
 
         <section class="card ag-col">
-          <div class="ag-col-h"><div><h2>Actividad del agente</h2><p class="sm mut">${ocupado && esActiva ? 'Trabajando ahora…' : `Etapa ${n + 1} · ${e.nombre}`}${e.via && !(ocupado && esActiva) ? html` · <span class="chip sm2 ${e.stub ? 'warn' : ''}">${e.stub ? 'STUB · simulado' : `${VIA[e.via] || e.via}${e.modelo ? ` · ${e.modelo}` : ''}`}</span>` : ''}</p></div></div>
+          <div class="ag-col-h"><div><h2>Actividad del agente</h2><p class="sm mut">${(ocupado || srv) && esActiva ? (srv ? 'En el servidor…' : 'Trabajando ahora…') : `Etapa ${n + 1} · ${e.nombre}`}${e.via && !(ocupado && esActiva) && !srv ? html` · <span class="chip sm2 ${e.stub ? 'warn' : ''}">${e.stub ? 'STUB · simulado' : `${VIA[e.via] || e.via}${e.modelo ? ` · ${e.modelo}` : ''}`}</span>` : ''}</p></div></div>
           <ol class="ag-tline">${acts.map(paso)}${finalTl}</ol>
           ${!acts.length && !finalTl ? html`<p class="sm mut">Esta etapa se desbloquea cuando se aprueben las anteriores.</p>` : ''}
         </section>
@@ -134,7 +140,7 @@ export async function pintarRun(el, me, id, alive) {
         ${run.archivado || completo(run) ? html`<span class="chip ${completo(run) ? 'ok' : ''}">${completo(run) ? 'Trabajo completo' : 'Archivado'}</span>`
           : run.etapas[act].estado === 'revision' ? html`<button class="btn ag-dark" data-act="revisar">Revisar y aprobar ${ico('arrow-right', 14)}</button>`
           : act > 0 && run.etapas[act - 1].estado === 'aprobada' && run.etapas[act].estado === 'pendiente' ? html`<button class="btn ag-dark" data-act="continuar" ${ocupado || run.pausado ? raw('disabled') : ''}>Continuar a ${run.etapas[act].nombre} ${ico('arrow-right', 14)}</button>`
-          : html`<button class="btn ag-dark" data-act="ejecutar" ${ocupado || run.pausado ? raw('disabled') : ''}>${ocupado ? 'Trabajando…' : run.etapas[act].estado === 'ajuste' ? 'Re-ejecutar con el ajuste' : `Ejecutar ${run.etapas[act].nombre}`} ${ico('arrow-right', 14)}</button>`}
+          : html`<button class="btn ag-dark" data-act="ejecutar" ${ocupado || run.pausado || enServidor(run.etapas[act]) ? raw('disabled') : ''}>${enServidor(run.etapas[act]) ? 'En el servidor…' : ocupado ? 'Trabajando…' : run.etapas[act].estado === 'ajuste' ? 'Re-ejecutar con el ajuste' : `Ejecutar ${run.etapas[act].nombre}`} ${ico('arrow-right', 14)}</button>`}
       </footer></div>`);
   };
 
@@ -144,8 +150,23 @@ export async function pintarRun(el, me, id, alive) {
     if (alive()) pinta();
   };
 
+  // Mientras el servidor trabaja una etapa, se relee el trabajo cada 2.5 s (la actividad llega de la base).
+  let vigilando = false;
+  async function vigilar() {
+    if (vigilando) return; vigilando = true;
+    try {
+      while (alive() && enServidor(run.etapas[activa(run)])) {
+        await new Promise((r) => setTimeout(r, 2500));
+        if (!alive()) return;
+        try { const antes = run.etapas[activa(run)]; ({ run } = await api('agentes/runs/' + enc(run.id))); const n = run.etapas.indexOf(run.etapas.find((x) => x.id === antes.id)); if (n >= 0 && run.etapas[n].estado === 'revision') toast('El servidor terminó la etapa: revísala y aprueba'); else if (n >= 0 && antes.estado !== 'pendiente' && ['pendiente', 'ajuste'].includes(run.etapas[n].estado) && run.etapas[n].actividades?.at(-1)?.aviso) toast(run.etapas[n].actividades.at(-1).detalle || 'Falló en el servidor', true); } catch {}
+        if (alive()) pinta();
+      }
+    } finally { vigilando = false; }
+  }
+
   async function ejecutar() {
     const n = activa(run); sel = null;
+    if (runner.startsWith('gw|')) { await guardar(`etapa/${n}/encolar`, { modelo: runner.slice(3) }, 'Etapa en cola en el servidor'); return vigilar(); }
     ocupado = true; vivo = [{ titulo: 'Preparando la etapa', detalle: `${run.etapas[n].nombre} · ${VIA[runner.split('|')[0]] || 'tu IA'}`, at: new Date().toISOString() }]; pinta();
     let res;
     try {
@@ -255,6 +276,7 @@ export async function pintarRun(el, me, id, alive) {
         <h2 class="sm">Historial</h2><ol class="ag-hist">${[...(run.historial || [])].reverse().slice(0, 80).map((h) => html`<li><b>${quien(h.quien)}</b> ${ACC[h.accion] || h.accion}${h.etapa != null && run.etapas[h.etapa] ? html` <span class="mut">· ${run.etapas[h.etapa].nombre}</span>` : ''}<span class="mut xs">${cuando(h.at)}</span>${h.nota ? html`<span class="ag-nota xs">${h.nota}</span>` : ''}</li>`)}</ol></div>`,
       { archivar: async () => { if (!confirm('¿Archivar este trabajo? Nada se borra.')) return; closeDrawer(); await guardar('archivar', { archivado: true }, 'Trabajo archivado'); } }, { title: 'Trabajo' }),
     restaurar: () => guardar('archivar', { archivado: false }, 'Trabajo restaurado'),
+    cancelar: () => guardar(`etapa/${activa(run)}/cancelar`, {}, 'Etapa fuera de la cola'),
   };
   el.addEventListener('click', (ev) => { const t = ev.target.closest('[data-act]'); if (t && el.contains(t)) mapa[t.dataset.act]?.(t, ev); });
   el.addEventListener('change', (ev) => {
@@ -263,4 +285,5 @@ export async function pintarRun(el, me, id, alive) {
     if (t.dataset.ch === 'verif') guardar('evidencia', { id: t.dataset.id, verificada: t.checked, etapa: sel ?? activa(run) });
   });
   pinta();
+  if (enServidor(run.etapas[activa(run)])) vigilar();
 }

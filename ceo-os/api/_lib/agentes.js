@@ -15,10 +15,11 @@ import { readFile } from './gh.js';
 import * as intel from './intel.js';
 import { body } from './http.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
-import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo } from '../../public/js/agentes-flujos.js';
+import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado } from '../../public/js/agentes-flujos.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
+export const GW = 'gateway_estado'; // el latido del trabajador del VPS: { at, modelos, trabajando, version }
 const lc = (x) => String(x || '').toLowerCase();
 const txt = (s, n) => String(s ?? '').trim().slice(0, n);
 const ahora = () => new Date().toISOString();
@@ -173,13 +174,40 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const r = await cargar(req, res, u); if (!r) return;
     const n = Number(req.params.n), m = puede(r, n, 'resultado', { rol: u.role }); if (m) return motivo(res, m);
-    const b = body(req), e = r.etapas[n], intento = (e.intento || 0) + 1;
-    const via = ['os', 'hermes', 'puente', 'claude-web', 'simulado'].includes(b.via) ? b.via : 'simulado';
-    const acts = (Array.isArray(b.actividades) ? b.actividades : []).slice(0, 60).map((a) => ({ titulo: txt(a?.titulo ?? a, 160), detalle: txt(a?.detalle, 400), aviso: Boolean(a?.aviso), pasos: (Array.isArray(a?.pasos) ? a.pasos : []).slice(0, 12).map((p) => txt(p, 120)), at: fecha(a?.at), intento })).filter((a) => a.titulo);
-    const campos = (Array.isArray(b.campos) ? b.campos : []).slice(0, 20).map((c) => ({ campo: txt(c?.campo, 80), valor: txt(c?.valor, 1200), items: (Array.isArray(c?.items) ? c.items : []).slice(0, 12).map((x) => txt(x, 300)), fuentes: (Array.isArray(c?.fuentes) ? c.fuentes : []).slice(0, 10).map((x) => txt(x, 20)), estado: c?.estado === 'evidencia' && via !== 'simulado' ? 'evidencia' : 'hipotesis' })).filter((c) => c.campo);
-    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', intento, actividades: [...(e.estado === 'ajuste' ? x.actividades : []), ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => txt(x, 300)), salida: txt(b.salida, 60000), via, modelo: txt(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '' }));
-    const evi = (Array.isArray(b.evidencia) ? b.evidencia : []).slice(0, 30).map((x, k) => ({ id: txt(x.id, 20) || `${n}-${intento}-${k}`, etapa: n, titulo: txt(x.titulo, 200) || 'Fuente', url: txt(x.url, 500), extracto: txt(x.extracto, 600), verificada: false, por: via }));
-    const d = await guardar(res, u, r, { etapas, evidencia: [...(r.evidencia || []).filter((x) => x.etapa !== n || x.por === 'persona'), ...evi] }, { accion: 'ejecutar', etapa: n, nota: intento > 1 ? `Intento ${intento} · ${via}` : via });
+    const b = body(req), out = aplicarResultado(r, n, { ...b, via: b.via === 'gateway' ? 'simulado' : b.via }); // «gateway» solo lo escribe el servidor
+    const { etapas, intento, via } = out;
+    const d = await guardar(res, u, r, { etapas, evidencia: out.evidencia }, { accion: 'ejecutar', etapa: n, nota: intento > 1 ? `Intento ${intento} · ${via}` : via });
+    if (d) res.json({ run: d });
+  });
+
+  // ----- El servidor (Gateway del VPS, PLAN-GATEWAY D13) -----
+  // El OS no llama al VPS: deja la etapa «en cola» en la base y el trabajador del VPS la toma, la corre y escribe aquí mismo.
+  on('GET', 'agentes/gateway', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const g = await db.get(GW, 'vps').catch(() => null);
+    const vivo = Boolean(g?.at && Date.now() - Date.parse(g.at) < 90 * 1000);
+    res.json({ en_linea: vivo, modelos: vivo ? (g.modelos || []) : [], visto: g?.at || '', trabajando: g?.trabajando || 0, version: g?.version || '' });
+  });
+  on('POST', 'agentes/runs/:id/etapa/:n/encolar', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n), m = puede(r, n, 'encolar', { rol: u.role }); if (m) return motivo(res, m);
+    if (r.pausado) return res.status(409).json({ error: 'El agente está en pausa: reanúdalo para ejecutar' });
+    const g = await db.get(GW, 'vps').catch(() => null);
+    if (!g?.at || Date.now() - Date.parse(g.at) > 90 * 1000) return res.status(503).json({ error: 'El servidor no está en línea: elige otra IA para esta etapa', code: 'GATEWAY_OFF' });
+    const modelo = txt(body(req).modelo, 120);
+    if (!modelo || !(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
+    const e = r.etapas[n], antes = e.estado;
+    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'en_cola', via: 'gateway', modelo, cola: { at: ahora(), por: u.email, antes, modelo }, actividades: [...(antes === 'ajuste' ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · espera su turno`, at: ahora() }].slice(-150) }));
+    const d = await guardar(res, u, r, { etapas }, { accion: 'encolar', etapa: n, nota: modelo });
+    if (d) res.json({ run: d });
+  });
+  on('POST', 'agentes/runs/:id/etapa/:n/cancelar', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n), m = puede(r, n, 'cancelar', { rol: u.role }); if (m) return motivo(res, m);
+    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...x, estado: x.cola?.antes === 'ajuste' ? 'ajuste' : 'pendiente', via: '', cola: null, actividades: [...(x.actividades || []), { titulo: 'Cancelada antes de empezar', detalle: '', aviso: true, at: ahora() }].slice(-150) }));
+    const d = await guardar(res, u, r, { etapas }, { accion: 'cancelar', etapa: n });
     if (d) res.json({ run: d });
   });
 
