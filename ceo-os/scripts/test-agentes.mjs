@@ -9,7 +9,8 @@ import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
-import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
+import { leerMencion, modeloDeEtapa, planDe, contextoChat } from '../public/js/chat-agentes.js';
+import { siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -38,7 +39,9 @@ t('solo se trabaja la etapa activa y se aprueba para avanzar', () => {
   assert.ok(puede(r, 0, 'aprobar', { rol: 'ceo' }), 'sin resultado no se aprueba');
   r.etapas[0].estado = 'revision';
   assert.ok(puede(r, 0, 'aprobar', { rol: 'team' }), 'el equipo no aprueba');
-  assert.equal(puede(r, 0, 'aprobar', { rol: 'coo' }), null);
+  assert.match(puede(r, 0, 'aprobar', { rol: 'coo', email: 'coo@x' }), /Abre el documento/, 'sin leer no se aprueba');
+  r.etapas[0].leida_por = [{ email: 'coo@x', at: new Date().toISOString() }];
+  assert.equal(puede(r, 0, 'aprobar', { rol: 'coo', email: 'coo@x' }), null);
   r.etapas[0].estado = 'aprobada';
   assert.equal(activa(r), 1);
 });
@@ -47,7 +50,8 @@ t('el gate del CEO solo lo aprueba el CEO', () => {
   r.etapas.forEach((e, i) => { if (i < g) e.estado = 'aprobada'; });
   r.etapas[g].estado = 'revision';
   assert.match(puede(r, g, 'aprobar', { rol: 'coo' }), /CEO/);
-  assert.equal(puede(r, g, 'aprobar', { rol: 'ceo' }), null);
+  r.etapas[g].leida_por = [{ email: 'ceo@x', at: new Date().toISOString() }];
+  assert.equal(puede(r, g, 'aprobar', { rol: 'ceo', email: 'ceo@x' }), null);
 });
 t('completo cuando todas están aprobadas', () => { const r = nuevo(); r.etapas.forEach((e) => (e.estado = 'aprobada')); assert.ok(completo(r)); });
 t('el simulado deja todo como hipótesis SIN DATOS y avisa que falta evidencia', () => {
@@ -166,6 +170,42 @@ t('chat de trabajo: Sources sin las fuentes quitadas y File tree con inputs y lo
   const [ins, prod] = archivos(runChat());
   assert.deepEqual(ins.items.map((x) => x.id), ['i-1']);
   assert.deepEqual(prod.items.map((x) => x.nombre), ['01-diagnostico.md', '02-oferta.md']);
+});
+
+// ----- F4.5 · el Chat con agentes -----
+const AGS = [{ id: 'inv', nombre: 'Investigación', agente: 'Investigación' }, { id: 'gp', nombre: 'Growth Partner' }];
+t('F4.5: @agente solo al inicio, sin acentos; correos y @cuentas no son agentes', () => {
+  const m = leerMencion('@Investigacion revisa AKAI', AGS); assert.equal(m.agente.id, 'inv'); assert.equal(m.resto, 'revisa AKAI');
+  assert.equal(leerMencion('@growthpartner arma el mes', AGS).agente.id, 'gp');
+  assert.equal(leerMencion('escríbele a ana@akai.com', AGS), null);
+  assert.equal(leerMencion('@akai hola', AGS), null);
+});
+t('F4.5: cada etapa trae su modelo (fijo, por tipo o el que haya en el servidor)', () => {
+  const gw = ['deepseek-v4-pro', 'deepseek-v4-flash'];
+  assert.equal(modeloDeEtapa({ tipo: 'analisis' }, gw), 'deepseek-v4-pro');
+  assert.equal(modeloDeEtapa({ tipo: 'entregable' }, gw), 'deepseek-v4-flash');
+  assert.equal(modeloDeEtapa({ modelo: 'glm-5.3' }, ['glm-5.3']), 'glm-5.3');
+  assert.equal(modeloDeEtapa({ tipo: 'analisis' }, ['deepseek-v4-flash']), 'deepseek-v4-flash');
+  const pl = planDe({ etapas: [{ nombre: 'A', tipo: 'decision', gate: true, aporte: { pregunta: '¿?' } }] }, gw);
+  assert.deepEqual(pl[0], { n: 0, nombre: 'A', entrega: 'A', modelo: 'deepseek-v4-pro', gate: true, aporte: true });
+});
+t('F4.5: el contexto del Chat cabe en 6,000 caracteres y termina con lo último', () => {
+  const ms = Array.from({ length: 40 }, (_, i) => ({ r: i % 2 ? 'a' : 'u', t: `m${i} ` + 'x'.repeat(500) }));
+  const c = contextoChat(ms, 'Resumen viejo'); assert.ok(c.length <= 6000, c.length); assert.ok(c.trimEnd().endsWith('x'), 'termina con el último'); assert.match(c, /m39 /); assert.doesNotMatch(c, /m0 /);
+});
+t('F4.5: aprobar exige haber abierto el documento después del último resultado', () => {
+  const r = { etapas: [{ estado: 'aprobada' }, { estado: 'revision' }], historial: [{ accion: 'ejecutar', etapa: 1, at: '2026-11-04T10:20:00Z' }] };
+  assert.match(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'c@x' }), /Abre el documento/);
+  r.etapas[1].leida_por = [{ email: 'c@x', at: '2026-11-04T10:30:00Z' }];
+  assert.equal(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'C@x' }), null);
+  r.etapas[1].leida_por = [{ email: 'c@x', at: '2026-11-04T10:10:00Z' }];
+  assert.match(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'c@x' }), /Abre el documento/);
+});
+t('F4.5: la siguiente etapa avanza sola solo dentro de lo platicado', () => {
+  const r = (hasta, extra = {}) => ({ plan_ok: { hasta }, etapas: [{ estado: 'aprobada' }, { estado: 'aprobada' }, { estado: 'pendiente' }, { estado: 'pendiente' }], ...extra });
+  assert.equal(siguienteAuto(r(2), 1), 2); assert.equal(siguienteAuto(r(1), 1), null);
+  assert.equal(siguienteAuto(r(3, { pausado: true }), 1), null); assert.equal(siguienteAuto({ etapas: r(3).etapas }, 1), null);
+  assert.equal(siguienteAuto(r(3), 3), null);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {
