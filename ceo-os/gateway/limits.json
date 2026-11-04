@@ -1,0 +1,38 @@
+{
+  "_nota": "Unidades de concurrencia por proveedor y costo por modelo. Featherless feather_pro_plus = 4 unidades; Kimi K3 cuesta 4 (medido 2026-11-04). El resto de costos esta POR MEDIR.",
+  "proveedores": {
+    "featherless": {
+      "unidades": 4
+    },
+    "nvidia": {
+      "unidades": 2
+    }
+  },
+  "modelos": {
+    "kimi-k3": {
+      "proveedor": "featherless",
+      "costo": 4,
+      "contexto": 32768
+    },
+    "deepseek-v4-pro": {
+      "proveedor": "featherless",
+      "costo": 4,
+      "contexto": 32768
+    },
+    "deepseek-v4-flash": {
+      "proveedor": "featherless",
+      "costo": 2,
+      "contexto": 32768
+    },
+    "glm-5.3": {
+      "proveedor": "featherless",
+      "costo": 4,
+      "contexto": 32768
+    },
+    "nv-minimax-m3.1-flash": {
+      "proveedor": "nvidia",
+      "costo": 1,
+      "contexto": 131072
+    }
+  }
+}

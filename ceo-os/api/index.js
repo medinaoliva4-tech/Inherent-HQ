@@ -36,6 +36,9 @@ import * as marketing from './_lib/marketing.js';
 import * as ojo from './_lib/ojo.js';
 import * as guia from './_lib/guia.js';
 import * as avisos from './_lib/avisos.js';
+import * as agentes from './_lib/agentes.js';
+import * as ia from './_lib/ia.js';
+import * as conectores from './_lib/conectores.js';
 import { seesTask, personalOk, profOf, visible, scopeOf, profInScope, shape, levelsFor } from './_lib/leer.js';
 import { hoyGT } from '../public/js/avisos-reglas/base.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
@@ -1159,6 +1162,9 @@ export async function search(u, q) {
 // ---------- Ventas › Buscar leads: scraping de prospectos con Apify ----------
 buscar.rutas(on);
 laya.rutas(on);
+agentes.rutas(on);
+ia.rutas(on);
+conectores.rutas(on);
 // ---------- App 02 · Estrategia: 5 bloques por cliente, el estado de cada uno y las fuentes de Hormozi ----------
 estrategia.rutas(on);
 // ---------- App 01 · Marca › Cliente ideal: los avatares de cada marca, con su peso y el OK del CEO ----------

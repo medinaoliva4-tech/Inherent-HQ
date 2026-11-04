@@ -80,7 +80,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'MCPs' : 'Inherent AI'}</h1>
     <p>${pagina ? 'Lo que tu IA puede usar hoy y cómo conectarle más.' : 'Habla con ella en el Chat y conéctale herramientas con MCPs.'}</p></div>
-    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
+    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agents</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
 
   // ---------- Portada ----------
   function portada() {
@@ -171,10 +171,13 @@ export async function render(el, { me, sub = [], alive }) {
 
   function paginaMcps() {
     return {
-      cuerpo: html`${seccion('Lo que tu Inherent AI puede usar hoy', 'Las capacidades que Hermes tiene en tu compu · las activas primero', html`<section class="card iai-panel" id="iai-ts">${revisando('Revisando Hermes…')}</section>`)}
+      cuerpo: html`<div id="iai-dir"></div>
+        <details class="iai-avanzado"><summary>${ico('settings', 14)} Avanzado · MCPs en Hermes (tu compu)</summary>
+        ${seccion('Lo que tu Inherent AI puede usar hoy', 'Las capacidades que Hermes tiene en tu compu · las activas primero', html`<section class="card iai-panel" id="iai-ts">${revisando('Revisando Hermes…')}</section>`)}
         ${seccion('Conectar un MCP a tu Inherent AI', 'Se agregan en la Terminal', conectar())}
-        ${seccion('Conecta Inherent OS a otra IA (Claude, ChatGPT)', 'El conector de Inherent OS hacia tu Claude o ChatGPT', html`<div id="iai-conn">${conexion()}</div>`)}`,
-      despues: cargarToolsets,
+        ${seccion('Conecta Inherent OS a otra IA (Claude, ChatGPT)', 'El conector de Inherent OS hacia tu Claude o ChatGPT', html`<div id="iai-conn">${conexion()}</div>`)}</details>`,
+      // El directorio de conectores (mcp-directorio.js): conectar de verdad desde aquí, con el OS como puente.
+      despues: (g) => { cargarToolsets(g); import('../mcp-directorio.js').then((m) => { const box = $('#iai-dir', el); if (box && g === gen) m.pintarDirectorio(box, me); }); },
     };
   }
 
