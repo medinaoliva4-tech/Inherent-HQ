@@ -9072,3 +9072,9 @@ a.agx-tr:hover{background:var(--fill)}
 .kf.full .kf-canvas{border-radius:16px}
 html.kf-fullscreen{overflow:hidden}
 .kf-bar-a{display:flex;align-items:center;gap:6px}
+/* Chat · propuesta del servidor que espera el OK de la persona */
+.lm-prop b{font-size:14.5px}
+.lm-prop>code{display:inline-block;width:max-content;padding:2px 7px;border-radius:6px;font-size:12px}
+.lm-prop-d{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:2px 0 0;font-size:13px}
+.lm-prop-d dt{color:var(--mut)}
+.lm-prop-d dd{margin:0;overflow-wrap:anywhere}

@@ -11,6 +11,8 @@ import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
+import * as mcpOS from './mcp.js';
+import { PROPONIBLES_CHAT } from './agentes.js';
 
 export const COLL = 'chat_sesiones';
 const GW = 'gateway_estado';
@@ -100,6 +102,35 @@ export function rutas(on) {
     const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora() }].slice(-MAX_MSGS);
     const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: txt(b.sistema, 40000), esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
     if (d) res.json({ ok: true, desde: mensajes.length });
+  });
+
+  // Una propuesta del servidor (crear una tarea, mover un lead…): la decide el dueño de la conversación, con SU sesión.
+  // Aprobar la ejecuta aquí, en el OS, con el MCP del OS como esa persona (sus permisos); el servidor nunca escribe.
+  // { decision: 'aprobar' | 'rechazar' } → la propuesta con su estado (aprobada · rechazada · fallo) y lo que respondió el OS.
+  on('POST', 'chat/sesiones/:id/propuestas/:pid', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    if (['en_cola', 'trabajando'].includes(s.turno?.estado)) return res.status(409).json({ error: 'Espera a que termine la respuesta para decidir' });
+    const pid = txt(req.params.pid, 40), decision = body(req).decision;
+    if (!['aprobar', 'rechazar'].includes(decision)) return res.status(400).json({ error: 'Decide aprobar o rechazar' });
+    const k = (s.mensajes || []).findIndex((m) => (m.propuestas || []).some((p) => p.id === pid));
+    const p = k >= 0 ? s.mensajes[k].propuestas.find((x) => x.id === pid) : null;
+    if (!p) return res.status(404).json({ error: 'Esa propuesta no existe' });
+    if (p.estado !== 'pendiente') return res.status(409).json({ error: 'Esa propuesta ya se decidió' });
+    let nueva = { ...p, decidida_por: u.email, decidida_en: ahora() };
+    if (decision === 'rechazar') nueva.estado = 'rechazada';
+    else {
+      // Doble candado: que sea de las que el Chat puede proponer y que el perfil de la persona la permita (mcp.run lo revisa).
+      if (p.conector !== 'inherent' || !PROPONIBLES_CHAT.has(p.tool)) return res.status(403).json({ error: 'Esa acción no se puede aprobar desde el Chat' });
+      const usuario = await mcpOS.userOf(u.email);
+      if (!usuario) return res.status(403).json({ error: 'Tu perfil no puede hacer esto' });
+      const o = await mcpOS.run(usuario, { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: p.tool, arguments: p.args && typeof p.args === 'object' ? p.args : {} } });
+      const rr = o.json?.result || {}, texto = (rr.content || []).map((c) => c.text || '').join('\n').slice(0, 2000);
+      nueva = rr.isError ? { ...nueva, estado: 'fallo', error: texto.slice(0, 300) } : { ...nueva, estado: 'aprobada', resultado: texto };
+    }
+    const mensajes = s.mensajes.map((m, i) => (i !== k ? m : { ...m, propuestas: m.propuestas.map((x) => (x.id === pid ? nueva : x)) }));
+    const d = await guardar(res, u, s, { mensajes });
+    if (d) res.json({ propuesta: nueva });
   });
 
   on('POST', 'chat/sesiones/:id/detener', async (req, res) => {

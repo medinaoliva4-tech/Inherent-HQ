@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 en curso** (ver §10, §14, §15 y §16): la web, los MCP por persona y el Chat ya corren en el servidor (§16, §17); sigue apagar Hermes cuando el equipo lo valide.
+**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 casi cerrada** (ver §10, §14–§17): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación ya corren en el servidor; falta retirar Hermes cuando el equipo lo valide.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -161,6 +161,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · el Chat en el servidor: conversaciones guardadas en el OS, respondidas por el VPS en vivo; Hermes queda como opción en Ajustes | CEO + Claude |
 | 2026-11-04 | F3 · el Chat del servidor con herramientas: web y MCP de la persona | CEO + Claude |
 | 2026-11-04 | F3 · el MCP del propio OS desde el servidor, como la persona y solo lectura | CEO + Claude |
+| 2026-11-04 | F3 · escrituras en el OS desde el Chat solo como propuestas que la persona aprueba | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -288,4 +289,8 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging):** «¿qué tareas tengo pendientes?» → usó `mis_pendientes` como esa persona y respondió con la tarea real y su fecha, en 16 s. «Crea una tarea…» → respondió que desde aquí solo puede consultar; no se creó nada.
 
-**Pendiente:** escribir en el OS desde el servidor con confirmación humana; retirar Hermes (F7) cuando el equipo lo haya usado unos días.
+**Escrituras con confirmación (hecho, 2026-11-04):** cuando la persona pide en el Chat crear o cambiar algo del OS, el servidor **no lo hace**: deja una **propuesta** en la conversación (la acción exacta y sus datos) y la pantalla muestra una tarjeta «Propuesta · necesita tu OK» con **Aprobar** y **Rechazar**. Aprobar la ejecuta **el OS con la sesión de la persona** (`POST chat/sesiones/:id/propuestas/:pid`), con el MCP del OS y sus permisos; el servidor nunca escribe. Candados: solo el dueño de la conversación decide, una sola vez, nunca mientras el servidor escribe en esa conversación, y solo acciones del trabajo diario (`PROPONIBLES_CHAT`: tareas, leads y su historial, ideas, agenda, proyectos, cotizaciones, documentos); roles, paquetes, facturas, pagos, borrar e importar en bloque no se pueden ni proponer. Lo que la persona decide vuelve al modelo como «[Aviso del OS: …]» justo después, así no repite lo hecho ni lo rechazado.
+
+**Probado (staging):** «crea una tarea…» → tarjeta con sus datos; aprobada desde el botón → la tarea quedó creada a nombre de la persona y la tarjeta dice «Hecho»; aprobar dos veces → 409; el siguiente turno dijo «Creada» con el id real y no la volvió a proponer (la primera versión sí la repetía: el aviso iba pegado al mensaje del modelo y lo pasaba por alto; ahora va como mensaje aparte); rechazar → no se creó nada; «marca la factura pagada» → no se puede ni proponer.
+
+**Pendiente:** retirar Hermes (F7) cuando el equipo lo haya usado unos días.

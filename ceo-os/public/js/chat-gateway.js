@@ -44,6 +44,7 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
     catch (e) { if (++fallos > 8) throw e; continue; } // un corte de red no tumba la respuesta
     const a = (j.messages || []).find((m) => m.role === 'assistant');
     (a?.pasos || []).forEach((p, i) => { if (vistos[i] !== p.fase) { vistos[i] = p.fase; on.tool?.({ fase: p.fase, nombre: p.nombre, detalle: p.detalle || '' }); } });
+    if (a?.propuestas?.length) on.propuestas?.(a.propuestas);
     if (a?.content && a.content !== texto) { texto = a.content; on.delta?.(texto); }
     const estado = j.turno?.estado;
     if (estado === 'en_cola' && !avisoCola) { avisoCola = true; on.nota?.('En cola en el servidor…'); }
@@ -52,3 +53,6 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
     if (estado === 'detenido') throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
   }
 }
+
+// Aprobar o rechazar una propuesta del servidor (crear una tarea, mover un lead…). La ejecuta el OS con tu sesión.
+export const decidirPropuesta = (id, pid, decision) => api(`chat/sesiones/${enc(id)}/propuestas/${enc(pid)}`, { method: 'POST', body: { decision } });
