@@ -137,6 +137,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
+| **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | En diseño: tres entregas, cada una con su PR |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -164,6 +165,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · escrituras en el OS desde el Chat solo como propuestas que la persona aprueba | CEO + Claude |
 | 2026-11-04 | F3 · Hermes retirado: el Chat, Strategy, las herramientas y el Agent Area corren en el servidor | CEO + Claude |
 | 2026-11-04 | F4 · chat de trabajo: cada trabajo abre en su chat (una conversación por persona y trabajo, guardada en el OS); la vista por etapas queda en `/etapas` | CEO + Claude |
+| 2026-11-04 | F4.5 · el Chat como centro: no hay otros chats; los agentes se llaman con `@` desde el Chat y su avance se ve en la ventana de agentes; el portal sirve para configurar, ver el flujo y los trabajos (§20). El chat de trabajo de F4 se retira | CEO |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -332,4 +334,98 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 **Archivos:** `public/js/agentes-chat.js` (pantalla), `public/js/agentes-chat-datos.js` (lo puro: id, contexto, hilo, fuentes, archivos; lo prueba `npm run test:agentes`). Ruta: `#/ai/agentes/<agente>/trabajos/<trabajo>` (chat) y `…/etapas` (vista por etapas).
 
 **Probado (staging):** un trabajo nuevo de Strategy: conversación con el servidor, input agregado, la etapa Contexto ejecutada en el servidor con su actividad en vivo, el resultado en tarjeta, la conversación sobre el resultado y la aprobación desde el chat.
+
+## 20 · F4.5 · El Chat como centro (diseño, 2026-11-04)
+
+### Por qué
+La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **trabajo real con el proceso correcto**: el flujo manda, la persona pone su parte **con conciencia** (lee, aporta, decide) y nada pasa de un agente a otro sin que alguien lo lea. Y **un solo chat**: los chats sueltos parten el contexto.
+
+### Metas
+1. **Un solo chat** (el de `#/chat`, con sus **modos por rol**: Strategy, Organización, Ads…; el modo no limita, da lineamientos). Otras pantallas pueden *abrir* el Chat; no tienen chat propio.
+2. **`@agente` en el Chat** arranca el flujo de ese agente **con lo que ya se habló**. Varios agentes pueden estar activos en la misma conversación.
+3. **Ventana de agentes** a la derecha (como el navegador de Claude): una pestaña por agente activo con su avance y **el documento que se va armando en vivo, con sus fuentes enlazadas adentro**.
+4. **Las preguntas del agente van en el Chat**, nunca en el panel ni en el portal.
+5. **Aporte humano**: el flujo puede pedir, en los pasos clave, tu punto de vista o un dato que solo tú sabes; sin eso el agente no avanza.
+6. **Leer antes de aprobar**: el OK se activa cuando abriste el documento (lo hace cumplir el servidor).
+7. **Pasar a otro agente es un gate**: el resultado entra a otro trabajo (o a la estrategia) solo con el OK de una persona que lo leyó.
+8. **OpenUI** dibuja las tarjetas en todo lo que tenga chat.
+9. **El portal del agente** sirve para **modificar el agente, ver su flujo y sus trabajos**. No se activa desde ahí.
+
+### No metas
+- Que el agente decida sus propios pasos (el flujo los decide).
+- Cambiar el motor, los modelos o el VPS más allá de lo que piden las preguntas, el aporte y el borrador en vivo.
+- Mover el chat de Design Studio (diseña en Figma desde la compu): entra al Chat en F5, con Figwright en el servidor.
+
+### Anti-metas (si pasa esto, salió mal aunque funcione)
+- Aprobar sin abrir el documento, o un «aprobar todo».
+- Un agente que avanza sin la respuesta o el aporte que pidió.
+- Dos conversaciones del mismo trabajo (una en el Chat y otra en otro lado).
+- Que se pierda algo de la base al retirar el chat de F4.
+
+### Buenas prácticas de un agente real (con qué se cumplen aquí)
+| Práctica | Fuente | Aquí |
+|---|---|---|
+| El sistema es dueño del flujo: pasos, paradas, reintentos y presupuesto | 12-factor agents (F8) | El workflow del Agent Area; el trabajador corre una etapa a la vez, máximo 2 reintentos |
+| Hablar con la persona es una acción estructurada | 12-factor agents (F7) | Bloque `pregunta` → la etapa queda «Esperando tu respuesta» y sigue sola al recibirla |
+| Contexto chico y útil, traído cuando hace falta | Anthropic · context engineering | El contexto del Chat entra resumido como input; lo aprobado recortado; web y MCP bajo demanda |
+| Parar y escalar ante riesgo, acciones irreversibles o fallas repetidas | Guía de OpenAI | Escrituras solo como propuestas; a la 2.ª falla la etapa se detiene y avisa en el Chat |
+| Evidencia o etiqueta | Reglas de Inherent | Cada dato con su fuente enlazada o marcado como hipótesis |
+
+### Enfoque elegido (A) y descartados
+- **A · El Chat como centro** (elegido por el CEO): el Chat principal recibe `@agente`, la ventana de agentes y las tarjetas; el servidor aprende a preguntar y a pedir aporte.
+- **B · Solo el @ que abre el chat de F4 al lado**: más rápido, pero deja dos conversaciones; el agente no vería lo hablado. Rompe «un solo chat».
+- **C · Que el agente decida sus pasos**: es justo lo que se quiere evitar.
+
+### Cómo funciona
+**1 · Llamar a un agente.** En el Chat, al escribir `@` sale la lista de agentes activos (los workflows con estado «activo»; nombre, área y qué entrega). Al enviar `@investigación revisa la competencia de AKAI`:
+- El OS crea el trabajo (`POST agentes/runs`) con: el workflow, el cliente/marca del modo del Chat (si el modo pide uno), `objetivo` = el texto del mensaje, y `chat: { sesion, owner }`.
+- Agrega un input `i-chat` «Lo hablado en el Chat»: los últimos mensajes (o el resumen que ya guarda la conversación, §17) recortados a ~6,000 caracteres, marcado como fuente interna.
+- Encola la etapa 1 en el servidor con el modelo del Chat. Si la etapa 1 pide aporte humano, primero aparece la tarjeta de aporte (paso 4).
+- Un mensaje sin `@` sigue siendo del modo del Chat, como hoy.
+- La conversación guarda qué trabajos nacieron de ella: `chat_sesiones.agentes: [{ run, flujo, at }]`.
+
+**2 · El hilo.** Entre los mensajes aparecen los eventos de cada trabajo ligado (mismo criterio que F4: etapa enviada, resultado listo, aprobada, ajuste, falla), **con el nombre y el color de su agente**. El resultado vigente de cada etapa sale como tarjeta con «Abrir documento» · «Pedir ajuste» · «Aprobar».
+
+**3 · Preguntas del agente (servidor).** El pedido de la etapa permite responder con un bloque ```` ```pregunta {"texto","por_que","opciones":[…]} ```` en vez del resultado **cuando falta un dato que solo la persona tiene**. El trabajador deja la etapa en estado nuevo **`pregunta`** con `e.pregunta`. En el Chat sale una tarjeta con el agente, la pregunta, el porqué y las opciones (o un campo de texto). Responder (`POST agentes/runs/:id/etapa/:n/responder { texto }`) agrega el input `i-resp-N` y re-encola la etapa sola. Máximo **3 preguntas por etapa**; a la 4.ª, el pedido le prohíbe preguntar y lo que falte va a «faltantes».
+
+**4 · Aporte humano.** Una etapa del workflow puede llevar `aporte: { pregunta, obligatorio: true }` (se edita en el portal → Flujo → inspector de la etapa). Antes de encolarla, el Chat muestra la tarjeta «Tu aporte para <etapa>»; se guarda como input `i-aporte-N` (fuente interna, con quién lo dio) y recién ahí se encola. El servidor rechaza encolar una etapa con aporte obligatorio sin su input.
+
+**5 · El documento en vivo y sus fuentes.** Mientras trabaja una etapa, el trabajador escribe cada ~2 s el texto parcial en `e.borrador` (hoy solo escribe «escribiendo N caracteres»). La pestaña del agente muestra **el documento del trabajo**: las secciones de las etapas aprobadas, la etapa en revisión y la que se está escribiendo. Las citas (`[w1]`, `[i-…]`, `[m2]`) se pintan como enlaces a su fuente; al pasar el puntero, **verificar / quitar**. Al final del documento, la lista de fuentes por etapa.
+
+**6 · Leer antes de aprobar.** Abrir el documento de una etapa en revisión llama a `POST …/etapa/:n/leida` (guarda `leida_por: [{ email, at }]`). `aprobar` responde 409 si quien aprueba no lo leyó después del último resultado. En pantalla el botón dice «Abre el documento para aprobar» hasta entonces.
+
+**7 · Pasar a otro agente (gate).** En la tarjeta de un trabajo completo (o de una etapa aprobada), «Usar en…» ofrece: otro trabajo activo de esta conversación (entra como input citable con su procedencia) o **la conversación misma** (entra al contexto del Chat, para que el modo Strategy lo convierta en la estrategia en vivo con su flujo de siempre). Solo con el documento leído. Queda en el historial de ambos.
+
+**8 · La ventana de agentes.** El panel derecho del Chat (`llm-panel`, hoy uno por modo) pasa a tener pestañas: **«<Modo>»** (el panel de hoy) + **una por agente activo** en la conversación. Cada pestaña: agente, etapa x/y, modelo, la cola de etapas, el documento en vivo y los archivos (inputs y producido). Se cierra una pestaña sin cerrar el trabajo. En el cel, la ventana es una hoja que se abre desde el agente en el hilo.
+
+**9 · Lo que se retira o cambia.**
+- **Chat de trabajo de F4** (`agentes-chat.js`): se retira. `#/ai/agentes/<agente>/trabajos/<id>` abre el Chat con ese trabajo en su pestaña: la conversación ligada (`run.chat`) si es tuya; si no, una conversación nueva del modo del agente con el trabajo adjunto. Las conversaciones ocultas que creó F4 (`inh-*-t<trabajo>-*`) se muestran en el Chat como historial de ese trabajo; no se borran.
+- **Portal del agente:** Resumen, Flujo, Trabajos y Configuración siguen. «Nuevo trabajo» abre el Chat con `@<agente> ` escrito. Los trabajos se abren en el Chat.
+- **Vista por etapas (`/etapas`):** queda como historial y detalle (solo lectura: sin Ejecutar ni selector de IA).
+- **Chat de la pantalla de Strategy:** se cambia por «Abrir en el Chat» (modo Strategy con ese cliente; el panel del modo ya muestra la estrategia en vivo). Entrega 3.
+
+**10 · OpenUI.** Se usa **`@openuidev/lang-core`** (MIT, sin React), copiado en `public/vendor/` con su versión fija, para dos cosas: generar del catálogo de componentes la parte del `sistema` que le enseña al modelo a dibujar, y leer en streaming lo que escribe. El dibujo lo hace **un render propio** (`public/js/genui.js`) con los componentes y el vidrio del OS: Card, Stack, Steps, Table, Metric, List, Question (las opciones responden en el Chat) y Action (solo **propone**: pasa por la aprobación de siempre; nunca ejecuta). El modelo lo usa cuando ayuda (una tabla, un resumen de etapa, opciones); lo demás sigue en texto. Los bloques viejos (`pregunta`, `criterios`, `meta`, `encargo`…) se siguen leyendo. Las tarjetas de los trabajos en el hilo usan los mismos componentes.
+
+**11 · El flujo avanza solo y elige bien (decidido por el CEO).**
+- **Primero se platica el plan.** Al llamar a `@agente`, antes de empezar, sale en el Chat la tarjeta **«Así lo voy a trabajar»**: las etapas, qué entrega cada una, con qué modelo y dónde pedirá tu aporte. La persona la confirma (puede decir «hasta aquí» en una etapa). Queda guardado en `run.plan_ok = { hasta, por, at }`.
+- **Al aprobar, la siguiente etapa se encola sola solo si está dentro de lo platicado** (`hasta`). Lo hace la ruta `aprobar`, sea quien sea quien aprueba. Si esa etapa pide aporte, espera su tarjeta en el Chat. Una etapa **fuera de lo platicado** (más allá de `hasta`, o una que se agregó al flujo después) no arranca sola: el Chat muestra de nuevo la tarjeta del plan para lo que sigue.
+- La conciencia está en tres momentos: platicar el plan, leer antes de aprobar y dar el aporte. No en empujar con clics.
+- **Cada etapa trae su modelo** según el flujo: `etapa.modelo` si el workflow lo fija; si no, por su tipo, con la tabla de §9 (análisis y decisiones → DeepSeek V4 Pro; redactar y revisar → V4 Flash; preparar y condensar → MiniMax). El selector de modelo del Chat solo cambia los mensajes del Chat, no las etapas. En el portal (Flujo → inspector) se ve y se cambia el modelo de cada etapa.
+
+### Entregas (cada una con su PR, probada en staging)
+1. **El Chat como centro:** `@agente`, trabajos ligados a la conversación, eventos en el hilo, ventana de agentes con pestañas (cola, documento, archivos, fuentes con verificar/quitar), leer antes de aprobar, retiro del chat de F4, portal y `/etapas` como se dice arriba.
+2. **El agente que pregunta y pide aporte:** trabajador `f4-5` (estado `pregunta`, `responder`, aporte obligatorio, `e.borrador` en vivo, contexto `i-chat`), «Usar en…».
+3. **OpenUI y un solo chat:** lang-core + `genui.js` en el Chat y en las tarjetas; el chat de Strategy pasa a «Abrir en el Chat».
+
+### Decisiones del builder (Claude), para revisar
+- El contexto del Chat entra como **input** del trabajo (citable, recortado) y no como historial completo: cabe en 32k y deja rastro de qué vio el agente.
+- `@` solo ofrece agentes **activos**; uno en borrador o en pausa no se puede llamar.
+- La conversación sigue siendo de una persona; los trabajos y sus aprobaciones son del equipo (como hoy).
+- **Control del CEO y del COO (decidido por el CEO):** desde la pestaña de un trabajo (o el portal → Trabajos) pueden abrir **la conversación ligada en solo lectura**, con una franja arriba que dice de quién es, qué cliente y qué proyecto. No escriben ahí: si quieren aportar, lo hacen desde su Chat con `@agente`. Esas conversaciones **no aparecen en su lista del Chat** (para que no haya bulla); solo se llega desde el trabajo. Ruta nueva `GET chat/sesiones/:id/lectura` (solo CEO/COO, solo si la sesión está ligada a un trabajo que pueden ver con `ver()`); cada lectura queda en el registro.
+- Quién aprueba no cambia (CEO o COO; gates 🚦 solo el CEO).
+- **Si el modo del Chat no tiene cliente y el workflow lo pide**, `@agente` muestra una tarjeta «¿Para qué cliente?» con los del alcance de la persona (`scoper`); nunca se adivina del texto.
+- **El contexto `i-chat` se renueva en cada etapa** al encolarla (lo último hablado, recortado); cada versión queda en el input con su fecha, para saber qué vio cada etapa.
+- **Fallas:** 1 reintento automático; a la 2.ª falla seguida la etapa se detiene (estado `detenida`, contador `fallas`) y avisa en el Chat con «Reintentar».
+- **Las conversaciones viejas del chat de F4** se ven dentro de la pestaña del trabajo como «Conversación anterior» (solo lectura). No son una segunda conversación viva.
+- **Orden de despliegue:** primero la pantalla y después el trabajador. El trabajador `f4-5` solo pregunta o pide aporte en trabajos con `run.chat` (los que nacen en el Chat, que solo existen con la Entrega 1). Así, un trabajo viejo nunca queda en `pregunta` sin dónde responder. Se prueba con el trabajador temporal de staging (§15).
 
