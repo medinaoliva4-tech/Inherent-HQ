@@ -5,7 +5,7 @@
 //   tipo 'token'  → servidor MCP remoto que pide un token personal (se pega una vez).
 //   tipo 'google' → ya viene con tu cuenta de Google del OS (Drive, Calendar, Gmail).
 //   tipo 'os'     → integraciones propias del OS (Inherent OS, Zernio, Windsor, Apify, Meta): las configura el CEO.
-//   tipo 'hermes' → solo por Hermes en tu compu (todavía sin MCP remoto público): el OS da el comando.
+//   tipo 'pronto' → todavía sin un MCP remoto público que el OS pueda conectar directo (antes iban por Hermes, que se retiró).
 export const CATEGORIAS = [['todo', 'Todo'], ['docs', 'Docs y archivos'], ['trabajo', 'Proyectos y equipo'], ['diseno', 'Diseño'], ['marketing', 'Marketing y ventas'], ['dev', 'Datos y desarrollo']];
 
 export const CONECTORES = [
@@ -33,14 +33,14 @@ export const CONECTORES = [
   { id: 'apify', nombre: 'Apify', sub: 'Scraping de redes y sitios', de: 'Apify', logo: 'apify', tipo: 'os', env: 'APIFY_TOKEN', cat: 'marketing' },
   { id: 'windsor', nombre: 'Windsor.ai', sub: 'Métricas de ads y analytics', de: 'Windsor', logo: 'custom', tipo: 'os', env: 'WINDSOR_API_KEY', cat: 'marketing' },
   { id: 'zernio', nombre: 'Zernio', sub: 'Publicar y medir en redes', de: 'Zernio', logo: 'custom', tipo: 'os', env: 'ZERNIO_API_KEY', cat: 'marketing' },
-  { id: 'slack', nombre: 'Slack', sub: 'Mensajes, canales y canvases', de: 'Slack', logo: 'slack', tipo: 'hermes', cat: 'trabajo' },
-  { id: 'microsoft365', nombre: 'Microsoft 365', sub: 'SharePoint, OneDrive, Outlook y Teams', de: 'Microsoft', logo: 'microsoft365', tipo: 'hermes', cat: 'docs' },
-  { id: 'airtable', nombre: 'Airtable', sub: 'Bases y registros', de: 'Airtable', logo: 'airtable', tipo: 'hermes', cat: 'dev' },
-  { id: 'shopify', nombre: 'Shopify', sub: 'Productos, pedidos y tiendas', de: 'Shopify', logo: 'shopify', tipo: 'hermes', cat: 'marketing' },
+  { id: 'slack', nombre: 'Slack', sub: 'Mensajes, canales y canvases', de: 'Slack', logo: 'slack', tipo: 'pronto', cat: 'trabajo' },
+  { id: 'microsoft365', nombre: 'Microsoft 365', sub: 'SharePoint, OneDrive, Outlook y Teams', de: 'Microsoft', logo: 'microsoft365', tipo: 'pronto', cat: 'docs' },
+  { id: 'airtable', nombre: 'Airtable', sub: 'Bases y registros', de: 'Airtable', logo: 'airtable', tipo: 'pronto', cat: 'dev' },
+  { id: 'shopify', nombre: 'Shopify', sub: 'Productos, pedidos y tiendas', de: 'Shopify', logo: 'shopify', tipo: 'pronto', cat: 'marketing' },
 ];
 export const conectorDe = (id) => CONECTORES.find((c) => c.id === id) || null;
 export const logoConector = (c) => `/brand/mcp/${c?.logo || 'inherent'}.svg`;
-export const TIPO_TEXTO = { mcp: 'Conexión directa', token: 'Con token', google: 'Con tu Google', os: 'Integración del OS', hermes: 'Por Hermes' };
+export const TIPO_TEXTO = { mcp: 'Conexión directa', token: 'Con token', google: 'Con tu Google', os: 'Integración del OS', pronto: 'Próximamente' };
 
 // Un nombre de herramienta MCP seguro para la IA: «notion__search» (letras, números, _ y -; máx. 64).
 export const nombreTool = (conector, tool) => `${conector}__${tool}`.replace(/[^\w-]/g, '_').slice(0, 64);

@@ -186,16 +186,16 @@ t('pla-laya-pendientes: los juicios en espera que ves; el CEO los resuelve en La
 
 // ---------- Lo de tu compu: el puente ----------
 const ME_CEO = { role: 'ceo', areas: [] }, ME_ANA = { role: 'team', areas: ['home', 'work', 'content'] };
-t('usosPuente: quién usa el puente (Estrategia sin Hermes, Diseño en completo o edita, Hermes)', () => {
-  assert.deepEqual(usosPuente(ME_CEO), { estrategia: true, diseno: true, hermes: false, alguno: true });
-  assert.deepEqual(usosPuente(ME_ANA), { estrategia: false, diseno: true, hermes: false, alguno: true });
+t('usosPuente: quién usa el puente (Estrategia con un motor de su compu, Diseño en completo o edita; el servidor no lo usa)', () => {
+  assert.deepEqual(usosPuente(ME_CEO, { motor: 'claude' }), { estrategia: true, diseno: true, alguno: true });
+  assert.deepEqual(usosPuente(ME_CEO), { estrategia: false, diseno: true, alguno: true }, 'con el servidor (por defecto), Estrategia no usa el puente');
+  assert.deepEqual(usosPuente(ME_ANA), { estrategia: false, diseno: true, alguno: true });
   assert.equal(usosPuente({ ...ME_ANA, views: { content: 'resumen' } }).alguno, false, 'Marcas en resumen no abre el chat de Diseño');
-  assert.equal(usosPuente({ role: 'team', areas: ['estrategia'] }, { motor: 'hermes' }).estrategia, false, 'con Hermes, Estrategia no usa el chat del puente');
-  assert.deepEqual(usosPuente({ role: 'team', areas: ['work'] }, { hermes: true }), { estrategia: false, diseno: false, hermes: true, alguno: true });
+  assert.equal(usosPuente({ role: 'team', areas: ['estrategia'] }, { motor: 'hermes' }).estrategia, false, 'quien tenía Hermes ya no usa el puente para Estrategia');
   assert.equal(usosPuente({ role: 'team', areas: ['work', 'sales'] }).alguno, false);
 });
 const OK = { status: 'ok', chat: { listo: true, ayuda: null, motores: { claude: true, chatgpt: { instalado: false }, local: { modelos: [] } } } };
-const h = (o = {}) => ({ usos: usosPuente(ME_CEO), salud: OK, bloquea: false, token: true, estado: 200, falta: null, enApp: false, so: 'mac', bajandoMin: 0, ...o });
+const h = (o = {}) => ({ usos: usosPuente(ME_CEO, { motor: 'claude' }), salud: OK, bloquea: false, token: true, estado: 200, falta: null, enApp: false, so: 'mac', bajandoMin: 0, ...o });
 const uno = (o) => { const xs = avisoPuente(h(o)); assert.equal(xs.length, 1); assert.equal(xs[0].clave, 'pla-puente'); assert.equal(xs[0].grupo, 'plataforma'); assert.equal(xs[0].urgencia, 'alta'); return xs[0]; };
 t('pla-puente: con todo bien no sale, y a quien no usa el puente nunca', () => {
   assert.deepEqual(avisoPuente(h()), []);
@@ -210,14 +210,13 @@ t('pla-puente (1): no responde — Chrome lo bloquea, en la app, en una Mac sin 
   assert.deepEqual(m.accion, { label: 'Bajar la app de Mac', href: APP_MAC }); assert.deepEqual(m.accion2, { label: 'Copiar el comando', copiar: INSTALAR_MAC });
   assert.deepEqual(uno({ salud: { status: 'error' }, so: 'win' }).accion, { label: 'Copiar el comando', copiar: INSTALAR_WIN });
   assert.equal(uno({ salud: null, usos: usosPuente(ME_ANA) }).titulo, 'El puente de tu compu no responde: el chat de Diseño no corre');
-  assert.equal(uno({ salud: null, usos: usosPuente({ role: 'team', areas: ['work'] }, { hermes: true }) }).titulo, 'El puente de tu compu no responde: Hermes no lee el repo al día');
 });
 t('pla-puente (2): el puente es viejo (sin el chat o sin sus motores)', () => {
   const x = uno({ salud: { status: 'ok' } });
   assert.equal(x.titulo, 'Actualiza el puente: los chats de Estrategia y Diseño no corren'); assert.deepEqual(x.accion, { label: 'Copiar el comando', copiar: INSTALAR_MAC });
   assert.equal(uno({ salud: { status: 'ok', chat: { listo: false, ayuda: 'apagado' } }, enApp: true }).titulo, 'Actualiza la app de Mac: su puente es viejo y los chats de Estrategia y Diseño no corren');
 });
-t('pla-puente (3): la compu no está emparejada (sin token o el token ya no sirve); a quien solo usa Hermes no se le pide', () => {
+t('pla-puente (3): la compu no está emparejada (sin token o el token ya no sirve); a quien no usa el puente no se le pide', () => {
   const x = uno({ token: false });
   assert.equal(x.titulo, 'Tu compu no está emparejada: los chats de Estrategia y Diseño no corren');
   assert.deepEqual(x.accion, { label: 'Copiar el comando', copiar: 'cat ~/.inherent/laya/chat-token' }); assert.deepEqual(x.accion2, { label: 'Emparejar', href: '#/estrategia' });
@@ -225,7 +224,7 @@ t('pla-puente (3): la compu no está emparejada (sin token o el token ya no sirv
   assert.equal(uno({ token: false, so: 'win', usos: usosPuente(ME_ANA) }).accion.copiar, 'Get-Content "$HOME\\.inherent\\laya\\chat-token"');
   assert.equal(uno({ token: false, usos: usosPuente(ME_ANA) }).accion2.href, '#/marcas/diseno');
   assert.match(uno({ token: false, enApp: true }).detalle, /La app empareja sola/);
-  assert.deepEqual(avisoPuente(h({ token: false, usos: usosPuente({ role: 'team', areas: ['work'] }, { hermes: true }) })), []);
+  assert.deepEqual(avisoPuente(h({ token: false, usos: usosPuente({ role: 'team', areas: ['work'] }) })), []);
 });
 t('pla-puente (4): la copia del repo (GitHub, error, ruta mala, puente viejo y «bajando» que no termina)', () => {
   const con = (ayuda, o = {}) => ({ salud: { status: 'ok', chat: { ...OK.chat, listo: false, ayuda, ...o } } });

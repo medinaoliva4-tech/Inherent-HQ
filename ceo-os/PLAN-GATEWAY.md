@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 casi cerrada** (ver §10, §14–§17): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación ya corren en el servidor; falta retirar Hermes cuando el equipo lo valide.
+**Estado (2026-11-04):** consolidado. **F0, F1, F2 y F3 cerradas** (ver §10, §14–§18): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, y **Hermes se retiró** (§18). Sigue F4.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -135,11 +135,11 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Cerrada (2026-11-04).** OS oficial: `inherent-work.vercel.app`. Base de pruebas: la rama `ceo-os-staging` de Neon (endpoint `ep-sweet-wind`, vacía, separada de `main`); conexión en `~/.config/inherent/neon-staging.env` (Mac) y `~/gateway/neon-staging.env` (VPS); en local se usa con la configuración `ceo-os-staging`. PR #209 unido a `main`; #207 y #208 cerrados |
 | **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales; calidad contra Claude; Figwright | **Cerrada (2026-11-04)** (§14): la calidad de DeepSeek V4 Pro alcanza para Strategy; Figwright funciona desde el VPS con un túnel que abre la Mac |
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
-| **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; apagar Hermes | Casi hecha: falta que el equipo use el Chat en el servidor unos días y retirar Hermes (F7) |
+| **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
-| **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día; retirar Hermes del instalador | Las reglas del repo dicen lo que es cierto |
+| **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
 
 ## 11 · Registro de cambios de rumbo
 
@@ -162,6 +162,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · el Chat del servidor con herramientas: web y MCP de la persona | CEO + Claude |
 | 2026-11-04 | F3 · el MCP del propio OS desde el servidor, como la persona y solo lectura | CEO + Claude |
 | 2026-11-04 | F3 · escrituras en el OS desde el Chat solo como propuestas que la persona aprueba | CEO + Claude |
+| 2026-11-04 | F3 · Hermes retirado: el Chat, Strategy, las herramientas y el Agent Area corren en el servidor | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -269,7 +270,7 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 ## 17 · F3 · el Chat en el servidor (2026-11-04)
 
-**Qué cambia para el equipo:** en el Chat (#/chat), Ajustes → «Dónde corre el Chat» trae dos opciones: **Servidor · siempre encendido** (por defecto si está en línea) o **Hermes · en tu compu**. Con el servidor:
+**Qué cambia para el equipo:** en el Chat (#/chat), Ajustes → «Dónde corre el Chat» corre en el **Servidor · siempre encendido** (Hermes se retiró, §18). Con el servidor:
 - las conversaciones **se guardan en el OS** (`chat_sesiones`, una por persona; nadie más las ve) y se abren desde cualquier compu;
 - responde el VPS aunque la compu esté apagada; la respuesta se ve escribir (la pantalla relee cada ~0.7 s);
 - «Detener» corta la respuesta y deja lo que alcanzó a escribir; ramificar copia la conversación; quitar una conversación la archiva (no se borra);
@@ -293,4 +294,19 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging):** «crea una tarea…» → tarjeta con sus datos; aprobada desde el botón → la tarea quedó creada a nombre de la persona y la tarjeta dice «Hecho»; aprobar dos veces → 409; el siguiente turno dijo «Creada» con el id real y no la volvió a proponer (la primera versión sí la repetía: el aviso iba pegado al mensaje del modelo y lo pasaba por alto; ahora va como mensaje aparte); rechazar → no se creó nada; «marca la factura pagada» → no se puede ni proponer.
 
-**Pendiente:** retirar Hermes (F7) cuando el equipo lo haya usado unos días.
+**Hermes:** retirado (§18).
+
+## 18 · Hermes retirado (2026-11-04)
+
+**Qué cambia para el equipo:** ya no hay que instalar ni encender nada en la compu para usar la IA. El Chat, Strategy, las herramientas (Inherent AI) y los trabajos del Agent Area corren en el **servidor**. Quien tenía Hermes elegido pasa solo al servidor.
+
+**Qué quedó:**
+- **Chat** (#/chat): solo servidor. Ajustes del Chat = el servidor, el límite semanal y el tema. Se quitaron la llave de Hermes, sus permisos, `/skill` y `/terminal` (ahora `/ajustes`).
+- **Strategy, Diseño y las herramientas:** piden al servidor con una **conversación oculta** (`oculto: true`, no sale en la lista del Chat) para que recuerde lo hablado. Orden: servidor → puente de Claude → claude.ai a mano.
+- **Inherent AI** (#/ai): portada con Chat · Agentes · MCPs y la página de MCPs (directorio + conectar Inherent OS a Claude/ChatGPT).
+- **Conectores** que antes iban por Hermes: ahora «Próximamente».
+- **App de Mac:** ya no instala Hermes ni pasa su llave (hay que sacar una versión nueva).
+- **Borrado:** `hermes.js`, `mcp-hermes.js` y su prueba, `laya/hermes/` (instalador y `SOUL.md`), los comandos de Terminal de Hermes. Las ayudas de pantalla quedaron en `public/js/ia-pasos.js`.
+- Los trabajos viejos con vía «hermes» se siguen leyendo (como «Hermes (retirado)»).
+
+**Probado (staging):** el Chat responde por el servidor; una conversación oculta de Strategy responde y no aparece en la lista; la portada de Inherent AI lee el servidor, los trabajos y las conexiones; todas las pruebas pasan.

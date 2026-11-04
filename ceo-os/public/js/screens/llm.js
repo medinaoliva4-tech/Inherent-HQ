@@ -1,13 +1,13 @@
 // El Inherent LLM (#/chat): el Chat de Inherent OS, una pantalla más dentro del shell (vive en #main, a la derecha de la
-// barra lateral; el elemento donde se monta lleva la clase llm-host). Front con la estructura de Hermes Desktop —barra de
-// conversaciones · conversación · panel— y el backend de Hermes en la compu de cada persona (hermes.js): el modelo que cada
-// quien conectó (ChatGPT con su suscripción, Claude, local), sus skills, su memoria y el conector de Inherent OS.
+// barra lateral; el elemento donde se monta lleva la clase llm-host): barra de conversaciones · conversación · panel. Responde
+// el SERVIDOR de Inherent (chat-gateway.js · PLAN-GATEWAY F3): las conversaciones se guardan en el OS, con web, los MCPs de la
+// persona, lectura del OS y propuestas que la persona aprueba. Hermes se retiró.
 // Un modo por área (areas.js), con su harness (llm/modos.js) y su panel (llm/paneles.js). El modo se elige con los comandos
 // «/», el selector de la barra o llega por abrirEnChat; en la caja, el switch de IA (Claude, ChatGPT, en tu compu u otras).
-// Vercel nunca habla con Hermes. Rutas: #/chat · #/chat/<sesión>
+// Rutas: #/chat · #/chat/<sesión>
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
-import { hermesDe, setHermes, saludHermes, modelosHermes, nombreProveedor, pasoHermes, sesionesHermes, crearSesion, mensajesSesion, borrarSesion, skillsHermes, turnoSesion, responderAprobacion, ramificarSesion, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../hermes.js';
-import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
+import { nombreProveedor, nombrePaso, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../ia-pasos.js';
+import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
 import { panelDe, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
@@ -17,8 +17,6 @@ import { etapaDe, etapaLabel } from '../estrategia.js';
 import { loadEstrategia, estrategiaNow } from '../stratlist.js';
 import { loadBrands, brandsNow, brandAccess } from '../brandlist.js';
 import { botonVoz, dictar } from '../voz.js';
-import { PUENTE, enApp } from '../laya.js';
-import { tokenDe } from '../puente-chat.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
@@ -57,12 +55,12 @@ export async function render(el, { me, sub = [], alive }) {
   const modoGuardado = areaDe(areaGuardada(me.email))?.modo;
   const S = {
     modo: modos.some((m) => m.id === modoGuardado) ? modoGuardado : modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
-    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: Boolean(pref.privado), porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
+    slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: false, porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
-  // solo cuando llega a la caja (si Hermes no está listo, espera: no se pierde).
+  // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
   const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
@@ -77,27 +75,24 @@ export async function render(el, { me, sub = [], alive }) {
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
   const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
   const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().filter((c) => S.modo === 'estrategia' || c.slug !== 'inherent').map((c) => [c.slug, c.nombre]) : modoDe(S.modo).pide === 'marca' ? brandsNow().filter((b) => S.modo !== 'marketing' || !b.personal).map((b) => [b.slug, b.name]) : []);
-  // Qué IA responde ahora: la del modelo elegido, la de Hermes por defecto, o «en tu compu» con el modo privado. '' si no se sabe.
+  // Qué IA responde ahora: la del modelo elegido o la del servidor por defecto. '' si no se sabe.
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider, S.modelo.model) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider, S.modelos.actual.model) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
   const listo = () => Boolean(S.salud?.on && S.salud?.auth);
-  // Dónde corre el Chat (PLAN-GATEWAY F3): «servidor» (el VPS, siempre encendido; las conversaciones viven en el OS) o
-  // «hermes» (en tu compu). Por defecto el servidor si está en línea. Todo lo demás de la pantalla es igual para los dos.
-  const KM = `os.chat.motor.${me.email}`;
-  const motorPref = () => { try { return localStorage.getItem(KM) || ''; } catch { return ''; } };
-  let enServidor = false;
+  // El Chat corre en el servidor (PLAN-GATEWAY F3). B: las funciones que usa la pantalla.
+  const enServidor = true;
   const B = {
-    salud: () => (enServidor ? saludServidor() : saludHermes(me)),
-    modelos: (o) => (enServidor ? modelosServidor() : modelosHermes(me, o)),
-    sesiones: () => (enServidor ? sesionesServidor() : sesionesHermes(me)),
-    crear: (o) => (enServidor ? crearSesionServidor(o) : crearSesion(me, o)),
-    mensajes: (id) => (enServidor ? mensajesServidor(id) : mensajesSesion(me, id)),
-    turno: (id, o) => (enServidor ? turnoServidor(id, o) : turnoSesion(me, id, o)),
-    borrar: (id) => (enServidor ? borrarSesionServidor(id) : borrarSesion(me, id)),
-    ramificar: (id, o) => (enServidor ? ramificarServidor(id, o) : ramificarSesion(me, id, o)),
-    skills: () => (enServidor ? Promise.resolve([]) : skillsHermes(me)),
+    salud: () => saludServidor(),
+    modelos: () => modelosServidor(),
+    sesiones: () => sesionesServidor(),
+    crear: (o) => crearSesionServidor(o),
+    mensajes: (id) => mensajesServidor(id),
+    turno: (id, o) => turnoServidor(id, o),
+    borrar: (id) => borrarSesionServidor(id),
+    ramificar: (id, o) => ramificarServidor(id, o),
+    skills: () => Promise.resolve([]),
   };
-  const quien = () => (enServidor ? 'el servidor' : 'Hermes');
+  const quien = () => 'el servidor';
 
   mount(el, html`<div class="llm" data-tema="${esNoche() ? 'noche' : 'dia'}" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
@@ -118,22 +113,22 @@ export async function render(el, { me, sub = [], alive }) {
   // El día y la noche son los del OS (tema.js): si cambia (aquí, en otra pantalla o en la compu), el Chat lo sigue.
   llmVivo = R;
 
-  // ---------- La barra de conversaciones (estilo Hermes: el modo · nueva · las conversaciones del modo por fecha · tú y Hermes) ----------
+  // ---------- La barra de conversaciones (el modo · nueva · las conversaciones del modo por fecha · tú y el servidor) ----------
   // Sin buscar se ven las conversaciones del modo; al buscar, las de todos (cada una con la letra de su modo).
   function pintarSide() {
     const q = S.busca.trim().toLowerCase(), m = modoDe(S.modo);
-    // Solo las de los modos que este perfil abre: Hermes vive en la compu y puede guardar las de otra cuenta.
+    // Solo las de los modos que este perfil abre (una conversación puede ser de un modo que el perfil ya no abre; cuenta.
     const lista = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo) && (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : leerIdSesion(s.id).modo === S.modo));
     const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
-    const estado = enServidor ? (S.salud?.on ? ['on', 'Servidor · siempre encendido'] : ['off', 'Servidor fuera de línea']) : !S.salud ? ['', 'Buscando Hermes…'] : !S.salud.on ? ['off', 'Hermes apagado'] : !S.salud.auth ? ['off', 'Falta la llave'] : ['on', `Hermes ${S.salud.version || ''}`.trim()];
+    const estado = !S.salud ? ['', 'Buscando el servidor…'] : S.salud.on ? ['on', 'Servidor · siempre encendido'] : ['off', 'Servidor fuera de línea'];
     // El logo ya está en la barra lateral del shell: aquí solo el nombre del Chat. El modo se cambia con el selector (o con «/»).
     mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${ico('chat-ia', 20)}</span><b class="ls-ttl">Inherent LLM</b></div>
       <div class="ls-area" data-m="${S.modo}">${modos.length > 1 ? html`<b><select class="ls-modo" aria-label="Modo del Chat">${modos.map((x) => html`<option value="${x.id}" ${x.id === S.modo ? raw('selected') : ''}>${x.nombre}</option>`)}</select></b>` : html`<b>${m.nombre}</b>`}<small>${m.sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
       <div class="ls-k ls-kr">${q ? 'Todos los modos' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
-      <div class="ls-list">${!listo() ? html`<p class="ls-mut">${enServidor ? 'El servidor no está en línea ahora.' : 'Las conversaciones viven en Hermes, en tu compu.'}</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
-      <footer class="ls-foot"><button type="button" class="ls-me" data-a="ajustes" title="Hermes y ajustes">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
+      <div class="ls-list">${!listo() ? html`<p class="ls-mut">${enServidor ? 'El servidor no está en línea ahora.' : ''}</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
+      <footer class="ls-foot"><button type="button" class="ls-me" data-a="ajustes" title="Ajustes del Chat">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
     const qi = C('ls-q'); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = C('ls-q'); n.focus(); n.setSelectionRange(pos, pos); };
   }
 
@@ -153,20 +148,15 @@ export async function render(el, { me, sub = [], alive }) {
     return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'consulting' && s ? html`¿Qué ordenamos del negocio de ${s}?` : S.modo === 'marketing' && s ? html`¿Qué planeamos para ${s}?` : S.modo === 'produccion' && s ? html`¿Qué producimos para ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
       <p>${m.depto} · ${m.sub}. Con las reglas de Inherent y el modelo que elijas.</p></div>`;
   }
-  // Lo que falta para que Hermes conteste (instalado · llave · modelo), con los comandos a la vista.
+  // El servidor fuera de línea (raro): se dice y se puede reintentar; mientras, los chats por el puente siguen.
   function setupHtml() {
     const h = S.salud;
-    const cmd = (c) => html`<div class="lsu-cmd"><code>${c}</code><button type="button" data-a="copiar" data-t="${c}">Copiar</button></div>`;
-    const atajos = html`<p class="lsu-mut">Mientras tanto, los chats de siempre (por el puente): ${me.areas?.includes('estrategia') ? html`<a href="#/ws/strategy">Strategy</a> · ` : ''}<a href="#/ws/creative">Creative</a>.</p>`;
-    if (!h) return html`<div class="lsu"><p class="lsu-mut">Buscando Hermes en tu compu…</p></div>`;
-    if (!h.on) return html`<div class="lsu"><span class="lsu-k">Paso 1 de 3</span><h2>Enciende Hermes en tu compu</h2><p>El Inherent LLM corre con Hermes, en tu Mac: tu modelo, tus suscripciones y las reglas de Inherent.</p>
-      ${enApp() ? html`<p>En el menú de arriba: <b>Puente › Instalar Hermes</b>. Una sola vez; después queda encendido.</p>` : cmd(TERMINAL[0][1])}<div class="lsu-acts"><button type="button" class="lsu-btn" data-a="revisar">Ya lo hice</button></div>${atajos}</div>`;
-    if (!h.auth) return html`<div class="lsu"><span class="lsu-k">Paso 2 de 3</span><h2>Pega la llave de Hermes</h2><p>Una sola vez en este navegador. Está en tu compu:</p>${cmd('cat ~/.inherent/hermes/api-key')}
-      <form class="lsu-pair" data-f="llave"><input name="k" type="password" autocomplete="off" spellcheck="false" placeholder="Pega la llave" aria-label="Llave de Hermes"><button type="submit" class="lsu-btn">Conectar</button></form>${S.errLlave ? html`<p class="lsu-err">${S.errLlave}</p>` : ''}${atajos}</div>`;
+    const atajos = html`<p class="lsu-mut">Mientras tanto, los chats por el puente de tu compu: ${me.areas?.includes('estrategia') ? html`<a href="#/ws/strategy">Strategy</a> · ` : ''}<a href="#/ws/creative">Creative</a>.</p>`;
+    if (!h) return html`<div class="lsu"><p class="lsu-mut">Buscando el servidor…</p></div>`;
+    if (!h.on) return html`<div class="lsu"><h2>El servidor no está en línea ahora</h2><p>Suele volver en un momento. Tus conversaciones están guardadas en el OS.</p><div class="lsu-acts"><button type="button" class="lsu-btn" data-a="revisar">Revisar otra vez</button></div>${atajos}</div>`;
     return '';
   }
-  // Sin modelo conectado en Hermes: el aviso va sobre la caja (Hermes responde con su modelo por defecto si lo tiene).
-  const sinModelo = () => S.modelos && !S.modelos.proveedores.some((p) => p.listo && p.modelos.length) && !S.modelos.actual.model;
+  const sinModelo = () => false; // el servidor siempre trae sus modelos
 
   function pintarSug() {
     const box = C('llm-sug');
@@ -186,13 +176,15 @@ export async function render(el, { me, sub = [], alive }) {
   }
   // El switch de IA: qué inteligencia (o empresa) responde. Solo las que esta compu tiene listas; «En tu compu» es el modo privado.
   function iasHtml() {
+    return ''; // en el servidor no hay modelos de tu compu ni varias empresas: un solo selector de modelo
+    // eslint-disable-next-line no-unreachable
     if (!S.modelos) return '';
     const xs = iasListas(S.modelos), on = iaAhora();
     if (xs.length < 2) return '';
     return html`<div class="lc-ias" role="radiogroup" aria-label="Qué IA responde">${xs.map(([id, n, ic]) => html`<button type="button" role="radio" class="${id === on ? 'on' : ''}" aria-checked="${id === on ? 'true' : 'false'}" data-a="ia" data-ia="${id}" style="--c:var(--ia-${id})" title="${id === 'local' ? 'En tu compu · privado: nada sale de ella' : n}" aria-label="${n}">${ico(ic, 15)}</button>`)}</div>`;
   }
   // Un solo estado: si responde un modelo de tu compu, es el modo privado (con su regla). Un modelo guardado de un
-  // proveedor que Hermes ya no tiene listo se suelta: vuelve el de Hermes por defecto.
+  // proveedor que el servidor ya no tiene listo se suelta: vuelve el de por defecto.
   const provListo = (m) => Boolean(m?.model && (S.modelos?.proveedores || []).some((p) => p.slug === m.provider && p.listo));
   function ajustarModelo() {
     if (!S.modelos?.proveedores) return;
@@ -200,7 +192,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (S.modelo?.model && !provListo(S.modelo)) S.modelo = null;
     if (!S.privado && (S.modelo?.model ? esLocal(S.modelo.provider) : esLocal(S.modelos.actual?.provider))) S.privado = true;
   }
-  // Cambiar de IA: vuelve al último modelo que usaste con ella, o al de Hermes por defecto si es de ella, o al primero que tenga.
+  // Cambiar de IA: vuelve al último modelo que usaste con ella, o al de por defecto si es de ella, o al primero que tenga.
   function ponerIa(id) {
     if (id === 'local' ? S.privado : !S.privado && id === iaAhora()) return;
     if (S.modelo?.model) S.porIa[iaDe(S.modelo.provider, S.modelo.model)] = S.modelo;
@@ -220,16 +212,14 @@ export async function render(el, { me, sub = [], alive }) {
     if (!listo()) return mount(box, vacio() ? heroHtml() : html`<div class="llm-col">${setupHtml()}</div>`);
     const m = modoDe(S.modo), sl = slugAhora();
     mount(box, html`${vacio() ? heroHtml() : ''}<div class="lc-w">
-      ${S.privado && S.modelos && !modeloLocal() ? html`<div class="lc-aviso">${ico('lock', 13)} El modo privado necesita un modelo en tu compu. Con LM Studio: baja cualquier modelo, enciende su servidor (<code>lms server start</code> <button type="button" data-a="copiar" data-t="lms server start">Copiar</button>) y elige «LM Studio» en <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
-      ${sinModelo() ? html`<div class="lc-aviso">${ico('alert', 13)} Hermes no tiene un modelo conectado. En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button></div>` : ''}
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo…   «/» para comandos'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox"><i data-m="${m.id}">${m.letra}</i>${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
           <span class="sp"></span>
-          ${iasHtml() || html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
-          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo responde y cuánto piensa (por Hermes, en tu compu)">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
+          ${iasHtml() || ''}${'' && html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
+          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo del servidor responde">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
         </div></form>
@@ -256,14 +246,13 @@ export async function render(el, { me, sub = [], alive }) {
     if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}</div></div>`;
     const ult = i === S.msgs.length - 1, busy = x.stream, m = modoDe(x.modo || S.modo);
     const pasos = x.tools || [];
-    const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${pasoHermes(pasos[pasos.length - 1].nombre)}` : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
-      <ol>${pasos.map((p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${pasoHermes(p.nombre)}${p.detalle ? html`<small>${p.detalle}</small>` : ''}</span></li>`)}</ol></details>` : '';
+    const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${nombrePaso(pasos[pasos.length - 1].nombre)}` : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
+      <ol>${pasos.map((p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${nombrePaso(p.nombre)}${p.detalle ? html`<small>${p.detalle}</small>` : ''}</span></li>`)}</ol></details>` : '';
     const t = x.tarjetas || {};
     const crit = t.criterios ? html`<div class="lm-crit ${t.criterios.falta.length ? 'falta' : 'ok'}"><div class="lm-crit-h"><b>Criterios${t.criterios.entregable ? ` · ${t.criterios.entregable}` : ''}</b><span>${t.criterios.falta.length ? `Falta ${t.criterios.falta.length}` : 'Listo'}</span></div>
       ${t.criterios.cumple.map((c) => html`<div class="si">${ico('check', 12)}${c}</div>`)}${t.criterios.falta.map((c) => html`<div class="no"><i></i>${c}</div>`)}</div>` : '';
     const preg = t.pregunta ? html`<div class="lm-preg ${ult ? '' : 'hecha'}"><span class="lm-k">Una pregunta antes de seguir</span><b>${t.pregunta.texto}</b>${t.pregunta.por_que ? html`<small>${t.pregunta.por_que}</small>` : ''}${t.pregunta.opciones.length ? html`<div class="lm-ops">${t.pregunta.opciones.map((o) => html`<button type="button" data-a="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : '';
-    const apr = x.aprob ? html`<div class="lm-apr"><span class="lm-k">${ico('alert', 12)} Hermes pide permiso</span>${x.aprob.description ? html`<p>${x.aprob.description}</p>` : ''}${x.aprob.command ? html`<code>${x.aprob.command}</code>` : ''}
-      <div class="lm-ops">${(x.aprob.choices || ['once', 'deny']).map((c) => html`<button type="button" class="${c === 'deny' ? 'no' : c === 'once' ? 'si' : ''}" data-a="aprobar" data-c="${c}" data-i="${i}">${ELECCION[c] || c}</button>`)}</div></div>` : '';
+    const apr = ''; // los permisos de Hermes se retiraron: lo que cambia algo llega como propuesta (props)
     // Lo que el servidor propone cambiar en el OS: no pasa nada hasta que la persona lo aprueba (lo ejecuta el OS con su sesión).
     const props = (x.propuestas || []).map((p, k) => {
       const datos = Object.entries(p.args || {}).filter(([, v]) => v !== '' && v != null).slice(0, 10);
@@ -402,7 +391,7 @@ export async function render(el, { me, sub = [], alive }) {
       <p class="bru-mut">${terminada(b) ? html`<b class="bru-listo">${ico('check', 13)} Meta cumplida</b> · ` : ''}${hechas} de ${total} tareas · ${pct}%</p>
       <ul class="bru-ts">${b.tareas.map((x, i) => html`<li class="${x.hecha ? 'hecha' : ''}"><button type="button" class="bru-ck" role="checkbox" aria-checked="${x.hecha ? 'true' : 'false'}" data-a="bru-tarea" data-k="${i}" aria-label="${x.hecha ? 'Desmarcar' : 'Marcar como hecha'}: ${x.t}">${x.hecha ? ico('check', 13) : ''}</button><span class="bru-t">${x.t}</span>${x === ahora ? html`<span class="bru-tag ahora">Ahora</span>` : x.quien === 'tu' ? html`<span class="bru-tag tu">TÚ</span>` : html`<small class="bru-ia">${QUIEN.ia}</small>`}</li>`)}</ul></section>`;
   }
-  // El uso del Chat esta semana contra TU límite (Hermes no da el de la suscripción): para no quemarlo el lunes.
+  // El uso del Chat esta semana contra TU límite: para no quemarlo el lunes.
   function usoHtml() {
     if (!listo()) return '';
     const ini = inicioSemana(), usados = S.sesiones.filter((x) => (Date.parse(x.last_active) || (+x.last_active < 1e12 ? +x.last_active * 1000 : +x.last_active) || 0) >= ini).reduce((a, x) => a + usosDe(x), 0);
@@ -441,40 +430,35 @@ export async function render(el, { me, sub = [], alive }) {
   async function menuModelo(a) {
     if (!S.modelos) { try { S.modelos = await B.modelos(); ajustarModelo(); } catch { S.modelos = { actual: {}, proveedores: [] }; } }
     // Con el switch de IA, aquí van solo los modelos de esa IA (sin IA conocida, todos).
-    // Si la IA de ahora ya no está lista en Hermes, no se filtra: que siempre haya algo que elegir.
+    // Si la IA de ahora ya no está lista, no se filtra: que siempre haya algo que elegir.
     const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug, x) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug, x) === ia));
     const nombreIa = (IAS.find(([k]) => k === ia) || [])[1];
     const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : nombreIa ? `Modelos de ${nombreIa}` : 'Qué modelo responde' }];
-    if (!S.privado && (!ia || iaDe(S.modelos.actual.provider, S.modelos.actual.model) === ia)) items.push({ v: '', label: 'Por defecto de Hermes', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El que elegiste con «inherent model»', on: !S.modelo?.model });
+    if (!S.privado && (!ia || iaDe(S.modelos.actual.provider, S.modelos.actual.model) === ia)) items.push({ v: '', label: 'Por defecto del servidor', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El modelo por defecto del servidor', on: !S.modelo?.model });
     const loc = S.privado ? modeloLocal() : null;
     for (const p of S.modelos.proveedores) for (const x of p.listo ? p.modelos.filter((x) => deIa(p.slug, x)).slice(0, PASARELAS.includes(p.slug) ? 40 : 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, fin: fuertesHtml(x), on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
-    if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'Abajo: cómo bajar uno gratis con LM Studio', off: true });
-    const pie = html`<p class="lmn-pie">¿Falta uno? En la Terminal: <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>`;
+    if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'El servidor no corre modelos locales', off: true });
+    const pie = '';
     menu(a, 'Modelo', items, (v) => {
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
       else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider, S.modelo.model)] = S.modelo; ajustarModelo(); }
       persistir(); pintarCaja();
-    }, { buscar: items.length > 14, pie: S.privado && !loc ? html`<p class="lmn-pie">Con <b>LM Studio</b>: baja cualquier modelo, enciende su servidor (<code>lms server start</code> <button type="button" data-a="copiar" data-t="lms server start">Copiar</button>) y elige «LM Studio» en <code>inherent model</code> <button type="button" data-a="copiar" data-t="inherent model">Copiar</button> · <button type="button" data-a="refrescar-modelos">Actualizar</button></p>` : pie });
+    }, { buscar: items.length > 14, pie });
   }
 
-  // ---------- Ajustes: Hermes, la llave, el tema y los comandos de la Terminal ----------
+  // ---------- Ajustes: el servidor, el límite semanal y el tema ----------
   function ajustes() {
     el.querySelector('.llm-sheet')?.remove();
-    const d = document.createElement('div'); d.className = 'llm-sheet'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Hermes y ajustes');
-    const h = S.salud || {}, cx = hermesDe(me);
-    mount(d, html`<div class="lsh"><header><b>Hermes y ajustes</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
-      <section><span class="lp-k">Dónde corre el Chat</span><div class="lsh-tema">${[['servidor', 'Servidor · siempre encendido'], ['hermes', 'Hermes · en tu compu']].map(([k, l]) => html`<button type="button" class="${(enServidor ? 'servidor' : 'hermes') === k ? 'on' : ''}" data-a="motor-chat" data-v="${k}">${l}</button>`)}</div>
-        <p class="lp-mut">${enServidor ? 'Responde el servidor de Inherent aunque tu compu esté apagada, y tus conversaciones quedan guardadas en el OS: las abres desde cualquier compu.' : 'Responde Hermes en esta compu, con sus modelos, skills y memoria. Las conversaciones viven en esta compu.'}</p></section>
-      <section><span class="lp-k">Hermes en esta compu</span><p><i class="ls-dot ${h.on && h.auth ? 'on' : 'off'}"></i>${h.on ? `Encendido${h.version ? ` · versión ${h.version}` : ''}` : 'Apagado o no instalado'} · ${h.auth ? 'llave conectada' : 'sin llave'}${enApp() ? ' (la da la app)' : ''}</p>
-        ${cx && !enApp() ? html`<button type="button" class="lsu-btn ghost" data-a="olvidar-llave">Olvidar la llave en este navegador</button>` : ''}
-        <p class="lp-mut">El modelo, las suscripciones, las skills y la memoria viven en Hermes. Aquí se ven; se cambian con estos comandos (perfil «inherent»):</p>
-        <div class="lsh-cmds">${TERMINAL.map(([t, c]) => html`<div class="lsu-cmd"><span>${t}</span><code>${c}</code><button type="button" data-a="copiar" data-t="${c}">Copiar</button></div>`)}</div></section>
-      <section><span class="lp-k">Tu límite semanal del Chat</span><p class="lp-mut">Cuántos usos quieres gastar por semana (los que tu suscripción aguanta). Con él, la Brújula te dice a qué ritmo vas. Es tu número: Hermes no da el límite de la suscripción.</p>
+    const d = document.createElement('div'); d.className = 'llm-sheet'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Ajustes del Chat');
+    const h = S.salud || {};
+    mount(d, html`<div class="lsh"><header><b>Ajustes del Chat</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
+      <section><span class="lp-k">El servidor</span><p><i class="ls-dot ${h.on ? 'on' : 'off'}"></i>${h.on ? `En línea${h.version ? ` · versión ${h.version}` : ''}` : 'Fuera de línea ahora'}</p>
+        <p class="lp-mut">Responde el servidor de Inherent aunque tu compu esté apagada. Tus conversaciones quedan guardadas en el OS (las abres desde cualquier compu); busca en la web, usa tus conexiones (Inherent AI → MCPs), lee el OS como tú y, para cambiar algo, te deja una propuesta que apruebas.</p></section>
+      <section><span class="lp-k">Tu límite semanal del Chat</span><p class="lp-mut">Cuántos usos quieres gastar por semana (los que tu suscripción aguanta). Con él, la Brújula te dice a qué ritmo vas. Es tu número: el servidor no da el límite de la suscripción.</p>
         <form class="lsu-pair" data-f="limite"><input name="n" type="number" min="0" step="10" inputmode="numeric" value="${S.limite || ''}" placeholder="Por ejemplo, 300" aria-label="Usos por semana"><button type="submit" class="lsu-btn">Guardar</button></form></section>
       <section><span class="lp-k">Día y noche</span><div class="lsh-tema">${[['sistema', 'Como mi compu'], ['dia', 'Día'], ['noche', 'Noche']].map(([k, l]) => html`<button type="button" class="${temaElegido() === k ? 'on' : ''}" data-a="tema" data-t="${k}">${l}</button>`)}</div></section>
-      <section><span class="lp-k">Skills de Hermes</span><div id="lsh-skills"><p class="lp-mut">${listo() ? 'Cargando…' : 'Conecta Hermes para verlas.'}</p></div></section></div>`);
+    </div>`);
     R.append(d);
-    if (listo()) skills().then((xs) => { const b = d.querySelector('#lsh-skills'); if (b) mount(b, xs.length ? html`<div class="lsh-sk">${xs.slice(0, 60).map((s) => html`<span title="${s.description || ''}">${s.name}</span>`)}</div><p class="lp-mut">Úsalas con «/skill» en la caja.</p>` : html`<p class="lp-mut">Sin skills instaladas.</p>`); }).catch(() => {});
   }
   const skills = async () => (S.skills ||= await B.skills().catch(() => []));
 
@@ -563,16 +547,11 @@ export async function render(el, { me, sub = [], alive }) {
     if ((S.modo === 'diseno' || S.modo === 'produccion') && slug) return { ...base, cliente: nombreSlug(), carpeta: slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`, extra: [`Mes del ciclo: ${today().slice(0, 7)}`] };
     return { ...base, extra: [`Secciones que ve en el OS: ${(me.areas || []).join(', ') || '—'}`] };
   }
-  // Antes de cada turno, el puente pone al día la copia del repo que lee Hermes (y borra cualquier cambio local).
-  async function repoAlDia() {
-    const t = tokenDe(me); if (!t) return;
-    try { await fetch(PUENTE + '/chat/sincronizar', { method: 'POST', credentials: 'omit', cache: 'no-store', targetAddressSpace: 'loopback', headers: { Authorization: 'Bearer ' + t }, signal: AbortSignal.timeout(25000) }); } catch { /* sin puente: Hermes lee la copia que hay */ }
-  }
   // sinGiro: lo que la persona manda desde la Brújula (aceptar la meta, volver a la tarea) no cuenta como turno perdido.
   async function enviar(texto, { reintento = false, sinGiro = false } = {}) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
     const cm = leerComando(texto); if (cm && !reintento) return comando(cm);
-    if (!listo()) return toast(enServidor ? 'El servidor no está en línea' : 'Primero conecta Hermes', true);
+    if (!listo()) return toast('El servidor no está en línea', true);
     const m = modoDe(S.modo);
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
@@ -588,19 +567,18 @@ export async function render(el, { me, sub = [], alive }) {
         await B.crear({ id, titulo: tituloDe(texto) });
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
       }
-      const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), enServidor ? null : repoAlDia()]);
+      const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), null]);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
-        delta: (t) => { msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); },
+        delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); }, // «En cola…» se va al empezar la respuesta
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
         nota: (n) => { msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
         propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
       } });
-      msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
+      msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
     } catch (e) {
       if (e.name === 'AbortError') msg.err = msg.t ? 'Detenido.' : 'Detenido antes de responder.';
-      else if (e.status === 401) { if (!enApp()) setHermes(me, null); S.salud = { ...(S.salud || {}), auth: false }; msg.err = 'Hermes no reconoció la llave. Vuelve a conectarla.'; }
       else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : `No pude hablar con ${quien()}. ¿Sigue encendido?`;
     } finally { S.enVuelo = null; msg.stream = false; msg.aprob = null; }
     // Lo que Strategy concretó va a la estrategia en vivo (si se puede editar y no está aprobada).
@@ -626,15 +604,11 @@ export async function render(el, { me, sub = [], alive }) {
     if (cmd === '/nuevo') return nuevo();
     if (MODOS.some((m) => '/' + m.id === cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
     if (cmd === '/modelo') { const b = el.querySelector('[data-a="menu-modelo"]'); if (b) menuModelo(b); return; }
-    if (cmd === '/terminal') return ajustes();
+    if (cmd === '/ajustes') return ajustes();
     if (cmd === '/privado') return alternarPrivado();
     if (cmd === '/ramificar') return ramificar();
     if (cmd === '/brujula') { if (!S.brujula) return toast('Esta conversación todavía no tiene meta: pide algo y te propongo una'); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
-    if (cmd === '/skill') {
-      const xs = await skills(), b = el.querySelector('[data-a="menu-modo"]') || el.querySelector('.lc-send');
-      if (!xs.length) return toast('Hermes no tiene skills instaladas', true);
-      return menu(b, 'Skill de Hermes', xs.map((s) => ({ v: s.name, label: s.name, sub: String(s.description || '').slice(0, 90) })), (v) => { const t = $('#llm-in', el); t.value = `Usa la skill «${v}»: ${arg || ''}`; crecer(t); t.focus(); }, { buscar: true });
-    }
+
   }
 
   // ---------- Clics, teclado y formularios ----------
@@ -686,28 +660,14 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'uso-limite') return ajustes();
     if (a === 'reintentar') { const u = [...S.msgs].reverse().find((x) => x.r === 'u'); if (u) enviar(u.t, { reintento: true }); return; }
     if (a === 'copiar') { try { await navigator.clipboard.writeText(t.dataset.t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } return; }
-    if (a === 'aprobar') {
-      const x = S.msgs[+t.dataset.i]; if (!x?.aprob || !S.runId) return;
-      try { await responderAprobacion(me, S.runId, x.aprob, t.dataset.c); x.notas = [...(x.notas || []), t.dataset.c === 'deny' ? 'No le diste permiso.' : 'Le diste permiso.']; x.aprob = null; pintarUltimo(); } catch (er) { toast(er.message, true); }
-      return;
-    }
     if (a === 'borrar') {
       e.preventDefault();
-      if (!(await confirmAsk(enServidor ? '¿Quitar esta conversación de tu lista? Queda archivada en el OS.' : '¿Borrar esta conversación? Se borra de Hermes.'))) return;
+      if (!(await confirmAsk(enServidor ? '¿Quitar esta conversación de tu lista?Queda archivada en el OS.' : ''))) return;
       try { await B.borrar(t.dataset.id); S.sesiones = S.sesiones.filter((s) => s.id !== t.dataset.id); if (S.sesion === t.dataset.id) nuevo(); else pintarSide(); } catch (er) { toast(er.message, true); }
       return;
     }
     if (a === 'ajustes') return ajustes();
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
-    if (a === 'motor-chat') { try { localStorage.setItem(KM, t.dataset.v); } catch {} el.querySelector('.llm-sheet')?.remove(); S.sesion = null; S.msgs = []; S.titulo = ''; S.sesiones = []; S.modelos = null; S.modelo = null; S.skills = null; if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat'); toast(t.dataset.v === 'servidor' ? 'El Chat corre en el servidor' : 'El Chat corre en Hermes, en tu compu'); return revisar(); }
-    if (a === 'propuesta') {
-      const x = S.msgs[+t.dataset.i], p = x?.propuestas?.[+t.dataset.k]; if (!p || p.estado !== 'pendiente' || p.decidiendo || !S.sesion) return;
-      p.decidiendo = true; pintarHilo();
-      try { const { propuesta } = await decidirPropuesta(S.sesion, p.id, t.dataset.d); Object.assign(p, propuesta); toast(propuesta.estado === 'aprobada' ? 'Hecho en el OS' : propuesta.estado === 'rechazada' ? 'Propuesta rechazada' : 'No se pudo hacer', propuesta.estado === 'fallo'); }
-      catch (er) { toast(er.message, true); }
-      p.decidiendo = false; pintarHilo(); return;
-    }
-    if (a === 'olvidar-llave') { setHermes(me, null); el.querySelector('.llm-sheet')?.remove(); return revisar(); }
     if (a === 'tema') { ponerTema(t.dataset.t); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
     if (a === 'revisar') return revisar();
   });
@@ -726,19 +686,11 @@ export async function render(el, { me, sub = [], alive }) {
     e.preventDefault();
     if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim()) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
     if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); el.querySelector('.llm-sheet')?.remove(); return pintarPanel(); }
-    if (e.target.dataset.f === 'llave') {
-      const v = new FormData(e.target).get('k')?.toString().trim(); if (!v) return;
-      setHermes(me, { key: v }); const h = await saludHermes(me);
-      if (h.auth) { S.errLlave = ''; toast('Hermes conectado'); } else { setHermes(me, null); S.errLlave = h.on ? 'Esa no es la llave de Hermes.' : 'Hermes no responde en esta compu.'; }
-      return revisar();
-    }
   });
 
-  // ---------- Arranque: Hermes, las listas y la conversación de la ruta ----------
+  // ---------- Arranque: el servidor, las listas y la conversación de la ruta ----------
   async function revisar() {
-    const srv = await saludServidor();
-    enServidor = motorPref() === 'hermes' ? false : motorPref() === 'servidor' ? true : srv.on;
-    S.salud = enServidor ? srv : await saludHermes(me);
+    S.salud = await saludServidor();
     if (!alive()) return;
     if (listo()) {
       const [xs, mods] = await Promise.all([B.sesiones().catch(() => []), B.modelos().catch(() => null)]);

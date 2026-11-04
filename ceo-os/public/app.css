@@ -8814,7 +8814,7 @@ a.agx-tr:hover{background:var(--ui-surf2)}
 .wfe-node-info{flex:1;min-width:0}
 .wfe-node-t{font-weight:600;color:var(--ink);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wfe-node-d{font-size:12.5px;color:var(--mut);white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.wfe-node-gate{font-size:11px;color:#b45309;background:rgb(234 179 8 / .12);padding:1px 6px;border-radius:99px;flex:none}
+.wfe-node-gate{font-size:11px;color:var(--warn);background:rgb(234 179 8 / .12);padding:1px 6px;border-radius:99px;flex:none}
 .wfe-node-handle-out,.wfe-node-handle-in{width:10px;height:10px;border-radius:50%;border:2px solid var(--surface);flex:none;cursor:crosshair}
 .wfe-node-handle-out{background:var(--c,var(--ink2))}
 .wfe-node-handle-in{background:var(--surface);border-color:var(--c,var(--ink2))}

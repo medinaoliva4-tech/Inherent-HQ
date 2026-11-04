@@ -6,16 +6,16 @@ import { aviso } from './base.js';
 import { INSTALAR_MAC, INSTALAR_WIN, APP_MAC } from '../laya.js';
 import { PASOS_COPIA_VIEJA } from '../puente-chat.js';
 
-// ¿Para qué usa esta persona el puente? El chat de Estrategia (con un motor que no es Hermes), el chat de Diseño (Marcas ·
-// contenido en completo o edita) y Hermes (el puente le pone al día la copia del repo antes de cada turno, screens/llm.js).
-// me = lo de GET /api/me (role, areas, views) · motor = motorDe(me).motor · hermes = hay conexión con Hermes (hermesDe).
-export function usosPuente(me, { motor = 'claude', hermes = false } = {}) {
+// ¿Para qué usa esta persona el puente? El chat de Estrategia (cuando eligió un motor de su compu, no el servidor) y el chat
+// de Diseño (Marcas · contenido en completo o edita: Figma corre en la compu). Hermes se retiró.
+// me = lo de GET /api/me (role, areas, views) · motor = motorDe(me).motor.
+export function usosPuente(me, { motor = 'servidor' } = {}) {
   const areas = me?.areas || [], ceo = me?.role === 'ceo';
-  const estrategia = (ceo || areas.includes('estrategia')) && motor !== 'hermes';
+  const estrategia = (ceo || areas.includes('estrategia')) && !['servidor', 'hermes'].includes(motor);
   const diseno = ceo || (areas.includes('content') && me?.views?.content !== 'resumen');
-  return { estrategia, diseno, hermes: Boolean(hermes), alguno: estrategia || diseno || Boolean(hermes) };
+  return { estrategia, diseno, alguno: estrategia || diseno };
 }
-const queNo = (u) => (u.estrategia && u.diseno ? 'los chats de Estrategia y Diseño no corren' : u.estrategia ? 'el chat de Estrategia no corre' : u.diseno ? 'el chat de Diseño no corre' : 'Hermes no lee el repo al día');
+const queNo = (u) => (u.estrategia && u.diseno ? 'los chats de Estrategia y Diseño no corren' : u.estrategia ? 'el chat de Estrategia no corre' : 'el chat de Diseño no corre');
 const corta = (s, n) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
 
 // pla-puente · ceo-os/PROPOSITOS.md §3 y §4 «La app de Mac» (el puente va adentro y no hay que emparejar) e INSTALAR.md
@@ -47,7 +47,7 @@ export function avisoPuente(h) {
   if (donde && (!h.token || h.estado === 401)) return h.enApp
     ? sale('token', `Tu compu no está emparejada: ${no}`, 'La app empareja sola: en el menú de arriba, Puente › Reiniciar el puente.', otra)
     : sale('token', `Tu compu no está emparejada: ${no}`, `${h.token ? 'El token que pegaste ya no sirve. ' : ''}Copia el token de tu compu con este comando y pégalo en el chat de ${donde[0]} › Emparejar.`, copiar(h.so === 'win' ? TOKEN_WIN : TOKEN_MAC), { label: 'Emparejar', href: donde[1] });
-  // (4) La copia del repo que leen los chats y Hermes.
+  // (4) La copia del repo que leen los chats del puente.
   const ay = c.ayuda;
   if (ay === 'sin_github') return sale('sin_github', 'El puente no tiene la copia del repo: inicia sesión en GitHub (una sola vez)', 'El repo es privado y el puente necesita tu permiso para leerlo. Corre otra vez el comando de instalar y sigue lo que te pide el navegador.', copiar(inst), otra);
   if (ay === 'repo_error') return sale('repo_error', 'El puente no pudo bajar la copia del repo', `${corta(c.error_repo || 'Revisa tu internet.', 160)} Se reintenta solo en un minuto; si sigue, corre otra vez el comando de instalar.`, copiar(inst), otra);

@@ -34,10 +34,6 @@
       {
         "from": "../public/laya/instalar.sh",
         "to": "puente/instalar.sh"
-      },
-      {
-        "from": "../public/laya/hermes/instalar.sh",
-        "to": "puente/hermes-instalar.sh"
       }
     ],
     "afterPack": "./firmar.js",

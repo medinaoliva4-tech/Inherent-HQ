@@ -3,7 +3,7 @@
 //   · Conectan y eligen el CEO y el COO; usar (ia/completar) lo puede todo el equipo, nunca un cliente.
 //   · Un solo adaptador: la API compatible con OpenAI (chat/completions y models). Claude y Gemini la ofrecen también.
 //   · ia/completar responde en streaming (SSE): {delta} mientras escribe y al final {fin, texto, citas, modelo}.
-// Las IAs locales (Hermes, el puente de Claude) no pasan por aquí: corren en la compu de cada persona.
+// Las IAs locales (el puente de Claude) no pasan por aquí: corren en la compu de cada persona.
 import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';

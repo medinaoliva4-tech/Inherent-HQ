@@ -19,7 +19,6 @@
     "test:marca": "node scripts/test-marca.mjs",
     "test:llm": "node scripts/test-llm.mjs",
     "test:areas": "node scripts/test-areas.mjs",
-    "test:mcp": "node scripts/test-mcp.mjs",
     "test:ui": "node scripts/test-ui.mjs",
     "test:herramientas": "node scripts/test-herramientas.mjs",
     "test:consulting": "node scripts/test-consulting.mjs && node scripts/test-consulting-dinero.mjs && node scripts/test-consulting-p2.mjs",

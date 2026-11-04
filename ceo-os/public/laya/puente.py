@@ -763,7 +763,7 @@ def servidor(laya_, origenes, puerto, chat=None, ojo=None):
             self.responder(200, {"ok": True, **chat.estado()})
 
         def chat_sincronizar(self):
-            """Pone al día la copia del repo que leen el chat y Hermes (el Inherent LLM) y borra cualquier cambio local
+            """Pone al día la copia del repo que lee el chat y borra cualquier cambio local
             (git reset --hard). Como mucho una vez por minuto: si ya está al día, contesta al instante."""
             if not self.chat_puerta():
                 return

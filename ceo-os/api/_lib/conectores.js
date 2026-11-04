@@ -37,11 +37,11 @@ async function descubrir(url) {
   const as = new URL(prm?.authorization_servers?.[0] || u.origin), asPath = as.pathname.replace(/\/+$/, '');
   let meta = null;
   for (const c of [`${as.origin}/.well-known/oauth-authorization-server${asPath}`, `${as.origin}/.well-known/oauth-authorization-server`, `${as.origin}/.well-known/openid-configuration${asPath}`, `${as.origin}/.well-known/openid-configuration`]) { try { meta = await pedirJSON(c); break; } catch {} }
-  if (!meta?.authorization_endpoint || !meta?.token_endpoint) throw Object.assign(new Error('Este servicio todavía no permite conectarse directo desde el OS. Conéctalo por Hermes.'), { status: 400, code: 'SIN_OAUTH' });
+  if (!meta?.authorization_endpoint || !meta?.token_endpoint) throw Object.assign(new Error('Este servicio todavía no permite conectarse directo desde el OS.'), { status: 400, code: 'SIN_OAUTH' });
   return { meta, resource: prm?.resource || url, scopes: prm?.scopes_supported || meta.scopes_supported || [] };
 }
 async function registrar(meta) {
-  if (!meta.registration_endpoint) throw Object.assign(new Error('Este servicio pide una app aprobada a mano: por ahora conéctalo por Hermes.'), { status: 400, code: 'SIN_REGISTRO' });
+  if (!meta.registration_endpoint) throw Object.assign(new Error('Este servicio pide una app aprobada a mano: todavía no se puede conectar directo desde el OS.'), { status: 400, code: 'SIN_REGISTRO' });
   const j = await pedirJSON(meta.registration_endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ client_name: 'Inherent OS', redirect_uris: [redirect()], grant_types: ['authorization_code', 'refresh_token'], response_types: ['code'], token_endpoint_auth_method: 'none', client_uri: app() }) });
   if (!j.client_id) throw new Error('El servicio no entregó una app para el OS');
   return { client_id: j.client_id, client_secret: j.client_secret || '' };

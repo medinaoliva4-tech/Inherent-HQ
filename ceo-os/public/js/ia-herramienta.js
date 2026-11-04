@@ -1,9 +1,10 @@
 // El adaptador único de IA de las herramientas (PLAN-WORKSPACES §5.3). Arma el prompt (el harness del modo del workspace +
-// lo que pide la herramienta), elige el camino que esta compu tiene —Hermes, el puente de Laya o claude.ai— y devuelve el
+// lo que pide la herramienta), elige el camino que hay —el servidor de Inherent, el puente de Laya o claude.ai— y devuelve el
 // texto tal cual. No guarda ni limpia nada: lo que dice un modelo es dato no confiable hasta que la herramienta lo lee con su
 // leer() y la persona lo revisa (el Tool Shell lo hace). Existe para que ninguna herramienta hable con una IA por su cuenta.
 import { api, today, ask, openClaude } from './core.js';
-import { hermesDe, saludHermes, chatHermes, pasoHermes } from './hermes.js';
+import { nombrePaso } from './ia-pasos.js';
+import { saludServidor, correrServidor } from './chat-gateway.js';
 import { saludPuente, tokenDe, preguntar } from './puente-chat.js';
 import { motorDe, nombreMotor } from './motor-ui.js';
 import { sistemaDe, idSesion } from './llm/modos.js';
@@ -24,9 +25,9 @@ function modoDe(tool) {
 const carpetaDe = (slug) => (!slug ? '' : slug === 'inherent' ? 'inherent/inherent-social-media' : 'clients/' + slug);
 
 // ---------- Qué camino usaría hoy (sin correr nada) ----------
-// → 'hermes' | 'puente' | 'claude-web'
+// → 'servidor' | 'puente' | 'claude-web'
 export async function caminoIA(me) {
-  if (hermesDe(me) && (await saludHermes(me)).auth) return 'hermes';
+  if ((await saludServidor()).on) return 'servidor';
   if (tokenDe(me) && (await saludPuente(4000)).listo) return 'puente';
   return 'claude-web';
 }
@@ -47,26 +48,27 @@ async function pegarDeClaude(tool, prompt) {
 }
 
 // ---------- Correr la IA ----------
-// → { texto, via: 'hermes'|'puente'|'claude-web', modelo }. preferir fuerza un camino (y falla si no está listo).
+// → { texto, via: 'servidor'|'puente'|'claude-web', modelo }. preferir fuerza un camino (y falla si no está listo).
 export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTool = () => {}, preferir, modelo } = {}) {
   if (typeof tool?.prompt !== 'function') throw new Error('Esta herramienta todavía no sabe pedirle algo a la IA');
   const c = ctx || {}, slug = c.cliente?.slug || '';
   const sistema = sistemaDe(modoDe(tool), { cliente: c.cliente?.nombre, carpeta: carpetaDe(slug), nivel: c.cliente?.nivel?.nombre, fecha: c.hoy });
   const mensaje = tool.prompt(c);
-  const forzado = ['hermes', 'puente', 'claude-web'].includes(preferir) ? preferir : '';
+  const forzado = ['servidor', 'puente', 'claude-web'].includes(preferir) ? preferir : '';
   const vacio = () => new Error('La IA no devolvió nada. Reintenta.');
 
-  // 1) Hermes: el harness en esta compu, con el modelo que la persona eligió en el Chat.
-  if (!forzado || forzado === 'hermes') {
-    const listo = hermesDe(me) && (await saludHermes(me)).auth;
-    if (listo) {
-      // `modelo` ({ provider, model }) fuerza un modelo de Hermes (Agent Area); si no, el que la persona eligió en el Chat.
-      const mo = modelo?.model ? { motor: 'hermes', modelo: modelo.model, provider: modelo.provider || '' } : motorDe(me), elegido = mo.motor === 'hermes' ? mo : null;
-      const out = await chatHermes(me, { sesion: idSesion(modoDe(tool), slug), sistema, mensaje, modelo: elegido ? { model: elegido.modelo, provider: elegido.provider } : {}, signal, onDelta, onTool: (n) => onTool(pasoHermes(n)) });
-      if (!String(out || '').trim()) throw vacio();
-      return { texto: out, via: 'hermes', modelo: (elegido?.modelo ? nombreMotor(elegido) : 'Hermes').slice(0, 80) };
+  // 1) El servidor de Inherent (siempre encendido; web, las conexiones de la persona y lectura del OS). Si la persona eligió
+  //    otro motor (Claude por el puente…) en el selector, se respeta y se salta al puente.
+  const mo = motorDe(me);
+  if (!forzado ? mo.motor === 'servidor' : forzado === 'servidor') {
+    const srv = await saludServidor();
+    if (srv.on) {
+      const m = modelo?.model && (!modelo.provider || modelo.provider === 'servidor') ? modelo.model : mo.motor === 'servidor' ? mo.modelo : '';
+      const out = await correrServidor({ idNueva: idSesion(modoDe(tool), slug), titulo: tool.nombre, sistema, mensaje, modelo: m, signal, onDelta, onTool: (n) => onTool(nombrePaso(n)) });
+      if (!String(out.texto || '').trim()) throw vacio();
+      return { texto: out.texto, via: 'servidor', modelo: m ? `Servidor · ${m}` : 'Servidor' };
     }
-    if (forzado) throw new Error(hermesDe(me) ? 'Hermes no está encendido en esta compu o su llave no sirve' : 'Hermes no está conectado en esta compu');
+    if (forzado) throw new Error('El servidor no está en línea ahora');
   }
 
   // 2) El puente de Laya (Claude de esta compu, solo lectura).
@@ -81,7 +83,6 @@ export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTo
   }
 
   // 3) claude.ai con la cuenta de la persona: siempre disponible, a mano.
-  // ⟵ PUNTO DE CAMBIO (decisión 7.1): aquí entra la rama via:'servidor', antes de pedirle nada a la persona.
   const pegado = await pegarDeClaude(tool, sistema + '\n\n' + mensaje);
   if (pegado == null) throw abortar();
   if (!pegado.trim()) throw vacio();
@@ -89,7 +90,7 @@ export async function correrIA(me, { tool, ctx, signal, onDelta = () => {}, onTo
 }
 
 // ---------- Correr un pedido que no es de una herramienta (Agent Area) ----------
-// Mismo orden y mismas vías que correrIA (Hermes → puente → claude.ai): el Agent Area no habla con una IA por su cuenta.
+// Mismo orden y mismas vías que correrIA (servidor → puente → claude.ai): el Agent Area no habla con una IA por su cuenta.
 // → { texto, via, modelo }. `bloque` es el nombre del bloque que se pide en la respuesta (para pegar desde claude.ai).
 export async function correrPedido(me, { modo = 'estrategia', slug = '', nombre = 'Agent Area', bloque = 'etapa', mensaje, signal, onDelta = () => {}, onTool = () => {}, preferir, modelo } = {}) {
   return correrIA(me, { tool: { ws: WORKSPACES.find((w) => w.modo === modo)?.id || 'strategy', nombre, bloque, prompt: () => mensaje }, ctx: { cliente: slug ? { slug } : null, hoy: today() }, signal, onDelta, onTool, preferir, modelo });

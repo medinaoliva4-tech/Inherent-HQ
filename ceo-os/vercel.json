@@ -79,7 +79,7 @@
       ]
     },
     {
-      "source": "/laya/(instalar\\.sh|instalar\\.ps1|puente\\.py|hermes/instalar\\.sh|hermes/SOUL\\.md)",
+      "source": "/laya/(instalar\\.sh|instalar\\.ps1|puente\\.py)",
       "headers": [
         {
           "key": "Content-Type",
