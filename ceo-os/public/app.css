@@ -9207,3 +9207,24 @@ html.kf-fullscreen{overflow:hidden}
   .wc-rail{position:static;max-height:none;overflow:visible}
   .wc-bub{max-width:88%}
 }
+
+/* ===== F4.5 · la ventana de agentes (PLAN-GATEWAY §20.8): la pestaña de un trabajo en el panel del Chat. Reusa .wc-* de F4 ===== */
+.av{display:flex;flex-direction:column;gap:12px;padding:12px 14px 20px;font-size:13px}
+.av-h{display:flex;align-items:center;gap:10px}
+.av-h-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.av-h-t span{color:var(--ui-mut);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:var(--ui-mut)}
+.av-sec{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid var(--ui-line)}
+.av-sec h3{display:flex;align-items:center;gap:6px;margin:0;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ui-mut)}
+.av-doc{border-radius:14px;background:var(--ui-fill);border:1px solid var(--ui-line);overflow:hidden}
+.av-doc.revision{border-color:color-mix(in srgb,var(--ui-warn) 40%,transparent)}
+.av-doc.vivo{border-color:color-mix(in srgb,var(--ui-info) 40%,transparent)}
+.av-doc header{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--ui-line)}
+.av-doc header b{flex:1;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-doc-md{padding:8px 12px;font-size:12.5px;max-height:260px;overflow:auto}
+.av-acts{margin:6px 0 8px;padding:0 12px 0 28px;display:flex;flex-direction:column;gap:3px;font-size:12px}
+.av-acts span{color:var(--ui-mut)}.av-acts li.warn b{color:var(--ui-warn)}
+.av-cita{display:inline-block;margin:0 1px;padding:0 5px;border-radius:6px;border:0;font:inherit;font-size:.8em;font-weight:600;line-height:1.5;vertical-align:baseline;background:color-mix(in srgb,var(--ui-acc) 14%,transparent);color:var(--ui-acc);text-decoration:none;cursor:pointer}
+.av-cita:hover{background:color-mix(in srgb,var(--ui-acc) 24%,transparent)}
+.av-franja{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:var(--ui-fill2);font-size:12px;color:var(--ui-ink2)}
+.av-lect{display:flex;flex-direction:column;gap:12px}

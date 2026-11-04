@@ -9,7 +9,7 @@ import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
-import { leerMencion, modeloDeEtapa, planDe, contextoChat } from '../public/js/chat-agentes.js';
+import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas } from '../public/js/chat-agentes.js';
 import { enCola, siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -214,6 +214,16 @@ t('F4.5: encolar una etapa deja su modelo, quién y de dónde venía (lo usan la
   assert.equal(e.actividades.length, 2, 'un ajuste conserva la actividad anterior');
   assert.match(e.actividades.at(-1).detalle, /sigue sola/);
   assert.equal(enCola({ estado: 'pendiente', actividades: [{ titulo: 'x' }] }, 'm', 'a', 't').actividades.length, 1);
+});
+t('F4.5: las citas del documento se vuelven enlaces a su fuente (solo las que existen)', () => {
+  const run = { inputs: [{ id: 'i-1', titulo: 'Entrevista' }, { id: 'i-2', titulo: 'Viejo', archivado: true }], evidencia: [{ id: 'w1', etapa: 0, titulo: 'Sitio A', url: 'https://a.com/x' }, { id: 'w2', etapa: 0, titulo: 'Quitada', url: 'https://b.com', quitada: true }] };
+  const m = mapaFuentes(run, 0);
+  assert.deepEqual(Object.keys(m).sort(), ['i-1', 'w1']);
+  const h = enlazarCitas('<p>Dato [w1] y [i-1], no [w2] ni [x9] ni <code>[w1]</code>.</p>', m);
+  assert.match(h, /<a class="av-cita" href="https:\/\/a\.com\/x" target="_blank" rel="noreferrer" title="Sitio A">w1<\/a>/);
+  assert.match(h, /<button type="button" class="av-cita" data-act="abrir-input" data-id="i-1" title="Entrevista">i-1<\/button>/);
+  assert.match(h, /\[w2\]/); assert.match(h, /\[x9\]/); assert.match(h, /<code>\[w1\]<\/code>/);
+  assert.doesNotMatch(enlazarCitas('[w1]', { w1: { titulo: '"><img>', url: 'javascript:alert(1)' } }), /javascript:|<img>/);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

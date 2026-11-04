@@ -51,3 +51,22 @@ export function contextoChat(msgs = [], resumen = '') {
   const cuerpo = lineas.reverse().join('\n\n');
   return (resumen ? `RESUMEN DE ANTES: ${String(resumen).slice(0, 1500)}\n\n${cuerpo}` : cuerpo).slice(0, MAX_CONTEXTO);
 }
+
+// Las fuentes que puede citar el documento de una etapa: los inputs vivos y la evidencia de esa etapa que nadie quitó.
+export function mapaFuentes(run, n) {
+  const m = {};
+  for (const x of run.inputs || []) if (!x.archivado) m[x.id] = { titulo: x.titulo || x.id, input: true };
+  for (const x of run.evidencia || []) if (x.etapa === n && !x.quitada) m[x.id] = { titulo: x.titulo || x.id, url: x.url || '' };
+  return m;
+}
+const attr = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// En el HTML ya dibujado del documento, [w1] [i-…] [m2] se vuelven enlaces a su fuente. Lo que va en <code> no se toca;
+// una cita que no existe (o que se quitó) queda tal cual, para que se note.
+export function enlazarCitas(htmlDoc, mapa = {}) {
+  return String(htmlDoc || '').split(/(<code[\s\S]*?<\/code>)/).map((parte) => (parte.startsWith('<code') ? parte : parte.replace(/\[([\w-]{1,24})\]/g, (todo, id) => {
+    const f = mapa[id]; if (!f) return todo;
+    if (f.input) return `<button type="button" class="av-cita" data-act="abrir-input" data-id="${attr(id)}" title="${attr(f.titulo)}">${attr(id)}</button>`;
+    if (/^https?:\/\//i.test(f.url || '')) return `<a class="av-cita" href="${attr(f.url)}" target="_blank" rel="noreferrer" title="${attr(f.titulo)}">${attr(id)}</a>`;
+    return `<span class="av-cita" title="${attr(f.titulo)}">${attr(id)}</span>`;
+  }))).join('');
+}
