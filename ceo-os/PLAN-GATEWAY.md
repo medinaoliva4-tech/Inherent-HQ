@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 en curso** (ver §10, §14, §15 y §16): la web, los MCP por persona y el Chat ya corren en el servidor (§16, §17); sigue apagar Hermes cuando el equipo lo valide.
+**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 casi cerrada** (ver §10, §14–§17): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación ya corren en el servidor; falta retirar Hermes cuando el equipo lo valide.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
