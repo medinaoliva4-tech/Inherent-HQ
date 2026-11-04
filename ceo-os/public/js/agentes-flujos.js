@@ -166,6 +166,8 @@ export function normalizarEtapa(e = {}) {
     fuentes_min: Math.max(0, Math.min(10, Number(e.fuentes_min) || 0)),
     gate: Boolean(e.gate), nota_gate: corto(e.nota_gate, 200),
     metodo: corto(e.metodo || e.skill, 80),
+    // La IA de esta etapa (vacía = la del agente). Así cada paso usa el modelo que le conviene.
+    ia: e.ia && typeof e.ia === 'object' && corto(e.ia.proveedor, 40) ? { proveedor: corto(e.ia.proveedor, 40), modelo: corto(e.ia.modelo, 120) } : { proveedor: '', modelo: '' },
   };
 }
 // Las áreas donde vive un agente (los mismos ids de #/areas/<id>): un agente de estrategia sale en Strategy → Agents.

@@ -160,7 +160,7 @@ export async function pintarRun(el, me, id, alive) {
         ctrl = new AbortController();
         if (tipo === 'os') {
           // La IA del OS. Si la etapa investiga en la web y hay una «IA para investigar», primero trae fuentes citadas.
-          const e = run.etapas[n], elegido = provider ? { proveedor: provider, modelo: m.join('|') } : porDefecto || {};
+          const e = run.etapas[n], elegido = provider ? { proveedor: provider, modelo: m.join('|') } : e.ia?.proveedor ? e.ia : porDefecto || {};
           let previo = '', citas = [];
           if ((e.herramientas || []).includes('web') && iaDeUso(ia, 'investigacion')) {
             const inv = iaDeUso(ia, 'investigacion'), paso = { titulo: 'Investigando en la web', detalle: `${proveedorDe(inv.proveedor)?.nombre || inv.proveedor} · ${inv.modelo}`, pasos: [], at: new Date().toISOString() };

@@ -7,6 +7,7 @@ import { html, raw, mount, ico, toast, api } from './core.js';
 import { TIPOS, CONEXIONES, tipoDe, normalizarEtapa } from './agentes-flujos.js';
 import { hermesDe, toolsetsHermes } from './hermes.js';
 import { CONECTORES, logoConector } from './conectores.js';
+import { proveedorDe } from './ia-proveedores.js';
 
 const lineas = (xs) => (xs || []).join('\n');
 const deLineas = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
@@ -24,10 +25,12 @@ let nodosPos = []; // { id, x, y, w, h }
 
 // Se monta dentro de la pestaña Workflow del portal del agente. onGuardado(wf) avisa al portal.
 export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, alive = () => el.isConnected) {
-  const [tools, estCon] = await Promise.all([
+  const [tools, estCon, estIA] = await Promise.all([
     hermesDe(me) ? toolsetsHermes(me).catch(() => []) : [],
     api('conectores/estado').catch(() => null),
+    api('ia/estado').catch(() => null),
   ]);
+  const iasOS = (estIA?.proveedores || []).filter((p) => p.conectado && p.modelos?.length);
   const conectado = (id) => Boolean(estCon?.conectores?.find((c) => c.id === id)?.conectado);
   let etapas = (wf.etapas || []).map((e) => ({ ...e }));
   let sel = 0, panel = 'construir', sucio = false, guardando = false;
@@ -38,19 +41,10 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
 
   // Calcula posiciones de nodos en columna vertical centrada.
   const calcularPos = () => {
-    const W = 340;
-    const gap = 120;
-    let y = 40;
-    nodosPos = etapas.map((e, i) => ({
-      id: e.id || `et-${i}`,
-      x: 24,
-      y,
-      w: W,
-      h: 104,
-      idx: i,
-    }));
-    y += gap;
+    const W = 340, H = 104, GAP = 56;
+    nodosPos = etapas.map((e, i) => ({ id: e.id || `et-${i}`, x: 24, y: 24 + i * (H + GAP), w: W, h: H, idx: i }));
   };
+  const altoLienzo = () => Math.max(520, 24 + etapas.length * 160 + 24);
   calcularPos();
 
   const posDe = (id) => nodosPos.find((n) => n.id === id) || nodosPos[0];
@@ -84,8 +78,8 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       <div class="wfe-node-h">
         <span class="wfe-node-ic" style="color:var(--c,${t.color})">${ico(t.icono, 16)}</span>
         <div class="wfe-node-info">
-          <div class="wfe-node-t">${t.nombre}</div>
-          <div class="wfe-node-d mut xs">${e.proposito || t.sub}</div>
+          <div class="wfe-node-t">${e.nombre || t.nombre}</div>
+          <div class="wfe-node-d mut xs">${t.nombre}${e.ia?.proveedor ? ` · ${e.ia.modelo}` : ''} — ${e.proposito || t.sub}</div>
         </div>
         ${e.gate ? html`<span class="wfe-node-gate">🚦 CEO</span>` : ''}
         <span class="wfe-node-handle-out" data-act="handle-out" data-i="${i}" style="background:var(--c,${t.color})"></span>
@@ -138,6 +132,11 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
         ? html`<div class="wfe-sec">
           <label class="wfe-f"><span>Tipo</span><select class="in" data-k="tipo" ${dis}>${TIPOS.map((t2) => html`<option value="${t2.id}" ${e.tipo === t2.id ? raw('selected') : ''}>${t2.nombre}</option>`)}</select></label>
           ${campo('nombre', 'Nombre', e.nombre)}
+          <label class="wfe-f"><span>Modelo de esta etapa</span><select class="in" data-k="ia" ${dis}>
+            <option value="" ${e.ia?.proveedor ? '' : raw('selected')}>El del agente${wf.ia?.proveedor ? ` · ${wf.ia.modelo}` : ' (Ajustes → IA)'}</option>
+            ${iasOS.map((p) => html`<optgroup label="${proveedorDe(p.id)?.nombre || p.id}">${p.modelos.slice(0, 80).map((m) => html`<option value="${p.id}|${m}" ${e.ia?.proveedor === p.id && e.ia?.modelo === m ? raw('selected') : ''}>${m}</option>`)}</optgroup>`)}
+            ${e.ia?.proveedor && !iasOS.some((p) => p.id === e.ia.proveedor) ? html`<option value="${e.ia.proveedor}|${e.ia.modelo}" selected>${e.ia.modelo} (sin conectar)</option>` : ''}
+          </select><span class="mut xs">Un modelo gratis o barato para preparar y uno fuerte para decidir. Se conectan en Ajustes → IA.</span></label>
           ${campo('proposito', 'Propósito', e.proposito, 'textarea', '¿Qué pregunta responde esta etapa?')}
           ${campo('inputs', 'Inputs que necesita (uno por línea)', lineas(e.inputs), 'textarea')}
           ${campo('tareas', 'Tareas del agente (uno por línea)', lineas(e.tareas), 'textarea')}
@@ -184,7 +183,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       <div class="wfe-body ${ro ? 'ro' : ''}">
         ${paletaHtml()}
         <div class="wfe-canvas-wrapper">
-          <div class="wfe-canvas">
+          <div class="wfe-canvas" style="height:${altoLienzo()}px">
             <svg class="wfe-connections" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none">${conexionesSvg()}</svg>
             <div class="wfe-nodes">${etapas.map((e, i) => nodoHtml(e, i))}</div>
           </div>
@@ -291,6 +290,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       else if (k === 'fuentes_min') e.fuentes_min = Math.max(0, Math.min(10, Number(t.value) || 0));
       else if (k === 'gate') { e.gate = t.checked; return marcar(); }
       else if (k === 'tipo') { e.tipo = t.value; return marcar(); }
+      else if (k === 'ia') { const [proveedor, ...m] = t.value.split('|'); e.ia = { proveedor: proveedor || '', modelo: m.join('|') }; return marcar(); }
       else e[k] = t.value;
     }
     if (t.dataset.con) {

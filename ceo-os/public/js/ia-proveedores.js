@@ -12,6 +12,8 @@ export const PROVEEDORES = [
   { id: 'gemini', nombre: 'Gemini', sub: 'La API de Google AI Studio', logo: 'gemini', forma: 'llave', base: 'https://generativelanguage.googleapis.com/v1beta/openai', llave: 'https://aistudio.google.com/app/apikey' },
   { id: 'perplexity', nombre: 'Perplexity', sub: 'Investiga en la web y cita sus fuentes', logo: 'perplexity', forma: 'llave', base: 'https://api.perplexity.ai', llave: 'https://www.perplexity.ai/account/api/keys', busca: true, modelos: ['sonar', 'sonar-pro', 'sonar-reasoning-pro', 'sonar-deep-research'] },
   { id: 'deepseek', nombre: 'DeepSeek', sub: 'Modelos abiertos, muy baratos', logo: 'deepseek', forma: 'llave', base: 'https://api.deepseek.com/v1', llave: 'https://platform.deepseek.com/api_keys' },
+  { id: 'featherless', nombre: 'Featherless', sub: 'Modelos abiertos por suscripción (DeepSeek, Kimi, GLM). Contexto de 32k en el plan actual', logo: 'custom', forma: 'llave', base: 'https://api.featherless.ai/v1', llave: 'https://featherless.ai/account/api-keys', contexto: 32768 },
+  { id: 'nvidia', nombre: 'NVIDIA', sub: 'Modelos gratis de build.nvidia.com (MiniMax y otros); lentos, para preparar contexto', logo: 'custom', forma: 'llave', base: 'https://integrate.api.nvidia.com/v1', llave: 'https://build.nvidia.com/settings/api-keys', contexto: 131072 },
   { id: 'mistral', nombre: 'Mistral', sub: 'Modelos europeos', logo: 'mistral', forma: 'llave', base: 'https://api.mistral.ai/v1', llave: 'https://console.mistral.ai/api-keys' },
   { id: 'xai', nombre: 'Grok', sub: 'La API de xAI', logo: 'xai', forma: 'llave', base: 'https://api.x.ai/v1', llave: 'https://console.x.ai' },
   { id: 'groq', nombre: 'Groq', sub: 'Modelos abiertos a gran velocidad', logo: 'groq', forma: 'llave', base: 'https://api.groq.com/openai/v1', llave: 'https://console.groq.com/keys' },
@@ -23,6 +25,10 @@ export const PROVEEDORES = [
   { id: 'puente', nombre: 'Claude · suscripción', sub: 'Tu plan de Claude, por el puente de tu compu', logo: 'claude', forma: 'local', donde: '#/chat' },
 ];
 export const proveedorDe = (id) => PROVEEDORES.find((p) => p.id === id) || null;
+// Cuántos tokens acepta un proveedor (si lo declara). Se usa para avisar antes de mandar un pedido que no cabe.
+export const contextoDe = (id) => proveedorDe(id)?.contexto || 0;
+// Estimación barata de tokens (español ≈ 3.4 caracteres por token). Para el umbral, no para cobrar.
+export const tokensDe = (s) => Math.ceil(String(s || '').length / 3.4);
 export const logoDe = (id) => `/brand/ia/${proveedorDe(id)?.logo || 'custom'}.svg`;
 
 // Para qué se usa cada IA. Cada uso elige un proveedor y un modelo de los conectados.

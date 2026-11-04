@@ -8,13 +8,21 @@ import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { seal, open } from './vault.js';
-import { PROVEEDORES, USOS, proveedorDe, baseValida, ultimos4, modelosChat } from '../../public/js/ia-proveedores.js';
+import { PROVEEDORES, USOS, proveedorDe, baseValida, ultimos4, modelosChat, contextoDe, tokensDe } from '../../public/js/ia-proveedores.js';
 import { toolsDe, llamarTool } from './conectores.js';
 import { conectorDe } from '../../public/js/conectores.js';
 
 const COLL = 'ia_config', ID = 'org';
 const editor = (u) => u.role === 'ceo' || u.role === 'coo';
 const txt = (s, n) => String(s ?? '').trim().slice(0, n);
+// El umbral: si el proveedor declara su contexto (Featherless: 32k en el plan actual), el pedido debe dejar espacio para la
+// respuesta. Mejor avisar aquí, en lenguaje humano, que dejar que el proveedor responda 500 a media etapa.
+const SALIDA = 6000;
+function excede(id, sistema, mensaje) {
+  const ctx = contextoDe(id); if (!ctx) return '';
+  const n = tokensDe(sistema) + tokensDe(mensaje);
+  return n + SALIDA > ctx ? `El pedido mide ~${n.toLocaleString('es-MX')} tokens y este modelo acepta ${ctx.toLocaleString('es-MX')} (contando ~${SALIDA} de respuesta). Quita inputs largos o usa para esta etapa un modelo con más contexto.` : '';
+}
 
 async function leer() { return (await db.get(COLL, ID)) || null; }
 async function escribir(u, cambio) {
@@ -60,7 +68,7 @@ async function probar(c) {
 // Una respuesta en streaming del proveedor → onDelta(texto acumulado). Devuelve { texto, citas }.
 export async function completar(c, { modelo, sistema, mensaje, buscar = false, onDelta = () => {}, signal }) {
   const model = c.p.id === 'openrouter' && buscar && !/:online$/.test(modelo) ? `${modelo}:online` : modelo;
-  const r = await fetch(`${c.base}/chat/completions`, { method: 'POST', headers: cabeceras(c), signal, body: JSON.stringify({ model, stream: true, messages: [...(sistema ? [{ role: 'system', content: sistema }] : []), { role: 'user', content: mensaje }] }) });
+  const r = await fetch(`${c.base}/chat/completions`, { method: 'POST', headers: cabeceras(c), signal, body: JSON.stringify({ model, stream: true, ...(contextoDe(c.p.id) ? { max_tokens: SALIDA } : {}), messages: [...(sistema ? [{ role: 'system', content: sistema }] : []), { role: 'user', content: mensaje }] }) });
   if (!r.ok) { const t = await r.text().catch(() => ''); throw Object.assign(new Error(`${c.p.nombre} respondió ${r.status}${t ? `: ${t.slice(0, 200)}` : ''}`), { status: 502 }); }
   const rd = r.body.getReader(), dec = new TextDecoder(); let buf = '', texto = ''; const citas = new Map();
   for (;;) {
@@ -148,6 +156,7 @@ export function rutas(on) {
     const c = conexion(d, id);
     if (!c || !modelo) return res.status(400).json({ error: 'No hay IA conectada para esto: conéctala en Ajustes → IA', code: 'SIN_IA' });
     const mensaje = txt(b.mensaje, 120000); if (!mensaje) return res.status(400).json({ error: 'Pedido vacío' });
+    { const m = excede(id, b.sistema, mensaje); if (m) return res.status(413).json({ error: m, code: 'UMBRAL' }); }
     res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive' });
     const enviar = (o) => res.write(`data: ${JSON.stringify(o)}\n\n`);
     let ultimo = 0;
@@ -169,6 +178,7 @@ export function rutas(on) {
     const id = txt(b.proveedor, 40) || uso.proveedor, modelo = txt(b.modelo, 120) || (id === uso.proveedor ? uso.modelo : '') || d?.proveedores?.[id]?.modelos?.[0];
     const c = conexion(d, id);
     if (!c || !modelo) return res.status(400).json({ error: 'No hay IA conectada para esto: conéctala en Ajustes → IA', code: 'SIN_IA' });
+    { const m = excede(id, b.sistema, b.mensaje); if (m) return res.status(413).json({ error: m, code: 'UMBRAL' }); }
     res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive' });
     const enviar = (o) => res.write(`data: ${JSON.stringify(o)}\n\n`);
     try {
