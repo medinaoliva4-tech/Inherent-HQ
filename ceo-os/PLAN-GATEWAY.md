@@ -261,4 +261,4 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging, con el MCP público de documentación de Cloudflare):** el servidor listó 2 herramientas, el modelo buscó dos veces en la documentación y entregó la etapa en 138 s con 7 páginas oficiales como evidencia. La primera vuelta descartó por error esas URLs (venían dentro del resultado de la herramienta); se corrigió y hay una prueba para eso. Para probar en local hay un token aparte (`~/.config/inherent/gateway-staging.env`) y la configuración `ceo-os-staging` lo carga.
 
-**Para que funcione en producción** falta el merge del #210: la ruta del OS y el `GATEWAY_TOKEN` de Vercel entran con ese despliegue. Mientras tanto, el servidor ya corre `f3-2` y, si una etapa pide un MCP, avisa «No pude abrir las conexiones» y sigue sin ellas. Nadie tiene MCP conectados todavía en producción.
+**En producción desde el 2026-11-04** (merge del #210): verificado que la ruta rechaza llamadas sin token o con token falso y que, con el token real, solo atiende etapas que el servidor está trabajando. Nadie tiene MCP conectados todavía en producción: se conectan en Inherent AI → MCPs.
