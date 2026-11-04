@@ -17,6 +17,7 @@ import { body } from './http.js';
 import crypto from 'node:crypto';
 import { toolsDe, llamarTool } from './conectores.js';
 import { conectorDe } from '../../public/js/conectores.js';
+import * as mcpOS from './mcp.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado } from '../../public/js/agentes-flujos.js';
 
@@ -225,20 +226,34 @@ export function rutas(on) {
       const s = await db.get('chat_sesiones', txt(q.chat, 120));
       if (!s || s.turno?.estado !== 'trabajando' || s.archivado) return res.status(409).json({ error: 'Esa conversación no la está respondiendo el servidor' });
       persona = lc(s.owner);
-      pide = (await db.list('mcp_conexiones')).filter((c) => c.id.startsWith(`${persona}|`)).map((c) => c.id.split('|')[1]).filter((id) => ['mcp', 'token'].includes(conectorDe(id)?.tipo)).slice(0, 4);
+      pide = ['inherent', ...(await db.list('mcp_conexiones')).filter((c) => c.id.startsWith(`${persona}|`)).map((c) => c.id.split('|')[1]).filter((id) => ['mcp', 'token'].includes(conectorDe(id)?.tipo)).slice(0, 4)];
     } else {
       const r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
       if (!e || e.estado !== 'trabajando' || e.via !== 'gateway' || r.archivado || r.pausado) return res.status(409).json({ error: 'Esa etapa no la está trabajando el servidor' });
       persona = lc(e.cola?.por || r.creado_por);
-      pide = (e.herramientas || []).filter((h) => ['mcp', 'token'].includes(conectorDe(h)?.tipo));
+      pide = (e.herramientas || []).filter((h) => h === 'inherent' || ['mcp', 'token'].includes(conectorDe(h)?.tipo));
     }
+    // El MCP del propio OS: corre aquí mismo, como esa persona (sus áreas, «solo ver», lo que es solo del CEO) y solo lo
+    // que lee. Lo que escribe (crear tareas, mover leads, subir documentos…) no se da al servidor hasta que haya confirmación.
+    const usuarioOS = pide.includes('inherent') ? await mcpOS.userOf(persona) : null;
+    const delOS = async () => (usuarioOS ? ((await mcpOS.run(usuarioOS, { jsonrpc: '2.0', id: 1, method: 'tools/list' })).json?.result?.tools || []).filter((t) => !mcpOS.esEscritura(t.name)) : []);
     if (q.accion === 'listar') {
-      const ts = await toolsDe(persona, pide);
-      return res.json({ tools: ts.map((t) => ({ conector: t.conector, nombre: t.tool.name, descripcion: String(t.tool.description || '').slice(0, 500), esquema: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } })), sin_conectar: pide.filter((id) => !ts.some((t) => t.conector === id)) });
+      const ts = await toolsDe(persona, pide.filter((id) => id !== 'inherent')), os = await delOS();
+      return res.json({ tools: [
+        ...os.map((t) => ({ conector: 'inherent', nombre: t.name, descripcion: String(t.description || '').slice(0, 500), esquema: t.inputSchema || { type: 'object', properties: {} } })),
+        ...ts.map((t) => ({ conector: t.conector, nombre: t.tool.name, descripcion: String(t.tool.description || '').slice(0, 500), esquema: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } })),
+      ], sin_conectar: pide.filter((id) => id !== 'inherent' && !ts.some((t) => t.conector === id)) });
     }
     if (q.accion === 'llamar') {
       const conector = txt(q.conector, 60), tool = txt(q.tool, 120);
       if (!pide.includes(conector)) return res.status(403).json({ error: q.chat ? 'Esa conexión no está conectada' : 'Esa conexión no la pide esta etapa' });
+      if (conector === 'inherent') {
+        if (!usuarioOS) return res.status(403).json({ error: 'Esta persona no tiene acceso al OS' });
+        if (mcpOS.esEscritura(tool)) return res.status(403).json({ error: 'Desde el servidor solo se lee el OS; para cambiar algo, hazlo en la pantalla' });
+        const o = await mcpOS.run(usuarioOS, { jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: tool, arguments: q.args && typeof q.args === 'object' ? q.args : {} } });
+        const rr = o.json?.result || {};
+        return res.json({ texto: (rr.content || []).map((c) => c.text || '').join('\n').slice(0, 12000), error: Boolean(rr.isError) });
+      }
       const t = (await toolsDe(persona, [conector])).find((x) => x.tool.name === tool);
       if (!t) return res.status(404).json({ error: 'Esa herramienta no está disponible' });
       try { const o = await llamarTool(t.cx, t.sesion, tool, q.args && typeof q.args === 'object' ? q.args : {}); return res.json(o); }
