@@ -39,6 +39,7 @@ import * as avisos from './_lib/avisos.js';
 import * as agentes from './_lib/agentes.js';
 import * as ia from './_lib/ia.js';
 import * as conectores from './_lib/conectores.js';
+import * as chat from './_lib/chat.js';
 import { seesTask, personalOk, profOf, visible, scopeOf, profInScope, shape, levelsFor } from './_lib/leer.js';
 import { hoyGT } from '../public/js/avisos-reglas/base.js';
 import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
@@ -1165,6 +1166,7 @@ laya.rutas(on);
 agentes.rutas(on);
 ia.rutas(on);
 conectores.rutas(on);
+chat.rutas(on);
 // ---------- App 02 · Estrategia: 5 bloques por cliente, el estado de cada uno y las fuentes de Hormozi ----------
 estrategia.rutas(on);
 // ---------- App 01 · Marca › Cliente ideal: los avatares de cada marca, con su peso y el OK del CEO ----------

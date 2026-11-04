@@ -65,7 +65,7 @@ export async function modelosHermes(me, { fresco = false } = {}) {
   return { actual: { provider: j.provider || '', model: j.model || '' }, proveedores };
 }
 // Nombres amables de los proveedores de Hermes, para el selector.
-export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok', kilocode: 'Kilo', 'ai-gateway': 'Vercel AI Gateway', gemini: 'Gemini' }[slug] || slug);
+export const nombreProveedor = (slug) => ({ 'openai-codex': 'ChatGPT', anthropic: 'Claude', nous: 'Nous Portal', openrouter: 'OpenRouter', openai: 'OpenAI', lmstudio: 'LM Studio', ollama: 'Ollama', llamacpp: 'llama.cpp', 'llama-cpp': 'llama.cpp', vllm: 'vLLM', local: 'Modelo local', 'ollama-cloud': 'Ollama Cloud', custom: 'Endpoint propio', 'github-copilot': 'Copilot', xai: 'Grok', kilocode: 'Kilo', 'ai-gateway': 'Vercel AI Gateway', gemini: 'Gemini', servidor: 'Servidor' }[slug] || slug);
 
 // Los proveedores locales y las IAs del switch viven en llm/ias.js (puro, lo prueba scripts/test-llm.mjs).
 export { LOCALES, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from './llm/ias.js';

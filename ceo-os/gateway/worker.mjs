@@ -22,8 +22,8 @@ const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, chatTools, condense, contextoDe } from './motor.mjs';
 import { conectorDe } from '../public/js/conectores.js';
 
-const RUNS = 'agent_runs', GW = 'gateway_estado', YO = 'gateway';
-const VERSION = 'f3-2';
+const RUNS = 'agent_runs', GW = 'gateway_estado', CHATS = 'chat_sesiones', YO = 'gateway';
+const VERSION = 'f3-3';
 const OS_URL = String(process.env.GW_OS_URL || '').replace(/\/+$/, ''), GW_TOKEN = process.env.GATEWAY_TOKEN || '';
 const MAX_VUELTAS = 8, MAX_RESULTADO = 6000;
 const PREP = process.env.GW_PREP_MODEL || 'nv-minimax-m3.1-flash';
@@ -65,7 +65,7 @@ async function latido() {
     const ids = r.ok ? ((await r.json()).data || []).map((m) => m.id) : [];
     modelos = ids.filter((m) => limits.modelos[m]); // solo los que tienen límites conocidos (contexto y costo)
   } catch (e) { log('latido: LiteLLM no respondió', e.message); modelos = []; }
-  await db.upsert(GW, 'vps', { at: ahora(), modelos, trabajando: enCurso.size, version: VERSION }, YO);
+  await db.upsert(GW, 'vps', { at: ahora(), modelos, trabajando: enCurso.size + chatsEnCurso.size, version: VERSION }, YO);
 }
 
 // ---------- Armar el pedido dentro del umbral ----------
@@ -203,6 +203,96 @@ async function correr(id, n) {
   }
 }
 
+// ---------- El Chat (F3): conversaciones guardadas en la base, respondidas aquí en vivo ----------
+const chatsEnCurso = new Set();
+async function tocarChat(id, fn) {
+  for (let i = 0; i < 6; i++) {
+    const s = await db.get(CHATS, id); if (!s) return null;
+    const cambio = fn(s); if (!cambio) return null;
+    const { id: _i, v, _meta, ...data } = s;
+    const d = await db.update(CHATS, id, { ...data, ...cambio }, v, YO);
+    if (d) return d;
+    await new Promise((x) => setTimeout(x, 150 + i * 250));
+  }
+  return null;
+}
+const MODELO_RESUMEN = process.env.GW_RESUMEN_MODEL || 'deepseek-v4-flash';
+// La conversación como mensajes para el modelo, dentro del contexto. Si no cabe, lo viejo se resume una vez y se guarda
+// (s.resumen = { hasta, texto }): la siguiente vez ya no se vuelve a mandar entero (rotación de sesiones, D7).
+async function conversacion(id, s, modelo) {
+  const cap = contextoDe(modelo) - MAX_OUT - 1500;
+  let resumen = s.resumen || null;
+  const armar = () => {
+    const sis = [s.turno?.sistema || SISTEMA, resumen?.texto ? `\n\nRESUMEN DE LO HABLADO ANTES EN ESTA CONVERSACIÓN (lo más viejo ya no está en los mensajes; esto es lo que se conserva):\n${resumen.texto}\n\nSi te preguntan algo que no está ni en este resumen ni en los mensajes, dilo así: no lo inventes.` : ''].join('');
+    const xs = (s.mensajes || []).slice(resumen?.hasta || 0).filter((m) => m.content && !m.parcial).map((m) => ({ role: m.role, content: m.content }));
+    return [{ role: 'system', content: sis }, ...xs];
+  };
+  let msgs = armar();
+  for (let i = 0; i < 3 && est(JSON.stringify(msgs)) > cap; i++) {
+    const total = (s.mensajes || []).length, hasta = Math.max((resumen?.hasta || 0) + 2, total - 6);
+    if (hasta <= (resumen?.hasta || 0)) break;
+    const viejo = (s.mensajes || []).slice(resumen?.hasta || 0, hasta).map((m) => `${m.role === 'user' ? 'PERSONA' : 'ASISTENTE'}: ${m.content}`).join('\n\n');
+    // Por bloques, sin tirar nada: lo que importa puede estar al principio (un dato, un código, una decisión).
+    const base = est(viejo) > 5000 ? await condense(viejo, 2500, MODELO_RESUMEN) : viejo;
+    const r = await chat(MODELO_RESUMEN, 'Resumes conversaciones de trabajo sin inventar. Conservas literal todo dato concreto: códigos, cifras, nombres, fechas, decisiones, pendientes y acuerdos. Español.',
+      `${resumen?.texto ? `Resumen previo:\n${resumen.texto}\n\n` : ''}Resume en máximo 1,500 tokens. Copia tal cual los datos concretos (códigos, cifras, nombres, fechas):\n\n${base}`, 2000);
+    resumen = { hasta, texto: r.content.trim(), at: ahora() };
+    await tocarChat(id, () => ({ resumen }));
+    msgs = armar();
+  }
+  return msgs;
+}
+
+async function correrChat(id) {
+  const s = await db.get(CHATS, id), modelo = s.turno?.modelo, desde = (s.mensajes || []).length;
+  const ctrl = new AbortController();
+  let ultimoTexto = '';
+  log(`[chat ${id}] turno con ${modelo}`);
+  const escribir = (texto, fin = false) => tocarChat(id, (cur) => {
+    if (cur.turno?.estado !== 'trabajando') { ctrl.abort(); return null; } // la persona lo detuvo
+    const ms = [...(cur.mensajes || [])], ult = ms[ms.length - 1];
+    const msg = { role: 'assistant', content: texto, at: ahora(), modelo, parcial: !fin };
+    if (ult?.role === 'assistant' && ult.parcial) ms[ms.length - 1] = msg; else ms.push(msg);
+    return { mensajes: ms.slice(-400), ...(fin ? { turno: { ...cur.turno, estado: 'listo', at: ahora() } } : {}) };
+  });
+  try {
+    if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
+    const messages = await conversacion(id, s, modelo);
+    const out = await chat(modelo, '', '', MAX_OUT, { messages, signal: ctrl.signal, cadaMs: 800,
+      onAvance: async ({ texto }) => { if (texto && texto !== ultimoTexto) { ultimoTexto = texto; await escribir(texto); } } });
+    await escribir(out.content.trim(), true);
+    log(`[chat ${id}] listo en ${out.seg}s (${out.usage.prompt_tokens ?? '?'} in / ${out.usage.completion_tokens ?? '?'} out)`);
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      log(`[chat ${id}] detenido`);
+      await tocarChat(id, (cur) => { const ms = [...(cur.mensajes || [])], ult = ms[ms.length - 1]; if (ult?.role === 'assistant' && ult.parcial) ms[ms.length - 1] = { ...ult, parcial: false, detenido: true }; return { mensajes: ms }; }).catch(() => {});
+      return;
+    }
+    log(`[chat ${id}] falló: ${err.message}`);
+    await tocarChat(id, (cur) => (cur.turno?.estado !== 'trabajando' ? null : { mensajes: (cur.mensajes || []).filter((m, i) => !(i >= desde && m.parcial)), turno: { ...cur.turno, estado: 'error', error: String(err.message).slice(0, 300), at: ahora() } })).catch(() => {});
+  }
+}
+// Solo los ids de las conversaciones que esperan (o se colgaron): leer todas completas cada 3 s sería caro.
+let sqlq = null;
+async function idsChatsPendientes() {
+  sqlq ||= (await import('@neondatabase/serverless')).neon(process.env.DATABASE_URL);
+  return (await sqlq.query("SELECT id FROM docs WHERE coll = $1 AND data->'turno'->>'estado' IN ('en_cola','trabajando') AND coalesce((data->>'archivado')::boolean, false) = false", [CHATS])).map((r) => r.id);
+}
+async function tomarChats() {
+  if (chatsEnCurso.size >= PARALELO) return;
+  for (const id of await idsChatsPendientes()) {
+    const s = await db.get(CHATS, id); if (!s) continue;
+    if (chatsEnCurso.size >= PARALELO) return;
+    const t = s.turno;
+    const colgado = t?.estado === 'trabajando' && Date.now() - Date.parse(t.at || 0) > 15 * 60 * 1000;
+    if (s.archivado || chatsEnCurso.has(s.id) || (t?.estado !== 'en_cola' && !colgado)) continue;
+    const tomado = await tocarChat(s.id, (cur) => (cur.turno?.estado === 'en_cola' || colgado ? { turno: { ...cur.turno, estado: 'trabajando', at: ahora(), gw: VERSION } } : null)).catch(() => null);
+    if (!tomado) continue;
+    chatsEnCurso.add(s.id);
+    correrChat(s.id).finally(() => chatsEnCurso.delete(s.id));
+  }
+}
+
 // ---------- Tomar trabajo ----------
 async function tomar() {
   if (enCurso.size >= PARALELO) return;
@@ -231,6 +321,7 @@ async function ciclo() {
     try {
       if (Date.now() - ultimoLatido > 20000) { await latido(); ultimoLatido = Date.now(); }
       await tomar();
+      await tomarChats();
     } catch (e) { log('ciclo:', e.message); }
     await new Promise((r) => setTimeout(r, 3000));
   }
