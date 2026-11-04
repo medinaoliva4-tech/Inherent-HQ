@@ -14,6 +14,9 @@ import { guard, scoper } from './access.js';
 import { readFile } from './gh.js';
 import * as intel from './intel.js';
 import { body } from './http.js';
+import crypto from 'node:crypto';
+import { toolsDe, llamarTool } from './conectores.js';
+import { conectorDe } from '../../public/js/conectores.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado } from '../../public/js/agentes-flujos.js';
 
@@ -202,6 +205,37 @@ export function rutas(on) {
     const d = await guardar(res, u, r, { etapas }, { accion: 'encolar', etapa: n, nota: modelo });
     if (d) res.json({ run: d });
   });
+  // El servidor usa los MCP de una persona SIN tener sus permisos: se los pide al OS, que es quien los guarda cifrados
+  // (la llave sale de SESSION_SECRET y nunca viaja al VPS). Candados:
+  //   · solo con el token del Gateway (GATEWAY_TOKEN, comparado en tiempo constante);
+  //   · solo para una etapa que el servidor está trabajando ahora (estado «trabajando», vía «gateway»);
+  //   · solo los conectores que esa etapa pide, y con las conexiones de quien la encargó.
+  // { run, etapa, accion: 'listar' } → { tools: [{ conector, nombre, descripcion, esquema }] }
+  // { run, etapa, accion: 'llamar', conector, tool, args } → { texto, error }
+  on('POST', 'agentes/gateway/mcp', async (req, res) => {
+    const esperado = String(process.env.GATEWAY_TOKEN || ''), dado = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    if (esperado.length < 32) return res.status(503).json({ error: 'El Gateway no está configurado en el OS (falta GATEWAY_TOKEN)' });
+    const a = Buffer.from(dado), b = Buffer.from(esperado);
+    if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return res.status(401).json({ error: 'Token del Gateway inválido' });
+    const q = body(req), r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
+    if (!e || e.estado !== 'trabajando' || e.via !== 'gateway' || r.archivado || r.pausado) return res.status(409).json({ error: 'Esa etapa no la está trabajando el servidor' });
+    const persona = lc(e.cola?.por || r.creado_por);
+    const pide = (e.herramientas || []).filter((h) => ['mcp', 'token'].includes(conectorDe(h)?.tipo));
+    if (q.accion === 'listar') {
+      const ts = await toolsDe(persona, pide);
+      return res.json({ tools: ts.map((t) => ({ conector: t.conector, nombre: t.tool.name, descripcion: String(t.tool.description || '').slice(0, 500), esquema: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } })), sin_conectar: pide.filter((id) => !ts.some((t) => t.conector === id)) });
+    }
+    if (q.accion === 'llamar') {
+      const conector = txt(q.conector, 60), tool = txt(q.tool, 120);
+      if (!pide.includes(conector)) return res.status(403).json({ error: 'Esa conexión no la pide esta etapa' });
+      const t = (await toolsDe(persona, [conector])).find((x) => x.tool.name === tool);
+      if (!t) return res.status(404).json({ error: 'Esa herramienta no está disponible' });
+      try { const o = await llamarTool(t.cx, t.sesion, tool, q.args && typeof q.args === 'object' ? q.args : {}); return res.json(o); }
+      catch (err) { return res.json({ texto: `ERROR: ${err.message}`, error: true }); }
+    }
+    res.status(400).json({ error: 'Acción desconocida' });
+  });
+
   on('POST', 'agentes/runs/:id/etapa/:n/cancelar', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const r = await cargar(req, res, u); if (!r) return;

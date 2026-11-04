@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
+import { leer, aTexto } from '../gateway/web.mjs';
 import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -110,4 +111,18 @@ t('sin herramientas: la evidencia que no viene de los inputs se descarta y su ca
   assert.match(r.faltantes[0], /no está en los inputs/); assert.equal(r.confianza, 40);
   assert.match(pedido({ ...nuevo(), inputs: [] }, 0, { sinHerramientas: true }), /NO tienes internet/);
 });
+t('una URL que viene dentro del resultado de un MCP cuenta como evidencia; una inventada no', () => {
+  const run = { inputs: [{ id: 'm1', titulo: 'Cloudflare · search', texto: 'Límite de CPU: 30 s. Fuente: https://developers.cloudflare.com/workers/platform/limits/' }] };
+  const r = soloEvidenciaDeInputs(run, { evidencia: [{ id: 'e1', titulo: 'Límites', url: 'https://developers.cloudflare.com/workers/platform/limits/' }, { id: 'e2', titulo: 'Blog', url: 'https://blog.inventado.com/x' }], campos: [], faltantes: [], confianza: 80 });
+  assert.deepEqual(r.evidencia.map((x) => x.id), ['e1']); assert.equal(r.faltantes.length, 1);
+});
+t('web: el texto de una página sale limpio (sin scripts ni menús, con acentos)', () => {
+  const r = aTexto('<title>T &amp; Co</title><script>x()</script><nav>menú</nav><p>Hola&nbsp;mundo &#233;xito</p>');
+  assert.equal(r.titulo, 'T & Co'); assert.equal(r.texto, 'T & Co Hola mundo éxito');
+});
+// El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
+for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {
+  await leer(u).then(() => assert.fail(`leyó ${u}`), (e) => assert.match(e.message, /no permitida/));
+}
+ok++; console.log('✓ web: bloquea direcciones internas y esquemas raros');
 console.log(`\n${ok} pruebas OK`);
