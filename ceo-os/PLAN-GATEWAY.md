@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas** (ver §10, §14 y §15). Lo siguiente es **F3**: web y MCP dentro del servidor.
+**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas; F3 en curso** (ver §10, §14, §15 y §16): la web ya corre en el servidor; siguen MCP por persona y el Chat.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -135,7 +135,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Cerrada (2026-11-04).** OS oficial: `inherent-work.vercel.app`. Base de pruebas: la rama `ceo-os-staging` de Neon (endpoint `ep-sweet-wind`, vacía, separada de `main`); conexión en `~/.config/inherent/neon-staging.env` (Mac) y `~/gateway/neon-staging.env` (VPS); en local se usa con la configuración `ceo-os-staging`. PR #209 unido a `main`; #207 y #208 cerrados |
 | **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales; calidad contra Claude; Figwright | **Cerrada (2026-11-04)** (§14): la calidad de DeepSeek V4 Pro alcanza para Strategy; Figwright funciona desde el VPS con un túnel que abre la Mac |
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
-| **F3 · Conectar el OS** | «Con qué corre» → «Gateway (servidor)» como opción por defecto; la pantalla del trabajo lee el avance de la base; el chat y los modos pasan al Gateway; apagar Hermes | Todos los modos funcionan sin Hermes |
+| **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; MCP por persona desde el servidor; el Chat y los modos pasan al Gateway; apagar Hermes | En curso. Hecho cuando todos los modos funcionan sin Hermes |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
@@ -156,6 +156,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | En el servidor (sin web ni MCP) la evidencia se limita a los inputs: el modelo inventó una fuente de Statista en la primera prueba | Prueba de F2 |
 | 2026-11-04 | D9: Claude nunca por API; se le habla por un canal a una sesión de Claude Code encendida | CEO |
 | 2026-11-04 | F0 y F1 cerradas: base de pruebas `ceo-os-staging`, #209 a `main`, comparación contra Claude, Figwright desde el VPS | CEO + Claude |
+| 2026-11-04 | F3 · web: SearXNG propio en el VPS y lectura de páginas en el trabajador; MCP por persona irá por el OS (el VPS no recibe `SESSION_SECRET`) | Claude, para aprobar |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -236,3 +237,17 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 - Que el PR #209 llegue a `main`, para que la pantalla con «Servidor» esté en `inherent-work`.
 - Web y MCP dentro del servidor (búsqueda y conectores por persona), para que las etapas de investigación no dependan de la compu.
 - Actualizar el código del VPS hoy es copiar los archivos (`scp`); conviene un `git pull` de la rama con una llave de solo lectura.
+
+## 16 · F3 · web en el servidor (2026-11-04)
+
+**Cómo funciona:** si una etapa tiene «Búsqueda web» en sus conexiones, antes de escribir el trabajador:
+1. pide a DeepSeek V4 Flash 3 búsquedas concretas (con el nombre, el lugar y el rubro que dan los inputs);
+2. las corre en **SearXNG propio** (Docker en el VPS, solo en `127.0.0.1:8888`, sin llaves de nadie);
+3. lee las mejores páginas como texto plano (sin scripts ni menús; salta redes que piden login) hasta 4–8 fuentes según las «fuentes mínimas» de la etapa;
+4. se las pasa al modelo como inputs citables `w1, w2…` con su URL. La evidencia sigue limitada a los inputs, así que **solo cuentan las URLs que de verdad se leyeron**.
+
+**Seguridad:** el servidor nunca lee direcciones internas (localhost, redes privadas, Tailscale `100.64/10`, metadatos de la nube, IPv6 local), solo `http(s)` en los puertos 80 y 443, y revisa cada redirección. Lo que dice una página es dato, no instrucción: el modelo no tiene herramientas que ejecutar.
+
+**Probado (en la base de pruebas `ceo-os-staging`):** Strategy · «Contexto» para una cafetería en San Pedro Garza García: 4 páginas reales leídas (Restaurant Guru, Wanderlog, Beany, Cafés de México), 87 s, ~5k tokens de entrada. El resultado cita esas cuatro URLs y marca como hipótesis lo que no encontró (precios, perfil del cliente). Se verificó contra la fuente un dato al azar (175 cafeterías registradas, 59 con sitio web).
+
+**MCP por persona (siguiente):** los permisos de los MCP se cifran con una llave derivada de `SESSION_SECRET`, la misma que firma los logins del OS. **No se copia al VPS.** El trabajador le pedirá al OS «llama esta herramienta por esta persona» con un token propio del Gateway (una variable nueva en Vercel y en el VPS), y el OS hace la llamada con lo que ya tiene. La llave nunca sale de Vercel.

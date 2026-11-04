@@ -14,12 +14,15 @@
 // Uso: DATABASE_URL=… LITELLM_MASTER_KEY=… node gateway/worker.mjs
 import * as db from '../api/_lib/db.js';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs } from '../public/js/agentes-flujos.js';
-// En F2 el servidor no tiene web ni MCP: el pedido se lo dice y la evidencia se limita a los inputs.
-const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true });
+// El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
+// y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
+const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)) });
+import { investigar } from './web.mjs';
+const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, condense, contextoDe } from './motor.mjs';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', YO = 'gateway';
-const VERSION = 'f2-1';
+const VERSION = 'f3-1';
 const PREP = process.env.GW_PREP_MODEL || 'nv-minimax-m3.1-flash';
 const MAX_IN = Number(process.env.GW_MAX_IN || 20000), MAX_OUT = Number(process.env.GW_MAX_OUT || 6000);
 const PARALELO = Number(process.env.GW_PARALELO || 3);
@@ -83,6 +86,24 @@ async function pedidoQueCabe(run, n, modelo, onPaso) {
   return texto;
 }
 
+// ---------- Investigación web (F3): si la etapa pide «Búsqueda web», el servidor busca y lee antes de escribir ----------
+async function conWeb(run, n, paso) {
+  const e = run.etapas[n];
+  if (!(e.herramientas || []).includes('web')) return run;
+  const contexto = (run.inputs || []).filter((x) => !x.archivado).map((x) => `${x.titulo}: ${String(x.texto || x.url || '').slice(0, 500)}`).join('\n').slice(0, 1800);
+  const tema = [`Etapa: ${e.nombre}`, e.proposito, run.objetivo ? `Objetivo: ${run.objetivo}` : '', run.cliente_nombre || run.cliente ? `Cliente: ${run.cliente_nombre || run.cliente}` : '', contexto ? `Lo que se sabe:\n${contexto}` : ''].filter(Boolean).join('\n');
+  const pedirBusquedas = async (t) => {
+    const r = await chat(MODELO_BUSQUEDAS, 'Escribes búsquedas web concretas en español. Respondes solo un arreglo JSON de textos.', `Escribe 3 búsquedas web (máximo 10 palabras cada una) para encontrar fuentes públicas y verificables que sirvan a esta etapa. Usa nombres propios, lugar y rubro si los hay.\n\n${t}\n\nResponde solo: ["…","…","…"]`, 300);
+    const m = r.content.match(/\[[\s\S]*\]/); return m ? JSON.parse(m[0]).map((x) => String(x).slice(0, 140)) : [];
+  };
+  const { fuentes } = await investigar({ tema, pedirBusquedas, maxFuentes: Math.min(8, Math.max(4, (e.fuentes_min || 0) + 2)), onPaso: paso });
+  if (!fuentes.length) { await paso({ titulo: 'Sin fuentes web', detalle: 'No se pudo leer ninguna página: la etapa sigue solo con los inputs', aviso: true }); return run; }
+  if (fuentes.length < (e.fuentes_min || 0)) await paso({ titulo: 'Menos fuentes de las pedidas', detalle: `${fuentes.length} de ${e.fuentes_min}`, aviso: true });
+  const r = structuredClone(run);
+  r.inputs = [...(run.inputs || []), ...fuentes.map((f) => ({ id: f.id, tipo: 'link', titulo: f.titulo, url: f.url, texto: f.texto, interna: false }))];
+  return r;
+}
+
 // ---------- Correr una etapa ----------
 async function correr(id, n) {
   const run = await db.get(RUNS, id), e = run.etapas[n], modelo = e.modelo || e.cola?.modelo;
@@ -91,13 +112,14 @@ async function correr(id, n) {
   try {
     if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
     await paso({ titulo: 'Tomada por el servidor', detalle: `${modelo} · contexto ${contextoDe(modelo).toLocaleString('es-MX')} tokens` });
-    const texto = await pedidoQueCabe(run, n, modelo, paso);
+    const base = await conWeb(run, n, paso);
+    const texto = await pedidoQueCabe(base, n, modelo, paso);
     await paso({ titulo: 'Trabajando la etapa', detalle: `~${est(texto).toLocaleString('es-MX')} tokens de entrada` });
     const out = await chat(modelo, SISTEMA, texto, MAX_OUT, {
       onEspera: (cap) => paso({ titulo: 'Esperando turno del proveedor', detalle: `${limits.modelos[modelo]?.proveedor || 'proveedor'}: ${cap} a la vez con este modelo` }),
       onAvance: ({ caracteres, razonando }) => paso({ titulo: caracteres ? 'Redactando el resultado' : 'Pensando', detalle: caracteres ? `${caracteres.toLocaleString('es-MX')} caracteres` : `${razonando} fragmentos de razonamiento` }),
     });
-    const r = soloEvidenciaDeInputs(run, leerRespuesta(out.content));
+    const r = soloEvidenciaDeInputs(base, leerRespuesta(out.content));
     const b = { ...r, via: 'gateway', modelo, costo: { entrada: out.usage.prompt_tokens || 0, salida: out.usage.completion_tokens || 0, seg: out.seg },
       actividades: [...r.actividades, ...r.faltantes.map((f) => ({ titulo: 'Falta evidencia', detalle: f, aviso: true })), { titulo: 'Listo para revisar', detalle: `${out.seg}s · ${out.usage.prompt_tokens ?? '?'} de entrada · ${out.usage.completion_tokens ?? '?'} de salida` }] };
     await tocar(id, (cur) => {
