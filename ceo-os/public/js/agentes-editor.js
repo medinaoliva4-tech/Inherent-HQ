@@ -7,13 +7,11 @@
 // Editan el CEO y el COO; el resto lo ve.
 import { html, raw, mount, ico, toast, api } from './core.js';
 import { TIPOS, CONEXIONES, tipoDe, normalizarEtapa } from './agentes-flujos.js';
-import { hermesDe, toolsetsHermes } from './hermes.js';
 import { CONECTORES, logoConector } from './conectores.js';
 import { proveedorDe } from './ia-proveedores.js';
 
 const lineas = (xs) => (xs || []).join('\n');
 const deLineas = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
-const etiquetaTool = (t) => String(t.label || t.name).replace(/^[^\p{L}\p{N}]+/u, '').trim() || t.name;
 const GRUPOS = [['Entender', ['investigacion', 'analisis']], ['Decidir', ['decision']], ['Entregar', ['entregable', 'validacion']]];
 
 // Geometría del lienzo (en unidades del «mundo»; la vista lo traslada y escala).
@@ -23,8 +21,7 @@ const ZMIN = 0.4, ZMAX = 1.25;
 const K_ACC = 'os.flujo.acciones';
 
 export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, alive = () => el.isConnected) {
-  const [tools, estCon, estIA] = await Promise.all([
-    hermesDe(me) ? toolsetsHermes(me).catch(() => []) : [],
+  const [estCon, estIA] = await Promise.all([
     api('conectores/estado').catch(() => null),
     api('ia/estado').catch(() => null),
   ]);
@@ -89,7 +86,6 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     const cons = [
       ...CONEXIONES.map((c) => ({ id: c.id, nombre: c.nombre, sub: c.sub })),
       ...CONECTORES.filter((c) => ['mcp', 'token'].includes(c.tipo)).map((c) => ({ id: c.id, nombre: c.nombre, sub: conectado(c.id) ? 'Conectado' : 'Sin conectar · conéctalo en MCPs', logo: logoConector(c), off: !conectado(c.id) })),
-      ...tools.filter((x) => !CONEXIONES.some((c) => c.id === x.name)).map((x) => ({ id: x.name, nombre: etiquetaTool(x), sub: `${x.enabled ? 'Activo' : 'Apagado'} en tu Hermes` })),
     ];
     const ultimo = sel === etapas.length - 1;
     return html`<aside class="kf-panel kf-insp" data-tt="${t.id}" aria-label="Etapa ${sel + 1}">

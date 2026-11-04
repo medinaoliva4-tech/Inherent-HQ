@@ -7,7 +7,7 @@
 //   · agent_runs — una corrida de un workflow. Congela sus etapas al crearse.
 // Reglas del run: solo se trabaja la etapa activa (409); toda etapa se aprueba para avanzar, aprueban CEO o COO y las 🚦 solo
 // el CEO (403); en pausa no se ejecuta; nada se borra (se archiva); el alcance por cliente (`scoper`) filtra; `personal` solo
-// CEO. La IA corre en la compu de la persona (Hermes con sus modelos y MCPs, el puente o claude.ai): el servidor guarda lo
+// CEO. La IA corre en la compu de la persona (el puente o claude.ai) o en el servidor de Inherent (PLAN-GATEWAY): el servidor guarda lo
 // que llega con su vía; la evidencia de un modelo entra SIN VERIFICAR y un campo sin fuente queda como hipótesis.
 import * as db from './db.js';
 import { guard, scoper } from './access.js';

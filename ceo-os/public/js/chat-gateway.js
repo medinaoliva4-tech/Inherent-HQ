@@ -1,5 +1,4 @@
-// El Chat en el servidor (PLAN-GATEWAY F3): las mismas funciones que la pantalla del Chat usa con Hermes (hermes.js), pero
-// contra la base del OS y el trabajador del VPS. Las conversaciones se guardan en el OS (se retoman desde cualquier compu)
+// El Chat en el servidor (PLAN-GATEWAY F3): las funciones de la pantalla del Chat, contra la base del OS y el trabajador del VPS. Las conversaciones se guardan en el OS (se retoman desde cualquier compu)
 // y la respuesta se escribe en vivo en la base: aquí se relee cada ~0.7 s mientras el servidor responde.
 import { api } from './core.js';
 
@@ -20,7 +19,7 @@ export async function modelosServidor() {
   return { actual: { provider: PROVEEDOR, model: xs[0] || '' }, proveedores: [{ slug: PROVEEDOR, nombre: 'Servidor', listo: Boolean(j.en_linea && xs.length), actual: true, modelos: xs }] };
 }
 export async function sesionesServidor() { return (await api('chat/sesiones')).sessions || []; }
-export const crearSesionServidor = ({ id, titulo }) => api('chat/sesiones', { method: 'POST', body: { id, titulo } });
+export const crearSesionServidor = ({ id, titulo, oculto = false }) => api('chat/sesiones', { method: 'POST', body: { id, titulo, oculto } });
 // Los pasos que usó el servidor (buscar en la web, leer una página, un MCP) salen como tool_calls, igual que en Hermes.
 export async function mensajesServidor(id) { return ((await api('chat/sesiones/' + enc(id))).messages || []).filter((m) => m.content).map((m) => ({ ...m, tool_calls: (m.pasos || []).map((p) => ({ name: p.nombre })) })); }
 export const borrarSesionServidor = (id) => api('chat/sesiones/' + enc(id), { method: 'DELETE' });
@@ -56,3 +55,14 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
 
 // Aprobar o rechazar una propuesta del servidor (crear una tarea, mover un lead…). La ejecuta el OS con tu sesión.
 export const decidirPropuesta = (id, pid, decision) => api(`chat/sesiones/${enc(id)}/propuestas/${enc(pid)}`, { method: 'POST', body: { decision } });
+
+// Un pedido al servidor desde cualquier pantalla (Strategy, Diseño, las herramientas, el Agent Area): usa una conversación
+// oculta (no sale en la lista del Chat) para que el servidor recuerde lo hablado. sesion = la de antes (o '' para una nueva).
+// → { texto, sesion, modelo, via: 'servidor' }
+export async function correrServidor({ sesion = '', idNueva, titulo = '', sistema = '', mensaje, modelo = '', signal, onDelta = () => {}, onTool = () => {} } = {}) {
+  let id = sesion;
+  if (!id) { id = idNueva; await crearSesionServidor({ id, titulo: titulo || mensaje.slice(0, 60), oculto: true }); }
+  const m = modelo ? { provider: PROVEEDOR, model: modelo } : {};
+  const r = await turnoServidor(id, { mensaje, sistema, modelo: m, signal, on: { delta: onDelta, tool: (p) => onTool(p.nombre, p) } });
+  return { texto: r.texto, sesion: id, modelo: modelo || 'Servidor', via: 'servidor' };
+}

@@ -1,4 +1,4 @@
-// El Chat en el servidor (PLAN-GATEWAY F3). Hace lo mismo que las sesiones de Hermes, pero las conversaciones viven en la
+// El Chat en el servidor (PLAN-GATEWAY F3). Las conversaciones viven en la
 // base del OS (como en Claude: se guardan, se retoman desde cualquier compu) y las responde el trabajador del VPS.
 // El OS no llama al VPS (D13): un turno nuevo queda «en_cola» en la conversación; el trabajador lo toma, escribe la respuesta
 // en vivo en la misma conversación y la pantalla la relee mientras tanto.
@@ -50,7 +50,7 @@ export function rutas(on) {
   on('GET', 'chat/sesiones', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
-    const xs = (await db.list(COLL)).filter((s) => lc(s.owner) === lc(u.email) && !s.archivado).map(resumenSesion)
+    const xs = (await db.list(COLL)).filter((s) => lc(s.owner) === lc(u.email) && !s.archivado && !s.oculto).map(resumenSesion)
       .sort((a, b) => String(b.last_active).localeCompare(String(a.last_active)));
     res.json({ sessions: xs.slice(0, 300) });
   });
@@ -61,7 +61,8 @@ export function rutas(on) {
     const b = body(req), id = txt(b.id, 120);
     if (!leerIdSesion(id)) return res.status(400).json({ error: 'Id de conversación inválido' });
     if (await db.get(COLL, id)) return res.status(409).json({ error: 'Ya existe' });
-    const d = await db.create(COLL, { owner: lc(u.email), title: txt(b.titulo, 120), modo: leerIdSesion(id).modo, mensajes: [], turno: null, archivado: false }, u.email, id);
+    // oculto: las conversaciones que usan otras pantallas por debajo (Strategy, Diseño, las herramientas): no salen en la lista del Chat.
+    const d = await db.create(COLL, { owner: lc(u.email), title: txt(b.titulo, 120), modo: leerIdSesion(id).modo, mensajes: [], turno: null, archivado: false, oculto: Boolean(b.oculto) }, u.email, id);
     res.json(resumenSesion(d));
   });
 

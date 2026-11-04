@@ -68,10 +68,8 @@ function apagarPuente() { if (puente) { try { puente.kill('SIGTERM'); } catch { 
 const token = () => { try { return fs.readFileSync(path.join(DATOS, 'chat-token'), 'utf8').trim(); } catch { return ''; } };
 // Solo al OS: una página de Google (el inicio de sesión) nunca lo recibe.
 ipcMain.on('inherent:token', (e) => { e.returnValue = delOS(e.senderFrame?.url || '') ? token() : ''; });
-// Hermes Agent (el harness de los chats): su instalador deja la URL y la llave de la API local en ~/.inherent/hermes.
-const HERMES_DATOS = path.join(os.homedir(), '.inherent', 'hermes');
-const hermes = () => { try { const key = fs.readFileSync(path.join(HERMES_DATOS, 'api-key'), 'utf8').trim(); if (!key) return null; let url = 'http://127.0.0.1:8642'; try { url = fs.readFileSync(path.join(HERMES_DATOS, 'api-url'), 'utf8').trim() || url; } catch { /* la URL de siempre */ } return { url, key }; } catch { return null; } };
-ipcMain.on('inherent:hermes', (e) => { e.returnValue = delOS(e.senderFrame?.url || '') ? hermes() : null; });
+// Hermes se retiró (PLAN-GATEWAY F3): el Chat corre en el servidor de Inherent. La app ya no lo instala ni le pasa su llave al OS.
+ipcMain.on('inherent:hermes', (e) => { e.returnValue = null; }); // apps viejas lo siguen pidiendo
 // La versión instalada (no es secreta): el OS la compara con la última publicada y avisa si hay una nueva (aviso pla-app-mac).
 ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
 // «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
@@ -297,27 +295,6 @@ function crearVentana() {
   ventana.loadURL(OS_URL);
 }
 
-// Hermes: se instala desde el menú (o desde el OS, que manda a este menú). Misma ventanita de avance que Laya.
-let instalandoHermes = null;
-function instalarHermes() {
-  if (instalandoHermes) { instalandoHermes.ventana?.show(); return; }
-  const script = app.isPackaged ? path.join(process.resourcesPath, 'puente', 'hermes-instalar.sh') : path.join(__dirname, '..', 'public', 'laya', 'hermes', 'instalar.sh');
-  const w = new BrowserWindow({ width: 460, height: 210, resizable: false, maximizable: false, fullscreenable: false, title: 'Instalando Hermes', backgroundColor: '#f1eadf', webPreferences: { sandbox: true, contextIsolation: true } });
-  w.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(PANTALLA.replace(/Instalando Laya/g, 'Instalando Hermes').replace('5 a 15 minutos', '3 a 10 minutos')));
-  const proc = spawn('/bin/bash', [script], { env: { ...process.env, PATH: [...RUTAS, process.env.PATH || ''].join(':'), HERMES_OS_URL: OS_URL }, stdio: ['ignore', 'pipe', 'pipe'] });
-  instalandoHermes = { proc, ventana: w };
-  w.on('closed', () => { if (instalandoHermes) instalandoHermes.ventana = null; });
-  let error = '';
-  const leer = (buf) => { for (const linea of String(buf).split('\n')) { const t = linea.trim(); if (t.startsWith('→ ') || t.startsWith('✓ ')) { if (!w.isDestroyed()) w.webContents.executeJavaScript(`paso(${JSON.stringify(t.slice(2))})`).catch(() => {}); } else if (t.startsWith('❌')) error = t.slice(1).trim(); } };
-  proc.stdout.on('data', leer); proc.stderr.on('data', leer);
-  proc.on('error', (e) => { error = String(e.message || e); });
-  proc.on('close', async (code) => {
-    instalandoHermes = null;
-    if (!w.isDestroyed()) w.close();
-    if (code === 0) { new Notification({ title: 'Hermes quedó instalado', body: 'Falta elegir el modelo: en la Terminal, «inherent model».' }).show(); ventana?.webContents.reload(); }
-    else await dialog.showMessageBox(ventana, { type: 'warning', message: 'Hermes no se pudo instalar', detail: `${error || 'Algo falló a medio camino.'}\n\nEl OS funciona igual con el puente de siempre. Para intentarlo otra vez: menú Puente › Instalar Hermes.`, buttons: ['Entendido'] });
-  });
-}
 function menu() {
   const m = [
     { label: app.name, submenu: [
@@ -338,7 +315,6 @@ function menu() {
     { label: 'Puente', submenu: [
       { label: 'Reiniciar el puente', click: async () => { apagarPuente(); await prenderPuente(); ventana?.webContents.reload(); } },
       { label: 'Instalar Laya', click: () => instalarLaya() },
-      { label: 'Instalar Hermes (el harness de los chats)', click: () => instalarHermes() },
       { label: 'Abrir la carpeta de registros', click: () => shell.openPath(path.join(DATOS, 'logs')) },
     ] },
     { role: 'windowMenu' },

@@ -1,10 +1,10 @@
 // Las IAs que se conectan al OS (Ajustes → IA). Puro: lo usan el servidor (api/_lib/ia.js), Ajustes, el Agent Area y las
 // pruebas. Casi todas hablan la API compatible con OpenAI (chat/completions + models), así que el servidor tiene UN solo
-// adaptador: cambia la dirección y la llave. Las «locales» (Hermes, la suscripción de Claude por el puente) corren en la
+// adaptador: cambia la dirección y la llave. Las «locales» (la suscripción de Claude por el puente) corren en la
 // compu de cada persona y se conectan desde el Chat, no aquí.
 //   forma: 'llave'  → pega una API key
 //          'url'    → la dirección de tu servidor (VPS, Ollama, LM Studio, vLLM…) y, si pide, su llave
-//          'local'  → corre en tu compu (Hermes, puente): se conecta en el Chat
+//          'local'  → corre en tu compu (el puente): se conecta en el Chat
 export const PROVEEDORES = [
   { id: 'openrouter', nombre: 'OpenRouter', sub: 'Cientos de modelos (Claude, GPT, Gemini, Llama…) con una sola llave', logo: 'openrouter', forma: 'llave', base: 'https://openrouter.ai/api/v1', llave: 'https://openrouter.ai/keys', busca: true, recomendado: true },
   { id: 'anthropic', nombre: 'Claude', sub: 'La API de Anthropic', logo: 'claude', forma: 'llave', base: 'https://api.anthropic.com/v1', llave: 'https://console.anthropic.com/settings/keys' },
@@ -21,7 +21,6 @@ export const PROVEEDORES = [
   { id: 'ollama', nombre: 'Ollama · servidor propio', sub: 'Tus modelos en tu VPS: pega su dirección', logo: 'ollama', forma: 'url', ejemplo: 'https://ia.tu-dominio.com/v1' },
   { id: 'lmstudio', nombre: 'LM Studio · servidor', sub: 'LM Studio expuesto en tu red o VPS', logo: 'lmstudio', forma: 'url', ejemplo: 'https://lmstudio.tu-dominio.com/v1' },
   { id: 'custom', nombre: 'Otro (compatible con OpenAI)', sub: 'vLLM, LiteLLM, una pasarela propia…', logo: 'custom', forma: 'url', ejemplo: 'https://gateway.tu-dominio.com/v1' },
-  { id: 'hermes', nombre: 'Hermes', sub: 'Tu harness en tu compu, con todos sus proveedores y MCPs', logo: 'hermes', forma: 'local', donde: '#/chat' },
   { id: 'puente', nombre: 'Claude · suscripción', sub: 'Tu plan de Claude, por el puente de tu compu', logo: 'claude', forma: 'local', donde: '#/chat' },
 ];
 export const proveedorDe = (id) => PROVEEDORES.find((p) => p.id === id) || null;

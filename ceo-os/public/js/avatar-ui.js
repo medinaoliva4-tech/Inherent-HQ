@@ -5,7 +5,7 @@
 //   intereses → mercado → momento → dolor y deseo → consciencia → dónde está → qué le decimos → señales en el video, y sus ángulos)
 //   y debajo la franja del Buyer Journey (5 etapas × 6 filas, editable).
 //   Derecha: nombre, peso, estado, aprobar (solo el CEO), los chequeos, «Enviar a Offer Architect», exportar y la IA.
-// La IA corre por correrIA (Hermes, el puente o claude.ai): propone, la persona revisa y confirma, y recién entonces se guarda.
+// La IA corre por correrIA (el servidor, el puente o claude.ai): propone, la persona revisa y confirma, y recién entonces se guarda.
 // Todo se guarda solo, al dejar cada campo; si alguien cambió el avatar antes, el servidor responde 409 y se trae la última versión.
 import { html, raw, mount, api, toast, ico, $, $$, confirmAsk, fdate } from './core.js';
 import { SECCIONES, CAMPOS, ANGULOS, ANGULO_AYUDA, MERCADO, REGLA_X, JOURNEY, FILAS_JOURNEY, SALE_DE, vivos, sumaPesos, reglaX, mercado, avance, avanceJourney, limpiarJourney, etiquetarFrase, promptAvatar, leerPropuesta, aMd } from './avatares.js';

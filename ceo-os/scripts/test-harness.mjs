@@ -1,7 +1,7 @@
 // Pruebas de Inherent AI (#/ai, antes «AI Harness»): la lista fija de los 12 agentes del repo (public/js/harness/agentes.js, ya sin
-// pantalla), el menú de app.js trae Chat, Agent Area y MCPs, el router de harness.js solo conoce la portada y «mcps»; al cargar solo
-// lee el estado de conectores (sin escrituras, costos ni mostrar la llave de Hermes). Ambas páginas cargan con y sin Hermes (con un
-// navegador de mentira). La portada trae la tarjeta «Modelos abiertos · LM Studio»: conectado (con sus modelos) o los 4 pasos.
+// pantalla), el menú de app.js trae Chat, Agent Area y MCPs, el router de harness.js solo conoce la portada y «mcps»; solo LEE
+// (el servidor, los trabajos y las conexiones), sin escrituras ni costos. Ambas páginas cargan con el servidor en línea y fuera de
+// línea (con un navegador de mentira). Hermes se retiró: no aparece en ninguna de las dos.
 // npm run test:harness
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -51,15 +51,15 @@ await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se
   assert.match(SRC, /href="#\/chat"/); assert.match(SRC, /href="#\/ai\/mcps"/);
   for (const m of SRC.matchAll(/\bico\(\s*'([\w-]+)'/g)) assert.ok(tieneIco(m[1]), `ícono ${m[1]}`);
 });
-await t('harness.js delega el directorio; no tiene escrituras directas ni costos', () => {
+await t('harness.js solo lee: sin escrituras, costos ni Hermes', () => {
   assert.ok(!/method\s*:\s*'(POST|PUT|PATCH|DELETE)'/.test(SRC) && !/\bbody\s*:/.test(SRC), 'sin escrituras');
   assert.ok(!/\.(save|create|remove)\(/.test(SRC), 'sin col().save/create/remove');
   assert.ok(!/client:\s*true/.test(SRC), 'sin { client: true }');
-  assert.ok(!/\bapi\(|\bcol\(/.test(SRC), 'las llamadas al OS se delegan al directorio, no se duplican aquí');
+  assert.ok(!/hermes/i.test(SRC.replace(/Hermes se retiró/g, '')), 'Hermes se retiró: no queda en la pantalla');
   for (const x of ['BASELINE', 'baseline', 'internos', 'payroll', 'finanzas', "'audit'", 'audit/', 'rates', 'seesCosts', 'USD_GTQ']) assert.ok(!SRC.includes(x), `no debe nombrar ${x}`);
 });
 
-// ---------- Cada página carga sin errores, con y sin Hermes ----------
+// ---------- Cada página carga sin errores, con el servidor en línea y fuera de línea ----------
 const noop = () => {};
 const store = new Map();
 globalThis.window = globalThis;
@@ -68,37 +68,17 @@ globalThis.location = { hash: '' };
 const reemplazos = [];
 globalThis.history = { replaceState: (_s, _t, u) => reemplazos.push(u) };
 Object.defineProperty(globalThis, 'navigator', { value: { clipboard: { writeText: async () => {} } }, configurable: true });
-const falso = () => new Proxy(function () {}, { get: (_, k) => (k === Symbol.toPrimitive ? () => '' : k === 'querySelector' ? () => null : k === 'querySelectorAll' ? () => [] : k === 'length' ? 0 : falso()), apply: () => falso(), set: () => true });
+const falso = () => new Proxy(function () {}, { get: (_, k) => (k === Symbol.toPrimitive ? () => '' : k === 'querySelector' ? () => null : k === 'querySelectorAll' ? () => [] : k === 'length' ? 0 : falso()), apply: () => falso() });
 globalThis.document = falso();
 
-const LLAVE = 'sk-llave-secreta-123';
-const HERMES = {
-  '/health': { status: 'ok', version: '1.2' }, '/v1/capabilities': {},
-  '/api/model/options': () => OPCIONES[escenario],
-  '/v1/toolsets': { toolsets: [
-    { name: 'web', label: '🌐 Web <b>x</b>', enabled: true, configured: true, tools: ['web_search', { name: 'web_extract' }] },
-    { name: 'memory', label: 'Memoria', enabled: true, configured: false, tools: ['memory_read'] },
-    { name: 'browser', label: 'Navegador', enabled: false, configured: false, tools: [] },
-  ] },
-};
-// Qué tiene conectado Hermes en cada prueba: solo Claude, Claude + LM Studio (ocho modelos, uno, o ninguno) o que no devuelva los modelos.
-const CLAUDE = { slug: 'anthropic', name: 'Claude', authenticated: true, is_current: true, models: ['claude-opus-5-5'] };
-const OCHO = ['qwen/qwen3-8b', 'meta/llama-3.1-8b-instruct', 'google/gemma-3-12b', 'mistralai/mistral-7b', 'nousresearch/hermes-3-8b', 'qwen/qwen2.5-14b', 'otro/modelo-siete', 'otro/modelo-ocho'];
-const OPCIONES = {
-  claude: { provider: 'anthropic', model: 'anthropic/claude-opus-5-5', providers: [CLAUDE] },
-  lm: { provider: 'lmstudio', model: 'qwen/qwen3-8b', providers: [{ ...CLAUDE, is_current: false }, { slug: 'lmstudio', name: 'LM Studio', authenticated: true, is_current: true, models: OCHO }] },
-  'lm-vacio': { provider: 'anthropic', model: 'anthropic/claude-opus-5-5', providers: [CLAUDE, { slug: 'lmstudio', name: 'LM Studio', authenticated: true, models: [] }] },
-  'lm-uno': { provider: 'anthropic', model: 'anthropic/claude-opus-5-5', providers: [CLAUDE, { slug: 'lmstudio', name: 'LM Studio', authenticated: true, models: ['solo/modelo-uno'] }] },
-  nulo: null, // Hermes no devuelve los modelos
-};
-let escenario = 'claude';
-let hermesOn = false, llamadasOS = [];
+let enLinea = true, llamadasOS = [];
 const resp = (ok, status, data) => ({ ok, status, json: async () => data });
 globalThis.fetch = async (url, opts = {}) => {
   const u = String(url);
-  if (u.startsWith('http://127.0.0.1:8642')) { let r = hermesOn ? HERMES[u.slice('http://127.0.0.1:8642'.length).split('?')[0]] : null; if (typeof r === 'function') r = r(); if (!r) throw new Error('sin Hermes'); return resp(true, 200, r); }
-  llamadasOS.push({ url: u, method: opts.method || 'GET', body: opts.body });
-  if (u === '/api/conectores/estado') return resp(true, 200, { conectores: [], puente: false });
+  llamadasOS.push({ url: u, method: opts.method || 'GET' });
+  if (u === '/api/chat/servidor') return resp(true, 200, { en_linea: enLinea, modelos: enLinea ? ['deepseek-v4-flash', 'deepseek-v4-pro'] : [], version: 'f3-7' });
+  if (u === '/api/agentes/runs') return resp(true, 200, { items: [{ completo: false, activa: 0, etapas: [{ estado: 'revision' }] }, { completo: false, activa: 1, etapas: [{ estado: 'aprobada' }, { estado: 'pendiente' }] }] });
+  if (u === '/api/conectores/estado') return resp(true, 200, { conectores: [{ id: 'notion', conectado: true }, { id: 'canva', conectado: false }], puente: false });
   return resp(false, 404, { error: 'no' });
 };
 
@@ -106,108 +86,35 @@ const { render } = await import('../public/js/screens/harness.js');
 const ceo = { email: 'ceo@x.com', role: 'ceo', areas: ['estrategia', 'content', 'clients', 'library', 'operations'] };
 const otro = { email: 'ed@x.com', role: 'content', areas: ['content'] };
 // Un nodo falso por cada id que la pantalla pinta (también los anidados): querySelector('#id') lo encuentra donde sea que esté.
-async function pagina(me, id, conHermes, esc = 'claude', sinLlave = false) {
-  hermesOn = conHermes; escenario = esc; llamadasOS = []; reemplazos.length = 0;
-  globalThis.inherentEscritorio = conHermes && !sinLlave ? { hermes: { key: LLAVE } } : undefined;
+async function pagina(me, id, online = true) {
+  enLinea = online; llamadasOS = []; reemplazos.length = 0;
   const nodos = {};
   const todo = () => el.innerHTML + Object.values(nodos).map((n) => n.innerHTML).join('');
-  const el = { innerHTML: '', addEventListener: noop, querySelectorAll: () => [], contains: () => true, querySelector(sel) { return /^#iai-[\w-]+$/.test(sel) && todo().includes(`id="${sel.slice(1)}"`) ? (nodos[sel] ||= { innerHTML: '', addEventListener: noop, contains: () => true, querySelector: () => null, querySelectorAll: () => [] }) : null; } };
+  const el = { innerHTML: '', addEventListener: noop, querySelectorAll: () => [], contains: () => true, querySelector(sel) { return /^#iai-[\w-]+$/.test(sel) && todo().includes(`id="${sel.slice(1)}"`) ? (nodos[sel] ||= { innerHTML: '', addEventListener: noop, querySelectorAll: () => [], querySelector: () => null }) : null; } };
   await render(el, { me, sub: id ? [id] : [], alive: () => true });
-  await new Promise((r) => setTimeout(r, 80)); // lo que se llena después (Hermes)
+  await new Promise((r) => setTimeout(r, 80)); // lo que se llena después
   return todo();
 }
-const limpio = (s, c) => { assert.ok(s.length > 400, `${c}: salió casi vacío`); assert.ok(!/undefined|\[object Object\]|NaN/.test(s), `${c}: ${s.match(/.{30}(undefined|\[object Object\]|NaN).{30}/)?.[0]}`); assert.ok(!/<b>x<\/b>|<img src=x/.test(s), `${c}: sin escapar`); assert.ok(!/(?:\bQ\d{2,}|\$\d{2,}(?![\dM]))/.test(s), `${c}: monto`); assert.ok(!s.includes(LLAVE), `${c}: muestra la llave de Hermes`); };
+const limpio = (s, c) => { assert.ok(s.length > 400, `${c}: salió casi vacío`); assert.ok(!/undefined|\[object Object\]|NaN/.test(s), `${c}: ${s.match(/.{30}(undefined|\[object Object\]|NaN).{30}/)?.[0]}`); };
 
-// Los 4 pasos de LM Studio: lo que se baja, el servidor, la carga con 64K y la conexión, cada comando en el bloque con «Copiar».
-function pasosLM(s, c) {
-  for (const x of ['Baja LM Studio y un modelo', 'Enciende su servidor', 'Cárgalo con 64K de contexto', 'Conéctalo a tu Inherent AI', 'Qwen, Llama, Gemma, Mistral', 'http://localhost:1234/v1', 'Opcional: que LM Studio cargue y descargue el modelo solo']) assert.ok(s.includes(x), `${c}: falta «${x}»`);
-  for (const cm of ['lms server start', 'lms load &lt;modelo&gt; --context-length 64000', 'inherent model', 'inherent config set model.lmstudio_load_mode jit']) assert.ok(s.includes(`<code>${cm}</code>`), `${c}: falta el comando ${cm}`);
-  for (const cm of ['lms server start', 'lms load <modelo> --context-length 64000', 'inherent model', 'inherent config set model.lmstudio_load_mode jit']) assert.ok(s.includes(`data-act="copiar" data-t="${cm.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`), `${c}: «${cm}» no se puede copiar`);
-  assert.ok(s.includes('href="https://lmstudio.ai" target="_blank" rel="noopener"'), `${c}: el link a lmstudio.ai`);
-  assert.equal((s.match(/class="iai-lm-paso"/g) || []).length, 4, `${c}: son 4 pasos`);
-  assert.ok(!/Conectado · \d/.test(s), `${c}: dice conectado sin LM Studio`);
-}
-
-for (const conHermes of [false, true]) for (const [me, quien] of [[ceo, 'CEO'], [otro, 'no CEO']]) for (const id of ['', 'mcps']) {
-  await t(`#/ai/${id} carga sin errores · ${quien} · ${conHermes ? 'con' : 'sin'} Hermes`, async () => {
-    const s = await pagina(me, id, conHermes), c = `${id || 'portada'}/${quien}/${conHermes}`;
+for (const online of [true, false]) for (const [me, quien] of [[ceo, 'CEO'], [otro, 'no CEO']]) for (const id of ['', 'mcps']) {
+  await t(`#/ai/${id} carga sin errores · ${quien} · servidor ${online ? 'en línea' : 'fuera de línea'}`, async () => {
+    const s = await pagina(me, id, online), c = `${id || 'portada'}/${quien}/${online}`;
     limpio(s, c);
-    assert.match(s, /Inherent AI/); assert.ok(!/AI Harness/.test(s), `${c}: dice «AI Harness»`);
+    assert.match(s, /Inherent AI/); assert.ok(!/AI Harness/.test(s), `${c}: dice «AI Harness»`); assert.ok(!/Hermes/.test(s), `${c}: menciona Hermes`);
     assert.match(s, /href="#\/chat"/); assert.match(s, /href="#\/ai\/mcps"/);
-    assert.deepEqual(llamadasOS, id === 'mcps' ? [{ url: '/api/conectores/estado', method: 'GET', body: undefined }] : [], `${c}: solo el directorio consulta su estado, sin escrituras ni llamadas extra`);
+    assert.ok(llamadasOS.every((x) => x.method === 'GET'), `${c}: solo lee`);
     if (id === '') {
-      assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los MCPs/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
-      if (conHermes) { assert.match(s, /Encendido/); assert.match(s, /Hermes v1\.2/); assert.match(s, /claude-opus-5-5/); assert.match(s, /2 capacidades activas/); assert.match(s, /de 3/); }
-      else { assert.match(s, /Apagado/); assert.match(s, /Cómo encenderlo/); }
-      // La tarjeta de LM Studio siempre está, y sin LM Studio conectado trae los 4 pasos con sus comandos y el link.
-      assert.match(s, /Modelos abiertos · LM Studio/); assert.match(s, /id="iai-lm"/); pasosLM(s, c);
-      assert.match(s, conHermes ? /Sin conectar<\/b> · LM Studio todavía no aparece en tu Hermes/ : /Sin conectar<\/b> · Hermes no responde en esta compu/);
-    } else {
-      assert.match(s, /<h2>Conectores<\/h2>/);
-      assert.match(s, /class="mcd-card /);
-      assert.match(s, /Avanzado · MCPs en Hermes/);
-      assert.match(s, /aria-current="page"/);
-      for (const x of ['Lo que tu Inherent AI puede usar hoy', 'Conectar un MCP a tu Inherent AI', 'Los MCPs viven en Hermes', 'Quitar o probar un MCP', 'Habla con Inherent OS desde tu IA', 'inherent mcp list', 'https://inherent-work.vercel.app/mcp']) assert.ok(s.includes(x), `${c}: falta «${x}»`);
-      assert.match(s, /id="iai-n"/); assert.match(s, /id="iai-u"/); assert.match(s, /id="iai-a"/);
-      if (conHermes) { assert.match(s, /Web &lt;b&gt;x&lt;\/b&gt;/); assert.match(s, /web search/); assert.match(s, /web extract/); assert.match(s, /Activa, falta configurarla/); assert.match(s, /Sin configurar/); assert.ok(s.indexOf('Navegador') > s.indexOf('Memoria'), 'las activas van primero'); }
-      else assert.match(s, /Hermes no responde/);
-    }
+      assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los agentes/); assert.match(s, /Ver los MCPs/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
+      if (online) { assert.match(s, /En línea/); assert.match(s, /deepseek-v4-flash/); } else assert.match(s, /Fuera de línea/);
+      assert.match(s, /1 trabajo espera tu OK/); assert.match(s, /2 trabajos en curso/); assert.match(s, /1 conexión/);
+    } else assert.match(s, /aria-current="page"/);
   });
 }
-// ---------- La tarjeta «Modelos abiertos · LM Studio» ----------
-await t('LM Studio conectado: «Conectado · 8 modelos», máximo 6 nombres, el que está en uso primero y marcado, sin los 4 pasos', async () => {
-  const s = await pagina(ceo, '', true, 'lm');
-  limpio(s, 'portada/lm');
-  assert.match(s, /Modelos abiertos · LM Studio/);
-  assert.match(s, /Conectado · 8 modelos/);
-  assert.equal((s.match(/<li class="iai-lm-modelo[ "]/g) || []).length, 6, 'máximo 6 modelos');
-  assert.match(s, /\+2 más/);
-  assert.ok(s.indexOf('qwen3-8b') < s.indexOf('llama-3.1-8b-instruct'), 'el modelo en uso va primero');
-  assert.equal((s.match(/iai-lm-uso/g) || []).length, 1, 'solo uno está en uso');
-  assert.match(s, /iai-lm-modelo uso" title="qwen\/qwen3-8b"/);
-  assert.ok(!s.includes('otro/modelo-ocho') && !s.includes('modelo-ocho'), 'el séptimo y el octavo no salen');
-  assert.ok(!s.includes('class="iai-lm-paso"'), 'conectado no repite los pasos');
-  assert.ok(!s.includes('lms server start'), 'conectado no pide encender el servidor');
-  assert.match(s, /LM Studio · en uso|Modelo: <b>qwen3-8b<\/b> · LM Studio/, 'la tarjeta del Chat dice que el modelo actual es de LM Studio');
-  assert.match(s, /href="#\/chat"/);
-});
-await t('LM Studio conectado con un solo modelo dice «1 modelo»; si no es el actual, no marca ninguno en uso', async () => {
-  const s = await pagina(ceo, '', true, 'lm-uno');
-  limpio(s, 'portada/lm-uno');
-  assert.match(s, /Conectado · 1 modelo</); assert.ok(!/Conectado · 1 modelos/.test(s));
-  assert.match(s, /modelo-uno/); assert.ok(!s.includes('iai-lm-uso'), 'ninguno en uso'); assert.ok(!/\+\d+ más/.test(s));
-});
-await t('LM Studio listo pero sin modelos no dice «Conectado · 0»: avisa y muestra los pasos', async () => {
-  const s = await pagina(ceo, '', true, 'lm-vacio');
-  limpio(s, 'portada/lm-vacio');
-  assert.match(s, /LM Studio está conectado, pero sin modelos/); assert.ok(!/Conectado · \d/.test(s)); assert.ok(!/ 0 modelos/.test(s));
-  pasosLM(s, 'lm-vacio');
-});
-await t('la tarjeta de LM Studio sale con los pasos si Hermes no devuelve los modelos o si el OS no tiene su llave', async () => {
-  const a = await pagina(ceo, '', true, 'nulo');
-  assert.match(a, /No pude leer los modelos de Hermes/); pasosLM(a, 'sin-modelos');
-  const b = await pagina(ceo, '', true, 'claude', true); // Hermes responde, pero no hay llave
-  assert.match(b, /el OS no tiene la llave de Hermes/); assert.match(b, /Los pasos 1 a 3 ya puedes hacerlos/); pasosLM(b, 'sin-llave');
-});
-await t('harness.js: el link a lmstudio.ai abre aparte y sin opener; los comandos salen de TERMINAL; la portada sigue con Chat y MCPs', () => {
-  assert.match(SRC, /const LM_WEB = 'https:\/\/lmstudio\.ai'/);
-  assert.match(SRC, /href="\$\{LM_WEB\}" target="_blank" rel="noopener"/);
-  assert.ok(!/<a [^>]*target="_blank"(?![^>]*rel="noopener")/.test(SRC), 'todo link _blank lleva rel=noopener');
-  assert.match(SRC, /TERMINAL\.find\(\(\[n\]\) => re\.test\(n\)\)/);
-  assert.match(SRC, /id="iai-lm"/); assert.match(SRC, /iai-lm-pasos/); assert.match(SRC, /iai-lm-modelos/);
-  assert.equal((SRC.match(/<a class="btn iai-go"/g) || []).length, 2, 'la portada sigue con dos destinos: Chat y MCPs');
-  assert.ok(!/ai\/lm|'lmstudio'\s*:\s*\[/.test(SRC), 'no hay pestaña ni ruta nueva para LM Studio');
-});
-await t('los comandos de LM Studio de la Terminal no llevan llaves ni se mezclan con los pasos de encender Hermes', async () => {
-  const { TERMINAL } = await import('../public/js/llm/modos.js');
-  assert.ok(TERMINAL.filter(([n]) => /LM Studio/.test(n)).every(([, c]) => !/sk-|key=|LM_API_KEY/.test(c)));
-  assert.ok(TERMINAL.filter(([n]) => /^(Instalar|Actualizar)/.test(n)).every(([, c]) => !/lms |lmstudio/.test(c)));
-});
 await t('una página desconocida cae en la portada y canoniza la ruta a #/ai', async () => {
-  const s = await pagina(ceo, 'agents', false);
-  assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los MCPs/); assert.ok(!/aria-current/.test(s));
-  assert.deepEqual(reemplazos, ['#/ai']);
+  const s = await pagina(ceo, 'agents');
+  assert.match(s, /Abrir el Chat/); assert.deepEqual(reemplazos, ['#/ai']);
 });
-await t('la portada de #/ai y #/ai/mcps no tocan la ruta', async () => { await pagina(ceo, '', true); await pagina(ceo, 'mcps', true); assert.deepEqual(reemplazos, []); });
+await t('la portada de #/ai y #/ai/mcps no tocan la ruta', async () => { await pagina(ceo, ''); await pagina(ceo, 'mcps'); assert.deepEqual(reemplazos, []); });
 
 console.log(`\n${ok} pruebas de Inherent AI pasaron`);

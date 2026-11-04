@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
-import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, TERMINAL, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
+import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
 import { AREAS, areaDe, areaDeModo } from '../public/js/areas.js';
 import { IAS, iaDe, iasListas, modelosDeIa, fuertesDe, esLocal } from '../public/js/llm/ias.js';
 
@@ -46,17 +46,16 @@ t('el harness nunca abre la puerta a pautar, publicar, borrar o editar el repo',
 t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () => {
   assert.deepEqual(leerComando('/diseño arma un carrusel'), { cmd: '/diseno', arg: 'arma un carrusel' });
   assert.deepEqual(leerComando('  /Organizacion '), { cmd: '/organizacion', arg: '' });
-  assert.deepEqual(leerComando('/skill hormozi'), { cmd: '/skill', arg: 'hormozi' });
+  assert.deepEqual(leerComando('/ajustes x'), { cmd: '/ajustes', arg: 'x' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 13);
+  assert.equal(COMANDOS.length, 12);
   assert.deepEqual(leerComando('/producción'), { cmd: '/produccion', arg: '' });
   assert.deepEqual(leerComando('/marketing'), { cmd: '/marketing', arg: '' });
   assert.deepEqual(leerComando('/consulting nao'), { cmd: '/consulting', arg: 'nao' });
   assert.deepEqual(leerComando('/brújula'), { cmd: '/brujula', arg: '' });
   assert.deepEqual(leerComando('/privado'), { cmd: '/privado', arg: '' });
   assert.deepEqual(leerComando('/ramificar'), { cmd: '/ramificar', arg: '' });
-  assert.ok(TERMINAL.every(([l, c]) => l && c && !/sk-|key=/.test(c)));
 });
 
 t('las tarjetas: criterios y pregunta salen del texto; lo visible no las muestra', () => {
@@ -103,37 +102,6 @@ t('modo privado y cuánto piensa', () => {
   assert.equal(nombreEsfuerzo('high'), 'A fondo');
   assert.equal(nombreEsfuerzo(''), 'Normal');
   assert.equal(nombreEsfuerzo('raro'), 'Normal');
-  assert.ok(TERMINAL.some(([, c]) => c.includes('ollama_num_ctx 65536')), 'la Terminal dice cómo darle 64K a Ollama (la alternativa)');
-  assert.ok(TERMINAL.some(([, c]) => c === 'inherent update'));
-});
-
-t('modelos abiertos: LM Studio es el camino recomendado de la Terminal y Ollama queda como alternativa, después', () => {
-  const cmdDe = (re) => TERMINAL.find(([n]) => re.test(n));
-  const servidor = cmdDe(/^Modelos abiertos con LM Studio: enciende su servidor$/), cargar = cmdDe(/^Cargar un modelo con la memoria que Hermes necesita \(64K\)$/);
-  const conectar = cmdDe(/^Conectar LM Studio a tu Inherent AI: elige «LM Studio»$/), jit = cmdDe(/^Opcional: que LM Studio cargue/), ollama = TERMINAL.findIndex(([, c]) => /^ollama pull /.test(c));
-  assert.equal(servidor[1], 'lms server start');
-  assert.equal(cargar[1], 'lms load <modelo> --context-length 64000');
-  assert.equal(conectar[1], 'inherent model');
-  assert.equal(jit[1], 'inherent config set model.lmstudio_load_mode jit');
-  // Los tres pasos van en orden y antes de cualquier cosa de Ollama.
-  const pos = (x) => TERMINAL.indexOf(x);
-  assert.ok(pos(servidor) < pos(cargar) && pos(cargar) < pos(conectar) && pos(conectar) < pos(jit), 'servidor → cargar → conectar → opcional');
-  assert.ok(ollama > pos(jit), 'Ollama va después de LM Studio');
-  assert.ok(TERMINAL.filter(([n]) => /Ollama/.test(n)).every(([n]) => /^Alternativa:/.test(n)), 'Ollama se rotula como alternativa');
-  // Los nombres que usa la portada de Inherent AI se mantienen exactos, y ninguno de los pasos de encender se confunde con ellos.
-  assert.equal(TERMINAL.filter(([n]) => n === 'Ver la llave del OS').length, 1);
-  assert.equal(TERMINAL.filter(([n]) => n === 'Revisar que todo esté bien').length, 1);
-  assert.deepEqual(TERMINAL.filter(([n]) => /^(Instalar|Actualizar)/.test(n)).map(([n]) => n), ['Instalar Hermes', 'Actualizar Hermes (si algo no abre)']);
-  assert.equal(new Set(TERMINAL.map(([n]) => n)).size, TERMINAL.length, 'sin rótulos repetidos');
-});
-
-t('el modo privado y el selector de modelos mandan a LM Studio primero (textos de screens/llm.js)', () => {
-  const src = fs.readFileSync(new URL('../public/js/screens/llm.js', import.meta.url), 'utf8');
-  assert.ok(src.includes('Con LM Studio: baja cualquier modelo, enciende su servidor'), 'aviso del modo privado');
-  assert.ok(src.includes('Con <b>LM Studio</b>: baja cualquier modelo, enciende su servidor'), 'pie del selector de modelos');
-  assert.ok(src.includes('elige «LM Studio» en <code>inherent model</code>'), 'dice dónde elegir LM Studio');
-  assert.ok(src.includes('Abajo: cómo bajar uno gratis con LM Studio'));
-  assert.ok(!/ollama pull/.test(src), 'llm.js ya no manda a Ollama como primer camino');
 });
 
 t('la brújula: la meta, sus tareas, el avance y el aviso de desvío', () => {

@@ -120,7 +120,7 @@ export const ESTRATEGIA_GUIADA = {
 // Un workflow es del OS (colección agent_workflows): se crea en blanco o se IMPORTA de una plantilla (un WORKFLOW.md del repo o
 // el flujo del PDF) y desde ahí es independiente: editarlo no toca el repo y cambiar el repo no lo cambia. La plantilla aporta
 // la ESTRUCTURA (qué etapas, qué se entrega, qué criterios), nunca el conocimiento: las respuestas salen de fuentes reales que
-// el agente consulta con sus herramientas (MCPs de Hermes, la web, el OS) o quedan como hipótesis.
+// el agente consulta con sus herramientas (la web, los MCPs de la persona, el OS) o quedan como hipótesis.
 
 // Los tipos de nodo (la paleta del editor). color = token --ui-* del sistema.
 export const TIPOS = [
@@ -132,10 +132,10 @@ export const TIPOS = [
 ];
 export const tipoDe = (id) => TIPOS.find((t) => t.id === id) || TIPOS[1];
 
-// Las conexiones que un nodo puede pedir. Las reales viven en Hermes (sus toolsets y MCPs): la pantalla suma las que la compu
-// tenga; estas son las que el OS conoce aunque Hermes no conteste.
+// Las conexiones que un nodo puede pedir. Las corre el servidor (web propia, los MCPs de quien encarga el trabajo y el OS);
+// la pantalla suma los MCPs del catálogo (conectores.js).
 export const CONEXIONES = [
-  { id: 'web', nombre: 'Búsqueda web', sub: 'web_search · web_extract (Hermes)' },
+  { id: 'web', nombre: 'Búsqueda web', sub: 'El servidor busca y lee páginas (SearXNG propio)' },
   { id: 'inherent', nombre: 'Inherent OS', sub: 'clientes, proyectos, Library y notas (el MCP del OS)' },
   { id: 'drive', nombre: 'Google Drive', sub: 'documentos del cliente' },
   { id: 'browser', nombre: 'Navegador', sub: 'leer páginas que piden JS' },
@@ -243,7 +243,7 @@ export function puede(run, n, accion, { rol = '' } = {}) {
   return 'Acción desconocida';
 }
 
-// Lo que se le pide a cualquier IA (agnóstico: viaja igual a Hermes con cualquier modelo, al puente o a claude.ai).
+// Lo que se le pide a cualquier IA (agnóstico: viaja igual al servidor, al puente o a claude.ai).
 // opts.sinHerramientas: corre donde no hay web ni MCP (el servidor en F2): se le prohíbe citar lo que no está en los inputs.
 export function pedido(run, n, opts = {}) {
   const e = run.etapas[n], f = run.flujo || {}, o = leerOutput(e.entrega || e.output, e.nombre);
@@ -310,7 +310,7 @@ export function simular(run, n) {
     e.fuentes_min ? { titulo: 'Falta evidencia', detalle: `Pide ${e.fuentes_min} fuente(s) externa(s) y el simulado no investiga`, aviso: true } : null,
   ].filter(Boolean);
   const nombres = o.campos.length ? o.campos : e.criterios?.length ? e.criterios.slice(0, 4) : ['Hallazgos', 'Decisión propuesta', 'Preguntas abiertas'];
-  const campos = nombres.map((c) => ({ campo: c, valor: '⚠️ SIN DATOS — conecta tu IA (Hermes) para investigarlo o corrígelo a mano.', items: [], fuentes: [], estado: 'hipotesis' }));
+  const campos = nombres.map((c) => ({ campo: c, valor: '⚠️ SIN DATOS — corre la etapa en el servidor para investigarlo o corrígelo a mano.', items: [], fuentes: [], estado: 'hipotesis' }));
   const salida = [`## ${o.titulo}`, run.objetivo ? `> Objetivo: ${run.objetivo}` : '', '', ...campos.flatMap((c) => [`### ${c.campo}`, c.valor, ''])].filter((x) => x !== '').join('\n');
   return { actividades, campos, confianza: 0, evidencia: [], faltantes: ['Simulado: ninguna afirmación tiene fuente'], salida };
 }
@@ -318,7 +318,7 @@ export function simular(run, n) {
 // ---------- Guardar el resultado de una etapa (lo usan la ruta del OS y el trabajador del VPS) ----------
 // b = { via, actividades, campos, confianza, faltantes, salida, modelo, evidencia, costo }. Lo que dice un modelo es dato no
 // confiable: la evidencia entra sin verificar y un campo sin fuente queda como hipótesis.
-const VIAS = ['os', 'hermes', 'puente', 'claude-web', 'gateway', 'simulado'];
+const VIAS = ['os', 'hermes', 'puente', 'claude-web', 'gateway', 'servidor', 'simulado']; // «hermes» solo por trabajos viejos
 const recorte = (s, n) => String(s ?? '').trim().slice(0, n);
 const fechaOk = (x) => (typeof x === 'string' && !Number.isNaN(Date.parse(x)) ? new Date(x).toISOString() : new Date().toISOString());
 export function aplicarResultado(run, n, b = {}) {

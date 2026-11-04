@@ -218,7 +218,7 @@ export function textoAlcanceConsulting(nivel, ficha) {
     : a === 'sin-finanzas' ? 'Operación y organización comercial sí. Finanzas va «según acuerdo» y su ficha no la incluye: lo de Money OS va FUERA DEL ALCANCE.' : '';
 }
 
-// Los comandos «/» de la caja: atajos del OS y las capacidades de Hermes (skills y la Terminal).
+// Los comandos «/» de la caja: atajos del OS y los ajustes.
 export const COMANDOS = [
   ['/estrategia', 'Cambiar al modo Strategy'],
   ['/organizacion', 'Cambiar al modo Organization'],
@@ -231,8 +231,7 @@ export const COMANDOS = [
   ['/privado', 'Prender o apagar el modo privado (un modelo en tu compu)'],
   ['/ramificar', 'Seguir esta conversación por otro lado, en una nueva'],
   ['/brujula', 'Ver la meta de esta conversación y sus tareas'],
-  ['/skill', 'Usar una skill de Hermes (las del repo y las suyas)'],
-  ['/terminal', 'Ver los comandos de Hermes en la Terminal'],
+  ['/ajustes', 'Ver los ajustes del Chat'],
 ];
 export function leerComando(t) {
   const m = /^\/([a-zñáéíóúü]+)\s*(.*)$/i.exec(String(t || '').trim()); // con o sin acento: /diseño, /brújula, /organización
@@ -240,30 +239,7 @@ export function leerComando(t) {
   const cmd = '/' + m[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   return COMANDOS.some(([c]) => c === cmd) ? { cmd, arg: m[2].trim() } : null;
 }
-// Los comandos de la Terminal que hacen funcionar a Hermes (perfil «inherent»): el backend se alimenta desde ahí.
-export const TERMINAL = [
-  ['Instalar Hermes', 'curl -fsSL https://inherent-work.vercel.app/laya/hermes/instalar.sh | bash'],
-  ['Actualizar Hermes (si algo no abre)', 'inherent update'],
-  ['Elegir el modelo (suscripción, API o local)', 'inherent model'],
-  ['Conectar ChatGPT con tu suscripción', 'inherent auth add openai-codex --browser'],
-  ['Conectar Claude', 'inherent auth add anthropic'],
-  ['Conectar Kilo Pass (Claude, ChatGPT y Gemini con una sola suscripción): elige «Kilo Code» y pega tu llave', 'inherent model'],
-  ['Autorizar el conector de Inherent OS', 'inherent mcp login inherent'],
-  // Modelos abiertos, gratis y privados: LM Studio (lmstudio.ai) baja y corre cualquier modelo; Hermes lo trae como el
-  // proveedor «lmstudio» (puerto 1234). Los pasos de la portada de Inherent AI (screens/harness.js) salen de estas líneas.
-  ['Modelos abiertos con LM Studio: enciende su servidor', 'lms server start'],
-  ['Cargar un modelo con la memoria que Hermes necesita (64K)', 'lms load <modelo> --context-length 64000'],
-  ['Conectar LM Studio a tu Inherent AI: elige «LM Studio»', 'inherent model'],
-  ['Opcional: que LM Studio cargue y descargue el modelo solo', 'inherent config set model.lmstudio_load_mode jit'],
-  // Ollama queda como alternativa.
-  ['Alternativa: modelo local con Ollama instalado', 'ollama pull qwen3-coder:30b'],
-  ['Alternativa: darle a Ollama la memoria que Hermes necesita (64K)', 'inherent config set model.ollama_num_ctx 65536'],
-  ['Ver las skills que tiene', 'inherent skills list'],
-  ['Revisar que todo esté bien', 'inherent doctor'],
-  ['Ver la llave del OS', 'cat ~/.inherent/hermes/api-key'],
-];
-
-// Cuánto piensa el modelo antes de responder (Hermes lo manda como reasoning_effort). '' = lo que decida el modelo.
+// Cuánto piensa el modelo antes de responder (el servidor lo manda como reasoning_effort). '' = lo que decida el modelo.
 export const ESFUERZOS = [['low', 'Rápido', 'Responde ya; para lo simple'], ['', 'Normal', 'Lo que decida el modelo'], ['high', 'A fondo', 'Piensa más; para estrategia y lo difícil']];
 export const nombreEsfuerzo = (k) => (ESFUERZOS.find(([v]) => v === (k || '')) || ESFUERZOS[1])[1];
 

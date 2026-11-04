@@ -1,21 +1,19 @@
 // Agent Area · un run por etapas (#/ai/agentes/<run>), como el concepto de AGENTS IN OS.pdf:
 //   arriba: el agente, el título, el cliente y «Pausar agente»; la línea de etapas numeradas.
 //   tres columnas: Inputs y evidencia (lo que el equipo le da + las fuentes que usó) · Actividad del agente (en tiempo real,
-//   con los pasos de Hermes mientras trabaja) · Resultado en trabajo (los campos de la entrega, cada uno Hipótesis o
+//   con los pasos del servidor mientras trabaja) · Resultado en trabajo (los campos de la entrega, cada uno Hipótesis o
 //   Con evidencia, con su confianza).
 //   abajo: «Paso N de M», el avance y la acción que toca (Ejecutar · Revisar y aprobar · Continuar a la siguiente).
-// La IA es la de la persona (Hermes con el modelo y los MCPs que tenga, el puente o claude.ai) o el simulado (STUB).
+// Corre en el servidor (por defecto), con la IA del OS, por el puente de la compu, en claude.ai (a mano) o simulado (STUB).
 import { html, raw, mount, ico, skel, toast, api, ask, md, esc, drawer, closeDrawer, uploadToDrive } from './core.js';
 import { ESTADOS, activa, completo, progreso, puede, pedido, leerRespuesta, simular, leerOutput, CONEXIONES, enServidor } from './agentes-flujos.js';
 import { correrPedido, caminoIA } from './ia-herramienta.js';
-import { hermesDe, modelosHermes, nombreProveedor, esLocal } from './hermes.js';
-import { motorDe, nombreMotor } from './motor-ui.js';
 import { correrOS } from './ia-os.js';
 import { proveedorDe, iaDeUso } from './ia-proveedores.js';
 import { rutaAgente } from './agentes-ui.js';
 
 const enc = encodeURIComponent;
-const VIA = { gateway: 'Servidor', os: 'IA del OS', hermes: 'Hermes (tu compu)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
+const VIA = { gateway: 'Servidor', servidor: 'Servidor', os: 'IA del OS', hermes: 'Hermes (retirado)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
 const ACC = { crear: 'creó el run', ejecutar: 'ejecutó la etapa', aprobar: 'aprobó', corregir: 'corrigió el resultado', ajuste: 'pidió un ajuste', input: 'agregó un input', 'quitar-input': 'quitó un input', verificar: 'verificó una fuente', desverificar: 'quitó la verificación', archivar: 'archivó el run', restaurar: 'restauró el run', pausar: 'pausó el agente', reanudar: 'reanudó el agente', encolar: 'mandó la etapa al servidor', cancelar: 'la sacó de la cola', tomar: 'la tomó', fallo: 'falló en' };
 const quien = (e) => String(e || '').split('@')[0];
 const hora = (iso) => (iso ? new Date(iso).toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' }) : '');
@@ -31,28 +29,24 @@ export async function pintarRun(el, me, id, alive) {
   catch (e) { if (alive()) mount(el, html`<div class="empty card">${e.message}<a class="btn ghost sm" href="#/ai/agentes">Volver</a></div>`); return; }
   if (!alive()) return;
 
-  // Con qué corre. Primero la IA del OS (Ajustes → IA: la del agente o la «IA para Agents»), después las demás conectadas,
-  // y las de la compu de la persona (Hermes con sus modelos y MCPs, el puente de Claude, claude.ai a mano), y el simulado.
+  // Con qué corre. Primero el servidor (siempre encendido), después la IA del OS (Ajustes → IA), el puente de Claude de la
+  // compu, claude.ai a mano y el simulado. Hermes se retiró (PLAN-GATEWAY F3).
   const [ia, camino, gw] = await Promise.all([api('ia/estado').catch(() => null), caminoIA(me).catch(() => 'claude-web'), api('agentes/gateway').catch(() => null)]);
   // El servidor (Gateway del VPS): corre aunque tu compu esté apagada. Va primero si está en línea.
   const PREF_GW = ['deepseek-v4-flash', 'deepseek-v4-pro'];
   const gwModelos = gw?.en_linea ? [...gw.modelos].sort((a, b) => (PREF_GW.indexOf(a) + 1 || 9) - (PREF_GW.indexOf(b) + 1 || 9)) : [];
-  const modelos = hermesDe(me) ? await modelosHermes(me).catch(() => null) : null;
-  const delChat = motorDe(me);
   const porDefecto = run.flujo?.ia?.proveedor ? run.flujo.ia : iaDeUso(ia, 'agents');
   const conectados = (ia?.proveedores || []).filter((p) => p.conectado);
   const opciones = [
     ...(gwModelos.length ? [['Servidor · siempre encendido', gwModelos.map((m) => [`gw|${m}`, m])]] : []),
     ...(porDefecto?.proveedor ? [['os', `IA del OS · ${proveedorDe(porDefecto.proveedor)?.nombre || porDefecto.proveedor}${porDefecto.modelo ? ` · ${porDefecto.modelo}` : ''}`]] : []),
     ...conectados.map((p) => [`IA del OS · ${proveedorDe(p.id)?.nombre || p.id}`, (p.modelos || []).slice(0, 60).map((m) => [`os|${p.id}|${m}`, m])]),
-    ...((modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length).map((p) => [`Hermes · ${nombreProveedor(p.slug)}${esLocal(p.slug) ? ' · en tu compu' : p.slug === 'custom' ? ' · endpoint propio' : ''}`, p.modelos.slice(0, 40).map((m) => [`hermes|${p.slug}|${m}`, m])])),
-    ...(camino === 'hermes' ? [['hermes', `Hermes · ${delChat.motor === 'hermes' ? nombreMotor(delChat) : 'modelo del Chat'}`]] : []),
     ['puente', VIA.puente], ['claude-web', VIA['claude-web']], ['simulado', 'Simulado (stub, sin IA)'],
   ];
   const valores = opciones.flatMap((o) => (Array.isArray(o[1]) ? o[1].map((x) => x[0]) : [o[0]]));
-  let runner = localStorage.getItem(prefRunner(me)) || (gwModelos.length ? `gw|${gwModelos[0]}` : porDefecto?.proveedor ? 'os' : camino === 'hermes' ? 'hermes' : 'simulado');
+  let runner = localStorage.getItem(prefRunner(me)) || (gwModelos.length ? `gw|${gwModelos[0]}` : porDefecto?.proveedor ? 'os' : 'simulado');
   if (!valores.includes(runner)) runner = valores[0];
-  const sinIA = !conectados.length && camino !== 'hermes' && !gwModelos.length;
+  const sinIA = !conectados.length && !gwModelos.length;
 
   const selector = () => html`<label class="ag-runner"><span class="xs mut">Con qué corre</span><select class="in sm" data-ch="runner">${opciones.map(([k, v]) => (Array.isArray(v)
     ? html`<optgroup label="${k}">${v.map(([val, t]) => html`<option value="${val}" ${runner === val ? raw('selected') : ''}>${t}</option>`)}</optgroup>`
@@ -201,12 +195,12 @@ export async function pintarRun(el, me, id, alive) {
           const evidencia = [...r.evidencia, ...citas.map((c, k) => ({ id: `w${k + 1}`, titulo: c.titulo, url: c.url, extracto: c.extracto || '', verificada: false })).filter((c) => !r.evidencia.some((x) => x.id === c.id))];
           res = { ...r, evidencia, actividades: [...vivo.filter((a) => a.pasos?.length), ...r.actividades.map((a) => ({ ...a, at: t })), ...r.faltantes.map((f) => ({ titulo: 'Falta evidencia', detalle: f, aviso: true, at: t }))], via: 'os', modelo: out.modelo };
         } else {
-        const elegido = tipo === 'hermes' && provider ? { preferir: 'hermes', modelo: { provider, model: m.join('|') } } : ['hermes', 'puente', 'claude-web'].includes(runner) ? { preferir: runner } : {};
+        const elegido = ['puente', 'claude-web'].includes(runner) ? { preferir: runner } : {};
         let ultimo = null;
         const out = await correrPedido(me, {
           modo: 'estrategia', slug: run.cliente, nombre: `${run.flujo.nombre} · ${run.etapas[n].nombre}`, mensaje: pedido(run, n), signal: ctrl.signal, ...elegido,
-          // Los pasos reales de Hermes (buscar en la web, leer una página, un MCP…) entran a la actividad mientras trabaja.
-          onTool: (nombre) => { const at = new Date().toISOString(); if (ultimo && ultimo.titulo === 'Usando sus conexiones') { ultimo.pasos = [...(ultimo.pasos || []), nombre].slice(-12); } else { ultimo = { titulo: 'Usando sus conexiones', detalle: 'Herramientas y MCPs de Hermes', pasos: [nombre], at }; vivo = [...vivo, ultimo]; } if (alive()) pinta(); },
+          // Los pasos reales (buscar en la web, leer una página, un MCP…) entran a la actividad mientras trabaja.
+          onTool: (nombre) => { const at = new Date().toISOString(); if (ultimo && ultimo.titulo === 'Usando sus conexiones') { ultimo.pasos = [...(ultimo.pasos || []), nombre].slice(-12); } else { ultimo = { titulo: 'Usando sus conexiones', detalle: 'Herramientas y MCPs', pasos: [nombre], at }; vivo = [...vivo, ultimo]; } if (alive()) pinta(); },
           onDelta: () => { if (vivo.at(-1)?.titulo !== 'Redactando el resultado') { vivo = [...vivo, { titulo: 'Redactando el resultado', detalle: '', at: new Date().toISOString() }]; if (alive()) pinta(); } },
         });
         const r = leerRespuesta(out.texto), t = new Date().toISOString();

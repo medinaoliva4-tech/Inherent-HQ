@@ -1,5 +1,5 @@
-// Las IAs del Chat: qué proveedores de Hermes corren en la compu (el modo privado) y el switch de IA de la caja.
-// Puro: sin DOM ni red (lo prueba scripts/test-llm.mjs). hermes.js los reexporta.
+// Las IAs del Chat: qué proveedores corren y el switch de IA de la caja.
+// Puro: sin DOM ni red (lo prueba scripts/test-llm.mjs). ia-pasos.js los reexporta.
 
 // Los proveedores que corren en la compu (el modo privado): lo que se habla no sale de ella. Ollama Cloud no cuenta.
 export const LOCALES = ['ollama', 'lmstudio', 'llamacpp', 'llama-cpp', 'vllm', 'local'];

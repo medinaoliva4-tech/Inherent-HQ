@@ -73,7 +73,7 @@ export async function avisosDe(u, hoy = hoyGT()) {
   return { hoy, items: visibles, pospuestos, n: contar(visibles), errores, pos: datos.yo?.avisos_pos || {}, todos: items };
 }
 
-const COMPU = /^pla-(hermes|puente|app-mac)$|^pla-avisos-celular:este$/;
+const COMPU = /^pla-(puente|app-mac)$|^pla-avisos-celular:este$/;
 
 export function rutas(on) {
   on('GET', 'avisos', async (req, res) => {

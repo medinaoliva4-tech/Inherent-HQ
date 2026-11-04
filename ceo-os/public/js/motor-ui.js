@@ -1,29 +1,31 @@
-// El motor de los chats (Estrategia, Plan del mes, Diseño): Claude, ChatGPT o un modelo local. Corren en tu compu por el
-// puente de Laya, leen el repo y no cambian nada. ChatGPT y los locales van por Codex (el agente de OpenAI); los locales, con Ollama.
+// El motor de los chats (Estrategia, Plan del mes, Diseño): el SERVIDOR de Inherent (por defecto: siempre encendido, con
+// web y las conexiones de la persona; PLAN-GATEWAY F3) o, por el puente de Laya en tu compu, Claude, ChatGPT o un modelo
+// local (leen el repo y no cambian nada; ChatGPT y los locales van por Codex; los locales, con Ollama). Hermes se retiró.
 // La elección es de cada persona (localStorage) y vale para todos los chats.
 import { html, raw, mount, ico } from './core.js';
 import { junto } from './divisor.js';
-import { nombreProveedor } from './hermes.js';
 
-export const MOTORES = [['claude', 'Claude'], ['chatgpt', 'ChatGPT'], ['local', 'Modelo local'], ['hermes', 'Hermes']];
-// Hermes: el harness en la compu de cada quien (hermes.js). modelo = el modelo elegido, provider = su proveedor en Hermes.
+export const MOTORES = [['servidor', 'Servidor'], ['claude', 'Claude'], ['chatgpt', 'ChatGPT'], ['local', 'Modelo local']];
+// servidor: el Gateway del VPS (chat-gateway.js). modelo = el modelo del servidor ('' = el de por defecto).
 // Los modelos de Claude que se eligen aquí (alias de Claude Code: siempre el más nuevo de cada uno). Vacío = el de tu cuenta.
 export const CLAUDE_MODELOS = [['opus', 'Opus', 'El más capaz'], ['sonnet', 'Sonnet', 'Equilibrado y rápido'], ['haiku', 'Haiku', 'El más rápido']];
 const K = (me) => `os.motor.${me.email}`;
-export function motorDe(me) { try { const j = JSON.parse(localStorage.getItem(K(me)) || 'null'); if (j && MOTORES.some(([k]) => k === j.motor)) return { motor: j.motor, modelo: String(j.modelo || ''), provider: String(j.provider || '') }; } catch {} return { motor: 'claude',modelo: '' }; }
+// Quien tenía Hermes (ya retirado) pasa al servidor.
+export function motorDe(me) { try { const j = JSON.parse(localStorage.getItem(K(me)) || 'null'); if (j?.motor === 'hermes') return { motor: 'servidor', modelo: '', provider: '' }; if (j && MOTORES.some(([k]) => k === j.motor)) return { motor: j.motor, modelo: String(j.modelo || ''), provider: String(j.provider || '') }; } catch {} return { motor: 'servidor', modelo: '' }; }
 export function setMotor(me, v) { try { localStorage.setItem(K(me), JSON.stringify({ motor: v.motor, modelo: v.modelo || '', provider: v.provider || '' })); } catch {} }
-export const esHermes = (me) => motorDe(me).motor === 'hermes';
+export const esServidor = (me) => motorDe(me).motor === 'servidor';
 const corto = (m) => String(m || '').split('/').pop().slice(0, 28);
-export const nombreMotor = (v) => (v.motor === 'hermes' ? (v.modelo ? `${nombreProveedor(v.provider)} · ${corto(v.modelo)}` : 'Hermes') : v.motor === 'local' ? (v.modelo ? `Local · ${v.modelo}` : 'Modelo local') : v.motor === 'claude' && v.modelo ? `Claude ${CLAUDE_MODELOS.find(([k]) => k === v.modelo)?.[1] || ''}`.trim() : MOTORES.find(([k]) => k === v.motor)?.[1] || 'Claude');
+export const nombreMotor = (v) => (v.motor === 'servidor' ? (v.modelo ? `Servidor · ${corto(v.modelo)}` : 'Servidor') : v.motor === 'local' ? (v.modelo ? `Local · ${v.modelo}` : 'Modelo local') : v.motor === 'claude' && v.modelo ? `Claude ${CLAUDE_MODELOS.find(([k]) => k === v.modelo)?.[1] || ''}`.trim() : MOTORES.find(([k]) => k === v.motor)?.[1] || 'Claude');
 // Lo que va en el cuerpo de POST /chat.
-export const cuerpoMotor = (me) => { const v = motorDe(me); return { motor: v.motor, ...((v.motor === 'local' || (v.motor === 'claude' && CLAUDE_MODELOS.some(([k]) => k === v.modelo))) && v.modelo ? { modelo: v.modelo } : {}) }; };
+// El puente solo conoce claude, chatgpt y local: quien eligió el servidor y usa un chat del puente (Diseño, con Figma) va con Claude.
+export const cuerpoMotor = (me) => { const v0 = motorDe(me), v = v0.motor === 'servidor' ? { motor: 'claude', modelo: '' } : v0; return { motor: v.motor, ...((v.motor === 'local' || (v.motor === 'claude' && CLAUDE_MODELOS.some(([k]) => k === v.modelo))) && v.modelo ? { modelo: v.modelo } : {}) }; };
 // La sesión de un chat es de un motor: si cambió, se empieza una conversación nueva.
 export const claveMotor = (me) => { const v = motorDe(me); return `${v.motor}:${v.modelo}`; };
 
 // Qué le falta al motor elegido en esta compu (o null si está listo). m = el bloque «motores» de /health.
 export function faltaMotor(me, chat, { diseno = false } = {}) {
-  const v = motorDe(me), m = chat?.motores;
-  if (v.motor === 'hermes') return null; // lo revisa la pantalla con saludHermes (hermes.js)
+  const v0 = motorDe(me), m = chat?.motores, v = v0.motor === 'servidor' && diseno ? { motor: 'claude', modelo: '' } : v0;
+  if (v.motor === 'servidor') return null; // lo revisa la pantalla con saludServidor (chat-gateway.js)
   if (!m) return v.motor === 'claude' ? null : { t: 'Falta actualizar el puente', p: 'Tu puente todavía no trae ChatGPT ni los modelos locales. Corre otra vez el comando de instalar.', instalar: true };
   if (v.motor === 'claude') return m.claude ? null : { t: 'No encuentro Claude Code', p: 'Instálalo e inicia sesión con tu cuenta (en la Terminal: claude). O elige ChatGPT o un modelo local.' };
   if (diseno && v.motor === 'local') return { t: 'Los modelos locales no diseñan en Figma', p: 'Para Diseño usa Claude o ChatGPT.' };
@@ -35,28 +37,26 @@ export function faltaMotor(me, chat, { diseno = false } = {}) {
 }
 export const faltaHtml = (f, cmd) => html`<div class="es-setup"><b>${f.t}</b><p>${f.p}</p>${f.cmd ? cmd(f.cmd) : ''}<div class="row" style="gap:8px">${f.cmd || f.instalar ? html`<button class="btn xs" data-act="reintentar">Ya lo hice</button>` : ''}<button class="btn ghost xs" data-act="motor">${f.elegir ? 'Elegir modelo' : 'Cambiar de modelo'}</button></div></div>`;
 
-// hermes = { salud: { on, auth }, modelos: lo que devuelve modelosHermes() } cuando la pantalla lo averiguó.
-export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = null, hermes = null } = {}) {
+// servidor = { en_linea, modelos } (saludServidor) cuando la pantalla lo averiguó.
+export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = null, servidor = null } = {}) {
   document.querySelector('.es-menu')?.remove();
   const box = anchor.closest('.es-box') || anchor.closest('.es-setup') || anchor.parentElement;
   const m = chat?.motores || {}, v = motorDe(me);
-  const op = (motor, modelo, label, sub, off, provider = '') => ({ motor, modelo, provider, label, sub, off, on: v.motor === motor && (motor === 'chatgpt' || (v.modelo === modelo && (motor !== 'hermes' || v.provider === provider))) });
-  // Hermes: cada proveedor que la persona conectó en su compu, con sus modelos (los primeros 6).
-  const hz = hermes?.salud?.on && hermes.salud.auth
-    ? ((hermes.modelos?.proveedores || []).filter((p) => p.listo && p.modelos.length).flatMap((p) => p.modelos.slice(0, 6).map((x) => op('hermes', x, `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, 'Por Hermes, en tu compu', false, p.slug))) || [])
-    : [];
-  const hzAviso = !hermes ? '' : !hermes.salud?.on ? (window.inherentEscritorio ? 'Hermes no está instalado: menú Puente › Instalar Hermes' : 'Hermes no está encendido en esta compu') : !hermes.salud.auth ? 'Hermes está, pero falta su llave (en el chat: pégala)' : hz.length ? '' : 'Hermes está, pero sin modelo: en la Terminal, «inherent model»';
+  const op = (motor, modelo, label, sub, off, provider = '') => ({ motor, modelo, provider, label, sub, off, on: v.motor === motor && (motor === 'chatgpt' || v.modelo === modelo) });
+  // El servidor: siempre encendido, con web y las conexiones de la persona. Sus modelos (los primeros 4) o el de por defecto.
+  const srv = servidor?.on ? [op('servidor', '', 'Servidor · siempre encendido', 'Responde aunque tu compu esté apagada', false), ...(servidor.modelos || []).slice(0, 4).map((x) => op('servidor', x, `Servidor · ${x}`, 'Modelo del servidor', false))]
+    : [op('servidor', '', 'Servidor', servidor ? 'Fuera de línea ahora' : 'Siempre encendido', false)];
   const sinClaude = m.claude === false, conModelos = Boolean(chat?.claude_modelos);
   const items = [
+    ...(diseno ? [] : srv),
     op('claude', '', 'Claude', sinClaude ? 'No está instalado en esta compu' : 'El modelo de tu cuenta', false),
     ...(conModelos && !sinClaude ? CLAUDE_MODELOS.map(([k, n, sub]) => op('claude', k, `Claude ${n}`, sub, false)) : []),
     op('chatgpt', '', 'ChatGPT', !m.chatgpt?.instalado ? 'Falta Codex' : m.chatgpt.sesion ? 'Codex, con tu cuenta de ChatGPT' : 'Falta iniciar la sesión', false),
     ...(diseno ? [] : (m.local?.modelos?.length ? m.local.modelos.map((x) => op('local', x, `Local · ${x}`, 'Ollama, en tu compu', false)) : [op('local', '', 'Modelo local', m.local?.instalado ? 'Falta Ollama o un modelo' : 'Falta Codex y Ollama', false)])),
   ];
   const el = document.createElement('div'); el.className = 'es-menu'; el.setAttribute('role', 'listbox');
-  const todos = [...items, ...hz];
+  const todos = items;
   mount(el, html`<span class="lbl" style="display:block;padding:6px 10px 2px">Qué modelo responde</span>${items.map((x, i) => html`<a href="#" role="option" class="${x.on ? 'on' : ''}" data-i="${i}"><b></b><span>${x.label}</span><small>${x.sub}</small></a>`)}${diseno ? html`<p class="mut sm" style="margin:4px 10px 6px">Los modelos locales no diseñan en Figma.</p>` : ''}
-    ${hermes ? html`<span class="lbl" style="display:block;padding:8px 10px 2px;border-top:1px solid var(--hair);margin-top:4px">Hermes · el harness en tu compu</span>${hz.map((x, i) => html`<a href="#" role="option" class="${x.on ? 'on' : ''}" data-i="${items.length + i}"><b></b><span>${x.label}</span><small>${x.sub}</small></a>`)}${hzAviso ? html`<p class="mut sm" style="margin:4px 10px 6px">${hzAviso}</p>` : ''}` : ''}
     ${conModelos || sinClaude ? '' : html`<p class="mut sm" style="margin:4px 10px 6px">Para elegir Opus, Sonnet o Haiku, actualiza el puente (o usa la app de Mac).</p>`}
     ${laya ? html`<p class="mm-laya ${laya.listo ? 'ok' : ''}"><i></i>${laya.listo ? 'Laya lista' : laya.cargando ? 'Laya cargando…' : 'Laya no está instalada en esta compu'}<small>${laya.listo ? 'Juzga y enruta en tu compu' : laya.cargando ? 'La primera vez baja su modelo' : (window.inherentEscritorio ? 'Menú Puente › Instalar Laya' : 'La app de Mac la instala sola')}</small></p>${laya.ojo ? html`<p class="mm-laya ${laya.ojo.listo ? 'ok' : ''}"><i></i>${laya.ojo.listo ? 'Ojo visual listo' : laya.ojo.cargando ? 'Ojo visual cargando…' : laya.ojo.disponible ? 'Ojo visual apagado' : 'Ojo visual no instalado'}<small>${laya.ojo.listo ? 'Dice si una imagen se ve de la marca' : laya.ojo.disponible ? 'La primera vez baja su modelo (~600 MB)' : 'Vuelve a correr el instalador de Laya'}</small></p>` : ''}` : ''}`);
   box.append(el); junto(el, anchor, box);
@@ -66,4 +66,4 @@ export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = nul
 }
 
 // El botón del modelo en la caja, como en ChatGPT: el nombre y un punto que dice si tu compu está conectada.
-export const modeloBtn = (me, ok) => html`<button type="button" class="cx-model" data-act="motor" aria-haspopup="listbox" title="${ok ? 'Corre en tu compu · conectado' : 'Tu compu no está conectada'}"><i class="cx-dot ${ok ? 'on' : ''}"></i>${nombreMotor(motorDe(me))} <span class="cx-car">▾</span></button>`;
+export const modeloBtn = (me, ok) => html`<button type="button" class="cx-model" data-act="motor" aria-haspopup="listbox" title="${esServidor(me) ? (ok ? 'Servidor · en línea' : 'Servidor fuera de línea') : ok ? 'Corre en tu compu · conectado' : 'Tu compu no está conectada'}"><i class="cx-dot ${ok ? 'on' : ''}"></i>${nombreMotor(motorDe(me))} <span class="cx-car">▾</span></button>`;
