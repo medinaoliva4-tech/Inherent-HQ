@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. F0 y F1 hechas en lo esencial; **F2 hecha y conectada a la base de producción** (ver §10 y §15). Lo siguiente: merge del #209, una base de pruebas de verdad y F3.
+**Estado (2026-11-04):** consolidado. **F0, F1 y F2 cerradas** (ver §10, §14 y §15). Lo siguiente es **F3**: web y MCP dentro del servidor.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -15,12 +15,12 @@
 | D1 | **El trabajo pesado corre en el VPS (Contabo)**, no en la compu de cada persona | Llaves, presupuestos, logs y colas en un solo lugar. Nadie depende de tener su Mac encendida |
 | D2 | **Un solo Gateway**; los motores se enchufan detrás | Se acaban las muchas rutas (Hermes, puente, claude.ai pegado, Simulado) |
 | D3 | **El motor base es un ejecutor determinista** (`gateway/runner.mjs`) que llama a LiteLLM **un paso a la vez**. OpenCode queda solo para tareas cortas con herramientas | En el spike, OpenCode con un bucle largo leyó y no escribió; el ejecutor por pasos corrió Strategy de punta a punta (§14). *Cambia la D3 original* |
-| D4 | Segundo motor: **Claude Code con Opus 5.5** para video y diseño | Ya funciona en esos flujos |
+| D4 | Segundo motor: **Claude Code con Opus 5.5** para video, diseño y lo premium | Ya funciona en esos flujos |
 | D5 | **LiteLLM** como capa de proveedores (Featherless, NVIDIA, frontier por API) | Un adaptador; llaves virtuales y presupuesto por persona y cliente |
 | D6 | **La memoria vive en la base del OS (Neon)**, no en el motor | El contexto de un motor es desechable; el trabajo no se pierde |
 | D7 | **Un solo hilo visible por Trabajo**; por debajo se rotan sesiones con resumen de traspaso | El contexto real es de 32k (§14): la rotación es obligatoria |
 | D8 | **MCP por persona**, con su propia autenticación (ya existe: `api/_lib/conectores.js`, OAuth y token cifrados) | Cada quien conecta lo suyo |
-| D9 | En el VPS el motor premium usa **API key de la empresa**, nunca la suscripción de alguien | Términos de uso |
+| D9 | **Claude nunca por API.** Al motor premium se le habla por un canal a una sesión de Claude Code encendida (la terminal con la suscripción iniciada), no con una llave de API. *Cambia la D9 original* | Decisión del CEO (2026-11-04). Por verificar: los términos de uso si esa sesión corre en el VPS en lugar de en una compu del equipo |
 | D10 | **Los workflows viven en la base del OS** (`agent_workflows`), creados en blanco o importados de una plantilla del repo (`agents/*/brain/WORKFLOW.md`). Importar corta el lazo. *Cambia lo dicho en §13 original («plantillas en el repo»)* | Se editan en el OS sin PR; el repo es fuente de plantillas, no de verdad. `ceo-os/workflows/*.json` queda como prueba del ejecutor |
 | D11 | **Modelo por etapa**, elegido en el Flujo (vacío = el del agente; si no, la «IA para Agents» de Ajustes) | Gratis o barato para preparar, fuerte para decidir. Ya construido |
 | D12 | **Umbral:** cada paso cabe en ~20k tokens de entrada y ~6k de salida; si no cabe, un modelo gratis condensa antes o el OS avisa (413 `UMBRAL`) | Featherless corta en 32,768 |
@@ -88,7 +88,7 @@ El contexto real de Featherless en el plan actual es **32,768 tokens** (no 262k)
 
 ## 7 · Figma y video
 
-- **Figwright** es un MCP local que necesita el plugin abierto en Figma. **Pendiente de probar** si llega al VPS; si no, esa etapa corre en la Mac del diseñador.
+- **Figwright** es un MCP local que necesita el plugin abierto en Figma. **Probado (2026-11-04): sí llega al VPS** con un túnel que abre la Mac del diseñador (§14). Mientras la Mac esté encendida y Figma abierto, el servidor puede leer y escribir en el archivo.
 - **Video y diseño** corren por Claude Code (Opus 5.5) detrás del mismo Gateway.
 
 ## 8 · La interfaz
@@ -123,17 +123,17 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 |---|---|---|
 | Preparar, condensar, títulos, triage | NVIDIA MiniMax M3.1 Flash (gratis, ~15 tok/s, razona en oculto) | Medido |
 | Redactar etapas de volumen y revisar | DeepSeek V4 Flash (~25 tok/s, sin razonamiento oculto) | Medido |
-| Análisis y decisiones (Strategy, Branding, Growth) | DeepSeek V4 Pro (~13 tok/s) | Medido; falta comparar contra Claude |
+| Análisis y decisiones (Strategy, Branding, Growth) | DeepSeek V4 Pro (~13 tok/s) | Medido y comparado con Claude: mismo nivel (§14) |
 | Kimi K3 / GLM 5.3 | Solo con presupuesto de razonamiento explícito | Por medir |
-| Diseño y video | Claude Code · Opus 5.5 | Ya funciona |
+| Diseño, video y segundo revisor premium | Claude Code · Opus 5.5, por la sesión encendida (D9) | Ya funciona |
 | Revisor | Otro modelo que el que escribió | Hoy Flash revisa lo de Flash: corregir cuando haya un tercer modelo útil |
 
 ## 10 · Fases
 
 | Fase | Qué se hace | Estado |
 |---|---|---|
-| **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Casi hecha.** OS oficial: `inherent-work.vercel.app`. **No hay base de pruebas separada:** la URL que se usaba como «staging» resultó ser la de producción (2026-11-04). Pendiente: crear una rama `staging` en Neon; merge del #209 y cierre de #207/#208 |
-| **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales | **Hecha** (§14). Pendiente: comparar calidad contra Claude por API; probar Figwright desde el VPS |
+| **F0 · Piso firme** | Agent Area recuperado y unido (PR #209); filtros por cliente (`scoper`); base de pruebas separada; OS oficial | **Cerrada (2026-11-04).** OS oficial: `inherent-work.vercel.app`. Base de pruebas: la rama `ceo-os-staging` de Neon (endpoint `ep-sweet-wind`, vacía, separada de `main`); conexión en `~/.config/inherent/neon-staging.env` (Mac) y `~/gateway/neon-staging.env` (VPS); en local se usa con la configuración `ceo-os-staging`. PR #209 unido a `main`; #207 y #208 cerrados |
+| **F1 · Spike** | VPS con LiteLLM y OpenCode; flujo real de Strategy; límites reales; calidad contra Claude; Figwright | **Cerrada (2026-11-04)** (§14): la calidad de DeepSeek V4 Pro alcanza para Strategy; Figwright funciona desde el VPS con un túnel que abre la Mac |
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Con qué corre» → «Gateway (servidor)» como opción por defecto; la pantalla del trabajo lee el avance de la base; el chat y los modos pasan al Gateway; apagar Hermes | Todos los modos funcionan sin Hermes |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | Un trabajo se lleva de punta a punta desde el chat |
@@ -154,14 +154,15 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | D14: la interfaz sigue a Apple HIG, con vidrio y profundidad | CEO |
 | 2026-11-04 | D13 aprobada y F2 construida: `gateway/worker.mjs` como servicio `gw-worker` en el VPS | CEO + Claude |
 | 2026-11-04 | En el servidor (sin web ni MCP) la evidencia se limita a los inputs: el modelo inventó una fuente de Statista en la primera prueba | Prueba de F2 |
+| 2026-11-04 | D9: Claude nunca por API; se le habla por un canal a una sesión de Claude Code encendida | CEO |
+| 2026-11-04 | F0 y F1 cerradas: base de pruebas `ceo-os-staging`, #209 a `main`, comparación contra Claude, Figwright desde el VPS | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
 
-- Crear una rama `staging` en Neon y usarla para las pruebas locales y del servidor (hoy solo existe producción).
+- Si la sesión de Claude Code para lo premium (D9) puede vivir en el VPS o tiene que ser la compu de alguien del equipo (términos de uso).
 - Que el VPS alcance con varios trabajos a la vez (4 vCPU, 7.8 GB: suficiente para el ejecutor; Claude Code puede pedir más).
 - Costo en unidades de Featherless de cada modelo que no es Kimi K3.
-- Si Figwright puede trabajar desde el VPS.
 - Higiene: revocar las llaves de Featherless que se pegaron en el chat y rotar la contraseña de Neon que también se pegó.
 
 ## 13 · El orquestador: de un prompt a un workflow multimodelo
@@ -208,7 +209,9 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 | Strategy (método → contexto → análisis → revisión → gate) corrió de punta a punta con el ejecutor: ~7 min, ~25k tokens, se detuvo en el gate. El revisor detectó una inconsistencia real en la ficha de prueba (2,990 × $145 = $433k ≠ $330k) | Valida §13 |
 | OpenCode + Kimi K3: tareas cortas con herramientas, bien; la tarea larga leyó y cerró sin escribir; arranques colgados por IPv6 (corregido con `gai.conf`) | D3 corregida: no usar bucle largo |
 | NVIDIA gratis: solo MiniMax M3.1 Flash responde | Sirve para preparar, no como motor base |
-| Claude Code CLI no corre en segundo plano en la Mac («Not logged in») | La comparación con Claude se hace por API con llave de la empresa |
+| Claude Code CLI de la terminal sin sesión («Not logged in» en `claude -p`); la app de escritorio sí tiene sesión | El canal a Claude (D9) necesita un `claude /login` una vez en la terminal o máquina que lo atienda |
+| **Calidad (Strategy · Análisis, mismo pedido y mismas entradas):** DeepSeek V4 Pro (~329 s) contra Claude Opus por la sesión encendida. Mismo nivel. DeepSeek es más operativo (GO GET con acción y métrica, tabla de entrega a cada departamento) y detectó la misma inconsistencia de números; un desliz: afirmó que el negocio es «rentable» sin dato. Claude es más preciso con los números (abre con la inconsistencia y calcula la meta según cuál dato sea el falso) y más corto, con GO GET menos accionables | DeepSeek V4 Pro queda como modelo de Strategy. Claude para lo premium y como segundo revisor en entregables de alto riesgo (D4, D9) |
+| **Figwright desde el VPS:** el servidor de Figwright de la Mac escucha solo en `127.0.0.1:3055`; el VPS no llega directo. Con un túnel que **abre la Mac hacia el VPS** (`ssh -R 127.0.0.1:3055:127.0.0.1:3055 inherent-gw`), un Figwright «seguidor» en el VPS hizo `ping` de punta a punta y leyó el archivo real «akai - brand world». El VPS nunca recibe acceso a la Mac | Funciona. Para F5: dejar ese túnel como servicio en la Mac del diseñador (se cae si la Mac se apaga o Figma se cierra) |
 | Firewall activo (solo Tailscale), login root y por contraseña cerrados | Servidor endurecido; compatible con D13 (el VPS solo sale) |
 
 ## 15 · F2 · lo que quedó construido (2026-11-04)
