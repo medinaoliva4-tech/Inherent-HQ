@@ -35,6 +35,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   let sel = etapas.length ? 0 : null, panel = 'construir', sucio = false, guardando = false, menuEn = null;
   let accAbierto = true; try { accAbierto = localStorage.getItem(K_ACC) !== '0'; } catch {}
   const view = { x: 0, y: 0, z: 1, listo: false };
+  let full = false, lugar = null; // pantalla completa: el Flujo cubre toda la ventana (Esc o el mismo botón salen)
 
   const modeloDe = (e) => (e.ia?.proveedor ? e.ia.modelo : wf.ia?.proveedor ? wf.ia.modelo : '');
   const conexionesDe = (e) => (e.herramientas || []).map((h) => CONEXIONES.find((c) => c.id === h)?.nombre || CONECTORES.find((c) => c.id === h)?.nombre || h);
@@ -139,10 +140,11 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   };
 
   const pinta = () => {
-    mount(el, html`<div class="kf ${ro ? 'ro' : ''}">
+    mount(el, html`<div class="kf ${ro ? 'ro' : ''} ${full ? 'full' : ''}">
       <div class="kf-bar">
         <p><b>${etapas.length} etapa${etapas.length === 1 ? '' : 's'}</b><span class="mut"> · cada trabajo las recorre en este orden y tú apruebas cada una</span>${sucio ? html`<span class="kf-sucio">Cambios sin guardar</span>` : ''}</p>
-        ${ro ? html`<span class="mut sm">Solo el CEO o el COO editan el flujo</span>` : html`<button class="btn sm" data-act="guardar" ${sucio && !guardando ? '' : raw('disabled')}>${guardando ? 'Guardando…' : 'Guardar'}</button>`}
+        <div class="kf-bar-a">${ro ? html`<span class="mut sm">Solo el CEO o el COO editan el flujo</span>` : html`<button class="btn sm" data-act="guardar" ${sucio && !guardando ? '' : raw('disabled')}>${guardando ? 'Guardando…' : 'Guardar'}</button>`}
+          <button type="button" class="kf-ib kf-full-b" data-act="full" aria-pressed="${full}" aria-label="${full ? 'Salir de pantalla completa' : 'Pantalla completa'}" title="${full ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa (F)'}">${ico(full ? 'x' : 'scan', 16)}</button></div>
       </div>
       <div class="kf-canvas" data-canvas>
         <div class="kf-world" style="transform:translate(${view.x}px,${view.y}px) scale(${view.z})">
@@ -241,6 +243,13 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     'zoom-in': () => { const r = lienzo().getBoundingClientRect(); zoomEn(1.2, r.width / 2, r.height / 2); },
     'zoom-out': () => { const r = lienzo().getBoundingClientRect(); zoomEn(1 / 1.2, r.width / 2, r.height / 2); },
     ajustar: () => ajustar(),
+    // Pantalla completa: el Flujo sale de #main (que tiene su propio apilamiento, debajo de la barra lateral) al body, y vuelve.
+    full: () => {
+      full = !full; document.documentElement.classList.toggle('kf-fullscreen', full);
+      if (full) { lugar = document.createComment('flujo'); el.before(lugar); document.body.append(el); }
+      else if (lugar) { lugar.replaceWith(el); lugar = null; }
+      pinta(); ajustar(false); enfocar(sel);
+    },
     guardar: async () => {
       guardando = true; pinta();
       try {
@@ -251,8 +260,20 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     },
   };
   el.onclick = (ev) => { const b = ev.target.closest('[data-act]'); if (b && el.contains(b) && mapa[b.dataset.act] && !b.disabled) mapa[b.dataset.act](b, ev); };
+  // Esc sale de pantalla completa aunque el foco no esté en el Flujo (al repintar, el foco vuelve al documento).
+  const teclaGlobal = (ev) => {
+    if (!el.isConnected || (lugar && !lugar.isConnected)) { document.removeEventListener('keydown', teclaGlobal); return; }
+    if (ev.key === 'Escape' && full && !el.contains(ev.target)) mapa.full();
+  };
+  document.addEventListener('keydown', teclaGlobal);
+  // Si se cambia de pantalla estando en pantalla completa, el Flujo (que vive en el body) se va con ella.
+  window.addEventListener('hashchange', () => { if (lugar) { el.remove(); lugar = null; full = false; } document.documentElement.classList.remove('kf-fullscreen'); }, { once: true });
   el.onkeydown = (ev) => {
+    const escribiendo = ev.target.closest?.('input,textarea,select,[contenteditable]');
     if (ev.key === 'Escape' && (menuEn != null || sel != null)) { menuEn = null; sel = null; pinta(); return; }
+    if (ev.key === 'Escape' && full) return mapa.full();
+    if (!escribiendo && (ev.key === 'f' || ev.key === 'F')) return mapa.full();
+    if (!escribiendo && ev.key === '0') return ajustar();
     const n = ev.target.closest?.('.kf-node'); if (n && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); mapa.sel(n); }
   };
 

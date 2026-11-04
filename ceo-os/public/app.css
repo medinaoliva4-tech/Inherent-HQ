@@ -9067,3 +9067,8 @@ a.agx-tr:hover{background:var(--fill)}
 .agp-more{display:flex;gap:8px;flex-wrap:wrap}
 .agp-danger{color:var(--warn)}
 @media (max-width:900px){.agp-kpis{grid-template-columns:1fr 1fr 1fr}.agp-grid{grid-template-columns:1fr}.agp-sec{grid-template-columns:1fr;gap:12px}.agp-job{grid-template-columns:1fr auto}.agp-job>:not(:first-child):not(:nth-child(4)){display:none}.agp-top{flex-wrap:wrap}}
+/* Flujo en pantalla completa: cubre la ventana entera, por encima de la barra lateral */
+.kf.full{position:fixed;inset:0;z-index:300;height:100dvh;padding:14px 16px 16px;box-sizing:border-box;background:var(--bg)}
+.kf.full .kf-canvas{border-radius:16px}
+html.kf-fullscreen{overflow:hidden}
+.kf-bar-a{display:flex;align-items:center;gap:6px}
