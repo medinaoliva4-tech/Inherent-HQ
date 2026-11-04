@@ -330,8 +330,10 @@ export function rutas(on) {
     const b = body(req), n = Number(b.etapa ?? activa(r));
     if (!r.etapas[n]) return res.status(400).json({ error: 'Esa etapa no existe' });
     if (!b.id) return res.status(400).json({ error: 'Las fuentes nuevas se agregan como inputs' });
-    const evidencia = (r.evidencia || []).map((x) => (x.id === b.id && x.etapa === n ? { ...x, verificada: Boolean(b.verificada), revisada_por: u.email } : x));
-    const d = await guardar(res, u, r, { evidencia }, { accion: b.verificada ? 'verificar' : 'desverificar', etapa: n });
+    // quitada: la fuente sale de Sources (no sirve o no es confiable). Nada se borra: queda marcada y con quién la quitó.
+    const quitar = b.quitada === true;
+    const evidencia = (r.evidencia || []).map((x) => (x.id === b.id && x.etapa === n ? (quitar ? { ...x, quitada: true, verificada: false, revisada_por: u.email } : { ...x, verificada: Boolean(b.verificada), revisada_por: u.email }) : x));
+    const d = await guardar(res, u, r, { evidencia }, { accion: quitar ? 'quitar-fuente' : b.verificada ? 'verificar' : 'desverificar', etapa: n });
     if (d) res.json({ run: d });
   });
 

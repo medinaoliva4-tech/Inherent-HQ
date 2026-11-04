@@ -7,6 +7,8 @@ import { AGENTES } from '../public/js/harness/agentes.js';
 import { leer, aTexto } from '../gateway/web.mjs';
 import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
+import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
+import { leerIdSesion } from '../public/js/llm/modos.js';
 import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -129,6 +131,41 @@ t('el Chat solo puede PROPONER acciones del trabajo diario (nada de roles, pagos
 t('web: el texto de una página sale limpio (sin scripts ni menús, con acentos)', () => {
   const r = aTexto('<title>T &amp; Co</title><script>x()</script><nav>menú</nav><p>Hola&nbsp;mundo &#233;xito</p>');
   assert.equal(r.titulo, 'T & Co'); assert.equal(r.texto, 'T & Co Hola mundo éxito');
+});
+
+// ----- Chat de trabajo (F4) -----
+const runChat = () => ({ id: 'AbC_123-xyz', titulo: 'Auditoría AKAI', objetivo: 'Encontrar el freno', cliente: 'akai', cliente_nombre: 'AKAI',
+  flujo: { id: 'wf1', nombre: 'Strategy', agente: 'Strategy', area: 'strategy', limites: ['No pauta'] },
+  etapas: [{ id: 'e1', nombre: 'Diagnóstico', estado: 'aprobada', salida: 'D'.repeat(5000), aprobada_por: 'ceo@x.com' }, { id: 'e2', nombre: 'Oferta', estado: 'revision', salida: 'La oferta propuesta', confianza: 60, faltantes: ['precio de la competencia'], gate: true }, { id: 'e3', nombre: 'Plan', estado: 'pendiente' }],
+  inputs: [{ id: 'i-1', titulo: 'Entrevista', texto: 'hola' }, { id: 'i-2', titulo: 'Viejo', archivado: true }],
+  evidencia: [{ id: 'w1', etapa: 1, titulo: 'Fuente A' }, { id: 'w2', etapa: 1, titulo: 'Fuente B', quitada: true }, { id: 'x', etapa: 0, titulo: 'Fuente C' }],
+  historial: [{ at: '2026-11-04T10:00:00Z', accion: 'crear', quien: 'ceo@x.com' }, { at: '2026-11-04T10:05:00Z', accion: 'ejecutar', etapa: 1 }, { at: '2026-11-04T10:06:00Z', accion: 'tomar', etapa: 1 }, { at: '2026-11-04T10:20:00Z', accion: 'ejecutar', etapa: 1 }] });
+t('chat de trabajo: un id por persona y trabajo, válido para el servidor y estable', () => {
+  const r = runChat(), a = idChatTrabajo(r, 'ceo@x.com'), b = idChatTrabajo(r, 'CEO@x.com'), c = idChatTrabajo(r, 'coo@x.com');
+  assert.equal(a, b); assert.notEqual(a, c);
+  assert.deepEqual(leerIdSesion(a), { modo: 'estrategia', slug: 'tabc_123-xyz' });
+  assert.ok(!a.includes('@') && !a.includes('ceo'), 'el correo no queda en el id');
+  assert.equal(modoDeArea('creative'), 'diseno'); assert.equal(modoDeArea('otra'), 'organizacion');
+  assert.ok(leerIdSesion(idChatTrabajo({ ...r, id: 'x'.repeat(80), flujo: { area: 'production' } }, 'a@b.c')));
+});
+t('chat de trabajo: el contexto lleva la etapa activa, lo que está en revisión y lo aprobado, y cabe', () => {
+  const s = sistemaTrabajo(runChat(), { nombre: 'Rodrigo' });
+  assert.match(s, /2\. Oferta — Esperando aprobación ← ACTIVA/); assert.match(s, /RESULTADO EN REVISIÓN/); assert.match(s, /La oferta propuesta/);
+  assert.match(s, /🚦/); assert.match(s, /precio de la competencia/); assert.match(s, /\[i-1\] Entrevista/); assert.doesNotMatch(s, /Viejo/);
+  assert.match(s, /Diagnóstico \(aprobada\)/); assert.match(s, /NUNCA inventes/); assert.match(s, /No pauta/);
+  assert.ok(s.length < 24000, `${s.length} caracteres`);
+  const enorme = runChat(); enorme.etapas = Array.from({ length: 12 }, (_, i) => ({ id: `e${i}`, nombre: `E${i}`, estado: i < 11 ? 'aprobada' : 'revision', salida: 'x'.repeat(40000) })); enorme.inputs = Array.from({ length: 20 }, (_, i) => ({ id: `i-${i}`, titulo: 'T', texto: 'y'.repeat(9000) }));
+  const se = sistemaTrabajo(enorme); assert.ok(se.length < 26000, `${se.length}: cabe en el contexto de 32k`); assert.match(se, /E0 \(aprobada · el texto está en Archivos/);
+});
+t('chat de trabajo: el hilo mezcla mensajes y eventos por hora; solo el último resultado de una etapa es tarjeta', () => {
+  const h = hilo(runChat(), [{ role: 'user', content: 'hola', at: '2026-11-04T10:10:00Z' }, { role: 'assistant', content: '…' }]);
+  assert.deepEqual(h.map((x) => (x.tipo === 'msg' ? `m${x.i}` : `${x.h.accion}${x.ultimo ? '*' : ''}`)), ['crear', 'ejecutar', 'm0', 'ejecutar*', 'm1']);
+});
+t('chat de trabajo: Sources sin las fuentes quitadas y File tree con inputs y lo producido', () => {
+  assert.deepEqual(fuentes(runChat()).map((g) => [g.n, g.xs.map((x) => x.id)]), [[0, ['x']], [1, ['w1']]]);
+  const [ins, prod] = archivos(runChat());
+  assert.deepEqual(ins.items.map((x) => x.id), ['i-1']);
+  assert.deepEqual(prod.items.map((x) => x.nombre), ['01-diagnostico.md', '02-oferta.md']);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {
