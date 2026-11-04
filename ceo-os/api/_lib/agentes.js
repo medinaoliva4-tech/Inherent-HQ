@@ -210,6 +210,7 @@ export function rutas(on) {
   //   · solo con el token del Gateway (GATEWAY_TOKEN, comparado en tiempo constante);
   //   · solo para una etapa que el servidor está trabajando ahora (estado «trabajando», vía «gateway»);
   //   · solo los conectores que esa etapa pide, y con las conexiones de quien la encargó.
+  //   · o para una conversación del Chat que el servidor está respondiendo ahora ({ chat }): las conexiones de su dueño (hasta 4).
   // { run, etapa, accion: 'listar' } → { tools: [{ conector, nombre, descripcion, esquema }] }
   // { run, etapa, accion: 'llamar', conector, tool, args } → { texto, error }
   on('POST', 'agentes/gateway/mcp', async (req, res) => {
@@ -217,17 +218,27 @@ export function rutas(on) {
     if (esperado.length < 32) return res.status(503).json({ error: 'El Gateway no está configurado en el OS (falta GATEWAY_TOKEN)' });
     const a = Buffer.from(dado), b = Buffer.from(esperado);
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return res.status(401).json({ error: 'Token del Gateway inválido' });
-    const q = body(req), r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
-    if (!e || e.estado !== 'trabajando' || e.via !== 'gateway' || r.archivado || r.pausado) return res.status(409).json({ error: 'Esa etapa no la está trabajando el servidor' });
-    const persona = lc(e.cola?.por || r.creado_por);
-    const pide = (e.herramientas || []).filter((h) => ['mcp', 'token'].includes(conectorDe(h)?.tipo));
+    const q = body(req);
+    let persona = '', pide = [];
+    if (q.chat) {
+      // Una conversación del Chat que el servidor está respondiendo ahora: las conexiones que su dueño tiene conectadas.
+      const s = await db.get('chat_sesiones', txt(q.chat, 120));
+      if (!s || s.turno?.estado !== 'trabajando' || s.archivado) return res.status(409).json({ error: 'Esa conversación no la está respondiendo el servidor' });
+      persona = lc(s.owner);
+      pide = (await db.list('mcp_conexiones')).filter((c) => c.id.startsWith(`${persona}|`)).map((c) => c.id.split('|')[1]).filter((id) => ['mcp', 'token'].includes(conectorDe(id)?.tipo)).slice(0, 4);
+    } else {
+      const r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
+      if (!e || e.estado !== 'trabajando' || e.via !== 'gateway' || r.archivado || r.pausado) return res.status(409).json({ error: 'Esa etapa no la está trabajando el servidor' });
+      persona = lc(e.cola?.por || r.creado_por);
+      pide = (e.herramientas || []).filter((h) => ['mcp', 'token'].includes(conectorDe(h)?.tipo));
+    }
     if (q.accion === 'listar') {
       const ts = await toolsDe(persona, pide);
       return res.json({ tools: ts.map((t) => ({ conector: t.conector, nombre: t.tool.name, descripcion: String(t.tool.description || '').slice(0, 500), esquema: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } })), sin_conectar: pide.filter((id) => !ts.some((t) => t.conector === id)) });
     }
     if (q.accion === 'llamar') {
       const conector = txt(q.conector, 60), tool = txt(q.tool, 120);
-      if (!pide.includes(conector)) return res.status(403).json({ error: 'Esa conexión no la pide esta etapa' });
+      if (!pide.includes(conector)) return res.status(403).json({ error: q.chat ? 'Esa conexión no está conectada' : 'Esa conexión no la pide esta etapa' });
       const t = (await toolsDe(persona, [conector])).find((x) => x.tool.name === tool);
       if (!t) return res.status(404).json({ error: 'Esa herramienta no está disponible' });
       try { const o = await llamarTool(t.cx, t.sesion, tool, q.args && typeof q.args === 'object' ? q.args : {}); return res.json(o); }

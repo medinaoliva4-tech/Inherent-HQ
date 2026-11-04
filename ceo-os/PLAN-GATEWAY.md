@@ -159,6 +159,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · web: SearXNG propio en el VPS y lectura de páginas en el trabajador | CEO + Claude |
 | 2026-11-04 | F3 · MCP por persona a través del OS con `GATEWAY_TOKEN`; el VPS nunca recibe `SESSION_SECRET` | CEO + Claude |
 | 2026-11-04 | F3 · el Chat en el servidor: conversaciones guardadas en el OS, respondidas por el VPS en vivo; Hermes queda como opción en Ajustes | CEO + Claude |
+| 2026-11-04 | F3 · el Chat del servidor con herramientas: web y MCP de la persona | CEO + Claude |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -278,4 +279,8 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging):** respuesta en 9 s guardada; el segundo turno recordó el primero; «Detener» cortó en 749 caracteres y no siguió; una conversación de ~54k tokens se resumió y el turno corrió con ~7k. **Hallazgo:** la primera versión del resumen tiraba el principio de lo viejo cuando era enorme y el modelo inventó un dato que no tenía; se corrigió (resumen por bloques y aviso de no inventar) y la prueba repetida recordó el dato exacto.
 
-**Pendiente:** el Chat en el servidor todavía no usa herramientas (web, MCP, el OS): responde con el contexto que le da cada modo. Se le agregan con lo de §16. Retirar Hermes (F7) cuando el equipo lo haya usado unos días.
+**Herramientas (hecho, 2026-11-04):** el Chat en el servidor tiene `buscar_web` (SearXNG del VPS) y `leer_pagina` (con las protecciones de §16), y las conexiones MCP que el dueño de la conversación tiene conectadas (hasta 4, por la misma ruta del OS con `GATEWAY_TOKEN`; la ruta acepta `{ chat }` solo para una conversación que el servidor está respondiendo). El modelo decide cuándo usarlas (hasta 6 vueltas) y la respuesta se sigue viendo escribir: el motor arma las llamadas a herramientas desde el streaming. Los pasos se guardan en el mensaje y la pantalla los muestra como los de Hermes («Buscando en la web», «Leyendo una página», «Cloudflare · …»).
+
+**Probado (staging):** «¿cuál es la versión estable más reciente de Node.js?» → buscó, leyó 4 páginas de nodejs.org y respondió v26.13.0 LTS con sus URLs, en 39 s (verificado contra `nodejs.org/dist/index.json`); «límite de CPU de un Worker según Cloudflare» → usó la conexión de Cloudflare y respondió en 15 s citando la página oficial.
+
+**Pendiente:** el MCP del propio OS (clientes, proyectos, tareas) todavía no está en el Chat del servidor; retirar Hermes (F7) cuando el equipo lo haya usado unos días.

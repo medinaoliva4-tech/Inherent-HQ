@@ -17,13 +17,13 @@ import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEviden
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
 const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)), conMcp: run._conMcp || '' });
-import { investigar } from './web.mjs';
+import { investigar, buscar, leer } from './web.mjs';
 const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, chatTools, condense, contextoDe } from './motor.mjs';
 import { conectorDe } from '../public/js/conectores.js';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', CHATS = 'chat_sesiones', YO = 'gateway';
-const VERSION = 'f3-3';
+const VERSION = 'f3-4';
 const OS_URL = String(process.env.GW_OS_URL || '').replace(/\/+$/, ''), GW_TOKEN = process.env.GATEWAY_TOKEN || '';
 const MAX_VUELTAS = 8, MAX_RESULTADO = 6000;
 const PREP = process.env.GW_PREP_MODEL || 'nv-minimax-m3.1-flash';
@@ -243,25 +243,76 @@ async function conversacion(id, s, modelo) {
   return msgs;
 }
 
+// Las herramientas del Chat: la web (siempre) y los MCP que el dueño de la conversación tiene conectados (por el OS).
+const WEB_TOOLS = [
+  { type: 'function', function: { name: 'buscar_web', description: 'Busca en la web (resultados actuales con título, URL y resumen). Úsala cuando haga falta información actual o externa.', parameters: { type: 'object', properties: { query: { type: 'string', description: 'La búsqueda, concreta' } }, required: ['query'] } } },
+  { type: 'function', function: { name: 'leer_pagina', description: 'Lee una página web y devuelve su texto. Úsala con URLs de los resultados de buscar_web o que dio la persona.', parameters: { type: 'object', properties: { url: { type: 'string' } }, required: ['url'] } } },
+];
+async function herramientasChat(id) {
+  let mcp = [];
+  if (OS_URL && GW_TOKEN.length >= 32) { try { mcp = (await os({ chat: id, accion: 'listar' })).tools || []; } catch (e) { log(`[chat ${id}] sin MCP: ${e.message}`); } }
+  const nombre = (t) => `${t.conector}__${t.nombre}`.replace(/[^\w-]/g, '_').slice(0, 64);
+  const mapa = new Map(mcp.slice(0, 24).map((t) => [nombre(t), t]));
+  const defs = [...WEB_TOOLS, ...[...mapa].map(([n, t]) => ({ type: 'function', function: { name: n, description: `[${conectorDe(t.conector)?.nombre || t.conector}] ${t.descripcion}`.slice(0, 400), parameters: t.esquema } }))];
+  return { defs, mapa, conexiones: [...new Set(mcp.map((t) => conectorDe(t.conector)?.nombre || t.conector))] };
+}
+async function usarHerramienta(id, call, mapa) {
+  let args = {}; try { args = JSON.parse(call.function.arguments || '{}'); } catch {}
+  const n = call.function.name;
+  if (n === 'buscar_web') {
+    const rs = await buscar(String(args.query || '').slice(0, 200), 6);
+    return { nombre: 'web_search', detalle: String(args.query || ''), salida: rs.length ? rs.map((x, i) => `${i + 1}. ${x.titulo}\n   ${x.url}\n   ${x.resumen}`).join('\n') : 'Sin resultados.' };
+  }
+  if (n === 'leer_pagina') {
+    const p = await leer(String(args.url || ''));
+    return { nombre: 'web_extract', detalle: p.titulo || p.url, salida: `${p.titulo}\n${p.url}\n\n${p.texto}` };
+  }
+  const t = mapa.get(n); if (!t) return { nombre: n, detalle: '', salida: 'Herramienta desconocida' };
+  const o = await os({ chat: id, accion: 'llamar', conector: t.conector, tool: t.nombre, args });
+  return { nombre: `${conectorDe(t.conector)?.nombre || t.conector} · ${t.nombre}`, detalle: '', salida: `${o.error ? 'ERROR: ' : ''}${String(o.texto || '').slice(0, MAX_RESULTADO)}` };
+}
+
 async function correrChat(id) {
   const s = await db.get(CHATS, id), modelo = s.turno?.modelo, desde = (s.mensajes || []).length;
-  const ctrl = new AbortController();
+  const ctrl = new AbortController(), pasos = [];
   let ultimoTexto = '';
   log(`[chat ${id}] turno con ${modelo}`);
   const escribir = (texto, fin = false) => tocarChat(id, (cur) => {
     if (cur.turno?.estado !== 'trabajando') { ctrl.abort(); return null; } // la persona lo detuvo
     const ms = [...(cur.mensajes || [])], ult = ms[ms.length - 1];
-    const msg = { role: 'assistant', content: texto, at: ahora(), modelo, parcial: !fin };
+    const msg = { role: 'assistant', content: texto, at: ahora(), modelo, parcial: !fin, ...(pasos.length ? { pasos: pasos.slice(-30) } : {}) };
     if (ult?.role === 'assistant' && ult.parcial) ms[ms.length - 1] = msg; else ms.push(msg);
     return { mensajes: ms.slice(-400), ...(fin ? { turno: { ...cur.turno, estado: 'listo', at: ahora() } } : {}) };
   });
   try {
     if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
     const messages = await conversacion(id, s, modelo);
-    const out = await chat(modelo, '', '', MAX_OUT, { messages, signal: ctrl.signal, cadaMs: 800,
-      onAvance: async ({ texto }) => { if (texto && texto !== ultimoTexto) { ultimoTexto = texto; await escribir(texto); } } });
-    await escribir(out.content.trim(), true);
-    log(`[chat ${id}] listo en ${out.seg}s (${out.usage.prompt_tokens ?? '?'} in / ${out.usage.completion_tokens ?? '?'} out)`);
+    const h = await herramientasChat(id);
+    messages[0].content += `\n\nHERRAMIENTAS: tienes buscar_web y leer_pagina${h.conexiones.length ? ` y las conexiones de la persona (${h.conexiones.join(', ')})` : ''}. Úsalas solo cuando haga falta información actual, externa o de esas conexiones. Si usas la web, cita las URLs que de verdad leíste. Nunca inventes fuentes ni datos.`;
+    const cap = contextoDe(modelo) - MAX_OUT - 1500;
+    let usage = { prompt_tokens: 0, completion_tokens: 0 }, seg = 0, final = '';
+    for (let vuelta = 0; vuelta <= 6; vuelta++) {
+      const lleno = est(JSON.stringify(messages)) + est(JSON.stringify(h.defs)) > cap - 2500, ultima = vuelta === 6 || lleno;
+      if (ultima && vuelta) messages.push({ role: 'user', content: 'Ya no hay más herramientas: responde ahora con lo que tienes.' });
+      const out = await chat(modelo, '', '', MAX_OUT, { messages, tools: ultima ? null : h.defs, signal: ctrl.signal, cadaMs: 800,
+        onAvance: async ({ texto }) => { if (texto && texto !== ultimoTexto) { ultimoTexto = texto; await escribir(texto); } } });
+      usage = { prompt_tokens: usage.prompt_tokens + (out.usage.prompt_tokens || 0), completion_tokens: usage.completion_tokens + (out.usage.completion_tokens || 0) }; seg += out.seg;
+      if (!out.toolCalls?.length) { final = out.content; break; }
+      messages.push({ role: 'assistant', content: out.content || null, tool_calls: out.toolCalls });
+      for (const call of out.toolCalls.slice(0, 4)) {
+        const tm = h.mapa.get(call.function.name); // el mismo nombre al empezar y al terminar (la pantalla los empareja)
+        const paso = { fase: 'inicio', nombre: call.function.name === 'buscar_web' ? 'web_search' : call.function.name === 'leer_pagina' ? 'web_extract' : tm ? `${conectorDe(tm.conector)?.nombre || tm.conector} · ${tm.nombre}` : call.function.name, detalle: '' };
+        pasos.push(paso); await escribir(ultimoTexto);
+        let salida;
+        try { const o = await usarHerramienta(id, call, h.mapa); Object.assign(paso, { fase: 'fin', nombre: o.nombre, detalle: o.detalle.slice(0, 200) }); salida = o.salida; }
+        catch (e) { Object.assign(paso, { fase: 'error', detalle: e.message.slice(0, 200) }); salida = `ERROR: ${e.message}`; }
+        messages.push({ role: 'tool', tool_call_id: call.id, content: String(salida).slice(0, MAX_RESULTADO + 400) });
+      }
+      await escribir(ultimoTexto);
+    }
+    if (!String(final || '').trim()) throw new Error(`${modelo} no terminó la respuesta`);
+    await escribir(final.trim(), true);
+    log(`[chat ${id}] listo en ${seg}s (${usage.prompt_tokens} in / ${usage.completion_tokens} out${pasos.length ? ` · ${pasos.length} herramientas` : ''})`);
   } catch (err) {
     if (err.name === 'AbortError') {
       log(`[chat ${id}] detenido`);

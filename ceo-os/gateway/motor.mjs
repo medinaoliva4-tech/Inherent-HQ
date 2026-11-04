@@ -34,20 +34,22 @@ export async function acquire(m, onEspera = () => {}) {
 
 // onAvance({ caracteres, razonando, texto }) se llama cada `cadaMs` (20 s por defecto) mientras el modelo trabaja.
 // messages: si se pasa, reemplaza [system, user] (el Chat manda la conversación completa). signal: para detenerlo.
-export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal } = {}) {
+// tools: herramientas en formato chat/completions; si el modelo pide alguna, vuelven en `toolCalls` (armadas desde el stream).
+export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal, tools = null } = {}) {
   const release = await acquire(m, onEspera);
   try {
     for (let intento = 1; intento <= 4; intento++) {
       const t0 = Date.now();
       const r = await fetch(`${BASE}/chat/completions`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
-        body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }] }),
+        body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }], ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
         signal,
       });
       if (r.status === 429 || r.status >= 500) { await r.text().catch(() => {}); log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
       if (!r.ok) throw new Error(`${m}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
       // En vivo (SSE): evita el límite de espera de la primera respuesta mientras el modelo «piensa».
       let content = '', thinking = 0, usage = {}, finish = '', buf = '', ultimo = Date.now();
+      const calls = []; // las llamadas a herramientas llegan en pedazos: por índice, nombre y argumentos
       const dec = new TextDecoder();
       for await (const chunk of r.body) {
         buf += dec.decode(chunk, { stream: true });
@@ -58,6 +60,7 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
           try {
             const j = JSON.parse(line.slice(5)), d = j.choices?.[0]?.delta || {};
             if (d.content) content += d.content;
+            for (const tc of d.tool_calls || []) { const k = tc.index ?? calls.length; calls[k] ||= { id: '', type: 'function', function: { name: '', arguments: '' } }; if (tc.id) calls[k].id = tc.id; if (tc.function?.name) calls[k].function.name += tc.function.name; if (tc.function?.arguments) calls[k].function.arguments += tc.function.arguments; }
             if (d.reasoning_content || d.reasoning) thinking += 1;
             if (j.choices?.[0]?.finish_reason) finish = j.choices[0].finish_reason;
             if (j.usage) usage = j.usage;
@@ -65,8 +68,9 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
         }
         if (Date.now() - ultimo > cadaMs) { ultimo = Date.now(); try { await onAvance({ caracteres: content.length, razonando: thinking, texto: content }); } catch {} }
       }
-      if (!content.trim()) throw new Error(`${m} devolvió vacío (finish=${finish}). Sube la salida máxima o usa otro modelo.`);
-      return { content, usage, seg: Math.round((Date.now() - t0) / 1000) };
+      const toolCalls = calls.filter((c) => c?.function?.name).map((c, i) => ({ ...c, id: c.id || `call_${i}_${Date.now().toString(36)}` }));
+      if (!content.trim() && !toolCalls.length) throw new Error(`${m} devolvió vacío (finish=${finish}). Sube la salida máxima o usa otro modelo.`);
+      return { content, usage, toolCalls, seg: Math.round((Date.now() - t0) / 1000) };
     }
     throw new Error(`${m}: sin respuesta tras reintentos`);
   } finally { release(); }
