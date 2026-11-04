@@ -154,7 +154,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | D14: la interfaz sigue a Apple HIG, con vidrio y profundidad | CEO |
 | 2026-11-04 | D13 aprobada y F2 construida: `gateway/worker.mjs` como servicio `gw-worker` en el VPS | CEO + Claude |
 | 2026-11-04 | En el servidor (sin web ni MCP) la evidencia se limita a los inputs: el modelo inventó una fuente de Statista en la primera prueba | Prueba de F2 |
-| 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí | CEO + Claude |
+| 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
 
