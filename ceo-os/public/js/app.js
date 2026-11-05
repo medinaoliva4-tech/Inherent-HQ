@@ -169,12 +169,12 @@ function paginaDe(url) {
 // equipo) vale el prefijo de su ruta.
 const grupoEnRuta = (n, url) => { const pag = paginaDe(url); return pag ? pag[1] === n : enRuta(url, n.ruta); };
 
-const SCREENS = { me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', agentes: 'agentes', ajustes: 'ajustes', areas: 'areas', calendario: 'calendario' };
+const SCREENS = { ws: 'workspace', me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', agentes: 'agentes', ajustes: 'ajustes', areas: 'areas', calendario: 'calendario' };
 // El nombre de cada pantalla (lo que recibe en `label`): los de NAV, más las que no están en la barra.
 const LABEL = { ajustes: 'Ajustes', agentes: 'Agentes', me: 'Mi perfil', avisos: 'Avisos', portal: 'Mi portal', chat: 'Chat', ai: 'Inherent AI', areas: 'Áreas', home: 'Home', calendario: 'Calendario' };
 for (const n of NAV) for (const [, nombre, ruta] of todasDe(n)) { const m = /^org\/([\w-]+)$/.exec(ruta); if (m && !LABEL[m[1]]) LABEL[m[1]] = nombre; }
 // La capa de cada pantalla (html[data-capa]): home · calendario · org · ai · areas · '' (Mi perfil, Avisos, el portal).
-const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' ? 'areas' : k === 'chat' || k === 'ai' || k === 'agentes' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
+const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' || k === 'ws' ? 'areas' : k === 'chat' || k === 'ai' || k === 'agentes' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
 
 // ---------- Alias de rutas viejas (PLAN §3.6) ----------
 const HUB_MAP = { control: 'home', operations: 'org/operations', work: 'org/work', sales: 'org/sales', finanzas: 'org/finanzas', resultados: 'home', responsabilidades: 'org/services/responsabilidades', vistas: 'org/team/vistas', setup: 'org/setup' };
@@ -195,7 +195,7 @@ function alias(parts) {
   const [a, ...r] = parts;
   // Una ruta de workspace de antes (ws/<ws>/…) abre la página de su área; cualquier otra se queda como viene.
   const deWs = (ruta) => { const p = String(ruta || 'home').split('/'); return p[0] === 'ws' ? (wsDe(p[1]) ? ['areas', p[1]] : ['home']) : p; };
-  if (a === 'ws') return deWs(parts.join('/'));
+  if (a === 'ws' && !(wsDe(r[0]) && r[1])) return deWs(parts.join('/')); // con cliente, abre el workspace de esa herramienta
   if (a === 'control-hub') { const to = r[0] && HUB_MAP[r[0]]; return to ? [...to.split('/'), ...r.slice(1)] : ['home']; }
   if (a === 'org' && (!r.length || r[0] === 'home')) return ['home'];
   if (a === 'mimarca') {
@@ -240,6 +240,7 @@ function resolve(path) {
     const v = parts[1] === 'contenido' ? 'contenido' : 'trabajo', rest = v === 'contenido' && /^[\w.-]+$/.test(parts[2] || '') ? [v, parts[2]] : [v];
     return { key: 'calendario', rest, url: 'calendario/' + rest.join('/') };
   }
+  if (a === 'ws') return puedeVerArea(me, parts[1]) ? { key: 'ws', rest: parts.slice(1), url: parts.join('/') } : fallback();
   if (a === 'chat') return sees('chat') ? { key: 'chat', rest: parts.slice(1), url: parts.join('/') } : fallback();
   // Inherent AI: #/ai es su portada y #/ai/mcps la de MCPs; cualquier otra sub-página (las de antes) vuelve a #/ai.
   // Agents: #/ai/agentes[/<agente>[/<pestaña>|/trabajos/<trabajo>[/etapas]]] (el trabajo abre su chat; /etapas, la vista por etapas).
@@ -250,7 +251,7 @@ function resolve(path) {
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {
     const ver = AREAS.filter((x) => puedeVerArea(me, x.id)), id = parts[1];
-    if (id && areaDe(id)) return puedeVerArea(me, id) ? (parts[2] === 'agents' ? { key: 'areas', rest: [id, 'agents'], url: `areas/${id}/agents` } : { key: 'areas', rest: [id], url: 'areas/' + id }) : fallback();
+    if (id && areaDe(id)) return puedeVerArea(me, id) ? (['agents', 'movimientos', 'notas'].includes(parts[2]) ? { key: 'areas', rest: [id, parts[2]], url: `areas/${id}/${parts[2]}` } : { key: 'areas', rest: [id], url: 'areas/' + id }) : fallback();
     return ver.length ? { key: 'areas', rest: [ver[0].id], url: 'areas/' + ver[0].id } : fallback();
   }
   const org = a === 'org' ? parts.slice(1) : parts;
@@ -450,7 +451,7 @@ const celKey = (cur) => {
   return ['avisos', 'me', 'ajustes', 'ai', 'areas'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };
 function paintCel(cur = resolve(hashNow())) {
-  const tt = $('#top-t'); if (tt) tt.textContent = paginaDe(cur.url)?.[0]?.[1] || LABEL[cur.key] || 'Inherent';
+  const tt = $('#top-t'); if (tt) tt.textContent = cur.key === 'ws' ? wsDe(cur.rest[0])?.nombre || 'Áreas' : paginaDe(cur.url)?.[0]?.[1] || LABEL[cur.key] || 'Inherent';
   const k = celKey(cur);
   for (const b of $$('.nav-cel [data-nc]')) { const on = b.dataset.nc === k; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); }
 }

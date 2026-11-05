@@ -26,7 +26,8 @@ const COLOR_ESTADO = { 'Por hacer': 'var(--ui-mut2)', 'En curso': 'var(--ui-info
 const SEL_DATOS = { lista: '.ar-pr, .ar-card', tablero: '.ar-resumen, .ar-col', calendario: '.ar-cal' };
 
 // Las pestañas de un área: lo que sabe (Notas) y quién trabaja en ella (Agents).
-const tabsArea = (a, on) => html`<nav class="iai-tabs ar-tabs" aria-label="${a.nombre}"><a href="#/areas/${a.id}" ${on === 'notas' ? raw('aria-current="page"') : ''}>${ico('file-text', 14)} Notas</a><a href="#/areas/${a.id}/agents" ${on === 'agents' ? raw('aria-current="page"') : ''}>${ico('agents', 14)} Agentes</a></nav>`;
+const tab = (a, ruta, on, k, icono, nombre) => html`<a href="#/areas/${a.id}${ruta}" ${on === k ? raw('aria-current="page"') : ''}>${ico(icono, 14)} ${nombre}</a>`;
+const tabsArea = (a, on) => html`<nav class="iai-tabs ar-tabs" aria-label="${a.nombre}">${tab(a, '', on, 'herramientas', 'layout-grid', 'Herramientas')}${tab(a, '/movimientos', on, 'movimientos', 'list-checks', 'Movimientos')}${tab(a, '/notas', on, 'notas', 'file-text', 'Notas')}<a href="#/areas/${a.id}/agents" ${on === 'agents' ? raw('aria-current="page"') : ''}>${ico('agents', 14)} Agentes</a></nav>`;
 
 export async function render(el, { me, sub, alive }) {
   // Agents del área (#/areas/<área>/agents): los mismos agentes del Agent Area, filtrados por esta área.
@@ -34,6 +35,12 @@ export async function render(el, { me, sub, alive }) {
     const a = areaInfo(sub[0]), { pintarAgentes } = await import('../agentes-ui.js');
     mount(el, html`<div class="hello sp-hero ar-head" style="--ar-c:var(${a.color})"><span class="ar-ico">${ico(a.icono, 22)}</span><div class="ar-tit"><h1>${a.nombre}</h1><p>Los agentes que trabajan en ${a.nombre}.</p></div></div>${tabsArea(a, 'agents')}<div class="ar-agents"></div>`);
     return pintarAgentes(el.querySelector('.ar-agents'), me, alive, { area: a.id, cabecera: false });
+  }
+  if (!sub?.[1]) { const { pintarMesas } = await import('../area-mesas.js'); return pintarMesas(el, { me, area: areaInfo(sub?.[0]), tabs: tabsArea, alive }); }
+  if (sub[1] === 'movimientos') {
+    const a = areaInfo(sub[0]), { pintarMovimientos } = await import('../movimientos-ui.js');
+    mount(el, html`<div class="hello sp-hero ar-head" style="--ar-c:var(${a.color})"><span class="ar-ico">${ico(a.icono, 22)}</span><div class="ar-tit"><h1>${a.nombre}</h1><p>Qué se hizo, qué costó y qué provocó.</p></div></div>${tabsArea(a, 'movimientos')}<div id="mv"></div>`);
+    return pintarMovimientos($('#mv', el), { me, area: a.id, alive });
   }
   const area = areaInfo(sub?.[0]), C = col('area_notes');
   const puede = canEdit(me, 'library'), drive = Boolean(me.google?.drive);

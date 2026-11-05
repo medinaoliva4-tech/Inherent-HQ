@@ -63,7 +63,7 @@ export async function render(el, { me, sub, alive }) {
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
     // Marca ya no es una pestaña: vive en Marcas → este cliente → Marca (un solo lugar). #/clients/<slug>/marca lleva allá.
-    const TABS = [['info', 'Inicio'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos'], ['ajustes', 'Portal y accesos']])];
+    const TABS = [['info', 'Inicio'], ['movimientos', 'Movimientos'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos'], ['ajustes', 'Portal y accesos']])];
     const toBrand = !resumen && me.areas.includes('clients');
     // La pestaña vieja «Prospectos» lleva al CRM, que vive en Ventas.
     const hubBase = '#/sales';
@@ -98,6 +98,7 @@ export async function render(el, { me, sub, alive }) {
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);
+      if (tab === 'movimientos') return import('../movimientos-ui.js').then((m) => m.pintarMovimientos(b, { me, cliente: slug, alive }));
       if (tab === 'ajustes') return ajustesTab(b);
       if (tab === 'links') return linksTab(b);
       if (tab === 'marca') return marcaTab(b);

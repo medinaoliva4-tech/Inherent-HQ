@@ -9,6 +9,9 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { MESAS, FUERA } from '../public/js/mesas.js';
+import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
+import { limpiarMovimiento, errorMovimiento, filtrarMovimientos, resumenMovimientos } from '../public/js/movimientos-datos.js';
 import { leerReproduccion, ACCIONES } from '../public/js/spotify-datos.js';
 import { setupVoz, aPcm16, aFloat, leerMensaje, urlVoz } from '../public/js/voz-gemini.js';
 import { estadoApp } from '../public/js/app-mac-estado.js';
@@ -291,6 +294,21 @@ t('Spotify: control escondible, solo CEO y sin secreto', () => {
   assert.match(js, /me\?\.role !== 'ceo'/); assert.match(js, /data-sp="cerrar"/);
   const srv = fs.readFileSync(path.join(RAIZ, '..', 'api', '_lib', 'spotify.js'), 'utf8');
   assert.match(srv, /code_challenge_method: 'S256'/); assert.ok(!/client_secret/.test(srv));
+});
+t('áreas: tres mesas por área y cada herramienta en un solo lugar', () => {
+  const usadas = [];
+  for (const w of WORKSPACES) { assert.equal(MESAS[w.id].mesas.length, 3, w.id); assert.ok(MESAS[w.id].numero, `${w.id} sin número`); for (const m of MESAS[w.id].mesas) usadas.push(...m.herramientas); }
+  assert.equal(new Set(usadas).size, usadas.length, 'una herramienta quedó en dos mesas');
+  assert.deepEqual([...usadas, ...FUERA].sort(), HERRAMIENTAS.map((h) => h.id).sort());
+});
+t('movimientos: guarda lo esencial y el resumen cuadra', () => {
+  const m = limpiarMovimiento({ titulo: ' Campaña ', client_slug: 'nao', area: 'nada', costo: 'Q2,500', espera: 'Más mesas', decision: 'Otra' });
+  assert.deepEqual([m.titulo, m.area, m.costo, m.decision], ['Campaña', 'strategy', 2500, 'Pendiente']);
+  assert.equal(errorMovimiento(limpiarMovimiento({})), 'Escribe qué se hizo');
+  assert.equal(errorMovimiento(m), '');
+  const xs = filtrarMovimientos([{ ...m, area: 'marketing', paso: 'x', decision: 'Repetir', fecha: '2026-11-01' }, { ...m, area: 'marketing', costo: 500, fecha: '2026-11-02' }, { ...m, area: 'creative' }, { ...m, area: 'marketing', archivado: true }], { area: 'marketing' });
+  assert.equal(xs.length, 2); assert.equal(xs[0].fecha, '2026-11-02');
+  assert.deepEqual(resumenMovimientos(xs), { total: 2, invertido: 3000, sinResultado: 1, repetir: 1, parar: 0 });
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
