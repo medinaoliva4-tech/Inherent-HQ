@@ -10,7 +10,7 @@ import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
 import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio } from '../public/js/marketing-datos.js';
-import { rutaAccion, leerReproduccion, motivoSpotify, tiempo } from '../public/js/spotify-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify, tiempo, idEquipo, elegirEquipo } from '../public/js/spotify-datos.js';
 import { limpiarEstrategia, analizarMeta, resumenVoces } from '../public/js/estrategia-datos.js';
 import { conLente, LENTE_HORMOZI } from '../public/js/llm/modos.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
@@ -377,6 +377,24 @@ t('Spotify: volumen y tiempo se acotan', () => {
   assert.equal(rutaAccion('volumen', 'x'), null);
   assert.equal(rutaAccion('constructor'), null);
   assert.equal(tiempo(125000), '2:05');
+});
+t('Spotify: solo acepta ids de equipo limpios y marca el equipo activo', () => {
+  assert.equal(idEquipo('abc-123_x'), 'abc-123_x'); assert.equal(idEquipo('a/b?c'), ''); assert.equal(idEquipo(''), '');
+  assert.equal(leerReproduccion({ device: { is_active: true } }).activo, true);
+  assert.equal(leerReproduccion(null).activo, false);
+});
+t('Spotify: prefiere el equipo activo, luego la compu', () => {
+  const tel = { id: 't', type: 'Smartphone' }, mac = { id: 'm', type: 'Computer' };
+  assert.equal(elegirEquipo([tel, mac]).id, 'm');
+  assert.equal(elegirEquipo([mac, { ...tel, is_active: true }]).id, 't');
+  assert.equal(elegirEquipo([{ ...mac, is_restricted: true }]), null);
+  assert.equal(elegirEquipo([]), null);
+});
+t('Spotify: la política deja cargar el reproductor oficial', () => {
+  const v = fs.readFileSync(path.join(RAIZ, '..', 'vercel.json'), 'utf8');
+  assert.match(v, /script-src 'self' https:\/\/sdk\.scdn\.co;/);
+  assert.match(v, /frame-src [^;]*https:\/\/sdk\.scdn\.co/);
+  assert.match(v, /encrypted-media=\(self/);
 });
 t('Spotify: lee el player y dice el motivo real', () => {
   const r = leerReproduccion({ is_playing: true, progress_ms: 1000, device: { name: 'Mac', volume_percent: 40, supports_volume: true }, item: { name: 'A', duration_ms: 9000, artists: [{ name: 'B' }], album: { images: [{ url: 'g' }, { url: 'm' }, { url: 'c' }] } } });

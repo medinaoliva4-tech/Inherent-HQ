@@ -1,4 +1,10 @@
 // Lo que el OS necesita saber de Spotify, sin pantalla ni red.
+export const idEquipo = (v) => (/^[\w-]{1,80}$/.test(String(v || '')) ? String(v) : '');
+// A qué equipo mandar la música: el activo, si no una compu, y al final cualquiera disponible.
+export function elegirEquipo(lista = []) {
+  const xs = lista.filter((d) => d.id && !d.is_restricted);
+  return xs.find((d) => d.is_active) || xs.find((d) => d.type === 'Computer') || xs[0] || null;
+}
 const FIJAS = { play: ['PUT', 'play'], pause: ['PUT', 'pause'], next: ['POST', 'next'], previous: ['POST', 'previous'] };
 const entero = (v) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? n : null; };
 // Devuelve [método, ruta] o null si la acción no es válida.
@@ -11,7 +17,7 @@ export function rutaAccion(accion, valor) {
 }
 export const leerReproduccion = (j) => {
   const t = j?.item, dev = j?.device, volumen = dev?.supports_volume === false ? null : dev?.volume_percent ?? null;
-  const base = { sonando: false, titulo: '', artista: '', portada: '', dispositivo: dev?.name || '', progreso: 0, duracion: 0, volumen };
+  const base = { sonando: false, titulo: '', artista: '', portada: '', dispositivo: dev?.name || '', activo: Boolean(dev?.is_active), progreso: 0, duracion: 0, volumen };
   if (!t) return base;
   const fotos = t.album?.images || t.images || [];
   return { ...base, sonando: Boolean(j.is_playing), titulo: t.name || '', artista: (t.artists || []).map((a) => a.name).join(', ') || t.show?.name || '', portada: fotos[1]?.url || fotos[0]?.url || '', progreso: j.progress_ms || 0, duracion: t.duration_ms || 0 };
