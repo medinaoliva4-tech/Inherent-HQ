@@ -21,7 +21,7 @@ import * as mcpOS from './mcp.js';
 import { conocimientoDeEtapa } from './conocimiento.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo, puedeRecibir } from '../../public/js/agentes-flujos.js';
-import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto } from '../../public/js/chat-agentes.js';
+import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto, limpiarCadena } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
@@ -193,7 +193,7 @@ export function rutas(on) {
       objetivo: txt(b.objetivo, 1000), cliente: slug, cliente_nombre: txt(b.cliente_nombre, 120),
       flujo: { id: w.id, v: w.v, nombre: w.nombre, agente: w.agente, depto: w.depto, area: w.area || 'strategy', limites: w.limites || [], origen: w.origen || null, ia: w.ia || null },
       etapas: w.etapas.map((e) => ({ ...e, estado: 'pendiente', intento: 0, actividades: [], campos: [], confianza: 0, faltantes: [], salida: '', via: '', modelo: '', stub: false, ajuste: '', aprobada_por: '', aprobada_en: '' })),
-      inputs: [], evidencia: [], creado_por: u.email, archivado: false, pausado: false,
+      inputs: [], evidencia: [], creado_por: u.email, archivado: false, pausado: false, cadena: limpiarCadena(b.cadena),
       historial: [{ at: ahora(), quien: u.email, accion: 'crear' }],
     };
     // F4.5: el trabajo que nace en el Chat queda ligado a esa conversación, con lo platicado y lo hablado como contexto.
@@ -392,6 +392,14 @@ export function rutas(on) {
     if (d) res.json({ run: d });
   });
   // F4.5 · lo platicado: hasta qué etapa sigue solo el flujo al aprobar.
+  // F4.6 · el siguiente agente del equipo ya arrancó: se marca para no arrancarlo dos veces.
+  on('POST', 'agentes/runs/:id/cadena', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    if (!r.cadena || r.cadena.hecho) return res.status(409).json({ error: 'Ese equipo ya siguió' });
+    const d = await guardar(res, u, r, { cadena: { ...r.cadena, hecho: txt(body(req).run, 80) } }, { accion: 'equipo', etapa: activa(r), nota: 'sigue el siguiente agente' });
+    if (d) res.json({ run: d });
+  });
   on('POST', 'agentes/runs/:id/plan', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const r = await cargar(req, res, u); if (!r) return;

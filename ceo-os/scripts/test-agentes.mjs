@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
+import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
 import { RUTAS_BASE, skillDe } from '../api/_lib/conocimiento.js';
@@ -99,6 +100,19 @@ t('normalizarWorkflow limpia lo que manda el editor', () => {
   assert.equal(w.etapas[0].fuentes_min, 10);
   assert.deepEqual(w.etapas[0].herramientas, ['web', 'inherent']);
   assert.equal(w.estado, 'borrador');
+});
+t('supervisor: lee varios agentes y sigue una sola vez', () => {
+  const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];
+  const m = leerMenciones('@Strategy @Creative arma la campaña', ag);
+  assert.deepEqual(m.agentes.map((x) => x.id), ['a', 'b']); assert.equal(m.resto, 'arma la campaña');
+  assert.equal(leerMenciones('@Strategy @Strategy hola', ag).agentes.length, 1); assert.equal(leerMenciones('hola', ag), null);
+  const c = limpiarCadena({ siguientes: [{ id: 'b', nombre: 'Creative' }, { id: 'c', nombre: 'X' }, { id: '' }] });
+  assert.equal(c.siguientes.length, 2); assert.equal(limpiarCadena({ siguientes: [] }), null); assert.equal(limpiarCadena(null), null);
+  const r = { cadena: c, etapas: [{ estado: 'aprobada' }, { estado: 'revision' }] };
+  assert.equal(siguienteDeCadena(r), null, 'sin terminar no sigue');
+  r.etapas[1].estado = 'aprobada';
+  const s = siguienteDeCadena(r); assert.equal(s.agente.id, 'b'); assert.equal(s.cadena.siguientes[0].id, 'c');
+  r.cadena.hecho = 'x'; assert.equal(siguienteDeCadena(r), null, 'no arranca dos veces');
 });
 t('revisor: lee criterios, falla cerrado y corrige solo una vez', () => {
   const rv = leerRevision('x {"criterios":[{"n":1,"cumple":true,"razon":"ok"},{"n":2,"cumple":false,"razon":"sin cifra"}],"decision":{"propone":"P","alternativa":"A","asumio":["S"]}}', ['Uno', 'Dos']);

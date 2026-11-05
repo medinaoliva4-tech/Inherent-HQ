@@ -26,7 +26,7 @@ import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, 
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
-import { leerMencion, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
+import { leerMenciones, siguienteDeCadena, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
@@ -655,8 +655,8 @@ export async function render(el, { me, sub = [], alive }) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
-      const ag = leerMencion(texto, await listaAgentes());
-      if (ag) { S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro(); return proponerPlan(ag.agente, ag.resto); }
+      const ag = leerMenciones(texto, await listaAgentes());
+      if (ag) { S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro(); return proponerPlan(ag.agentes[0], ag.resto, { equipo: ag.agentes.slice(1).map((x) => ({ id: x.id, nombre: x.nombre })) }); }
     }
     const cm = leerComando(texto); if (cm && !reintento) return comando(cm);
     if (!listo()) return toast('El servidor no está en línea', true);
@@ -766,7 +766,7 @@ export async function render(el, { me, sub = [], alive }) {
     } catch {}
   }
   // La tarjeta «Así lo voy a trabajar». Con `run`, es lo que sigue de un trabajo que ya existe (más allá de lo platicado).
-  async function proponerPlan(agente, resto, { run = null } = {}) {
+  async function proponerPlan(agente, resto, { run = null, equipo = [] } = {}) {
     let w; try { ({ workflow: w } = await api('agentes/workflows/' + enc(agente.id))); } catch (e) { return toast(e.message, true); }
     const desde = run ? activa(run) : 0, plan = planDe(run || w, modelosGw()).filter((e) => e.n >= desde);
     // Sin cliente en el modo, la tarjeta pregunta para quién es (nunca se asume). Un modo que pide cliente no admite «interno».
@@ -776,7 +776,7 @@ export async function render(el, { me, sub = [], alive }) {
       clientes = [['', 'Elige…'], ...(pide ? [] : [['interno', 'Inherent (trabajo interno)']]), ...xs.map((c) => [c.slug, c.name])];
       sinClientes = clientes.length < 2;
     }
-    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, sinClientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
+    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { equipo, modo: 'secuencia', agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, sinClientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
     if (!alive()) return; pintarCentro();
   }
   async function empezarPlan(i) {
@@ -789,7 +789,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (p.run) ({ run } = await api(`agentes/runs/${enc(p.run)}/plan`, { method: 'POST', body: { hasta: p.hasta } }));
       else {
         if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: tituloDe(`@${p.agente.nombre} ${p.resto}`) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
-        ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente: cl.cliente, cliente_nombre: cl.nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs) } }));
+        ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente: cl.cliente, cliente_nombre: cl.nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs), cadena: p.modo === 'secuencia' && p.equipo?.length ? { siguientes: p.equipo } : null } }));
         p.run = run.id;
         // En orden (cada escritura usa la versión de la conversación): primero el mensaje, después el lazo.
         if (p.mensaje) { await api(`chat/sesiones/${enc(S.sesion)}/nota`, { method: 'POST', body: { texto: p.mensaje } }).catch(() => {}); p.mensaje = ''; }
@@ -801,9 +801,35 @@ export async function render(el, { me, sub = [], alive }) {
         try { ({ run } = await api(`agentes/runs/${enc(run.id)}/etapa/${k}/encolar`, { method: 'POST', body: {} })); ponerRun(run); }
         catch (e) { toast(e.code === 'GATEWAY_OFF' ? 'El servidor no está en línea: usa «Continuar» en su pestaña cuando vuelva' : e.message, true); }
       }
+      // En paralelo, el resto del equipo arranca ahora con el mismo encargo.
+      if (p.modo === 'paralelo') for (const x of p.equipo || []) { const { run: otro } = await api('agentes/runs', { method: 'POST', body: { workflow: x.id, titulo: (p.resto || x.nombre).slice(0, 140), objetivo: p.resto, cliente: cl.cliente, cliente_nombre: cl.nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: 999 }, contexto: contextoChat(S.msgs) } }); await ligarYCorrer(otro); }
       S.tab = run.id; S.cerradas?.delete(run.id); if (!angosto()) { S.panel = true; R.dataset.panel = 'on'; }
     } catch (e) { p.estado = 'error'; p.error = e.message; }
     if (!alive()) return; pintarCentro(); pintarPanel(); vigilar();
+  }
+  async function ligarYCorrer(run) {
+    if (S.sesion) await api(`chat/sesiones/${enc(S.sesion)}/agentes`, { method: 'POST', body: { run: run.id } });
+    ponerRun(run);
+    const k = activa(run);
+    if (!['pendiente', 'ajuste'].includes(run.etapas[k].estado) || faltaAporte(run, k)) return run;
+    try { ({ run } = await api(`agentes/runs/${enc(run.id)}/etapa/${k}/encolar`, { method: 'POST', body: {} })); ponerRun(run); }
+    catch (e) { toast(e.code === 'GATEWAY_OFF' ? 'El servidor no está en línea: usa «Continuar» en su pestaña cuando vuelva' : e.message, true); }
+    return run;
+  }
+  // Secuencia: cuando un agente termina, su resultado pasa como input al siguiente y este arranca solo.
+  const cadenaEnCurso = new Set();
+  async function seguirCadena(r) {
+    const sig = siguienteDeCadena(r); if (!sig || cadenaEnCurso.has(r.id) || !S.sesion) return;
+    cadenaEnCurso.add(r.id);
+    try {
+      const { run: nuevo } = await api('agentes/runs', { method: 'POST', body: { workflow: sig.agente.id, titulo: r.titulo, objetivo: r.objetivo, cliente: r.cliente, cliente_nombre: r.cliente_nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: 999 }, cadena: sig.cadena } });
+      // Primero el resultado y después arrancar: la etapa debe nacer con ese input.
+      const { destino } = await api(`agentes/runs/${enc(r.id)}/etapa/${r.etapas.length - 1}/usar`, { method: 'POST', body: { destino: nuevo.id } });
+      await ligarYCorrer(destino);
+      const { run } = await api(`agentes/runs/${enc(r.id)}/cadena`, { method: 'POST', body: { run: nuevo.id } }); ponerRun(run);
+      toast(`Sigue ${sig.agente.nombre} con el resultado`);
+      if (alive()) { pintarHilo(); pintarPanel(); vigilar(); }
+    } catch (e) { cadenaEnCurso.delete(r.id); toast(e.message, true); }
   }
   // Mientras el servidor trabaja una etapa de algún trabajo ligado, se relee cada 2.5 s.
   let vigilando = false;
@@ -838,6 +864,7 @@ export async function render(el, { me, sub = [], alive }) {
     ponerRun(r);
     const k = activa(r);
     if (r.plan_ok && k > r.plan_ok.hasta && !completo(r) && r.etapas[k]?.estado === 'pendiente' && !S.msgs.some((m) => m.r === 'plan' && m.p.run === r.id && m.p.estado === 'pendiente')) proponerPlan({ id: r.flujo.id }, '', { run: r });
+    seguirCadena(r);
     pintarHilo(); pintarPanel(); vigilar();
   }
   const ctxDoc = () => ({ me, rol, modelos: modelosGw(), onCambio: alCambiar });
@@ -945,7 +972,7 @@ export async function render(el, { me, sub = [], alive }) {
   });
   escucha('change', async (e) => {
     if (e.target.id === 'ch-inst') { try { await api(`chat/clientes/${encodeURIComponent(e.target.dataset.c)}`, { method: 'POST', body: { instrucciones: e.target.value } }); if (S.proyecto) S.proyecto.instrucciones = e.target.value; toast('Instrucciones guardadas'); } catch (er) { toast(er.message, true); } return; }
-    const pc = e.target.dataset?.ch; if (pc === 'plan-hasta' || pc === 'plan-cliente') { const p = S.msgs[+e.target.dataset.i]?.p; if (!p) return; if (pc === 'plan-hasta') p.hasta = +e.target.value; else p.cliente = e.target.value; return pintarHilo(); }
+    const pc = e.target.dataset?.ch; if (pc === 'plan-modo') { const p = S.msgs[+e.target.dataset.i]?.p; if (p) p.modo = e.target.value === 'paralelo' ? 'paralelo' : 'secuencia'; return pintarHilo(); } if (pc === 'plan-hasta' || pc === 'plan-cliente') { const p = S.msgs[+e.target.dataset.i]?.p; if (!p) return; if (pc === 'plan-hasta') p.hasta = +e.target.value; else p.cliente = e.target.value; return pintarHilo(); }
     // El selector de modo de la barra. Si no se pudo cambiar (una respuesta en camino), el selector vuelve al modo de ahora.
     if (e.target.matches?.('.ls-modo')) { cambiarModo(e.target.value); if (S.modo !== e.target.value) pintarSide(); }
   });
