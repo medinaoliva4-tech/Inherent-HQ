@@ -5,7 +5,7 @@ import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { seal, open } from './vault.js';
-import { ACCIONES, leerReproduccion } from '../../public/js/spotify-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify } from '../../public/js/spotify-datos.js';
 
 const CONN = 'spotify_conexiones', PEND = 'spotify_pendientes';
 const CLIENT = () => (process.env.SPOTIFY_CLIENT_ID || '70d9110fca724c03b737e631460e968f').trim();
@@ -67,12 +67,24 @@ export function rutas(on) {
   });
   on('POST', 'spotify/accion', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
-    const a = ACCIONES[String(body(req).accion || '')]; if (!a) return res.status(400).json({ error: 'Acción no válida' });
-    const t = await permiso(u.email); if (!t) return res.status(409).json({ error: 'Conecta Spotify primero' });
-    const r = await llamar(t, `/${a[1]}`, { method: a[0] });
-    if (r.status === 404) return res.status(409).json({ error: 'Abre Spotify en algún equipo y dale play una vez.' });
-    if (!r.ok && r.status !== 202 && r.status !== 204) return res.status(502).json({ error: r.status === 403 ? 'Spotify pide Premium para esto.' : 'Spotify no respondió.' });
-    res.json({ ok: true });
+    const b = body(req), accion = String(b.accion || ''), ruta = rutaAccion(accion, b.valor);
+    if (!ruta) return res.status(400).json({ error: 'Acción no válida' });
+    try {
+      const t = await permiso(u.email); if (!t) return res.status(409).json({ error: 'Conecta Spotify primero' });
+      let r = await llamar(t, `/${ruta[1]}`, { method: ruta[0] });
+      if (r.status === 404 && accion === 'play') {
+        // Sin equipo activo: lo manda al primero que Spotify tenga abierto.
+        const d = await llamar(t, '/devices'), lista = d.ok ? (await d.json()).devices || [] : [];
+        if (lista[0]) r = await llamar(t, `/play?device_id=${encodeURIComponent(lista[0].id)}`, { method: 'PUT' });
+      }
+      if (r.ok) return res.json({ ok: true });
+      const j = await r.json().catch(() => ({})), razon = j.error?.reason || '';
+      console.error('spotify/accion', accion, r.status, razon);
+      res.status(409).json({ error: motivoSpotify(r.status, razon), code: razon || undefined });
+    } catch (e) {
+      console.error('spotify/accion', accion, e.name);
+      res.status(409).json({ error: motivoSpotify(0, '') });
+    }
   });
   on('POST', 'spotify/desconectar', async (req, res) => {
     const u = await guard(req, res); if (!u) return;

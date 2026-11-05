@@ -10,11 +10,11 @@ import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
 import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio } from '../public/js/marketing-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify, tiempo } from '../public/js/spotify-datos.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
 import { limpiarMovimiento, errorMovimiento, filtrarMovimientos, resumenMovimientos } from '../public/js/movimientos-datos.js';
-import { leerReproduccion, ACCIONES } from '../public/js/spotify-datos.js';
 import { setupVoz, aPcm16, aFloat, leerMensaje, urlVoz } from '../public/js/voz-gemini.js';
 import { estadoApp } from '../public/js/app-mac-estado.js';
 import { siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from '../public/js/conversacion.js';
@@ -286,9 +286,9 @@ t('voz real: lee interrupción, fin, audio y reconexión', () => {
 });
 t('Spotify: lee lo que suena y solo acepta los cuatro controles', () => {
   const r = leerReproduccion({ is_playing: true, device: { name: 'Mac' }, item: { name: 'Canción', artists: [{ name: 'A' }, { name: 'B' }], album: { images: [{ url: 'g' }, { url: 'p' }] } } });
-  assert.deepEqual(r, { sonando: true, titulo: 'Canción', artista: 'A, B', portada: 'p', dispositivo: 'Mac' });
+  assert.deepEqual([r.sonando, r.titulo, r.artista, r.portada, r.dispositivo], [true, 'Canción', 'A, B', 'p', 'Mac']);
   assert.equal(leerReproduccion(null).sonando, false);
-  assert.deepEqual(Object.keys(ACCIONES), ['play', 'pause', 'next', 'previous']);
+  assert.ok(['play', 'pause', 'next', 'previous'].every((a) => rutaAccion(a)));
 });
 t('Spotify: control escondible, solo CEO y sin secreto', () => {
   assert.match(APP, /id="lat-sp"/);
@@ -347,6 +347,22 @@ t('embudo: del CRM cuenta solo el mes y sin prospectos', () => {
 t('rentabilidad: ordena por margen y marca la peor línea', () => {
   const r = analizarLineas(limpiarEmbudo({ lineas: [{ nombre: 'A', ingreso: 1000, costo: 1200 }, { nombre: 'B', ingreso: 2000, costo: 500 }, { nombre: '', ingreso: 9 }] }).lineas);
   assert.equal(r.mejor.nombre, 'B'); assert.equal(r.peor.nombre, 'A'); assert.equal(r.peor.margen, -200); assert.equal(r.margen, 1300); assert.equal(r.filas.length, 2);
+});
+t('Spotify: volumen y tiempo se acotan', () => {
+  assert.deepEqual(rutaAccion('volumen', 140), ['PUT', 'volume?volume_percent=100']);
+  assert.deepEqual(rutaAccion('buscar', -5), ['PUT', 'seek?position_ms=0']);
+  assert.deepEqual(rutaAccion('play'), ['PUT', 'play']);
+  assert.equal(rutaAccion('volumen', 'x'), null);
+  assert.equal(rutaAccion('constructor'), null);
+  assert.equal(tiempo(125000), '2:05');
+});
+t('Spotify: lee el player y dice el motivo real', () => {
+  const r = leerReproduccion({ is_playing: true, progress_ms: 1000, device: { name: 'Mac', volume_percent: 40, supports_volume: true }, item: { name: 'A', duration_ms: 9000, artists: [{ name: 'B' }], album: { images: [{ url: 'g' }, { url: 'm' }, { url: 'c' }] } } });
+  assert.deepEqual([r.portada, r.volumen, r.duracion], ['m', 40, 9000]);
+  assert.equal(leerReproduccion({ device: { supports_volume: false, volume_percent: 3 } }).volumen, null);
+  assert.match(motivoSpotify(403, 'PREMIUM_REQUIRED'), /Premium/);
+  assert.match(motivoSpotify(403, 'UNKNOWN'), /no permite/);
+  assert.match(motivoSpotify(404, ''), /Abre Spotify/);
 });
 t('Chat: el panel se esconde con un botón', () => {
   const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
