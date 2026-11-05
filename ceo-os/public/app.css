@@ -9393,6 +9393,34 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 a.ch-f{text-decoration:none}
 @media (max-width:760px){.lat-top{display:none}.llm-head{background:none;border:0}.lc-w{max-width:none}.llm-side{display:flex;flex-direction:column;background:rgb(20 20 21 / .94);padding:calc(10px + env(safe-area-inset-top)) 10px 10px;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}}
 
+/* ===== TRANSICIONES · solo movimiento: una curva suave para todo, sin colores ni formas nuevas ===== */
+:root{--suave:cubic-bezier(.22,.8,.2,1);--e-ent:var(--suave);--e-spring:var(--suave);--e-pop:var(--suave);--e-std:ease-out;--e-sheet:var(--suave);--mv-paso:22ms}
+@media (prefers-reduced-motion:no-preference){
+  html[data-vt=nav]::view-transition-old(vt-main){animation:vt3Out 200ms ease-out both}
+  html[data-vt=nav]::view-transition-new(vt-main){animation:vt3In 320ms var(--suave) both}
+  html[data-pantalla="chat"] #main.enter{animation:mvFade 260ms ease-out backwards}
+  .entra,.entra-lista>*{animation-duration:320ms}
+  .lat-ind{transition-duration:460ms,460ms,460ms,180ms}
+  .lat-it,.lat-subs a,.lat-yo-b,.lat-ib,.lat-grp-tg,.hoja-it,.ch-f,.ch-d,.ch-conv a,.ch-mas,.ch-x{transition:background-color .18s ease-out,color .18s ease-out,opacity .18s ease-out,transform .26s var(--suave)}
+  .lat-grp-tg>svg,.lat-sub-tg>svg{transition:transform .32s var(--suave)}
+  .btn{transition:transform .26s var(--suave),background-color .18s ease-out,color .18s ease-out}
+  .in,select.in,textarea.in{transition:box-shadow .2s ease-out}
+  .ch-cuerpo{transition-duration:.36s}
+  .ch-d>svg:first-child,.ch-tg svg{transition-duration:.32s}
+  .lat-ctx:not([hidden]){animation:mvFade 280ms ease-out backwards}
+  .llm-panel,.llm-main{transition-duration:.46s;transition-timing-function:var(--suave)}
+  #toast{transition:transform 260ms var(--suave),opacity 200ms ease-out}
+  #toast.on{transition:transform 460ms var(--suave),opacity 220ms ease-out}
+  #drawer.drawer{transition:opacity 220ms ease-out,transform 300ms var(--suave),visibility 0s linear 300ms}
+  #drawer.drawer.on{transition:opacity 260ms ease-out,transform 460ms var(--suave),visibility 0s}
+  .dlg[open]{animation-duration:380ms}
+  .dlg[open]::backdrop{animation-duration:260ms}
+  .hoja{animation-duration:360ms}
+  .lat-menu{animation-duration:300ms}
+  .llega{animation:mvEntra 340ms var(--suave) backwards}
+}
+.lm.llega{will-change:transform}
+
 @media (prefers-reduced-motion:reduce){.btn,.in{transition:none}}
 @media (prefers-reduced-transparency:reduce){
   :root{--ui-glass:#1d1d1f}

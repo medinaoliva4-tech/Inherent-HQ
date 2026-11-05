@@ -304,6 +304,7 @@ export async function render(el, { me, sub = [], alive }) {
       ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${sinUi(x.t)}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
+  let hiloDe = null, hiloN = 0;
   function pintarHilo() {
     const col = C('llm-col'), box = C('llm-conv');
     if (S.decidir) {
@@ -319,7 +320,10 @@ export async function render(el, { me, sub = [], alive }) {
     const escrito = Object.fromEntries([...col.querySelectorAll('textarea[data-k]')].filter((t) => t.value).map((t) => [t.dataset.k, t.value]));
     const foco = document.activeElement?.matches?.('textarea[data-k]') && col.contains(document.activeElement) ? { k: document.activeElement.dataset.k, a: document.activeElement.selectionStart, b: document.activeElement.selectionEnd } : null;
     const ctx = { me, rol, otros: S.agentes, sesion: S.sesion };
+    const antes = S.sesion === hiloDe ? hiloN : Infinity;
     mount(col, html`${items.map((it) => (it.tipo === 'msg' ? msgHtml(S.msgs[it.i], it.i) : eventoHtml(it, ctx)))}${S.agentes.map(vivoHtml)}${desvioHtml()}`);
+    [...col.children].slice(antes).forEach((n) => n.classList.add('llega')); // solo lo nuevo entra suave; lo que ya estaba no se mueve
+    hiloDe = S.sesion; hiloN = col.children.length;
     for (const t of col.querySelectorAll('textarea[data-k]')) { if (escrito[t.dataset.k]) t.value = escrito[t.dataset.k]; if (foco?.k === t.dataset.k) { t.focus(); t.setSelectionRange(foco.a, foco.b); } }
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();

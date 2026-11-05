@@ -92,6 +92,13 @@ t('solo oscuro: no quedan selectores de tema en la app', () => {
   for (const [f, s] of JS) if (f !== path.join('js', 'tema.js')) assert.ok(!/themebtn|ponerTema|temaElegido/.test(s), f);
 });
 
+t('transiciones: una sola curva suave, entradas sin saltos y reducir movimiento intacto', () => {
+  assert.match(v3, /--suave:/);
+  assert.match(v3, /view-transition-new\(vt-main\)\{animation:vt3In 320ms var\(--suave\)/);
+  assert.match(v3, /\.lm\.llega/);
+  const trans = v3.slice(v3.indexOf('TRANSICIONES'), v3.indexOf('@media (prefers-reduced-motion:reduce){.btn'));
+  assert.ok(!/#[0-9a-f]{6}|rgb\(|background:|border-radius/.test(trans.replace(/\.llega|transition[^;}]*/g, '')), 'este bloque solo mueve: no toca colores ni formas');
+});
 const APP = JS.find(([f]) => f === path.join('js', 'app.js'))[1];
 const NAV_SRC = APP.slice(APP.indexOf('const NAV = ['), APP.indexOf('const navDe'));
 t('barra única: máximo dos niveles y nada repite al Chat', () => {
