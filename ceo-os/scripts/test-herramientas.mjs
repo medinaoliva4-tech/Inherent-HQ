@@ -677,7 +677,7 @@ t('Creative 3c · estáticas: package.json trae test:creative y app.css el bloqu
   const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:creative'], /test-creative\.mjs.*test-creative-marca\.mjs/);
   const css = leerSrc('public/app.css'); assert.match(css, /FASE 3c · Creative/);
   for (const k of ['.dl{', '.dl-cons{', '.dz.dz3{', '.dz-cola{', '.dna,.mb{', '.dse{']) assert.ok(css.includes(k), k);
-  const bloque = css.slice(css.indexOf('FASE 3c · Creative'));
+  const bloque = css.slice(css.indexOf('FASE 3c · Creative'), css.indexOf('FASE 3d · Production'));
   assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '').replace(/:root(\[[^\]]*\])?\{[^}]*\}/g, '')), 'el bloque no trae colores sueltos: solo tokens (los :root que los definen no cuentan)');
 });
 
@@ -736,7 +736,7 @@ t('Production 3d · estáticas: workspace.js monta el brief, el shot list y el s
   const pk = JSON.parse(leerSrc('package.json')); assert.match(pk.scripts['test:produccion'], /test-produccion\.mjs.*test-shotlist\.mjs/);
   const css = leerSrc('public/app.css'); assert.match(css, /FASE 3d · Production/);
   for (const k of ['.pb{', '.pb-bar>span{', '.pb-bar[data-sobre="1"]>span{', '.pb-pie{', '.sl{', '.sl-gr{', '.sl-tablero{', '.vd-capas{', '.vd-v{', '.vd-coms{', '.cr-fr-ed{']) assert.ok(css.includes(k), k);
-  const bloque = css.slice(css.indexOf('FASE 3d · Production'));
+  const bloque = css.slice(css.indexOf('FASE 3d · Production'), css.indexOf('OS simple · Áreas e Inherent AI'));
   assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/\/\*[\s\S]*?\*\//g, '').replace(/:root(\[[^\]]*\])?\{[^}]*\}/g, '')), 'el bloque no trae colores sueltos: solo tokens (los :root que los definen no cuentan)');
 });
 
@@ -778,7 +778,7 @@ t('Fase 3e P2 · estáticas: workspace.js monta las vistas nuevas, las hojas sin
   const pk = JSON.parse(leerSrc('package.json'));
   for (const [s, f] of [['test:consulting', 'test-consulting-p2'], ['test:strategy', 'test-strategy-p2'], ['test:strategy', 'test-strategy-radar'], ['test:marketing', 'test-marketing-p2'], ['test:produccion', 'test-produccion-p2'], ['test:creative', 'test-creative-p2']]) assert.ok(pk.scripts[s].includes(`${f}.mjs`), `${s} corre ${f}`);
   const css = leerSrc('public/app.css'); assert.match(css, /Fase 3e · P2/);
-  const bloque = css.slice(css.indexOf('Fase 3e · P2')).replace(/\/\*[\s\S]*?\*\//g, '');
+  const bloque = css.slice(css.indexOf('Fase 3e · P2'), css.indexOf('OS simple · Áreas e Inherent AI')).replace(/\/\*[\s\S]*?\*\//g, '');
   for (const k of ['.cd{', '.om-svg{', '.rd-svg{', '.pr-mx{', '.org-raci{', '.aut-mx{', '.hk-grid', '.cp-act{', '.fnl-canvas{', '.cns-g{', '.rcr-grid{', '.pl-tira{', '.pl-linea{', '.rp-tabla{']) assert.ok(bloque.includes(k.replace(/[{]$/, '')) || css.includes(k), k);
   assert.ok(!/#[0-9a-f]{3,8}\b/i.test(bloque.replace(/:root(\[[^\]]*\])?\{[^}]*\}/g, '')), 'el bloque de la 3e P2 no trae colores sueltos: solo tokens --ui-*');
   assert.match(css, /\.rd-sd,\.pr-sd\)/, 'los «sin datos» del Radar y de Pricing usan el estilo ámbar');

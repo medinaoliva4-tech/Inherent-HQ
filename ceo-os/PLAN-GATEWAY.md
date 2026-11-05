@@ -547,3 +547,12 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 ### Entrega 12 · Spotify
 - **Mini control:** en la barra lateral, escondible y solo para el CEO. Controla el Spotify abierto en cualquier equipo: reproducir, pausar y cambiar.
 
+## 23 · Las áreas en simple (2026-11-05)
+
+Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qué número mueve, qué decisión cambia y si le gana a un Excel.
+
+### Entrega 1 · base
+- **Hoja de Movimientos:** tabla por cliente con qué se hizo, costo, qué se esperaba, qué pasó y la decisión. Se ve por área y por cliente.
+- **Tres mesas por área:** las herramientas actuales se agrupan en 15 mesas, cada área con propósito y número. Una herramienta vive en una sola mesa.
+- **Por construir fuera:** Growth Experiment Lab y AI Video Lab no entran hasta que muevan un número.
+

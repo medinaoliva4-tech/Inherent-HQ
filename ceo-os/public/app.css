@@ -9755,10 +9755,48 @@ html[data-vidrio="real"] .login .side{background:rgb(30 30 32 / .4)}
 .sp-t b{font-weight:600;color:var(--ui-ink)}.sp-t small{font-size:12px;color:var(--ui-mut)}
 .sp-x{width:22px;height:22px;border:0;border-radius:50%;background:none;color:var(--ui-mut);font-size:16px;line-height:1;cursor:pointer}
 .sp-x:hover{background:rgb(255 255 255 / .1);color:var(--ui-ink)}
-.sp-con{grid-column:1/-1;height:30px;border:0;border-radius:9px;background:var(--ui-azul);color:#fff;font:500 13px var(--sans);cursor:pointer}
+.sp-con{grid-column:1/3;height:30px;border:0;border-radius:9px;background:var(--ui-azul);color:#fff;font:500 13px var(--sans);cursor:pointer}
+.sp-con+.sp-x{grid-column:3;grid-row:1}
 .sp-b{grid-column:1/-1;display:flex;justify-content:center;gap:10px}
 .sp-b button{display:grid;place-items:center;width:34px;height:30px;border:0;border-radius:9px;background:none;color:var(--ui-ink);cursor:pointer}
 .sp-b button:hover{background:rgb(255 255 255 / .1)}
+
+/* Áreas: propósito, número y tres mesas */
+.ms-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;color:var(--ui-ink2);font-size:14px}
+.ms-bar>span{display:inline-flex;align-items:center;gap:7px}
+.ms-bar select{width:auto;min-width:200px}
+.ms{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.ms-m{display:flex;flex-direction:column;gap:5px;min-width:0;padding:16px;border-radius:16px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.ms-m h2{margin:0;font-size:18px;font-weight:620;letter-spacing:-.012em}
+.ms-m p{margin:0 0 8px;font-size:13.5px;color:var(--ui-mut)}
+.ms-l{display:grid;margin-top:auto}
+.ms-h{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:38px;padding:0 4px;color:var(--ui-ink);font-size:14px;text-decoration:none;box-shadow:inset 0 .5px 0 var(--ui-line)}
+.ms-h svg{flex:none;color:var(--ui-mut2)}
+.ms-h:hover{color:#fff}
+/* Hoja de Movimientos */
+.mv-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.mv-bar p{flex:1;min-width:200px;margin:0;font-size:14px;color:var(--ui-mut)}
+.mv-bar select{width:auto;min-width:180px}
+.mv-t{overflow-x:auto;border-radius:14px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.mv-t table{width:100%;border-collapse:collapse;font-size:14px}
+.mv-t th{padding:10px 13px;font-size:12.5px;font-weight:600;text-align:left;color:var(--ui-mut);box-shadow:inset 0 -1px 0 var(--ui-line)}
+.mv-t td{padding:11px 13px;vertical-align:top;color:var(--ui-ink2);box-shadow:inset 0 -1px 0 var(--ui-line)}
+.mv-t td b{display:block;font-weight:600;color:var(--ui-ink)}.mv-t td small{font-size:12.5px;color:var(--ui-mut)}
+.mv-t tr[data-mv]{cursor:pointer}.mv-t tr[data-mv]:hover td{background:rgb(255 255 255 / .03)}
+.mv-falta{color:var(--ui-warn)}
+.mv-d{display:inline-block;padding:2px 9px;border-radius:11px;background:rgb(255 255 255 / .09);font-size:12.5px;white-space:nowrap}
+.mv-d[data-d="Repetir"]{color:var(--ui-ok)}.mv-d[data-d="Parar"]{color:var(--ui-rojo)}
+@media (max-width:760px){
+  .mv-t thead{display:none}.mv-t table,.mv-t tbody,.mv-t tr,.mv-t td{display:block}
+  .mv-t tr{padding:6px 0;box-shadow:inset 0 -1px 0 var(--ui-line)}
+  .mv-t td{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;padding:5px 13px;box-shadow:none}
+  .mv-t td::before{content:attr(data-t);font-size:12.5px;color:var(--ui-mut)}
+  .ms-bar select{width:100%}
+  .ar-head:not(:has(.ar-acc)),.ar-ico{display:none}
+  .mv-t td small{grid-column:2}
+  .mv-t td b{min-width:0}
+  .mv-d{justify-self:start}
+}
 
 /* ===== Modo conversación: un aro, lo que se dice y tres botones ===== */
 .vz{position:fixed;z-index:80;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;justify-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(90% 34% at 50% 104%,rgb(235 235 240 / .16),transparent 72%),rgb(8 8 9 / .86);-webkit-backdrop-filter:blur(34px) saturate(130%);backdrop-filter:blur(34px) saturate(130%);color:var(--ui-ink);animation:vzEntra .36s var(--suave)}
