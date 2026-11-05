@@ -1,3 +1,4 @@
+import { paraPocket } from '../pocket.js';
 import { SECTIONS, GROUPS, SUMMARY, LEVELS, LEVEL_HELP, SCOPES, SCOPE_HELP, STARTS, baseAreas } from '../roleviews.js';
 import { events, html, raw, mount, col, api, drawer, closeDrawer, ask, toast, initials, IC, acts, confirmAsk, teamList, squareImage, cropImage, WORK_ROLES, roleName, $, teamDoc, ico } from '../core.js';
 import { bdayText } from './me.js';
@@ -140,7 +141,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
       <div class="hello sp-hero" style="margin:0"><h1>Equipo</h1><p style="margin:0">${SUB[view]}</p></div><div class="sp"></div>
       ${isCeo && ['org', 'people'].includes(view) ? html`<button class="btn" data-act="add">+ Agregar</button>` : ''}
     </div>
-    <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px"><div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>${isCeo ? html`<a class="sm mut" href="#/services/responsabilidades" style="margin-left:auto">Las recetas ahora viven en Servicios → Responsabilidades →</a>` : ''}</div>
+    <div class="row" style="margin:0 0 16px;flex-wrap:wrap;gap:8px"><div class="tabs" style="margin:0">${paraPocket(TABS, ([k]) => `org/team/${k}`).map(([k, l]) => html`<button class="${view === k ? 'on' : ''}" data-act="view" data-v="${k}">${l}</button>`)}</div>${isCeo ? html`<a class="sm mut" href="#/services/responsabilidades" style="margin-left:auto">Las recetas ahora viven en Servicios → Responsabilidades →</a>` : ''}</div>
     ${missing.length && ['org', 'people'].includes(view) ? html`<div class="warnbox" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px"><span style="flex:1">${missing.length === 1 ? '1 persona' : missing.length + ' personas'} del manual y la nómina no ${missing.length === 1 ? 'está' : 'están'} en el organigrama: <b>${missing.map((x) => x.name + ' (' + x.roles.join(', ') + ')').join(' · ')}</b></span><button class="btn" data-act="import">Agregarlas</button></div>` : ''}
     ${view === 'org' ? html`<div class="card" style="padding:34px 22px">${org()}</div>` : view === 'roles' ? roles() : view === 'vistas' && isCeo ? vistas() : cards()}`);
     const st = $('[data-act=rvstart]', el); if (st) st.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st.value } });

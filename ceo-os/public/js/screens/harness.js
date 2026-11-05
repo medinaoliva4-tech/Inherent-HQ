@@ -23,9 +23,9 @@ export async function render(el, { me, sub = [], alive }) {
   if (pagina && pagina !== 'mcps') { pagina = ''; try { history.replaceState(null, '', '#/ai'); } catch {} }
   let gen = 0;
 
-  const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'MCPs' : 'Inherent AI'}</h1>
+  const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'Conexiones' : 'Inherent AI'}</h1>
     <p>${pagina ? 'Conecta tus herramientas: el Chat y los agentes las usan desde el servidor, con tu permiso.' : 'Corre en el servidor de Inherent: siempre encendido, con tus conexiones y tus permisos.'}</p></div>
-    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agents</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} MCPs</a></nav>`;
+    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agents</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} Conexiones</a></nav>`;
 
   // ---------- Portada ----------
   function portada() {
@@ -39,10 +39,10 @@ export async function render(el, { me, sub = [], alive }) {
           <p class="mut sm">Cada agente sigue su flujo de etapas; le encargas un trabajo y apruebas cada paso.</p>
           <div class="iai-estado" id="iai-agentes">${revisando('Revisando los trabajos…')}</div>
           <a class="btn iai-go" href="#/ai/agentes">Ver los agentes</a></article>
-        <article class="card iai-card"><div class="iai-card-h"><span class="iai-ic">${ico('puzzle', 20)}</span><b>MCPs</b></div>
+        <article class="card iai-card"><div class="iai-card-h"><span class="iai-ic">${ico('puzzle', 20)}</span><b>Conexiones</b></div>
           <p class="mut sm">Notion, Canva, Figma, Drive… conéctalos una vez y el servidor los usa por ti.</p>
           <div class="iai-estado" id="iai-mcps">${revisando('Revisando tus conexiones…')}</div>
-          <a class="btn iai-go" href="#/ai/mcps">Ver los MCPs</a></article></section>`,
+          <a class="btn iai-go" href="#/ai/mcps">Ver conexiones</a></article></section>`,
       despues: async (g) => {
         const vivo = () => alive() && g === gen;
         const [srv, runs, con] = await Promise.all([saludServidor(), leer('agentes/runs'), leer('conectores/estado')]);

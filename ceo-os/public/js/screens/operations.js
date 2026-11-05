@@ -1,3 +1,4 @@
+import { paraPocket } from '../pocket.js';
 import { newProject as wizProject, newTask as wizTask, VIS_OPTS } from '../create.js';
 import { tipoSopFields, bindSop, readTipoSop, sopLink } from '../tasktype.js';
 import { projectPage, myProjects } from '../project-page.js';
@@ -39,7 +40,7 @@ export async function render(el, { me, sub, alive }) {
       ${projects.length ? html`<div id="mprojects"></div>`
       : html`<div class="empty"><b>Todavía no hay proyectos</b>Si es un cliente con plan, su pipeline se arma solo según lo contratado.${edit ? html`<div><button class="btn" data-act="newProject">+ Proyecto</button></div>` : ''}</div>`}
       ${!projects.length && !tasks.length ? '' : resumen ? html`<div class="sec-title" style="margin-top:22px"><h2>Necesita atención</h2><span class="mut sm">Atrasadas y en revisión</span></div><div id="obody"></div>` : html`<div class="row" style="margin:26px 0 16px;flex-wrap:wrap">
-        <div class="tabs" style="margin:0">${[['tasks', 'Tareas'], ['cal', 'Calendario'], ['time', 'Timeline']].map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
+        <div class="tabs" style="margin:0">${paraPocket([['tasks', 'Tareas'], ['cal', 'Calendario'], ['time', 'Timeline']], ([k]) => `org/operations/${k}`).map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div>
         <div class="sp"></div>${tab === 'tasks' && edit ? html`<button class="btn" data-act="newTask">+ Tarea</button>` : ''}
       </div>
       <div id="obody"></div>`}`);

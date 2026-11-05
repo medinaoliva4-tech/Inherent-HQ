@@ -6,6 +6,7 @@
 //   · Especialistas: la red por industria → mentors.js (antes Ventas → Especialistas)
 //   · Responsabilidades: el pipeline programable por paquete o servicio (las recetas) → responsabilidades.js
 // Las cotizaciones viven solo en Ventas → Cotizaciones. Los movimientos y pagos, en Finanzas. embed «responsabilidades»: monta solo esa pestaña.
+import { paraPocket } from '../pocket.js';
 import { byScope, proposal, targetMargin, LEVELS as CX, PRICING_ID } from '../finscope.js';
 import { html, raw, mount, col, api, toast, acts, Q, today, $, $$, ico, isSummary, canEdit, roChip, csv, swap, fromLink } from '../core.js';
 import { hbars, PAL } from '../charts.js';
@@ -60,7 +61,7 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
     }
     mount(el, html`<div class="hello row" style="align-items:flex-end"><div><h1>Servicios</h1><p>Qué vendemos, <em>en qué paquetes</em> y quién lo hace.</p></div><div class="sp"></div>${roChip(me, 'sales')}</div>
       <div class="row" style="margin-bottom:18px;flex-wrap:wrap;gap:8px">
-        <div class="tabs" style="margin:0">${TABS.map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div><div class="sp"></div>
+        <div class="tabs" style="margin:0">${paraPocket(TABS, ([k]) => `org/services/${k}`).map(([k, l]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}">${l}</button>`)}</div><div class="sp"></div>
         ${tab === 'servicios' && edit ? html`${ceo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'especialistas' && ceo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>

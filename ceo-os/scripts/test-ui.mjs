@@ -7,6 +7,8 @@ import path from 'node:path';
 import { tieneIco, svgIco, nombreIco } from '../public/js/iconos.js';
 import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
+import { aroDe, SUPERFICIES } from '../public/js/luz.js';
+import { soloCompu } from '../public/js/pocket.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const RAIZ = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'public');
@@ -130,6 +132,55 @@ t('barra única: en la compu la lista del Chat vive en la barra del shell', () =
   const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
   assert.match(llm, /getElementById\('lat-ctx'\)/);
   assert.ok(!/ el\.addEventListener\('(click|change|keydown|submit)', async/.test(llm.replace("el.addEventListener(tipo, fn)", '')), 'los clics también deben llegar a la lista movida');
+});
+t('luz: el aro se calcula sobre la superficie donde está el mouse', () => {
+  const r = { left: 100, top: 40, width: 300, height: 200 };
+  assert.deepEqual(aroDe(r, 160, 90), { x: 100, y: 40, ancho: 300, alto: 200, mx: 60, my: 50 });
+});
+t('luz: vive en todo el OS y respeta a quien pide menos movimiento', () => {
+  for (const s of ['.lat', '.lc', '.llm-panel', '.card', '.home-kpi', '.gl']) assert.ok(SUPERFICIES.split(',').includes(s), s);
+  assert.match(APP, /instalarLuz\(\)/);
+  const luz = JS.find(([f]) => f === path.join('js', 'luz.js'))[1];
+  assert.match(luz, /prefers-reduced-motion/); assert.match(luz, /hover:hover/);
+});
+t('vidrio: el fondo se ve a través del contenido, y lo que flota sigue sólido', () => {
+  const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
+  assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(255 255 255 \/ \.0/);
+  assert.match(bloque, /#luz\{/); assert.match(bloque, /#luz-aro/);
+  for (const s of ['.avi-menu', '.ctx-pop', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
+  assert.match(bloque, /prefers-reduced-transparency/);
+});
+t('vidrio real: en la app de la Mac se ve lo que hay detrás de la ventana', () => {
+  const main = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'main.js'), 'utf8');
+  const pre = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'preload.js'), 'utf8');
+  const boot = fs.readFileSync(path.join(RAIZ, 'js/tema-boot.js'), 'utf8');
+  assert.match(main, /vibrancy:\s*'under-window'/); assert.match(main, /'#00000000'/);
+  assert.match(pre, /vidrio:/);
+  assert.match(boot, /inherentEscritorio[^;]*vidrio/); // una app vieja no pide transparencia: se quedaría sin fondo
+  assert.match(CSS, /html\[data-vidrio="real"\]\{background:rgb\(/);
+});
+t('vidrio en la web: formas grandes detrás, sin textura y apagadas si piden menos transparencia', () => {
+  const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
+  assert.match(bloque, /html::before,html::after\{/);
+  assert.match(bloque, /prefers-reduced-transparency:reduce\)\{[^\n]*html::before/);
+});
+t('Pocket: lo de pantalla grande se abre en la compu y el día a día se queda', () => {
+  for (const r of ['org/setup', 'org/team/vistas', 'org/team/laya', 'org/finanzas/profit', 'org/operations/time', 'ai/agentes/abc1/workflow']) assert.ok(soloCompu(r), r);
+  for (const r of ['home', 'chat', 'org/work', 'org/operations', 'org/finanzas/fact', 'org/team/org', 'ai/agentes', 'ai/agentes/abc1', 'org/clients/akai/info']) assert.ok(!soloCompu(r), r);
+  assert.match(APP, /soloCompu\(cur\.url\)/);
+});
+t('Pocket: mapas y tableros cambian de forma en el iPhone', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
+  assert.match(b, /\.wc-cal \.dh/); assert.match(b, /\.kb-board\{display:grid;grid-template-columns:minmax\(0,1fr\)/); assert.match(b, /\.mt-side\{/);
+  assert.match(b, /\.ainoti,/);
+});
+t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
+  const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
+  assert.match(de('library.js'), /<h1>Biblioteca<\/h1>/);
+  assert.match(de('sales.js'), /<h1>CRM<\/h1>/);
+  assert.match(de('setup.js'), /<h1>Configuración<\/h1>/);
+  assert.match(de('harness.js'), /'Conexiones'/);
+  for (const n of ['Active projects', 'Tasks due', 'Monthly revenue', 'Active clients', 'Ask InherentOS anything" data-act']) assert.ok(!de('home.js').includes(n), n);
 });
 
 console.log(`\n${ok} pruebas del sistema de diseño pasaron`);

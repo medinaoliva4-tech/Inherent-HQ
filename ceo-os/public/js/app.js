@@ -1,6 +1,8 @@
 import { workspacesDe, rutaDeVuelta, esApp } from './workspaces.js';
 import { chatVivo } from './chat-vivo.js';
 import { instalarMenu } from './menu-contextual.js';
+import { instalarLuz } from './luz.js';
+import { pocket, soloCompu } from './pocket.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
@@ -454,7 +456,7 @@ function abrirHoja(id, btn) {
   const it = (ruta, label, icon, on, style = '') => html`<a class="hoja-it${on ? ' on' : ''}" href="#/${ruta}"${on ? raw(' aria-current="page"') : ''}${style ? raw(` style="${style}"`) : ''}>${icon}<span>${label}</span></a>`;
   const bt = (k, label, icon) => html`<button type="button" class="hoja-it" data-lat="${k}">${icon}<span>${label}</span></button>`;
   // x[5] es el color del área (un token --ui-m-<id> propio, nunca texto de usuario).
-  const deNav = (xs) => xs.map((x) => it(x[2], x[1], ico(x[4] || 'dot', 18), pag?.[0] === x, x[5] ? `--ac:var(${x[5]})` : ''));
+  const deNav = (xs) => xs.filter((x) => !soloCompu(x[2])).map((x) => it(x[2], x[1], ico(x[4] || 'dot', 18), pag?.[0] === x, x[5] ? `--ac:var(${x[5]})` : ''));
   let titulo = '', cuerpo = '';
   {
     titulo = 'Más';
@@ -571,7 +573,7 @@ async function render() {
   // Mientras baja, la pantalla vieja ya no se puede tocar (si no, una pestaña tocada a destiempo cambiaría la dirección).
   old.inert = true;
   let mod = null, err = null;
-  try { mod = await import(`./screens/${SCREENS[cur.key]}.js`); } catch (e) { err = e; }
+  try { mod = await import(`./screens/${pocket() && soloCompu(cur.url) ? 'solo-compu' : SCREENS[cur.key]}.js`); } catch (e) { err = e; }
   if (!alive()) return;
   // Si lo que falló fue bajar el código de la pantalla, «Reintentar» recarga la página (el navegador de la app de Mac
   // recuerda el módulo que falló y volver a pedirlo fallaría igual).
@@ -636,6 +638,7 @@ async function start(u) {
   me = u;
   bootEtapa('Preparando tu espacio…'); // la sesión ya contestó: ahora van las vistas por rol y los niveles
   if (u.role !== 'client') instalarMenu(u);
+  instalarLuz();
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
   if (me.role !== 'client') { let doc = null; const lv = Promise.all([api('db/settings'), me.role === 'ceo' ? api('internos/baseline').catch(() => null) : null]).then(([r, b]) => { if (b) baseDefaults(b.base); applyLevels((r.items || []).find((x) => x.id === LEVELS_ID)); }).catch(() => {}); try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); await lv; }
   if (!hashNow()) history.replaceState(null, '', '#/' + landing());

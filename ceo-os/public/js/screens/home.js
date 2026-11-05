@@ -137,7 +137,7 @@ export async function render(el, { me, alive }) {
     return html`<form class="home-ask" data-act="ask" autocomplete="off">
       <div class="home-ask-box"><span class="home-ask-ic">${ico('chat-ia', 20)}</span>
         <label class="sr-only" for="home-q">Pregúntale a InherentOS</label>
-        <textarea id="home-q" class="home-ask-ta" rows="1" placeholder="Ask InherentOS anything" data-act="askTa"></textarea>
+        <textarea id="home-q" class="home-ask-ta" rows="1" placeholder="Pregúntale a Inherent OS" data-act="askTa"></textarea>
         <button class="btn home-ask-go" type="submit" aria-label="Enviar al Chat">${ico('enviar', 16)}</button></div>
       <div class="home-ask-foot"><div class="home-chips">${sug.map(([q]) => html`<button type="button" class="chip home-chip" data-act="chip" data-q="${q}">${q}</button>`)}</div>
         <span class="home-ask-modo mut sm">Modo ${modoDe(modo).nombre}${quien ? html` · ${quien}` : ''}</span></div></form>`;
@@ -152,17 +152,17 @@ export async function render(el, { me, alive }) {
     // Proyectos: el anillo es el avance real (tareas hechas de las que cuelgan de los proyectos en curso); sin tareas, anillo vacío.
     const ids = new Set(activos.map((p) => p.id)), deEllos = tasks.filter((t) => ids.has(t.project_id)), hechas = deEllos.filter((t) => !open(t)).length;
     const cuantos = PROY_ORDEN.map((e) => [e, activos.filter((p) => projStatus(p, tasks) === e).length]).filter(([, n]) => n);
-    out.push({ k: 'Active projects', href: '#/org/operations', ic: 'kanban', n: activos.length || null, clave: 'proyectos',
+    out.push({ k: 'Proyectos activos', href: '#/org/operations', ic: 'kanban', n: activos.length || null, clave: 'proyectos',
       sub: !projects.length ? 'Sale de los proyectos en Proyectos' : activos.length ? cuantos.map(([e, n]) => `${n} ${e === 'Pausado' && n !== 1 ? 'pausados' : e.toLowerCase()}`).join(' · ') : 'Ninguno en curso: todos terminados',
       anillo: activos.length ? anillo(deEllos.length ? Math.round((hechas / deEllos.length) * 100) : null, { tam: 46, label: deEllos.length ? `Avance: ${hechas} de ${deEllos.length} tareas hechas en los proyectos en curso` : 'Sin tareas ligadas a los proyectos en curso' }) : undefined });
     // Tareas: la barra parte el número en lo vencido y lo que está en plazo (el rojo siempre va con su cuenta escrita).
     const abiertas = tasks.filter(open), semana = abiertas.filter((t) => t.due && t.due <= sunday), vencidas = semana.filter((t) => t.due < T);
-    out.push({ k: 'Tasks due', href: '#/org/work', ic: 'list-checks', n: semana.length || null, clave: 'tareas', red: vencidas.length > 0,
+    out.push({ k: 'Tareas de la semana', href: '#/org/work', ic: 'list-checks', n: semana.length || null, clave: 'tareas', red: vencidas.length > 0,
       sub: !tasks.length ? 'Sale de las tareas con fecha en Mis tareas' : semana.length ? html`Hasta el domingo${vencidas.length ? html` · <span class="r">${vencidas.length} vencida${vencidas.length === 1 ? '' : 's'}</span>` : ''}` : 'Nada vence esta semana',
       vis: proporcion([{ valor: vencidas.length, color: 'var(--ui-bad)', label: 'Vencidas' }, { valor: semana.length - vencidas.length, color: 'var(--ui-acc)', label: 'En plazo' }], { leyenda: false, minimo: 2 }) });
     if (acc.cobrar) {
       const t = totales(dueInv || []), cobrado = t.cobradoMes;
-      out.push({ k: 'Monthly revenue', href: '#/org/finanzas', ic: 'wallet', n: cobrado || null, pre: 'Q', clave: 'ingresos', cargando: dueInv === null,
+      out.push({ k: 'Ingresos del mes', href: '#/org/finanzas', ic: 'wallet', n: cobrado || null, pre: 'Q', clave: 'ingresos', cargando: dueInv === null,
         sub: dueInv === null ? 'Cargando…' : cobrado ? (t.nPorCobrar ? `${Q(t.porCobrar)} por cobrar` : 'Cobrado este mes') : 'Sale de las facturas marcadas como pagadas en Finanzas',
         vis: dueInv === null ? '' : proporcion([{ valor: cobrado, color: 'var(--ui-ok)', label: 'Cobrado este mes' }, { valor: Math.max(0, t.porCobrar - t.vencido), color: 'var(--ui-mut2)', label: 'Por cobrar' }, { valor: t.vencido, color: 'var(--ui-bad)', label: 'Vencido' }], { leyenda: false, minimo: 2 }) });
     }
@@ -170,7 +170,7 @@ export async function render(el, { me, alive }) {
       // Quiénes son: por ficha de oferta o por cuenta desde una cotización (sin repetir), con el nombre que ya conoce el Chat.
       const quienes = new Map([...(repoClients || []).filter((c) => c.hasPlan).map((c) => [c.slug, nombreDe(c.slug)]), ...accounts.filter((a) => a.from_quote).map((a) => { const sl = a.slug || String(a.id).replace(/^acc-/, ''); return [sl, a.name || nombreDe(sl)]; })]);
       const set = new Set(quienes.keys());
-      out.push({ k: 'Active clients', href: '#/org/clients', ic: 'users', n: set.size || null, clave: 'clientes', cargando: repoClients === null,
+      out.push({ k: 'Clientes activos', href: '#/org/clients', ic: 'users', n: set.size || null, clave: 'clientes', cargando: repoClients === null,
         sub: repoClients === null ? 'Cargando…' : set.size ? 'Con ficha de oferta o cuenta desde una cotización' : 'Sale de los clientes con ficha en Clientes',
         vis: repoClients === null ? '' : monogramas([...quienes.values()], { max: 5 }) });
     }
@@ -204,7 +204,7 @@ export async function render(el, { me, alive }) {
       const ms = Date.parse(String(r.ts)), ahora = ms && Date.now() - ms < 3e5;
       return html`${sep}<li class="home-tl-i ${ahora ? 'is-ahora' : ''}"><a class="home-tl-a" href="${r.href}"><span class="home-tl-n">${ico(r.ic, 12)}</span><span class="home-tl-t">${r.t}<small>${r.s}</small></span><span class="home-tl-q mut sm">${r.who ? corto(r.who) : ''}</span><time class="home-tl-h mut sm" datetime="${String(r.ts)}" title="${ms ? new Date(ms).toLocaleString('es-GT') : ''}">${relativo(r.ts)}</time></a></li>`;
     });
-    return html`<section class="home-act"><div class="hy-bh"><h2>Recent Activity</h2><span>Lo último que se movió</span>${hay(spark) ? html`<span class="home-act-spark" title="Movimientos por día, últimos 7 días">${spark}<small class="mut">7 días</small></span>` : ''}</div>
+    return html`<section class="home-act"><div class="hy-bh"><h2>Actividad reciente</h2><span>Lo último que se movió</span>${hay(spark) ? html`<span class="home-act-spark" title="Movimientos por día, últimos 7 días">${spark}<small class="mut">7 días</small></span>` : ''}</div>
       ${lista.length ? html`<ol class="home-tl">${filas}</ol>`
       : vacio({ icono: 'clock', titulo: 'Aún no hay movimiento', linea: `Sale de las tareas, proyectos${acc.sales ? ', leads, cotizaciones' : ''}${ceoish ? ' y contenido' : ''} que se muevan.`, compacto: true })}</section>`;
   }
