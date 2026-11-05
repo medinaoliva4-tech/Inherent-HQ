@@ -1,0 +1,50 @@
+// F4.6 · El conocimiento que entra al trabajo (PLAN-GATEWAY §21). Lista cerrada: los principios y las skills de los agentes.
+// 06-ECONOMIA.md y lo de los clientes no se leen aquí. El trabajador lo pide al tomar una etapa: no se guarda en el trabajo.
+import * as db from './db.js';
+import { readFile } from './gh.js';
+import { scoper } from './access.js';
+import { seesTask } from './leer.js';
+import { AGENTES } from '../../public/js/harness/agentes.js';
+import { completo } from '../../public/js/agentes-flujos.js';
+import { nombresSkill, metodoDeSkill, equipoHoy, deCliente, MAX_SKILLS } from '../../public/js/conocimiento.js';
+
+export const RUTAS_BASE = ['inherent/00-PRINCIPIOS.md'];
+const VIDA = 5 * 60 * 1000, cache = new Map();
+export const skillDe = (carpeta, nombre) => (/^[a-z][a-z0-9-]{1,60}$/.test(nombre) ? `${carpeta}brain/skills/${nombre}/SKILL.md` : null);
+
+async function leer(ruta) {
+  const c = cache.get(ruta); if (c && Date.now() - c.at < VIDA) return c.texto;
+  const texto = (await readFile(ruta))?.content ?? null; // un archivo que no existe también se recuerda
+  cache.set(ruta, { at: Date.now(), texto });
+  return texto;
+}
+async function buscarSkill(nombre) {
+  for (const a of AGENTES) {
+    const ruta = skillDe(a.carpeta, nombre); if (!ruta) return null;
+    const texto = await leer(ruta); if (texto) return texto;
+  }
+  return null;
+}
+const nombresDe = async () => Object.fromEntries((await db.list('team')).filter((p) => p.name).map((p) => [String(p.email || p.id).toLowerCase(), p.name]));
+
+// Para una etapa → { principios, metodo: [{ nombre, texto }], faltan: [nombre], equipo }.
+export async function conocimientoDeEtapa(run, n) {
+  const pedidos = nombresSkill(run.etapas?.[n]), metodo = [];
+  for (const nombre of pedidos) {
+    if (metodo.length >= MAX_SKILLS) break;
+    const texto = await buscarSkill(nombre);
+    if (texto) metodo.push({ nombre, texto: metodoDeSkill(texto) });
+  }
+  const principios = (await Promise.all(RUTAS_BASE.map(leer))).filter(Boolean).join('\n\n');
+  const [runs, tareas, proyectos, nombres] = await Promise.all([db.list('agent_runs'), db.list('tasks'), db.list('projects'), nombresDe()]);
+  return { principios, metodo, faltan: metodo.length ? [] : pedidos.slice(0, 1), equipo: equipoHoy({ ...deCliente({ runs, tareas, proyectos, run }), nombres }) };
+}
+
+// Para un turno del Chat: lo que ESA persona puede ver. `ver` es la regla de los trabajos (agentes.js).
+export async function equipoPara(u, ver) {
+  if (!u || u.role === 'client') return '';
+  const [todos, tasks, nombres] = await Promise.all([db.list('agent_runs'), db.list('tasks'), nombresDe()]);
+  const sc = await scoper(u, { tasks }), runs = [];
+  for (const r of todos) if (!r.archivado && !completo(r) && (await ver(u, r, sc))) runs.push(r);
+  return equipoHoy({ runs, tareas: tasks.filter((t) => seesTask(u, t) && (!sc || sc.tasks(t))), nombres });
+}

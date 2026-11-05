@@ -18,6 +18,7 @@ import crypto from 'node:crypto';
 import { toolsDe, llamarTool } from './conectores.js';
 import { conectorDe } from '../../public/js/conectores.js';
 import * as mcpOS from './mcp.js';
+import { conocimientoDeEtapa } from './conocimiento.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo, puedeRecibir } from '../../public/js/agentes-flujos.js';
 import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto } from '../../public/js/chat-agentes.js';
@@ -264,6 +265,7 @@ export function rutas(on) {
     } else {
       const r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
       if (!e || e.estado !== 'trabajando' || e.via !== 'gateway' || r.archivado || r.pausado) return res.status(409).json({ error: 'Esa etapa no la está trabajando el servidor' });
+      if (q.accion === 'conocimiento') return res.json(await conocimientoDeEtapa(r, n)); // no depende de las conexiones de nadie
       persona = lc(e.cola?.por || r.creado_por);
       pide = (e.herramientas || []).filter((h) => h === 'inherent' || ['mcp', 'token'].includes(conectorDe(h)?.tipo));
     }

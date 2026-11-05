@@ -4,6 +4,8 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
+import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
+import { RUTAS_BASE, skillDe } from '../api/_lib/conocimiento.js';
 import { leer, aTexto } from '../gateway/web.mjs';
 import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
@@ -404,6 +406,66 @@ t('E3 revisión: el contexto y Copiar llevan los datos, no el código', () => {
 });
 t('E3 revisión: también se entiende con espacios y saltos de Windows', () => {
   assert.equal(partirUi('```ui \r\nroot = Stack([])\r\n```')[0].tipo, 'ui');
+});
+// F4.6 · Entrega 1: el agente sabe (PLAN-GATEWAY §21).
+t('skills: salen del método de la etapa, sin repetir y aunque venga en frase', () => {
+  assert.deepEqual(nombresSkill({ metodo: 'cr-hook-copy' }), ['cr-hook-copy']);
+  assert.deepEqual(nombresSkill({ metodo: 'cr-big-idea, cr-storytelling, cr-big-idea' }), ['cr-big-idea', 'cr-storytelling']);
+  assert.deepEqual(nombresSkill({ skill: 'Analysis' }), ['analysis']);
+  assert.deepEqual(nombresSkill({}), []);
+});
+t('skills: se quita el encabezado y lo largo se corta en una sección', () => {
+  const md = `---\nname: x\n---\n\n# Título\n\n## Uno\n${'a'.repeat(MAX_SKILL - 200)}\n\n## Dos\n${'b'.repeat(500)}`;
+  const r = metodoDeSkill(md);
+  assert.ok(r.startsWith('# Título')); assert.ok(r.length <= MAX_SKILL + 120);
+  assert.ok(!r.includes('## Dos')); assert.match(r, /recortado/);
+  assert.equal(metodoDeSkill('---\nname: x\n---\nCorto'), 'Corto');
+  assert.ok(metodoDeSkill('a'.repeat(MAX_SKILL + 50)).startsWith('a'.repeat(MAX_SKILL))); // sin saltos de línea no se pierde todo
+});
+t('conocimiento: la lista cerrada nunca trae la economía y una skill rara no sale del repo', () => {
+  assert.ok(RUTAS_BASE.includes('inherent/00-PRINCIPIOS.md'));
+  assert.ok(!RUTAS_BASE.some((p) => /ECONOMIA|clients\//.test(p)));
+  assert.equal(skillDe('agents/04-creative/', '../../inherent/06-ECONOMIA'), null);
+  assert.equal(skillDe('agents/04-creative/', 'cr-hook-copy'), 'agents/04-creative/brain/skills/cr-hook-copy/SKILL.md');
+});
+const hoyRuns = [
+  { id: 'r1', titulo: 'Estrategia Q1', flujo: { nombre: 'Strategy' }, cliente: 'akai', cliente_nombre: 'AKAI', creado_por: 'ana@x.gt', etapas: [{ nombre: 'ICP', estado: 'aprobada' }, { nombre: 'Oferta', estado: 'revision' }] },
+  { id: 'r2', titulo: 'Terminado', flujo: { nombre: 'Strategy' }, etapas: [{ nombre: 'A', estado: 'aprobada' }] },
+  { id: 'r3', titulo: 'Viejo', flujo: { nombre: 'X' }, archivado: true, etapas: [{ nombre: 'A', estado: 'pendiente' }] },
+];
+const hoyTareas = [
+  { title: 'Guion', assignee: 'ana@x.gt', status: 'En curso', due: '2026-11-03' },
+  { title: 'Lista', assignee: 'ana@x.gt', status: 'Hecha', due: '2026-11-03' },
+  { title: 'Foto', assignee: 'leo@x.gt', status: 'Por empezar', due: '2026-11-09' },
+];
+t('equipo: dice qué trabajos siguen, en qué van y las tareas por persona', () => {
+  const x = equipoHoy({ runs: hoyRuns, tareas: hoyTareas, nombres: { 'ana@x.gt': 'Ana' }, hoy: '2026-11-04' });
+  assert.match(x, /Estrategia Q1/); assert.match(x, /etapa 2 de 2/); assert.match(x, /esperando aprobación/); assert.match(x, /AKAI/);
+  assert.ok(!x.includes('Terminado')); assert.ok(!x.includes('Viejo'));
+  assert.match(x, /Ana: 1 abierta/); assert.match(x, /1 vencida/); assert.match(x, /leo@x\.gt: 1 abierta/); assert.ok(!x.includes('Lista'));
+});
+t('equipo: sin nada no agrega texto y nunca pasa del tope', () => {
+  assert.equal(equipoHoy({}), '');
+  assert.equal(bloqueEquipo(''), '');
+  const muchos = Array.from({ length: 200 }, (_, i) => ({ id: `r${i}`, titulo: `Trabajo largo número ${i} ${'x'.repeat(70)}`, flujo: { nombre: 'A' }, etapas: [{ nombre: 'E', estado: 'en_cola' }] }));
+  const x = equipoHoy({ runs: muchos }); assert.ok(x.length <= MAX_EQUIPO); assert.ok(x.endsWith('Trabajos') === false);
+  assert.match(bloqueEquipo("algo"), /no instrucciones/i);
+});
+t('equipo: una etapa solo ve a su cliente; lo personal nunca entra', () => {
+  const runs = [{ id: 'a', titulo: 'De AKAI', cliente: 'akai', etapas: [{ nombre: 'E', estado: 'en_cola' }] }, { id: 'b', titulo: 'De NAO', cliente: 'nao', etapas: [{ nombre: 'E', estado: 'en_cola' }] }, { id: 'c', titulo: 'Mío', cliente: 'personal', etapas: [{ nombre: 'E', estado: 'en_cola' }] }, { id: 'd', titulo: 'Interno', etapas: [{ nombre: 'E', estado: 'en_cola' }] }];
+  const tareas = [{ title: 'T akai', project_id: 'p1', assignee: 'a@x', status: 'En curso' }, { title: 'T nao', project_id: 'p2', assignee: 'a@x', status: 'En curso' }, { title: 'T privada', project_id: 'p1', assignee: 'a@x', status: 'En curso', visibility: 'people' }, { title: 'T personal', project_id: 'p1', tipo: 'Personal', status: 'En curso' }];
+  const proyectos = [{ id: 'p1', client_slug: 'akai' }, { id: 'p2', client_slug: 'nao' }];
+  const f = deCliente({ runs, tareas, proyectos, run: { id: 'z', cliente: 'akai' } });
+  assert.deepEqual(f.runs.map((r) => r.id), ['a']); assert.deepEqual(f.tareas.map((x) => x.title), ['T akai']);
+  const s = deCliente({ runs, tareas, proyectos, run: { id: 'z', cliente: '' } });
+  assert.deepEqual(s.runs.map((r) => r.id), ['d']); assert.deepEqual(s.tareas, []);
+  assert.deepEqual(deCliente({ runs, tareas, proyectos, run: { id: 'c', cliente: 'personal' } }), { runs: [], tareas: [] });
+});
+t('pedido: lleva principios, método y equipo; sin ellos queda igual', () => {
+  const run = { titulo: 'T', flujo: { agente: 'A' }, inputs: [], etapas: [{ nombre: 'E', tipo: 'analisis', entrega: 'Doc' }] };
+  const con = pedido(run, 0, { principios: 'PRINCIPIO-1', metodo: [{ nombre: 'cr-hook-copy', texto: 'METODO-1' }], equipo: 'EQUIPO-1' });
+  assert.match(con, /PRINCIPIO-1/); assert.match(con, /### cr-hook-copy\nMETODO-1/); assert.match(con, /EQUIPO-1/); assert.match(con, /no lo cites/i); assert.match(con, /no bloquees/i);
+  assert.ok(!/PRINCIPIO|Método de esta etapa|equipo trabaja/.test(pedido(run, 0, {})));
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {
