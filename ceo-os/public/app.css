@@ -9135,7 +9135,7 @@ html.kf-fullscreen{overflow:hidden}
 
 .wc-msg.yo{display:flex;justify-content:flex-end}
 /* ===== F4.5 · la ventana de agentes (PLAN-GATEWAY §20.8): la pestaña de un trabajo en el panel del Chat. Reusa .wc-* de F4 ===== */
-.av{display:flex;flex-direction:column;gap:12px;padding:12px 14px 20px;font-size:13px}
+.avw{display:flex;flex-direction:column;gap:12px;font-size:13px;min-width:0}
 .av-h{display:flex;align-items:center;gap:10px}
 .av-h-t{flex:1;min-width:0;display:flex;flex-direction:column}
 .av-h-t span{color:var(--ui-mut);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -9185,4 +9185,3 @@ html.kf-fullscreen{overflow:hidden}
 .lpt-x{border:0;background:none;color:var(--l-mut);padding:4px 6px 4px 0;cursor:pointer;display:grid;place-items:center}
 .lpt-d{width:7px;height:7px;border-radius:99px;background:var(--c)}
 .lpt-d.revision{background:var(--ui-warn)}.lpt-d.ok{background:var(--ui-ok)}.lpt-d.en_cola,.lpt-d.trabajando{background:var(--ui-info)}
-.llm-av .av{padding:0}

@@ -26,7 +26,7 @@ import { rutaModulo } from '../herramientas.js';
 import { leerMencion, planDe, contextoChat, hiloChat, modeloDeEtapa } from '../chat-agentes.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
-import { activa, enServidor } from '../agentes-flujos.js';
+import { activa, completo, enServidor as etapaEnServidor } from '../agentes-flujos.js';
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
 
@@ -521,6 +521,8 @@ export async function render(el, { me, sub = [], alive }) {
       S.msgs = out;
     } catch (e) { S.msgs = [{ r: 'a', modo: S.modo, t: '', err: `No pude leer la conversación: ${e.message}` }]; }
     await cargarAgentesDe(id);
+    // Al volver a una conversación con trabajos, la ventana abre en el que sigue en curso (o el último).
+    if (S.agentes.length && !angosto()) { S.tab = (S.agentes.find((r) => !completo(r)) || S.agentes.at(-1)).id; S.panel = true; R.dataset.panel = 'on'; }
     if (alive()) { pintarTitulo(); pintarCentro(); pintarPanel(); marcarMandados(); vigilar(); }
   }
 
@@ -666,7 +668,7 @@ export async function render(el, { me, sub = [], alive }) {
     const desde = run ? activa(run) : 0, plan = planDe(run || w, modelosGw()).filter((e) => e.n >= desde);
     let clientes = null;
     if (!run && !slugAhora()) { const xs = (await cargarContexto(me).catch(() => [])).filter((c) => c.slug && c.slug !== 'inherent'); if (xs.length) clientes = [['', 'Inherent (sin cliente)'], ...xs.map((c) => [c.slug, c.name])]; }
-    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, plan, hasta: plan.at(-1)?.n ?? 0, clientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
+    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
     if (!alive()) return; pintarCentro();
   }
   async function empezarPlan(i) {
@@ -680,11 +682,12 @@ export async function render(el, { me, sub = [], alive }) {
         const cliente = p.clientes ? p.cliente : slugAhora(), nombre = p.clientes ? p.clientes.find(([sl]) => sl === cliente)?.[1] || '' : nombreSlug();
         ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente, cliente_nombre: cliente ? nombre : '', chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs) } }));
         p.run = run.id;
+        if (p.mensaje) { api(`chat/sesiones/${enc(S.sesion)}/nota`, { method: 'POST', body: { texto: p.mensaje } }).catch(() => {}); p.mensaje = ''; }
       }
       if (S.sesion) await api(`chat/sesiones/${enc(S.sesion)}/agentes`, { method: 'POST', body: { run: run.id } }); // sin repetir: se puede reintentar
       ponerRun(run); p.estado = 'hecho';
       const k = activa(run);
-      if (['pendiente', 'ajuste'].includes(run.etapas[k].estado) && !enServidor(run.etapas[k])) {
+      if (['pendiente', 'ajuste'].includes(run.etapas[k].estado) && !etapaEnServidor(run.etapas[k])) {
         try { ({ run } = await api(`agentes/runs/${enc(run.id)}/etapa/${k}/encolar`, { method: 'POST', body: {} })); ponerRun(run); }
         catch (e) { toast(e.code === 'GATEWAY_OFF' ? 'El servidor no está en línea: usa «Continuar» en su pestaña cuando vuelva' : e.message, true); }
       }
@@ -697,9 +700,9 @@ export async function render(el, { me, sub = [], alive }) {
   async function vigilar() {
     if (vigilando) return; vigilando = true;
     try {
-      while (alive() && S.agentes.some((r) => enServidor(r.etapas[activa(r)]))) {
+      while (alive() && S.agentes.some((r) => etapaEnServidor(r.etapas[activa(r)]))) {
         await new Promise((ok) => setTimeout(ok, 2500)); if (!alive()) return;
-        for (const r of S.agentes.filter((x) => enServidor(x.etapas[activa(x)]))) {
+        for (const r of S.agentes.filter((x) => etapaEnServidor(x.etapas[activa(x)]))) {
           try { const { run } = await api('agentes/runs/' + enc(r.id)); ponerRun(run); if (run.etapas[activa(run)]?.estado === 'revision' && r.etapas[activa(r)]?.estado !== 'revision') toast(`${run.flujo.nombre}: resultado listo para revisar`); } catch {}
         }
         if (!S.enVuelo) pintarHilo();

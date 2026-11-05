@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1, F2, F3 y F4 cerradas** (ver §10, §14–§19): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, **Hermes se retiró** (§18) y **cada trabajo del Agent Area se lleva desde su chat de trabajo** (§19). Sigue F5.
+**Estado (2026-11-04):** consolidado. **F0, F1, F2, F3 y F4 cerradas; F4.5 en curso (Entrega 1 hecha)** (ver §10, §14–§20): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, **Hermes se retiró** (§18) y **cada trabajo del Agent Area se lleva desde su chat de trabajo** (§19). Sigue F4.5 (§20) y después F5.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -137,7 +137,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
-| **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | En diseño: tres entregas, cada una con su PR |
+| **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | Entrega 1 hecha (§20); siguen la 2 y la 3 |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -335,7 +335,7 @@ Prompt («arma el mes de AKAI», «lanza la campaña de X»)
 
 **Probado (staging):** un trabajo nuevo de Strategy: conversación con el servidor, input agregado, la etapa Contexto ejecutada en el servidor con su actividad en vivo, el resultado en tarjeta, la conversación sobre el resultado y la aprobación desde el chat.
 
-## 20 · F4.5 · El Chat como centro (diseño, 2026-11-04)
+## 20 · F4.5 · El Chat como centro (2026-11-04)
 
 ### Por qué
 La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **trabajo real con el proceso correcto**: el flujo manda, la persona pone su parte **con conciencia** (lee, aporta, decide) y nada pasa de un agente a otro sin que alguien lo lea. Y **un solo chat**: los chats sueltos parten el contexto.
@@ -413,7 +413,7 @@ La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **tra
 - **Cada etapa trae su modelo** según el flujo: `etapa.modelo` si el workflow lo fija; si no, por su tipo, con la tabla de §9 (análisis y decisiones → DeepSeek V4 Pro; redactar y revisar → V4 Flash; preparar y condensar → MiniMax). El selector de modelo del Chat solo cambia los mensajes del Chat, no las etapas. En el portal (Flujo → inspector) se ve y se cambia el modelo de cada etapa.
 
 ### Entregas (cada una con su PR, probada en staging)
-1. **El Chat como centro:** `@agente`, trabajos ligados a la conversación, eventos en el hilo, ventana de agentes con pestañas (cola, documento, archivos, fuentes con verificar/quitar), leer antes de aprobar, retiro del chat de F4, portal y `/etapas` como se dice arriba.
+1. ✅ **El Chat como centro:** `@agente`, trabajos ligados a la conversación, eventos en el hilo, ventana de agentes con pestañas (cola, documento, archivos, fuentes con verificar/quitar), leer antes de aprobar, retiro del chat de F4, portal y `/etapas` como se dice arriba.
 2. **El agente que pregunta y pide aporte:** trabajador `f4-5` (estado `pregunta`, `responder`, aporte obligatorio, `e.borrador` en vivo, contexto `i-chat`), «Usar en…».
 3. **OpenUI y un solo chat:** lang-core + `genui.js` en el Chat y en las tarjetas; el chat de Strategy pasa a «Abrir en el Chat».
 

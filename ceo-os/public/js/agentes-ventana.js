@@ -29,7 +29,7 @@ export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () =
   box._av = { me, run, rol, modelos, onCambio, onPlan };
   const n = activa(run), e = run.etapas[n], pr = progreso(run), ajena = run.chat?.owner && run.chat.owner !== String(me.email).toLowerCase();
   const gs = fuentes(run), [ins, prod] = archivos(run);
-  mount(box, html`<div class="av">
+  mount(box, html`<div class="avw">
     <header class="av-h"><span class="wc-av sm" aria-hidden="true">${(run.flujo.agente || run.flujo.nombre || '?').slice(0, 1)}</span>
       <div class="av-h-t"><b>${run.flujo.nombre}</b><span>${run.titulo}${run.cliente ? ` · ${run.cliente_nombre || run.cliente}` : ''}</span></div>
       <span class="wc-chip ${completo(run) ? 'ok' : e.estado}">${completo(run) ? 'Completo' : `${n + 1}/${run.etapas.length}`}</span></header>

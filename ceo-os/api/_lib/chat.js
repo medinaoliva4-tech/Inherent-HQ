@@ -74,6 +74,16 @@ export function rutas(on) {
     res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at } : null });
   });
 
+  // F4.5 · un mensaje que no pide respuesta del servidor (el «@agente …» que arrancó un trabajo): queda en la conversación.
+  on('POST', 'chat/sesiones/:id/nota', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    if (['en_cola', 'trabajando'].includes(s.turno?.estado)) return res.status(409).json({ error: 'Todavía está respondiendo el turno anterior' });
+    const texto = txt(body(req).texto, MAX_MSG).trim(); if (!texto) return res.status(400).json({ error: 'Mensaje vacío' });
+    const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), { role: 'user', content: texto, at: ahora() }].slice(-MAX_MSGS) });
+    if (d) res.json({ ok: true });
+  });
+
   // F4.5 · los trabajos que nacieron (o se abrieron) en esta conversación: su pestaña y sus eventos en el hilo.
   on('POST', 'chat/sesiones/:id/agentes', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
