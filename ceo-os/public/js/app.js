@@ -120,7 +120,7 @@ const sees = (k) => {
 // Home, Calendario y Library son ítems de primer nivel (sin flecha). Library conserva su regla de siempre (area('library')).
 const NAV = [
   { id: 'home', nombre: 'Hoy', ruta: 'home', icono: 'nav-home', ve: equipo },
-  { id: 'chat', nombre: 'Chat', ruta: 'chat', icono: 'chat-ia', ve: equipo },
+  { id: 'chat', nombre: 'Chat', ruta: 'chat', icono: 'chat-ia', ve: equipo, oculto: true }, // se abre desde el selector de workspace
   { id: 'agentes', nombre: 'Agentes', ruta: 'ai/agentes', icono: 'agents', ve: equipo },
   { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo },
   { id: 'org', nombre: 'Organización', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
@@ -316,7 +316,7 @@ function toggleGrp(id) {
 
 // ---------- La barra lateral (compu) ----------
 const latMini = () => lsGet('barra.mini') === '1';
-const latIt = (ruta, label, icon, on) => html`<a class="lat-it${on ? ' on' : ''}" href="#/${ruta}" title="${label}"${on ? raw(' aria-current="page"') : ''}>${icon}<span class="lat-t">${label}</span></a>`;
+const latIt = (ruta, label, icon, on) => html`<a class="lat-it${on ? ' on' : ''}" href="#/${ruta}" aria-label="${label}"${latMini() ? raw(` title="${label}"`) : ''}${on ? raw(' aria-current="page"') : ''}>${icon}<span class="lat-t">${label}</span></a>`;
 // Organization, Inherent AI y Áreas: el ítem abre su portada (Inherent AI) o su primera página visible; la flecha solo abre
 // o cierra; Company va colapsado adentro de Organization. Un ítem con color (cada área) lleva su ícono con el color del área.
 function latGrupo(n, cur) {
@@ -357,7 +357,7 @@ function paintLat(cur = resolve(hashNow())) {
   const cab = cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : '';
   if (me.role === 'client') { mount(nav, html`${cab}${latIt('portal', 'Mi portal', ico('nav-portal', 16), cur.key === 'portal')}`); latIndicador(nav); return; }
   const pag = paginaDe(cur.url);
-  mount(nav, html`${cab}${NAV.filter((n) => n.ve() && !n.pie).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
+  mount(nav, html`${cab}${NAV.filter((n) => n.ve() && !n.pie && !n.oculto).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
   latIndicador(nav);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
   const enChat = cur.key === 'chat', ws = $('#lat-ws-n', lat), volver = $('#lat-volver', lat);
@@ -395,7 +395,7 @@ function latHtml(mac) {
   const cliente = me.role === 'client';
   return html`<aside class="lat" aria-label="Barra lateral">
     <div class="lat-top">${cliente ? '' : html`<button type="button" class="lat-ws" data-lat="ws" aria-haspopup="menu" aria-expanded="false"><span id="lat-ws-n">Inherent OS</span>${ico('chevrons-up-down', 14)}</button>`}<button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
-    ${cliente ? '' : html`<a class="lat-volver" id="lat-volver" href="#/home" hidden>${ico('chevron-left', 15)}<span></span></a><a class="lat-it lat-nueva" href="#/chat">${ico('nuevo', 16)}<span class="lat-t">Nueva conversación</span></a><button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
+    ${cliente ? '' : html`<a class="lat-volver" id="lat-volver" href="#/home" hidden>${ico('chevron-left', 15)}<span></span></a><button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>`}
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
     <div class="lat-ctx" id="lat-ctx" hidden></div>

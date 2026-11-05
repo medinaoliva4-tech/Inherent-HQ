@@ -199,6 +199,23 @@ t('conversación: usa los colores de Inherent y se abre desde el Chat', () => {
   const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
   assert.match(llm, /abrirConversacion\(/); assert.match(llm, /PROMPT_VOZ/);
 });
+t('ventana de Mac: toda es la app, sin barra de título aparte', () => {
+  const main = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'main.js'), 'utf8');
+  assert.match(main, /titleBarStyle:\s*'hiddenInset'/);
+  assert.match(CSS, /-webkit-app-region:drag/); assert.match(CSS, /-webkit-app-region:no-drag/);
+});
+t('barra del OS: el Chat se abre desde el selector, no desde una fila', () => {
+  assert.match(NAV_SRC, /id: 'chat'[^\n]*oculto: true/);
+  assert.match(APP, /!n\.oculto/);
+  assert.ok(!APP.includes('lat-nueva'), 'Nueva conversación vive dentro del Chat');
+  assert.ok(!/const latIt = [^\n]*href="#\/\$\{ruta\}" title=/.test(APP), 'la etiqueta ya se lee: sin aviso encima');
+});
+t('transiciones (Apple Motion): breves, sin desplazamiento y se pueden interrumpir', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Foundations'));
+  assert.match(b, /::view-transition\{pointer-events:none\}/);
+  assert.match(b, /view-transition-old\(vt-main\)\{animation:vtFuera 110ms/);
+  assert.match(b, /prefers-contrast:more/);
+});
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
   assert.match(de('library.js'), /<h1>Biblioteca<\/h1>/);
