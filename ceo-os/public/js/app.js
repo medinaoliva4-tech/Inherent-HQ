@@ -68,9 +68,9 @@ async function loginView() {
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
   bootSoltar(); // la pantalla de arranque se queda encima mientras el login se pinta, y se desvanece (misma salida que el cascarón)
   mount(root, html`<div class="login">
-    <div class="art"><div class="quote entra"><p>We build cool brands—<br><em>and the growth systems behind them.</em></p></div></div>
     <div class="side entra-lista">
       <div class="lg-marca"><div>${emblem()}</div><div style="width:auto"><img src="/brand/wordmark-light.svg" alt="Inherent"><small>Operating System</small></div></div>
+      <p class="lg-frase">We build cool brands—and the growth systems behind them.</p>
       <p class="lg-sub">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
       ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
       ${st.google ? html`<a class="gbtn" href="/api/auth/google">${IC.google} Continuar con Google</a>

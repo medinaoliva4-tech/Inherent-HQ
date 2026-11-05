@@ -239,7 +239,7 @@ t('sin café: el buscador es neutro', () => {
 });
 t('entrada al OS: neutra, sin café ni textura', () => {
   const b = CSS.slice(CSS.indexOf('/* ===== Entrada al OS'));
-  assert.match(b, /\.login\{[^}]*background:#0d0d0e/); assert.match(b, /\.login \.side::after\{display:none\}/);
+  assert.match(b, /\.login\{[^}]*#0d0d0e/); assert.ok(!APP.includes('class="art"'), 'la entrada no lleva foto'); assert.match(b, /\.login \.side::after\{display:none\}/);
   assert.ok(!/style="[^"]*--cream/.test(APP));
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
