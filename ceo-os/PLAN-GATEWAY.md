@@ -582,3 +582,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Production:** Costo y entrega por pieza, solo para el CEO, con costo, margen y entregas a tiempo.
 - **Dinero de Inherent:** Embudo, Rentabilidad, Resultados y Mapa de la Meta del cliente `inherent` solo los ve el CEO.
 
+### Navegación y Overview
+- **Flechas y dirección:** atrás, adelante y «Clientes / AKAI / Strategy» arriba de cada pantalla, salvo el Chat.
+- **Overview:** solo la siguiente acción y el resumen. Las herramientas viven en sus pestañas.
+- **Entrada:** cada área abre al cliente elegido con «Abrir …».
+
