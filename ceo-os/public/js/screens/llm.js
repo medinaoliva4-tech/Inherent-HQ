@@ -4,7 +4,7 @@
 // persona, lectura del OS y propuestas que la persona aprueba. Hermes se retiró.
 // Un modo por área (areas.js), con su harness (llm/modos.js) y su panel (llm/paneles.js). El modo se elige con los comandos
 // «/», el selector de la barra o llega por abrirEnChat; en la caja, el switch de IA (Claude, ChatGPT, en tu compu u otras).
-// Rutas: #/chat · #/chat/<sesión>
+// Rutas: #/chat · #/chat/<sesión> · #/chat/trabajo/<trabajo> (abre el Chat con ese trabajo en su pestaña)
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
 import { nombreProveedor, nombrePaso, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../ia-pasos.js';
 import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
@@ -22,6 +22,13 @@ import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, 
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { ponerTema, temaElegido, esNoche } from '../tema.js';
 import { rutaModulo } from '../herramientas.js';
+// F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
+import { leerMencion, planDe, contextoChat, hiloChat, modeloDeEtapa } from '../chat-agentes.js';
+import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
+import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
+import { activa, enServidor } from '../agentes-flujos.js';
+import { cargarContexto } from '../contexto.js';
+import { modoDeArea } from '../agentes-chat-datos.js';
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
@@ -57,6 +64,7 @@ export async function render(el, { me, sub = [], alive }) {
     modo: modos.some((m) => m.id === modoGuardado) ? modoGuardado : modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
     slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: false, porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
+    agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
@@ -133,7 +141,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
 
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
-  const vacio = () => !S.msgs.length;
+  const vacio = () => !S.msgs.length && !S.agentes.length;
   function pintarTitulo() {
     const m = modoDe(S.modo), rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     mount(C('llm-titulo'), vacio() ? html`<span class="lt-modo"><i data-m="${m.id}">${m.letra}</i>${m.nombre}</span>` : html`<span class="lt-t">${S.titulo || 'Conversación'}</span><span class="lt-modo sm"><i data-m="${m.id}">${m.letra}</i>${m.nombre}${slugAhora() ? ` · ${nombreSlug()}` : ''}</span>`);
@@ -234,6 +242,11 @@ export async function render(el, { me, sub = [], alive }) {
   // Los comandos «/»: aparecen al escribir «/» al inicio.
   function comandos(v) {
     const box = $('#lc-cmds', el); if (!box) return;
+    // F4.5 · «@»: los agentes activos (la lista se trae la primera vez).
+    if (/^@\S*$/.test(v.trim())) {
+      if (!S.listaAgentes) { listaAgentes().then(() => { if (S.listaAgentes) comandos($('#llm-in', el)?.value || ''); }); return; }
+      const xs = menuArroba(S.listaAgentes, v); box.hidden = !xs.length; return mount(box, menuArrobaHtml(xs));
+    }
     const q = /^\/\S*$/.test(v.trim()) ? v.trim().toLowerCase() : null;
     const lst = q === null ? [] : COMANDOS.filter(([c]) => c.startsWith(q.normalize('NFD').replace(/[̀-ͯ]/g, '')));
     box.hidden = !lst.length;
@@ -244,6 +257,7 @@ export async function render(el, { me, sub = [], alive }) {
   const textoDe = (c) => (Array.isArray(c) ? c.map((p) => (typeof p === 'string' ? p : p?.text || '')).join('') : String(c ?? ''));
   function msgHtml(x, i) {
     if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}</div></div>`;
+    if (x.r === 'plan') return planAgenteHtml(x.p, i);
     const ult = i === S.msgs.length - 1, busy = x.stream, m = modoDe(x.modo || S.modo);
     const pasos = x.tools || [];
     const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${nombrePaso(pasos[pasos.length - 1].nombre)}` : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
@@ -270,7 +284,9 @@ export async function render(el, { me, sub = [], alive }) {
     const col = C('llm-col'), box = C('llm-conv');
     if (vacio()) { mount(col, ''); flecha(); return; }
     const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
-    mount(col, html`${S.msgs.map((x, i) => msgHtml(x, i))}${desvioHtml()}`);
+    // F4.5: los mensajes y, entre ellos, lo que pasa en cada trabajo ligado; al final, lo que el servidor hace ahora.
+    const items = S.agentes.length ? hiloChat(S.msgs, S.agentes) : S.msgs.map((_, i) => ({ tipo: 'msg', i }));
+    mount(col, html`${items.map((it) => (it.tipo === 'msg' ? msgHtml(S.msgs[it.i], it.i) : eventoHtml(it, { me, rol })))}${S.agentes.map(vivoHtml)}${desvioHtml()}`);
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();
   }
@@ -351,7 +367,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = 0;
-      const col = C('llm-col'), box = C('llm-conv'), ult = col?.lastElementChild; if (!ult) return pintarHilo();
+      const col = C('llm-col'), box = C('llm-conv'), ult = col?.lastElementChild; if (!ult || S.agentes.length) return pintarHilo();
       const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 160;
       const tmp = document.createElement('div'); mount(tmp, msgHtml(S.msgs[S.msgs.length - 1], S.msgs.length - 1));
       const steps = ult.querySelector('.lm-steps'), abierto = steps ? steps.open : null;
@@ -368,10 +384,17 @@ export async function render(el, { me, sub = [], alive }) {
   async function pintarPanel() {
     const box = C('llm-panel'); if (!S.panel) return mount(box, '');
     const gen = ++panelGen;
+    // F4.5 · la ventana de agentes: una pestaña por trabajo ligado a la conversación (cerrar una pestaña no cierra el trabajo).
+    const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = S.tab !== 'modo' && tabs.find((r) => r.id === S.tab);
+    const cab = tabs.length ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : 'modo') : '';
+    if (run) {
+      mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-av"></div>`);
+      return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: (r) => { ponerRun(r); pintarHilo(); pintarPanel(); vigilar(); }, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
+    }
     if (!box.childElementCount) mount(box, html`<p class="lp-mut" style="padding:16px">Cargando…</p>`);
     // Production no tiene panel propio todavía (llm/paneles.js): se ve el de Creative, las piezas del mes de la marca.
     const h = await panelDe({ me, modo: S.modo === 'produccion' ? 'diseno' : S.modo, slug: slugAhora(), nombre: nombreSlug(), mes: mesPlan });
-    if (gen === panelGen && alive()) mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${brujulaHtml()}${h}${usoHtml()}`);
+    if (gen === panelGen && alive()) mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}${brujulaHtml()}${h}${usoHtml()}`);
   }
 
   // ---------- La Brújula: la meta medible de la conversación, sus tareas y el ritmo de la semana ----------
@@ -474,7 +497,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; R.classList.remove('side-on'); pintarBrujula();
+    S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
@@ -488,16 +511,17 @@ export async function render(el, { me, sub = [], alive }) {
       const rows = await B.mensajes(id);
       const out = []; let pend = [];
       for (const r of rows) {
-        if (r.role === 'user') { const t = textoDe(r.content).trim(); if (t) { out.push({ r: 'u', t }); if (!S.titulo) S.titulo = tituloDe(t); } }
+        if (r.role === 'user') { const t = textoDe(r.content).trim(); if (t) { out.push({ r: 'u', t, at: r.at }); if (!S.titulo) S.titulo = tituloDe(t); } }
         else if (r.role === 'assistant') {
           for (const tc of r.tool_calls || []) pend.push({ fase: 'fin', nombre: String(tc.function?.name || tc.name || 'herramienta'), detalle: '' });
           const raw0 = textoDe(r.content); if (!raw0.trim()) continue;
-          out.push({ r: 'a', modo: S.modo, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend, propuestas: r.propuestas || [] }); pend = [];
+          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend, propuestas: r.propuestas || [] }); pend = [];
         }
       }
       S.msgs = out;
     } catch (e) { S.msgs = [{ r: 'a', modo: S.modo, t: '', err: `No pude leer la conversación: ${e.message}` }]; }
-    if (alive()) { pintarTitulo(); pintarCentro(); marcarMandados(); }
+    await cargarAgentesDe(id);
+    if (alive()) { pintarTitulo(); pintarCentro(); pintarPanel(); marcarMandados(); vigilar(); }
   }
 
   // ---------- Modo privado y ramificar ----------
@@ -550,13 +574,18 @@ export async function render(el, { me, sub = [], alive }) {
   // sinGiro: lo que la persona manda desde la Brújula (aceptar la meta, volver a la tarea) no cuenta como turno perdido.
   async function enviar(texto, { reintento = false, sinGiro = false } = {}) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
+    // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
+    if (!reintento && texto.startsWith('@')) {
+      const ag = leerMencion(texto, await listaAgentes());
+      if (ag) { S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro(); return proponerPlan(ag.agente, ag.resto); }
+    }
     const cm = leerComando(texto); if (cm && !reintento) return comando(cm);
     if (!listo()) return toast('El servidor no está en línea', true);
     const m = modoDe(S.modo);
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
     const ctrl = new AbortController(); S.enVuelo = ctrl;
-    if (!reintento) { S.msgs.push({ r: 'u', t: texto }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
+    if (!reintento) { S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
     else if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop();
     const msg = { r: 'a', modo: S.modo, t: '', stream: true, tools: [], notas: [] }; S.msgs.push(msg);
     if (!S.titulo) S.titulo = tituloDe(texto);
@@ -566,6 +595,7 @@ export async function render(el, { me, sub = [], alive }) {
         const id = idSesion(S.modo, slugAhora());
         await B.crear({ id, titulo: tituloDe(texto) });
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
+        for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
       const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), null]);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
@@ -580,7 +610,7 @@ export async function render(el, { me, sub = [], alive }) {
     } catch (e) {
       if (e.name === 'AbortError') msg.err = msg.t ? 'Detenido.' : 'Detenido antes de responder.';
       else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : `No pude hablar con ${quien()}. ¿Sigue encendido?`;
-    } finally { S.enVuelo = null; msg.stream = false; msg.aprob = null; }
+    } finally { S.enVuelo = null; msg.stream = false; msg.aprob = null; msg.at = new Date().toISOString(); }
     // Lo que Strategy concretó va a la estrategia en vivo (si se puede editar y no está aprobada).
     if (S.modo === 'estrategia' && msg.raw && slugAhora()) {
       const { parche } = leerBloques(msg.raw);
@@ -611,6 +641,87 @@ export async function render(el, { me, sub = [], alive }) {
 
   }
 
+  // ---------- F4.5 · los agentes en el Chat (PLAN-GATEWAY §20) ----------
+  const rol = me.role, enc = encodeURIComponent, ahoraIso = () => new Date().toISOString();
+  const modelosGw = () => (S.modelos?.proveedores || []).flatMap((p) => p.modelos || []);
+  async function listaAgentes() {
+    if (S.listaAgentes) return S.listaAgentes;
+    // Una falla de red no se guarda: la próxima vez se vuelve a pedir (si no, «@» dejaría de funcionar hasta recargar).
+    try { S.listaAgentes = ((await api('agentes/workflows')).items || []).filter((w) => w.estado === 'activo' && !w.archivado); return S.listaAgentes; } catch { return []; }
+  }
+  function elegirArroba(n) { const ta = $('#llm-in', el); if (!ta) return; ta.value = `@${n} `; crecer(ta); comandos(''); const b = $('#lc-cmds', el); if (b) b.hidden = true; ta.focus(); }
+  const runDe = (id) => S.agentes.find((r) => r.id === id);
+  function ponerRun(run) { const k = S.agentes.findIndex((r) => r.id === run.id); if (k >= 0) S.agentes[k] = run; else S.agentes.push(run); }
+  async function cargarAgentesDe(sesion) {
+    S.agentes = []; S.tab = 'modo'; S.cerradas = new Set();
+    if (!sesion) return;
+    try {
+      const j = await api(`chat/sesiones/${enc(sesion)}?desde=999999`);
+      S.agentes = (await Promise.all((j.agentes || []).map((x) => api('agentes/runs/' + enc(x.run)).then((r) => r.run).catch(() => null)))).filter(Boolean);
+    } catch {}
+  }
+  // La tarjeta «Así lo voy a trabajar». Con `run`, es lo que sigue de un trabajo que ya existe (más allá de lo platicado).
+  async function proponerPlan(agente, resto, { run = null } = {}) {
+    let w; try { ({ workflow: w } = await api('agentes/workflows/' + enc(agente.id))); } catch (e) { return toast(e.message, true); }
+    const desde = run ? activa(run) : 0, plan = planDe(run || w, modelosGw()).filter((e) => e.n >= desde);
+    let clientes = null;
+    if (!run && !slugAhora()) { const xs = (await cargarContexto(me).catch(() => [])).filter((c) => c.slug && c.slug !== 'inherent'); if (xs.length) clientes = [['', 'Inherent (sin cliente)'], ...xs.map((c) => [c.slug, c.name])]; }
+    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, plan, hasta: plan.at(-1)?.n ?? 0, clientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
+    if (!alive()) return; pintarCentro();
+  }
+  async function empezarPlan(i) {
+    const p = S.msgs[i]?.p; if (!p || !['pendiente', 'error'].includes(p.estado)) return;
+    p.estado = 'creando'; pintarHilo();
+    try {
+      let run;
+      if (p.run) ({ run } = await api(`agentes/runs/${enc(p.run)}/plan`, { method: 'POST', body: { hasta: p.hasta } }));
+      else {
+        if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: tituloDe(`@${p.agente.nombre} ${p.resto}`) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+        const cliente = p.clientes ? p.cliente : slugAhora(), nombre = p.clientes ? p.clientes.find(([sl]) => sl === cliente)?.[1] || '' : nombreSlug();
+        ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente, cliente_nombre: cliente ? nombre : '', chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs) } }));
+        p.run = run.id;
+      }
+      if (S.sesion) await api(`chat/sesiones/${enc(S.sesion)}/agentes`, { method: 'POST', body: { run: run.id } }); // sin repetir: se puede reintentar
+      ponerRun(run); p.estado = 'hecho';
+      const k = activa(run);
+      if (['pendiente', 'ajuste'].includes(run.etapas[k].estado) && !enServidor(run.etapas[k])) {
+        try { ({ run } = await api(`agentes/runs/${enc(run.id)}/etapa/${k}/encolar`, { method: 'POST', body: {} })); ponerRun(run); }
+        catch (e) { toast(e.code === 'GATEWAY_OFF' ? 'El servidor no está en línea: usa «Continuar» en su pestaña cuando vuelva' : e.message, true); }
+      }
+      S.tab = run.id; S.cerradas?.delete(run.id); if (!angosto()) { S.panel = true; R.dataset.panel = 'on'; }
+    } catch (e) { p.estado = 'error'; p.error = e.message; }
+    if (!alive()) return; pintarCentro(); pintarPanel(); vigilar();
+  }
+  // Mientras el servidor trabaja una etapa de algún trabajo ligado, se relee cada 2.5 s.
+  let vigilando = false;
+  async function vigilar() {
+    if (vigilando) return; vigilando = true;
+    try {
+      while (alive() && S.agentes.some((r) => enServidor(r.etapas[activa(r)]))) {
+        await new Promise((ok) => setTimeout(ok, 2500)); if (!alive()) return;
+        for (const r of S.agentes.filter((x) => enServidor(x.etapas[activa(x)]))) {
+          try { const { run } = await api('agentes/runs/' + enc(r.id)); ponerRun(run); if (run.etapas[activa(run)]?.estado === 'revision' && r.etapas[activa(r)]?.estado !== 'revision') toast(`${run.flujo.nombre}: resultado listo para revisar`); } catch {}
+        }
+        if (!S.enVuelo) pintarHilo();
+        pintarPanel();
+      }
+    } finally { vigilando = false; }
+  }
+  // Abrir un trabajo (desde el portal, la vista por etapas o un enlace): su conversación si es tuya; si no, una nueva con él.
+  async function abrirTrabajo(id) {
+    let run; try { ({ run } = await api('agentes/runs/' + enc(id))); } catch (e) { toast(e.message, true); return nuevo(); }
+    if (run.chat?.sesion && run.chat.owner === String(me.email).toLowerCase()) await abrirSesion(run.chat.sesion);
+    else {
+      nuevo();
+      const mo = modoDeArea(run.flujo?.area);
+      if (modos.some((m) => m.id === mo)) { S.modo = mo; if (run.cliente && modoDe(mo).pide) S.slugs[mo] = run.cliente; }
+      S.agentes = [run];
+    }
+    ponerRun(run); S.tab = run.id; S.panel = true; R.dataset.panel = 'on';
+    if (alive()) { pintarSide(); pintarCentro(); pintarPanel(); vigilar(); }
+  }
+  const ctxDoc = () => ({ me, rol, modelos: modelosGw(), onCambio: (r) => { ponerRun(r); pintarHilo(); pintarPanel(); vigilar(); } });
+
   // ---------- Clics, teclado y formularios ----------
   el.addEventListener('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && el.contains(v)) return dictar(v, $('#llm-in', el));
@@ -620,6 +731,13 @@ export async function render(el, { me, sub = [], alive }) {
     const t = e.target.closest('[data-a]'); if (!t || !el.contains(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
+    if (a === 'arroba') return elegirArroba(t.dataset.n);
+    if (a === 'plan-empezar') return empezarPlan(+t.dataset.i);
+    if (a === 'plan-cancelar') { const p = S.msgs[+t.dataset.i]?.p; if (p) { p.estado = 'cancelado'; pintarHilo(); } return; }
+    if (a === 'ag-tab') { S.tab = t.dataset.run === 'modo' ? 'modo' : t.dataset.run; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
+    if (a === 'ag-cerrar') { S.cerradas = S.cerradas || new Set(); S.cerradas.add(t.dataset.run); if (S.tab === t.dataset.run) S.tab = 'modo'; return pintarPanel(); }
+    if (a === 'ag-doc' || a === 'ag-ajuste') { const r = runDe(t.dataset.run); if (r) abrirDocumento(r, +t.dataset.n, ctxDoc()); return; }
+    if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
     if (a === 'side') { S.side = !S.side; R.classList.toggle('side-on', S.side); return; }
     if (a === 'panel') { S.panel = !S.panel; R.dataset.panel = S.panel ? 'on' : 'off'; persistir(); return pintarPanel(); }
@@ -672,13 +790,14 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'revisar') return revisar();
   });
   el.addEventListener('change', (e) => {
+    const pc = e.target.dataset?.ch; if (pc === 'plan-hasta' || pc === 'plan-cliente') { const p = S.msgs[+e.target.dataset.i]?.p; if (!p) return; if (pc === 'plan-hasta') p.hasta = +e.target.value; else p.cliente = e.target.value; return pintarHilo(); }
     // El selector de modo de la barra. Si no se pudo cambiar (una respuesta en camino), el selector vuelve al modo de ahora.
     if (e.target.matches?.('.ls-modo')) { cambiarModo(e.target.value); if (S.modo !== e.target.value) pintarSide(); }
   });
   el.addEventListener('keydown', (e) => {
     if (e.target.id !== 'llm-in') { if (e.key === 'Escape') el.querySelector('.llm-sheet, .llm-menu')?.remove(); return; }
     const cmds = $('#lc-cmds', el);
-    if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) comando({ cmd: b.dataset.c, arg: '' }); return; }
+    if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) { if (b.dataset.a === 'arroba') elegirArroba(b.dataset.n); else comando({ cmd: b.dataset.c, arg: '' }); } return; }
     if (cmds && !cmds.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); const bs = [...cmds.querySelectorAll('button')], i = bs.findIndex((b) => b.classList.contains('on')), j = (i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k) => b.classList.toggle('on', k === j)); return; }
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#llm-form', el)?.requestSubmit(); }
   });
@@ -703,7 +822,8 @@ export async function render(el, { me, sub = [], alive }) {
   await Promise.all([me.areas?.includes('estrategia') ? loadEstrategia().catch(() => {}) : null, brandAccess(me).any ? loadBrands(me).catch(() => {}) : null]);
   if (!alive()) return;
   await revisar();
-  if (sub[0] && listo()) await abrirSesion(decodeURIComponent(sub[0]));
+  if (sub[0] === 'trabajo' && sub[1] && listo()) await abrirTrabajo(decodeURIComponent(sub[1]));
+  else if (sub[0] && listo()) await abrirSesion(decodeURIComponent(sub[0]));
   else pintarPanel();
   $('#llm-in', el)?.focus();
 }

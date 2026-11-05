@@ -4,6 +4,7 @@
 //   · contextoChat: lo hablado en el Chat, recortado, como input «i-chat» del trabajo.
 import { tipoDe } from './agentes-flujos.js';
 import { leerOutput } from './agentes-flujos.js';
+import { hilo } from './agentes-chat-datos.js';
 export { hilo, fuentes, archivos, idChatTrabajo } from './agentes-chat-datos.js';
 
 const plano = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -69,4 +70,12 @@ export function enlazarCitas(htmlDoc, mapa = {}) {
     if (/^https?:\/\//i.test(f.url || '')) return `<a class="av-cita" href="${attr(f.url)}" target="_blank" rel="noreferrer" title="${attr(f.titulo)}">${attr(id)}</a>`;
     return `<span class="av-cita" title="${attr(f.titulo)}">${attr(id)}</span>`;
   }))).join('');
+}
+
+// El hilo del Chat: los mensajes y, entre ellos, los eventos de cada trabajo ligado (con su trabajo), por hora.
+// Un mensaje sin hora es el que se está escribiendo: va al final. → [{ tipo:'msg', i } | { tipo:'evento', run, x }]
+export function hiloChat(msgs = [], runs = []) {
+  const xs = msgs.map((m, i) => ({ tipo: 'msg', i, t: m.at ? Date.parse(m.at) : Infinity }));
+  for (const run of runs) for (const x of hilo(run, [])) xs.push({ tipo: 'evento', run, x, t: Date.parse(x.at) || 0 });
+  return xs.map((y, k) => ({ y, k })).sort((a, b) => a.y.t - b.y.t || a.k - b.k).map(({ y }) => { const { t, ...r } = y; return r; });
 }

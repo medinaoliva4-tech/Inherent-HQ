@@ -9,7 +9,7 @@ import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
-import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas } from '../public/js/chat-agentes.js';
+import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat } from '../public/js/chat-agentes.js';
 import { enCola, siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -224,6 +224,13 @@ t('F4.5: las citas del documento se vuelven enlaces a su fuente (solo las que ex
   assert.match(h, /<button type="button" class="av-cita" data-act="abrir-input" data-id="i-1" title="Entrevista">i-1<\/button>/);
   assert.match(h, /\[w2\]/); assert.match(h, /\[x9\]/); assert.match(h, /<code>\[w1\]<\/code>/);
   assert.doesNotMatch(enlazarCitas('[w1]', { w1: { titulo: '"><img>', url: 'javascript:alert(1)' } }), /javascript:|<img>/);
+});
+t('F4.5: el hilo del Chat mezcla mensajes y eventos de varios agentes por hora; lo que se está escribiendo va al final', () => {
+  const runA = { id: 'A', etapas: [{ estado: 'revision' }], historial: [{ at: '2026-11-04T10:01:00Z', accion: 'crear' }, { at: '2026-11-04T10:05:00Z', accion: 'ejecutar', etapa: 0 }] };
+  const runB = { id: 'B', etapas: [{ estado: 'pendiente' }], historial: [{ at: '2026-11-04T10:03:00Z', accion: 'crear' }, { at: '2026-11-04T10:03:30Z', accion: 'tomar', etapa: 0 }] };
+  const msgs = [{ r: 'u', t: '@A', at: '2026-11-04T10:00:00Z' }, { r: 'u', t: '@B', at: '2026-11-04T10:02:00Z' }, { r: 'a', t: 'escribiendo' }];
+  const h = hiloChat(msgs, [runA, runB]);
+  assert.deepEqual(h.map((x) => (x.tipo === 'msg' ? `m${x.i}` : `${x.run.id}:${x.x.h.accion}${x.x.ultimo ? '*' : ''}`)), ['m0', 'A:crear', 'm1', 'B:crear', 'A:ejecutar*', 'm2']);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {
