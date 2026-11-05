@@ -10,6 +10,7 @@ import { html, raw, mount, ico, skel, toast, api } from './core.js';
 import { AREAS_AGENTE, ESTADOS_AGENTE, CONEXIONES, tipoDe, ESTADOS } from './agentes-flujos.js';
 import { areaNombre, colorArea, chipEstado, rutaAgente, rutaTrabajo, nuevoTrabajo } from './agentes-ui.js';
 import { pintarEditor } from './agentes-editor.js';
+import { pintarMemoria } from './agentes-memoria.js';
 import { iaDeUso, proveedorDe } from './ia-proveedores.js';
 import { CONECTORES, logoConector } from './conectores.js';
 
@@ -133,7 +134,8 @@ export async function pintarPortal(el, me, id, tab, alive) {
 
   const pinta = () => {
     if (tab === 'workflow') {
-      mount(el, html`${cabeza()}<div class="agp-wf"></div>`);
+      mount(el, html`${cabeza()}<div class="agp-mem"></div><div class="agp-wf"></div>`);
+      pintarMemoria(el.querySelector('.agp-mem'), wf, editor, (nuevo) => { wf = nuevo; });
       return pintarEditor(el.querySelector('.agp-wf'), me, wf, editor, (nuevo) => { wf = nuevo; });
     }
     mount(el, html`${cabeza()}${tab === 'overview' ? overview() : tab === 'settings' ? settings() : listaTrabajos()}`);

@@ -20,6 +20,7 @@ import { conectorDe } from '../../public/js/conectores.js';
 import * as mcpOS from './mcp.js';
 import { conocimientoDeEtapa } from './conocimiento.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
+import { correccionesDe, agregarRegla } from '../../public/js/memoria.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo, puedeRecibir } from '../../public/js/agentes-flujos.js';
 import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto, limpiarCadena } from '../../public/js/chat-agentes.js';
 
@@ -145,13 +146,31 @@ export function rutas(on) {
     const d = await db.create(WF, { ...w, archivado: false, creado_por: u.email, historial: [{ at: ahora(), quien: u.email, accion: b.plantilla ? 'importar' : 'crear' }] }, u.email);
     res.json({ workflow: d });
   });
+  // F4.6 · el aprendizaje: lo corregido en los trabajos que esta persona puede ver, y las reglas aprobadas.
+  on('GET', 'agentes/workflows/:id/aprendizaje', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const w = await db.get(WF, String(req.params.id || '')); if (!w) return res.status(404).json({ error: 'Ese workflow no existe' });
+    const propios = editor(u) ? (await db.list(COLL)).filter((r) => r.flujo?.id === w.id && !r.archivado) : [];
+    const vistos = (await Promise.all(propios.map(async (r) => ((await ver(u, r)) ? r : null)))).filter(Boolean);
+    res.json({ reglas: w.reglas || [], correcciones: correccionesDe(vistos) });
+  });
+  on('POST', 'agentes/workflows/:id/reglas', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (!editor(u)) return res.status(403).json({ error: 'Aprueban reglas el CEO o el COO' });
+    const w = await db.get(WF, String(req.params.id || '')); if (!w) return res.status(404).json({ error: 'Ese workflow no existe' });
+    const b = body(req), actuales = w.reglas || [];
+    const out = Number.isInteger(b.quitar) ? { reglas: actuales.filter((_, i) => i !== b.quitar) } : agregarRegla(actuales, b.texto, u.email, ahora());
+    if (out.error) return res.status(400).json({ error: out.error });
+    const d = await guardar(res, u, w, { reglas: out.reglas }, { accion: 'regla' }, WF);
+    if (d) res.json({ workflow: d });
+  });
   on('POST', 'agentes/workflows/:id/guardar', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     if (!editor(u)) return res.status(403).json({ error: 'Editan workflows el CEO o el COO' });
     const w = await db.get(WF, String(req.params.id || '')); if (!w) return res.status(404).json({ error: 'Ese workflow no existe' });
     const b = body(req);
     if (b.v != null && Number(b.v) !== w.v) return res.status(409).json({ error: 'Alguien cambió este workflow. Recarga.', code: 'CONFLICTO' });
-    const limpio = normalizarWorkflow({ ...w, ...b });
+    const limpio = { ...normalizarWorkflow({ ...w, ...b }), reglas: w.reglas || [] }; // las reglas solo cambian por su ruta
     if (!limpio.etapas.length) return res.status(400).json({ error: 'El workflow necesita al menos una etapa' });
     const d = await guardar(res, u, w, limpio, { accion: 'editar' }, WF);
     if (d) res.json({ workflow: d });
