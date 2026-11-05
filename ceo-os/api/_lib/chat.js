@@ -13,6 +13,8 @@ import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
+import { equipoPara } from './conocimiento.js';
+import { bloqueEquipo } from '../../public/js/conocimiento.js';
 import { conversacionLigada } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'chat_sesiones';
@@ -138,7 +140,8 @@ export function rutas(on) {
     if (!mensaje) return res.status(400).json({ error: 'Mensaje vacío' });
     if (!(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
     const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora() }].slice(-MAX_MSGS);
-    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: txt(b.sistema, 40000), esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
+    const equipo = await equipoPara(u, verRun).catch(() => ''); // ayuda, pero no detiene la respuesta
+    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
     if (d) res.json({ ok: true, desde: mensajes.length });
   });
 

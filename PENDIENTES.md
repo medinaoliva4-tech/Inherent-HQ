@@ -38,6 +38,7 @@
 | 11 | **Cerantola: mejorar con IA las fotos del PDF** | Vienen en baja resolución. Se retocan con Higgsfield según las reglas de § Imagen |
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
 | 13 | **Sistema de referidos: la plataforma** | La skill `gr-referidos` ya existe. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
+| 14 | **Revisar las skills a conciencia** | Se aplican como están en los agentes del servidor: tienen método, pero solo algunas dicen qué decide la persona. Hay que revisarlas en una parte del proceso y sumar «Lo que decide la persona» |
 
 ---
 

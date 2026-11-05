@@ -138,6 +138,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
 | **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | ✅ Las 3 entregas hechas (§20) |
+| **F4.6 · El agente sabe y se revisa** | Conocimiento, «El equipo hoy», calidad sin fricción, supervisor, memoria y mejora, tablero (§21) | En curso |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -166,6 +167,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F3 · Hermes retirado: el Chat, Strategy, las herramientas y el Agent Area corren en el servidor | CEO + Claude |
 | 2026-11-04 | F4 · chat de trabajo: cada trabajo abre en su chat (una conversación por persona y trabajo, guardada en el OS); la vista por etapas queda en `/etapas` | CEO + Claude |
 | 2026-11-04 | F4.5 · el Chat como centro: no hay otros chats; los agentes se llaman con `@` desde el Chat y su avance se ve en la ventana de agentes; el portal sirve para configurar, ver el flujo y los trabajos (§20). El chat de trabajo de F4 se retira | CEO |
+| 2026-11-04 | F4.6 · después de leer Mastra: la conciencia pasa a pocas decisiones claras; las etapas intermedias se aprueban con una decisión corta y la lectura completa queda en la entrega final y al pasar a otro agente (§21) | CEO |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -429,3 +431,28 @@ La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **tra
 - **Las conversaciones viejas del chat de F4** se ven dentro de la pestaña del trabajo como «Conversación anterior» (solo lectura). No son una segunda conversación viva.
 - **Orden de despliegue:** primero la pantalla y después el trabajador. El trabajador `f4-5` solo pregunta o pide aporte en trabajos con `run.chat` (los que nacen en el Chat, que solo existen con la Entrega 1). Así, un trabajo viejo nunca queda en `pregunta` sin dónde responder. Se prueba con el trabajador temporal de staging (§15).
 
+## 21 · F4.6 · El agente sabe y se revisa (2026-11-04)
+
+Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe tener poca fricción y cumplir calidad y conciencia. Si el proceso pesa o no se entiende, la gente lo deja y se lo entrega a la inteligencia.
+
+### Decisiones
+1. **Lo revisa primero una máquina.** Un revisor separado evalúa cada entrega contra sus criterios (rúbrica) y la regresa al agente con lo que faltó. La persona no recibe lo que no pasó.
+2. **La conciencia es decidir poco, pero de verdad.** Las etapas intermedias se aprueban con una decisión corta en el Chat: qué propone, la alternativa, qué asumió. Se puede elegir, corregir o abrir el documento.
+3. **La lectura completa sigue obligatoria** en la entrega final y al pasar el trabajo a otro agente. Esto cambia §20.6 solo para las etapas intermedias, y entra con la Entrega 2.
+4. **Las skills se aplican como están.** Tienen método, pero se revisarán a conciencia en una parte del proceso (`PENDIENTES.md`).
+5. **El supervisor planea el trabajo:** propone quién trabaja, en qué orden y de qué forma (secuencia, paralelo o council) en la tarjeta «Así lo voy a trabajar». La persona la cambia o la confirma y cada paso entre agentes sigue siendo un gate. El council queda para decisiones importantes.
+6. **La mejora sale de lo que hace el equipo:** ajustes, rechazos y correcciones. Un proceso encuentra patrones, propone el cambio, lo prueba contra casos anteriores y una persona lo aprueba. Nada cambia solo.
+
+### Entregas (cada una con su PR, probada en staging)
+1. **El agente sabe:** cada etapa recibe los principios y la skill que declara, y el Chat y las etapas saben qué trabaja el equipo.
+2. **Calidad sin fricción:** revisor con rúbrica y tarjetas de decisión.
+3. **Supervisor:** plan con varios agentes, handoff, paralelo y council.
+4. **Memoria y ciclo de mejora.**
+5. **Tablero** estilo Factory: Encargo → Diagnóstico → Plan → Producción → Revisión → Entrega.
+
+### Entrega 1 · reglas
+- **Skills bajo demanda:** solo entra la skill que la etapa declara en `metodo` (máximo 2 y 12,000 caracteres cada una), nunca todas. El trabajador se la pide al OS al tomar la etapa (D13: el OS sigue sin llamar al VPS) y la skill no se guarda en el trabajo.
+- **Conocimiento:** además entra `inherent/00-PRINCIPIOS.md`. Es una lista cerrada: `06-ECONOMIA.md` nunca entra.
+- **«El equipo hoy» en el Chat:** el OS lo agrega al turno con lo que esa persona puede ver (`ver`, `scoper`, `seesTask`).
+- **«El equipo hoy» en una etapa:** solo trabajos y tareas de proyecto del mismo cliente. Sin cliente, solo trabajos sin cliente. Lo personal nunca entra. Es un dato, no una instrucción.
+- Si el OS no responde, la etapa sigue y avisa: el conocimiento ayuda, pero no detiene el trabajo.

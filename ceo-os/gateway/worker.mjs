@@ -16,14 +16,14 @@ import * as db from '../api/_lib/db.js';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla, respuestaAbierta } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
-const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)), conMcp: run._conMcp || '', puedePreguntar: Boolean(run.chat) });
+const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)), conMcp: run._conMcp || '', puedePreguntar: Boolean(run.chat), ...(run._saber || {}) });
 import { investigar, buscar, leer } from './web.mjs';
 const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, condense, contextoDe } from './motor.mjs';
 import { conectorDe } from '../public/js/conectores.js';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', CHATS = 'chat_sesiones', YO = 'gateway';
-const VERSION = 'f4-5';
+const VERSION = 'f4-6';
 const OS_URL = String(process.env.GW_OS_URL || '').replace(/\/+$/, ''), GW_TOKEN = process.env.GATEWAY_TOKEN || '';
 const MAX_VUELTAS = 8, MAX_RESULTADO = 6000;
 const PREP = process.env.GW_PREP_MODEL || 'nv-minimax-m3.1-flash';
@@ -77,6 +77,7 @@ async function pedidoQueCabe(run, n, modelo, onPaso) {
   const piezas = [
     ...r.etapas.slice(0, n).map((x, i) => ({ get: () => r.etapas[i].salida || '', set: (t) => { r.etapas[i].salida = t; } })),
     ...(r.inputs || []).map((x, i) => ({ get: () => r.inputs[i].texto || '', set: (t) => { r.inputs[i].texto = t; } })),
+    ...(r._saber?.metodo || []).map((x, i) => ({ get: () => r._saber.metodo[i].texto, set: (t) => { r._saber.metodo[i].texto = t; } })),
   ].sort((a, b) => b.get().length - a.get().length);
   await onPaso({ titulo: 'Preparando el contexto', detalle: `El pedido mide ~${est(texto).toLocaleString('es-MX')} tokens y el tope es ${cap.toLocaleString('es-MX')}: condensando lo más largo con ${PREP}` });
   for (const p of piezas) {
@@ -105,6 +106,17 @@ async function conWeb(run, n, paso) {
   const r = structuredClone(run);
   r.inputs = [...(run.inputs || []), ...fuentes.map((f) => ({ id: f.id, tipo: 'link', titulo: f.titulo, url: f.url, texto: f.texto, interna: false }))];
   return r;
+}
+
+// ---------- Lo que la etapa debe saber (F4.6): principios, su skill y qué trabaja el equipo. Si falla, sigue y avisa ----------
+async function conSaber(run, n, paso) {
+  if (!OS_URL || GW_TOKEN.length < 32) { await paso({ titulo: 'Sin conocimiento de Inherent', detalle: 'El servidor no tiene acceso al OS: la etapa sigue con su plantilla', aviso: true }); return run; }
+  try {
+    const { principios, metodo = [], faltan = [], equipo } = await os({ run: run.id, etapa: n, accion: 'conocimiento' });
+    if (metodo.length) await paso({ titulo: 'Método cargado', detalle: metodo.map((m) => m.nombre).join(', ') });
+    else if (faltan.length) await paso({ titulo: 'Sin skill para esta etapa', detalle: `No encontré «${faltan[0]}»: sigue con su plantilla`, aviso: true });
+    return { ...run, _saber: { principios, metodo, equipo } };
+  } catch (e) { await paso({ titulo: 'No pude leer el conocimiento', detalle: `${e.message}. La etapa sigue con su plantilla`, aviso: true }); return run; }
 }
 
 // ---------- MCP por persona (F3): el servidor no tiene los permisos; se los pide al OS en cada llamada ----------
@@ -192,7 +204,7 @@ async function correr(id, n) {
   try {
     if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
     await paso({ titulo: 'Tomada por el servidor', detalle: `${modelo} · contexto ${contextoDe(modelo).toLocaleString('es-MX')} tokens` });
-    base = await conWeb(run, n, paso);
+    base = await conSaber(await conWeb(run, n, paso), n, paso);
     const mcp = await herramientasMcp(run, n, paso);
     if (mcp.tools.length) base._conMcp = [...new Set(mcp.tools.map((t) => conectorDe(t.conector)?.nombre || t.conector))].join(', ');
     const texto = await pedidoQueCabe(base, n, modelo, paso);
