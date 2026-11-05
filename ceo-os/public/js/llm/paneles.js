@@ -25,7 +25,7 @@ export const datosEstrategia = (slug) => una(`e:${slug}`, () => api(`estrategia/
 const harnessHtml = (modo) => {
   const m = modoDe(modo), h = HARNESS[m.id];
   return html`<details class="lp-harness"><summary>${ico('target', 13)} Cómo trabaja este modo</summary>
-    <p>${h.rol}</p><b>Criterios de aceptación</b><ul>${h.criterios.map((c) => html`<li>${c}</li>`)}</ul>
+    <p>${h.rol}</p>${h.criterios.length ? html`<b>Criterios de aceptación</b><ul>${h.criterios.map((c) => html`<li>${c}</li>`)}</ul>` : ''}
     <p class="lp-mut">Más las reglas de Inherent (principios, alcance contratado, evidencia o etiqueta) y la identidad de su SOUL.md.</p></details>`;
 };
 const vacio = (t, p) => html`<div class="lp-vacio"><b>${t}</b><p>${p}</p></div>`;

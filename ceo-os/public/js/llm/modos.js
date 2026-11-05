@@ -13,7 +13,11 @@ export const MODOS = [
   { id: 'consulting', nombre: 'Consulting', letra: 'C', icono: 'chart-pie', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', pide: 'cliente', depto: 'Consulting · Operations OS y Money OS' },
   { id: 'produccion', nombre: 'Production', letra: 'P', icono: 'video', sub: 'Brief, guiones, shot list, grabación y edición de cada marca', pide: 'marca', depto: '⑤ Producción · ⑦ Video Editing' },
 ];
-export const modoDe = (id) => MODOS.find((m) => m.id === id) || MODOS[0];
+// El Chat a secas, solo para el CEO: sin instrucciones de Inherent, sin harness y sin pedir cliente.
+export const MODO_LIBRE = { id: 'libre', nombre: 'Sin modo', letra: '·', icono: 'chat-ia', sub: 'Chat directo, sin instrucciones de Inherent', pide: '', depto: 'Chat' };
+export const SISTEMA_LIBRE = 'Eres un asistente útil. Responde en el idioma de la persona.';
+export const modosDe = (rol, permitidos) => [...permitidos, ...(rol === 'ceo' ? [MODO_LIBRE] : [])];
+export const modoDe = (id) => (id === MODO_LIBRE.id ? MODO_LIBRE : MODOS.find((m) => m.id === id) || MODOS[0]);
 
 // Lo que vale en todos los modos. Sale de inherent/00-PRINCIPIOS.md y CLAUDE.md (resumido; el agente los lee completos).
 export const REGLAS_COMUNES = [
@@ -137,7 +141,11 @@ export const HARNESS = {
 
 // El mensaje de sistema de un turno: el harness del modo + el contexto que arma el OS (datos, no instrucciones).
 // ctx = { persona, puesto, fecha, cliente, carpeta, nivel, extra: [líneas], instrucciones: texto (p. ej. la estrategia en vivo) }
+// «Sin modo» no tiene harness: el panel solo dice qué es.
+HARNESS[MODO_LIBRE.id] = { rol: MODO_LIBRE.sub, criterios: [] };
+
 export function sistemaDe(modo, ctx = {}) {
+  if (modo === MODO_LIBRE.id) return SISTEMA_LIBRE;
   const m = modoDe(modo), h = HARNESS[m.id];
   const contexto = [
     ctx.persona ? `Persona: ${ctx.persona}${ctx.puesto ? ` · ${ctx.puesto}` : ''}` : '',
@@ -305,7 +313,7 @@ export function idSesion(modo, slug, ahora = Date.now(), azar = Math.random()) {
 }
 // → { modo, slug } de un id de sesión del LLM (o null si no es nuestra).
 // Los modos salen de MODOS: cuando entra un área nueva, sus conversaciones se leen solas.
-const RE_SESION = new RegExp(`^inh-(${MODOS.map((m) => m.id).join('|')})-([a-z0-9_-]+)-[a-z0-9]+$`);
+const RE_SESION = new RegExp(`^inh-(${[...MODOS, MODO_LIBRE].map((m) => m.id).join('|')})-([a-z0-9_-]+)-[a-z0-9]+$`);
 export function leerIdSesion(id) {
   const m = RE_SESION.exec(String(id || ''));
   return m ? { modo: m[1], slug: m[2] === 'general' ? '' : m[2] } : null;

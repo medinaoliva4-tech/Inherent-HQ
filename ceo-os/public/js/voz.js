@@ -14,6 +14,7 @@ let activo = null; // { rec, boton }
 export function dictar(boton, caja) {
   if (activo) { activo.rec.stop(); return; }
   if (!caja) return;
+  if (window.inherentEscritorio?.dictar) { caja.focus(); return window.inherentEscritorio.dictar(); }
   if (!SR || window.inherentEscritorio) { caja.focus(); toast(window.inherentEscritorio ? AVISO_MAC : 'Este navegador no dicta. Usa Chrome, o el dictado de tu compu.'); return; }
   const rec = new SR(), base = caja.value ? `${caja.value.replace(/\s+$/, '')} ` : '';
   rec.lang = 'es-419'; rec.interimResults = true; rec.continuous = true;

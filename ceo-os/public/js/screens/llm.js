@@ -7,7 +7,7 @@
 // Rutas: #/chat · #/chat/<sesión> · #/chat/trabajo/<trabajo> (abre el Chat con ese trabajo en su pestaña)
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
 import { nombreProveedor, nombrePaso, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../ia-pasos.js';
-import { MODOS, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
+import { MODOS, MODO_LIBRE, modosDe, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
 import { panelDe, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
@@ -63,7 +63,7 @@ export async function render(el, { me, sub = [], alive }) {
   // Quién abre qué modo (solo refleja: el permiso lo pone el servidor). Strategy y Consulting, quien ve estrategia;
   // Creative, quien ve alguna marca; Marketing y Production, Contenido completo; Organization, todos.
   const puedeModo = (id) => (id === 'estrategia' || id === 'consulting' ? me.areas?.includes('estrategia') : id === 'diseno' ? brandAccess(me).any : id === 'marketing' || id === 'produccion' ? brandAccess(me).contentFull : true);
-  const modos = MODOS.filter((m) => puedeModo(m.id));
+  const modos = modosDe(me.role, MODOS.filter((m) => puedeModo(m.id)));
   // El modo elegido se recuerda por persona (areas.js); abrirEnChat lo deja ahí desde las pantallas.
   const modoGuardado = areaDe(areaGuardada(me.email))?.modo;
   const S = {
@@ -673,7 +673,8 @@ export async function render(el, { me, sub = [], alive }) {
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
-      const [sistema] = await Promise.all([contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`), null]);
+      const libre = S.modo === MODO_LIBRE.id;
+      const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
@@ -707,9 +708,26 @@ export async function render(el, { me, sub = [], alive }) {
     return msg.err ? null : msg.t;
   }
   // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
+  async function guardarVoz(mensajes) {
+    if (!mensajes.length) return;
+    for (const m of mensajes) S.msgs.push(m.role === 'user' ? { r: 'u', t: m.content, at: ahoraIso() } : { r: 'a', modo: S.modo, t: m.content, tools: [], notas: [], at: ahoraIso() });
+    if (!S.titulo) S.titulo = tituloDe(mensajes[0].content);
+    if (alive()) pintarCentro();
+    try {
+      if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: S.titulo }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+      await api(`chat/sesiones/${enc(S.sesion)}/voz`, { method: 'POST', body: { mensajes } });
+      B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    } catch (e) { toast(`No pude guardar lo hablado: ${e.message}`, true); }
+  }
   async function conversar() {
+    const Ctx = window.AudioContext || window.webkitAudioContext, salida = new Ctx({ sampleRate: 24000 }); salida.resume(); // en el iPhone el audio se activa con este toque
+    const { abrirVozViva } = await import('../voz-viva.js');
+    const libre = S.modo === MODO_LIBRE.id, base = libre ? sistemaDe(S.modo) : sistemaDe(S.modo, await contexto());
+    const viva = await abrirVozViva({ titulo: quien(), sistema: `${base}\n\n${PROMPT_VOZ}`, salida, alTeclado: () => $('#llm-in', el)?.focus(), alCerrar: guardarVoz });
+    if (viva) return;
+    salida.close();
     const { abrirConversacion, vozDisponible } = await import('../conversacion-ui.js');
-    if (!vozDisponible()) return toast('La conversación por voz funciona en Chrome y en el iPhone. En la app de Mac todavía no.', true);
+    if (!vozDisponible()) return toast(window.inherentEscritorio ? 'Actualiza la app de Mac para conversar por voz.' : 'Este navegador no reconoce voz. Usa Chrome o el iPhone.', true);
     if (!listo()) return toast('El servidor no está en línea', true);
     abrirConversacion({ titulo: quien(), enviar: (t, o) => enviar(t, { ...o, hablado: true }), detener: () => S.enVuelo?.abort(), alTeclado: () => $('#llm-in', el)?.focus() });
   }
@@ -824,7 +842,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Clics, teclado y formularios ----------
   escucha('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && dentro(v)) return dictar(v, $('#llm-in', el));
-    if (e.target.closest('[data-act="conversar"]')) return conversar();
+    const co = e.target.closest('[data-act="conversar"]'); if (co) { co.blur(); return conversar(); }
     // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
     const va = e.target.closest('[data-act="viva-aprobar"]');
     if (va && dentro(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }

@@ -522,7 +522,7 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 
 ### Entrega 7 · modo conversación
 - **Conversar por voz:** el Chat abre una pantalla con un aro, lo que se dice y tres botones. Escucha, responde en voz alta y vuelve a escuchar. Lo hablado queda guardado en la conversación.
-- **Voz:** usa la del navegador en Chrome y iPhone. En la app de Mac todavía no funciona.
+- **Voz:** Gemini Live (`gemini-3.8-live`) con la voz Kore. La llave vive en el OS y el navegador recibe un token de un solo uso. Sin llave, usa la voz del navegador o el dictado del sistema.
 
 ### Entrega 8 · ventana y Foundations
 - **Ventana de la Mac:** sin barra de título aparte; los botones de la ventana viven en la barra lateral.
@@ -538,3 +538,8 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Azul:** interruptores, avance, enfoque y selección. **Rojo:** lo que borra. El botón principal sigue en hueso.
 - **Aviso de actualización:** solo aparece cuando hay una versión nueva.
 
+### Entrega 11 · Chat sin modo
+- **Sin modo:** el CEO puede usar el Chat a secas, sin instrucciones de Inherent ni pedir cliente. El resto del equipo no lo ve.
+- **Luz del mouse:** más chica y más suave.
+- **Dictado en la Mac:** el micrófono abre el dictado del sistema con un toque, sin atajos.
+- **Pocket:** barra de arriba con menú y título, y menú lateral con todas las secciones. Se quita la barra de abajo.
