@@ -23,8 +23,8 @@ export const MESAS = {
     M('resultados', 'Resultados', 'Qué escalar y qué parar.', ['marketing-performance-center']),
   ] },
   consulting: { para: 'Que el crecimiento se cobre y se pueda sostener.', numero: 'Cierre, velocidad de respuesta y margen', mesas: [
-    M('embudo', 'Embudo', 'Leads, seguimiento y cierre.', ['business-health-assessment'], [['CRM', '#/org/sales/crm']]),
-    M('rentabilidad', 'Rentabilidad', 'Margen por oferta, canal y campaña.', ['financial-scenario-lab', 'root-cause-explorer', 'impact-tracker'], [['Finanzas', '#/org/finanzas/res']]),
+    M('embudo', 'Embudo', 'Leads, seguimiento y cierre.', ['business-health-assessment'], [['Embudo visual', '#/areas/consulting/embudo'], ['CRM', '#/org/sales/crm']]),
+    M('rentabilidad', 'Rentabilidad', 'Margen por oferta, canal y campaña.', ['financial-scenario-lab', 'root-cause-explorer', 'impact-tracker'], [['Rentabilidad por oferta y canal', '#/areas/consulting/rentabilidad'], ['Finanzas', '#/org/finanzas/res']]),
     M('operacion', 'Operación', 'Roles, procesos y automatización.', ['process-mapper', 'organization-architect', 'automation-opportunity-finder', 'solution-blueprint-builder']),
   ] },
 };
