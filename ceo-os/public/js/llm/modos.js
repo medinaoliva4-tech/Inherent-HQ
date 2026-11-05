@@ -144,6 +144,15 @@ export const HARNESS = {
 // «Sin modo» no tiene harness: el panel solo dice qué es.
 HARNESS[MODO_LIBRE.id] = { rol: MODO_LIBRE.sub, criterios: [] };
 
+// Lente Hormozi: cambia cómo se razona la oferta. Se prende y se apaga; no toca las reglas del modo.
+export const LENTE_HORMOZI = ['LENTE HORMOZI (prendido por la persona):',
+  '- Razona el valor como resultado soñado × probabilidad percibida, entre tiempo de espera × esfuerzo.',
+  '- Antes de bajar un precio, busca subir valor, garantía, escasez o bonos.',
+  '- Piensa el dinero como modelo: atraer, subir ticket, vender más y que se repita.',
+  '- Di qué número se mueve y cuál es la restricción de hoy. Si la oferta es débil, dilo sin suavizar.',
+  '- Es una lente: la evidencia y las reglas del modo mandan sobre ella.'].join('\n');
+export const conLente = (sistema, on) => (on ? `${sistema}\n\n${LENTE_HORMOZI}` : sistema);
+
 export function sistemaDe(modo, ctx = {}) {
   if (modo === MODO_LIBRE.id) return SISTEMA_LIBRE;
   const m = modoDe(modo), h = HARNESS[m.id];

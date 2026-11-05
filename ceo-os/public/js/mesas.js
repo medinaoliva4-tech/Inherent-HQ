@@ -3,8 +3,8 @@
 const M = (id, nombre, para, herramientas, enlaces = []) => ({ id, nombre, para, herramientas, enlaces });
 export const MESAS = {
   strategy: { para: 'Entender qué pasos llevan a la meta.', numero: 'Distancia a la meta de ingresos', mesas: [
-    M('mapa', 'Mapa de la Meta', 'Meta, palancas, cuello de botella y plan de 90 días.', ['commercial-diagnosis', 'business-xray', 'opportunity-map', 'growth-roadmap']),
-    M('comprador', 'Comprador', 'ICP, dolores, deseos y entrevistas reales.', ['customer-bullseye', 'customer-avatar-studio']),
+    M('mapa', 'Mapa de la Meta', 'Meta, palancas, cuello de botella y plan de 90 días.', ['commercial-diagnosis', 'business-xray', 'opportunity-map', 'growth-roadmap'], [['Distancia a la meta', '#/areas/strategy/meta']]),
+    M('comprador', 'Comprador', 'ICP, dolores, deseos y entrevistas reales.', ['customer-bullseye', 'customer-avatar-studio'], [['Voz del comprador', '#/areas/strategy/voz']]),
     M('oferta', 'Oferta y Dinero', 'Oferta, precios, bundles y money model.', ['offer-architect', 'pricing-packages']),
   ] },
   creative: { para: 'Diferenciar la marca y hacerla deseable.', numero: 'Piezas arriba del promedio de la marca', mesas: [

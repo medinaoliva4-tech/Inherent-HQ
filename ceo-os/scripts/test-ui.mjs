@@ -11,6 +11,8 @@ import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
 import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio } from '../public/js/marketing-datos.js';
 import { rutaAccion, leerReproduccion, motivoSpotify, tiempo } from '../public/js/spotify-datos.js';
+import { limpiarEstrategia, analizarMeta, resumenVoces } from '../public/js/estrategia-datos.js';
+import { conLente, LENTE_HORMOZI } from '../public/js/llm/modos.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
@@ -328,6 +330,26 @@ t('radar: tres oportunidades como máximo y solo enlaces web', () => {
   assert.equal(d.radar.length, 3); assert.equal(d.radar[0].fuente, '');
   assert.equal(limpiarMarketing({ canales: [{ nombre: 'Meta', gasto: '-5' }] }).canales[0].gasto, 0);
   assert.equal(aMovimiento('nao', '2026-11', 'T', 'E').area, 'marketing');
+});
+t('meta: dice qué haría falta por palanca', () => {
+  const a = analizarMeta(limpiarEstrategia({ meta: 40000, actual: 20000, ticket: 2000, leads: 100, cierre_pct: 10 }));
+  assert.equal(a.falta, 20000); assert.equal(a.avance, 0.5); assert.equal(a.ventasMeta, 20);
+  assert.deepEqual(a.palancas.map((p) => Math.round(p.a * 100) / 100), [200, 0.2, 4000]);
+  const no = analizarMeta(limpiarEstrategia({ meta: 300000, actual: 20000, ticket: 2000, leads: 100, cierre_pct: 10 }));
+  assert.equal(no.palancas[1].posible, false);
+  assert.equal(analizarMeta(limpiarEstrategia({ meta: 100 })).listo, false);
+  assert.deepEqual(analizarMeta(limpiarEstrategia({ meta: 100, actual: 200, ticket: 1, leads: 1, cierre_pct: 1 })).palancas, []);
+  assert.equal(limpiarEstrategia({ pasos: [1, 2, 3, 4].map((n) => ({ texto: `p${n}` })) }).pasos.length, 3);
+});
+t('voz: cuenta por tipo y agrupa temas sin importar mayúsculas', () => {
+  const d = limpiarEstrategia({ voces: [{ frase: 'a', tipo: 'Deseo', tema: 'Precio' }, { frase: 'b', tipo: 'Objeción', tema: 'precio' }, { frase: '', tipo: 'Deseo' }, { frase: 'c', tipo: 'otro' }] });
+  const r = resumenVoces(d.voces);
+  assert.equal(d.voces.length, 3); assert.equal(r.porTipo.Deseo, 1); assert.equal(r.porTipo.Dolor, 1);
+  assert.deepEqual(r.temas, [{ tema: 'Precio', n: 2 }]);
+});
+t('Chat: la lente Hormozi se prende y se apaga', () => {
+  assert.equal(conLente('base', false), 'base');
+  assert.equal(conLente('base', true), `base\n\n${LENTE_HORMOZI}`);
 });
 t('embudo: encuentra la mayor fuga y le pone valor', () => {
   const d = limpiarEmbudo({ client_slug: 'nao', mes: '2026-11', ticket: '1000', margen_pct: 50, etapas: [{ n: 1000 }, { n: 100 }, { n: 50 }, { n: 10 }, { n: 5 }] });

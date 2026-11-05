@@ -7,7 +7,7 @@
 // Rutas: #/chat · #/chat/<sesión> · #/chat/trabajo/<trabajo> (abre el Chat con ese trabajo en su pestaña)
 import { html, raw, mount, api, col, toast, $, ico, md, esc, initials, today, roleName, confirmAsk } from '../core.js';
 import { nombreProveedor, nombrePaso, esLocal, PASARELAS, IAS, iaDe, modelosDeIa, iasListas, fuertesDe } from '../ia-pasos.js';
-import { MODOS, MODO_LIBRE, modosDe, modoDe, sistemaDe, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
+import { MODOS, MODO_LIBRE, modosDe, modoDe, sistemaDe, conLente, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
 import { panelDe, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
@@ -33,6 +33,8 @@ import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '..
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
 import { partirUi, uiHtml, lectorUi, lectorFallo, sinUi, PROMPT_GENUI } from '../llm/genui.js'; // OpenUI: la interfaz que dibuja el modelo
+const LLAVE_LENTE = 'os.llm.lente';
+const lenteOn = () => { try { return localStorage.getItem(LLAVE_LENTE) === '1'; } catch { return false; } };
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
@@ -264,6 +266,7 @@ export async function render(el, { me, sub = [], alive }) {
         <div class="lc-row">
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox">${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
+          ${S.modo === MODO_LIBRE.id ? '' : html`<button type="button" class="lc-chip lc-lente" data-a="lente" aria-pressed="${lenteOn() ? 'true' : 'false'}" title="Razona la oferta con la lente de Hormozi">Hormozi</button>`}
           <span class="sp"></span>
           ${iasHtml() || ''}${'' && html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
           <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo del servidor responde">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
@@ -674,7 +677,7 @@ export async function render(el, { me, sub = [], alive }) {
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
       const libre = S.modo === MODO_LIBRE.id;
-      const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
+      const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
@@ -722,7 +725,7 @@ export async function render(el, { me, sub = [], alive }) {
   async function conversar() {
     const Ctx = window.AudioContext || window.webkitAudioContext, salida = new Ctx({ sampleRate: 24000 }); salida.resume(); // en el iPhone el audio se activa con este toque
     const { abrirVozViva } = await import('../voz-viva.js');
-    const libre = S.modo === MODO_LIBRE.id, base = libre ? sistemaDe(S.modo) : sistemaDe(S.modo, await contexto());
+    const libre = S.modo === MODO_LIBRE.id, base = libre ? sistemaDe(S.modo) : conLente(sistemaDe(S.modo, await contexto()), lenteOn());
     const viva = await abrirVozViva({ titulo: quien(), sistema: `${base}\n\n${PROMPT_VOZ}`, salida, alTeclado: () => $('#llm-in', el)?.focus(), alCerrar: guardarVoz });
     if (viva) return;
     salida.close();
@@ -886,6 +889,7 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
+    if (a === 'lente') { try { localStorage.setItem(LLAVE_LENTE, lenteOn() ? '0' : '1'); } catch { /* sin memoria no cambia */ } const b = el.querySelector('.lc-lente'); b?.setAttribute('aria-pressed', lenteOn() ? 'true' : 'false'); return; }
     if (a === 'side' && matchMedia('(min-width:761px)').matches) return document.querySelector('.lat-top [data-lat="mini"]')?.click();
     if (a === 'side') { S.side = !S.side; R.classList.toggle('side-on', S.side); return; }
     if (a === 'panel') { S.panel = !S.panel; R.dataset.panel = S.panel ? 'on' : 'off'; persistir(); return pintarPanel(); }
