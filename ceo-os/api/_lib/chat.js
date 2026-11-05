@@ -13,7 +13,7 @@ import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
-import { equipoPara, equipoDeCliente, instruccionesDe, resumenDeCliente, CLIENTES } from './conocimiento.js';
+import { saberEmpresa, equipoPara, equipoDeCliente, instruccionesDe, resumenDeCliente, CLIENTES } from './conocimiento.js';
 import { scoper } from './access.js';
 import { bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES } from '../../public/js/conocimiento.js';
 import { agenteDeSesion, carpetaDe } from '../../public/js/llm/carpetas.js';
@@ -200,7 +200,8 @@ export function rutas(on) {
     const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora() }].slice(-MAX_MSGS);
     const equipo = await equipoPara(u, verRun).catch(() => ''); // ayuda, pero no detiene la respuesta
     const instrucciones = await instruccionesDe(carpetaDe(s)).catch(() => '');
-    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
+    const empresa = await saberEmpresa(u).catch(() => '');
+    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${empresa}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
     if (d) res.json({ ok: true, desde: mensajes.length });
   });
 

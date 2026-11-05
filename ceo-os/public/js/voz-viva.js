@@ -8,6 +8,7 @@ export async function abrirVozViva({ titulo, sistema, salida, alTeclado, alCerra
   let cred;
   try { cred = await api('chat/voz/token', { method: 'POST', body: {} }); } catch (e) { if (e.code === 'NO_VOZ' || e.status === 503) return false; toast(e.message, true); return true; }
   let mic;
+  if (window.inherentEscritorio?.microfono && !(await window.inherentEscritorio.microfono())) { toast('Activa el micrófono en Ajustes del Sistema › Privacidad › Micrófono.', true); return true; }
   try { mic = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); } catch { toast('Dale permiso al micrófono para conversar.', true); return true; }
   const entrada = new (window.AudioContext || window.webkitAudioContext)();
   await entrada.resume(); await salida.resume();

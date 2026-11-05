@@ -6,7 +6,7 @@
 //   5. Se pone al día sola: si hay una versión nueva de la app, avisa y con un clic se reemplaza y se vuelve a abrir.
 //   6. Arranca al 85% del tamaño y recuerda el que elijas (⌘ − / ⌘ + / ⌘ 0).
 // El puente es el mismo archivo de la web (public/laya/puente.py) y corre con el Python de la Mac.
-const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net, nativeTheme } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net, nativeTheme, systemPreferences } = require('electron');
 const { spawn, execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const http = require('node:http');
@@ -75,6 +75,8 @@ ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
 // «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
 ipcMain.on('inherent:actualizar', (e) => { if (delOS(e.senderFrame?.url || '')) buscarActualizacion(true); });
 // El dictado de la Mac, con un toque: funciona en la caja que tenga el cursor.
+// El micrófono: macOS pregunta una vez. Sin esto, la voz abre y nunca escucha.
+ipcMain.handle('inherent:microfono', (e) => (delOS(e.senderFrame?.url || '') && process.platform === 'darwin' ? systemPreferences.askForMediaAccess('microphone') : true));
 ipcMain.on('inherent:dictar', (e) => { if (delOS(e.senderFrame?.url || '') && process.platform === 'darwin') { const iniciar = () => Menu.sendActionToFirstResponder('startDictation:'); if (ventana?.isFocused()) iniciar(); else { ventana?.focus(); setTimeout(iniciar, 500); } } });
 // «Actualizar» junto al perfil: sin más preguntas; el avance se ve en la barra.
 ipcMain.on('inherent:instalar', (e) => { if (delOS(e.senderFrame?.url || '') && !actualizando) actualizar(); });

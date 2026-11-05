@@ -4,7 +4,7 @@
   var h = document.documentElement;
   var claro = false; try { claro = localStorage.getItem('os.modo') === 'claro'; } catch (e) { /* sin memoria, oscuro */ }
   h.setAttribute('data-theme', claro ? 'light' : 'dark');
-  h.setAttribute('data-llm-tema', 'noche');
+  h.setAttribute('data-llm-tema', claro ? 'dia' : 'noche');
   if (window.inherentEscritorio && window.inherentEscritorio.vidrio) h.setAttribute('data-vidrio', 'real');
   var m = document.querySelector('meta[name="theme-color"]');
   if (m) m.setAttribute('content', claro ? '#f3f3f4' : '#0d0d0e');

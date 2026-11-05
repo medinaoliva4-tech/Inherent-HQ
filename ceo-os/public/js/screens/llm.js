@@ -114,7 +114,7 @@ export async function render(el, { me, sub = [], alive }) {
   };
   const quien = () => 'el servidor';
 
-  mount(el, html`<div class="llm" data-tema="noche" data-panel="${S.panel ? 'on' : 'off'}">
+  mount(el, html`<div class="llm" data-tema="${document.documentElement.dataset.theme === 'light' ? 'dia' : 'noche'}" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
@@ -277,6 +277,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
     ta.oninput = () => { crecer(ta); comandos(ta.value); };
+    // En el iPhone las opciones viven con el teclado abierto: tocarlas no debe cerrarlo.
+    $('.lc-row', box)?.addEventListener('mousedown', (e) => { if (angosto() && e.target.closest('.lc-chip')) e.preventDefault(); });
   }
   const crecer = (ta) => { ta.style.height = 'auto'; ta.style.height = Math.min(240, ta.scrollHeight) + 'px'; };
 

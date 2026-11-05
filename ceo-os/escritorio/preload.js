@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('inherentEscritorio', {
   plataforma: process.platform,
   vidrio: process.platform === 'darwin', // la ventana deja ver lo que hay detrás
   version: ipcRenderer.sendSync('inherent:version'), // la versión instalada, ej. 0.1.4 (una app sin este campo es más vieja)
+  microfono: () => ipcRenderer.invoke('inherent:microfono'),
   dictar: () => ipcRenderer.send('inherent:dictar'), // abre el dictado de la Mac en la caja activa
   instalar: () => ipcRenderer.send('inherent:instalar'), // baja, cambia y reabre la app sin más preguntas
   alProgreso: (f) => ipcRenderer.on('inherent:progreso', (_, n) => f(n)),
