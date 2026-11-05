@@ -251,7 +251,7 @@ function resolve(path) {
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {
     const ver = AREAS.filter((x) => puedeVerArea(me, x.id)), id = parts[1];
-    if (id && areaDe(id)) return puedeVerArea(me, id) ? (['agents', 'movimientos', 'notas', 'embudo', 'rentabilidad'].includes(parts[2]) ? { key: 'areas', rest: [id, parts[2]], url: `areas/${id}/${parts[2]}` } : { key: 'areas', rest: [id], url: 'areas/' + id }) : fallback();
+    if (id && areaDe(id)) return puedeVerArea(me, id) ? (['agents', 'movimientos', 'notas', 'embudo', 'rentabilidad', 'radar', 'resultados'].includes(parts[2]) ? { key: 'areas', rest: [id, parts[2]], url: `areas/${id}/${parts[2]}` } : { key: 'areas', rest: [id], url: 'areas/' + id }) : fallback();
     return ver.length ? { key: 'areas', rest: [ver[0].id], url: 'areas/' + ver[0].id } : fallback();
   }
   const org = a === 'org' ? parts.slice(1) : parts;

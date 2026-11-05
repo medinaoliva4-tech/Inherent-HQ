@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio } from '../public/js/marketing-datos.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
@@ -310,6 +311,23 @@ t('movimientos: guarda lo esencial y el resumen cuadra', () => {
   const xs = filtrarMovimientos([{ ...m, area: 'marketing', paso: 'x', decision: 'Repetir', fecha: '2026-11-01' }, { ...m, area: 'marketing', costo: 500, fecha: '2026-11-02' }, { ...m, area: 'creative' }, { ...m, area: 'marketing', archivado: true }], { area: 'marketing' });
   assert.equal(xs.length, 2); assert.equal(xs[0].fecha, '2026-11-02');
   assert.deepEqual(resumenMovimientos(xs), { total: 2, invertido: 3000, sinResultado: 1, repetir: 1, parar: 0 });
+});
+t('resultados: el veredicto depende del margen', () => {
+  assert.equal(equilibrio(50), 2); assert.equal(equilibrio(0), null);
+  assert.equal(veredicto({ gasto: 100, ingreso: 300 }, 50), 'Escalar');
+  assert.equal(veredicto({ gasto: 100, ingreso: 200 }, 50), 'Mantener');
+  assert.equal(veredicto({ gasto: 100, ingreso: 199 }, 50), 'Parar o cambiar');
+  assert.equal(veredicto({ gasto: 100, ingreso: 500 }, 0), 'Falta margen');
+  assert.equal(veredicto({ gasto: 0, ingreso: 500 }, 50), 'Sin gasto');
+  const r = analizarCanales([{ nombre: 'A', gasto: 100, ingreso: 100, leads: 5, ventas: 1 }, { nombre: 'B', gasto: 100, ingreso: 400, leads: 0, ventas: 2 }], 50);
+  assert.equal(r.filas[0].nombre, 'B'); assert.equal(r.filas[1].porLead, 20); assert.equal(r.roas, 2.5);
+});
+t('radar: tres oportunidades como máximo y solo enlaces web', () => {
+  const o = { competidor: 'X', movida: 'Y', fuente: 'javascript:alert(1)' };
+  const d = limpiarMarketing({ radar: [o, o, o, o] });
+  assert.equal(d.radar.length, 3); assert.equal(d.radar[0].fuente, '');
+  assert.equal(limpiarMarketing({ canales: [{ nombre: 'Meta', gasto: '-5' }] }).canales[0].gasto, 0);
+  assert.equal(aMovimiento('nao', '2026-11', 'T', 'E').area, 'marketing');
 });
 t('embudo: encuentra la mayor fuga y le pone valor', () => {
   const d = limpiarEmbudo({ client_slug: 'nao', mes: '2026-11', ticket: '1000', margen_pct: 50, etapas: [{ n: 1000 }, { n: 100 }, { n: 50 }, { n: 10 }, { n: 5 }] });

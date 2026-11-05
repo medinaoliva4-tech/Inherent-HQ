@@ -9791,6 +9791,27 @@ html[data-vidrio="real"] .login .side{background:rgb(30 30 32 / .4)}
 .ren-mal{color:var(--ui-rojo)}
 .mv-t td .in{min-width:88px}
 @media (max-width:760px){.em{grid-template-columns:minmax(0,1fr)}}
+/* Marketing: Resultados y Radar */
+.mk-margen{display:grid;gap:3px;padding:10px 14px;border-radius:14px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.mk-margen .in{height:32px;padding:0 9px}
+@media (min-width:761px){
+  .mk-t{overflow-x:auto}.mk-t table{min-width:640px}
+  .mk-t th,.mk-t td{padding-left:7px;padding-right:7px}
+  .mk-t td .in{min-width:64px;width:100%;height:36px;padding:0 6px;font-size:14px}
+  .mk-t th:first-child{width:18%}
+  .mk-t th:nth-child(n+2):nth-child(-n+5){width:12%}
+  .mk-t th,.mk-t td{padding-left:5px;padding-right:5px}
+}
+.mk-sub{display:block;color:var(--ui-mut);font-size:12px;font-weight:400}
+.mk-v{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12.5px;font-weight:550;white-space:nowrap;background:rgb(255 255 255 / .09);color:var(--ui-ink2)}
+.mk-v.bien{background:rgb(74 134 232 / .18);color:#9dc0f7}.mk-v.mal{background:rgb(255 107 94 / .16);color:var(--ui-rojo)}.mk-v.nada{color:var(--ui-mut)}
+.mk-acc{white-space:nowrap}.mk-acc .lat-ib{display:inline-grid}
+@media (max-width:760px){.mk-t .mk-v{justify-self:start;width:fit-content}.mk-t td b{display:inline}.mk-sub{display:inline;margin-left:8px}.mv-t td.mk-acc{display:flex;justify-content:flex-end;gap:6px}.mv-t td.mk-acc::before{display:none}}
+.mk-op{display:grid;gap:12px}
+.mk-c{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px 12px;padding:14px;border-radius:16px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.mk-c>.em-acc{grid-column:2}
+.mk-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgb(255 255 255 / .08);font-weight:600}
+.mk-w{grid-column:1/-1}
 /* Áreas: propósito, número y tres mesas */
 .ms-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;color:var(--ui-ink2);font-size:14px}
 .ms-bar>span{display:inline-flex;align-items:center;gap:7px}
