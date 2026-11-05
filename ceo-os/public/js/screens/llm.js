@@ -763,6 +763,7 @@ export async function render(el, { me, sub = [], alive }) {
     try {
       const j = await api(`chat/sesiones/${enc(sesion)}?desde=999999`);
       S.agentes = (await Promise.all((j.agentes || []).map((x) => api('agentes/runs/' + enc(x.run)).then((r) => r.run).catch(() => null)))).filter(Boolean);
+      S.agentes.forEach((r) => { seguirCadena(r); }); // lo que se aprobó con esta conversación cerrada
     } catch {}
   }
   // La tarjeta «Así lo voy a trabajar». Con `run`, es lo que sigue de un trabajo que ya existe (más allá de lo platicado).
