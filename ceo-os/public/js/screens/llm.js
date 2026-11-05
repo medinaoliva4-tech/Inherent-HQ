@@ -20,7 +20,6 @@ import { botonVoz, dictar } from '../voz.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
-import { ponerTema, temaElegido, esNoche } from '../tema.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { leerMencion, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
@@ -50,7 +49,6 @@ const ELECCION = { once: 'Permitir una vez', session: 'En esta conversación', a
 
 // Un solo escuchador del tema para el Chat montado (no uno por pintada: guardaría las conversaciones viejas en memoria).
 let llmVivo = null;
-window.addEventListener('tema', () => { if (llmVivo?.isConnected) llmVivo.dataset.tema = esNoche() ? 'noche' : 'dia'; });
 
 export async function render(el, { me, sub = [], alive }) {
   el.classList.add('llm-host');
@@ -103,7 +101,7 @@ export async function render(el, { me, sub = [], alive }) {
   };
   const quien = () => 'el servidor';
 
-  mount(el, html`<div class="llm" data-tema="${esNoche() ? 'noche' : 'dia'}" data-panel="${S.panel ? 'on' : 'off'}">
+  mount(el, html`<div class="llm" data-tema="noche" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
@@ -492,7 +490,6 @@ export async function render(el, { me, sub = [], alive }) {
         <p class="lp-mut">Responde el servidor de Inherent aunque tu compu esté apagada. Tus conversaciones quedan guardadas en el OS (las abres desde cualquier compu); busca en la web, usa tus conexiones (Inherent AI → MCPs), lee el OS como tú y, para cambiar algo, te deja una propuesta que apruebas.</p></section>
       <section><span class="lp-k">Tu límite semanal del Chat</span><p class="lp-mut">Cuántos usos quieres gastar por semana (los que tu suscripción aguanta). Con él, la Brújula te dice a qué ritmo vas. Es tu número: el servidor no da el límite de la suscripción.</p>
         <form class="lsu-pair" data-f="limite"><input name="n" type="number" min="0" step="10" inputmode="numeric" value="${S.limite || ''}" placeholder="Por ejemplo, 300" aria-label="Usos por semana"><button type="submit" class="lsu-btn">Guardar</button></form></section>
-      <section><span class="lp-k">Día y noche</span><div class="lsh-tema">${[['sistema', 'Como mi compu'], ['dia', 'Día'], ['noche', 'Noche']].map(([k, l]) => html`<button type="button" class="${temaElegido() === k ? 'on' : ''}" data-a="tema" data-t="${k}">${l}</button>`)}</div></section>
     </div>`);
     R.append(d);
   }
@@ -836,7 +833,6 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'ajustes') return ajustes();
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
-    if (a === 'tema') { ponerTema(t.dataset.t); el.querySelector('.llm-sheet')?.remove(); return ajustes(); }
     if (a === 'revisar') return revisar();
   });
   el.addEventListener('change', (e) => {

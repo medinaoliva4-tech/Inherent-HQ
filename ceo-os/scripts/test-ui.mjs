@@ -41,7 +41,7 @@ const bloque = (sel) => { const i = v2.indexOf(sel + '{'); const j = v2.indexOf(
 const tokens = (b) => Object.fromEntries([...b.matchAll(/--(ui-[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
 const DIA = tokens(bloque(':root')), NOCHE = tokens(bloque(':root[data-theme="dark"]'));
 
-t('cada color tiene su valor de día y de noche', () => {
+t('cada color tiene su valor oscuro', () => {
   const colores = Object.keys(DIA).filter((k) => !/^ui-(focus)$/.test(k) && /^(#|rgb|0 )/.test(DIA[k]));
   const faltan = colores.filter((k) => !(k in NOCHE));
   assert.deepEqual(faltan, []);
@@ -68,8 +68,28 @@ t('el tema arranca antes de pintar y sin destellos', () => {
   const idx = fs.readFileSync(path.join(RAIZ, 'index.html'), 'utf8');
   assert.ok(idx.indexOf('/js/tema-boot.js') > 0 && idx.indexOf('/js/tema-boot.js') < idx.indexOf('/app.css'), 'tema-boot va en el head, antes del CSS');
   const boot = fs.readFileSync(path.join(RAIZ, 'js/tema-boot.js'), 'utf8');
-  assert.ok(boot.includes('#1f1e1c') && boot.includes('#faf9f6'), 'la franja del iPhone usa el fondo de cada tema');
-  assert.equal(DIA['ui-bg'], '#faf9f6'); assert.equal(NOCHE['ui-bg'], '#1f1e1c');
+  assert.ok(boot.includes("'dark'") && boot.includes('#0d0d0e'), 'arranca oscuro y la franja del iPhone usa su fondo');
+  assert.ok(!boot.includes('localStorage'), 'no depende de una elección guardada');
+  assert.equal(NOCHE['ui-bg'], '#0d0d0e');
+});
+
+const v3 = CSS.slice(CSS.indexOf('SISTEMA v3 (PLAN-GATEWAY'));
+t('sistema v3: la paleta es la aprobada y solo los estados llevan color', () => {
+  assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#efebe4', '#a39f9a', '#e3d8c5', '#a7f3d0']);
+  for (const k of ['ui-m-estrategia', 'ui-m-organizacion', 'ui-m-diseno']) {
+    const [r, g, b] = NOCHE[k].slice(1).match(/../g).map((x) => parseInt(x, 16));
+    assert.ok(Math.max(r, g, b) - Math.min(r, g, b) < 36, `${k} debe ser neutro`);
+  }
+});
+t('sistema v3: sin texturas ni formas de fondo', () => {
+  assert.match(v3, /body::after\{display:none\}/);
+  assert.ok(!/radial-gradient\([^;]*dots|background-image:var\(--grain\)/.test(v3));
+});
+t('sistema v3: respeta reducir movimiento, reducir transparencia y más contraste', () => {
+  for (const m of ['prefers-reduced-motion', 'prefers-reduced-transparency', 'prefers-contrast']) assert.ok(v3.includes(m), m);
+});
+t('solo oscuro: no quedan selectores de tema en la app', () => {
+  for (const [f, s] of JS) if (f !== path.join('js', 'tema.js')) assert.ok(!/themebtn|ponerTema|temaElegido/.test(s), f);
 });
 
 console.log(`\n${ok} pruebas del sistema de diseño pasaron`);

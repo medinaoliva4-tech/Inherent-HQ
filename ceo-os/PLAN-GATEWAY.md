@@ -139,6 +139,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
 | **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | ✅ Las 3 entregas hechas (§20) |
 | **F4.6 · El agente sabe y se revisa** | Conocimiento, «El equipo hoy», calidad sin fricción, supervisor, memoria y mejora, tablero (§21) | En curso |
+| **F4.7 · Sistema de diseño** | Un solo lenguaje visual y de uso para toda la plataforma (§22). Pausa las demás funciones hasta terminar | En curso |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -168,6 +169,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | 2026-11-04 | F4 · chat de trabajo: cada trabajo abre en su chat (una conversación por persona y trabajo, guardada en el OS); la vista por etapas queda en `/etapas` | CEO + Claude |
 | 2026-11-04 | F4.5 · el Chat como centro: no hay otros chats; los agentes se llaman con `@` desde el Chat y su avance se ve en la ventana de agentes; el portal sirve para configurar, ver el flujo y los trabajos (§20). El chat de trabajo de F4 se retira | CEO |
 | 2026-11-04 | F4.6 · después de leer Mastra: la conciencia pasa a pocas decisiones claras; las etapas intermedias se aprueban con una decisión corta y la lectura completa queda en la entrega final y al pasar a otro agente (§21) | CEO |
+| 2026-11-05 | F4.7 · antes de más funciones, un solo sistema de diseño para toda la plataforma, guiado por Apple Foundations. Carpetas del Chat por cliente. Solo modo oscuro por ahora (§22) | CEO |
 | 2026-11-04 | La base «staging» era producción: el servidor queda conectado a producción (`~/gateway/neon-prod.env`) y la prueba de F2 dejó un trabajo y un usuario de prueba ahí (limpiado: trabajo archivado, usuario borrado) | CEO + Claude |
 
 ## 12 · Por verificar
@@ -456,3 +458,27 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **«El equipo hoy» en el Chat:** el OS lo agrega al turno con lo que esa persona puede ver (`ver`, `scoper`, `seesTask`).
 - **«El equipo hoy» en una etapa:** solo trabajos y tareas de proyecto del mismo cliente. Sin cliente, solo trabajos sin cliente. Lo personal nunca entra. Es un dato, no una instrucción.
 - Si el OS no responde, la etapa sigue y avisa: el conocimiento ayuda, pero no detiene el trabajo.
+
+## 22 · F4.7 · Sistema de diseño (2026-11-05)
+
+**Por qué:** la plataforma se sentía plana y genérica, y sus piezas no eran de la misma familia. **Referencia aprobada:** [prototipo del Chat](https://claude.ai/artifact/UuTGMAePW9UT1GEnDjVff8). Este lenguaje aplica a toda la plataforma. Si una referencia choca con Apple Foundations, manda Apple.
+
+### Reglas
+1. **Propósito:** cada elemento ayuda a decidir, avanzar o ubicarse. Si no, se quita. Cada pantalla se repiensa por lo que la persona viene a hacer.
+2. **Capas:** contenido sólido abajo; vidrio solo para navegar y controlar. Nunca vidrio sobre vidrio ni en lo que se lee.
+3. **Fondo:** gradiente oscuro con luz suave dentro de la app. Sin texturas ni formas decorativas.
+4. **Color:** negro, grises profundos, hueso, gris medio y crema. Solo los estados llevan color, y siempre con ícono o texto.
+5. **Tranquila y con vida:** lo frecuente responde al instante; lo importante se mueve con resorte. La vida viene de la respuesta, no de la decoración. Todo respeta reducir movimiento, reducir transparencia y más contraste.
+6. **Tipografía:** la del sistema, sin pesos delgados. Texto con contraste mínimo de 4.5:1.
+7. **Redondeos concéntricos:** panel 20, tarjeta 14, control 10.
+8. **Una acción principal por vista.** Barras con máximo tres grupos y títulos cortos.
+9. **Barra lateral:** máximo dos niveles. Nada crítico abajo.
+10. **Lenguaje:** español, directo, con verbos en los botones y estados vacíos que dicen qué sigue.
+
+**Solo modo oscuro por ahora** (decisión del CEO, por la paleta). El modo claro volverá siguiendo al sistema, sin selector dentro de la app. Las zonas de papel (cotización y portadas) conservan su paleta.
+
+### Entregas (cada una con su PR, probada en staging)
+1. **Sistema base:** colores, tipografía, redondeos, movimiento, fondo, vidrio y componentes (botón, campo, tarjeta, chip).
+2. **Estructura:** una sola barra lateral y dónde vive cada área.
+3. **Chat real:** carpetas por cliente, conversaciones por proyecto y agentes dentro de su conversación.
+4. **Pantallas por grupos:** Inicio, Organización, Agentes, Áreas y lo demás, repensadas por propósito.

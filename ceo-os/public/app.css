@@ -857,10 +857,7 @@ h1 .itip{width:18px;height:18px;font-size:11px;vertical-align:.45em}
 .qdoc .qsvc .qget.qs{border-bottom:1px solid var(--hair-strong)!important;padding:8px 0 10px!important}
 
 /* ===================== Modo noche: ver tokens al final (sin invertir colores) ===================== */
-.themebtn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--stroke);color:var(--ink2);backdrop-filter:blur(18px);flex:none}
-.themebtn:hover{color:var(--ink)}
 /* Espacio para el botón de modo noche en la barra de arriba */
-.themebtn{width:40px;height:40px}
 /* Al cambiar de pestaña la página no se corre de lado: el espacio de la barra de scroll queda siempre reservado */
 html{scrollbar-gutter:stable;overflow-y:scroll}
 /* Library · Entrevista: pregunta, caja de respuesta y «Lo ideal» */
@@ -1138,8 +1135,6 @@ p,.md p,.md li{line-height:1.55}
   border:1px solid var(--stroke);box-shadow:0 8px 24px -14px rgb(var(--ink-rgb) / .25), 0 1px 0 rgb(255 255 255 / .35) inset}
 :root[data-theme="dark"] .top{box-shadow:0 10px 30px -14px rgb(0 0 0 / .7)}
 .emb{width:23px;height:30px}.word img{height:21px!important}.word sup{top:2px}
-.themebtn{width:36px;height:36px;background:transparent;border:1px solid transparent;backdrop-filter:none;color:var(--ink2);transition:background var(--t) var(--ease)}
-.themebtn:hover{background:rgb(var(--ink-rgb) / .06)}
 .avatar{width:36px;height:36px;font-size:12.5px;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--hair-strong);transition:box-shadow var(--t) var(--ease)}
 .avatar.on{outline:0;box-shadow:0 0 0 2px var(--ink)}
 .av,.wav,.mav,.rv-av,.bigav{box-shadow:0 0 0 2px var(--surface)}
@@ -2232,7 +2227,6 @@ html.spot-open{overflow:hidden}
 @media (max-width:760px){
   .top{gap:8px}
   .searchbtn{width:36px;height:36px;padding:0;justify-content:center;background:transparent}
-  .themebtn{width:34px;height:34px}
   .nav-mono{width:22px;height:22px;border-radius:7px;font-size:9.5px}
   .brand-tiles{grid-template-columns:1fr}
   .brand-tile.r43{aspect-ratio:auto;min-height:168px}
@@ -4049,7 +4043,7 @@ body.arrastrando{cursor:col-resize;user-select:none}
    como acento. Sus colores viven en .llm (--l-*) y por dentro redefinen los del OS, así el panel de Estrategia se ve igual. */
 
 .llm{
-  --l-bg:#1f1e1c; --l-side:#181816; --l-surf:#2a2926; --l-surf2:#34322e; --l-line:rgb(255 250 240 / .085); --l-line2:rgb(255 250 240 / .14);
+  --l-bg:#0d0d0e; --l-side:#111112; --l-surf:#141415; --l-surf2:#1b1b1d; --l-line:rgb(239 235 228 / .09); --l-line2:rgb(239 235 228 / .16);
   --l-ink:#ecebe6; --l-ink2:#c4c1b8; --l-mut:#8e8a80; --l-acc:#c99d74; --l-acc-ink:#1d1712; --l-user:#302e2a; --l-ok:#8fbf8a; --l-warn:#e3a07f;
   --l-glass:rgb(42 41 38 / .78); --l-shadow:0 18px 50px -18px rgb(0 0 0 / .7),0 1px 0 rgb(255 250 240 / .04) inset;
   --l-m-estrategia:#d4a373; --l-m-organizacion:#8fb39a; --l-m-diseno:#a99ad6;
@@ -4283,9 +4277,6 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .lsh section{display:grid;gap:9px}
 .lsh section>p{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--l-ink2)}
 .lsh-cmds{display:grid;gap:10px}
-.lsh-tema{display:inline-flex;gap:2px;padding:3px;border-radius:99px;background:var(--l-side);width:max-content}
-.lsh-tema button{padding:6px 14px;border:0;border-radius:99px;background:transparent;font-size:13px;color:var(--l-mut)}
-.lsh-tema button.on{background:var(--l-surf2);color:var(--l-ink)}
 .lsh-sk{display:flex;flex-wrap:wrap;gap:6px}
 .lsh-sk span{padding:4px 9px;border-radius:99px;font-size:12px;background:var(--l-side);border:1px solid var(--l-line);color:var(--l-ink2)}
 
@@ -4398,15 +4389,15 @@ html[data-pantalla="chat"] .app{overflow:hidden}
   --r-1:6px; --r-2:10px; --r-3:12px; --r-4:16px;
 }
 :root[data-theme="dark"]{
-  --ui-bg:#1f1e1c; --ui-side:#181816; --ui-surf:#2a2926; --ui-surf2:#34322e; --ui-fill:#2f2e2b; --ui-fill2:#3a3834;
-  --ui-line:rgb(255 250 240 / .085); --ui-line2:rgb(255 250 240 / .14);
-  --ui-ink:#ecebe6; --ui-ink2:#c4c1b8; --ui-mut:#9a968c; --ui-mut2:#8e8a80; --ui-acc:#c99d74; --ui-acc-ink:#1d1712; --ui-user:#302e2a;
-  --ui-ok:#8fbf8a; --ui-warn:#e3a07f; --ui-bad:#e8857a;
-  --ui-glass:rgb(42 41 38 / .78); --ui-ink-rgb:236 235 230; --ui-surf-rgb:42 41 38;
-  --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 0 rgb(0 0 0 / .25);
-  --ui-sh-2:0 0 0 1px var(--ui-line2),0 16px 40px -14px rgb(0 0 0 / .65);
-  --ui-sh-3:0 18px 50px -18px rgb(0 0 0 / .7),0 1px 0 rgb(255 250 240 / .04) inset;
-  --ui-m-estrategia:#d4a373; --ui-m-organizacion:#8fb39a; --ui-m-diseno:#a99ad6;
+  --ui-bg:#0d0d0e; --ui-side:#111112; --ui-surf:#141415; --ui-surf2:#1b1b1d; --ui-fill:#18181a; --ui-fill2:#232325;
+  --ui-line:rgb(239 235 228 / .09); --ui-line2:rgb(239 235 228 / .16);
+  --ui-ink:#efebe4; --ui-ink2:#bdb9b2; --ui-mut:#a39f9a; --ui-mut2:#8f8b86; --ui-acc:#e3d8c5; --ui-acc-ink:#16140f; --ui-user:#252527;
+  --ui-ok:#a7f3d0; --ui-warn:#e8c98f; --ui-bad:#f4b3a6;
+  --ui-glass:rgb(30 30 32 / .52); --ui-ink-rgb:239 235 228; --ui-surf-rgb:20 20 21;
+  --ui-sh-1:0 0 0 1px var(--ui-line);
+  --ui-sh-2:0 0 0 1px var(--ui-line),0 14px 30px rgb(0 0 0 / .36);
+  --ui-sh-3:inset 0 1px 0 rgb(255 255 255 / .13),inset 0 0 0 1px rgb(255 255 255 / .055),0 18px 44px rgb(0 0 0 / .5);
+  --ui-m-estrategia:#e3d8c5; --ui-m-organizacion:#bdb9b2; --ui-m-diseno:#efebe4;
 }
 /* Los tokens de antes, como alias (en los dos temas, para ganarle a los bloques viejos de :root[data-theme="dark"]). */
 :root,:root[data-theme="dark"]{
@@ -4572,7 +4563,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
    Los colores de los workspaces y modos (con sus alias en inglés para herramientas.js), la barra lateral del cascarón
    (html[data-barra=lateral], solo en la compu; en el cel va la barra de abajo .nav-cel), el switch de IA del Chat, los encargos y Consulting. */
 :root{--ui-m-marketing:#b0553f;--ui-m-consulting:#3f6c9a;--ui-m-produccion:#2a7570;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion);--ia-claude:#d97757;--ia-chatgpt:var(--ui-ink);--ia-gemini:#4b7bec;--ia-local:var(--ui-ok);--ia-otras:var(--ui-acc);--lat-w:256px}
-:root[data-theme="dark"]{--ui-m-marketing:#e3937a;--ui-m-consulting:#8fb0dc;--ui-m-produccion:#86c7c0;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion)}
+:root[data-theme="dark"]{--ui-m-marketing:#cfc6b8;--ui-m-consulting:#a39f9a;--ui-m-produccion:#8f8b86;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion)}
 .llm,.llm[data-tema="dia"]{--l-m-consulting:var(--ui-m-consulting);--l-m-marketing:var(--ui-m-marketing);--l-m-produccion:var(--ui-m-produccion)}
 .llm [data-m="consulting"]{--m:var(--l-m-consulting)}
 .llm [data-m="marketing"]{--m:var(--l-m-marketing)}
@@ -4635,9 +4626,6 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
 .lat-ib:hover{background:var(--ui-surf2);color:var(--ui-ink)}
 .lat-menu{position:absolute;z-index:40;left:0;right:0;bottom:calc(100% + 6px);display:grid;gap:2px;padding:6px;border-radius:14px;background:var(--ui-surf);box-shadow:var(--ui-sh-2)}
 .lat-menu-k{padding:6px 8px 2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut)}
-.lat-tema{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1fr);gap:2px;padding:3px;margin:0 2px 4px;border-radius:10px;background:var(--ui-fill2)}
-.lat-tema button{min-height:28px;padding:0 8px;white-space:nowrap;border:0;border-radius:8px;background:transparent;color:var(--ui-ink2);font:inherit;font-size:12px;cursor:pointer}
-.lat-tema button.on{background:var(--ui-surf);color:var(--ui-ink);font-weight:600;box-shadow:var(--ui-sh-1)}
 .lat-menu>a,.lat-menu>button{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;border:0;background:transparent;color:var(--ui-ink);font:inherit;font-size:13.5px;text-align:left;text-decoration:none;cursor:pointer}
 .lat-menu>a:hover,.lat-menu>button:hover{background:var(--ui-surf2)}
 /* ⌘B: solo íconos. */
@@ -5057,7 +5045,7 @@ html[data-pantalla="chat"] .top,html[data-pantalla="chat"] .nav-cel{display:none
    Las vistas se miden por el ancho de su propio centro (container «vista»), no por el de la pantalla: con la entrada abierta el
    centro es mucho más angosto que el viewport. Las clases .card/.chip/.btn/.in/.lbl/.check/.gbar/.hbars se heredan a propósito. */
 :root{--ui-amb:#8a5d00;--ui-amb-f:#b8820a;--ui-info:#2f6491}
-:root[data-theme="dark"]{--ui-amb:#e0b84a;--ui-amb-f:#e0b84a;--ui-info:#8fb7e3}
+:root[data-theme="dark"]{--ui-amb:#e8c98f;--ui-amb-f:#e8c98f;--ui-info:#c5cbd0}
 :root,:root[data-theme="dark"]{
   --ui-ok-t:color-mix(in srgb,var(--ui-ok) 80%,var(--ui-ink)); --ui-bad-t:color-mix(in srgb,var(--ui-bad) 80%,var(--ui-ink));
   --ui-amb-t:color-mix(in srgb,var(--ui-amb) 85%,var(--ui-ink)); --ui-info-t:color-mix(in srgb,var(--ui-info) 80%,var(--ui-ink));
@@ -9210,3 +9198,65 @@ html.kf-fullscreen{overflow:hidden}
 .gu-q{display:grid;gap:6px}.gu-q>b{font-size:14px}
 .gu-carga{font-size:12.5px;color:var(--l-mut);padding:8px 0}
 .gu-src{margin:6px 0;padding:10px 12px;border-radius:12px;background:var(--l-surf2);font-size:12.5px;white-space:pre-wrap;overflow-x:auto}
+
+/* ===================== SISTEMA v3 (PLAN-GATEWAY §22) · va al final: manda sobre todo lo anterior =====================
+   Oscuro con luz interior. Contenido sólido abajo, vidrio solo para navegar y controlar. Colores: tokens --ui-* de arriba.
+   Redondeos concéntricos: panel 20, tarjeta 14, control 10. Lo frecuente responde al instante; lo importante, con resorte. */
+:root{
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",sans-serif; --serif:var(--sans);
+  --v-blur:blur(28px) saturate(150%); --v-borde:inset 0 1px 0 rgb(255 255 255 / .13),inset 0 0 0 1px rgb(255 255 255 / .055);
+  --e-out:cubic-bezier(.22,1,.36,1); --d-mueve:.42s;
+}
+@supports (transition-timing-function:linear(0,1)){:root{--e-out:linear(0.0,0.0593,0.1889,0.3397,0.4851,0.6124,0.7171,0.7993,0.8617,0.9075,0.9402,0.9628,0.9781,0.988,0.9943,0.998,1.0,1.0011,1.0015,1.0015,1.0014,1.0012,1.0009,1.0007,1.0005,1.0004,1.0003,1.0002,1);--d-mueve:.62s}}
+:root,:root[data-theme="dark"]{--r:14px;--r-s:10px;--r-l:20px;--r-1:7px;--r-2:10px;--r-3:12px;--r-4:14px}
+html{background:#09090a}
+html,body{font-feature-settings:"ss01"}
+body::before{inset:0;z-index:-2;background:radial-gradient(760px 820px at 3% 0%,rgb(239 235 228 / .17),transparent 72%),radial-gradient(800px 520px at 100% 100%,rgb(239 235 228 / .05),transparent 70%),linear-gradient(160deg,#111112,#09090a)}
+body::after{display:none}
+h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
+:focus-visible{outline:2px solid var(--ui-acc);outline-offset:2px}
+
+/* Botones: uno principal, lo demás discreto. Sin elevarse al pasar el cursor. */
+.btn{height:34px;padding:0 14px;border-radius:10px;font-size:13.5px;box-shadow:none;background:var(--ui-ink);color:#121110;transition:transform .26s var(--e-out),background-color .12s}
+.btn:hover{transform:none;filter:none;box-shadow:none;background:#fff}
+.btn:active{transform:scale(.97);transition-duration:.06s}
+.btn.ghost,.btn.lime,.btn.cream{background:var(--ui-fill2);color:var(--ui-ink);border:0;box-shadow:none}
+.btn.ghost:hover,.btn.lime:hover,.btn.cream:hover{background:rgb(239 235 228 / .15);box-shadow:none}
+.btn:disabled,.btn[disabled]{background:var(--ui-fill);color:var(--ui-mut2);opacity:1;cursor:default;transform:none}
+
+/* Campos */
+.in,select.in,textarea.in{background:var(--ui-surf2);border:0;border-radius:10px;box-shadow:inset 0 0 0 1px var(--ui-line);transition:box-shadow .12s}
+.in:focus,.in:focus-visible{outline:none;border:0;box-shadow:inset 0 0 0 1.5px var(--ui-acc)}
+
+/* Contenido: sólido */
+.card,.card.glass,.sp-panel{background:var(--ui-surf);border:0;border-radius:14px;box-shadow:var(--ui-sh-1)}
+.chip{border-radius:8px;background:var(--ui-fill2);color:var(--ui-ink2)}
+.chip.lime,.chip.red,.chip.amber,.chip.green{background:var(--ui-fill2);color:var(--ui-ink)}
+.chip.dark{background:var(--ui-ink);color:#121110}
+
+/* Vidrio: navegación y hojas */
+@media (min-width:761px){
+  html[data-barra="lateral"] body{padding-left:calc(var(--lat-w) + 20px)}
+  html[data-barra="lateral"] .lat{top:10px;bottom:10px;left:10px;border:0;border-radius:20px;background:var(--ui-glass);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-borde),0 14px 34px rgb(0 0 0 / .42)}
+}
+.lat-n,.bellbtn b{background:var(--ui-acc);color:#16140f}
+.lat-ind-item{background:rgb(239 235 228 / .11);box-shadow:none}
+.lat-ind-pag{background:rgb(239 235 228 / .08)}
+.drawer,.sp-sheet{background:rgb(30 30 32 / .72);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);border:0;border-radius:20px;box-shadow:var(--ui-sh-3)}
+.veil{background:rgb(0 0 0 / .46);-webkit-backdrop-filter:none;backdrop-filter:none}
+
+/* El Chat: su fondo es el de la app y su barra, vidrio */
+.llm{background:transparent}
+.llm-side{background:var(--ui-glass);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);border-right:0}
+
+.agx-chain i{background:var(--ui-mut)!important;box-shadow:none}
+.pdchip{background:var(--ui-fill2);color:var(--ui-ink)}
+
+@media (prefers-reduced-motion:reduce){.btn,.in{transition:none}}
+@media (prefers-reduced-transparency:reduce){
+  :root{--ui-glass:#1d1d1f}
+  html[data-barra="lateral"] .lat,.drawer,.sp-sheet,.llm-side{-webkit-backdrop-filter:none;backdrop-filter:none;background:#1d1d1f}
+}
+@media (prefers-contrast:more){
+  :root,:root[data-theme="dark"]{--ui-line:rgb(239 235 228 / .3);--ui-line2:rgb(239 235 228 / .5);--ui-ink2:#efebe4;--ui-mut:#c9c5be;--ui-mut2:#c9c5be}
+}
