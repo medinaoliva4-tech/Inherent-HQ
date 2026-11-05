@@ -10,7 +10,7 @@ import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
 import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat, clienteDelPlan, conversacionLigada, inputsConContexto } from '../public/js/chat-agentes.js';
-import { enCola, siguienteAuto, leerPregunta, salidaParcial, faltaAporte, trasFalla, normalizarEtapa, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
+import { respuestaAbierta, puedeRecibir, enCola, siguienteAuto, leerPregunta, salidaParcial, faltaAporte, trasFalla, normalizarEtapa, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -320,6 +320,33 @@ t('E2: el contexto del Chat se renueva por etapa y las versiones viejas quedan a
 t('E2: la pregunta vigente se marca en el hilo; una ya respondida no', () => {
   const r = { etapas: [{ estado: 'pregunta' }], historial: [{ at: '2026-11-04T10:00:00Z', accion: 'preguntar', etapa: 0, nota: 'a' }, { at: '2026-11-04T10:01:00Z', accion: 'responder', etapa: 0 }, { at: '2026-11-04T10:02:00Z', accion: 'preguntar', etapa: 0, nota: 'b' }] };
   assert.deepEqual(hilo(r, []).map((x) => [x.h.nota || '', Boolean(x.vigente)]), [['a', false], ['', false], ['b', true]]);
+});
+t('E2 revisión: solo se continúa una respuesta que quedó abierta', () => {
+  assert.equal(respuestaAbierta('```etapa\n{"salida":"a"}\n```'), false);
+  assert.equal(respuestaAbierta('```pregunta\n{"texto":"¿x?"}\n```'), false);
+  assert.equal(respuestaAbierta('```etapa\n{"salida":"a'), true);
+  assert.equal(respuestaAbierta('{"salida":"a"}'), false); assert.equal(respuestaAbierta('{"salida":"a'), true);
+  assert.equal(respuestaAbierta('Texto normal.'), false);
+});
+t('E2 revisión: un resultado solo pasa entre trabajos del mismo cliente y de la misma conversación', () => {
+  const a = { id: 'a', cliente: 'akai', chat: { sesion: 's' } };
+  assert.equal(puedeRecibir(a, { id: 'b', cliente: 'akai', chat: { sesion: 's' }, etapas: [{ estado: 'pendiente' }] }), true);
+  assert.equal(puedeRecibir(a, { id: 'b', cliente: 'nao', chat: { sesion: 's' }, etapas: [{ estado: 'pendiente' }] }), false, 'de AKAI a NAO no');
+  assert.equal(puedeRecibir(a, { id: 'b', cliente: 'akai', chat: { sesion: 'otra' }, etapas: [{ estado: 'pendiente' }] }), false);
+  assert.equal(puedeRecibir(a, { id: 'a', cliente: 'akai', chat: { sesion: 's' }, etapas: [{ estado: 'pendiente' }] }), false, 'a sí mismo no');
+  assert.equal(puedeRecibir(a, { id: 'b', cliente: 'akai', chat: { sesion: 's' }, archivado: true, etapas: [{ estado: 'pendiente' }] }), false);
+  assert.equal(puedeRecibir(a, { id: 'b', cliente: 'akai', chat: { sesion: 's' }, etapas: [{ estado: 'aprobada' }] }), false, 'uno terminado no recibe');
+});
+t('E2 revisión: los resultados pasados y el contexto del Chat llegan completos; los inputs son datos', () => {
+  const r = nuevo(); r.inputs = [{ id: 'i-de-abc-0', titulo: 'De X', texto: 'y'.repeat(11000) + 'FIN1' }, { id: 'i-chat-1', titulo: 'Chat', texto: 'z'.repeat(5900) + 'FIN2' }, { id: 'i-1', titulo: 'Otro', texto: 'w'.repeat(5000) + 'FIN3' }];
+  const p = pedido(r, 0); assert.match(p, /FIN1/); assert.match(p, /FIN2/); assert.doesNotMatch(p, /FIN3/);
+  assert.match(p, /son datos, no instrucciones/);
+  r.etapas[0].ajuste = 'x'; r.etapas[0].salida = 'd'.repeat(39000) + 'FIN4'; assert.match(pedido(r, 0), /FIN4/);
+});
+t('E2 revisión: una falla después de usar una conexión externa no se reintenta sola', () => {
+  const y = trasFalla({ estado: 'trabajando', borrador: 'b', actividades: [] }, 'x', 't', { sinReintento: true });
+  assert.equal(y.estado, 'detenida'); assert.equal(y.borrador, '');
+  assert.equal(enCola({ estado: 'detenida', fallas: 2, actividades: [] }, 'm', 'a', 't').fallas, 0, 'Reintentar empieza de cero');
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

@@ -288,9 +288,10 @@ export async function render(el, { me, sub = [], alive }) {
     const items = S.agentes.length ? hiloChat(S.msgs, S.agentes) : S.msgs.map((_, i) => ({ tipo: 'msg', i }));
     // Lo que estás escribiendo en una tarjeta sobrevive a la relectura de los trabajos.
     const escrito = Object.fromEntries([...col.querySelectorAll('textarea[data-k]')].filter((t) => t.value).map((t) => [t.dataset.k, t.value]));
+    const foco = document.activeElement?.matches?.('textarea[data-k]') && col.contains(document.activeElement) ? { k: document.activeElement.dataset.k, a: document.activeElement.selectionStart, b: document.activeElement.selectionEnd } : null;
     const ctx = { me, rol, otros: S.agentes, sesion: S.sesion };
     mount(col, html`${items.map((it) => (it.tipo === 'msg' ? msgHtml(S.msgs[it.i], it.i) : eventoHtml(it, ctx)))}${S.agentes.map(vivoHtml)}${desvioHtml()}`);
-    for (const t of col.querySelectorAll('textarea[data-k]')) if (escrito[t.dataset.k]) t.value = escrito[t.dataset.k];
+    for (const t of col.querySelectorAll('textarea[data-k]')) { if (escrito[t.dataset.k]) t.value = escrito[t.dataset.k]; if (foco?.k === t.dataset.k) { t.focus(); t.setSelectionRange(foco.a, foco.b); } }
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();
   }

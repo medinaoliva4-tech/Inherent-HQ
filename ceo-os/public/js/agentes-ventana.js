@@ -20,10 +20,10 @@ function accionCola(run, n, modelos) {
   const e = run.etapas[n];
   if (n !== activa(run) || run.archivado || completo(run) || enServidor(e)) return '';
   if (e.estado === 'pregunta') return html`<span class="wc-note">${ico('chat', 12)} Responde en el Chat</span>`;
+  if (run.plan_ok && n > run.plan_ok.hasta && e.estado === 'pendiente') return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
   if (faltaAporte(run, n)) return html`<span class="wc-note">${ico('chat', 12)} Falta tu aporte: dalo en el Chat</span>`;
   if (e.estado === 'revision') return html`<button type="button" class="btn sm ag-dark" data-act="doc" data-n="${n}">${ico('file-text', 12)} Abrir documento</button>`;
   if (!['pendiente', 'ajuste', 'detenida'].includes(e.estado)) return '';
-  if (run.plan_ok && n > run.plan_ok.hasta) return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
   return html`<button type="button" class="btn sm ag-dark" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico(e.estado === 'pendiente' ? 'play' : 'rotate-cw', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : e.estado === 'detenida' ? 'Reintentar' : 'Continuar'}</button>`;
 }
 
@@ -48,7 +48,7 @@ export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () =
       ${run.pausado ? html`<p class="wc-note">${ico('pause', 12)} El agente está en pausa.</p>` : ''}</section>
 
     <section class="av-sec" aria-label="Documento"><h3>${ico('file-text', 12)} Documento</h3>
-      ${run.etapas.some((x) => x.salida) || enServidor(e) ? run.etapas.map((x, i) => (x.salida ? html`<article class="av-doc ${x.estado}">
+      ${run.etapas.some((x) => x.salida) || enServidor(e) ? run.etapas.map((x, i) => (x.salida && !(i === n && enServidor(x) && x.borrador) ? html`<article class="av-doc ${x.estado}">
           <header><b>${i + 1} · ${leerOutput(x.entrega || x.output, x.nombre).titulo}</b><span class="wc-chip ${x.estado}">${ESTADOS[x.estado] || x.estado}</span><button type="button" class="wc-ic" data-act="doc" data-n="${i}" title="Abrir" aria-label="Abrir el documento de ${x.nombre}">${ico('external-link', 12)}</button></header>
           <div class="ag-md av-doc-md">${docHtml(run, i)}</div></article>`
         : i === n && enServidor(x) ? html`<article class="av-doc vivo"><header><b>${i + 1} · ${x.nombre}</b><span class="wc-chip en_cola">${x.estado === 'en_cola' ? 'En cola' : 'Escribiendo…'}</span></header>

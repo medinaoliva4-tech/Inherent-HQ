@@ -2,7 +2,7 @@
 // trabajo en el hilo (con el nombre y el color de su agente), la tarjeta del resultado y las pestañas del panel.
 // Solo dibuja: el estado y las llamadas viven en screens/llm.js.
 import { html, raw, ico, esc } from '../core.js';
-import { activa, completo, puede, leerOutput, ESTADOS, enServidor, faltaAporte, leyo } from '../agentes-flujos.js';
+import { activa, completo, puede, leerOutput, ESTADOS, enServidor, faltaAporte, leyo, puedeRecibir } from '../agentes-flujos.js';
 import { colorArea, areaNombre } from '../agentes-ui.js';
 
 const quien = (e) => String(e || '').split('@')[0];
@@ -40,7 +40,7 @@ export function planHtml(p, i) {
 function usarHtml(run, n, { me, otros = [], sesion = '' }) {
   if (run.etapas[n].estado !== 'aprobada') return '';
   if (!leyo(run, n, me.email)) return html`<small class="lres-c">Abre el documento para pasarlo a otro agente.</small>`;
-  const ops = [...otros.filter((r) => r.id !== run.id).map((r) => [r.id, `@${r.flujo.nombre} · ${r.titulo}`.slice(0, 60)]), ...(sesion ? [['chat', 'Esta conversación']] : [])];
+  const ops = [...otros.filter((r) => puedeRecibir(run, r)).map((r) => [r.id, `@${r.flujo.nombre} · ${r.titulo}`.slice(0, 60)]), ...(sesion ? [['chat', 'Esta conversación']] : [])];
   return ops.length ? html`<div class="lres-u"><select aria-label="Pasar el resultado a">${ops.map(([v, t]) => html`<option value="${v}">${t}</option>`)}</select><button type="button" data-a="ag-usar" data-run="${run.id}" data-n="${n}">${ico('arrow-right', 13)} Usar en…</button></div>` : '';
 }
 function resultadoHtml(run, n, ctx) {
@@ -82,7 +82,7 @@ function aporteHtml(run, n) {
 export function vivoHtml(run) {
   const n = activa(run), e = run.etapas[n];
   if (run.archivado || completo(run)) return '';
-  if (e.estado === 'pendiente' && faltaAporte(run, n) && (!run.plan_ok || n <= run.plan_ok.hasta)) return aporteHtml(run, n);
+  if (['pendiente', 'ajuste', 'detenida'].includes(e.estado) && faltaAporte(run, n) && (!run.plan_ok || n <= run.plan_ok.hasta)) return aporteHtml(run, n);
   if (e.estado === 'detenida') return html`<div class="lpr" style="${raw(color(run))}"><span class="lm-k">${inicial(run.flujo.nombre)} · ${run.flujo.nombre} se detuvo</span><b>${e.nombre} falló dos veces</b><small>${(e.actividades || []).at(-1)?.detalle || ''}</small><div class="lm-ops"><button type="button" class="si" data-a="ag-reintentar" data-run="${run.id}" data-n="${n}">${ico('rotate-cw', 13)} Reintentar</button></div></div>`;
   if (!enServidor(e)) return '';
   const a = (e.actividades || []).at(-1);

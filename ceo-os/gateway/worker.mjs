@@ -13,7 +13,7 @@
 //
 // Uso: DATABASE_URL=… LITELLM_MASTER_KEY=… node gateway/worker.mjs
 import * as db from '../api/_lib/db.js';
-import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla } from '../public/js/agentes-flujos.js';
+import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla, respuestaAbierta } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
 const pedido = (run, n) => pedidoOS(run, n, { sinHerramientas: true, conWeb: (run.inputs || []).some((x) => /^w\d+$/.test(x.id)), conMcp: run._conMcp || '', puedePreguntar: Boolean(run.chat) });
@@ -129,9 +129,11 @@ async function herramientasMcp(run, n, paso) {
 async function completar(modelo, messages, r, onAvance, onEspera) {
   let content = r.content, finish = r.finish, extra = { prompt_tokens: 0, completion_tokens: 0, seg: 0 };
   const cap = contextoDe(modelo) - MAX_OUT - 1500;
-  for (let i = 0; i < 2 && (finish === 'length' || !finish) && est(JSON.stringify(messages)) + est(content) < cap; i++) {
+  for (let i = 0; i < 2 && (finish === 'length' || (!finish && respuestaAbierta(content))) && est(JSON.stringify(messages)) + est(content) < cap; i++) {
     const avance = ({ texto, ...o }) => onAvance({ ...o, texto: content + (texto || '') });
-    const s = await chat(modelo, '', '', MAX_OUT, { messages: [...messages, { role: 'assistant', content }, { role: 'user', content: 'Se cortó por el límite. Sigue EXACTAMENTE donde te quedaste, carácter por carácter: sin repetir nada, sin saludar y sin abrir otro bloque.' }], onEspera, onAvance: avance, cadaMs: 3000 });
+    // Si seguir falla, se queda lo que ya se escribió: un resultado largo no se pierde por la continuación.
+    let s; try { s = await chat(modelo, '', '', MAX_OUT, { messages: [...messages, { role: 'assistant', content }, { role: 'user', content: 'Se cortó por el límite. Sigue EXACTAMENTE donde te quedaste, carácter por carácter: sin repetir nada, sin saludar y sin abrir otro bloque.' }], onEspera, onAvance: avance, cadaMs: 3000 }); }
+    catch (e) { log(`  no pude continuar la respuesta: ${e.message}`); break; }
     content += s.content; finish = s.finish;
     extra = { prompt_tokens: extra.prompt_tokens + (s.usage.prompt_tokens || 0), completion_tokens: extra.completion_tokens + (s.usage.completion_tokens || 0), seg: extra.seg + s.seg };
   }
@@ -167,6 +169,7 @@ async function conHerramientas(modelo, texto, tools, runId, n, base, paso, onEsp
         let args = {}; try { args = JSON.parse(call.function.arguments || '{}'); } catch {}
         const quien = `${conectorDe(t.conector)?.nombre || t.conector} · ${t.nombre}`;
         await paso({ titulo: 'Usando sus conexiones', detalle: quien });
+        if (t.conector !== 'inherent') base._terceros = true; // repetir la etapa podría repetir una acción allá
         try {
           const o = await os({ run: runId, etapa: n, accion: 'llamar', conector: t.conector, tool: t.nombre, args });
           const id = `m${++k}`; usadas.push(quien);
@@ -185,10 +188,11 @@ async function correr(id, n) {
   const run = await db.get(RUNS, id), e = run.etapas[n], modelo = e.modelo || e.cola?.modelo;
   const paso = (a) => actividad(id, n, a);
   log(`[${id}] etapa ${n + 1} «${e.nombre}» con ${modelo}`);
+  let base = null;
   try {
     if (!modelos.includes(modelo)) throw new Error(`El modelo ${modelo} no está disponible en el servidor`);
     await paso({ titulo: 'Tomada por el servidor', detalle: `${modelo} · contexto ${contextoDe(modelo).toLocaleString('es-MX')} tokens` });
-    const base = await conWeb(run, n, paso);
+    base = await conWeb(run, n, paso);
     const mcp = await herramientasMcp(run, n, paso);
     if (mcp.tools.length) base._conMcp = [...new Set(mcp.tools.map((t) => conectorDe(t.conector)?.nombre || t.conector))].join(', ');
     const texto = await pedidoQueCabe(base, n, modelo, paso);
@@ -228,7 +232,7 @@ async function correr(id, n) {
   } catch (err) {
     log(`[${id}] etapa ${n + 1} falló: ${err.message}`);
     await tocar(id, (cur) => (cur.etapas[n]?.estado !== 'trabajando' ? null : {
-      etapas: conEtapa(cur, n, (x) => trasFalla(x, err.message, ahora())),
+      etapas: conEtapa(cur, n, (x) => trasFalla(x, err.message, ahora(), { sinReintento: Boolean(base?._terceros) })),
       _nota: { accion: 'fallo', etapa: n, nota: String(err.message).slice(0, 200) },
     })).catch(() => {});
   }
