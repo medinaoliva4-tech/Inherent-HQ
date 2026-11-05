@@ -6,7 +6,7 @@ import { html, raw, fdate, fdateLong, today, ask, confirmAsk, toast, wizard, ico
 import { priceLabel, avatar } from './mentors.js';
 
 const RM = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Logrado', 'green'] };
-const HEALTH = { ok: ['En camino', 'green', '#795c45'], riesgo: ['En riesgo', 'amber', '#b29b86'], off: ['Fuera de ruta', 'red', '#654c38'] };
+const HEALTH = { ok: ['En camino', 'green', '#626263'], riesgo: ['En riesgo', 'amber', '#a0a0a1'], off: ['Fuera de ruta', 'red', '#515152'] };
 // (Los hitos viejos se leen como metas sin métrica.)
 export const goalsOf = (a) => a?.goals || (a?.roadmap || []).map((x) => ({ goal: x.t, due: x.date || '', status: x.status || 'todo', note: x.note || '', metric: '', baseline: '', target: '', current: '', tasks: [], checks: [] }));
 const num = (v) => { const n = parseFloat(String(v ?? '').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : null; };
@@ -79,8 +79,8 @@ export function goalsUI(ctx) {
     docView(html`${docHead('Roadmap', html`${a.name}<br>${fdateLong(today())}`)}
       <div class="qto"><div><div class="lbl2">CLIENTE</div><b style="font-weight:500;font-size:15px">${a.name}</b>${planName ? html`<div>${planName}</div>` : ''}</div>
         <div><div class="lbl2">AVANCE</div><b style="font-weight:500;font-size:15px">${rm.filter((x) => x.status === 'done').length} de ${rm.length} metas logradas</b></div></div>
-      ${rm.map((g) => { const pct = pctOf(g), h = healthOf(g); return html`<div class="pgoal"><div class="row"><b style="font-weight:500;font-size:15px">${g.goal}</b><div class="sp"></div><span style="color:#7a5d46;font-size:12px">${g.due ? fdateLong(g.due) : ''}</span></div>
-        <div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${g.status === 'done' ? '#755943' : '#9f846d'}">${(RM[g.status]?.[0] || 'Pendiente').toUpperCase()}${h ? ' · ' + HEALTH[h][0].toUpperCase() : ''}</div>
+      ${rm.map((g) => { const pct = pctOf(g), h = healthOf(g); return html`<div class="pgoal"><div class="row"><b style="font-weight:500;font-size:15px">${g.goal}</b><div class="sp"></div><span style="color:#636364;font-size:12px">${g.due ? fdateLong(g.due) : ''}</span></div>
+        <div style="font-size:11px;letter-spacing:1px;font-weight:700;color:${g.status === 'done' ? '#5f5f60' : '#8a8a8b'}">${(RM[g.status]?.[0] || 'Pendiente').toUpperCase()}${h ? ' · ' + HEALTH[h][0].toUpperCase() : ''}</div>
         ${g.metric ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Cómo se mide:</b> ${g.metric} · hoy ${g.current || g.baseline || '—'} → meta ${g.target || '—'}${pct == null ? '' : ` (${pct}%)`}</div>` : ''}
         ${(g.tasks || []).length ? html`<div style="font-size:12.5px;margin-top:6px"><b style="font-weight:500">Desglose:</b> ${g.tasks.map((t) => (t.done ? '✓ ' : '○ ') + t.t).join(' · ')}</div>` : ''}
         ${(g.checks || []).length ? html`<div style="font-size:12.5px;margin-top:4px"><b style="font-weight:500">Checkpoints:</b> ${g.checks.map((c) => `${fdate(c.date)}${c.done ? ` ✓${c.value ? ' ' + c.value : ''}` : ''}`).join(' · ')}</div>` : ''}

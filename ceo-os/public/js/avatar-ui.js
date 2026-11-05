@@ -13,7 +13,7 @@ import { CONSCIENCIA } from './calendario-contenido.js';
 import { correrIA, armarCtx } from './ia-herramienta.js';
 import { herramientaDe, rutaHerramienta } from './herramientas.js';
 
-const TONOS = ['#5b4433', '#9a7b5f', '#c3a588', '#7d8b5a', '#b0875a', '#6f5a7a'];
+const TONOS = ['#49494a', '#818182', '#ababac', '#7d8b5a', '#8e8e8f', '#6f5a7a'];
 const q = (n) => (n == null || n === '' ? '' : 'Q ' + Number(n).toLocaleString('es-GT'));
 const enc = encodeURIComponent;
 const corta = (s, n) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1).trimEnd() + '…' : t; };

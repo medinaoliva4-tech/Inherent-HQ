@@ -362,7 +362,7 @@ function paintLat(cur = resolve(hashNow())) {
   if (ws) ws.textContent = enChat ? 'Inherent Chat' : 'Inherent OS';
   if (volver) { const r = rutaOS(); volver.hidden = !enChat; volver.href = '#/' + r; volver.querySelector('span').textContent = `Volver a ${paginaDe(r)?.[0]?.[1] || 'Inherent OS'}`; }
   const ctx = $('#lat-ctx', lat); if (ctx) { ctx.hidden = cur.key !== 'chat'; if (cur.key !== 'chat') ctx.replaceChildren(); }
-  if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus();
+  if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus({ focusVisible: false });
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
 function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); }

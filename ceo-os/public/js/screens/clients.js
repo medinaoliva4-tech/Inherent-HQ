@@ -46,11 +46,12 @@ export async function render(el, { me, sub, alive }) {
 
   function list() {
     mount(el, html`<div class="hello sp-hero row" style="align-items:flex-end"><div><h1>Clientes</h1><p>Quiénes son y <em>cómo va su mes</em>.</p></div><div class="sp"></div>${roChip(me, 'clients')}</div>
-      ${clients.length ? html`<div class="sp-tiles">${clients.map((c, i) => { const a = acct(c.slug), mo = month(c.slug), rm = goalsOf(a), next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
-        return html`<a class="sp-tile r43" href="#/clients/${c.slug}">
-          <div class="sp-tile-top"><span class="sp-mono ${['', 't1', 't2'][i % 3]}">${initials(a?.name || c.slug)}</span><div style="min-width:0"><div class="sp-tile-name">${a?.name || c.slug.toUpperCase()}</div><div class="sp-tile-sub">${c.plan || 'Sin nivel'}</div></div><span class="sp-tile-go">↗</span></div>
-          <div><span class="lbl">Avance del mes</span><div class="sp-pct" style="margin-top:6px">${mo.pct == null ? '—' : html`${mo.pct}<small>%</small>`}</div><div class="sp-meter"><i style="width:${mo.pct || 0}%"></i></div></div>
-          <div class="sp-tile-foot"><span><i class="dot light-${mo.light[0]}"></i>${mo.light[1]}</span><span>${mo.total ? `${mo.done}/${mo.total} entregas` : next ? 'Meta: ' + next.goal : `${mo.ps.length} proyecto${mo.ps.length === 1 ? '' : 's'}`}</span></div></a>`; })}</div>`
+      ${clients.length ? html`<div class="gl">${clients.map((c) => { const a = acct(c.slug), mo = month(c.slug), rm = goalsOf(a), next = rm.filter((x) => x.status !== 'done').sort((x, z) => String(x.due || '9').localeCompare(String(z.due || '9')))[0];
+        return html`<a class="gl-f gl-cl" href="#/clients/${c.slug}"><span class="sp-mono">${initials(a?.name || c.slug)}</span>
+          <span class="gl-t"><b>${a?.name || c.slug.toUpperCase()}</b><small>${c.plan || 'Sin nivel'}</small></span>
+          <span class="gl-av" aria-label="Avance del mes"><span class="sp-meter"><i style="width:${mo.pct || 0}%"></i></span><small>${mo.pct == null ? 'Sin avance' : `${mo.pct}%`}</small></span>
+          <span class="gl-e"><i class="dot light-${mo.light[0]}"></i>${mo.light[1]}</span>
+          <span class="gl-n">${mo.total ? `${mo.done}/${mo.total} entregas` : next ? 'Meta: ' + next.goal : `${mo.ps.length} proyecto${mo.ps.length === 1 ? '' : 's'}`}</span>${ico('chevron-right', 15)}</a>`; })}</div>`
       : html`<div class="empty"><b>No encontré clientes</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md, o entra por una cotización pagada.</div>`}`);
   }
 
@@ -151,9 +152,10 @@ export async function render(el, { me, sub, alive }) {
     function infoTab(b) {
       mount(b, html`<div class="cpf">
         <div class="grid g11 cp-row">${cicloCard()}${proyectosCard()}</div>
+        <details class="cp-mas"><summary>Más de este cliente<small>Semana, reunión, cobros, estrategia, metas y herramientas</small></summary>
         <div class="cp-row3">${semanaCard()}${reunionCard()}${cobrosCard()}</div>
         <div class="grid g11 cp-row">${estrategiaCard()}<section class="card cp-card cp-goals">${goals.section()}</section></div>
-        ${herramientas()}</div>`);
+        ${herramientas()}</details></div>`);
     }
     // Portal, especialista y accesos del equipo: lo que se configura de vez en cuando.
     function ajustesTab(b) {

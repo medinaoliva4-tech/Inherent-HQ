@@ -7,7 +7,7 @@
 // Arriba de cada panel, «Cómo trabaja este modo»: el harness a la vista (reglas y criterios de aceptación).
 import { html, api, col, ico, fdate, today, esc } from '../core.js';
 import { panelViva } from '../estrategia-viva-ui.js';
-import { avance } from '../estrategia-viva.js';
+import { avance, PASOS } from '../estrategia-viva.js';
 import { isWaiting } from '../ventas-flujo.js';
 import { HARNESS, modoDe, textoAlcanceConsulting, encargosDe, alcanceConsulting, consultingAbierto } from './modos.js';
 import { deWorkspace, rutaHerramienta } from '../herramientas.js';
@@ -41,12 +41,21 @@ export async function panelDe({ me, modo, slug, nombre, mes }) {
   } catch (e) { return html`${harnessHtml(modo)}<div class="lp-err">No pude leer el panel: ${e.message}</div>`; }
 }
 
+// Lo primero que se lee: en qué paso va la estrategia y qué hacer ahora. Los demás pasos quedan plegados.
+const QUE_HACER = { contexto: 'Cuenta del negocio o adjunta sus documentos.', analisis: 'Define qué debe ser cierto, su ventaja y qué falta por conseguir.', inversa: 'Baja la meta a ticket, cierre, conversión y visitas.', metodologia: 'Define la oferta y su modelo de crecimiento.', entrega: 'Convierte todo en el roadmap de 90 días.' };
+function siguientePaso(a) {
+  const p = PASOS.find((x) => x.id === a.ahora);
+  if (!p) return html`<div class="lp-sig"><b>Estrategia completa</b><p>Los cinco pasos están listos.</p></div>`;
+  return html`<div class="lp-sig"><span class="lp-k">Paso ${p.n} de 5</span><b>${p.largo}</b><p>${QUE_HACER[p.id]}</p><button type="button" class="btn sm" data-a="a-caja" data-t="Trabajemos ${p.largo}: ">Trabajar este paso</button></div>`;
+}
+
 async function panelEstrategia(me, slug) {
   if (!slug) return vacio('Elige un cliente', 'Abajo, junto al modo, elige de quién es la estrategia. El panel muestra la estrategia en vivo mientras la trabajan.');
   const data = await datosEstrategia(slug), v = data.viva || {}, a = avance(v);
   return html`<div class="lp-head"><div><span class="lp-k">Estrategia</span><h3>${data.nombre}</h3><span class="lp-mut">${data.nivel?.nombre || 'Sin ficha de oferta'} · ${a.n} de 5 pasos${data.vivaAprobada ? ' · Aprobada' : ''}</span></div>
       <a class="lp-btn" href="#/ws/strategy/${esc(slug)}/overview" title="La pantalla de Estrategia de siempre: aprobar, editar la ficha y los documentos">Tablero ↗</a></div>
     ${data.nivel ? '' : html`<div class="lp-warn">Sin ficha de oferta, el agente bloquea a este cliente: el alcance contratado es el techo.</div>`}
+    ${siguientePaso(a)}
     <div class="lp-viva">${panelViva({ v, data, bid: '', editable: false, esCeo: me.role === 'ceo', aprobada: Boolean(data.vivaAprobada) })}</div>`;
 }
 
