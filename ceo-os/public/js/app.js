@@ -297,8 +297,15 @@ const grpAbierto = (id, enSuRuta) => (enSuRuta && !grpCerrado.has(id)) || grpGua
 const grpEnRuta = (id, cur) => grupoEnRuta(navDe(id), cur.url);
 function toggleGrp(id) {
   const cur = resolve(hashNow()), en = grpEnRuta(id, cur), g = grpGuardados();
-  if (grpAbierto(id, en)) { g[id] = false; if (en) grpCerrado.add(id); } else { g[id] = true; grpCerrado.delete(id); }
-  lsSet('lat.grp', JSON.stringify(g)); paintLat(cur);
+  const abria = !grpAbierto(id, en), grp = () => $(`.lat [data-grp="${id}"]>.lat-subs`);
+  if (!abria) { g[id] = false; if (en) grpCerrado.add(id); } else { g[id] = true; grpCerrado.delete(id); }
+  lsSet('lat.grp', JSON.stringify(g));
+  // La lista se abre y se cierra deslizándose: al cerrar, primero se recoge y después se pinta la barra.
+  const mueve = (el, h, de, a) => el.animate([{ height: de ? h + 'px' : 0, opacity: de ? 1 : 0, overflow: 'hidden' }, { height: a ? h + 'px' : 0, opacity: a ? 1 : 0, overflow: 'hidden' }], { duration: 320, easing: 'cubic-bezier(.22,.8,.2,1)' });
+  const calma = matchMedia('(prefers-reduced-motion: reduce)').matches, viejo = grp();
+  if (!abria && viejo && !calma) { mueve(viejo, viejo.offsetHeight, true, false).onfinish = () => { paintLat(cur); $(`.lat [data-grp-tg="${id}"]`)?.focus(); }; return; }
+  paintLat(cur);
+  const nuevo = grp(); if (abria && nuevo && !calma) mueve(nuevo, nuevo.offsetHeight, false, true);
   $(`.lat [data-grp-tg="${id}"]`)?.focus();
 }
 
