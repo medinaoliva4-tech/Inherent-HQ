@@ -530,3 +530,8 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Movimiento:** cambios de página breves, solo con fundido, y que se pueden interrumpir.
 - **Decisiones que se apartan de Apple:** solo modo oscuro, pantalla de arranque con marca y Pocket con menos funciones que la compu.
 
+### Entrega 9 · actualizar desde el perfil
+- **Actualización:** la app de Mac avisa junto al perfil, con instrucciones cortas. Un toque la baja, la cambia y la vuelve a abrir.
+- **Si no puede revisar:** el aviso muestra el motivo real.
+- **Buscador y fondos oscuros:** sin tono café.
+

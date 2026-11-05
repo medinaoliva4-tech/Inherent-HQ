@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { estadoApp } from '../public/js/app-mac-estado.js';
 import { siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from '../public/js/conversacion.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -215,6 +216,17 @@ t('transiciones (Apple Motion): breves, sin desplazamiento y se pueden interrump
   assert.match(b, /::view-transition\{pointer-events:none\}/);
   assert.match(b, /view-transition-old\(vt-main\)\{animation:vtFuera 110ms/);
   assert.match(b, /prefers-contrast:more/);
+});
+t('app de Mac: la actualización aparece junto al perfil solo si hay una más nueva', () => {
+  assert.equal(estadoApp('0.1.5', { version: '0.1.6' }), 'nueva');
+  assert.equal(estadoApp('0.1.6', { version: '0.1.6' }), 'aldia');
+  assert.equal(estadoApp('0.1.10', { version: '0.1.9' }), 'aldia');
+  assert.equal(estadoApp('0.1.6', { version: null }), 'aldia');
+  assert.match(APP, /id="lat-act"/);
+});
+t('sin café: el buscador es neutro', () => {
+  assert.ok(!/rgb\(33 27 22/.test(CSS));
+  assert.match(CSS, /\.spot\{border:0;background:rgb\(28 28 30/);
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
