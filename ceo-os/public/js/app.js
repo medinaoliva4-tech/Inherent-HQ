@@ -6,7 +6,6 @@ import { openSearch, searchOpen } from './search.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
 import { svgIco } from './iconos.js';
-import { ponerTema, esNoche, temaElegido } from './tema.js';
 import { abrirEnChat } from './areas.js';
 import { WORKSPACES, wsDe, wsDeRuta, puedeWs } from './herramientas.js';
 import { SECCIONES } from './guia-secciones.js';
@@ -46,7 +45,6 @@ function bootSalir() {
   }));
 }
 // El botón de día y noche muestra a dónde vas: de noche el sol, de día la luna. El tema lo lleva tema.js.
-const icoTema = () => svgIco(esNoche() ? 'sun' : 'moon', 18);
 export let me = null;
 let renderGen = 0;
 
@@ -369,11 +367,9 @@ function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (c
 function menuYo(btn) {
   const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
   const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
-  const pintar = () => mount(m, html`<span class="lat-menu-k">Día y noche</span><div class="lat-tema" role="group" aria-label="Día y noche">${[['sistema', 'Como mi compu'], ['dia', 'Día'], ['noche', 'Noche']].map(([k, l]) => html`<button type="button" class="${temaElegido() === k ? 'on' : ''}" aria-pressed="${temaElegido() === k ? 'true' : 'false'}" data-tema="${k}">${l}</button>`)}</div>
-    <a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a>`);
-  pintar(); btn.closest('.lat-yo').append(m); btn.setAttribute('aria-expanded', 'true');
+  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a>`);
+  btn.closest('.lat-yo').append(m); btn.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-tema]'); if (t) { ponerTema(t.dataset.tema); pintar(); m.querySelector(`[data-tema="${t.dataset.tema}"]`)?.focus(); return; }
     if (e.target.closest('a')) cerrarTodo();
   });
 }
@@ -506,7 +502,6 @@ function shell() {
       ${cliente ? '' : html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>`}
       ${cliente ? '' : html`<span class="top-ayuda" id="top-ayuda"><button class="pdchip" id="pdchip" type="button" hidden aria-label="Seguir tu primer día"></button><button class="guiabtn" id="guiabtn" type="button" hidden aria-label="Cómo se usa esta parte">${ico('video', 15)}<span>Cómo se usa</span></button></span>`}
       ${cliente ? '' : html`<a class="bellbtn" href="#/avisos" data-avisos aria-label="Avisos" title="Avisos">${ico('bell', 18)}<b data-avisos-n hidden></b></a>`}
-      <button class="themebtn" id="themebtn" title="${esNoche() ? 'Modo día' : 'Modo noche'}" aria-label="Cambiar modo día / noche">${raw(icoTema())}</button>
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
     <main id="main"></main>
@@ -519,7 +514,6 @@ function shell() {
   $('#avatar').onclick = () => { location.hash = '/me'; };
   $('#avatar').onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.hash = '/me'; } };
   // Modo noche: se guarda en este navegador.
-  $('#themebtn').onclick = () => ponerTema(esNoche() ? 'dia' : 'noche');
 }
 
 // Cuando el esqueleto (o un «Cargando…») cede su lugar a la pantalla, lo que llega entra escalonado (core.js › escalonar:
@@ -594,7 +588,6 @@ async function render() {
 }
 
 window.addEventListener('hashchange', () => me && render());
-window.addEventListener('tema', () => { const b = $('#themebtn'); if (b) { b.innerHTML = icoTema(); b.title = esNoche() ? 'Modo día' : 'Modo noche'; } });
 // El CEO cambió la matriz de Vistas por rol: la barra se recalcula y, si la ruta ya no se ve, se vuelve a pintar.
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola: la barra se pone al día.
