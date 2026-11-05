@@ -9689,7 +9689,7 @@ html[data-vidrio="real"]{--ven-h:44px}
 html[data-vidrio="real"] #root::before{content:"";position:fixed;z-index:19;top:0;left:0;right:0;height:14px;-webkit-app-region:drag}
 html[data-vidrio="real"] .lat-top{position:relative;min-height:34px;padding-top:36px;-webkit-app-region:drag}
 html[data-vidrio="real"] .lat-top .lat-ib{position:absolute;top:0;right:0}
-html[data-vidrio="real"][data-barra="lateral"][data-lat-mini]{--lat-w:78px}
+html[data-vidrio="real"][data-barra="lateral"][data-lat-mini]{--lat-w:88px}
 html[data-vidrio="real"][data-lat-mini] .lat-top{justify-content:center;min-height:0;padding:40px 0 0}
 html[data-vidrio="real"][data-lat-mini] .lat-top .lat-ib{position:static}
 html[data-vidrio="real"] .llm-head{-webkit-app-region:drag}
@@ -9855,11 +9855,11 @@ input[type=range].sp-r:hover::-webkit-slider-thumb,input[type=range].sp-r:focus-
 @media (min-width:761px){.pr-t table{min-width:900px}.pr-t th,.pr-t td{padding-left:6px;padding-right:6px}.pr-t td .in{min-width:66px;width:100%;height:36px;padding:0 7px;font-size:14px}.pr-t td:first-child .in{min-width:136px}}
 /* Atrás, adelante y dirección */
 [data-lat-mini] .lat-ws{display:none}
-.migas{display:flex;align-items:center;gap:2px;min-height:30px;margin:0 auto;padding:10px 24px 0;font-size:13.5px;color:var(--ui-mut)}
+.migas{display:flex;align-items:center;gap:0;min-height:30px;margin:0 0 0 -8px;padding:10px 0 0;font-size:13.5px;line-height:28px;color:var(--ui-mut)}
 .migas[hidden]{display:none}
 .migas button{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:8px;background:none;color:var(--ui-ink2);cursor:pointer}
 .migas button:hover:not(:disabled){background:rgb(255 255 255 / .08);color:var(--ui-ink)}.migas button:disabled{opacity:.3;cursor:default}
-.migas ol{display:flex;align-items:center;min-width:0;margin:0 0 0 8px;padding:0;list-style:none;overflow:hidden;white-space:nowrap}
+.migas ol{display:flex;align-items:center;min-width:0;margin:0 0 0 6px;padding:0;list-style:none;overflow:hidden;white-space:nowrap}
 .migas li{overflow:hidden;text-overflow:ellipsis}.migas li+li::before{content:"/";margin:0 7px;color:var(--ui-mut2)}
 .migas li[aria-current]{color:var(--ui-ink)}.migas a{color:inherit;text-decoration:none}.migas a:hover{color:var(--ui-ink)}
 html[data-vidrio="real"] .migas{-webkit-app-region:no-drag}
