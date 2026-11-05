@@ -218,11 +218,23 @@ export function activa(run) {
   const i = (run?.etapas || []).findIndex((e) => e.estado !== 'aprobada');
   return i === -1 ? Math.max(0, (run?.etapas || []).length - 1) : i;
 }
+// F4.5 · la etapa que sigue se encola sola al aprobar, solo si está dentro de lo platicado (run.plan_ok.hasta).
+export function siguienteAuto(run, n) {
+  const k = n + 1, e = run?.etapas?.[k];
+  if (!e || e.estado !== 'pendiente' || run.pausado || run.archivado) return null;
+  return Number.isInteger(run.plan_ok?.hasta) && run.plan_ok.hasta >= k ? k : null;
+}
+// Una etapa puesta en cola para el servidor (la ruta «encolar» y el avance automático al aprobar usan lo mismo).
+export const enCola = (x, modelo, por, at, origen = '') => ({ ...x, estado: 'en_cola', via: 'gateway', modelo, cola: { at, por, antes: x.estado, modelo },
+  actividades: [...(x.estado === 'ajuste' ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · ${origen === 'auto' ? 'sigue sola: está dentro de lo platicado' : 'espera su turno'}`, at }].slice(-150) });
 export const completo = (run) => (run?.etapas || []).length > 0 && run.etapas.every((e) => e.estado === 'aprobada');
 export const progreso = (run) => { const t = (run?.etapas || []).length, h = (run?.etapas || []).filter((e) => e.estado === 'aprobada').length; return { hechas: h, total: t, pct: t ? Math.round((h / t) * 100) : 0 }; };
 
 // ¿Qué puede pasar con esta etapa? → null si se puede, o el motivo (texto para la persona).
-export function puede(run, n, accion, { rol = '' } = {}) {
+// ¿Quién leyó el documento de la etapa después de su último resultado? (F4.5: el OK se activa al abrirlo.)
+const ultimoResultado = (run, n) => (run.historial || []).filter((h) => ['ejecutar', 'corregir'].includes(h.accion) && h.etapa === n).map((h) => Date.parse(h.at) || 0).reduce((a, b) => Math.max(a, b), 0);
+export const leyo = (run, n, email) => { const desde = ultimoResultado(run, n), yo = String(email || '').toLowerCase(); return (run.etapas[n]?.leida_por || []).some((x) => String(x.email).toLowerCase() === yo && (Date.parse(x.at) || 0) >= desde); };
+export function puede(run, n, accion, { rol = '', email = '' } = {}) {
   const e = run?.etapas?.[n];
   if (!e) return 'Esa etapa no existe';
   if (run.archivado) return 'El run está archivado';
@@ -236,6 +248,7 @@ export function puede(run, n, accion, { rol = '' } = {}) {
     if (e.estado !== 'revision') return 'Solo se aprueba una etapa que espera aprobación';
     if (e.gate && rol !== 'ceo') return '🚦 Gate del CEO: solo el CEO aprueba esta etapa';
     if (!['ceo', 'coo'].includes(rol)) return 'Aprueban el CEO o el COO';
+    if (!leyo(run, n, email)) return 'Abre el documento para aprobar';
     return null;
   }
   if (accion === 'corregir') return e.estado === 'revision' ? (['ceo', 'coo'].includes(rol) ? null : 'Corrigen el CEO o el COO') : 'No hay resultado para corregir todavía';

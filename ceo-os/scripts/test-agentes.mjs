@@ -9,7 +9,8 @@ import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
-import { leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
+import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat, clienteDelPlan, conversacionLigada } from '../public/js/chat-agentes.js';
+import { enCola, siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
@@ -38,7 +39,9 @@ t('solo se trabaja la etapa activa y se aprueba para avanzar', () => {
   assert.ok(puede(r, 0, 'aprobar', { rol: 'ceo' }), 'sin resultado no se aprueba');
   r.etapas[0].estado = 'revision';
   assert.ok(puede(r, 0, 'aprobar', { rol: 'team' }), 'el equipo no aprueba');
-  assert.equal(puede(r, 0, 'aprobar', { rol: 'coo' }), null);
+  assert.match(puede(r, 0, 'aprobar', { rol: 'coo', email: 'coo@x' }), /Abre el documento/, 'sin leer no se aprueba');
+  r.etapas[0].leida_por = [{ email: 'coo@x', at: new Date().toISOString() }];
+  assert.equal(puede(r, 0, 'aprobar', { rol: 'coo', email: 'coo@x' }), null);
   r.etapas[0].estado = 'aprobada';
   assert.equal(activa(r), 1);
 });
@@ -47,7 +50,8 @@ t('el gate del CEO solo lo aprueba el CEO', () => {
   r.etapas.forEach((e, i) => { if (i < g) e.estado = 'aprobada'; });
   r.etapas[g].estado = 'revision';
   assert.match(puede(r, g, 'aprobar', { rol: 'coo' }), /CEO/);
-  assert.equal(puede(r, g, 'aprobar', { rol: 'ceo' }), null);
+  r.etapas[g].leida_por = [{ email: 'ceo@x', at: new Date().toISOString() }];
+  assert.equal(puede(r, g, 'aprobar', { rol: 'ceo', email: 'ceo@x' }), null);
 });
 t('completo cuando todas están aprobadas', () => { const r = nuevo(); r.etapas.forEach((e) => (e.estado = 'aprobada')); assert.ok(completo(r)); });
 t('el simulado deja todo como hipótesis SIN DATOS y avisa que falta evidencia', () => {
@@ -166,6 +170,88 @@ t('chat de trabajo: Sources sin las fuentes quitadas y File tree con inputs y lo
   const [ins, prod] = archivos(runChat());
   assert.deepEqual(ins.items.map((x) => x.id), ['i-1']);
   assert.deepEqual(prod.items.map((x) => x.nombre), ['01-diagnostico.md', '02-oferta.md']);
+});
+
+// ----- F4.5 · el Chat con agentes -----
+const AGS = [{ id: 'inv', nombre: 'Investigación', agente: 'Investigación' }, { id: 'gp', nombre: 'Growth Partner' }];
+t('F4.5: @agente solo al inicio, sin acentos; correos y @cuentas no son agentes', () => {
+  const m = leerMencion('@Investigacion revisa AKAI', AGS); assert.equal(m.agente.id, 'inv'); assert.equal(m.resto, 'revisa AKAI');
+  assert.equal(leerMencion('@growthpartner arma el mes', AGS).agente.id, 'gp');
+  assert.equal(leerMencion('escríbele a ana@akai.com', AGS), null);
+  assert.equal(leerMencion('@akai hola', AGS), null);
+});
+t('F4.5: cada etapa trae su modelo (fijo, por tipo o el que haya en el servidor)', () => {
+  const gw = ['deepseek-v4-pro', 'deepseek-v4-flash'];
+  assert.equal(modeloDeEtapa({ tipo: 'analisis' }, gw), 'deepseek-v4-pro');
+  assert.equal(modeloDeEtapa({ tipo: 'entregable' }, gw), 'deepseek-v4-flash');
+  assert.equal(modeloDeEtapa({ modelo: 'glm-5.3' }, ['glm-5.3']), 'glm-5.3');
+  assert.equal(modeloDeEtapa({ tipo: 'analisis' }, ['deepseek-v4-flash']), 'deepseek-v4-flash');
+  const pl = planDe({ etapas: [{ nombre: 'A', tipo: 'decision', gate: true, aporte: { pregunta: '¿?' } }] }, gw);
+  assert.deepEqual(pl[0], { n: 0, nombre: 'A', entrega: 'A', modelo: 'deepseek-v4-pro', gate: true, aporte: true });
+});
+t('F4.5: el contexto del Chat cabe en 6,000 caracteres y termina con lo último', () => {
+  const ms = Array.from({ length: 40 }, (_, i) => ({ r: i % 2 ? 'a' : 'u', t: `m${i} ` + 'x'.repeat(500) }));
+  const c = contextoChat(ms, 'Resumen viejo'); assert.ok(c.length <= 6000, c.length); assert.ok(c.trimEnd().endsWith('x'), 'termina con el último'); assert.match(c, /m39 /); assert.doesNotMatch(c, /m0 /);
+});
+t('F4.5: aprobar exige haber abierto el documento después del último resultado', () => {
+  const r = { etapas: [{ estado: 'aprobada' }, { estado: 'revision' }], historial: [{ accion: 'ejecutar', etapa: 1, at: '2026-11-04T10:20:00Z' }] };
+  assert.match(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'c@x' }), /Abre el documento/);
+  r.etapas[1].leida_por = [{ email: 'c@x', at: '2026-11-04T10:30:00Z' }];
+  assert.equal(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'C@x' }), null);
+  r.etapas[1].leida_por = [{ email: 'c@x', at: '2026-11-04T10:10:00Z' }];
+  assert.match(puede(r, 1, 'aprobar', { rol: 'ceo', email: 'c@x' }), /Abre el documento/);
+});
+t('F4.5: la siguiente etapa avanza sola solo dentro de lo platicado', () => {
+  const r = (hasta, extra = {}) => ({ plan_ok: { hasta }, etapas: [{ estado: 'aprobada' }, { estado: 'aprobada' }, { estado: 'pendiente' }, { estado: 'pendiente' }], ...extra });
+  assert.equal(siguienteAuto(r(2), 1), 2); assert.equal(siguienteAuto(r(1), 1), null);
+  assert.equal(siguienteAuto(r(3, { pausado: true }), 1), null); assert.equal(siguienteAuto({ etapas: r(3).etapas }, 1), null);
+  assert.equal(siguienteAuto(r(3), 3), null);
+});
+t('F4.5: encolar una etapa deja su modelo, quién y de dónde venía (lo usan la ruta y el avance solo)', () => {
+  const e = enCola({ nombre: 'B', estado: 'ajuste', actividades: [{ titulo: 'viejo' }] }, 'deepseek-v4-pro', 'ceo@x', '2026-11-04T10:00:00Z', 'auto');
+  assert.equal(e.estado, 'en_cola'); assert.equal(e.via, 'gateway'); assert.equal(e.modelo, 'deepseek-v4-pro');
+  assert.deepEqual(e.cola, { at: '2026-11-04T10:00:00Z', por: 'ceo@x', antes: 'ajuste', modelo: 'deepseek-v4-pro' });
+  assert.equal(e.actividades.length, 2, 'un ajuste conserva la actividad anterior');
+  assert.match(e.actividades.at(-1).detalle, /sigue sola/);
+  assert.equal(enCola({ estado: 'pendiente', actividades: [{ titulo: 'x' }] }, 'm', 'a', 't').actividades.length, 1);
+});
+t('F4.5: las citas del documento se vuelven enlaces a su fuente (solo las que existen)', () => {
+  const run = { inputs: [{ id: 'i-1', titulo: 'Entrevista' }, { id: 'i-2', titulo: 'Viejo', archivado: true }], evidencia: [{ id: 'w1', etapa: 0, titulo: 'Sitio A', url: 'https://a.com/x' }, { id: 'w2', etapa: 0, titulo: 'Quitada', url: 'https://b.com', quitada: true }] };
+  const m = mapaFuentes(run, 0);
+  assert.deepEqual(Object.keys(m).sort(), ['i-1', 'w1']);
+  const h = enlazarCitas('<p>Dato [w1] y [i-1], no [w2] ni [x9] ni <code>[w1]</code>.</p>', m);
+  assert.match(h, /<a class="av-cita" href="https:\/\/a\.com\/x" target="_blank" rel="noreferrer" title="Sitio A">w1<\/a>/);
+  assert.match(h, /<button type="button" class="av-cita" data-act="abrir-input" data-id="i-1" title="Entrevista">i-1<\/button>/);
+  assert.match(h, /\[w2\]/); assert.match(h, /\[x9\]/); assert.match(h, /<code>\[w1\]<\/code>/);
+  assert.doesNotMatch(enlazarCitas('[w1]', { w1: { titulo: '"><img>', url: 'javascript:alert(1)' } }), /javascript:|<img>/);
+});
+t('F4.5: el hilo del Chat mezcla mensajes y eventos de varios agentes por hora; lo que se está escribiendo va al final', () => {
+  const runA = { id: 'A', etapas: [{ estado: 'revision' }], historial: [{ at: '2026-11-04T10:01:00Z', accion: 'crear' }, { at: '2026-11-04T10:05:00Z', accion: 'ejecutar', etapa: 0 }] };
+  const runB = { id: 'B', etapas: [{ estado: 'pendiente' }], historial: [{ at: '2026-11-04T10:03:00Z', accion: 'crear' }, { at: '2026-11-04T10:03:30Z', accion: 'tomar', etapa: 0 }] };
+  const msgs = [{ r: 'u', t: '@A', at: '2026-11-04T10:00:00Z' }, { r: 'u', t: '@B', at: '2026-11-04T10:02:00Z' }, { r: 'a', t: 'escribiendo' }];
+  const h = hiloChat(msgs, [runA, runB]);
+  assert.deepEqual(h.map((x) => (x.tipo === 'msg' ? `m${x.i}` : `${x.run.id}:${x.x.h.accion}${x.x.ultimo ? '*' : ''}`)), ['m0', 'A:crear', 'm1', 'B:crear', 'A:ejecutar*', 'm2']);
+});
+t('F4.5: nombres de agente de tres o más palabras también se reconocen', () => {
+  const m = leerMencion('@Diagnóstico de marca revisa AKAI', [{ id: 'd', nombre: 'Diagnóstico de marca' }, { id: 'di', nombre: 'Diagnóstico' }]);
+  assert.equal(m.agente.id, 'd'); assert.equal(m.resto, 'revisa AKAI');
+});
+t('F4.5: corregir el resultado también pide volver a leerlo', () => {
+  const r = { etapas: [{ estado: 'revision', leida_por: [{ email: 'c@x', at: '2026-11-04T10:30:00Z' }] }], historial: [{ accion: 'ejecutar', etapa: 0, at: '2026-11-04T10:20:00Z' }, { accion: 'corregir', etapa: 0, at: '2026-11-04T10:40:00Z' }] };
+  assert.match(puede(r, 0, 'aprobar', { rol: 'coo', email: 'c@x' }), /Abre el documento/);
+});
+t('F4.5: el cliente del plan se elige, nunca se asume', () => {
+  assert.deepEqual(clienteDelPlan({ clientes: [['', 'Elige…'], ['akai', 'AKAI']], cliente: '' }), { error: 'Elige para quién es este trabajo' });
+  assert.deepEqual(clienteDelPlan({ clientes: [['akai', 'AKAI']], cliente: 'akai' }), { cliente: 'akai', nombre: 'AKAI' });
+  assert.deepEqual(clienteDelPlan({ clientes: [['', 'Elige…'], ['interno', 'Inherent (trabajo interno)']], cliente: 'interno' }), { cliente: '', nombre: '' });
+  assert.deepEqual(clienteDelPlan({ clientes: null }, 'nao', 'NAO'), { cliente: 'nao', nombre: 'NAO' });
+  assert.deepEqual(clienteDelPlan({ clientes: [], sinClientes: true }), { error: 'No tienes clientes para este trabajo: pídele acceso al CEO' });
+});
+t('F4.5: la lectura del CEO/COO solo vale si la conversación es de quien creó el lazo', () => {
+  assert.equal(conversacionLigada({ chat: { sesion: 's1', owner: 'a@x' } }, { id: 's1', owner: 'A@x' }), true);
+  assert.equal(conversacionLigada({ chat: { sesion: 's1', owner: 'coo@x' } }, { id: 's1', owner: 'a@x' }), false, 'un lazo a la conversación de otra persona no vale');
+  assert.equal(conversacionLigada({ chat: { sesion: 's2', owner: 'a@x' } }, { id: 's1', owner: 'a@x' }), false);
+  assert.equal(conversacionLigada({}, { id: 's1', owner: 'a@x' }), false);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

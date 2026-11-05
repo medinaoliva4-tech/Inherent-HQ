@@ -34,12 +34,12 @@ try {
   await page.locator('[data-s=objetivo]').fill('Objetivo QA'); await page.waitForTimeout(900);
   assert.equal((await api('agentes/workflows/'+id)).workflow.objetivo,'Objetivo QA');
   const {run} = await api('agentes/runs',{workflow:id,titulo:'QA navegador · simulado'});
-  await page.goto(`${base}/#/ai/agentes/${id}/trabajos/${run.id}`);
-  await page.locator('[data-ch=runner]').selectOption('simulado');
-  await page.locator('[data-act=ejecutar]').first().click();
-  await page.getByText('STUB · simulado',{exact:true}).waitFor();
-  assert.ok((await page.locator('#main').innerText()).includes('SIN DATOS'));
-  assert.equal((await api('agentes/runs/'+run.id)).run.etapas[0].stub,true);
+  // F4.5: el trabajo se abre en el Chat; /etapas queda como historial, sin ejecutar.
+  await page.goto(`${base}/#/ai/agentes/${id}/trabajos/${run.id}`); await page.waitForTimeout(900);
+  assert.equal(await page.evaluate(()=>location.hash),`#/chat/trabajo/${run.id}`);
+  await page.goto(`${base}/#/ai/agentes/${id}/trabajos/${run.id}/etapas`); await page.waitForTimeout(900);
+  assert.equal(await page.locator('[data-act=ejecutar],[data-ch=runner]').count(),0,'la vista por etapas no ejecuta');
+  assert.equal(await page.locator('a:has-text("Abrir en el Chat")').count(),1);
   await page.locator('[data-act=pausa]').click(); await page.waitForTimeout(500);
   assert.equal((await api('agentes/runs/'+run.id)).run.pausado,true);
   assert.ok((await page.locator('#main').innerText()).includes('no se ejecuta nada'));
