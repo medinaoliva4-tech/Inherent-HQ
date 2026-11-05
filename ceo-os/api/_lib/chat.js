@@ -13,9 +13,10 @@ import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
-import { equipoPara } from './conocimiento.js';
-import { bloqueEquipo } from '../../public/js/conocimiento.js';
-import { agenteDeSesion } from '../../public/js/llm/carpetas.js';
+import { equipoPara, equipoDeCliente, instruccionesDe, CLIENTES } from './conocimiento.js';
+import { scoper } from './access.js';
+import { bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES } from '../../public/js/conocimiento.js';
+import { agenteDeSesion, carpetaDe } from '../../public/js/llm/carpetas.js';
 import { conversacionLigada } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'chat_sesiones';
@@ -80,6 +81,28 @@ export function rutas(on) {
   });
 
   // F4.5 · un mensaje que no pide respuesta del servidor (el «@agente …» que arrancó un trabajo): queda en la conversación.
+  // La página de un cliente: instrucciones y lo que el equipo trabaja hoy. Solo quien puede ver ese cliente.
+  const veCliente = async (u, slug) => {
+    if (!/^[a-z0-9_-]{2,40}$/.test(slug) || u.role === 'client') return false;
+    if (slug === 'personal') return u.role === 'ceo';
+    if (slug === 'inherent') return true;
+    const sc = await scoper(u); return !sc || sc.client(slug);
+  };
+  on('GET', 'chat/clientes/:slug', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const slug = lc(req.params.slug); if (!(await veCliente(u, slug))) return res.status(404).json({ error: 'Ese cliente no existe' });
+    const [instrucciones, equipo] = await Promise.all([instruccionesDe(slug), equipoDeCliente(slug).catch(() => '')]);
+    res.json({ instrucciones, equipo: slug === 'personal' ? '' : equipo, editable: ['ceo', 'coo'].includes(u.role) });
+  });
+  on('POST', 'chat/clientes/:slug', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (!['ceo', 'coo'].includes(u.role)) return res.status(403).json({ error: 'Las instrucciones las editan el CEO o el COO' });
+    const slug = lc(req.params.slug); if (!(await veCliente(u, slug))) return res.status(404).json({ error: 'Ese cliente no existe' });
+    const instrucciones = txt(body(req).instrucciones, MAX_INSTRUCCIONES).trim();
+    await db.upsert(CLIENTES, slug, { instrucciones }, u.email);
+    res.json({ ok: true });
+  });
+
   // Mover una conversación a otro cliente: cambia su carpeta. Su id no cambia.
   on('POST', 'chat/sesiones/:id/mover', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
@@ -153,7 +176,8 @@ export function rutas(on) {
     if (!(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
     const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora() }].slice(-MAX_MSGS);
     const equipo = await equipoPara(u, verRun).catch(() => ''); // ayuda, pero no detiene la respuesta
-    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
+    const instrucciones = await instruccionesDe(carpetaDe(s)).catch(() => '');
+    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
     if (d) res.json({ ok: true, desde: mensajes.length });
   });
 

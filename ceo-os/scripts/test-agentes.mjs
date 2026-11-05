@@ -4,7 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
-import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
+import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
 import { RUTAS_BASE, skillDe } from '../api/_lib/conocimiento.js';
 import { leer, aTexto } from '../gateway/web.mjs';
 import { esEscritura } from '../api/_lib/mcp.js';
@@ -460,6 +460,11 @@ t('equipo: una etapa solo ve a su cliente; lo personal nunca entra', () => {
   const s = deCliente({ runs, tareas, proyectos, run: { id: 'z', cliente: '' } });
   assert.deepEqual(s.runs.map((r) => r.id), ['d']); assert.deepEqual(s.tareas, []);
   assert.deepEqual(deCliente({ runs, tareas, proyectos, run: { id: 'c', cliente: 'personal' } }), { runs: [], tareas: [] });
+});
+t('instrucciones del cliente: se agregan con tope y sin texto vacío', () => {
+  assert.equal(bloqueInstrucciones('   '), '');
+  assert.match(bloqueInstrucciones('Nunca Halloween'), /INSTRUCCIONES DE ESTE CLIENTE[\s\S]*Nunca Halloween/);
+  assert.ok(bloqueInstrucciones('x'.repeat(MAX_INSTRUCCIONES + 500)).length < MAX_INSTRUCCIONES + 120);
 });
 t('pedido: lleva principios, método y equipo; sin ellos queda igual', () => {
   const run = { titulo: 'T', flujo: { agente: 'A' }, inputs: [], etapas: [{ nombre: 'E', tipo: 'analisis', entrega: 'Doc' }] };

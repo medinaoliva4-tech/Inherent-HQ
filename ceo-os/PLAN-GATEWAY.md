@@ -495,5 +495,5 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Estado del agente:** va en la fila de la conversación: espera tu decisión, trabajando o listo para leer.
 - **Por decidir:** junta las conversaciones que esperan a la persona.
 - **El modo** se elige en la caja de mensaje, no en la barra.
-- **Falta:** la página de cada cliente, con instrucciones, archivos y el equipo de hoy.
+- **Página del cliente:** conversaciones, instrucciones y el equipo de hoy. Las instrucciones las editan el CEO y el COO, y entran a cada turno del Chat y a cada etapa de ese cliente. Los archivos quedan pendientes.
 
