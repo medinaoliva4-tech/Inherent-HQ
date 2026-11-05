@@ -107,6 +107,7 @@ export async function render(el, { me, sub = [], alive }) {
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
         <button type="button" class="llm-bru-chip" data-a="ver-brujula" id="llm-bru" hidden title="La brújula de esta conversación"></button>
         <button type="button" class="llm-ib" data-a="ramificar" id="llm-rama" hidden aria-label="Ramificar: seguir en una conversación nueva con todo lo hablado" title="Ramificar">${ICO_RAMA}</button>
+        <button type="button" class="llm-ib" data-a="ajustes" aria-label="Ajustes del Chat" title="Ajustes del Chat">${ico('settings', 16)}</button>
         <button type="button" class="llm-ib" data-a="panel" aria-label="Mostrar u ocultar el panel" title="Panel">${ICO_PANEL}</button></header>
       <div class="llm-conv" id="llm-conv"><div class="llm-col" id="llm-col"></div></div>
       <button type="button" class="llm-abajo" data-a="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>
@@ -117,6 +118,19 @@ export async function render(el, { me, sub = [], alive }) {
     <div class="llm-velo" data-a="side"></div>
   </div>`);
   const R = $('.llm', el), C = (id) => $('#' + id, el);
+  // Barra única (PLAN-GATEWAY §22): en la compu, la lista vive dentro de la barra lateral del shell; en el cel, en su cajón.
+  const escuchas = {}, escucha = (tipo, fn) => { el.addEventListener(tipo, fn); (escuchas[tipo] ||= []).push(fn); };
+  const compu = matchMedia('(min-width:761px)');
+  let enBarra = null;
+  const dentro = (n) => el.contains(n) || Boolean(enBarra?.contains(n));
+  const lado = () => {
+    const ranura = compu.matches ? document.getElementById('lat-ctx') : null;
+    if (!ranura) return C('llm-side');
+    if (!enBarra) { enBarra = document.createElement('div'); enBarra.className = 'lat-chat-lista'; for (const [t, fns] of Object.entries(escuchas)) for (const f of fns) enBarra.addEventListener(t, f); }
+    if (enBarra.parentElement !== ranura) ranura.replaceChildren(enBarra);
+    return enBarra;
+  };
+  compu.addEventListener('change', () => { if (R.isConnected) pintarSide(); });
   // El día y la noche son los del OS (tema.js): si cambia (aquí, en otra pantalla o en la compu), el Chat lo sigue.
   llmVivo = R;
 
@@ -130,13 +144,14 @@ export async function render(el, { me, sub = [], alive }) {
     const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     const estado = !S.salud ? ['', 'Buscando el servidor…'] : S.salud.on ? ['on', 'Servidor · siempre encendido'] : ['off', 'Servidor fuera de línea'];
     // El logo ya está en la barra lateral del shell: aquí solo el nombre del Chat. El modo se cambia con el selector (o con «/»).
-    mount(C('llm-side'), html`<div class="ls-brand"><span class="ls-emb">${ico('chat-ia', 20)}</span><b class="ls-ttl">Inherent LLM</b></div>
+    const dest = lado();
+    mount(dest, html`<div class="ls-brand"><span class="ls-emb">${ico('chat-ia', 20)}</span><b class="ls-ttl">Inherent LLM</b></div>
       <div class="ls-area" data-m="${S.modo}">${modos.length > 1 ? html`<b><select class="ls-modo" aria-label="Modo del Chat">${modos.map((x) => html`<option value="${x.id}" ${x.id === S.modo ? raw('selected') : ''}>${x.nombre}</option>`)}</select></b>` : html`<b>${m.nombre}</b>`}<small>${m.sub}</small></div>
       <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
       <div class="ls-k ls-kr">${q ? 'Todos los modos' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
       <div class="ls-list">${!listo() ? html`<p class="ls-mut">${enServidor ? 'El servidor no está en línea ahora.' : ''}</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
       <footer class="ls-foot"><button type="button" class="ls-me" data-a="ajustes" title="Ajustes del Chat">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
-    const qi = C('ls-q'); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = C('ls-q'); n.focus(); n.setSelectionRange(pos, pos); };
+    const qi = $('#ls-q', dest); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = $('#ls-q', lado()); n.focus(); n.setSelectionRange(pos, pos); };
   }
 
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
@@ -750,12 +765,12 @@ export async function render(el, { me, sub = [], alive }) {
   const ctxDoc = () => ({ me, rol, modelos: modelosGw(), onCambio: alCambiar });
 
   // ---------- Clics, teclado y formularios ----------
-  el.addEventListener('click', async (e) => {
-    const v = e.target.closest('[data-act="voz"]'); if (v && el.contains(v)) return dictar(v, $('#llm-in', el));
+  escucha('click', async (e) => {
+    const v = e.target.closest('[data-act="voz"]'); if (v && dentro(v)) return dictar(v, $('#llm-in', el));
     // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
     const va = e.target.closest('[data-act="viva-aprobar"]');
-    if (va && el.contains(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }
-    const t = e.target.closest('[data-a]'); if (!t || !el.contains(t)) return;
+    if (va && dentro(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }
+    const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
     if (a === 'arroba') return elegirArroba(t.dataset.n);
@@ -835,19 +850,19 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
     if (a === 'revisar') return revisar();
   });
-  el.addEventListener('change', (e) => {
+  escucha('change', (e) => {
     const pc = e.target.dataset?.ch; if (pc === 'plan-hasta' || pc === 'plan-cliente') { const p = S.msgs[+e.target.dataset.i]?.p; if (!p) return; if (pc === 'plan-hasta') p.hasta = +e.target.value; else p.cliente = e.target.value; return pintarHilo(); }
     // El selector de modo de la barra. Si no se pudo cambiar (una respuesta en camino), el selector vuelve al modo de ahora.
     if (e.target.matches?.('.ls-modo')) { cambiarModo(e.target.value); if (S.modo !== e.target.value) pintarSide(); }
   });
-  el.addEventListener('keydown', (e) => {
+  escucha('keydown', (e) => {
     if (e.target.id !== 'llm-in') { if (e.key === 'Escape') el.querySelector('.llm-sheet, .llm-menu')?.remove(); return; }
     const cmds = $('#lc-cmds', el);
     if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) { if (b.dataset.a === 'arroba') elegirArroba(b.dataset.n); else comando({ cmd: b.dataset.c, arg: '' }); } return; }
     if (cmds && !cmds.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); const bs = [...cmds.querySelectorAll('button')], i = bs.findIndex((b) => b.classList.contains('on')), j = (i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k) => b.classList.toggle('on', k === j)); return; }
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#llm-form', el)?.requestSubmit(); }
   });
-  el.addEventListener('submit', async (e) => {
+  escucha('submit', async (e) => {
     e.preventDefault();
     if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim()) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
     if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); el.querySelector('.llm-sheet')?.remove(); return pintarPanel(); }

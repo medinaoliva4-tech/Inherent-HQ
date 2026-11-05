@@ -482,3 +482,11 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 2. **Estructura:** una sola barra lateral y dónde vive cada área.
 3. **Chat real:** carpetas por cliente, conversaciones por proyecto y agentes dentro de su conversación.
 4. **Pantallas por grupos:** Inicio, Organización, Agentes, Áreas y lo demás, repensadas por propósito.
+
+### Entrega 2 · dónde vive cada cosa
+- **Barra:** Hoy, Chat, Agentes, Calendario, Organización, Empresa, Áreas y Biblioteca. Máximo dos niveles: Company salió de Organización y pasó a ser Empresa.
+- **Cuenta:** Ajustes va junto a tu cuenta. Conexiones (antes MCPs) va en el menú de tu cuenta.
+- **Chat:** los destinos se vuelven una fila de íconos y la lista de conversaciones ocupa el panel. En el celular sigue en su cajón.
+- **Celular:** Hoy, Chat, Agentes, Calendario y Más.
+- **Fuera:** «Ask InherentOS» repetía al Chat. Inherent AI dejó de ser un grupo.
+

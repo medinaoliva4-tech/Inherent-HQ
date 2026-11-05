@@ -9252,6 +9252,27 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 .agx-chain i{background:var(--ui-mut)!important;box-shadow:none}
 .pdchip{background:var(--ui-fill2);color:var(--ui-ink)}
 
+/* Barra única: en el Chat los destinos se vuelven una fila de íconos y la lista ocupa el panel */
+.lat-ctx{display:none}
+@media (min-width:761px){
+  .llm,.llm[data-panel="on"]{grid-template-columns:minmax(0,1fr)}
+  .llm[data-panel="on"]{grid-template-columns:minmax(0,1fr) 380px}
+  .llm-side,.llm-velo{display:none}
+  .lat-ctx:not([hidden]){display:flex;flex:1;min-height:0;flex-direction:column}
+  .lat-chat-lista{display:flex;flex-direction:column;flex:1;min-height:0}
+  .lat-chat-lista .ls-brand,.lat-chat-lista .ls-foot{display:none}
+  .lat-chat-lista .ls-list{flex:1;min-height:0;overflow:auto}
+  [data-lat-mini] .lat-ctx{display:none}
+  html[data-pantalla="chat"]:not([data-lat-mini]) .lat-nav{display:flex;flex-direction:row;flex:none;gap:0;justify-content:space-between;align-items:center;overflow:visible;padding:0;margin:2px 0 6px}
+  html[data-pantalla="chat"]:not([data-lat-mini]) .lat-nav .lat-t,html[data-pantalla="chat"]:not([data-lat-mini]) .lat-grp-tg,html[data-pantalla="chat"]:not([data-lat-mini]) .lat-subs{display:none!important}
+  html[data-pantalla="chat"]:not([data-lat-mini]) .lat-nav .lat-it{width:30px;height:30px;padding:0;justify-content:center}
+  html[data-pantalla="chat"]:not([data-lat-mini]) .lat-grp>.lat-it{padding:0}
+  html[data-pantalla="chat"] .lat-ayuda{display:none}
+}
+.lat-yo-b i{background:var(--ui-acc);color:var(--ui-acc-ink)}
+.lat-ayuda .pdchip{width:100%;background:none;color:var(--ui-ink2);justify-content:flex-start;padding:0 10px}
+.lat-ayuda .pdchip:hover{background:var(--ui-fill2);color:var(--ui-ink);opacity:1}
+
 @media (prefers-reduced-motion:reduce){.btn,.in{transition:none}}
 @media (prefers-reduced-transparency:reduce){
   :root{--ui-glass:#1d1d1f}
