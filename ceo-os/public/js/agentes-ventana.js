@@ -21,8 +21,8 @@ function accionCola(run, n, modelos) {
   if (n !== activa(run) || run.archivado || completo(run) || enServidor(e)) return '';
   if (e.estado === 'revision') return html`<button type="button" class="btn sm ag-dark" data-act="doc" data-n="${n}">${ico('file-text', 12)} Abrir documento</button>`;
   if (!['pendiente', 'ajuste'].includes(e.estado)) return '';
-  if (run.plan_ok && n > run.plan_ok.hasta) return html`<button type="button" class="btn sm" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
-  return html`<button type="button" class="btn sm" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico('play', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : 'Continuar'}</button>`;
+  if (run.plan_ok && n > run.plan_ok.hasta) return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
+  return html`<button type="button" class="btn sm ag-dark" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico('play', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : 'Continuar'}</button>`;
 }
 
 export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () => {}, onPlan = () => {} }) {

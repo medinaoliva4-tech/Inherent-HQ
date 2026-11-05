@@ -414,7 +414,7 @@ La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **tra
 
 ### Entregas (cada una con su PR, probada en staging)
 1. ✅ **El Chat como centro:** `@agente`, trabajos ligados a la conversación, eventos en el hilo, ventana de agentes con pestañas (cola, documento, archivos, fuentes con verificar/quitar), leer antes de aprobar, retiro del chat de F4, portal y `/etapas` como se dice arriba.
-2. **El agente que pregunta y pide aporte:** trabajador `f4-5` (estado `pregunta`, `responder`, aporte obligatorio, `e.borrador` en vivo, contexto `i-chat`), «Usar en…».
+2. **El agente que pregunta y pide aporte:** trabajador `f4-5` (estado `pregunta`, `responder`, aporte obligatorio, `e.borrador` en vivo, contexto `i-chat` renovado por etapa, fallas con reintento), «Usar en…». **Además:** un resultado que pasa el límite de salida (6,000 tokens) llega cortado y queda «sin estructura», con el JSON crudo en el documento (pasó 2 de 2 en la prueba de la Entrega 1 con etapas que leen mucho del OS): hay que subir el límite por etapa o pedirle al modelo que siga, y rescatar la `salida` aunque el bloque no cierre.
 3. **OpenUI y un solo chat:** lang-core + `genui.js` en el Chat y en las tarjetas; el chat de Strategy pasa a «Abrir en el Chat».
 
 ### Decisiones del builder (Claude), para revisar

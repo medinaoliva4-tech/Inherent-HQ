@@ -389,7 +389,7 @@ export async function render(el, { me, sub = [], alive }) {
     const cab = tabs.length ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : 'modo') : '';
     if (run) {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-av"></div>`);
-      return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: (r) => { ponerRun(r); pintarHilo(); pintarPanel(); vigilar(); }, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
+      return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: alCambiar, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
     }
     if (!box.childElementCount) mount(box, html`<p class="lp-mut" style="padding:16px">Cargando…</p>`);
     // Production no tiene panel propio todavía (llm/paneles.js): se ve el de Creative, las piezas del mes de la marca.
@@ -730,7 +730,14 @@ export async function render(el, { me, sub = [], alive }) {
     ponerRun(run); S.tab = run.id; S.panel = true; R.dataset.panel = 'on';
     if (alive()) { pintarSide(); pintarCentro(); pintarPanel(); vigilar(); }
   }
-  const ctxDoc = () => ({ me, rol, modelos: modelosGw(), onCambio: (r) => { ponerRun(r); pintarHilo(); pintarPanel(); vigilar(); } });
+  // Tras cada cambio: al pasar de lo platicado, la tarjeta del plan vuelve al Chat (§20.11) y el flujo espera.
+  function alCambiar(r) {
+    ponerRun(r);
+    const k = activa(r);
+    if (r.plan_ok && k > r.plan_ok.hasta && !completo(r) && r.etapas[k]?.estado === 'pendiente' && !S.msgs.some((m) => m.r === 'plan' && m.p.run === r.id && m.p.estado === 'pendiente')) proponerPlan({ id: r.flujo.id }, '', { run: r });
+    pintarHilo(); pintarPanel(); vigilar();
+  }
+  const ctxDoc = () => ({ me, rol, modelos: modelosGw(), onCambio: alCambiar });
 
   // ---------- Clics, teclado y formularios ----------
   el.addEventListener('click', async (e) => {
