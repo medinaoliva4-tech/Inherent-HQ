@@ -204,7 +204,7 @@ export async function render(el, { me, alive }) {
       const ms = Date.parse(String(r.ts)), ahora = ms && Date.now() - ms < 3e5;
       return html`${sep}<li class="home-tl-i ${ahora ? 'is-ahora' : ''}"><a class="home-tl-a" href="${r.href}"><span class="home-tl-n">${ico(r.ic, 12)}</span><span class="home-tl-t">${r.t}<small>${r.s}</small></span><span class="home-tl-q mut sm">${r.who ? corto(r.who) : ''}</span><time class="home-tl-h mut sm" datetime="${String(r.ts)}" title="${ms ? new Date(ms).toLocaleString('es-GT') : ''}">${relativo(r.ts)}</time></a></li>`;
     });
-    return html`<section class="home-act"><div class="hy-bh"><h2>Recent Activity</h2><span>Lo último que se movió</span>${hay(spark) ? html`<span class="home-act-spark" title="Movimientos por día, últimos 7 días">${spark}<small class="mut">7 días</small></span>` : ''}</div>
+    return html`<section class="home-act"><div class="hy-bh"><h2>Actividad reciente</h2><span>Lo último que se movió</span>${hay(spark) ? html`<span class="home-act-spark" title="Movimientos por día, últimos 7 días">${spark}<small class="mut">7 días</small></span>` : ''}</div>
       ${lista.length ? html`<ol class="home-tl">${filas}</ol>`
       : vacio({ icono: 'clock', titulo: 'Aún no hay movimiento', linea: `Sale de las tareas, proyectos${acc.sales ? ', leads, cotizaciones' : ''}${ceoish ? ' y contenido' : ''} que se muevan.`, compacto: true })}</section>`;
   }

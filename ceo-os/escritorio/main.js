@@ -6,7 +6,7 @@
 //   5. Se pone al día sola: si hay una versión nueva de la app, avisa y con un clic se reemplaza y se vuelve a abrir.
 //   6. Arranca al 85% del tamaño y recuerda el que elijas (⌘ − / ⌘ + / ⌘ 0).
 // El puente es el mismo archivo de la web (public/laya/puente.py) y corre con el Python de la Mac.
-const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net, nativeTheme } = require('electron');
 const { spawn, execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const http = require('node:http');
@@ -268,10 +268,11 @@ const delOS = (u) => { try { return new URL(u).host === OS_HOST; } catch { retur
 const deGoogle = (u) => { try { return /(^|\.)google\.com$|(^|\.)googleusercontent\.com$/.test(new URL(u).host); } catch { return false; } };
 
 function crearVentana() {
+  nativeTheme.themeSource = 'dark'; // el vidrio de la Mac sale oscuro, como el OS
   ventana = new BrowserWindow({
     width: 1440, height: 920, minWidth: 900, minHeight: 600,
     title: 'Inherent OS',
-    backgroundColor: '#f1eadf',
+    ...(process.platform === 'darwin' ? { backgroundColor: '#00000000', vibrancy: 'under-window', visualEffectState: 'active' } : { backgroundColor: '#0d0d0e' }),
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true },
   });
   ventana.webContents.setWindowOpenHandler(({ url }) => {

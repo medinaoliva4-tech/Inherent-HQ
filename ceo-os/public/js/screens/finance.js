@@ -1,3 +1,4 @@
+import { paraPocket } from '../pocket.js';
 import { svcHours, svcCost, svcPrice, svcAuto } from '../cycle.js';
 import { byScope, proposal, targetMargin, LEVELS, PRICING_ID } from '../finscope.js';
 import { fit, priceLabel, monthly } from '../mentors.js';
@@ -42,8 +43,9 @@ export async function render(el, { me, sub }) {
   let entries = [...manual, ...fromSheet(sheet)];
 
   // Facturas: la primera para el CEO. En resumen (el perfil Cobros) llega solo lo por cobrar, después de Movimientos.
-  const TABS = resumen ? [['mov', 'Movimientos'], ['fact', 'Facturas']] : [['res', 'Resumen'], ['fact', 'Facturas'], ['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
+  const TODAS = resumen ? [['mov', 'Movimientos'], ['fact', 'Facturas']] : [['res', 'Resumen'], ['fact', 'Facturas'], ['mov', 'Movimientos'], ['costs', 'Costos'], ['profit', 'Rentabilidad'], ['pricing', 'Precios'], ['nomina', 'Pagos por servicio']];
   // Las de todos los días arriba; las de vez en cuando, más chicas (y también como tarjetas al final del Resumen).
+  const TABS = paraPocket(TODAS, ([k]) => `org/finanzas/${k}`);
   const MAS = ['costs', 'profit', 'pricing', 'nomina'];
   let tab = TABS.some(([k]) => k === sub[0]) ? sub[0] : TABS[0][0];
   const now = today().slice(0, 7);

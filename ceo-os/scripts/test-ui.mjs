@@ -8,6 +8,7 @@ import { tieneIco, svgIco, nombreIco } from '../public/js/iconos.js';
 import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
+import { soloCompu } from '../public/js/pocket.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const RAIZ = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'public');
@@ -148,6 +149,30 @@ t('vidrio: el fondo se ve a través del contenido, y lo que flota sigue sólido'
   assert.match(bloque, /#luz\{/); assert.match(bloque, /#luz-aro/);
   for (const s of ['.avi-menu', '.ctx-pop', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
   assert.match(bloque, /prefers-reduced-transparency/);
+});
+t('vidrio real: en la app de la Mac se ve lo que hay detrás de la ventana', () => {
+  const main = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'main.js'), 'utf8');
+  const pre = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'preload.js'), 'utf8');
+  const boot = fs.readFileSync(path.join(RAIZ, 'js/tema-boot.js'), 'utf8');
+  assert.match(main, /vibrancy:\s*'under-window'/); assert.match(main, /'#00000000'/);
+  assert.match(pre, /vidrio:/);
+  assert.match(boot, /inherentEscritorio[^;]*vidrio/); // una app vieja no pide transparencia: se quedaría sin fondo
+  assert.match(CSS, /html\[data-vidrio="real"\]\{background:rgb\(/);
+});
+t('vidrio en la web: formas grandes detrás, sin textura y apagadas si piden menos transparencia', () => {
+  const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
+  assert.match(bloque, /html::before,html::after\{/);
+  assert.match(bloque, /prefers-reduced-transparency:reduce\)\{[^\n]*html::before/);
+});
+t('Pocket: lo de pantalla grande se abre en la compu y el día a día se queda', () => {
+  for (const r of ['org/setup', 'org/team/vistas', 'org/team/laya', 'org/finanzas/profit', 'org/operations/time', 'ai/agentes/abc1/workflow']) assert.ok(soloCompu(r), r);
+  for (const r of ['home', 'chat', 'org/work', 'org/operations', 'org/finanzas/fact', 'org/team/org', 'ai/agentes', 'ai/agentes/abc1', 'org/clients/akai/info']) assert.ok(!soloCompu(r), r);
+  assert.match(APP, /soloCompu\(cur\.url\)/);
+});
+t('Pocket: mapas y tableros cambian de forma en el iPhone', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
+  assert.match(b, /\.wc-cal \.dh/); assert.match(b, /\.kb-board\{display:grid;grid-template-columns:minmax\(0,1fr\)/); assert.match(b, /\.mt-side\{/);
+  assert.match(b, /\.ainoti,/);
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];

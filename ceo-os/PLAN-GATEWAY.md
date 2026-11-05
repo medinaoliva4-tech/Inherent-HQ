@@ -517,4 +517,6 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Vidrio de fondo:** las tarjetas y superficies del contenido son transparentes y dejan ver el degradado. Menús, tablas fijas y encabezados siguen sólidos.
 - **Luz del mouse:** una luz suave sigue al cursor detrás del vidrio y un brillo marca el borde de la superficie. No se instala sin mouse ni con reducir movimiento.
 - **Subpáginas:** cada título se llama como en la barra, los datos de Hoy van en español y los títulos tienen un solo tamaño.
+- **Vidrio real en la Mac:** la app de escritorio deja ver lo que hay detrás de la ventana. La web lo aproxima con formas grandes detrás del vidrio.
+- **Pocket (iPhone):** primero lo del día. Calendario como agenda, tableros como lista por estado, Tareas con una fila de apartados y el panel del Chat a pantalla completa. Configuración, Vistas por rol, Roles, Laya, Responsabilidades, Timeline, editores de agentes y finanzas de detalle se abren en la compu.
 
