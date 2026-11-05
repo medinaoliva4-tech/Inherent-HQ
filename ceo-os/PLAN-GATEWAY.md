@@ -556,3 +556,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Tres mesas por área:** las herramientas actuales se agrupan en 15 mesas, cada área con propósito y número. Una herramienta vive en una sola mesa.
 - **Por construir fuera:** Growth Experiment Lab y AI Video Lab no entran hasta que muevan un número.
 
+### Entrega 2 · Embudo y Rentabilidad
+- **Embudo visual:** cinco etapas por cliente y mes. Marca la mayor fuga y estima cuánto vale subirla 10 puntos.
+- **Rentabilidad:** ingresos, costos y margen por oferta o canal, con el gasto de la Hoja de Movimientos al lado.
+- **Chat:** el panel se esconde con su botón y `⌘B`.
+

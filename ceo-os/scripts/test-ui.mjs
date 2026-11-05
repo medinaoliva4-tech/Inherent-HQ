@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
 import { limpiarMovimiento, errorMovimiento, filtrarMovimientos, resumenMovimientos } from '../public/js/movimientos-datos.js';
@@ -309,6 +310,31 @@ t('movimientos: guarda lo esencial y el resumen cuadra', () => {
   const xs = filtrarMovimientos([{ ...m, area: 'marketing', paso: 'x', decision: 'Repetir', fecha: '2026-11-01' }, { ...m, area: 'marketing', costo: 500, fecha: '2026-11-02' }, { ...m, area: 'creative' }, { ...m, area: 'marketing', archivado: true }], { area: 'marketing' });
   assert.equal(xs.length, 2); assert.equal(xs[0].fecha, '2026-11-02');
   assert.deepEqual(resumenMovimientos(xs), { total: 2, invertido: 3000, sinResultado: 1, repetir: 1, parar: 0 });
+});
+t('embudo: encuentra la mayor fuga y le pone valor', () => {
+  const d = limpiarEmbudo({ client_slug: 'nao', mes: '2026-11', ticket: '1000', margen_pct: 50, etapas: [{ n: 1000 }, { n: 100 }, { n: 50 }, { n: 10 }, { n: 5 }] });
+  const a = analizarEmbudo(d.etapas, d);
+  assert.deepEqual([a.fuga.de, a.fuga.a], ['Calificados', 'Propuestas']);
+  assert.equal(a.fuga.tasa, 0.2);
+  assert.equal(Math.round(a.fuga.extraClientes * 10) / 10, 2.5);
+  assert.equal(Math.round(a.fuga.extraMargen), 1250);
+  assert.equal(analizarEmbudo(limpiarEmbudo({}).etapas).fuga, null);
+  assert.equal(idEmbudo('nao', '2026-11'), 'nao--2026-11');
+});
+t('embudo: del CRM cuenta solo el mes y sin prospectos', () => {
+  const l = (stage, m = '2026-11') => ({ stage, _meta: { created_at: `${m}-03` } });
+  const e = etapasDeLeads([l('Nuevo'), l('Reunión'), l('Propuesta'), l('Ganado'), l('Perdido'), l('Prospecto'), l('Ganado', '2026-10')], '2026-11');
+  assert.deepEqual(e.map((x) => x.n), [5, 5, 3, 2, 1]);
+});
+t('rentabilidad: ordena por margen y marca la peor línea', () => {
+  const r = analizarLineas(limpiarEmbudo({ lineas: [{ nombre: 'A', ingreso: 1000, costo: 1200 }, { nombre: 'B', ingreso: 2000, costo: 500 }, { nombre: '', ingreso: 9 }] }).lineas);
+  assert.equal(r.mejor.nombre, 'B'); assert.equal(r.peor.nombre, 'A'); assert.equal(r.peor.margen, -200); assert.equal(r.margen, 1300); assert.equal(r.filas.length, 2);
+});
+t('Chat: el panel se esconde con un botón', () => {
+  const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
+  assert.match(llm, /\[data-lat=\\?"mini\\?"\]/);
+  assert.ok(!/html\[data-pantalla="chat"\] \.lat-top>\.lat-ib\{display:none\}/.test(CSS));
+  assert.match(CSS, /data-pantalla="chat"\]\[data-lat-mini\] \.lat\{transform/);
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];

@@ -886,6 +886,7 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
+    if (a === 'side' && matchMedia('(min-width:761px)').matches) return document.querySelector('.lat-top [data-lat="mini"]')?.click();
     if (a === 'side') { S.side = !S.side; R.classList.toggle('side-on', S.side); return; }
     if (a === 'panel') { S.panel = !S.panel; R.dataset.panel = S.panel ? 'on' : 'off'; persistir(); return pintarPanel(); }
     if (a === 'abajo') { const box = C('llm-conv'); box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' }); return; }
