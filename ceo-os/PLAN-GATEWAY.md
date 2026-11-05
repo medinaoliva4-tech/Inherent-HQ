@@ -497,3 +497,11 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **El modo** se elige en la caja de mensaje, no en la barra.
 - **Página del cliente:** conversaciones, instrucciones y el equipo de hoy. Las instrucciones las editan el CEO y el COO, y entran a cada turno del Chat y a cada etapa de ese cliente. Los archivos quedan pendientes.
 
+### Entrega 4 · workspaces y mejoras
+- **Criterio del CEO:** mejorar conservando la estructura, tras comparar con productos similares.
+- **Workspaces:** selector arriba a la izquierda con Inherent OS e Inherent Chat, filtrado por rol. El OS abre según Vistas por rol y un cliente no ve el selector.
+- **Chat como app:** sin la navegación de gestión. «Volver» regresa a la pantalla donde estabas.
+- **Cambiar de conversación** no reconstruye la pantalla: la barra queda fija y solo cambia el contenido.
+- **Acciones neutras:** botones y acento sin tonos cálidos. Los estados conservan su color.
+- **Hoy:** las mismas secciones en el mismo orden, compactas y con listas que se deslizan por dentro para reducir el scroll.
+

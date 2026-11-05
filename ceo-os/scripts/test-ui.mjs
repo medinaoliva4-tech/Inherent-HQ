@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { tieneIco, svgIco, nombreIco } from '../public/js/iconos.js';
 import { contraste } from '../public/js/sistema-visual.js';
+import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const RAIZ = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'public');
@@ -75,7 +76,7 @@ t('el tema arranca antes de pintar y sin destellos', () => {
 
 const v3 = CSS.slice(CSS.indexOf('SISTEMA v3 (PLAN-GATEWAY'));
 t('sistema v3: la paleta es la aprobada y solo los estados llevan color', () => {
-  assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#efebe4', '#a39f9a', '#e3d8c5', '#a7f3d0']);
+  assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#efebe4', '#a39f9a', '#f5f5f7', '#a7f3d0']);
   for (const k of ['ui-m-estrategia', 'ui-m-organizacion', 'ui-m-diseno']) {
     const [r, g, b] = NOCHE[k].slice(1).match(/../g).map((x) => parseInt(x, 16));
     assert.ok(Math.max(r, g, b) - Math.min(r, g, b) < 36, `${k} debe ser neutro`);
@@ -96,8 +97,25 @@ t('transiciones: una sola curva suave, entradas sin saltos y reducir movimiento 
   assert.match(v3, /--suave:/);
   assert.match(v3, /view-transition-new\(vt-main\)\{animation:vt3In 320ms var\(--suave\)/);
   assert.match(v3, /\.lm\.llega/);
-  const trans = v3.slice(v3.indexOf('TRANSICIONES'), v3.indexOf('@media (prefers-reduced-motion:reduce){.btn'));
+  const trans = v3.slice(v3.indexOf('TRANSICIONES'), v3.indexOf('/* ===== Workspaces y acciones'));
   assert.ok(!/#[0-9a-f]{6}|rgb\(|background:|border-radius/.test(trans.replace(/\.llega|transition[^;}]*/g, '')), 'este bloque solo mueve: no toca colores ni formas');
+});
+t('workspaces: según el rol; un cliente no tiene selector', () => {
+  assert.deepEqual(workspacesDe({ role: 'client' }, { verChat: true }), []);
+  assert.deepEqual(workspacesDe({ role: 'ceo' }, { verChat: true, rutaOS: 'org/work' }).map((w) => [w.nombre, w.ruta]), [['Inherent OS', 'org/work'], ['Inherent Chat', 'chat']]);
+  assert.deepEqual(workspacesDe({ role: 'team' }, { verChat: false }).map((w) => w.id), ['os']);
+});
+t('workspaces: volver regresa a donde estabas; sin eso, al inicio de tu rol', () => {
+  assert.equal(rutaDeVuelta('org/sales', 'home'), 'org/sales');
+  assert.equal(rutaDeVuelta('chat/inh-x', 'org/work'), 'org/work');
+  assert.equal(rutaDeVuelta('', 'org/work'), 'org/work');
+  assert.equal(esApp('chat'), 'chat'); assert.equal(esApp('home'), 'os');
+});
+t('Chat: cambiar de conversación no reconstruye la pantalla', () => {
+  const app = JS.find(([f]) => f === path.join('js', 'app.js'))[1];
+  assert.match(app, /chatVivo\(\)/);
+  const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
+  assert.match(llm, /ponerChatVivo\(/);
 });
 const APP = JS.find(([f]) => f === path.join('js', 'app.js'))[1];
 const NAV_SRC = APP.slice(APP.indexOf('const NAV = ['), APP.indexOf('const navDe'));

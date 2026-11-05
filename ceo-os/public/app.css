@@ -4391,7 +4391,7 @@ html[data-pantalla="chat"] .app{overflow:hidden}
 :root[data-theme="dark"]{
   --ui-bg:#0d0d0e; --ui-side:#111112; --ui-surf:#141415; --ui-surf2:#1b1b1d; --ui-fill:#18181a; --ui-fill2:#232325;
   --ui-line:rgb(239 235 228 / .09); --ui-line2:rgb(239 235 228 / .16);
-  --ui-ink:#efebe4; --ui-ink2:#bdb9b2; --ui-mut:#a39f9a; --ui-mut2:#8f8b86; --ui-acc:#e3d8c5; --ui-acc-ink:#16140f; --ui-user:#252527;
+  --ui-ink:#efebe4; --ui-ink2:#bdb9b2; --ui-mut:#a39f9a; --ui-mut2:#8f8b86; --ui-acc:#f5f5f7; --ui-acc-ink:#000000; --ui-user:#252527;
   --ui-ok:#a7f3d0; --ui-warn:#e8c98f; --ui-bad:#f4b3a6;
   --ui-glass:rgb(30 30 32 / .52); --ui-ink-rgb:239 235 228; --ui-surf-rgb:20 20 21;
   --ui-sh-1:0 0 0 1px var(--ui-line);
@@ -9437,6 +9437,68 @@ a.ch-f{text-decoration:none}
   .llega{animation:mvEntra 340ms var(--suave) backwards}
 }
 .lm.llega{will-change:transform}
+
+/* ===== Workspaces y acciones neutras (PLAN-GATEWAY §22) ===== */
+.llm{--l-acc:#f5f5f7;--l-acc-ink:#000;--tone:#f5f5f7}
+.btn,.lc-send,.lc-send.stop,.lm-ops .si,.lm-ops button.si,.chip.dark{background:#f5f5f7;color:#000}
+.pdchip{background:none}
+.lat-top{position:relative}
+.lat-ws{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:8px;height:34px;padding:0 10px;border:0;border-radius:10px;background:none;color:var(--ui-ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.lat-ws:hover{background:rgb(239 235 228 / .065)}
+.lat-ws span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lat-ws svg{color:var(--ui-mut2);flex:none}
+.lat-ws-menu{position:absolute;z-index:40;left:0;right:0;top:calc(100% + 6px);display:grid;gap:2px;padding:6px;border-radius:14px;background:rgb(44 44 46 / .86);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur);box-shadow:var(--v-borde),0 18px 40px rgb(0 0 0 / .55);transform-origin:top left}
+.lat-ws-k{padding:4px 8px;font-size:12px;color:var(--ui-mut2)}
+.lat-ws-menu a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 8px;border-radius:9px;color:var(--ui-ink);text-decoration:none}
+.lat-ws-menu a:hover{background:rgb(239 235 228 / .1)}
+.lat-ws-menu b{display:block;font-weight:500;font-size:13.5px}
+.lat-ws-menu small{display:block;font-size:12px;color:var(--ui-ink2)}
+.lat-volver{display:flex;align-items:center;gap:6px;height:32px;padding:0 8px;border-radius:9px;color:var(--ui-ink2);font-size:13.5px;text-decoration:none}
+.lat-volver[hidden]{display:none}
+.lat-volver:hover{background:rgb(239 235 228 / .065);color:var(--ui-ink)}
+.chat-carga{height:70vh;display:grid;place-content:center;justify-items:center;gap:12px;color:var(--ui-mut);font-size:14px}
+.chat-carga-p{width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--ui-line2);border-top:2px solid var(--ui-ink);animation:cc-gira 1s linear infinite}
+@keyframes cc-gira{to{transform:rotate(360deg)}}
+@media (min-width:761px){
+  html[data-pantalla="chat"] .lat-nav{display:none!important}
+  html[data-pantalla="chat"] .lat-top{position:relative;right:auto;bottom:auto;order:0;justify-content:flex-start}
+  html[data-pantalla="chat"] .lat-yo{padding-right:0}
+  html[data-pantalla="chat"] .lat-top>.lat-ib{display:none}
+}
+@media (prefers-reduced-motion:no-preference){
+  html[data-vt=app]::view-transition-old(root),html[data-vt=app]::view-transition-old(vt-main){animation:vtAppOut 240ms ease-out both}
+  html[data-vt=app]::view-transition-new(root),html[data-vt=app]::view-transition-new(vt-main){animation:vtAppIn 460ms var(--suave) both}
+  .lat-ws-menu{animation:mvPop 280ms var(--suave) backwards}
+}
+@keyframes vtAppOut{to{opacity:0;transform:scale(.985)}}
+@keyframes vtAppIn{from{opacity:0;transform:scale(1.012)}}
+
+/* ===== Hoy cabe en una pantalla: mismas secciones y mismo orden, con listas que se deslizan por dentro ===== */
+@media (min-width:1100px){
+  .home-hero{margin-bottom:10px}
+  .home-hero h1{font-size:28px}
+  .home-hero p{margin-top:2px;font-size:14px}
+  .ainoti{display:flex;align-items:center;justify-content:flex-start;text-align:left;gap:12px;padding:6px 40px 6px 14px;margin-bottom:10px}
+  .ainoti .mut.sm{display:none}
+  .ainoti .aifoot{margin:0 0 0 auto;display:flex;align-items:center;gap:8px}
+  .home-ask{margin-bottom:12px}
+  .home-ask-box{padding:6px 10px}
+  .home-ask-foot{margin-top:4px}
+  .home-kpis{gap:10px;margin-bottom:12px}
+  .home-kpi{padding:10px 14px;gap:2px;flex-direction:column;min-height:0}
+  .home-kpi-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+  .home-kpi-vis{display:none}
+  .home-two,.hy-two{gap:12px;margin-bottom:12px;align-items:stretch}
+  .hy-two{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr)}
+  .hy-side{display:contents}
+  .home-act,.home-imp,.hy-box{height:206px;padding:12px 14px;overflow:hidden;display:flex;flex-direction:column}
+  .home-tl,.home-imp-grid,#hoy-att>*:not(.hy-bh){flex:none}
+  .home-act>ol,.home-imp-grid{flex:1;min-height:0;overflow:auto;scrollbar-width:thin}
+  .hy-box{overflow:auto;scrollbar-width:thin}
+  .hy-bh{margin-bottom:6px}
+  .hy-bh h2{font-size:15px}
+  .hy-bh>span:not(.hy-c){font-size:12px}
+}
 
 @media (prefers-reduced-motion:reduce){.btn,.in{transition:none}}
 @media (prefers-reduced-transparency:reduce){
