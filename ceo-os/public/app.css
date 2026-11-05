@@ -1089,7 +1089,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible,summary:focus-visi
   color-scheme:dark;
 }
 /* Lo que siempre es oscuro (o siempre papel) conserva los valores de día por dentro. */
-:root[data-theme="dark"] :is(.qdoc,.feat,.login,.bx,.rview,.recbar,.inbox,.sp-cover){
+:root[data-theme="dark"] :is(.qdoc,.feat,.bx,.rview,.recbar,.inbox,.sp-cover){
   --ink:#2c1f16; --ink2:#4a3628; --mut:#7d624b; --tone:#6a503c; --ink-rgb:44 31 22; --surface:#fcf9f2; --surface-rgb:253 250 243;
   --fill:#f3ede3; --cream:#f4eee5; --cream2:#f1ebe0; --espresso:#36271b; --lime:#efe7dc; --lime-ink:#594231;
   --line:rgb(32 32 33 / .1); --hair:rgb(32 32 33 / .08); --hair-strong:rgb(32 32 33 / .14);
@@ -4414,7 +4414,7 @@ html[data-pantalla="chat"] .app{overflow:hidden}
 :root{--stroke:rgb(255 255 255 / .7)}
 :root[data-theme="dark"]{--stroke:var(--ui-line)}
 /* Las zonas de papel: la cotización, el login, las portadas y lo que siempre fue papel conservan la paleta de siempre. */
-:is(.qdoc,.feat,.login,.bx,.rview,.recbar,.inbox,.sp-cover){
+:is(.qdoc,.feat,.bx,.rview,.recbar,.inbox,.sp-cover){
   --bg:#f1eadf; --ink:#2c1f16; --ink2:#4a3628; --mut:#7d624b; --tone:#6a503c; --warn:#7a4632;
   --ink-rgb:44 31 22; --surface:#fcf9f2; --surface-rgb:253 250 243; --fill:#f3ede3; --fill-2:#ebe3d6;
   --line:rgb(44 31 22 / .1); --hair:rgb(44 31 22 / .08); --hair-strong:rgb(44 31 22 / .14);
@@ -9720,6 +9720,32 @@ input[type=checkbox]:not(.switch):not([role=switch]),input[type=radio],input[typ
 .btn:is([data-act="del"],[data-act="evdel"],[data-act*="borrar"],[data-act*="eliminar"],.danger){background:rgb(255 107 94 / .14)}
 .btn:is([data-act="del"],[data-act="evdel"],[data-act*="borrar"],[data-act*="eliminar"],.danger):hover{background:rgb(255 107 94 / .22)}
 .lib-menu button.danger{color:var(--ui-rojo)}
+
+/* ===== Entrada al OS: el mismo vidrio neutro, sin café ni textura ===== */
+.login{grid-template-columns:minmax(0,1.3fr) minmax(420px,1fr);background:#0d0d0e;color:var(--ui-ink)}
+.login .art{filter:saturate(.72)}
+.login .art::after{background:linear-gradient(180deg,transparent 45%,rgb(8 8 9 / .72)),linear-gradient(90deg,transparent 60%,rgb(8 8 9 / .5))}
+.login .art .quote{left:48px;bottom:44px}
+.login .art .quote p{margin:0;font-family:var(--sans);font-size:36px;font-weight:600;line-height:1.1;letter-spacing:-.02em;color:#fff}
+.login .art .quote p em{font-style:normal;font-weight:500;color:rgb(255 255 255 / .72)}
+.login .side{gap:12px;padding:56px 48px;background:rgb(18 18 19 / .92);box-shadow:inset 1px 0 0 rgb(255 255 255 / .07)}
+.login .side::after{display:none}
+.lg-marca{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.lg-marca>div{width:34px}
+.lg-marca img{display:block;height:34px}
+.lg-marca small{display:block;margin-top:5px;font-size:12.5px;color:var(--ui-mut)}
+.lg-sub{margin:0 0 8px;font-size:15px;color:var(--ui-mut)}
+.gbtn{height:46px;margin-top:0;padding:0 18px;border:0;border-radius:12px;background:#f5f1ea;color:#0c0c0d;font-size:15px;text-decoration:none;transition:background-color .15s,transform .2s var(--suave)}
+.gbtn:hover{transform:none;box-shadow:none;background:#fff}
+.gbtn:active{transform:scale(.98)}
+.gbtn.sec{background:rgb(255 255 255 / .09);color:var(--ui-ink)}
+.gbtn.sec:hover{background:rgb(255 255 255 / .14)}
+.lg-nota{margin:4px 0 0;font-size:12.5px;text-align:center;color:var(--ui-mut)}
+.perm{margin-top:6px;padding:14px;border:0;border-radius:14px;background:rgb(255 255 255 / .05);font-size:13px;color:var(--ui-ink2)}
+.perm>span{color:var(--ui-mut)}
+html[data-vidrio="real"] .login{background:transparent}
+html[data-vidrio="real"] .login .side{background:rgb(18 18 19 / .55)}
+@media (max-width:1150px){.login{grid-template-columns:minmax(0,1fr)}.login .side{padding:40px 24px;box-shadow:none}}
 
 /* ===== Modo conversación: un aro, lo que se dice y tres botones ===== */
 .vz{position:fixed;z-index:80;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;justify-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(90% 34% at 50% 104%,rgb(235 235 240 / .16),transparent 72%),rgb(8 8 9 / .86);-webkit-backdrop-filter:blur(34px) saturate(130%);backdrop-filter:blur(34px) saturate(130%);color:var(--ui-ink);animation:vzEntra .36s var(--suave)}
