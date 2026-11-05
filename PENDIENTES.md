@@ -3132,3 +3132,7 @@ pieza entregada del plan.
 ## agents/_router/skills/inherent/SKILL.md (frase)
 | **Algo que el plan del cliente no incluye** | 🛑 **Se bloquea.** El plan es el techo.
 
+## Modo conversación del Chat
+- Probarlo con micrófono real en Chrome y en un iPhone.
+- Decidir si se paga una voz más natural y reconocimiento para la app de Mac.
+

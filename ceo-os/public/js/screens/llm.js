@@ -20,6 +20,7 @@ import { ponerChatVivo } from '../chat-vivo.js';
 import { rutaDeVuelta } from '../workspaces.js';
 import { loadBrands, brandsNow, brandAccess } from '../brandlist.js';
 import { botonVoz, dictar } from '../voz.js';
+import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
@@ -647,7 +648,7 @@ export async function render(el, { me, sub = [], alive }) {
     return { ...base, extra: [`Secciones que ve en el OS: ${(me.areas || []).join(', ') || '—'}`] };
   }
   // sinGiro: lo que la persona manda desde la Brújula (aceptar la meta, volver a la tarea) no cuenta como turno perdido.
-  async function enviar(texto, { reintento = false, sinGiro = false } = {}) {
+  async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false } = {}) {
     texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
@@ -672,10 +673,10 @@ export async function render(el, { me, sub = [], alive }) {
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
-      const [sistema] = await Promise.all([contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${PROMPT_GENUI}`), null]);
+      const [sistema] = await Promise.all([contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`), null]);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
-        delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); }, // «En cola…» se va al empezar la respuesta
+        delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
         nota: (n) => { msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
@@ -703,6 +704,14 @@ export async function render(el, { me, sub = [], alive }) {
     if (!alive()) return;
     pintarCentro(); pintarPanel();
     B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    return msg.err ? null : msg.t;
+  }
+  // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
+  async function conversar() {
+    const { abrirConversacion, vozDisponible } = await import('../conversacion-ui.js');
+    if (!vozDisponible()) return toast('La conversación por voz funciona en Chrome y en el iPhone. En la app de Mac todavía no.', true);
+    if (!listo()) return toast('El servidor no está en línea', true);
+    abrirConversacion({ titulo: quien(), enviar: (t, o) => enviar(t, { ...o, hablado: true }), detener: () => S.enVuelo?.abort(), alTeclado: () => $('#llm-in', el)?.focus() });
   }
   async function comando({ cmd, arg }) {
     const ta = $('#llm-in', el); if (ta) { ta.value = ''; crecer(ta); comandos(''); }
@@ -815,6 +824,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Clics, teclado y formularios ----------
   escucha('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && dentro(v)) return dictar(v, $('#llm-in', el));
+    if (e.target.closest('[data-act="conversar"]')) return conversar();
     // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
     const va = e.target.closest('[data-act="viva-aprobar"]');
     if (va && dentro(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }
