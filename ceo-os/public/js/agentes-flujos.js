@@ -166,6 +166,8 @@ export function normalizarEtapa(e = {}) {
     fuentes_min: Math.max(0, Math.min(10, Number(e.fuentes_min) || 0)),
     gate: Boolean(e.gate), nota_gate: corto(e.nota_gate, 200),
     metodo: corto(e.metodo || e.skill, 80),
+    // F4.5: lo que la persona tiene que aportar antes de que el agente trabaje esta etapa (tu punto de vista, un dato que solo tú sabes).
+    aporte: corto(e.aporte?.pregunta, 300) ? { pregunta: corto(e.aporte.pregunta, 300) } : null,
     // La IA de esta etapa (vacía = la del agente). Así cada paso usa el modelo que le conviene.
     ia: e.ia && typeof e.ia === 'object' && corto(e.ia.proveedor, 40) ? { proveedor: corto(e.ia.proveedor, 40), modelo: corto(e.ia.modelo, 120) } : { proveedor: '', modelo: '' },
   };
@@ -209,7 +211,7 @@ export function desdePlantilla(f) {
 }
 
 // ---------- El run ----------
-export const ESTADOS = { pendiente: 'Pendiente', en_cola: 'En cola en el servidor', trabajando: 'Trabajando', revision: 'Esperando aprobación', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada' };
+export const ESTADOS = { pendiente: 'Pendiente', en_cola: 'En cola en el servidor', trabajando: 'Trabajando', revision: 'Esperando aprobación', ajuste: 'Ajuste solicitado', aprobada: 'Aprobada', pregunta: 'Esperando tu respuesta', detenida: 'Detenida: falló dos veces' };
 // En el servidor (el Gateway del VPS): la etapa espera turno o ya la está trabajando. Mientras tanto no se ejecuta desde otro lado.
 export const enServidor = (e) => e?.estado === 'en_cola' || (e?.estado === 'trabajando' && e?.via === 'gateway');
 
@@ -218,15 +220,24 @@ export function activa(run) {
   const i = (run?.etapas || []).findIndex((e) => e.estado !== 'aprobada');
   return i === -1 ? Math.max(0, (run?.etapas || []).length - 1) : i;
 }
+// F4.5 · el aporte humano: sin él la etapa no arranca (lo da la persona en el Chat y queda como input i-aporte-<n>).
+export const idAporte = (n) => `i-aporte-${n}`;
+export const faltaAporte = (run, n) => Boolean(run?.etapas?.[n]?.aporte?.pregunta) && !(run.inputs || []).some((x) => x.id === idAporte(n) && !x.archivado && String(x.texto || '').trim());
 // F4.5 · la etapa que sigue se encola sola al aprobar, solo si está dentro de lo platicado (run.plan_ok.hasta).
 export function siguienteAuto(run, n) {
   const k = n + 1, e = run?.etapas?.[k];
-  if (!e || e.estado !== 'pendiente' || run.pausado || run.archivado) return null;
+  if (!e || e.estado !== 'pendiente' || run.pausado || run.archivado || faltaAporte(run, k)) return null;
   return Number.isInteger(run.plan_ok?.hasta) && run.plan_ok.hasta >= k ? k : null;
 }
 // Una etapa puesta en cola para el servidor (la ruta «encolar» y el avance automático al aprobar usan lo mismo).
 export const enCola = (x, modelo, por, at, origen = '') => ({ ...x, estado: 'en_cola', via: 'gateway', modelo, cola: { at, por, antes: x.estado, modelo },
-  actividades: [...(x.estado === 'ajuste' ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · ${origen === 'auto' ? 'sigue sola: está dentro de lo platicado' : 'espera su turno'}`, at }].slice(-150) });
+  actividades: [...(['ajuste', 'pregunta'].includes(x.estado) ? x.actividades || [] : []), { titulo: 'En cola en el servidor', detalle: `${modelo} · ${origen === 'auto' ? 'sigue sola: está dentro de lo platicado' : 'espera su turno'}`, at }].slice(-150) });
+// F4.5 · una falla en el servidor: un reintento automático; a la segunda seguida la etapa se detiene y avisa (§20).
+export function trasFalla(x, mensaje, at) {
+  const fallas = (x.fallas || 0) + 1, msg = String(mensaje || '').slice(0, 380);
+  const nota = (titulo) => [...(x.actividades || []), { titulo, detalle: msg, aviso: true, at }].slice(-150);
+  return fallas < 2 ? { ...x, estado: 'en_cola', fallas, actividades: nota('Reintentando: falló una vez') } : { ...x, estado: 'detenida', via: '', fallas, actividades: nota('Falló en el servidor') };
+}
 export const completo = (run) => (run?.etapas || []).length > 0 && run.etapas.every((e) => e.estado === 'aprobada');
 export const progreso = (run) => { const t = (run?.etapas || []).length, h = (run?.etapas || []).filter((e) => e.estado === 'aprobada').length; return { hechas: h, total: t, pct: t ? Math.round((h / t) * 100) : 0 }; };
 
@@ -242,7 +253,13 @@ export function puede(run, n, accion, { rol = '', email = '' } = {}) {
   if (run.pausado && accion === 'resultado') return 'El agente está en pausa: reanúdalo para ejecutar';
   if (n !== activa(run)) return 'Solo se trabaja la etapa activa: primero se aprueban las anteriores';
   if (accion === 'resultado') return enServidor(e) ? 'Esta etapa la está trabajando el servidor: espera o cancélala' : ['pendiente', 'ajuste', 'trabajando'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
-  if (accion === 'encolar') return enServidor(e) ? 'Esta etapa ya está en el servidor' : ['pendiente', 'ajuste'].includes(e.estado) ? null : 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
+  if (accion === 'responder') return e.estado === 'pregunta' ? null : 'Esta etapa no está esperando una respuesta';
+  if (accion === 'encolar') {
+    if (enServidor(e)) return 'Esta etapa ya está en el servidor';
+    if (e.estado === 'pregunta') return 'El agente está esperando tu respuesta';
+    if (!['pendiente', 'ajuste', 'detenida'].includes(e.estado)) return 'Esta etapa ya tiene resultado: apruébala, corrígela o pide un ajuste';
+    return faltaAporte(run, n) ? 'Falta tu aporte para esta etapa' : null;
+  }
   if (accion === 'cancelar') return e.estado === 'en_cola' ? null : e.estado === 'trabajando' ? 'El servidor ya la está trabajando: espera a que termine' : 'No está en cola';
   if (accion === 'aprobar') {
     if (e.estado !== 'revision') return 'Solo se aprueba una etapa que espera aprobación';
@@ -279,22 +296,51 @@ export function pedido(run, n, opts = {}) {
     e.criterios?.length ? `Criterios de éxito: ${e.criterios.join('; ')}` : '',
     inputs.length ? `Inputs y evidencia que dio el equipo (id entre corchetes):\n${inputs.map((x) => `[${x.id}] ${x.titulo}${x.url ? ` — ${x.url}` : ''}${x.texto ? `\n${String(x.texto).slice(0, 4000)}` : ''}`).join('\n\n')}` : '',
     previas.length ? `Resultados aprobados de etapas anteriores:\n${previas.map((x) => `### ${x.nombre}\n${x.salida || ''}`).join('\n\n')}` : '',
-    e.estado === 'ajuste' && e.ajuste ? `AJUSTE QUE PIDIÓ EL HUMANO: ${e.ajuste}` : '',
+    e.ajuste ? `AJUSTE QUE PIDIÓ EL HUMANO: ${e.ajuste}${e.salida ? `\n\nEl resultado anterior, para corregirlo (no empieces de cero):\n${String(e.salida).slice(0, 7000)}` : ''}` : '',
+    opts.puedePreguntar && run.chat && (e.preguntas || 0) < 3 ? `Si falta un dato que SOLO la persona tiene y sin él no puedes hacer bien esta etapa, no la entregues ni lo inventes: responde únicamente con un bloque \`\`\`pregunta con {"texto":"la pregunta, concreta","por_que":"para qué lo necesitas","opciones":["hasta 4, si aplican"]}. El trabajo espera su respuesta y sigue. No preguntes lo que ya está en los inputs ni lo que puedes buscar.` : '',
     '',
     'Responde SOLO con un bloque ```etapa con este JSON:',
-    '{"actividades":[{"titulo":"qué hiciste","detalle":"cómo y con qué"}],"campos":[{"campo":"nombre del campo","valor":"resumen","items":["punto"],"fuentes":["id de evidencia"],"estado":"evidencia|hipotesis"}],"confianza":0-100,"evidencia":[{"id":"e1","titulo":"…","url":"…","extracto":"cita breve"}],"faltantes":["lo que no se pudo verificar"],"salida":"el resultado completo en markdown"}',
+    '{"salida":"el resultado completo en markdown","actividades":[{"titulo":"qué hiciste","detalle":"cómo y con qué"}],"campos":[{"campo":"nombre del campo","valor":"resumen","fuentes":["id de evidencia"],"estado":"evidencia|hipotesis"}],"confianza":0-100,"evidencia":[{"id":"e1","titulo":"…","url":"…","extracto":"cita breve"}],"faltantes":["lo que no se pudo verificar"]}',
+    'El documento va en «salida», primero. En «campos» no lo repitas: cada «valor» es un resumen de máximo 200 caracteres. Máximo 8 actividades.',
     'Un campo es «evidencia» solo si cita al menos una fuente de «evidencia» o un input; si no, es «hipotesis».',
   ].filter(Boolean).join('\n');
 }
 
 const txtDe = (x) => (typeof x === 'string' ? x : x?.titulo || x?.texto || x?.text || '');
+// El documento mientras se escribe (o si se cortó): el texto de «salida» aunque el JSON todavía no cierre.
+export function salidaParcial(texto) {
+  const m = /"salida"\s*:\s*"((?:[^"\\]|\\[\s\S])*)/.exec(String(texto || '')); if (!m) return '';
+  let c = m[1]; if (/(^|[^\\])(\\\\)*\\$/.test(c)) c = c.slice(0, -1); // un escape a medias al final
+  c = c.replace(/\\u[0-9a-fA-F]{0,3}$/, '');
+  try { return JSON.parse(`"${c.replace(/[\n\r\t]/g, (x) => ({ '\n': '\\n', '\r': '\\r', '\t': '\\t' }[x]))}"`); } catch { return ''; }
+}
+// Lo legible de un JSON cortado que no llegó a «salida»: los campos completos, como secciones.
+function camposParciales(t) {
+  const xs = [...String(t).matchAll(/"campo"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"valor"\s*:\s*"((?:[^"\\]|\\.)*)"/g)].map((m) => { try { return `### ${JSON.parse(`"${m[1]}"`)}\n${JSON.parse(`"${m[2]}"`)}`; } catch { return ''; } }).filter(Boolean);
+  return xs.join('\n\n');
+}
+
+// La pregunta de un agente: un bloque ```pregunta (hablar con la persona es una acción estructurada, no un invento del texto).
+export function leerPregunta(texto) {
+  const t = String(texto || ''); if (/```etapa/.test(t)) return null;
+  const m = /```pregunta\s*([\s\S]*?)```/.exec(t); if (!m) return null;
+  let j; try { j = JSON.parse(m[1]); } catch { return null; }
+  const q = corto(j?.texto, 300); if (!q) return null;
+  return { texto: q, por_que: corto(j.por_que, 300), opciones: lista(j.opciones, 4, 120) };
+}
+
 // La respuesta de una IA → { actividades, campos, confianza, evidencia, faltantes, salida }. Lo que dice un modelo es dato no confiable:
 // la evidencia nunca sale verificada y un campo sin fuente baja a hipótesis aunque diga lo contrario.
 export function leerRespuesta(texto) {
   const t = String(texto || '');
-  const m = t.match(/```etapa\s*([\s\S]*?)```/) || t.match(/(\{[\s\S]*"(?:salida|campos)"[\s\S]*\})/);
+  const m = t.match(/```etapa\s*([\s\S]*?)\n?```\s*$/) || t.match(/```etapa\s*([\s\S]*?)```/) || t.match(/(\{[\s\S]*"(?:salida|campos)"[\s\S]*\})/);
   let j = null; try { j = m ? JSON.parse(m[1]) : null; } catch {}
-  if (!j) return { actividades: [{ titulo: 'La IA respondió sin el formato pedido', detalle: 'Se guardó su texto tal cual', aviso: true }], campos: [], confianza: 0, evidencia: [], faltantes: ['Respuesta sin estructura: revisar a mano'], salida: t.trim() };
+  if (!j) {
+    // Se cortó a medias (el límite de salida): se rescata el documento, o lo que haya de los campos, para no mostrar JSON crudo.
+    const doc = salidaParcial(t) || camposParciales(t);
+    if (doc) return { actividades: [{ titulo: 'El resultado se cortó', detalle: 'Se rescató lo que alcanzó a escribir', aviso: true }], campos: [], confianza: 0, evidencia: [], faltantes: ['El resultado se cortó antes de terminar: revisa si falta algo o pide un ajuste'], salida: doc };
+    return { actividades: [{ titulo: 'La IA respondió sin el formato pedido', detalle: 'Se guardó su texto tal cual', aviso: true }], campos: [], confianza: 0, evidencia: [], faltantes: ['Respuesta sin estructura: revisar a mano'], salida: t.trim() };
+  }
   const evidencia = (Array.isArray(j.evidencia) ? j.evidencia : []).slice(0, 30).map((x, k) => ({ id: corto(x?.id, 20) || `e${k + 1}`, titulo: corto(x?.titulo || x?.url || 'Fuente', 200), url: corto(x?.url, 500), extracto: corto(x?.extracto, 600), verificada: false }));
   const ids = new Set(evidencia.map((x) => x.id));
   const campos = (Array.isArray(j.campos) ? j.campos : []).slice(0, 20).map((c) => {
@@ -341,7 +387,7 @@ export function aplicarResultado(run, n, b = {}) {
   const campos = (Array.isArray(b.campos) ? b.campos : []).slice(0, 20).map((c) => ({ campo: recorte(c?.campo, 80), valor: recorte(c?.valor, 1200), items: (Array.isArray(c?.items) ? c.items : []).slice(0, 12).map((x) => recorte(x, 300)), fuentes: (Array.isArray(c?.fuentes) ? c.fuentes : []).slice(0, 10).map((x) => recorte(x, 20)), estado: c?.estado === 'evidencia' && via !== 'simulado' ? 'evidencia' : 'hipotesis' })).filter((c) => c.campo);
   const previas = e.estado === 'ajuste' || via === 'gateway' ? (e.actividades || []) : [];
   const costo = b.costo && typeof b.costo === 'object' ? { entrada: Number(b.costo.entrada) || 0, salida: Number(b.costo.salida) || 0, seg: Number(b.costo.seg) || 0 } : null;
-  const etapas = run.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', intento, actividades: [...previas, ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => recorte(x, 300)), salida: recorte(b.salida, 60000), via, modelo: recorte(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '', ...(costo ? { costo } : {}) }));
+  const etapas = run.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', ajuste: '', borrador: '', fallas: 0, pregunta: null, intento, actividades: [...previas, ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => recorte(x, 300)), salida: recorte(b.salida, 60000), via, modelo: recorte(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '', ...(costo ? { costo } : {}) }));
   const evi = (Array.isArray(b.evidencia) ? b.evidencia : []).slice(0, 30).map((x, k) => ({ id: recorte(x.id, 20) || `${n}-${intento}-${k}`, etapa: n, titulo: recorte(x.titulo, 200) || 'Fuente', url: recorte(x.url, 500), extracto: recorte(x.extracto, 600), verificada: false, por: via }));
   return { etapas, evidencia: [...(run.evidencia || []).filter((x) => x.etapa !== n || x.por === 'persona'), ...evi], intento, via };
 }

@@ -26,7 +26,7 @@ import { rutaModulo } from '../herramientas.js';
 import { leerMencion, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
-import { activa, completo, enServidor as etapaEnServidor } from '../agentes-flujos.js';
+import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
 
@@ -286,7 +286,11 @@ export async function render(el, { me, sub = [], alive }) {
     const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
     // F4.5: los mensajes y, entre ellos, lo que pasa en cada trabajo ligado; al final, lo que el servidor hace ahora.
     const items = S.agentes.length ? hiloChat(S.msgs, S.agentes) : S.msgs.map((_, i) => ({ tipo: 'msg', i }));
-    mount(col, html`${items.map((it) => (it.tipo === 'msg' ? msgHtml(S.msgs[it.i], it.i) : eventoHtml(it, { me, rol })))}${S.agentes.map(vivoHtml)}${desvioHtml()}`);
+    // Lo que estás escribiendo en una tarjeta sobrevive a la relectura de los trabajos.
+    const escrito = Object.fromEntries([...col.querySelectorAll('textarea[data-k]')].filter((t) => t.value).map((t) => [t.dataset.k, t.value]));
+    const ctx = { me, rol, otros: S.agentes, sesion: S.sesion };
+    mount(col, html`${items.map((it) => (it.tipo === 'msg' ? msgHtml(S.msgs[it.i], it.i) : eventoHtml(it, ctx)))}${S.agentes.map(vivoHtml)}${desvioHtml()}`);
+    for (const t of col.querySelectorAll('textarea[data-k]')) if (escrito[t.dataset.k]) t.value = escrito[t.dataset.k];
     if (abajo || S.enVuelo) box.scrollTop = box.scrollHeight;
     flecha();
   }
@@ -694,7 +698,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (S.sesion) await api(`chat/sesiones/${enc(S.sesion)}/agentes`, { method: 'POST', body: { run: run.id } }); // sin repetir: se puede reintentar
       ponerRun(run); p.estado = 'hecho';
       const k = activa(run);
-      if (['pendiente', 'ajuste'].includes(run.etapas[k].estado) && !etapaEnServidor(run.etapas[k])) {
+      if (['pendiente', 'ajuste'].includes(run.etapas[k].estado) && !etapaEnServidor(run.etapas[k]) && !faltaAporte(run, k)) {
         try { ({ run } = await api(`agentes/runs/${enc(run.id)}/etapa/${k}/encolar`, { method: 'POST', body: {} })); ponerRun(run); }
         catch (e) { toast(e.code === 'GATEWAY_OFF' ? 'El servidor no está en línea: usa «Continuar» en su pestaña cuando vuelva' : e.message, true); }
       }
@@ -710,7 +714,7 @@ export async function render(el, { me, sub = [], alive }) {
       while (alive() && S.agentes.some((r) => etapaEnServidor(r.etapas[activa(r)]))) {
         await new Promise((ok) => setTimeout(ok, 2500)); if (!alive()) return;
         for (const r of S.agentes.filter((x) => etapaEnServidor(x.etapas[activa(x)]))) {
-          try { const { run } = await api('agentes/runs/' + enc(r.id)); ponerRun(run); if (run.etapas[activa(run)]?.estado === 'revision' && r.etapas[activa(r)]?.estado !== 'revision') toast(`${run.flujo.nombre}: resultado listo para revisar`); } catch {}
+          try { const { run } = await api('agentes/runs/' + enc(r.id)); ponerRun(run); const ya = run.etapas[activa(run)]?.estado; if (ya === 'revision' && r.etapas[activa(r)]?.estado !== 'revision') toast(`${run.flujo.nombre}: resultado listo para revisar`); if (ya === 'pregunta') toast(`${run.flujo.nombre} te hizo una pregunta`); if (ya === 'detenida') toast(`${run.flujo.nombre} se detuvo`, true); } catch {}
         }
         if (!S.enVuelo) pintarHilo();
         pintarPanel();
@@ -754,6 +758,24 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'ag-tab') { S.tab = t.dataset.run === 'modo' ? 'modo' : t.dataset.run; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
     if (a === 'ag-cerrar') { S.cerradas = S.cerradas || new Set(); S.cerradas.add(t.dataset.run); if (S.tab === t.dataset.run) S.tab = 'modo'; return pintarPanel(); }
     if (a === 'ag-doc' || a === 'ag-ajuste') { const r = runDe(t.dataset.run); if (r) abrirDocumento(r, +t.dataset.n, ctxDoc()); return; }
+    if (a === 'ag-resp' || a === 'ag-aporte') {
+      const r = runDe(t.dataset.run), n = +t.dataset.n, caja = t.closest('.lpr')?.querySelector('textarea'), texto = String(t.dataset.t || caja?.value || '').trim();
+      if (!r) return; if (!texto) { toast('Escribe tu respuesta primero', true); return caja?.focus(); }
+      t.disabled = true;
+      try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${n}/${a === 'ag-resp' ? 'responder' : 'aporte'}`, { method: 'POST', body: { texto } }); if (caja) caja.value = ''; toast(a === 'ag-resp' ? 'Respuesta enviada: sigue trabajando' : 'Aporte guardado'); alCambiar(run); } catch (er) { t.disabled = false; toast(er.message, true); }
+      return;
+    }
+    if (a === 'ag-reintentar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/encolar`, { method: 'POST', body: {} }); alCambiar(run); } catch (er) { toast(er.message, true); } return; }
+    if (a === 'ag-usar') {
+      const r = runDe(t.dataset.run), n = +t.dataset.n, sel = t.parentElement.querySelector('select'), destino = sel?.value; if (!r || !destino) return;
+      try {
+        const j = await api(`agentes/runs/${enc(r.id)}/etapa/${n}/usar`, { method: 'POST', body: { destino, sesion: S.sesion } });
+        if (j.destino) ponerRun(j.destino);
+        if (j.texto) S.msgs.push({ r: 'u', t: j.texto, at: new Date().toISOString() });
+        toast('Resultado pasado'); alCambiar(j.run);
+      } catch (er) { toast(er.message, true); }
+      return;
+    }
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
     if (a === 'side') { S.side = !S.side; R.classList.toggle('side-on', S.side); return; }

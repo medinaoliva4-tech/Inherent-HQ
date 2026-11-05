@@ -19,8 +19,8 @@ import { toolsDe, llamarTool } from './conectores.js';
 import { conectorDe } from '../../public/js/conectores.js';
 import * as mcpOS from './mcp.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
-import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto } from '../../public/js/agentes-flujos.js';
-import { modeloDeEtapa, MAX_CONTEXTO } from '../../public/js/chat-agentes.js';
+import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo } from '../../public/js/agentes-flujos.js';
+import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
@@ -86,6 +86,13 @@ async function guardar(res, u, r, cambio, nota = {}, coll = COLL) {
   return d;
 }
 const latido = async () => { const g = await db.get(GW, 'vps').catch(() => null); return g?.at && Date.now() - Date.parse(g.at) < 90 * 1000 ? g : null; };
+// F4.5 · lo último hablado en el Chat entra a cada etapa al encolarla (§20): cada versión queda, archivada, para saber qué vio cada una.
+async function conContexto(r, n) {
+  if (!r.chat?.sesion) return r.inputs || [];
+  const s = await db.get('chat_sesiones', r.chat.sesion).catch(() => null); if (!s) return r.inputs || [];
+  const msgs = (s.mensajes || []).filter((m) => m.content && !m.parcial).map((m) => ({ r: m.role === 'user' ? 'u' : 'a', t: m.content }));
+  return inputsConContexto(r.inputs || [], contextoChat(msgs, s.resumen?.texto || ''), n, ahora());
+}
 const motivo = (res, m) => res.status(m.startsWith('🚦') || /Aprueban|Corrigen/.test(m) ? 403 : 409).json({ error: m });
 
 export function rutas(on) {
@@ -219,7 +226,7 @@ export function rutas(on) {
     const modelo = txt(body(req).modelo, 120) || modeloDeEtapa(r.etapas[n], g.modelos || []);
     if (!modelo || !(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
     const etapas = r.etapas.map((x, i) => (i !== n ? x : enCola(x, modelo, u.email, ahora())));
-    const d = await guardar(res, u, r, { etapas }, { accion: 'encolar', etapa: n, nota: modelo });
+    const d = await guardar(res, u, r, { etapas, inputs: await conContexto(r, n) }, { accion: 'encolar', etapa: n, nota: modelo });
     if (d) res.json({ run: d });
   });
   // El servidor usa los MCP de una persona SIN tener sus permisos: se los pide al OS, que es quien los guarda cifrados
@@ -298,9 +305,67 @@ export function rutas(on) {
     const notas = [{ accion: 'aprobar', etapa: n, nota: txt(body(req).nota, 500) }];
     // F4.5: la que sigue se encola sola si está dentro de lo platicado y el servidor está en línea (si no, queda para «Continuar»).
     const k = siguienteAuto({ ...r, etapas }, n), g = k === null ? null : await latido();
-    if (g) { const modelo = modeloDeEtapa(etapas[k], g.modelos || []); etapas = etapas.map((x, i) => (i !== k ? x : enCola(x, modelo, u.email, ahora(), 'auto'))); notas.push({ accion: 'encolar', etapa: k, nota: `auto · ${modelo}` }); }
-    const d = await guardar(res, u, r, { etapas }, notas);
+    const cambio = {};
+    if (g) { const modelo = modeloDeEtapa(etapas[k], g.modelos || []); etapas = etapas.map((x, i) => (i !== k ? x : enCola(x, modelo, u.email, ahora(), 'auto'))); notas.push({ accion: 'encolar', etapa: k, nota: `auto · ${modelo}` }); cambio.inputs = await conContexto(r, k); }
+    const d = await guardar(res, u, r, { etapas, ...cambio }, notas);
     if (d) res.json({ run: d });
+  });
+  // F4.5 · la respuesta a una pregunta del agente: entra como input (fuente interna, con quién la dio) y la etapa sigue sola.
+  on('POST', 'agentes/runs/:id/etapa/:n/responder', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n), m = puede(r, n, 'responder', { rol: u.role }); if (m) return motivo(res, m);
+    const texto = txt(body(req).texto, 4000); if (!texto) return res.status(400).json({ error: 'Escribe tu respuesta' });
+    const g = await latido(); if (!g) return res.status(503).json({ error: 'El servidor no está en línea: vuelve a intentarlo en un momento', code: 'GATEWAY_OFF' });
+    const e = r.etapas[n], k = e.preguntas || 1, modelo = e.modelo && (g.modelos || []).includes(e.modelo) ? e.modelo : modeloDeEtapa(e, g.modelos || []);
+    const inputs = [...(r.inputs || []), { id: `i-resp-${n}-${k}`, tipo: 'texto', titulo: `Tu respuesta: ${txt(e.pregunta?.texto, 100)}`, texto, interna: true, por: u.email, at: ahora(), archivado: false }];
+    const etapas = r.etapas.map((x, i) => (i !== n ? x : { ...enCola(x, modelo, u.email, ahora()), pregunta: null }));
+    const d = await guardar(res, u, r, { etapas, inputs: await conContexto({ ...r, inputs }, n) }, { accion: 'responder', etapa: n, nota: texto.slice(0, 200) });
+    if (d) res.json({ run: d });
+  });
+  // F4.5 · el aporte de la persona para una etapa (tu punto de vista, un dato que solo tú sabes). Con él, la etapa arranca
+  // sola si está dentro de lo platicado.
+  on('POST', 'agentes/runs/:id/etapa/:n/aporte', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n), e = r.etapas[n];
+    if (!e?.aporte?.pregunta) return res.status(400).json({ error: 'Esta etapa no pide aporte' });
+    if (n !== activa(r) || !['pendiente', 'ajuste', 'detenida'].includes(e.estado)) return res.status(409).json({ error: 'Esta etapa ya no espera tu aporte' });
+    const texto = txt(body(req).texto, 4000); if (!texto) return res.status(400).json({ error: 'Escribe tu aporte' });
+    const inputs = [...(r.inputs || []).filter((x) => x.id !== idAporte(n)), { id: idAporte(n), tipo: 'texto', titulo: `Tu aporte: ${txt(e.aporte.pregunta, 100)}`, texto, interna: true, por: u.email, at: ahora(), archivado: false }];
+    const sigue = !r.pausado && (!r.plan_ok || n <= r.plan_ok.hasta), g = sigue ? await latido() : null, notas = [{ accion: 'aporte', etapa: n }];
+    let etapas = r.etapas, finales = inputs;
+    if (g) { const modelo = modeloDeEtapa(e, g.modelos || []); etapas = r.etapas.map((x, i) => (i !== n ? x : enCola(x, modelo, u.email, ahora()))); finales = await conContexto({ ...r, inputs }, n); notas.push({ accion: 'encolar', etapa: n, nota: modelo }); }
+    const d = await guardar(res, u, r, { etapas, inputs: finales }, notas);
+    if (d) res.json({ run: d });
+  });
+  // F4.5 · pasar el resultado a otro trabajo de la conversación: es un gate, solo con el documento leído. Entra como input citable.
+  on('POST', 'agentes/runs/:id/etapa/:n/usar', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const r = await cargar(req, res, u); if (!r) return;
+    const n = Number(req.params.n), e = r.etapas[n], b = body(req);
+    if (e?.estado !== 'aprobada' || !e.salida) return res.status(409).json({ error: 'Primero aprueba esta etapa' });
+    if (!leyo(r, n, u.email)) return res.status(409).json({ error: 'Abre el documento para pasarlo' });
+    // A la conversación: entra como mensaje, para que el modo del Chat lo use (Strategy lo lleva a la estrategia en vivo con su flujo).
+    if (b.destino === 'chat') {
+      const s = await db.get('chat_sesiones', txt(b.sesion, 120));
+      if (!s || lc(s.owner) !== lc(u.email)) return res.status(404).json({ error: 'Esa conversación no existe' });
+      const texto = `Resultado de ${r.flujo?.nombre || 'un agente'} · ${e.nombre}:\n\n${String(e.salida).slice(0, 8000)}`;
+      const { id: sid, v, _meta, ...data } = s;
+      const ok = await db.update('chat_sesiones', sid, { ...data, mensajes: [...(s.mensajes || []), { role: 'user', content: texto, at: ahora() }].slice(-400) }, v, u.email);
+      if (!ok) return res.status(409).json({ error: 'La conversación cambió mientras tanto. Reintenta.' });
+      const o = await guardar(res, u, r, {}, { accion: 'usar', etapa: n, nota: 'esta conversación' });
+      return o ? res.json({ run: o, texto }) : undefined;
+    }
+    const destino = await db.get(COLL, txt(b.destino, 80));
+    if (!destino || destino.id === r.id || !(await ver(u, destino)) || destino.archivado) return res.status(404).json({ error: 'Ese trabajo no existe' });
+    const id = `i-de-${r.id.slice(-6)}-${n}`;
+    if ((destino.inputs || []).some((x) => x.id === id && !x.archivado)) return res.status(409).json({ error: 'Ese resultado ya está en ese trabajo' });
+    const inp = { id, tipo: 'texto', titulo: `De ${r.flujo?.nombre || 'otro agente'}: ${e.nombre}`, texto: String(e.salida).slice(0, 12000), interna: true, por: u.email, at: ahora(), origen: { run: r.id, etapa: n }, archivado: false };
+    const d = await guardar(res, u, destino, { inputs: [...(destino.inputs || []), inp] }, { accion: 'recibir', etapa: activa(destino), nota: `${r.flujo?.nombre}: ${e.nombre}` });
+    if (!d) return;
+    const o = await guardar(res, u, r, {}, { accion: 'usar', etapa: n, nota: destino.flujo?.nombre || destino.titulo });
+    if (o) res.json({ run: o, destino: d });
   });
   // F4.5 · abrir el documento de una etapa cuenta como leerlo (el OK se activa después). Se guarda quién y cuándo.
   on('POST', 'agentes/runs/:id/etapa/:n/leida', async (req, res) => {
