@@ -1,3 +1,5 @@
+import { workspacesDe, rutaDeVuelta, esApp } from './workspaces.js';
+import { chatVivo } from './chat-vivo.js';
 import { instalarMenu } from './menu-contextual.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
@@ -47,6 +49,7 @@ function bootSalir() {
 // El botón de día y noche muestra a dónde vas: de noche el sol, de día la luna. El tema lo lleva tema.js.
 export let me = null;
 let renderGen = 0;
+const rutaOS = () => rutaDeVuelta(lsGet('os.ruta'), landing(false));
 
 const ERR = { conector: 'No se pudo conectar la app.', dominio: 'No pudimos verificar esa cuenta de Google.', noaprobado: 'Esa cuenta todavía no tiene acceso. Pídele a Inherent que la apruebe.', estado: 'El inicio de sesión expiró. Inténtalo otra vez.', inactivo: 'Tu cuenta está desactivada. Habla con el CEO.', google: 'Google no dejó terminar el inicio de sesión.', servidor: 'Falló al guardar tu sesión.' };
 
@@ -355,6 +358,9 @@ function paintLat(cur = resolve(hashNow())) {
   mount(nav, html`${cab}${NAV.filter((n) => n.ve() && !n.pie).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
   latIndicador(nav);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
+  const enChat = cur.key === 'chat', ws = $('#lat-ws-n', lat), volver = $('#lat-volver', lat);
+  if (ws) ws.textContent = enChat ? 'Inherent Chat' : 'Inherent OS';
+  if (volver) { const r = rutaOS(); volver.hidden = !enChat; volver.href = '#/' + r; volver.querySelector('span').textContent = `Volver a ${paginaDe(r)?.[0]?.[1] || 'Inherent OS'}`; }
   const ctx = $('#lat-ctx', lat); if (ctx) { ctx.hidden = cur.key !== 'chat'; if (cur.key !== 'chat') ctx.replaceChildren(); }
   if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus();
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
@@ -363,7 +369,16 @@ function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); }
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = desk.matches ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
 // Todo popover propio (el menú de «tú», las hojas del cel) lleva data-popover: aquí se quitan y se apagan sus botones.
-function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (const b of $$('[data-hoja], [data-lat="yo"]')) b.setAttribute('aria-expanded', 'false'); }
+function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (const b of $$('[data-hoja], [data-lat="yo"], [data-lat="ws"]')) b.setAttribute('aria-expanded', 'false'); }
+// El selector de arriba: qué workspaces abre tu rol. Se abre desde su botón y se cierra como los demás popovers.
+function menuWs(btn) {
+  const viejo = $('.lat-ws-menu'); cerrarTodo(); if (viejo) return;
+  const actual = esApp(resolve(hashNow()).key), xs = workspacesDe(me, { verChat: sees('chat'), rutaOS: rutaOS() });
+  const m = document.createElement('div'); m.className = 'lat-ws-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
+  mount(m, html`<span class="lat-ws-k">Workspaces</span>${xs.map((w) => html`<a role="menuitem" href="#/${w.ruta}"><span><b>${w.nombre}</b><small>${w.sub}</small></span>${w.id === actual ? ico('check', 14) : ''}</a>`)}`);
+  btn.closest('.lat-top').append(m); btn.setAttribute('aria-expanded', 'true');
+  m.addEventListener('click', (e) => { if (e.target.closest('a')) cerrarTodo(); });
+}
 function menuYo(btn) {
   const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
   const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
@@ -377,8 +392,8 @@ const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.docume
 function latHtml(mac) {
   const cliente = me.role === 'client';
   return html`<aside class="lat" aria-label="Barra lateral">
-    <div class="lat-top">${cliente ? '' : html`<a class="lat-it lat-nueva" href="#/chat">${ico('nuevo', 16)}<span class="lat-t">Nueva conversación</span></a>`}<button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
-    ${cliente ? '' : html`<button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
+    <div class="lat-top">${cliente ? '' : html`<button type="button" class="lat-ws" data-lat="ws" aria-haspopup="menu" aria-expanded="false"><span id="lat-ws-n">Inherent OS</span>${ico('chevrons-up-down', 14)}</button>`}<button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
+    ${cliente ? '' : html`<a class="lat-volver" id="lat-volver" href="#/home" hidden>${ico('chevron-left', 15)}<span></span></a><a class="lat-it lat-nueva" href="#/chat">${ico('nuevo', 16)}<span class="lat-t">Nueva conversación</span></a><button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>`}
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
     <div class="lat-ctx" id="lat-ctx" hidden></div>
@@ -392,6 +407,7 @@ function latHtml(mac) {
 function accionLat(k, b) {
   if (k === 'buscar') return search();
   if (k === 'yo') return menuYo(b);
+  if (k === 'ws') return menuWs(b);
   if (k === 'mini') return ponerMini(!latMini());
   if (k === 'guia') return $('#guiabtn')?.click();
 }
@@ -461,7 +477,7 @@ document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-hoja]'); if (b) return abrirHoja(b.dataset.hoja, b);
   const l = e.target.closest('.hoja [data-lat]'); if (l) { cerrarTodo(); accionLat(l.dataset.lat, l); }
 });
-document.addEventListener('pointerdown', (e) => { if ($('[data-popover]') && !e.target?.closest?.('[data-popover], [data-hoja], [data-lat="yo"]')) cerrarTodo(); });
+document.addEventListener('pointerdown', (e) => { if ($('[data-popover]') && !e.target?.closest?.('[data-popover], [data-hoja], [data-lat="yo"], [data-lat="ws"]')) cerrarTodo(); });
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape' || !$('[data-popover]')) return;
   const volver = $('[data-hoja][aria-expanded="true"]') || $('.lat [data-lat="yo"]'); cerrarTodo(); volver?.focus();
@@ -530,11 +546,16 @@ async function render() {
   const cur = resolve(hashNow());
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
-  const H = document.documentElement; H.dataset.pantalla = cur.key; H.dataset.capa = capaDe(cur.key);
+  const H = document.documentElement, antes = H.dataset.pantalla;
+  if (cur.key !== 'chat' && !['me', 'avisos'].includes(cur.key)) lsSet('os.ruta', cur.url);
+  // Dentro del Chat, cambiar de conversación no reconstruye nada: solo cambia su contenido.
+  if (cur.key === 'chat' && antes === 'chat' && chatVivo()) { lsSet('last.route', cur.url); chatVivo()(cur.rest); return; }
+  const cambiaApp = Boolean(antes) && esApp(antes) !== esApp(cur.key);
+  const pintarCascaron = () => { H.dataset.pantalla = cur.key; H.dataset.capa = capaDe(cur.key); markNav(cur); };
+  if (!cambiaApp) pintarCascaron();
   // Se recuerda la última área abierta (home.js la lee para abrir el Chat en su modo desde «Ask»).
   if (cur.key === 'areas') lsSet('ws.ultimo', cur.rest[0]);
   if (!['me', 'avisos'].includes(cur.key)) lsSet('last.route', cur.url);
-  markNav(cur);
   if (me.role !== 'client') marcarSeccion(seccionGuia(cur));
   $('#avatar')?.classList.toggle('on', cur.key === 'me');
   for (const b of $$('[data-avisos]')) b.classList.toggle('on', cur.key === 'avisos');
@@ -559,6 +580,7 @@ async function render() {
   let lista = null;
   const pintar = () => {
     if (!alive()) return null; // ya se pidió otra pantalla: esta no se pinta
+    if (cambiaApp) pintarCascaron(); // el cambio de app entra dentro de la transición
     closeDrawer();
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); $('.app')?.scrollTo({ top: 0, left: 0, behavior: 'instant' }); // en el cel el que se desliza es .app
     old.replaceWith(main);
@@ -576,10 +598,10 @@ async function render() {
     return Promise.race([lista, new Promise((r) => setTimeout(r, 150))]);
   };
   if (vt) {
-    const rootEl = document.documentElement; rootEl.dataset.vt = 'nav';
+    const rootEl = document.documentElement, tipoVt = cambiaApp ? 'app' : 'nav'; rootEl.dataset.vt = tipoVt;
     const t = document.startViewTransition(pintar);
     t.ready.catch(() => {}); // saltada por otra o con la pestaña oculta, `ready` se rechaza: no es un error
-    t.finished.catch(() => {}).finally(() => { if (rootEl.dataset.vt === 'nav') delete rootEl.dataset.vt; }); // una transición saltada por otra no es un error
+    t.finished.catch(() => {}).finally(() => { if (rootEl.dataset.vt === tipoVt) delete rootEl.dataset.vt; }); // una transición saltada por otra no es un error
     await t.updateCallbackDone.catch(() => {});
   } else pintar();
   await lista;

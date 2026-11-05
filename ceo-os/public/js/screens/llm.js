@@ -16,6 +16,8 @@ import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js
 import { etapaDe, etapaLabel } from '../estrategia.js';
 import { loadEstrategia, estrategiaNow } from '../stratlist.js';
 import { carpetas, carpetaDe, ESTADO_FILA } from '../llm/carpetas.js';
+import { ponerChatVivo } from '../chat-vivo.js';
+import { rutaDeVuelta } from '../workspaces.js';
 import { loadBrands, brandsNow, brandAccess } from '../brandlist.js';
 import { botonVoz, dictar } from '../voz.js';
 import { svgIco } from '../iconos.js';
@@ -50,6 +52,9 @@ const ELECCION = { once: 'Permitir una vez', session: 'En esta conversación', a
 
 // Un solo escuchador del tema para el Chat montado (no uno por pintada: guardaría las conversaciones viejas en memoria).
 let llmVivo = null;
+
+// Mientras baja el Chat: una carga corta con la forma de la app (solo se ve si tarda).
+export const esqueleto = () => html`<div class="chat-carga skel" role="status"><span class="chat-carga-p"></span><p>Abriendo Inherent Chat…</p></div>`;
 
 export async function render(el, { me, sub = [], alive }) {
   el.classList.add('llm-host');
@@ -150,7 +155,7 @@ export async function render(el, { me, sub = [], alive }) {
     const abierta = (c) => Boolean(q) || c.id === cur || (S.abiertas[c.id] ?? c.conv.length > 0);
     const fila = (s) => { const e = s.agente && ESTADO_FILA[s.agente.estado]; return html`<div class="ch-conv ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"${s.id === S.sesion ? raw(' aria-current="page"') : ''}><span class="ch-t">${s.title || s.preview || 'Conversación'}</span>${e ? html`<span class="ch-est ${s.agente.estado}">${ico(e[1], 12)}<span>${s.agente.nombre} · ${e[0]}</span></span>` : ''}</a><button type="button" class="ch-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     mount(dest, html`<div class="ch-sup">
-        <a class="ch-f ch-solo-cel" href="#/home">${ico('nav-home', 16)}<span>Volver a Hoy</span></a>
+        <a class="ch-f ch-solo-cel" href="#/${rutaDeVuelta(localStorage.getItem(`os.os.ruta.${me.email}`) || '', 'home')}">${ico('chevron-left', 16)}<span>Volver a Inherent OS</span></a>
         <button type="button" class="ch-f" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
         <label class="ch-f ch-busca">${ico('search', 16)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label>
         <button type="button" class="ch-f ${S.decidir ? 'on' : ''}" data-a="por-decidir">${ico('alert', 16)}<span>Por decidir</span>${n ? html`<b class="ch-n">${n}</b>` : ''}</button>
@@ -163,7 +168,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
 
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
-  const vacio = () => !S.msgs.length && !S.agentes.length;
+  const vacio = () => !S.msgs.length && !S.agentes.length && !S.cargando;
   function pintarTitulo() {
     const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
@@ -542,16 +547,18 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
+    abrirGen++; S.cargando = false; S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
+  let abrirGen = 0;
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
     if (!modos.some((m) => m.id === info.modo)) { toast('Esa conversación es de un modo que tu perfil no abre', true); return nuevo(); }
     S.decidir = false; S.proyecto = null; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
-    S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
-    pintarSide(); pintarCentro(); pintarPanel();
+    S.cargando = true; S.titulo = S.sesiones.find((s) => s.id === id)?.title || S.titulo; S.brujula = brujulas(me)[id] || null; pintarBrujula();
+    const turno = ++abrirGen;
+    pintarSide(); pintarTitulo(); // la barra responde al instante; lo de antes sigue visible hasta que llega lo nuevo
     try {
       const rows = await B.mensajes(id);
       const out = []; let pend = [];
@@ -563,9 +570,12 @@ export async function render(el, { me, sub = [], alive }) {
           out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend, propuestas: r.propuestas || [] }); pend = [];
         }
       }
+      if (turno !== abrirGen) return; // ya se pidió otra conversación
       S.msgs = out;
-    } catch (e) { S.msgs = [{ r: 'a', modo: S.modo, t: '', err: `No pude leer la conversación: ${e.message}` }]; }
+    } catch (e) { if (turno !== abrirGen) return; S.msgs = [{ r: 'a', modo: S.modo, t: '', err: `No pude leer la conversación: ${e.message}` }]; }
     await cargarAgentesDe(id);
+    if (turno !== abrirGen) return;
+    S.cargando = false; C('llm-col')?.animate?.([{ opacity: .35 }, { opacity: 1 }], { duration: 220, easing: 'ease-out' });
     // Al volver a una conversación con trabajos, la ventana abre en el que sigue en curso (o el último).
     if (S.agentes.length && !angosto()) { S.tab = (S.agentes.find((r) => !completo(r)) || S.agentes.at(-1)).id; S.panel = true; R.dataset.panel = 'on'; }
     if (alive()) { pintarTitulo(); pintarCentro(); pintarPanel(); marcarMandados(); vigilar(); }
@@ -913,6 +923,12 @@ export async function render(el, { me, sub = [], alive }) {
   pintarSide(); pintarCentro(); pintarPanel();
   await Promise.all([me.areas?.includes('estrategia') ? loadEstrategia().catch(() => {}) : null, brandAccess(me).any ? loadBrands(me).catch(() => {}) : null]);
   if (!alive()) return;
+  ponerChatVivo((rest = []) => {
+    if (!R.isConnected) { ponerChatVivo(null); return; }
+    if (rest[0] === 'trabajo' && rest[1]) return abrirTrabajo(decodeURIComponent(rest[1]));
+    if (!rest[0]) return S.sesion ? nuevo() : null;
+    const id = decodeURIComponent(rest[0]); if (id !== S.sesion) return abrirSesion(id);
+  });
   await revisar();
   // Sin servidor también se abre: leer y aprobar no lo necesitan (lo escrito queda en la base).
   if (sub[0] === 'trabajo' && sub[1]) await abrirTrabajo(decodeURIComponent(sub[1]));
