@@ -125,11 +125,11 @@ async function herramientasMcp(run, n, paso) {
     return { tools: tools.slice(0, 30) };
   } catch (e) { await paso({ titulo: 'No pude abrir las conexiones', detalle: e.message, aviso: true }); return { tools: [] }; }
 }
-// El límite de salida cortó la respuesta: se le pide seguir donde iba (hasta 2 veces) y se une. Así un documento largo no se pierde.
+// La respuesta se cortó (el límite de salida, o el proveedor cerró sin señal de fin): se le pide seguir donde iba (hasta 2 veces) y se une. Así un documento largo no se pierde.
 async function completar(modelo, messages, r, onAvance, onEspera) {
   let content = r.content, finish = r.finish, extra = { prompt_tokens: 0, completion_tokens: 0, seg: 0 };
   const cap = contextoDe(modelo) - MAX_OUT - 1500;
-  for (let i = 0; i < 2 && finish === 'length' && est(JSON.stringify(messages)) + est(content) < cap; i++) {
+  for (let i = 0; i < 2 && (finish === 'length' || !finish) && est(JSON.stringify(messages)) + est(content) < cap; i++) {
     const avance = ({ texto, ...o }) => onAvance({ ...o, texto: content + (texto || '') });
     const s = await chat(modelo, '', '', MAX_OUT, { messages: [...messages, { role: 'assistant', content }, { role: 'user', content: 'Se cortó por el límite. Sigue EXACTAMENTE donde te quedaste, carácter por carácter: sin repetir nada, sin saludar y sin abrir otro bloque.' }], onEspera, onAvance: avance, cadaMs: 3000 });
     content += s.content; finish = s.finish;
