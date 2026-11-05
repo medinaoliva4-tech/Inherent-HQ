@@ -4,7 +4,7 @@
 // Las preguntas y las tarjetas viven en el hilo del Chat, no aquí. Aprobar se hace abriendo el documento (abrirDocumento):
 // abrirlo cuenta como leerlo y recién entonces se activa el OK (lo hace cumplir el servidor).
 import { html, raw, mount, ico, toast, api, ask, md, esc, drawer, closeDrawer } from './core.js';
-import { activa, completo, progreso, puede, enServidor, leerOutput, ESTADOS } from './agentes-flujos.js';
+import { activa, completo, progreso, puede, enServidor, leerOutput, ESTADOS, faltaAporte } from './agentes-flujos.js';
 import { rutaEtapas } from './agentes-ui.js';
 import { fuentes, archivos, mapaFuentes, enlazarCitas, modeloDeEtapa, idChatTrabajo } from './chat-agentes.js';
 
@@ -19,10 +19,12 @@ const docHtml = (run, n) => raw(enlazarCitas(String(md(run.etapas[n].salida || '
 function accionCola(run, n, modelos) {
   const e = run.etapas[n];
   if (n !== activa(run) || run.archivado || completo(run) || enServidor(e)) return '';
+  if (e.estado === 'pregunta') return html`<span class="wc-note">${ico('chat', 12)} Responde en el Chat</span>`;
+  if (run.plan_ok && n > run.plan_ok.hasta && e.estado === 'pendiente') return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
+  if (faltaAporte(run, n)) return html`<span class="wc-note">${ico('chat', 12)} Falta tu aporte: dalo en el Chat</span>`;
   if (e.estado === 'revision') return html`<button type="button" class="btn sm ag-dark" data-act="doc" data-n="${n}">${ico('file-text', 12)} Abrir documento</button>`;
-  if (!['pendiente', 'ajuste'].includes(e.estado)) return '';
-  if (run.plan_ok && n > run.plan_ok.hasta) return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
-  return html`<button type="button" class="btn sm ag-dark" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico('play', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : 'Continuar'}</button>`;
+  if (!['pendiente', 'ajuste', 'detenida'].includes(e.estado)) return '';
+  return html`<button type="button" class="btn sm ag-dark" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico(e.estado === 'pendiente' ? 'play' : 'rotate-cw', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : e.estado === 'detenida' ? 'Reintentar' : 'Continuar'}</button>`;
 }
 
 export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () => {}, onPlan = () => {} }) {
@@ -46,7 +48,7 @@ export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () =
       ${run.pausado ? html`<p class="wc-note">${ico('pause', 12)} El agente está en pausa.</p>` : ''}</section>
 
     <section class="av-sec" aria-label="Documento"><h3>${ico('file-text', 12)} Documento</h3>
-      ${run.etapas.some((x) => x.salida) || enServidor(e) ? run.etapas.map((x, i) => (x.salida ? html`<article class="av-doc ${x.estado}">
+      ${run.etapas.some((x) => x.salida) || enServidor(e) ? run.etapas.map((x, i) => (x.salida && !(i === n && enServidor(x) && x.borrador) ? html`<article class="av-doc ${x.estado}">
           <header><b>${i + 1} · ${leerOutput(x.entrega || x.output, x.nombre).titulo}</b><span class="wc-chip ${x.estado}">${ESTADOS[x.estado] || x.estado}</span><button type="button" class="wc-ic" data-act="doc" data-n="${i}" title="Abrir" aria-label="Abrir el documento de ${x.nombre}">${ico('external-link', 12)}</button></header>
           <div class="ag-md av-doc-md">${docHtml(run, i)}</div></article>`
         : i === n && enServidor(x) ? html`<article class="av-doc vivo"><header><b>${i + 1} · ${x.nombre}</b><span class="wc-chip en_cola">${x.estado === 'en_cola' ? 'En cola' : 'Escribiendo…'}</span></header>
@@ -89,7 +91,7 @@ async function clic(box, ev) {
 export async function abrirDocumento(run, n, { me, rol, modelos = [], onCambio = () => {} }) {
   const e = run.etapas[n]; if (!e?.salida) return;
   const o = leerOutput(e.entrega || e.output, e.nombre);
-  if (e.estado === 'revision') { try { ({ run } = await post(run, `etapa/${n}/leida`)); onCambio(run); } catch (er) { toast(er.message, true); } }
+  if (['revision', 'aprobada'].includes(e.estado)) { try { ({ run } = await post(run, `etapa/${n}/leida`)); onCambio(run); } catch (er) { toast(er.message, true); } }
   const noA = puede(run, n, 'aprobar', { rol, email: me.email }), noC = puede(run, n, 'corregir', { rol }), enRev = e.estado === 'revision' && n === activa(run);
   const sigue = run.plan_ok && n + 1 < run.etapas.length && n + 1 <= run.plan_ok.hasta ? ` Después sigue sola con ${run.etapas[n + 1].nombre}.` : '';
   drawer(html`<div class="ag-rev"><span class="lbl">Etapa ${n + 1} · ${e.nombre}</span><h1>${o.titulo}</h1>
@@ -117,7 +119,7 @@ function abrirInput(run, iid, onCambio) {
   const x = (run.inputs || []).find((y) => y.id === iid); if (!x) return;
   drawer(html`<div class="ag-rev"><span class="lbl">Input · ${x.interna ? 'fuente interna' : 'fuente externa'}</span><h1>${x.titulo}</h1>${x.meta ? html`<p class="sm mut">${x.meta}</p>` : ''}
     ${x.url ? html`<p><a href="${x.url}" target="_blank" rel="noreferrer">${x.url}</a></p>` : ''}${x.texto ? html`<pre class="wc-pre">${x.texto}</pre>` : ''}
-    ${run.archivado || x.id === 'i-chat' ? '' : html`<div class="ag-rev-a"><button class="btn ghost" data-act="quitar">Quitar input</button></div>`}</div>`,
+    ${run.archivado || /^i-chat/.test(x.id) ? '' : html`<div class="ag-rev-a"><button class="btn ghost" data-act="quitar">Quitar input</button></div>`}</div>`,
   { quitar: async () => { closeDrawer(); try { const r = await post(run, 'inputs', { id: x.id, archivado: true }); toast('Input quitado'); onCambio(r.run); } catch (e) { toast(e.message, true); } } }, { title: 'Input' });
 }
 

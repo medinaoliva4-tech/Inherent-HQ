@@ -117,6 +117,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
         <label class="kf-f"><span>Fuentes externas mínimas</span><input class="in" type="number" min="0" max="10" data-k="fuentes_min" value="${e.fuentes_min || 0}" ${dis}><small>Si no las alcanza, el resultado queda como «Falta evidencia».</small></label>
         <label class="kf-sw"><input type="checkbox" data-k="gate" ${e.gate ? raw('checked') : ''} ${dis}><span><b>Solo la aprueba el CEO</b><small>Sin esto, la aprueba el CEO o el COO.</small></span></label>
         ${e.gate ? campo('nota_gate', 'Por qué', e.nota_gate || '') : ''}
+        ${campo('aporte', 'Tu aporte en esta etapa', e.aporte?.pregunta || '', 'textarea', 'Ej.: ¿Cuál es tu punto de vista sobre este mercado?', 'Si escribes una pregunta, el agente no arranca esta etapa hasta que la persona responda en el Chat.')}
         <p class="kf-hint">Toda etapa se aprueba antes de seguir. Nada se publica ni se manda al cliente desde aquí.</p>`
       : html`
         <p class="kf-hint">Con qué trabaja el agente en esta etapa.</p>
@@ -284,6 +285,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       else if (k === 'entrega.campos') e.entrega = { ...(e.entrega || {}), campos: deLineas(t.value) };
       else if (k === 'fuentes_min') e.fuentes_min = Math.max(0, Math.min(10, Number(t.value) || 0));
       else if (k === 'gate') { e.gate = t.checked; return marcar(); }
+      else if (k === 'aporte') e.aporte = t.value.trim() ? { pregunta: t.value } : null;
       else if (k === 'tipo') { e.tipo = t.value; return marcar(); }
       else if (k === 'ia') { const [proveedor, ...m] = t.value.split('|'); e.ia = { proveedor: proveedor || '', modelo: m.join('|') }; return marcar(); }
       else e[k] = t.value;

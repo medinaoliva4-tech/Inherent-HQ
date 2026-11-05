@@ -51,6 +51,7 @@ export function sistemaTrabajo(run, { nombre = '' } = {}) {
       e.criterios?.length ? `Criterios de éxito: ${e.criterios.join('; ')}` : '',
       con.length ? `Conexiones de la etapa: ${con.join(', ')}` : '',
       e.estado === 'ajuste' && e.ajuste ? `Ajuste pedido (falta re-ejecutar): ${e.ajuste}` : '',
+      e.estado === 'pregunta' && e.pregunta ? `Le preguntaste a la persona: ${e.pregunta.texto}` : '',
       e.estado === 'revision' && e.salida ? `RESULTADO EN REVISIÓN (lo que la persona está por aprobar)${e.confianza ? ` · confianza ${e.confianza}%` : ''}:\n${corta(e.salida, 7000)}${e.faltantes?.length ? `\nFaltó evidencia de: ${e.faltantes.join('; ')}` : ''}` : '',
     ].filter(Boolean).join('\n'),
     inputs.length ? `Inputs del equipo (id entre corchetes):\n${inputs.slice(0, 30).map(lineaInput).join('\n')}` : 'Todavía no hay inputs del equipo.',
@@ -59,14 +60,15 @@ export function sistemaTrabajo(run, { nombre = '' } = {}) {
 }
 
 // Los eventos del trabajo que entran al hilo, entre los mensajes, por hora. Lo demás (tomar, verificar…) se ve en las piezas.
-const EVENTO = { crear: 'Trabajo creado', encolar: 'Etapa enviada al servidor', ejecutar: 'Resultado listo', aprobar: 'Etapa aprobada', ajuste: 'Ajuste pedido', corregir: 'Resultado corregido a mano', fallo: 'Falló en el servidor', cancelar: 'Etapa sacada de la cola', pausar: 'Agente en pausa', reanudar: 'Agente reanudado', input: 'Input agregado' };
+const EVENTO = { crear: 'Trabajo creado', encolar: 'Etapa enviada al servidor', ejecutar: 'Resultado listo', aprobar: 'Etapa aprobada', ajuste: 'Ajuste pedido', corregir: 'Resultado corregido a mano', fallo: 'Falló en el servidor', cancelar: 'Etapa sacada de la cola', pausar: 'Agente en pausa', reanudar: 'Agente reanudado', input: 'Input agregado', preguntar: 'Te hizo una pregunta', responder: 'Respondiste', aporte: 'Diste tu aporte', usar: 'Resultado pasado a', recibir: 'Recibió un resultado' };
 // → [{ tipo: 'msg', i, m } | { tipo: 'evento', h, etapa, titulo, ultimo }] en orden. `ultimo`: el resultado vigente de su etapa
 // (ese se pinta como tarjeta con su resultado; los anteriores, como una línea).
 export function hilo(run, mensajes = []) {
   const evs = (run.historial || []).filter((h) => EVENTO[h.accion]).map((h) => ({ tipo: 'evento', at: h.at, h, etapa: h.etapa, titulo: EVENTO[h.accion] }));
   const ultimoRes = new Map();
-  evs.forEach((x, k) => { if (x.h.accion === 'ejecutar') ultimoRes.set(x.etapa, k); });
-  evs.forEach((x, k) => { x.ultimo = x.h.accion === 'ejecutar' && ultimoRes.get(x.etapa) === k && ['revision', 'aprobada'].includes(run.etapas[x.etapa]?.estado); });
+  const ultimoPreg = new Map();
+  evs.forEach((x, k) => { if (x.h.accion === 'ejecutar') ultimoRes.set(x.etapa, k); if (x.h.accion === 'preguntar') ultimoPreg.set(x.etapa, k); });
+  evs.forEach((x, k) => { x.ultimo = x.h.accion === 'ejecutar' && ultimoRes.get(x.etapa) === k && ['revision', 'aprobada'].includes(run.etapas[x.etapa]?.estado); x.vigente = x.h.accion === 'preguntar' && ultimoPreg.get(x.etapa) === k && run.etapas[x.etapa]?.estado === 'pregunta'; });
   const ms = mensajes.map((m, i) => ({ tipo: 'msg', at: m.at || '', i, m }));
   // Orden estable por hora; un mensaje sin hora (el que se está escribiendo) va al final.
   return [...evs, ...ms].map((x, k) => ({ x, k, t: x.at ? Date.parse(x.at) : Infinity })).sort((a, b) => a.t - b.t || a.k - b.k).map((y) => y.x);

@@ -9185,3 +9185,12 @@ html.kf-fullscreen{overflow:hidden}
 .lpt-x{border:0;background:none;color:var(--l-mut);padding:4px 6px 4px 0;cursor:pointer;display:grid;place-items:center}
 .lpt-d{width:7px;height:7px;border-radius:99px;background:var(--c)}
 .lpt-d.revision{background:var(--ui-warn)}.lpt-d.ok{background:var(--ui-ok)}.lpt-d.en_cola,.lpt-d.trabajando{background:var(--ui-info)}
+/* F4.5 · Entrega 2: la pregunta del agente y tu aporte, en el Chat */
+.lpr{margin:6px 0;padding:12px 14px;border-radius:var(--r-4);border:1px solid color-mix(in srgb,var(--c) 45%,var(--l-line));background:color-mix(in srgb,var(--c) 7%,var(--l-surf));display:grid;gap:6px}
+.lpr>b{font-size:14.5px}.lpr>small{font-size:12.5px;color:var(--l-mut)}
+.lpr-r{display:flex;gap:8px;align-items:flex-end}
+.lpr-r textarea{flex:1;min-width:0;resize:vertical;font:inherit;font-size:13.5px;color:var(--l-ink);background:var(--l-surf);border:1px solid var(--l-line2);border-radius:12px;padding:8px 10px}
+.lpr-r button,.lres-u button{font:inherit;font-size:13px;padding:7px 12px;border-radius:10px;border:1px solid var(--l-line2);background:var(--l-surf2);color:var(--l-ink);cursor:pointer;white-space:nowrap}
+.lpr-r button.si{background:var(--l-acc);color:var(--l-bg);border-color:transparent}
+.lres-u{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lres-u select{min-width:0;max-width:100%;font:inherit;font-size:13px;color:var(--l-ink);background:var(--l-surf2);border:1px solid var(--l-line);border-radius:10px;padding:6px 8px}

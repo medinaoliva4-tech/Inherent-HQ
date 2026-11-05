@@ -30,7 +30,7 @@ export function leerMencion(texto, agentes = []) {
 export const MODELO_POR_TIPO = { investigacion: 'deepseek-v4-flash', analisis: 'deepseek-v4-pro', decision: 'deepseek-v4-pro', entregable: 'deepseek-v4-flash', validacion: 'deepseek-v4-flash' };
 export const PREF_GW = ['deepseek-v4-flash', 'deepseek-v4-pro'];
 export function modeloDeEtapa(e = {}, modelosGw = []) {
-  const quiere = e.modelo || MODELO_POR_TIPO[tipoDe(e.tipo).id] || PREF_GW[0];
+  const quiere = e.modelo || e.ia?.modelo || MODELO_POR_TIPO[tipoDe(e.tipo).id] || PREF_GW[0];
   if (modelosGw.includes(quiere)) return quiere;
   return PREF_GW.find((m) => modelosGw.includes(m)) || modelosGw[0] || quiere;
 }
@@ -91,3 +91,10 @@ export function clienteDelPlan(p, slug = '', nombre = '') {
 }
 // La lectura del CEO/COO: la conversación tiene que ser la del trabajo Y de quien lo encargó.
 export const conversacionLigada = (run, sesion) => Boolean(run?.chat?.sesion && sesion?.id === run.chat.sesion && String(sesion.owner).toLowerCase() === String(run.chat.owner).toLowerCase());
+
+// La nueva versión del contexto del Chat para una etapa: las anteriores quedan archivadas (se sabe qué vio cada etapa).
+export function inputsConContexto(inputs, texto, n, at) {
+  const viejos = inputs.filter((x) => /^i-chat(-|$)/.test(x.id)), vigente = viejos.find((x) => !x.archivado);
+  if (!texto || vigente?.texto === texto) return inputs;
+  return [...inputs.map((x) => (/^i-chat(-|$)/.test(x.id) ? { ...x, archivado: true } : x)), { id: `i-chat-${n}`, tipo: 'texto', titulo: `Lo hablado en el Chat · etapa ${n + 1}`, texto: String(texto).slice(0, MAX_CONTEXTO), interna: true, at, archivado: false }];
+}

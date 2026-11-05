@@ -70,7 +70,7 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
       }
       const toolCalls = calls.filter((c) => c?.function?.name).map((c, i) => ({ ...c, id: c.id || `call_${i}_${Date.now().toString(36)}` }));
       if (!content.trim() && !toolCalls.length) throw new Error(`${m} devolvió vacío (finish=${finish}). Sube la salida máxima o usa otro modelo.`);
-      return { content, usage, toolCalls, seg: Math.round((Date.now() - t0) / 1000) };
+      return { content, usage, toolCalls, finish, seg: Math.round((Date.now() - t0) / 1000) };
     }
     throw new Error(`${m}: sin respuesta tras reintentos`);
   } finally { release(); }
