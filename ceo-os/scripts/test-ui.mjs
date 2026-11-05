@@ -10,10 +10,11 @@ import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
 import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio } from '../public/js/marketing-datos.js';
-import { rutaAccion, leerReproduccion, motivoSpotify, tiempo, idEquipo, elegirEquipo } from '../public/js/spotify-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify, tiempo, idEquipo, elegirEquipo, fotoPermitida, rutaPortada, leerEquipos } from '../public/js/spotify-datos.js';
 import { limpiarEstrategia, analizarMeta, resumenVoces } from '../public/js/estrategia-datos.js';
 import { conLente, LENTE_HORMOZI } from '../public/js/llm/modos.js';
 import { limpiarProduccion, analizarPiezas, estadoEntrega } from '../public/js/produccion-datos.js';
+import { migasDe } from '../public/js/migas.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
@@ -402,6 +403,21 @@ t('Spotify: prefiere el equipo activo, luego la compu', () => {
   assert.equal(elegirEquipo([mac, { ...tel, is_active: true }]).id, 't');
   assert.equal(elegirEquipo([{ ...mac, is_restricted: true }]), null);
   assert.equal(elegirEquipo([]), null);
+});
+t('Spotify: solo pasa fotos de Spotify por el servidor', () => {
+  assert.ok(fotoPermitida('https://i.scdn.co/image/a')); assert.ok(fotoPermitida('https://image-cdn-ak.spotifycdn.com/image/a'));
+  assert.ok(!fotoPermitida('http://i.scdn.co/a')); assert.ok(!fotoPermitida('https://scdn.co.evil.com/a')); assert.ok(!fotoPermitida('nada'));
+  assert.equal(rutaPortada('https://evil.com/a'), '');
+  assert.match(rutaPortada('https://i.scdn.co/image/a'), /^\/api\/spotify\/portada\?u=https%3A/);
+  assert.deepEqual(leerEquipos({ devices: [{ id: 'a', name: 'Mac', type: 'Computer', is_active: true }, { id: 'b', is_restricted: true }] }), [{ id: 'a', nombre: 'Mac', tipo: 'Computer', activo: true }]);
+});
+t('migas: la dirección dice cliente, área y herramienta', () => {
+  const n = { cliente: () => 'AKAI', area: () => 'Strategy', herramienta: () => 'Radar', pestana: () => 'Research' };
+  assert.deepEqual(migasDe('ws/strategy/akai/overview', n).map((x) => x.t), ['Clientes', 'AKAI', 'Strategy']);
+  assert.deepEqual(migasDe('ws/strategy/akai/research/competitor-radar', n).map((x) => x.t), ['Clientes', 'AKAI', 'Strategy', 'Research', 'Radar']);
+  assert.deepEqual(migasDe('areas/strategy/meta', n).map((x) => x.t), ['Áreas', 'Strategy', 'Mapa de la Meta']);
+  assert.deepEqual(migasDe('org/clients/akai/x', n).map((x) => x.t), ['Clientes', 'AKAI']);
+  assert.deepEqual(migasDe('home', { pagina: 'Hoy' }).map((x) => x.t), ['Hoy']);
 });
 t('Spotify: la política deja cargar el reproductor oficial', () => {
   const v = fs.readFileSync(path.join(RAIZ, '..', 'vercel.json'), 'utf8');

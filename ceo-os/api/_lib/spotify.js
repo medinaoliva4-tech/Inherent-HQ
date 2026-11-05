@@ -5,7 +5,7 @@ import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { seal, open } from './vault.js';
-import { rutaAccion, leerReproduccion, motivoSpotify, idEquipo, elegirEquipo } from '../../public/js/spotify-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify, idEquipo, elegirEquipo, rutaPortada, fotoPermitida, leerEquipos } from '../../public/js/spotify-datos.js';
 
 const CONN = 'spotify_conexiones', PEND = 'spotify_pendientes';
 const CLIENT = () => (process.env.SPOTIFY_CLIENT_ID || '70d9110fca724c03b737e631460e968f').trim();
@@ -35,6 +35,22 @@ async function permiso(email) {
 }
 const llamar = (token, ruta, init = {}) => fetch(`https://api.spotify.com/v1/me/player${ruta}`, { ...init, headers: { Authorization: `Bearer ${token}`, ...init.headers }, signal: AbortSignal.timeout(10000) });
 
+// Si Spotify no trae la foto, se pide a su página pública. Se recuerda por canción.
+const fotos = new Map();
+async function conPortada(r) {
+  const { enlace, ...resto } = r;
+  let u = r.portada;
+  if (!u && enlace) {
+    if (fotos.has(enlace)) u = fotos.get(enlace);
+    else {
+      const o = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(enlace)}`, { signal: AbortSignal.timeout(5000) }).catch(() => null);
+      u = o?.ok ? (await o.json().catch(() => ({}))).thumbnail_url || '' : '';
+      if (fotos.size > 200) fotos.clear();
+      fotos.set(enlace, u);
+    }
+  }
+  return { ...resto, portada: rutaPortada(u) };
+}
 // Pasa la música a un equipo y sigue donde iba.
 const pasarA = (token, id) => llamar(token, '', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_ids: [id], play: true }) });
 
@@ -66,7 +82,22 @@ export function rutas(on) {
     const streaming = /\bstreaming\b/.test((await db.get(CONN, lc(u.email)))?.scope || ''), r = await llamar(t, '');
     if (r.status === 204) return res.json({ conectado: true, streaming, ...leerReproduccion(null) });
     if (!r.ok) return res.json({ conectado: true, streaming, ...leerReproduccion(null), aviso: r.status === 403 ? 'Spotify pide Premium o acceso a esta app.' : 'Spotify no respondió.' });
-    res.json({ conectado: true, streaming, ...leerReproduccion(await r.json()) });
+    res.json({ conectado: true, streaming, ...(await conPortada(leerReproduccion(await r.json()))) });
+  });
+  on('GET', 'spotify/portada', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const url = String(req.query.u || '');
+    if (!fotoPermitida(url)) return res.status(400).json({ error: 'Foto no válida' });
+    const r = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(8000) }).catch(() => null), tipo = r?.headers.get('content-type') || '';
+    if (!r?.ok || !tipo.startsWith('image/')) return res.status(502).json({ error: 'Sin foto' });
+    res.setHeader('Content-Type', tipo); res.setHeader('Cache-Control', 'private, max-age=86400');
+    res.end(Buffer.from(await r.arrayBuffer()));
+  });
+  on('GET', 'spotify/equipos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const t = await permiso(u.email); if (!t) return res.json({ equipos: [] });
+    const r = await llamar(t, '/devices').catch(() => null);
+    res.json({ equipos: r?.ok ? leerEquipos(await r.json()) : [] });
   });
   // El reproductor del navegador pide su permiso aquí: es de la misma persona y dura una hora.
   on('GET', 'spotify/token', async (req, res) => {

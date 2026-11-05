@@ -6,7 +6,7 @@ const LLAVE = 'os.spotify.visible';
 const svg = (d) => raw(`<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>`);
 const NOTA = 'M9 18V6l10-2v11.5a2.5 2.5 0 1 1-1.8-2.4V8.2L11 9.4V18a2.5 2.5 0 1 1-2-2.4z';
 const ICO = { prev: svg('M6 5h2v14H6zM20 5v14L9 12z'), play: svg('M7 4v16l13-8z'), pausa: svg('M6 5h4v14H6zM14 5h4v14h-4z'), sig: svg('M16 5h2v14h-2zM4 5v14l11-7z'), nota: svg(NOTA), vol: svg('M4 9v6h4l5 4V5L8 9zm12.5 3a4 4 0 0 0-2-3.5v7a4 4 0 0 0 2-3.5z') };
-let d = null, reloj = 0, tic = 0, tocando = false, enviar = 0, sinFoto = '', local = null, equipo = '', iniciado = false, sonable = false;
+let d = null, reloj = 0, tic = 0, tocando = false, enviar = 0, sinFoto = '', local = null, equipo = '', iniciado = false, sonable = false, equipos = null;
 const enApp = () => Boolean(window.inherentEscritorio);
 // El reproductor del navegador necesita Widevine. Electron no lo trae: en la app de Mac suena la app de Spotify.
 const puedeSonarAqui = async () => {
@@ -56,7 +56,8 @@ function pintar() {
   mount(c, html`<div class="sp-mini sp-player">${foto ? html`<img src="${d.portada}" alt="">` : html`<span class="sp-ic">${ICO.nota}</span>`}<span class="sp-t"><b title="${d.titulo}">${d.titulo || 'Nada sonando'}</b><small>${d.aviso || d.artista || d.dispositivo || (enApp() ? 'Dale play para abrir Spotify' : 'Dale play para escuchar')}</small></span><button type="button" class="sp-x" data-sp="cerrar" aria-label="Esconder Spotify">×</button>
     ${d.duracion ? html`<div class="sp-pos"><input id="sp-pos" class="sp-r" type="range" min="0" max="${d.duracion}" step="1000" value="${d.progreso}" aria-label="Avanzar en la canción"><span id="sp-va">${tiempo(d.progreso)}</span><span>${tiempo(d.duracion)}</span></div>` : ''}
     <div class="sp-b"><button type="button" data-sp="previous" aria-label="Anterior">${ICO.prev}</button><button type="button" class="sp-play" data-sp="${d.sonando ? 'pause' : 'play'}" aria-label="${d.sonando ? 'Pausar' : 'Reproducir'}">${d.sonando ? ICO.pausa : ICO.play}</button><button type="button" data-sp="next" aria-label="Siguiente">${ICO.sig}</button></div>
-    ${d.dispositivo ? html`<small class="sp-eq">En ${d.dispositivo}</small>` : ''}
+    <button type="button" class="sp-eq" data-sp="equipos" aria-expanded="${equipos ? 'true' : 'false'}">${d.dispositivo ? `En ${d.dispositivo}` : 'Elegir dónde suena'}</button>
+    ${equipos ? html`<div class="sp-lista">${equipos.length ? equipos.map((x) => html`<button type="button" class="${x.activo ? 'on' : ''}" data-eq="${x.id}">${x.nombre}</button>`) : html`<small>No hay equipos abiertos.</small>`}</div>` : ''}
     ${d.streaming || !sonable ? '' : html`<button type="button" class="sp-con sp-re" data-sp="conectar">Activar sonido aquí</button>`}
     ${d.volumen == null ? '' : html`<label class="sp-vol">${ICO.vol}<input id="sp-vol" class="sp-r" type="range" min="0" max="100" value="${d.volumen}" aria-label="Volumen"></label>`}</div>`);
   c.querySelectorAll('.sp-r').forEach(relleno);
@@ -85,7 +86,13 @@ async function accion(a) {
 }
 export function pintarSpotify(me) {
   const c = $('#lat-sp'); if (!c || me?.role !== 'ceo') return;
-  c.onclick = (e) => { const b = e.target.closest('[data-sp]'); if (b) accion(b.dataset.sp); };
+  c.onclick = async (e) => {
+    const q = e.target.closest('[data-eq]');
+    if (q) { equipos = null; if (d) d.sonando = true; pintar(); try { await api('spotify/accion', { method: 'POST', body: { accion: 'play', dispositivo: q.dataset.eq } }); } catch (er) { toast(er.message, true); } return setTimeout(refrescar, 900); }
+    const b = e.target.closest('[data-sp]'); if (!b) return;
+    if (b.dataset.sp === 'equipos') { if (equipos) { equipos = null; return pintar(); } try { equipos = (await api('spotify/equipos')).equipos; } catch { equipos = []; } return pintar(); }
+    accion(b.dataset.sp);
+  };
   c.onpointerdown = (e) => { if (e.target.matches?.('.sp-r')) tocando = true; };
   // El volumen responde mientras arrastras, sin mandar una llamada por cada píxel.
   c.oninput = (e) => {

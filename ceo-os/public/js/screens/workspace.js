@@ -1,3 +1,4 @@
+import { avance } from '../estrategia-viva.js';
 // La página de un workspace: #/ws/<ws>/<cliente>/<pestaña>[/<herramienta>[/<resto>]]. Arriba las pestañas del workspace, el
 // hero del cliente (monograma, nivel, etapa si aplica, aprobación y el flujo compartido) y «Continuar en el Chat». Abajo, la
 // grilla de herramientas de la pestaña (nombre, qué produce, estado, último entregable —una sola lectura de /api/entregables por
@@ -168,8 +169,7 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="ws-hero-t"><h1>${b.name}</h1><p>${b.nivel?.nombre || b.sub || ''}<span class="mut"> · ${W.nombre}</span></p><div class="ws-chips">${chips()}</div></div>
       <div class="sp"></div>
       <button type="button" class="btn" data-ws="chat">${ico('chat-ia', 14)} Continuar en el Chat</button>
-    </header>
-    <ol class="ws-flujo" aria-label="El flujo del trabajo">${FLUJO.map((p) => html`<li class="${pasoId(p) === pasoId(pestana.paso) ? 'on' : ''}">${pasoNombre(p)}</li>`)}</ol>`;
+    </header>`;
   }
 
   // ---------- La grilla ----------
@@ -217,9 +217,8 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Overview: el resumen del cliente en este workspace + todas las herramientas + la siguiente acción ----------
   async function overview(box) {
-    mount(box, html`<section class="ws-sec" id="ws-resumen"><div id="ws-res"></div></section>${siguiente()}
-      ${W.pestanas.map((p) => { const ts = visibles(p); return ts.length ? seccion(html`<a href="${rutaPest(p)}">${p.nombre}</a>`, pasoNombre(p.paso), grilla(ts)) : ''; })}`);
-    ultimos(box).catch(() => {});
+    // Solo lo importante: qué sigue y el resumen. Las herramientas viven en sus pestañas.
+    mount(box, html`${siguiente()}<section class="ws-sec" id="ws-resumen"><div id="ws-res"></div></section>`);
     const r = $('#ws-res', box);
     if (ws === 'strategy') return resumenStrategy(r);
     if (ws === 'marketing') return brandHome(r, { me, b, alive });
@@ -229,8 +228,9 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function resumenStrategy(r) {
     if (!est) return mount(r, html`<div class="empty sm"><b>No pude leer la estrategia</b>Puede que tu perfil no vea Estrategia o que este cliente no tenga carpeta todavía.</div>`);
-    return mount(r, html`<div class="ws-sec-h"><h2>La estrategia en vivo</h2><span class="mut sm">Solo lectura: se trabaja en Business X-Ray, Offer Architect y Growth Roadmap</span></div>
-      <div class="lp-viva">${panelViva({ v: est.viva || {}, data: { ...est, slug }, bid: 'diagnostico', editable: false, esCeo: me.role === 'ceo', aprobada: Boolean(est.vivaAprobada) })}</div>`);
+    const hay = avance(est.viva || {}).n > 0;
+    return mount(r, html`${hay ? '' : html`<div class="ws-vacia"><b>Todavía no hay estrategia de ${b.name}</b><p>Empieza por la siguiente acción o continúa en el Chat. Aquí aparecerá la meta y el plan.</p></div>`}
+      <details class="ws-mas" ${hay ? 'open' : ''}><summary>${hay ? 'La estrategia en vivo' : 'Ver el mapa completo'}</summary><div class="lp-viva">${panelViva({ v: est.viva || {}, data: { ...est, slug }, bid: 'diagnostico', editable: false, esCeo: me.role === 'ceo', aprobada: Boolean(est.vivaAprobada) })}</div></details>`);
   }
 
   // ---------- Una pestaña: lo extra arriba y su grilla ----------

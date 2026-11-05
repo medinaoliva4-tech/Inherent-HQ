@@ -13,7 +13,9 @@ import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
 import { svgIco } from './iconos.js';
 import { abrirEnChat } from './areas.js';
-import { WORKSPACES, wsDe, wsDeRuta, puedeWs } from './herramientas.js';
+import { WORKSPACES, wsDe, wsDeRuta, puedeWs, herramientaDe } from './herramientas.js';
+import { migasDe } from './migas.js';
+import { contextoDe } from './contexto.js';
 import { SECCIONES } from './guia-secciones.js';
 
 // La entrada del OS: el router, la única barra y el dueño de lo que comparten las pantallas.
@@ -370,7 +372,17 @@ function paintLat(cur = resolve(hashNow())) {
   if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus({ focusVisible: false });
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
-function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); }
+function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); pintarMigas(cur); }
+// Atrás, adelante y la dirección. En el Chat no: tiene su propio encabezado.
+function pintarMigas(cur) {
+  const n = $('#migas'); if (!n) return;
+  n.hidden = cur.key === 'chat';
+  if (n.hidden) return;
+  const xs = migasDe(cur.url, { cliente: (s) => contextoDe(s)?.name, area: (id) => wsDe(id)?.nombre || areaDe(id)?.nombre, pestana: (ar, id) => wsDe(ar)?.pestanas?.find((p) => p.id === id)?.nombre, herramienta: (id) => herramientaDe(id)?.nombre, pagina: paginaDe(cur.url)?.[0]?.[1] || LABEL[cur.key] });
+  const nav = window.navigation, atras = nav ? nav.canGoBack : true, adelante = nav ? nav.canGoForward : true;
+  mount(n, html`<button type="button" data-mig="atras" aria-label="Atrás" title="Atrás" ${atras ? '' : 'disabled'}>${ico('chevron-left', 17)}</button><button type="button" data-mig="adelante" aria-label="Adelante" title="Adelante" ${adelante ? '' : 'disabled'}>${ico('chevron-right', 17)}</button>
+    <ol>${xs.map((x, i) => (i === xs.length - 1 ? html`<li aria-current="page">${x.t}</li>` : html`<li><a href="${x.r}">${x.t}</a></li>`))}</ol>`);
+}
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = desk.matches ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
 // Todo popover propio (el menú de «tú», las hojas del cel) lleva data-popover: aquí se quitan y se apagan sus botones.
@@ -529,6 +541,7 @@ function shell() {
       ${cliente ? '' : html`<a class="bellbtn" href="#/avisos" data-avisos aria-label="Avisos" title="Avisos">${ico('bell', 18)}<b data-avisos-n hidden></b></a>`}
       <div class="avatar" id="avatar" title="Mi perfil" role="button" tabindex="0" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover">` : initials(me.name)}</div>
     </header>
+    <nav class="migas" id="migas" aria-label="Dónde estás" hidden></nav>
     <main id="main"></main>
     ${celHtml()}
   </div>`);
@@ -619,6 +632,7 @@ async function render() {
 }
 
 window.addEventListener('hashchange', () => me && render());
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-mig]'); if (b) history[b.dataset.mig === 'atras' ? 'back' : 'forward'](); });
 // El CEO cambió la matriz de Vistas por rol: la barra se recalcula y, si la ruta ya no se ve, se vuelve a pintar.
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola: la barra se pone al día.
