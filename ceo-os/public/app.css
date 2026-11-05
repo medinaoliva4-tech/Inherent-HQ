@@ -9685,8 +9685,6 @@ html::view-transition{pointer-events:none}
   .llm-panel,.llm-main{transition-duration:.3s}
 }
 #main{--ui-mut:#b5b1ab;--ui-mut2:#a8a49f}
-.lat-nueva{display:none}
-html[data-pantalla="chat"] .lat-nueva{display:flex}
 /* La ventana de la Mac: el OS llega hasta el borde y los botones de la ventana viven en la barra lateral */
 html[data-vidrio="real"]{--ven-h:44px}
 html[data-vidrio="real"] #root::before{content:"";position:fixed;z-index:19;top:0;left:0;right:0;height:14px;-webkit-app-region:drag}

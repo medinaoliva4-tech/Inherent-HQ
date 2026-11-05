@@ -526,7 +526,7 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 
 ### Entrega 8 · ventana y Foundations
 - **Ventana de la Mac:** sin barra de título aparte; los botones de la ventana viven en la barra lateral.
-- **Barra del OS:** el Chat se abre desde el selector de workspace y «Nueva conversación» solo está dentro del Chat.
+- **Barra del OS:** el Chat se abre desde el selector de workspace y «Nueva conversación» solo vive dentro del Chat.
 - **Movimiento:** cambios de página breves, solo con fundido, y que se pueden interrumpir.
 - **Decisiones que se apartan de Apple:** solo modo oscuro, pantalla de arranque con marca y Pocket con menos funciones que la compu.
 

@@ -207,8 +207,8 @@ t('ventana de Mac: toda es la app, sin barra de título aparte', () => {
 t('barra del OS: el Chat se abre desde el selector, no desde una fila', () => {
   assert.match(NAV_SRC, /id: 'chat'[^\n]*oculto: true/);
   assert.match(APP, /!n\.oculto/);
-  assert.match(CSS, /\.lat-nueva\{display:none\}/); assert.match(CSS, /html\[data-pantalla="chat"\] \.lat-nueva\{display:flex\}/);
-  assert.ok(!/const latIt = [^\n]*title="\$\{label\}"/.test(APP), 'la etiqueta ya se lee: sin aviso encima');
+  assert.ok(!APP.includes('lat-nueva'), 'Nueva conversación vive dentro del Chat');
+  assert.ok(!/const latIt = [^\n]*href="#\/\$\{ruta\}" title=/.test(APP), 'la etiqueta ya se lee: sin aviso encima');
 });
 t('transiciones (Apple Motion): breves, sin desplazamiento y se pueden interrumpir', () => {
   const b = CSS.slice(CSS.indexOf('/* ===== Foundations'));
