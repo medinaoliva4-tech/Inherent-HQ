@@ -520,3 +520,7 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Vidrio real en la Mac:** la app de escritorio deja ver lo que hay detrás de la ventana. La web lo aproxima con formas grandes detrás del vidrio.
 - **Pocket (iPhone):** primero lo del día. Calendario como agenda, tableros como lista por estado, Tareas con una fila de apartados y el panel del Chat a pantalla completa. Configuración, Vistas por rol, Roles, Laya, Responsabilidades, Timeline, editores de agentes y finanzas de detalle se abren en la compu.
 
+### Entrega 7 · modo conversación
+- **Conversar por voz:** el Chat abre una pantalla con un aro, lo que se dice y tres botones. Escucha, responde en voz alta y vuelve a escuchar. Lo hablado queda guardado en la conversación.
+- **Voz:** usa la del navegador en Chrome y iPhone. En la app de Mac todavía no funciona.
+

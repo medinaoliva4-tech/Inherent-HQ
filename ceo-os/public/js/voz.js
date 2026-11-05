@@ -4,7 +4,7 @@
 import { html, raw, toast } from './core.js';
 
 export const icoMic = () => raw('<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>');
-export const botonVoz = () => html`<button type="button" class="cx-mic" data-act="voz" aria-label="Dictar" title="Dictar">${icoMic()}</button>`;
+export const botonVoz = () => html`<button type="button" class="cx-mic" data-act="voz" aria-label="Dictar" title="Dictar">${icoMic()}</button><button type="button" class="cx-mic cx-conv" data-act="conversar" aria-label="Conversar por voz" title="Conversar por voz">${raw('<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg>')}</button>`;
 
 const SR = typeof window !== 'undefined' ? window.SpeechRecognition || window.webkitSpeechRecognition : null;
 const AVISO_MAC = 'Para dictar en la app: toca dos veces la tecla 🌐 (o fn) y habla. El texto entra en la caja.';

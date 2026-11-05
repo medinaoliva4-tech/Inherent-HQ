@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from '../public/js/conversacion.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const RAIZ = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'public');
@@ -173,6 +174,30 @@ t('Pocket: mapas y tableros cambian de forma en el iPhone', () => {
   const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
   assert.match(b, /\.wc-cal \.dh/); assert.match(b, /\.kb-board\{display:grid;grid-template-columns:minmax\(0,1fr\)/); assert.match(b, /\.mt-side\{/);
   assert.match(b, /\.ainoti,/);
+});
+t('conversación: el mic grande pausa, detiene o interrumpe según el momento', () => {
+  assert.equal(siguiente('escuchando', 'mic'), 'pausa'); assert.equal(siguiente('pausa', 'mic'), 'escuchando');
+  assert.equal(siguiente('hablando', 'mic'), 'escuchando'); assert.equal(siguiente('pensando', 'mic'), 'escuchando');
+  assert.equal(siguiente('escuchando', 'enviado'), 'pensando'); assert.equal(siguiente('pensando', 'voz'), 'hablando');
+  assert.equal(siguiente('pausa', 'fin'), 'pausa'); assert.equal(siguiente('hablando', 'fin'), 'escuchando');
+});
+t('conversación: en voz alta no se leen código, enlaces ni tablas', () => {
+  assert.equal(limpiarParaVoz('**Hola** [mira](https://x.co)\n```js\nconst a\n```\n| a | b |\n- uno'), 'Hola mira uno');
+});
+t('conversación: las frases se dicen enteras y lo último sale al terminar', () => {
+  const a = frasesNuevas('Hola Rodrigo. Hoy tienes', 0);
+  assert.deepEqual(a.frases, ['Hola Rodrigo.']);
+  const b = frasesNuevas('Hola Rodrigo. Hoy tienes tres', a.dichas, { fin: true });
+  assert.deepEqual(b.frases, ['Hoy tienes tres']); assert.equal(b.dichas, 'Hola Rodrigo. Hoy tienes tres'.length);
+});
+t('conversación: el aro brilla en su banda y se apaga afuera', () => {
+  assert.equal(brilloDelAro(100, 100, 30), 1); assert.equal(brilloDelAro(131, 100, 30), 0); assert.ok(brilloDelAro(115, 100, 30) < 1);
+});
+t('conversación: usa los colores de Inherent y se abre desde el Chat', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Modo conversación'));
+  assert.match(b, /\.vz-m\{/); assert.ok(!/#e[0-9a-f]5|orange/i.test(b.slice(0, 2600)));
+  const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
+  assert.match(llm, /abrirConversacion\(/); assert.match(llm, /PROMPT_VOZ/);
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];

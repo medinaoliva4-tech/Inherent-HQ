@@ -9672,6 +9672,26 @@ html[data-vidrio="real"]::before,html[data-vidrio="real"]::after{display:none}
 .cp-hd-t h1,.cp-hd.sm .cp-hd-t h1,.wktop h1,.avs-h h1,.aj-hero h1,.aj-con-h h1,.profhead h1{font-size:28px;line-height:1.12;font-weight:650;letter-spacing:-.02em}
 @media (prefers-reduced-transparency:reduce){#main{--ui-surf:#141415;--surface:#141415;--ui-surf2:#1b1b1d;--ui-side:#111112}#luz,#luz-aro,html::before,html::after{display:none}html[data-vidrio="real"]{background:#0d0d0e}}
 
+/* ===== Modo conversación: un aro, lo que se dice y tres botones ===== */
+.vz{position:fixed;z-index:80;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;justify-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(90% 34% at 50% 104%,rgb(235 235 240 / .16),transparent 72%),rgb(8 8 9 / .86);-webkit-backdrop-filter:blur(34px) saturate(130%);backdrop-filter:blur(34px) saturate(130%);color:var(--ui-ink);animation:vzEntra .36s var(--suave)}
+@keyframes vzEntra{from{opacity:0}}
+.vz-t{display:inline-flex;align-items:center;height:36px;padding:0 15px;border-radius:12px;background:rgb(255 255 255 / .08);font-size:14.5px;font-weight:500}
+.vz-aro{align-self:center;width:min(300px,74vw);aspect-ratio:1;transition:opacity .4s}
+.vz[data-estado="pausa"] .vz-aro{opacity:.45}
+.vz-txt{width:min(560px,100%);min-height:5.2em;max-height:32vh;margin:0;overflow:auto;font-size:clamp(20px,5.4vw,25px);line-height:1.3;letter-spacing:-.012em;text-align:left;scrollbar-width:none}
+.vz-txt b{font-weight:500}.vz-txt span{color:var(--ui-mut2)}
+.vz-est{margin:0;font-size:14px;color:var(--ui-mut)}
+.vz-b{display:flex;align-items:center;justify-content:space-between;width:min(380px,100%);margin-top:8px}
+.vz-l{width:50px;height:50px;display:grid;place-items:center;border:0;border-radius:50%;background:rgb(255 255 255 / .1);color:var(--ui-ink);cursor:pointer;transition:background-color .15s,transform .2s var(--suave)}
+.vz-l:hover{background:rgb(255 255 255 / .16)}
+.vz-m{position:relative;width:76px;height:76px;display:grid;place-items:center;border:0;border-radius:50%;background:#f5f1ea;color:#0c0c0d;box-shadow:0 0 0 7px rgb(245 241 234 / .13);cursor:pointer;transition:box-shadow .3s var(--suave),transform .2s var(--suave),background-color .2s}
+.vz-m svg{width:24px;height:24px}
+.vz-l:active,.vz-m:active{transform:scale(.94)}
+.vz[data-estado="escuchando"] .vz-m{animation:vzLatido 2.2s ease-in-out infinite}
+.vz[data-estado="pausa"] .vz-m{background:rgb(255 255 255 / .14);color:var(--ui-ink);box-shadow:none}
+@keyframes vzLatido{50%{box-shadow:0 0 0 13px rgb(245 241 234 / .07)}}
+@media (prefers-reduced-motion:reduce){.vz,.vz[data-estado="escuchando"] .vz-m{animation:none}}
+
 /* ===== Pocket: el iPhone. Primero lo de hoy; mapas, tablas y tableros cambian de forma ===== */
 .pk-compu{display:grid;justify-items:center;gap:8px;padding:72px 24px;text-align:center;color:var(--ui-mut)}
 .pk-compu b{font-size:18px;font-weight:600;color:var(--ui-ink)}.pk-compu p{margin:0 0 10px;font-size:14.5px}
