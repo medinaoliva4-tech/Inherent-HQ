@@ -272,7 +272,7 @@ function crearVentana() {
   ventana = new BrowserWindow({
     width: 1440, height: 920, minWidth: 900, minHeight: 600,
     title: 'Inherent OS',
-    ...(process.platform === 'darwin' ? { backgroundColor: '#00000000', vibrancy: 'under-window', visualEffectState: 'active' } : { backgroundColor: '#0d0d0e' }),
+    ...(process.platform === 'darwin' ? { backgroundColor: '#00000000', vibrancy: 'under-window', visualEffectState: 'active', titleBarStyle: 'hiddenInset', trafficLightPosition: { x: 24, y: 24 } } : { backgroundColor: '#0d0d0e' }),
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true },
   });
   ventana.webContents.setWindowOpenHandler(({ url }) => {
