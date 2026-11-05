@@ -14,7 +14,7 @@ export const MESAS = {
   ] },
   production: { para: 'Entregar alta calidad, a tiempo y con margen.', numero: 'Costo y entrega por pieza', mesas: [
     M('jornada', 'Jornada', 'Brief, guion, shot list y calendario.', ['production-brief', 'script-storyboard-studio', 'shot-list-builder', 'production-planner']),
-    M('edicion', 'Edición', 'Avance, comentarios y aprobación.', ['post-production-workspace', 'review-approval-studio']),
+    M('edicion', 'Edición', 'Avance, comentarios y aprobación.', ['post-production-workspace', 'review-approval-studio'], [['Costo y entrega por pieza', '#/areas/production/costo', 'ceo']]),
     M('multiplicar', 'Multiplicar', 'Versiones por canal desde una misma pieza.', ['content-repurposing']),
   ] },
   marketing: { para: 'Conseguir demanda rentable.', numero: 'Ventas o leads calificados por quetzal invertido', mesas: [

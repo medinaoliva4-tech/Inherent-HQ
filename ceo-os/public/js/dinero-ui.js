@@ -21,8 +21,9 @@ function dibujo(pasos, fuga) {
 export async function pintarDinero(el, { me, area, tabs, vista, alive }) {
   await cargarContexto(me).catch(() => {});
   if (!alive()) return;
-  const lista = contextoLista().filter((c) => c.slug);
-  let slug = contextoActual(me) || lista[0]?.slug || '', mes = mesHoy(), doc = null, d = null, gastoMov = 0;
+  const lista = contextoLista().filter((c) => c.slug && (me.role === 'ceo' || c.slug !== 'inherent'));
+  const pedido = contextoActual(me);
+  let slug = lista.some((c) => c.slug === pedido) ? pedido : lista[0]?.slug || '', mes = mesHoy(), doc = null, d = null, gastoMov = 0;
   const cargar = async () => {
     doc = await C.get(idEmbudo(slug, mes)).catch(() => null);
     d = limpiarEmbudo({ ...(doc || {}), client_slug: slug, mes });

@@ -1,7 +1,7 @@
 // Qué puede leer cada persona de una colección: las mismas reglas para GET db/:coll, el conector, los indicadores y los
 // Avisos (una sola definición: si cambia aquí, cambia en todos). Antes vivían repetidas en index.js, mcp.js y results.js.
 import * as db from './db.js';
-import { COLLS, READ_ALSO, SCOPED, canRead, sees, scoper, inScope, summaryOf, stripAccesos, stripCosts, seesCosts } from './access.js';
+import { dineroDeInherent, COLLS, READ_ALSO, SCOPED, canRead, sees, scoper, inScope, summaryOf, stripAccesos, stripCosts, seesCosts } from './access.js';
 
 const lc = (x) => String(x || '').toLowerCase();
 // Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
@@ -19,7 +19,7 @@ export const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?
 // El margen objetivo de las propuestas (settings «pricing», Finanzas → Precios) es costo/margen: solo el CEO.
 // El caché de la tabla de pauta (sources «ads-<cliente>-tabla», api/_lib/ads.js) lleva gasto y CPA: solo quien ve costos.
 const esCacheTablaPauta = (coll, d) => coll === 'sources' && /^ads-.+-tabla$/.test(String(d?.id || '')) && d?.por_dias != null;
-export const visible = (u, coll, d) => (coll !== 'tasks' || seesTask(u, d)) && (!esCacheTablaPauta(coll, d) || seesCosts(u)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
+export const visible = (u, coll, d) => (u.role === 'ceo' || !dineroDeInherent(coll, d)) && (coll !== 'tasks' || seesTask(u, d)) && (!esCacheTablaPauta(coll, d) || seesCosts(u)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
 // El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
 export const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
 // Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.

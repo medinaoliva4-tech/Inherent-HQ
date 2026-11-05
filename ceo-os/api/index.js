@@ -2,7 +2,7 @@
 import * as db from './_lib/db.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
-import { seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
+import { dineroDeInherent, seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
 import * as zernio from './_lib/zernio.js';
@@ -246,6 +246,7 @@ const markExternal = (coll, b, id) => { if (coll === 'team') { const e = String(
 on('POST', 'db/:coll', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
   let b = body(req);
+  if (u.role !== 'ceo' && dineroDeInherent(req.params.coll, b)) return res.status(403).json({ error: 'Solo el CEO ve esto' });
   try { b = markExternal(req.params.coll, b, b.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
   if (req.params.coll === 'leads') {
@@ -277,6 +278,7 @@ on('POST', 'db/:coll', async (req, res) => {
 on('PUT', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
   let b = body(req);
+  if (u.role !== 'ceo' && dineroDeInherent(req.params.coll, b)) return res.status(403).json({ error: 'Solo el CEO ve esto' });
   try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
   // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
