@@ -80,6 +80,7 @@ t('sin modo: solo el CEO lo ve y va sin instrucciones de Inherent', () => {
   assert.equal(sistemaDe('libre', { persona: 'x', cliente: 'y' }), SISTEMA_LIBRE);
   assert.ok(!/Inherent/.test(SISTEMA_LIBRE));
   assert.equal(MODO_LIBRE.pide, '');
+  assert.deepEqual(HARNESS.libre.criterios, [], 'el panel del Chat no se rompe sin harness');
   assert.equal(leerIdSesion(idSesion('libre', '')).modo, 'libre');
 });
 t('las sesiones: id con modo y cliente, se lee de vuelta; lo ajeno no', () => {

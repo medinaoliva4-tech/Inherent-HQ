@@ -141,6 +141,9 @@ export const HARNESS = {
 
 // El mensaje de sistema de un turno: el harness del modo + el contexto que arma el OS (datos, no instrucciones).
 // ctx = { persona, puesto, fecha, cliente, carpeta, nivel, extra: [líneas], instrucciones: texto (p. ej. la estrategia en vivo) }
+// «Sin modo» no tiene harness: el panel solo dice qué es.
+HARNESS[MODO_LIBRE.id] = { rol: MODO_LIBRE.sub, criterios: [] };
+
 export function sistemaDe(modo, ctx = {}) {
   if (modo === MODO_LIBRE.id) return SISTEMA_LIBRE;
   const m = modoDe(modo), h = HARNESS[m.id];
