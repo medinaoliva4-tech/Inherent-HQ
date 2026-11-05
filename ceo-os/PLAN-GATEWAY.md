@@ -513,3 +513,8 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - Clientes como lista, con el detalle secundario plegado. Tareas con lista lateral simple.
 - Un mismo lenguaje de títulos y etiquetas en páginas y subpáginas, sin mayúsculas forzadas.
 
+### Entrega 6 · vidrio, luz y subpáginas
+- **Vidrio de fondo:** las tarjetas y superficies del contenido son transparentes y dejan ver el degradado. Menús, tablas fijas y encabezados siguen sólidos.
+- **Luz del mouse:** una luz suave sigue al cursor detrás del vidrio y un brillo marca el borde de la superficie. No se instala sin mouse ni con reducir movimiento.
+- **Subpáginas:** cada título se llama como en la barra, los datos de Hoy van en español y los títulos tienen un solo tamaño.
+

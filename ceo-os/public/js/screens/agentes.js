@@ -18,7 +18,7 @@ export async function render(el, { me, sub = [], alive }) {
   if (ID.test(agente || '') && tab === 'trabajos' && ID.test(trabajo || '')) { if (vista === 'etapas') return pintarRun(el, me, trabajo, alive); location.replace(`#/chat/trabajo/${trabajo}`); return; }
   if (ID.test(agente || '')) return pintarPortal(el, me, agente, tab || 'overview', alive);
   mount(el, html`<div></div>`);
-  const tabs = html`<nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes" aria-current="page">${ico('agents', 14)} Agentes</a><a href="#/ai/mcps">${ico('puzzle', 14)} MCPs</a></nav>`;
+  const tabs = html`<nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes" aria-current="page">${ico('agents', 14)} Agentes</a><a href="#/ai/mcps">${ico('puzzle', 14)} Conexiones</a></nav>`;
   const box = document.createElement('div');
   mount(el, tabs); el.appendChild(box);
   return pintarAgentes(box, me, alive, { titulo: 'Agentes' });

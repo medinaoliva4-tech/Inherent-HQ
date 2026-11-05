@@ -1,6 +1,7 @@
 import { workspacesDe, rutaDeVuelta, esApp } from './workspaces.js';
 import { chatVivo } from './chat-vivo.js';
 import { instalarMenu } from './menu-contextual.js';
+import { instalarLuz } from './luz.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
@@ -636,6 +637,7 @@ async function start(u) {
   me = u;
   bootEtapa('Preparando tu espacio…'); // la sesión ya contestó: ahora van las vistas por rol y los niveles
   if (u.role !== 'client') instalarMenu(u);
+  instalarLuz();
   // El servidor ya manda areas, views, scope y start aplicados; la matriz se guarda para recalcular en vivo si el CEO la cambia.
   if (me.role !== 'client') { let doc = null; const lv = Promise.all([api('db/settings'), me.role === 'ceo' ? api('internos/baseline').catch(() => null) : null]).then(([r, b]) => { if (b) baseDefaults(b.base); applyLevels((r.items || []).find((x) => x.id === LEVELS_ID)); }).catch(() => {}); try { doc = await api('db/settings/role_views'); } catch {} applyViews(me, doc); await lv; }
   if (!hashNow()) history.replaceState(null, '', '#/' + landing());

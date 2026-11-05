@@ -105,7 +105,7 @@ for (const online of [true, false]) for (const [me, quien] of [[ceo, 'CEO'], [ot
     assert.match(s, /href="#\/chat"/); assert.match(s, /href="#\/ai\/mcps"/);
     assert.ok(llamadasOS.every((x) => x.method === 'GET'), `${c}: solo lee`);
     if (id === '') {
-      assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los agentes/); assert.match(s, /Ver los MCPs/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
+      assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los agentes/); assert.match(s, /Ver conexiones/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
       if (online) { assert.match(s, /En línea/); assert.match(s, /deepseek-v4-flash/); } else assert.match(s, /Fuera de línea/);
       assert.match(s, /1 trabajo espera tu OK/); assert.match(s, /2 trabajos en curso/); assert.match(s, /1 conexión/);
     } else assert.match(s, /aria-current="page"/);

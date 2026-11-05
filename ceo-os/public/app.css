@@ -9648,6 +9648,25 @@ a.ch-f{text-decoration:none}
 .ch-eq{padding:12px 14px;border-radius:12px;background:var(--ui-surf)}
 @media (max-width:760px){.gl-f{grid-template-columns:34px minmax(0,1fr) 16px}.gl-av,.gl-e,.gl-n{display:none}.ch-cli-datos{grid-template-columns:repeat(2,minmax(0,1fr))}.ch-proy{grid-template-columns:1fr}}
 
+/* ===== Vidrio de fondo y luz del mouse (PLAN-GATEWAY §22): el contenido deja ver el fondo; lo que flota sigue sólido ===== */
+html{background:radial-gradient(900px 780px at 0% 0%,rgb(235 235 240 / .2),transparent 72%) fixed,radial-gradient(1000px 760px at 100% 26%,rgb(235 235 240 / .1),transparent 72%) fixed,radial-gradient(900px 620px at 46% 100%,rgb(235 235 240 / .075),transparent 70%) fixed,linear-gradient(160deg,#141415,#09090a) fixed #09090a}
+#main{--ui-surf:rgb(255 255 255 / .045);--surface:rgb(255 255 255 / .045);--ui-surf2:rgb(255 255 255 / .07);--ui-side:rgb(255 255 255 / .035)}
+#main :is(.avi-menu,.ctx-pop,.ag-foot,.cma-lado,.cma-tabla th,th,.pp-ghead,.pp-glabs,.es-lib,.es-menu,.dz-ctxp,.ch-abajo,.guia-menu,.guia-pip,.wfe-node){--ui-surf:#1c1c1e;--surface:#1c1c1e;--ui-surf2:#242426}
+#main :is(.card,.ainoti,.home-ask-box,.home-kpi,.home-act,.hy-box,.agx-q,.agx-tabla,.cal-res,.kb-card,.vx-goal,.gl,.cp-tool,.fx-mi,.mcd-q,.mcd-card,.aj-pasos,.aj-prov,.avi,.ch-cli-datos,.ch-pl,.ch-eq,.cp-mas>summary){border-color:transparent;box-shadow:var(--v-borde)}
+#luz{position:fixed;z-index:-1;left:-460px;top:-460px;width:920px;height:920px;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgb(235 235 240 / .15),rgb(235 235 240 / .05) 52%,transparent);transition:transform .6s var(--suave),opacity .5s ease-out;will-change:transform}
+#luz.on{opacity:1}
+#luz-aro{position:fixed;z-index:25;left:0;top:0;pointer-events:none;opacity:0;background:radial-gradient(280px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .05),transparent 70%);transition:opacity .35s ease-out}
+#luz-aro.on{opacity:1}
+#luz-aro::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(210px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .42),transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.kb-board{grid-template-columns:repeat(4,minmax(172px,1fr));overflow-x:auto}
+#main .sp-cover .lbl{color:rgb(255 255 255 / .62)}
+#main .agx-espera{border:0;background:var(--surface);box-shadow:var(--v-borde)}
+#main .agx-espera-ic{background:var(--ui-fill2);color:var(--ui-ink)}
+#main .node,#main .node.dark{border:0;background:var(--ui-surf);color:var(--ui-ink);box-shadow:var(--v-borde)}
+#main .node.dark .mut{color:var(--ui-mut)}
+.cp-hd-t h1,.cp-hd.sm .cp-hd-t h1,.wktop h1,.avs-h h1,.aj-hero h1,.aj-con-h h1,.profhead h1{font-size:28px;line-height:1.12;font-weight:650;letter-spacing:-.02em}
+@media (prefers-reduced-transparency:reduce){#main{--ui-surf:#141415;--surface:#141415;--ui-surf2:#1b1b1d;--ui-side:#111112}#luz,#luz-aro{display:none}}
+
 @media (prefers-reduced-motion:reduce){.btn,.in{transition:none}}
 @media (prefers-reduced-transparency:reduce){
   :root{--ui-glass:#1d1d1f}
