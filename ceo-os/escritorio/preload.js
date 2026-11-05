@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld('inherentEscritorio', {
   plataforma: process.platform,
   vidrio: process.platform === 'darwin', // la ventana deja ver lo que hay detrás
   version: ipcRenderer.sendSync('inherent:version'), // la versión instalada, ej. 0.1.4 (una app sin este campo es más vieja)
+  instalar: () => ipcRenderer.send('inherent:instalar'), // baja, cambia y reabre la app sin más preguntas
+  alProgreso: (f) => ipcRenderer.on('inherent:progreso', (_, n) => f(n)),
   actualizar: () => ipcRenderer.send('inherent:actualizar'), // abre el diálogo «Hay una versión nueva» (o «Ya tienes la última»)
 });

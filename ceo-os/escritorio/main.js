@@ -74,6 +74,8 @@ ipcMain.on('inherent:hermes', (e) => { e.returnValue = null; }); // apps viejas 
 ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
 // «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
 ipcMain.on('inherent:actualizar', (e) => { if (delOS(e.senderFrame?.url || '')) buscarActualizacion(true); });
+// «Actualizar» junto al perfil: sin más preguntas; el avance se ve en la barra.
+ipcMain.on('inherent:instalar', (e) => { if (delOS(e.senderFrame?.url || '') && !actualizando) actualizar(); });
 
 // Sin las herramientas de Apple no hay git ni Python: se ofrece instalarlas (un clic, las instala la Mac).
 async function avisarHerramientas() {
@@ -196,7 +198,7 @@ async function buscarActualizacion(aMano = false) {
       if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: `Ya tienes la última versión (${app.getVersion()})`, buttons: ['Entendido'] });
       return true;
     }
-    if (!aMano && saltada === v.version) return true;
+    if (!aMano) return true; // sin ventanas emergentes: el aviso vive junto al perfil
     const r = await dialog.showMessageBox(ventana, {
       type: 'info',
       message: `Hay una versión nueva de Inherent OS (${v.version})`,
@@ -226,7 +228,7 @@ osascript -e 'display dialog "macOS no dejó que Inherent OS se cambiara sola. A
 async function actualizar() {
   actualizando = true;
   const fallo = async (m) => {
-    actualizando = false; ventana?.setProgressBar(-1);
+    actualizando = false; ventana?.setProgressBar(-1); ventana?.webContents.send('inherent:progreso', -1);
     await dialog.showMessageBox(ventana, { type: 'warning', message: 'No se pudo actualizar', detail: `${m}\n\nLa app sigue funcionando. Puedes bajar la versión nueva desde la página de descargas.`, buttons: ['Entendido'] });
   };
   if (process.platform !== 'darwin') return fallo('La actualización automática es para Mac.');
@@ -245,7 +247,7 @@ async function actualizar() {
     for await (const parte of r.body) {
       bajado += parte.length;
       if (!out.write(parte)) await new Promise((ok) => out.once('drain', ok));
-      if (total) ventana?.setProgressBar(Math.min(1, bajado / total));
+      if (total) { ventana?.setProgressBar(Math.min(1, bajado / total)); ventana?.webContents.send('inherent:progreso', Math.round((bajado / total) * 100)); }
     }
     await new Promise((ok, mal) => { out.on('error', mal); out.end(ok); });
     ventana?.setProgressBar(2); // sin porcentaje mientras se abre el .zip
