@@ -8,6 +8,8 @@ import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDO
 import { AREAS, areaDe, areaDeModo } from '../public/js/areas.js';
 import { IAS, iaDe, iasListas, modelosDeIa, fuertesDe, esLocal } from '../public/js/llm/ias.js';
 
+import { carpetaDe, carpetas, estadoDeTrabajo, agenteDeSesion } from '../public/js/llm/carpetas.js';
+
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
 t('seis modos, cada uno con su harness y sus sugerencias', () => {
@@ -239,6 +241,30 @@ t('el switch de IA: qué empresa responde, aparte del modelo', () => {
   assert.deepEqual(modelosDeIa(kilo, 'claude'), [{ provider: 'kilocode', model: 'anthropic/claude-opus' }]);
   assert.deepEqual(modelosDeIa(kilo, 'local'), [{ provider: 'ollama', model: 'qwen3:8b' }]);
   assert.deepEqual(fuertesDe('anthropic/claude-opus-5.5'), ['estrategia', 'diseno']); assert.deepEqual(fuertesDe('moonshotai/kimi-k3'), ['diseno', 'consulting']); assert.deepEqual(fuertesDe('qwen/qwen3'), []);
+});
+
+t('carpetas: cada conversación vive en su cliente; sin cliente, en Inherent', () => {
+  assert.equal(carpetaDe({ id: 'inh-diseno-akai-mw1' }), 'akai');
+  assert.equal(carpetaDe({ id: 'inh-organizacion-general-mw1' }), 'inherent');
+  assert.equal(carpetaDe({ id: 'inh-organizacion-general-mw1', cliente: 'nao' }), 'nao');
+});
+t('carpetas: primero lo reciente, luego Inherent y Personal; un cliente vacío también sale', () => {
+  const xs = carpetas([
+    { id: 'inh-diseno-akai-mw1', last_active: '2026-11-01' },
+    { id: 'inh-diseno-nao-mw2', last_active: '2026-11-03', agente: { nombre: 'Creative', estado: 'decidir' } },
+    { id: 'inh-organizacion-general-mw3', last_active: '2026-11-05' },
+  ], [{ slug: 'akai', nombre: 'AKAI' }, { slug: 'nao', nombre: 'NAO' }, { slug: 'atelier', nombre: 'Atelier' }], { personal: true });
+  assert.deepEqual(xs.map((c) => c.nombre), ['NAO', 'AKAI', 'Atelier', 'Inherent', 'Personal']);
+  assert.equal(xs[0].pendientes, 1);
+  assert.deepEqual(carpetas([], []).map((c) => c.id), ['inherent']);
+});
+t('carpetas: la fila muestra el trabajo más urgente', () => {
+  assert.equal(estadoDeTrabajo({ etapas: [{ estado: 'aprobada' }, { estado: 'revision' }] }), 'decidir');
+  assert.equal(estadoDeTrabajo({ etapas: [{ estado: 'en_cola' }] }), 'trabajando');
+  assert.equal(estadoDeTrabajo({ etapas: [{ estado: 'aprobada' }] }), 'listo');
+  const runs = [{ id: 'a', flujo: { agente: 'Creative' }, etapas: [{ estado: 'trabajando' }] }, { id: 'b', flujo: { agente: 'Ads' }, etapas: [{ estado: 'pregunta' }] }, { id: 'c', archivado: true, etapas: [{ estado: 'revision' }] }];
+  assert.deepEqual(agenteDeSesion([{ run: 'a' }, { run: 'b' }, { run: 'c' }], runs), { nombre: 'Ads', estado: 'decidir' });
+  assert.equal(agenteDeSesion([], runs), null);
 });
 
 console.log(`\n${ok} pruebas del Inherent LLM pasaron`);

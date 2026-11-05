@@ -370,7 +370,7 @@ const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.docume
 function latHtml(mac) {
   const cliente = me.role === 'client';
   return html`<aside class="lat" aria-label="Barra lateral">
-    <a class="lat-marca" href="#/${cliente ? 'portal' : 'home'}" aria-label="Inherent OS"><span class="lat-emb">${emblemaTema()}</span><span class="lat-wm"><img class="wm-dia" src="/brand/wordmark-dark.svg" alt="Inherent"><img class="wm-noche" src="/brand/wordmark-light.svg" alt=""><sup>OS</sup></span></a>
+    <div class="lat-top">${cliente ? '' : html`<a class="lat-it lat-nueva" href="#/chat">${ico('nuevo', 16)}<span class="lat-t">Nueva conversación</span></a>`}<button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
     ${cliente ? '' : html`<button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>`}
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
@@ -378,7 +378,7 @@ function latHtml(mac) {
     <div class="lat-pie">
       ${cliente ? '' : html`<div class="lat-ayuda" id="lat-ayuda"></div>`}
       <div class="lat-yo"><button type="button" class="lat-yo-b" data-lat="yo" aria-haspopup="menu" aria-expanded="false" title="Tu cuenta">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<i>${initials(me.name)}</i>`}<span><b>${me.name}</b><small>${me.title || roleName(me.role)}</small></span></button>
-        <a class="lat-ib" href="#/ajustes/ia" aria-label="Ajustes" title="Ajustes">${ico('settings', 16)}</a><button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
+        <a class="lat-ib" href="#/ajustes/ia" aria-label="Ajustes" title="Ajustes">${ico('settings', 16)}</a></div>
     </div></aside>`;
 }
 // Lo que hacen los botones de la barra (y los mismos dentro de la hoja «Más» del cel).

@@ -15,6 +15,7 @@ import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, 
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
 import { etapaDe, etapaLabel } from '../estrategia.js';
 import { loadEstrategia, estrategiaNow } from '../stratlist.js';
+import { carpetas, carpetaDe, ESTADO_FILA } from '../llm/carpetas.js';
 import { loadBrands, brandsNow, brandAccess } from '../brandlist.js';
 import { botonVoz, dictar } from '../voz.js';
 import { svgIco } from '../iconos.js';
@@ -65,11 +66,12 @@ export async function render(el, { me, sub = [], alive }) {
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
+    cliente: '', abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
-  const persistir = () => guardar(me, { modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
+  const persistir = () => guardar(me, { abiertas: S.abiertas, modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (LM Studio, Ollama…). El elegido si es local; si no, el primero que haya.
@@ -80,7 +82,10 @@ export async function render(el, { me, sub = [], alive }) {
     return p ? { provider: p.slug, model: p.modelos[0] } : null;
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
-  const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || '' : '');
+  const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || S.cliente : S.cliente) || '';
+  const clientesChat = () => { const m = new Map(); for (const c of estrategiaNow()) if (c.slug !== 'inherent') m.set(c.slug, c.nombre); for (const b of brandsNow()) if (b.slug && !m.has(b.slug) && b.slug !== 'inherent' && b.slug !== 'personal') m.set(b.slug, b.nombre || b.name || b.slug); return [...m].map(([slug, nombre]) => ({ slug, nombre })); };
+  const carpetasChat = (xs = S.sesiones) => carpetas(xs, clientesChat(), { personal: me.role === 'ceo' });
+  const nombreCliente = (id) => carpetasChat().find((c) => c.id === id)?.nombre || '';
   const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().filter((c) => S.modo === 'estrategia' || c.slug !== 'inherent').map((c) => [c.slug, c.nombre]) : modoDe(S.modo).pide === 'marca' ? brandsNow().filter((b) => S.modo !== 'marketing' || !b.personal).map((b) => [b.slug, b.name]) : []);
   // Qué IA responde ahora: la del modelo elegido o la del servidor por defecto. '' si no se sabe.
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider, S.modelo.model) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider, S.modelos.actual.model) : '');
@@ -112,7 +117,6 @@ export async function render(el, { me, sub = [], alive }) {
       <div class="llm-conv" id="llm-conv"><div class="llm-col" id="llm-col"></div></div>
       <button type="button" class="llm-abajo" data-a="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>
       <div class="llm-compw" id="llm-compw"></div>
-      <div class="llm-sug" id="llm-sug"></div>
     </main>
     <aside class="llm-panel" id="llm-panel" aria-label="Panel del modo"></aside>
     <div class="llm-velo" data-a="side"></div>
@@ -137,38 +141,43 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- La barra de conversaciones (el modo · nueva · las conversaciones del modo por fecha · tú y el servidor) ----------
   // Sin buscar se ven las conversaciones del modo; al buscar, las de todos (cada una con la letra de su modo).
   function pintarSide() {
-    const q = S.busca.trim().toLowerCase(), m = modoDe(S.modo);
-    // Solo las de los modos que este perfil abre (una conversación puede ser de un modo que el perfil ya no abre; cuenta.
-    const lista = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo) && (q ? String(s.title || s.preview || '').toLowerCase().includes(q) : leerIdSesion(s.id).modo === S.modo));
-    const grupos = {}; for (const s of lista) (grupos[grupoFecha(s.last_active || s.started_at)] ||= []).push(s);
-    const fila = (s) => { const m = modoDe(leerIdSesion(s.id)?.modo || 'organizacion'); return html`<div class="ls-row ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"><i class="ls-m" data-m="${m.id}">${m.letra}</i><span>${s.title || s.preview || 'Conversación'}</span></a><button type="button" class="ls-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
-    const estado = !S.salud ? ['', 'Buscando el servidor…'] : S.salud.on ? ['on', 'Servidor · siempre encendido'] : ['off', 'Servidor fuera de línea'];
-    // El logo ya está en la barra lateral del shell: aquí solo el nombre del Chat. El modo se cambia con el selector (o con «/»).
-    const dest = lado();
-    mount(dest, html`<div class="ls-brand"><span class="ls-emb">${ico('chat-ia', 20)}</span><b class="ls-ttl">Inherent LLM</b></div>
-      <div class="ls-area" data-m="${S.modo}">${modos.length > 1 ? html`<b><select class="ls-modo" aria-label="Modo del Chat">${modos.map((x) => html`<option value="${x.id}" ${x.id === S.modo ? raw('selected') : ''}>${x.nombre}</option>`)}</select></b>` : html`<b>${m.nombre}</b>`}<small>${m.sub}</small></div>
-      <button type="button" class="ls-new" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
-      <div class="ls-k ls-kr">${q ? 'Todos los modos' : 'Recientes'}<label class="ls-busca">${ico('search', 12)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label></div>
-      <div class="ls-list">${!listo() ? html`<p class="ls-mut">${enServidor ? 'El servidor no está en línea ahora.' : ''}</p>` : lista.length ? ['Hoy', 'Ayer', 'Últimos 7 días', 'Antes'].filter((g) => grupos[g]).map((g) => html`<div class="ls-g">${g}</div>${grupos[g].map(fila)}`) : html`<p class="ls-mut">${q ? 'Nada con ese nombre.' : S.sesiones.tope ? `Entre las últimas ${S.sesiones.length} conversaciones no hay de ${m.nombre}.` : `Todavía no hay conversaciones de ${m.nombre}.`}</p>`}</div>
-      <footer class="ls-foot"><button type="button" class="ls-me" data-a="ajustes" title="Ajustes del Chat">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<span>${initials(me.name)}</span>`}<span class="ls-me-t"><b>${me.name}</b><small><i class="ls-dot ${estado[0]}"></i>${estado[1]}</small></span>${ico('gear', 15)}</button></footer>`);
-    const qi = $('#ls-q', dest); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n = $('#ls-q', lado()); n.focus(); n.setSelectionRange(pos, pos); };
+    const q = S.busca.trim().toLowerCase(), dest = lado();
+    // Solo las de los modos que este perfil abre. Al buscar se abren las carpetas que tienen resultados.
+    const validas = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo));
+    const lista = q ? validas.filter((s) => String(s.title || s.preview || '').toLowerCase().includes(q)) : validas;
+    const cars = carpetasChat(lista).filter((c) => !q || c.conv.length);
+    const n = validas.filter((s) => s.agente?.estado === 'decidir').length, cur = S.sesion ? carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) : '';
+    const abierta = (c) => Boolean(q) || c.id === cur || (S.abiertas[c.id] ?? c.conv.length > 0);
+    const fila = (s) => { const e = s.agente && ESTADO_FILA[s.agente.estado]; return html`<div class="ch-conv ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"${s.id === S.sesion ? raw(' aria-current="page"') : ''}><span class="ch-t">${s.title || s.preview || 'Conversación'}</span>${e ? html`<span class="ch-est ${s.agente.estado}">${ico(e[1], 12)}<span>${s.agente.nombre} · ${e[0]}</span></span>` : ''}</a><button type="button" class="ch-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
+    mount(dest, html`<div class="ch-sup">
+        <a class="ch-f ch-solo-cel" href="#/home">${ico('nav-home', 16)}<span>Volver a Hoy</span></a>
+        <button type="button" class="ch-f" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
+        <label class="ch-f ch-busca">${ico('search', 16)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label>
+        <button type="button" class="ch-f ${S.decidir ? 'on' : ''}" data-a="por-decidir">${ico('alert', 16)}<span>Por decidir</span>${n ? html`<b class="ch-n">${n}</b>` : ''}</button>
+      </div>
+      <div class="ch-k">Clientes</div>
+      <div class="ch-lista">${!listo() ? html`<p class="ls-mut">${S.salud ? 'El servidor no está en línea ahora.' : 'Conectando…'}</p>` : !cars.length ? html`<p class="ls-mut">Nada con ese nombre.</p>` : cars.map((c) => html`<div class="ch-car ${abierta(c) ? 'abierta' : ''}">
+        <div class="ch-car-f"><button type="button" class="ch-d" data-a="carpeta" data-c="${c.id}" aria-expanded="${abierta(c) ? 'true' : 'false'}">${ico('chevron-right', 13)}${ico('folder-open', 16)}<span>${c.nombre}</span>${!abierta(c) && c.pendientes ? html`<i class="ch-pend" title="Tiene decisiones pendientes"></i>` : ''}</button><button type="button" class="ch-mas" data-a="nuevo-en" data-c="${c.id}" aria-label="Nueva conversación en ${c.nombre}" title="Nueva conversación">${ico('plus', 14)}</button></div>
+        <div class="ch-cuerpo"><div>${c.conv.length ? c.conv.map(fila) : html`<p class="ch-vacio">Sin conversaciones</p>`}</div></div></div>`)}</div>`);
+    const qi = $('#ls-q', dest); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n2 = $('#ls-q', lado()); n2.focus(); n2.setSelectionRange(pos, pos); };
   }
 
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
   const vacio = () => !S.msgs.length && !S.agentes.length;
   function pintarTitulo() {
-    const m = modoDe(S.modo), rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
-    mount(C('llm-titulo'), vacio() ? html`<span class="lt-modo"><i data-m="${m.id}">${m.letra}</i>${m.nombre}</span>` : html`<span class="lt-t">${S.titulo || 'Conversación'}</span><span class="lt-modo sm"><i data-m="${m.id}">${m.letra}</i>${m.nombre}${slugAhora() ? ` · ${nombreSlug()}` : ''}</span>`);
+    const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
+    if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
+    const cli = S.sesion ? carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) : S.cliente || 'inherent';
+    mount(C('llm-titulo'), html`<span class="lt-t">${vacio() ? 'Nueva conversación' : S.titulo || 'Conversación'}</span>${S.sesion ? html`<button type="button" class="ch-chip" data-a="mover" aria-haspopup="listbox" title="Mover a otro cliente">${nombreCliente(cli)}${ico('down', 12)}</button>` : ''}`);
   }
   function pintarCentro() {
     C('llm-main').classList.toggle('vacio', vacio());
-    pintarTitulo(); pintarCaja(); pintarHilo(); pintarSug();
+    pintarTitulo(); pintarCaja(); pintarHilo();
   }
   function heroHtml() {
-    const m = modoDe(S.modo), s = nombreSlug();
     if (!listo()) return setupHtml();
-    return html`<div class="lh"><h1>${S.modo === 'estrategia' && s ? html`¿Qué trabajamos de ${s}?` : S.modo === 'diseno' && s ? html`¿Qué diseñamos para ${s}?` : S.modo === 'consulting' && s ? html`¿Qué ordenamos del negocio de ${s}?` : S.modo === 'marketing' && s ? html`¿Qué planeamos para ${s}?` : S.modo === 'produccion' && s ? html`¿Qué producimos para ${s}?` : S.modo === 'organizacion' ? '¿Qué organizamos hoy?' : '¿En qué trabajamos?'}</h1>
-      <p>${m.depto} · ${m.sub}. Con las reglas de Inherent y el modelo que elijas.</p></div>`;
+    const cli = S.cliente ? nombreCliente(S.cliente) : '', m = modoDe(S.modo);
+    return html`<div class="ch-nuevo"><h1>${cli ? `¿Qué necesitas para ${cli}?` : '¿En qué trabajamos?'}</h1><p>${m.nombre} · ${m.sub}.</p><div class="ch-sug">${(SUGERENCIAS[S.modo] || []).slice(0, 4).map(([t]) => html`<button type="button" data-a="sugerencia" data-t="${t}">${ico('arrow-right', 15)}<span>${t}</span></button>`)}</div></div>`;
   }
   // El servidor fuera de línea (raro): se dice y se puede reintentar; mientras, los chats por el puente siguen.
   function setupHtml() {
@@ -179,12 +188,6 @@ export async function render(el, { me, sub = [], alive }) {
     return '';
   }
   const sinModelo = () => false; // el servidor siempre trae sus modelos
-
-  function pintarSug() {
-    const box = C('llm-sug');
-    if (!vacio() || !listo()) return mount(box, '');
-    mount(box, html`<div class="lsg">${(SUGERENCIAS[S.modo] || []).map(([t, k]) => html`<button type="button" class="lsg-c" data-a="sugerencia" data-t="${t}"><b>${t}</b><span>${k}</span></button>`)}</div>`);
-  }
 
   // ---------- La caja (composer): modo · cliente/marca · modelo · voz · enviar ----------
   // El nombre del modelo en la caja: sin la IA (ya la dice el switch), salvo en «Otras» o por una pasarela (Kilo,
@@ -231,21 +234,21 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function pintarCaja() {
     const box = C('llm-compw'), prev = $('#llm-in', el)?.value || '';
-    if (!listo()) return mount(box, vacio() ? heroHtml() : html`<div class="llm-col">${setupHtml()}</div>`);
+    box.hidden = S.decidir;
+    if (!listo()) return mount(box, '');
     const m = modoDe(S.modo), sl = slugAhora();
-    mount(box, html`${vacio() ? heroHtml() : ''}<div class="lc-w">
+    mount(box, html`<div class="lc-w">
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
-        <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo…   «/» para comandos'}" aria-label="Mensaje"></textarea>
+        <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo, o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
-          <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox"><i data-m="${m.id}">${m.letra}</i>${m.nombre}<span class="lc-car">▾</span></button>
+          <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox">${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
           <span class="sp"></span>
           ${iasHtml() || ''}${'' && html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
           <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo del servidor responde">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
-        </div></form>
-      <p class="lc-nota">El Inherent LLM trabaja con las reglas de Inherent y puede equivocarse: revisa lo importante.</p></div>`);
+        </div></form></div>`);
     const ta = $('#llm-in', el); ta.value = prev;
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
@@ -303,7 +306,12 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function pintarHilo() {
     const col = C('llm-col'), box = C('llm-conv');
-    if (vacio()) { mount(col, ''); flecha(); return; }
+    if (S.decidir) {
+      const xs = S.sesiones.filter((s) => s.agente?.estado === 'decidir');
+      mount(col, xs.length ? html`<div class="ch-dl">${xs.map((s) => html`<a href="#/chat/${esc(s.id)}"><span><b>${s.title || 'Conversación'}</b><small>${nombreCliente(carpetaDe(s))} · ${s.agente.nombre}</small></span>${ico('arrow-right', 15)}</a>`)}</div>` : html`<div class="ch-nuevo"><h1>Nada espera tu decisión</h1><p>Cuando un agente te necesite, aparecerá aquí y en su conversación.</p></div>`);
+      flecha(); return;
+    }
+    if (vacio()) { mount(col, heroHtml()); flecha(); return; }
     const abajo = box.scrollHeight - box.scrollTop - box.clientHeight < 120;
     // F4.5: los mensajes y, entre ellos, lo que pasa en cada trabajo ligado; al final, lo que el servidor hace ahora.
     const items = S.agentes.length ? hiloChat(S.msgs, S.agentes) : S.msgs.map((_, i) => ({ tipo: 'msg', i }));
@@ -522,14 +530,14 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
+    S.decidir = false; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
     if (!modos.some((m) => m.id === info.modo)) { toast('Esa conversación es de un modo que tu perfil no abre', true); return nuevo(); }
-    S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; if (info.slug) S.slugs[S.modo] = info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
+    S.decidir = false; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
     S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     pintarSide(); pintarCentro(); pintarPanel();
     try {
@@ -773,6 +781,10 @@ export async function render(el, { me, sub = [], alive }) {
     const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
+    if (a === 'nuevo-en') { S.cliente = t.dataset.c === 'inherent' ? '' : t.dataset.c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[t.dataset.c] = true; persistir(); return nuevo(); }
+    if (a === 'carpeta') { const c = t.closest('.ch-car'), ab = !c.classList.contains('abierta'); c.classList.toggle('abierta', ab); t.setAttribute('aria-expanded', ab ? 'true' : 'false'); S.abiertas[t.dataset.c] = ab; persistir(); return; }
+    if (a === 'por-decidir') { S.decidir = !S.decidir; S.side = false; R.classList.remove('side-on'); pintarSide(); pintarCentro(); return; }
+    if (a === 'mover') return menu(t, 'Mover a', carpetasChat().map((c) => ({ v: c.id, label: c.nombre, on: c.id === carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) })), async (v) => { try { await api(`chat/sesiones/${encodeURIComponent(S.sesion)}/mover`, { method: 'POST', body: { cliente: v } }); const f = S.sesiones.find((x) => x.id === S.sesion); if (f) f.cliente = v; S.cliente = v === 'inherent' ? '' : v; S.abiertas[v] = true; persistir(); pintarSide(); pintarTitulo(); toast(`Movida a ${nombreCliente(v)}`); } catch (e) { toast(e.message, true); } });
     if (a === 'arroba') return elegirArroba(t.dataset.n);
     if (a === 'plan-empezar') return empezarPlan(+t.dataset.i);
     if (a === 'plan-cancelar') { const p = S.msgs[+t.dataset.i]?.p; if (p) { p.estado = 'cancelado'; pintarHilo(); } return; }
