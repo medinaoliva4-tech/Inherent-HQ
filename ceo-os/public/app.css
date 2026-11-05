@@ -9658,11 +9658,11 @@ html::before{left:-16vw;top:30vh;width:60vw;height:84vh;background:linear-gradie
 html::after{right:-14vw;top:-26vh;width:58vw;height:80vh;background:linear-gradient(232deg,rgb(235 235 240 / .24),rgb(235 235 240 / .05) 36%,transparent 64%)}
 html[data-vidrio="real"]{background:rgb(14 14 15 / .56)}
 html[data-vidrio="real"]::before,html[data-vidrio="real"]::after{display:none}
-#luz{position:fixed;z-index:-1;left:-460px;top:-460px;width:920px;height:920px;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgb(235 235 240 / .055),rgb(235 235 240 / .018) 52%,transparent);transition:transform .6s var(--suave),opacity .5s ease-out;will-change:transform}
+#luz{position:fixed;z-index:-1;left:-280px;top:-280px;width:560px;height:560px;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgb(235 235 240 / .032),rgb(235 235 240 / .01) 52%,transparent);transition:transform .6s var(--suave),opacity .5s ease-out;will-change:transform}
 #luz.on{opacity:1}
-#luz-aro{position:fixed;z-index:25;left:0;top:0;pointer-events:none;opacity:0;background:radial-gradient(280px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .018),transparent 70%);transition:opacity .35s ease-out}
+#luz-aro{position:fixed;z-index:25;left:0;top:0;pointer-events:none;opacity:0;background:radial-gradient(180px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .012),transparent 70%);transition:opacity .35s ease-out}
 #luz-aro.on{opacity:1}
-#luz-aro::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(210px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .16),transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+#luz-aro::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(140px circle at var(--mx,50%) var(--my,0),rgb(255 255 255 / .1),transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .kb-board{grid-template-columns:repeat(4,minmax(172px,1fr));overflow-x:auto}
 #main .sp-cover .lbl{color:rgb(255 255 255 / .62)}
 #main .agx-espera{border:0;background:var(--surface);box-shadow:var(--v-borde)}

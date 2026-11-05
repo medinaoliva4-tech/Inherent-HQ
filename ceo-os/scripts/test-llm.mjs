@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { leerMeta, crearBrujula, progreso, tareaActual, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe } from '../public/js/llm/brujula.js';
-import { MODOS, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
+import { MODOS, MODO_LIBRE, SISTEMA_LIBRE, modosDe, modoDe, sistemaDe, HARNESS, REGLAS_COMUNES, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, CONSULTING, alcanceConsulting, consultingAbierto, leerEncargo, tareaDeEncargo, encargosDe } from '../public/js/llm/modos.js';
 import { AREAS, areaDe, areaDeModo } from '../public/js/areas.js';
 import { IAS, iaDe, iasListas, modelosDeIa, fuertesDe, esLocal } from '../public/js/llm/ias.js';
 
@@ -74,6 +74,14 @@ t('las tarjetas: criterios y pregunta salen del texto; lo visible no las muestra
   assert.equal(textoVisible('Listo.\n```estrategia\n{"meta":"x"}\n```'), 'Listo.');
 });
 
+t('sin modo: solo el CEO lo ve y va sin instrucciones de Inherent', () => {
+  assert.ok(modosDe('ceo', MODOS).some((m) => m.id === 'libre'));
+  for (const r of ['team', 'coo', 'client']) assert.ok(!modosDe(r, MODOS).some((m) => m.id === 'libre'), r);
+  assert.equal(sistemaDe('libre', { persona: 'x', cliente: 'y' }), SISTEMA_LIBRE);
+  assert.ok(!/Inherent/.test(SISTEMA_LIBRE));
+  assert.equal(MODO_LIBRE.pide, '');
+  assert.equal(leerIdSesion(idSesion('libre', '')).modo, 'libre');
+});
 t('las sesiones: id con modo y cliente, se lee de vuelta; lo ajeno no', () => {
   const id = idSesion('diseno', 'Akai Café!', 1767225600000, 0.5);
   assert.match(id, /^inh-diseno-akaicaf-[a-z0-9]+$/);

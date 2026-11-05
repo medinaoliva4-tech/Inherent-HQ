@@ -538,3 +538,7 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Azul:** interruptores, avance, enfoque y selección. **Rojo:** lo que borra. El botón principal sigue en hueso.
 - **Aviso de actualización:** solo aparece cuando hay una versión nueva.
 
+### Entrega 11 · Chat sin modo
+- **Sin modo:** el CEO puede usar el Chat a secas, sin instrucciones de Inherent ni pedir cliente. El resto del equipo no lo ve.
+- **Luz del mouse:** más chica y más suave.
+
