@@ -10,6 +10,8 @@ import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
 import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat, clienteDelPlan, conversacionLigada, inputsConContexto } from '../public/js/chat-agentes.js';
+import { partirUi, uiHtml, PROMPT_GENUI, ESQUEMA_UI } from '../public/js/llm/genui.js';
+import { createStreamingParser } from '../public/vendor/openui-lang-core-1.1.0.min.js';
 import { respuestaAbierta, puedeRecibir, enCola, siguienteAuto, leerPregunta, salidaParcial, faltaAporte, trasFalla, normalizarEtapa, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -347,6 +349,33 @@ t('E2 revisión: una falla después de usar una conexión externa no se reintent
   const y = trasFalla({ estado: 'trabajando', borrador: 'b', actividades: [] }, 'x', 't', { sinReintento: true });
   assert.equal(y.estado, 'detenida'); assert.equal(y.borrador, '');
   assert.equal(enCola({ estado: 'detenida', fallas: 2, actividades: [] }, 'm', 'a', 't').fallas, 0, 'Reintentar empieza de cero');
+});
+// ----- F4.5 · Entrega 3: OpenUI -----
+const ui = (src, o) => uiHtml(src, createStreamingParser, o);
+t('E3: el mensaje se parte en texto e interfaz, también con el bloque a medias', () => {
+  assert.deepEqual(partirUi('Hola\n\n```ui\nroot = Stack([])\n```\n\nAdiós'), [{ tipo: 'md', t: 'Hola\n\n' }, { tipo: 'ui', t: 'root = Stack([])\n' }, { tipo: 'md', t: '\n\nAdiós' }]);
+  assert.deepEqual(partirUi('Antes\n```ui\nroot = St'), [{ tipo: 'md', t: 'Antes\n' }, { tipo: 'ui', t: 'root = St' }]);
+  assert.deepEqual(partirUi('Solo texto, con ```js\ncode\n``` adentro'), [{ tipo: 'md', t: 'Solo texto, con ```js\ncode\n``` adentro' }]);
+});
+t('E3: dibuja los componentes del OS', () => {
+  const h = ui('root = Stack([c, t, s, q])\nc = Card("Ventas", [m])\nm = Metric("Enero", "Q10,000", "sube 5%")\nt = Table(["Mes", "Total"], [["Ene", "10"]])\ns = Steps(["Uno", "Dos"])\nq = Question("¿Seguimos?", ["Sí", "No"])\n');
+  assert.match(h, /class="gu-card"/); assert.match(h, /<b>Ventas<\/b>/); assert.match(h, /gu-metric/); assert.match(h, /Q10,000/); assert.match(h, /<th>Mes<\/th>/); assert.match(h, /<td>Ene<\/td>/);
+  assert.match(h, /<ol class="gu-steps">/); assert.match(h, /data-a="opcion" data-t="Sí"/);
+});
+t('E3: lo que escribe el modelo es dato: se escapa y una acción solo manda un pedido', () => {
+  const h = ui('root = Stack([a, b])\na = Text("<img src=x onerror=alert(1)>")\nb = Pedir("Crear \\"tarea\\"", "Crea la tarea <b>")\n');
+  assert.doesNotMatch(h, /<img/); assert.match(h, /&lt;img/); assert.match(h, /data-a="opcion"/); assert.doesNotMatch(h, /href|onclick|<script/);
+  assert.equal(ui('root = Stack([x])\nx = Desconocido("a")\n').includes('Desconocido'), false, 'un componente que no existe no se dibuja');
+});
+t('E3: mientras llega se dibuja lo que hay; las opciones viejas quedan apagadas', () => {
+  assert.match(ui('root = Stack([a, b])\na = Text("Listo")\nb = Tex'), /Listo/);
+  assert.equal(ui(''), '');
+  assert.match(ui('root = Stack([q])\nq = Question("¿Sí?", ["A"])\n', { apagado: true }), /disabled/);
+});
+t('E3: el ejemplo que aprende el modelo se dibuja de verdad y el texto cabe en el contexto', () => {
+  const ej = /```ui\n([\s\S]*?)```/.exec(PROMPT_GENUI)[1];
+  const r = createStreamingParser(ESQUEMA_UI, 'Stack').set(ej, true); assert.deepEqual(r.meta.errors, []); assert.deepEqual(r.meta.unresolved, []);
+  assert.ok(ui(ej).length > 100); assert.ok(PROMPT_GENUI.length < 2200, `${PROMPT_GENUI.length}`);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

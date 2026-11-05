@@ -21,6 +21,7 @@ import { botonVoz, dictar } from '../voz.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, motorDe, esServidor } from '../motor-ui.js';
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
 import { rutaBloque, rutaChat } from '../herramientas.js';
+import { abrirEnChat } from '../areas.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
@@ -49,6 +50,9 @@ export async function render(el, { me, sub = [], alive }) {
   if (enVuelo) { try { enVuelo.abort(); } catch {} enVuelo = null; }
   mount(el, html`<p class="loading">Cargando…</p>`);
   const [slug, bloque0] = sub;
+  // F4.5 · un solo chat (PLAN-GATEWAY §20): el modo Strategy del Chat, con este cliente y su estrategia en vivo en el panel.
+  return abrirEnChat(me.email, { modo: 'estrategia', slug: slug || '' });
+  // eslint-disable-next-line no-unreachable
   if (!slug) return lista();
   return cliente(slug, bloque0);
 

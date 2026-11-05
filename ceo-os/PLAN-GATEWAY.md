@@ -1,6 +1,6 @@
 # PLAN-GATEWAY · el puente entre Inherent OS y los motores de IA
 
-**Estado (2026-11-04):** consolidado. **F0, F1, F2, F3 y F4 cerradas; F4.5 en curso (Entregas 1 y 2 hechas)** (ver §10, §14–§20): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, **Hermes se retiró** (§18) y **cada trabajo del Agent Area se lleva desde su chat de trabajo** (§19). Sigue F4.5 (§20) y después F5.
+**Estado (2026-11-04):** consolidado. **F0, F1, F2, F3 y F4 cerradas; F4.5 hecha** (ver §10, §14–§20): la web, los MCP por persona, el Chat, la lectura del OS y las escrituras con confirmación corren en el servidor, **Hermes se retiró** (§18) y **cada trabajo del Agent Area se lleva desde su chat de trabajo** (§19). Sigue F5.
 **Para qué sirve este archivo:** es la fuente de verdad del plan. Antes de trabajar en el Gateway, en el Agent Area o en el chat de trabajo se lee; todo cambio de rumbo se anota en §11 en vez de resolverse de palabra.
 **Dónde está el código hoy:** rama `os-agentes-gateway`, PR medinaoliva4-tech/Inherent-HQ#209 (reemplaza #207 y #208, que siguen abiertos hasta que el CEO los cierre).
 
@@ -137,7 +137,7 @@ Esto es lo básico; encima van funciones propias de cada workspace (Strategy, Ma
 | **F2 · Gateway mínimo** | Trabajador en el VPS que toma etapas en cola desde Neon (D13), las corre con el motor (umbral, condensado, cola por proveedor), escribe actividad, resultado y costo; servicio `systemd` | **Hecha y conectada a producción** (§15). Falta que el merge del #209 lleve la pantalla a `inherent-work` |
 | **F3 · Conectar el OS** | «Servidor» por defecto en los trabajos (hecho en F2); **web en el servidor (hecho, §16)**; **MCP por persona desde el servidor (hecho, §16)**; **el Chat y sus modos en el servidor (hecho, §17)**; **Hermes retirado (§18)** | ✅ Cerrada |
 | **F4 · Chat de trabajo** | La interfaz de §8 (Agent, Queue, Sources, File tree), con la conversación guardada | ✅ Cerrada (§19): un trabajo se lleva de punta a punta desde el chat |
-| **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | Entregas 1 y 2 hechas (§20); sigue la 3 |
+| **F4.5 · El Chat como centro** | Un solo chat; `@agente` corre su flujo con el contexto del Chat; ventana de agentes; preguntas y aporte humano; leer antes de aprobar; OpenUI (§20) | ✅ Las 3 entregas hechas (§20) |
 | **F5 · Segundo motor y Figma** | Claude Code detrás del Gateway; ruta de Figwright | El flujo de video corre desde el Gateway |
 | **F6 · Orquestador y flujo** | De un prompt al workflow (§13); generar flujos desde una descripción; W1–W9 por impacto | «Arma el mes de AKAI» crea y corre el trabajo correcto |
 | **F7 · Limpieza** | `CLAUDE.md`, `MAPA.md` y este archivo al día (Hermes ya salió del código y de la app en §18) | Las reglas del repo dicen lo que es cierto |
@@ -415,7 +415,7 @@ La IA que trabaja por un prompt suelto hace lo que quiere. Inherent quiere **tra
 ### Entregas (cada una con su PR, probada en staging)
 1. ✅ **El Chat como centro:** `@agente`, trabajos ligados a la conversación, eventos en el hilo, ventana de agentes con pestañas (cola, documento, archivos, fuentes con verificar/quitar), leer antes de aprobar, retiro del chat de F4, portal y `/etapas` como se dice arriba.
 2. ✅ **El agente que pregunta y pide aporte:** trabajador `f4-5`: estado `pregunta` y `responder` (máximo 3 por etapa, solo en trabajos del Chat), aporte obligatorio (`aporte.pregunta` en el inspector → Reglas), `e.borrador` en vivo (cada ~3 s, también con herramientas), contexto `i-chat-<n>` renovado por etapa, 1 reintento y estado `detenida` a la 2.ª falla, «Usar en…» (otro trabajo o la conversación, con el documento leído). Resultados completos: el documento va primero en el JSON, los campos ya no lo repiten, si se corta el agente sigue donde iba (hasta 2 veces) y lo escrito se rescata. Los ajustes ahora sí llegan al servidor, con el resultado anterior.
-3. **OpenUI y un solo chat:** lang-core + `genui.js` en el Chat y en las tarjetas; el chat de Strategy pasa a «Abrir en el Chat».
+3. ✅ **OpenUI y un solo chat:** el lector de lang-core en `public/vendor` (se carga la primera vez que un mensaje trae un bloque ```ui) y `public/js/llm/genui.js` con Card, Metric, Table, Steps, List, Question y Pedir. La pantalla de Strategy abre el modo Strategy del Chat. Las tarjetas de los trabajos conservan su diseño propio (`.lres`, `.lpr`). Falta borrar el código viejo de `screens/strategy.js` (F7).
 
 ### Decisiones del builder (Claude), para revisar
 - El contexto del Chat entra como **input** del trabajo (citable, recortado) y no como historial completo: cabe en 32k y deja rastro de qué vio el agente.

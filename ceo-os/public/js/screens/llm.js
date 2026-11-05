@@ -29,6 +29,7 @@ import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
+import { partirUi, uiHtml, lectorUi, PROMPT_GENUI } from '../llm/genui.js'; // OpenUI: la interfaz que dibuja el modelo
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
@@ -255,6 +256,13 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- La conversación ----------
   const textoDe = (c) => (Array.isArray(c) ? c.map((p) => (typeof p === 'string' ? p : p?.text || '')).join('') : String(c ?? ''));
+  // El texto del mensaje y, si trae un bloque ```ui, la interfaz. El lector de OpenUI se trae la primera vez que hace falta.
+  function cuerpoDe(x, ult) {
+    const partes = partirUi(x.t);
+    if (partes.length === 1 && partes[0].tipo === 'md') return md(x.t);
+    const lector = lectorUi(() => { if (alive()) pintarHilo(); });
+    return html`${partes.map((p) => (p.tipo === 'md' ? (p.t.trim() ? md(p.t) : '') : !lector ? html`<div class="gu-carga">Dibujando…</div>` : raw(uiHtml(p.t, lector, { apagado: !ult || x.stream }))))}`;
+  }
   function msgHtml(x, i) {
     if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}</div></div>`;
     if (x.r === 'plan') return planAgenteHtml(x.p, i);
@@ -275,7 +283,7 @@ export async function render(el, { me, sub = [], alive }) {
       return html`<div class="lm-apr lm-prop"><span class="lm-k">${ico('alert', 12)} Propuesta · necesita tu OK</span><b>${p.titulo || p.tool}</b><code>${p.tool}</code>
         ${datos.length ? html`<dl class="lm-prop-d">${datos.map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v) : String(v)}</dd>`)}</dl>` : ''}${estado}</div>`;
     });
-    const cuerpo = x.t ? md(x.t) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
+    const cuerpo = x.t ? cuerpoDe(x, ult) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
       ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
@@ -604,7 +612,7 @@ export async function render(el, { me, sub = [], alive }) {
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
-      const [sistema] = await Promise.all([contexto().then((c) => sistemaDe(S.modo, c)), null]);
+      const [sistema] = await Promise.all([contexto().then((c) => `${sistemaDe(S.modo, c)}\n\n${PROMPT_GENUI}`), null]);
       const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); }, // «En cola…» se va al empezar la respuesta

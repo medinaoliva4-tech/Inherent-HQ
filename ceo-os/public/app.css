@@ -9194,3 +9194,19 @@ html.kf-fullscreen{overflow:hidden}
 .lpr-r button.si{background:var(--l-acc);color:var(--l-bg);border-color:transparent}
 .lres-u{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .lres-u select{min-width:0;max-width:100%;font:inherit;font-size:13px;color:var(--l-ink);background:var(--l-surf2);border:1px solid var(--l-line);border-radius:10px;padding:6px 8px}
+/* F4.5 · Entrega 3: la interfaz que dibuja el modelo (OpenUI), con los tokens del Chat */
+.gu{margin:8px 0}.gu-stack{display:grid;gap:8px}
+.gu-card{display:grid;gap:8px;padding:12px 14px;border-radius:var(--r-4);border:1px solid var(--l-line);background:var(--l-surf)}
+.gu-card>b{font-size:14px}
+.gu-text{margin:0;font-size:14px;line-height:1.55}
+.gu-metric{display:grid;gap:1px;padding:10px 12px;border-radius:12px;background:var(--l-surf2)}
+.gu-metric span,.gu-metric small{font-size:12px;color:var(--l-mut)}.gu-metric b{font-size:20px;font-weight:600;letter-spacing:-.01em}
+.gu-tabla{overflow-x:auto;border-radius:12px;border:1px solid var(--l-line)}
+.gu-tabla table{width:100%;border-collapse:collapse;font-size:13px}
+.gu-tabla th{text-align:left;font-weight:500;color:var(--l-mut);background:var(--l-surf2);white-space:nowrap}
+.gu-tabla th,.gu-tabla td{padding:7px 10px;border-bottom:1px solid var(--l-line)}
+.gu-tabla tr:last-child td{border-bottom:0}
+.gu-steps,.gu-list{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14px}
+.gu-q{display:grid;gap:6px}.gu-q>b{font-size:14px}
+.gu-carga{font-size:12.5px;color:var(--l-mut);padding:8px 0}
+
