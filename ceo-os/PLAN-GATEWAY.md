@@ -452,6 +452,9 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 4. **Memoria y ciclo de mejora.**
 5. **Tablero** estilo Factory: Encargo → Diagnóstico → Plan → Producción → Revisión → Entrega.
 
+### Entrega 5 · reglas
+- **Tablero:** Encargo, Diagnóstico, Plan, Producción, Revisión y Entrega, en la página de Agentes. Lo que espera a una persona cae en Revisión.
+
 ### Entrega 4 · reglas
 - **Memoria:** los ajustes y correcciones se muestran por agente. Solo se vuelven regla si el CEO o el COO la aprueban.
 - **Reglas:** máximo 12, sin datos de un cliente. Entran a cada etapa junto con los principios.

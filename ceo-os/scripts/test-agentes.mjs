@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
 import { correccionesDe, agregarRegla, bloqueReglas, MAX_REGLAS } from '../public/js/memoria.js';
+import { columnaDe, tablero, COLUMNAS } from '../public/js/tablero.js';
 import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
@@ -109,6 +110,16 @@ t('memoria: solo lo escrito por el equipo y solo reglas aprobadas', () => {
   assert.ok(agregarRegla(a.reglas, 'di el número').error); assert.ok(agregarRegla([], ' ').error);
   assert.ok(agregarRegla(Array.from({ length: MAX_REGLAS }, (_, i) => ({ texto: `r${i}` })), 'x').error);
   assert.match(bloqueReglas(a.reglas), /Di el número/); assert.equal(bloqueReglas(undefined), '');
+});
+t('tablero: cada trabajo cae en una sola columna', () => {
+  const T = (estado, tipo, activa = 1, extra = {}) => ({ activa, etapas: [{ estado: 'aprobada', tipo: 'analisis' }, { estado, tipo }], flujo: { area: 'strategy' }, ...extra });
+  assert.equal(columnaDe({ activa: 0, etapas: [{ estado: 'pendiente', tipo: 'analisis' }] }), 'Encargo');
+  assert.equal(columnaDe(T('trabajando', 'analisis')), 'Diagnóstico'); assert.equal(columnaDe(T('en_cola', 'decision')), 'Plan');
+  assert.equal(columnaDe(T('trabajando', 'entregable')), 'Producción'); assert.equal(columnaDe(T('revision', 'entregable')), 'Revisión');
+  assert.equal(columnaDe(T('pregunta', 'analisis')), 'Revisión'); assert.equal(columnaDe({ completo: true }), 'Entrega');
+  const xs = [T('revision', 'decision'), T('revision', 'decision', 1, { archivado: true }), T('revision', 'decision', 1, { flujo: { area: 'creative' } })];
+  const c = tablero(xs, { area: 'strategy' }); assert.equal(c.length, COLUMNAS.length); assert.equal(c[4].total, 1);
+  assert.equal(tablero(Array.from({ length: 12 }, () => ({ completo: true })))[5].trabajos.length, 8);
 });
 t('supervisor: lee varios agentes y sigue una sola vez', () => {
   const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];
