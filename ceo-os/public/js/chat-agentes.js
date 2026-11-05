@@ -5,6 +5,7 @@
 import { tipoDe } from './agentes-flujos.js';
 import { leerOutput } from './agentes-flujos.js';
 import { hilo } from './agentes-chat-datos.js';
+import { sinUi } from './llm/genui.js';
 export { hilo, fuentes, archivos, idChatTrabajo } from './agentes-chat-datos.js';
 
 const plano = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -45,7 +46,7 @@ export function contextoChat(msgs = [], resumen = '') {
   const lineas = [];
   let usado = resumen ? Math.min(resumen.length, 1500) + 40 : 0;
   for (const m of [...msgs].reverse()) {
-    const t = String(m.t || '').trim(); if (!t || !['u', 'a'].includes(m.r)) continue;
+    const t = sinUi(m.t); if (!t || !['u', 'a'].includes(m.r)) continue;
     const l = `${m.r === 'u' ? 'PERSONA' : 'CHAT'}: ${t}`;
     if (usado + l.length + 2 > MAX_CONTEXTO) { if (!lineas.length) lineas.push(l.slice(-(MAX_CONTEXTO - usado - 2))); break; }
     lineas.push(l); usado += l.length + 2;

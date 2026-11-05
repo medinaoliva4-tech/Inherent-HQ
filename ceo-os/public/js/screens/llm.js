@@ -29,7 +29,7 @@ import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
-import { partirUi, uiHtml, lectorUi, PROMPT_GENUI } from '../llm/genui.js'; // OpenUI: la interfaz que dibuja el modelo
+import { partirUi, uiHtml, lectorUi, lectorFallo, sinUi, PROMPT_GENUI } from '../llm/genui.js'; // OpenUI: la interfaz que dibuja el modelo
 
 const K = (me) => `os.llm.${me.email}`;
 // En pantallas chicas el panel va encima del chat: empieza cerrado y abrirlo no se recuerda.
@@ -261,7 +261,7 @@ export async function render(el, { me, sub = [], alive }) {
     const partes = partirUi(x.t);
     if (partes.length === 1 && partes[0].tipo === 'md') return md(x.t);
     const lector = lectorUi(() => { if (alive()) pintarHilo(); });
-    return html`${partes.map((p) => (p.tipo === 'md' ? (p.t.trim() ? md(p.t) : '') : !lector ? html`<div class="gu-carga">Dibujando…</div>` : raw(uiHtml(p.t, lector, { apagado: !ult || x.stream }))))}`;
+    return html`${partes.map((p) => (p.tipo === 'md' ? (p.t.trim() ? md(p.t) : '') : lector ? raw(uiHtml(p.t, lector, { apagado: !ult || x.stream, final: !x.stream })) : lectorFallo() ? html`<pre class="gu-src">${p.t}</pre>` : html`<div class="gu-carga">Dibujando…</div>`))}`;
   }
   function msgHtml(x, i) {
     if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}</div></div>`;
@@ -286,7 +286,7 @@ export async function render(el, { me, sub = [], alive }) {
     const cuerpo = x.t ? cuerpoDe(x, ult) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
     return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
       ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
-      ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${x.t}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
+      ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${sinUi(x.t)}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   function pintarHilo() {
     const col = C('llm-col'), box = C('llm-conv');
@@ -796,6 +796,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await B.modelos({ fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
     if (a === 'sugerencia') return enviar(t.dataset.t);
     if (a === 'opcion') return enviar(t.dataset.t);
+    // Un botón dibujado por el modelo no manda nada: deja el texto en la caja, a la vista, y la persona decide.
+    if (a === 'ui-pedir') { const ta = $('#llm-in', el); if (ta) { ta.value = t.dataset.t; crecer(ta); ta.focus(); } return; }
     if (a === 'comando') return comando({ cmd: t.dataset.c, arg: '' });
     if (a === 'detener') { S.enVuelo?.abort(); return; }
     if (a === 'privado') return alternarPrivado();

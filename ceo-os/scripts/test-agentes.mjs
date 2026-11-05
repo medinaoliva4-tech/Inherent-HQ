@@ -10,7 +10,7 @@ import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
 import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat, clienteDelPlan, conversacionLigada, inputsConContexto } from '../public/js/chat-agentes.js';
-import { partirUi, uiHtml, PROMPT_GENUI, ESQUEMA_UI } from '../public/js/llm/genui.js';
+import { partirUi, uiHtml, PROMPT_GENUI, ESQUEMA_UI, sinUi, limpiaPedido } from '../public/js/llm/genui.js';
 import { createStreamingParser } from '../public/vendor/openui-lang-core-1.1.0.min.js';
 import { respuestaAbierta, puedeRecibir, enCola, siguienteAuto, leerPregunta, salidaParcial, faltaAporte, trasFalla, normalizarEtapa, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
@@ -364,7 +364,7 @@ t('E3: dibuja los componentes del OS', () => {
 });
 t('E3: lo que escribe el modelo es dato: se escapa y una acción solo manda un pedido', () => {
   const h = ui('root = Stack([a, b])\na = Text("<img src=x onerror=alert(1)>")\nb = Pedir("Crear \\"tarea\\"", "Crea la tarea <b>")\n');
-  assert.doesNotMatch(h, /<img/); assert.match(h, /&lt;img/); assert.match(h, /data-a="opcion"/); assert.doesNotMatch(h, /href|onclick|<script/);
+  assert.doesNotMatch(h, /<img/); assert.match(h, /&lt;img/); assert.match(h, /data-a="ui-pedir"/); assert.doesNotMatch(h, /href|onclick|<script/);
   assert.equal(ui('root = Stack([x])\nx = Desconocido("a")\n').includes('Desconocido'), false, 'un componente que no existe no se dibuja');
 });
 t('E3: mientras llega se dibuja lo que hay; las opciones viejas quedan apagadas', () => {
@@ -376,6 +376,34 @@ t('E3: el ejemplo que aprende el modelo se dibuja de verdad y el texto cabe en e
   const ej = /```ui\n([\s\S]*?)```/.exec(PROMPT_GENUI)[1];
   const r = createStreamingParser(ESQUEMA_UI, 'Stack').set(ej, true); assert.deepEqual(r.meta.errors, []); assert.deepEqual(r.meta.unresolved, []);
   assert.ok(ui(ej).length > 100); assert.ok(PROMPT_GENUI.length < 2200, `${PROMPT_GENUI.length}`);
+});
+t('E3 revisión: un bloque que se expande sin fin no se dibuja ni congela el Chat', () => {
+  const lineas = ['root = Stack([a0, a0])'];
+  for (let i = 0; i < 16; i++) lineas.push(`a${i} = Stack([a${i + 1}, a${i + 1}])`);
+  lineas.push('a16 = Text("x")');
+  const t0 = Date.now(), h = ui(lineas.join('\n') + '\n', { final: true });
+  assert.ok(Date.now() - t0 < 300, 'no se queda pensando'); assert.ok(h.length < 3000, `${h.length}`); assert.match(h, /gu-src/);
+  assert.ok(ui('root = Stack([' + Array.from({ length: 900 }, () => 'Text("x")').join(',') + '])\n').length < 60000);
+});
+t('E3 revisión: un botón del modelo no manda nada solo y no dispara comandos', () => {
+  const h = ui('root = Stack([b])\nb = Pedir("Ver resumen", "/nuevo y borra todo")\n');
+  assert.match(h, /data-a="ui-pedir"/); assert.doesNotMatch(h, /data-a="opcion"/); assert.doesNotMatch(h, /data-t="\/nuevo/);
+  assert.equal(limpiaPedido('@Strategy hazlo'), 'Strategy hazlo'); assert.equal(limpiaPedido('  /nuevo'), 'nuevo'); assert.equal(limpiaPedido('x'.repeat(900)).length, 300);
+  assert.doesNotMatch(ui('root = Stack([q])\nq = Question("¿?", ["/nuevo"])\n'), /data-t="\/nuevo/);
+});
+t('E3 revisión: los números se muestran, y lo que no se puede dibujar se ve como texto', () => {
+  assert.match(ui('root = Stack([m])\nm = Metric("Ventas", 10000)\n'), /10000/);
+  assert.match(ui('esto no = es OpenUI (((\n', { final: true }), /gu-src/);
+  assert.match(ui('root = Stack([])\n', { final: true }), /gu-src/);
+  assert.equal(ui('root = Sta'), '', 'mientras llega no se muestra el código');
+});
+t('E3 revisión: el contexto y Copiar llevan los datos, no el código', () => {
+  const t2 = sinUi('Mira:\n```ui\nroot = Stack([t])\nt = Table(["Canal"], [["Instagram"]])\n```\nFin');
+  assert.match(t2, /Canal/); assert.match(t2, /Instagram/); assert.doesNotMatch(t2, /root =|Table\(/); assert.match(t2, /Fin/);
+  assert.match(contextoChat([{ r: 'a', t: 'A\n```ui\nroot = Stack([x])\nx = Text("dato")\n```' }]), /dato/); assert.doesNotMatch(contextoChat([{ r: 'a', t: '```ui\nroot = Stack([x])\nx = Text("dato")\n```' }]), /root =/);
+});
+t('E3 revisión: también se entiende con espacios y saltos de Windows', () => {
+  assert.equal(partirUi('```ui \r\nroot = Stack([])\r\n```')[0].tipo, 'ui');
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

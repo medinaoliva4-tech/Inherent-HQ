@@ -52,7 +52,6 @@ export async function render(el, { me, sub = [], alive }) {
   const [slug, bloque0] = sub;
   // F4.5 · un solo chat (PLAN-GATEWAY §20): el modo Strategy del Chat, con este cliente y su estrategia en vivo en el panel.
   return abrirEnChat(me.email, { modo: 'estrategia', slug: slug || '' });
-  // eslint-disable-next-line no-unreachable
   if (!slug) return lista();
   return cliente(slug, bloque0);
 
