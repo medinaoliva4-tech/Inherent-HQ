@@ -452,6 +452,11 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 4. **Memoria y ciclo de mejora.**
 5. **Tablero** estilo Factory: Encargo → Diagnóstico → Plan → Producción → Revisión → Entrega.
 
+### Entrega 3 · reglas
+- **Equipo:** varios `@agente` al inicio arman un equipo en la tarjeta del plan. Se elige uno después del otro o todos a la vez.
+- **Handoff:** en secuencia, al aprobar la última etapa el resultado entra como input al siguiente, que arranca solo.
+- **Council:** todavía no entra.
+
 ### Entrega 2 · reglas
 - **Revisor:** una etapa con criterios se revisa con el modelo de preparación. Si falta algo, el agente corrige una vez.
 - **Tarjeta:** quien aprueba ve si cumple, qué propone, la alternativa y qué asumió. En etapas intermedias el documento queda plegado.

@@ -28,6 +28,7 @@ export function planHtml(p, i) {
       <ol class="lpl-e">${p.plan.map((e) => html`<li class="${e.n > p.hasta ? 'fuera' : ''}"><span>${e.n + 1}</span><div><b>${e.nombre}${e.gate ? ' 🚦' : ''}</b><small>${e.entrega} · ${e.modelo}${e.aporte ? ' · te pedirá tu aporte' : ''}</small></div></li>`)}</ol>
       ${vivo ? html`<div class="lpl-f">
         ${p.clientes ? html`<label>Para<select data-ch="plan-cliente" data-i="${i}">${p.clientes.map(([s, n]) => html`<option value="${s}" ${s === p.cliente ? raw('selected') : ''}>${n}</option>`)}</select></label>` : ''}
+        ${p.equipo?.length ? html`<label>Con ${p.equipo.map((x) => x.nombre).join(', ')}<select data-ch="plan-modo" data-i="${i}"><option value="secuencia" ${p.modo === 'secuencia' ? raw('selected') : ''}>Uno después del otro</option><option value="paralelo" ${p.modo === 'paralelo' ? raw('selected') : ''}>Todos a la vez</option></select></label>` : ''}
         <label>Sigue solo hasta<select data-ch="plan-hasta" data-i="${i}">${p.plan.map((e) => html`<option value="${e.n}" ${e.n === p.hasta ? raw('selected') : ''}>${e.n + 1} · ${e.nombre}</option>`)}</select></label></div>
         <p class="lpl-n">Al aprobar cada etapa, la siguiente arranca sola hasta donde digas. Lo que siga después lo platicamos. Lo último de esta conversación entra al trabajo como contexto y lo ve quien vea el trabajo.</p>
         ${p.estado === 'error' ? html`<p class="lm-err">${p.error}</p>` : ''}

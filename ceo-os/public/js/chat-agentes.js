@@ -13,6 +13,29 @@ const junto = (s) => plano(s).replace(/[^a-z0-9]/g, '');
 
 // → { agente, resto } si el texto empieza con @<agente>; null si no (un correo o una @cuenta de Instagram no son agentes).
 // Gana el nombre más largo: «@Diagnóstico de marca …» no se confunde con «@Diagnóstico».
+// Varios agentes al inicio: «@strategy @creative arma la campaña». Devuelve los agentes en orden y lo que se pidió.
+export function leerMenciones(texto, agentes = []) {
+  const xs = []; let resto = String(texto || '').trim();
+  while (resto.startsWith('@') && xs.length < MAX_EQUIPO) {
+    const m = leerMencion(resto, agentes); if (!m) break;
+    if (!xs.some((a) => a.id === m.agente.id)) xs.push(m.agente);
+    resto = m.resto;
+  }
+  return xs.length ? { agentes: xs, resto } : null;
+}
+export const MAX_EQUIPO = 4;
+// El equipo de un trabajo: quién sigue y de qué forma. «secuencia» pasa el resultado al siguiente; «paralelo» arranca a todos.
+export function limpiarCadena(c) {
+  const siguientes = (Array.isArray(c?.siguientes) ? c.siguientes : []).slice(0, MAX_EQUIPO - 1).map((x) => ({ id: String(x?.id ?? '').slice(0, 80), nombre: String(x?.nombre ?? '').slice(0, 120) })).filter((x) => x.id);
+  return siguientes.length ? { siguientes, hecho: '' } : null;
+}
+// El siguiente trabajo de una secuencia, cuando el actual ya terminó y nadie lo ha arrancado.
+export function siguienteDeCadena(run) {
+  const c = run?.cadena;
+  if (!c?.siguientes?.length || c.hecho || !run.etapas?.every((e) => e.estado === 'aprobada')) return null;
+  const [agente, ...resto] = c.siguientes;
+  return { agente, cadena: resto.length ? { siguientes: resto } : null };
+}
 export function leerMencion(texto, agentes = []) {
   const t = String(texto || '').trim(); if (!t.startsWith('@')) return null;
   const palabras = t.slice(1).split(/\s+/);
