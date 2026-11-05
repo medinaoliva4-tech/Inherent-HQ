@@ -6,7 +6,7 @@
 //   5. Se pone al día sola: si hay una versión nueva de la app, avisa y con un clic se reemplaza y se vuelve a abrir.
 //   6. Arranca al 85% del tamaño y recuerda el que elijas (⌘ − / ⌘ + / ⌘ 0).
 // El puente es el mismo archivo de la web (public/laya/puente.py) y corre con el Python de la Mac.
-const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net, nativeTheme } = require('electron');
+const { app, BrowserWindow, Menu, shell, dialog, ipcMain, Notification, net, nativeTheme, components } = require('electron');
 const { spawn, execFileSync } = require('node:child_process');
 const fs = require('node:fs');
 const http = require('node:http');
@@ -332,6 +332,8 @@ if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => { if (ventana) { if (ventana.isMinimized()) ventana.restore(); ventana.focus(); } });
   app.whenReady().then(async () => {
+    // Widevine: lo necesita el reproductor de Spotify. La primera vez se baja; si tarda, la app abre igual.
+    await Promise.race([components.whenReady().catch(() => {}), new Promise((r) => setTimeout(r, 8000))]);
     menu();
     const estado = await prenderPuente();
     crearVentana();

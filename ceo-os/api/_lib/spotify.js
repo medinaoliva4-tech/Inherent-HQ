@@ -22,7 +22,7 @@ async function guardar(email, t, prev) {
 async function pedirToken(form) {
   const r = await fetch('https://accounts.spotify.com/api/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ client_id: CLIENT(), ...form }), signal: AbortSignal.timeout(12000) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok || !j.access_token) throw Object.assign(new Error('Spotify no dio el permiso'), { status: 502 });
+  if (!r.ok || !j.access_token) { console.error('spotify/token', r.status, j.error || '', j.error_description || ''); throw Object.assign(new Error('Spotify no dio el permiso'), { status: 502 }); }
   return j;
 }
 async function permiso(email) {
@@ -66,14 +66,14 @@ export function rutas(on) {
     // Sin sesión a propósito: en la app de Mac el login abre en el navegador. El state, secreto y de un solo uso, dice de quién es.
     const volver = (q) => res.writeHead(302, { Location: `/?${q}#/home` }).end();
     const state = String(req.query.state || ''), p = state ? await db.get(PEND, state) : null;
-    if (!p || !p.exp || p.exp < Date.now()) return volver('spotify=vencido');
-    if (req.query.error) return volver('spotify=cancelado');
+    if (!p || !p.exp || p.exp < Date.now()) { console.error('spotify/callback vencido'); return volver('spotify=vencido'); }
+    if (req.query.error) { console.error('spotify/callback cancelado', String(req.query.error).slice(0, 60)); return volver('spotify=cancelado'); }
     try {
       const t = await pedirToken({ grant_type: 'authorization_code', code: String(req.query.code || ''), redirect_uri: redirect(), code_verifier: open(p.verifier) });
       await guardar(p.email, t, await db.get(CONN, p.email));
       const { id, v, _meta, ...resto } = p; await db.update(PEND, state, { ...resto, exp: 0 }, v, p.email).catch(() => {});
       volver('spotify=listo');
-    } catch { volver('spotify=error'); }
+    } catch (e) { console.error('spotify/callback', e.message); volver('spotify=error'); }
   });
   on('GET', 'spotify/estado', async (req, res) => {
     const u = await guard(req, res); if (!u) return;

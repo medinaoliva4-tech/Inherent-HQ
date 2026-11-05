@@ -6,11 +6,11 @@ const LLAVE = 'os.spotify.visible';
 const svg = (d) => raw(`<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="${d}"/></svg>`);
 const NOTA = 'M9 18V6l10-2v11.5a2.5 2.5 0 1 1-1.8-2.4V8.2L11 9.4V18a2.5 2.5 0 1 1-2-2.4z';
 const ICO = { prev: svg('M6 5h2v14H6zM20 5v14L9 12z'), play: svg('M7 4v16l13-8z'), pausa: svg('M6 5h4v14H6zM14 5h4v14h-4z'), sig: svg('M16 5h2v14h-2zM4 5v14l11-7z'), nota: svg(NOTA), vol: svg('M4 9v6h4l5 4V5L8 9zm12.5 3a4 4 0 0 0-2-3.5v7a4 4 0 0 0 2-3.5z') };
-let d = null, reloj = 0, tic = 0, tocando = false, enviar = 0, sinFoto = '', local = null, equipo = '', iniciado = false, sonable = false, equipos = null;
+let d = null, reloj = 0, tic = 0, tocando = false, enviar = 0, sinFoto = '', local = null, equipo = '', iniciado = false, sonable = false, equipos = null, elegido = false;
 const enApp = () => Boolean(window.inherentEscritorio);
-// El reproductor del navegador necesita Widevine. Electron no lo trae: en la app de Mac suena la app de Spotify.
+// El reproductor necesita Widevine. La app de Mac lo trae desde la 0.1.9; las anteriores abren la app de Spotify.
 const puedeSonarAqui = async () => {
-  if (enApp() || !navigator.requestMediaKeySystemAccess) return false;
+  if (!navigator.requestMediaKeySystemAccess) return false;
   try { await navigator.requestMediaKeySystemAccess('com.widevine.alpha', [{ initDataTypes: ['cenc'], audioCapabilities: [{ contentType: 'audio/mp4; codecs="mp4a.40.2"' }] }]); return true; } catch { return false; }
 };
 async function iniciarLocal() {
@@ -22,6 +22,7 @@ async function iniciarLocal() {
     local.addListener('not_ready', () => { equipo = ''; });
     local.addListener('account_error', () => { equipo = ''; toast('Spotify pide Premium para sonar aquí.', true); });
     local.addListener('authentication_error', () => { equipo = ''; toast('Vuelve a conectar Spotify.', true); });
+    local.addListener('playback_error', ({ message }) => { console.warn('spotify', message); equipo = ''; toast('Spotify no dejó sonar aquí. Elige otro equipo.', true); });
     local.addListener('player_state_changed', () => setTimeout(refrescar, 400));
     local.connect();
   };
@@ -69,7 +70,7 @@ async function refrescar() {
   try { d = await api('spotify/estado'); if (!tocando) pintar(); iniciarLocal(); } catch { /* lo intenta en la próxima vuelta */ }
 }
 async function mandar(accionN, valor) {
-  try { await api('spotify/accion', { method: 'POST', body: { accion: accionN, valor, dispositivo: accionN === 'play' && !d?.activo ? equipo : '' } }); }
+  try { await api('spotify/accion', { method: 'POST', body: { accion: accionN, valor, dispositivo: accionN === 'play' && equipo && d?.dispositivo !== 'Inherent OS' && (!d?.activo || (enApp() && !elegido)) ? equipo : '' } }); }
   catch (e) {
     if (accionN === 'play' && (e.code === 'SIN_EQUIPO' || e.code === 'NO_ACTIVE_DEVICE')) { if (d) d.sonando = false; pintar(); return abrirApp(); }
     if (accionN !== 'volumen' || e.code !== 'NO_ACTIVE_DEVICE') toast(e.message, true);
@@ -88,7 +89,7 @@ export function pintarSpotify(me) {
   const c = $('#lat-sp'); if (!c || me?.role !== 'ceo') return;
   c.onclick = async (e) => {
     const q = e.target.closest('[data-eq]');
-    if (q) { equipos = null; if (d) d.sonando = true; pintar(); try { await api('spotify/accion', { method: 'POST', body: { accion: 'play', dispositivo: q.dataset.eq } }); } catch (er) { toast(er.message, true); } return setTimeout(refrescar, 900); }
+    if (q) { elegido = true; equipos = null; if (d) d.sonando = true; pintar(); try { await api('spotify/accion', { method: 'POST', body: { accion: 'play', dispositivo: q.dataset.eq } }); } catch (er) { toast(er.message, true); } return setTimeout(refrescar, 900); }
     const b = e.target.closest('[data-sp]'); if (!b) return;
     if (b.dataset.sp === 'equipos') { if (equipos) { equipos = null; return pintar(); } try { equipos = (await api('spotify/equipos')).equipos; } catch { equipos = []; } return pintar(); }
     accion(b.dataset.sp);
