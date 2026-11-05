@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { leerReproduccion, ACCIONES } from '../public/js/spotify-datos.js';
 import { setupVoz, aPcm16, aFloat, leerMensaje, urlVoz } from '../public/js/voz-gemini.js';
 import { estadoApp } from '../public/js/app-mac-estado.js';
 import { siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from '../public/js/conversacion.js';
@@ -277,6 +278,19 @@ t('voz real: lee interrupción, fin, audio y reconexión', () => {
   assert.ok(m.interrumpido && m.fin); assert.equal(m.oido, 'hola'); assert.deepEqual(m.audio, ['QQ']);
   assert.equal(leerMensaje({ sessionResumptionUpdate: { resumable: true, newHandle: 'h' } }).handle, 'h');
   assert.ok(leerMensaje({ goAway: {} }).salir); assert.ok(leerMensaje({ setupComplete: {} }).listo);
+});
+t('Spotify: lee lo que suena y solo acepta los cuatro controles', () => {
+  const r = leerReproduccion({ is_playing: true, device: { name: 'Mac' }, item: { name: 'Canción', artists: [{ name: 'A' }, { name: 'B' }], album: { images: [{ url: 'g' }, { url: 'p' }] } } });
+  assert.deepEqual(r, { sonando: true, titulo: 'Canción', artista: 'A, B', portada: 'p', dispositivo: 'Mac' });
+  assert.equal(leerReproduccion(null).sonando, false);
+  assert.deepEqual(Object.keys(ACCIONES), ['play', 'pause', 'next', 'previous']);
+});
+t('Spotify: control escondible, solo CEO y sin secreto', () => {
+  assert.match(APP, /id="lat-sp"/);
+  const js = JS.find(([f]) => f === path.join('js', 'spotify.js'))[1];
+  assert.match(js, /me\?\.role !== 'ceo'/); assert.match(js, /data-sp="cerrar"/);
+  const srv = fs.readFileSync(path.join(RAIZ, '..', 'api', '_lib', 'spotify.js'), 'utf8');
+  assert.match(srv, /code_challenge_method: 'S256'/); assert.ok(!/client_secret/.test(srv));
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];

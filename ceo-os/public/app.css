@@ -9743,6 +9743,23 @@ input[type=checkbox]:not(.switch):not([role=switch]),input[type=radio],input[typ
 html[data-vidrio="real"] .login{background:transparent}
 html[data-vidrio="real"] .login .side{background:rgb(30 30 32 / .4)}
 
+/* Mini control de Spotify: discreto y escondible */
+.lat-sp[hidden],html[data-lat-mini] .lat-sp{display:none}
+.lat-sp{margin:0 2px 8px}
+.sp-tab{display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:9px;background:none;color:var(--ui-mut);cursor:pointer}
+.sp-tab:hover{background:rgb(255 255 255 / .08);color:var(--ui-ink)}
+.sp-mini{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border-radius:12px;background:rgb(255 255 255 / .06);box-shadow:var(--v-borde)}
+.sp-mini>img,.sp-ic{width:36px;height:36px;display:grid;place-items:center;border-radius:7px;background:rgb(255 255 255 / .08);color:var(--ui-ink2);object-fit:cover}
+.sp-t{min-width:0;display:grid;font-size:12.5px;line-height:1.25}
+.sp-t b,.sp-t small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-t b{font-weight:600;color:var(--ui-ink)}.sp-t small{font-size:12px;color:var(--ui-mut)}
+.sp-x{width:22px;height:22px;border:0;border-radius:50%;background:none;color:var(--ui-mut);font-size:16px;line-height:1;cursor:pointer}
+.sp-x:hover{background:rgb(255 255 255 / .1);color:var(--ui-ink)}
+.sp-con{grid-column:1/-1;height:30px;border:0;border-radius:9px;background:var(--ui-azul);color:#fff;font:500 13px var(--sans);cursor:pointer}
+.sp-b{grid-column:1/-1;display:flex;justify-content:center;gap:10px}
+.sp-b button{display:grid;place-items:center;width:34px;height:30px;border:0;border-radius:9px;background:none;color:var(--ui-ink);cursor:pointer}
+.sp-b button:hover{background:rgb(255 255 255 / .1)}
+
 /* ===== Modo conversación: un aro, lo que se dice y tres botones ===== */
 .vz{position:fixed;z-index:80;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;justify-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(90% 34% at 50% 104%,rgb(235 235 240 / .16),transparent 72%),rgb(8 8 9 / .86);-webkit-backdrop-filter:blur(34px) saturate(130%);backdrop-filter:blur(34px) saturate(130%);color:var(--ui-ink);animation:vzEntra .36s var(--suave)}
 @keyframes vzEntra{from{opacity:0}}
