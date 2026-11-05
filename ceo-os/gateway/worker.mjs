@@ -21,6 +21,7 @@ import { investigar, buscar, leer } from './web.mjs';
 const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, condense, contextoDe } from './motor.mjs';
 import { conectorDe } from '../public/js/conectores.js';
+import { pedidoRevisor, leerRevision, debeCorregir, retroalimentacion } from '../public/js/revisor.js';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', CHATS = 'chat_sesiones', YO = 'gateway';
 const VERSION = 'f4-6';
@@ -232,8 +233,23 @@ async function correr(id, n) {
       log(`[${id}] etapa ${n + 1} pregunta: ${q.texto.slice(0, 80)}`);
       return;
     }
+    // Lo revisa primero una máquina. Si falta algo, el agente corrige una vez. El revisor nunca detiene el trabajo.
+    let revision = null;
+    if (e.criterios?.length) {
+      try {
+        const revisar = async (texto) => leerRevision((await chat(PREP, '', '', 1500, { messages: pedidoRevisor(e, texto) })).content, e.criterios);
+        await paso({ titulo: 'Revisando contra los criterios', detalle: `${e.criterios.length} criterios` });
+        revision = await revisar(leerRespuesta(out.content).salida);
+        if (debeCorregir(revision, 0)) {
+          await paso({ titulo: 'Corrigiendo lo que faltó', detalle: `${revision.criterios.filter((c) => !c.cumple).length} criterios` });
+          const r1 = await chat(modelo, '', '', MAX_OUT, { messages: [{ role: 'system', content: SISTEMA }, { role: 'user', content: texto }, { role: 'assistant', content: out.content }, { role: 'user', content: retroalimentacion(revision) }], onEspera, onAvance, cadaMs: 3000 });
+          out = { content: r1.content, usage: { prompt_tokens: (out.usage.prompt_tokens || 0) + (r1.usage.prompt_tokens || 0), completion_tokens: (out.usage.completion_tokens || 0) + (r1.usage.completion_tokens || 0) }, seg: out.seg + r1.seg };
+          revision = { ...((await revisar(leerRespuesta(out.content).salida)) || revision), vueltas: 1 };
+        }
+      } catch (er) { log(`[${id}] revisor: ${er.message}`); }
+    }
     const r = soloEvidenciaDeInputs(base, leerRespuesta(out.content));
-    const b = { ...r, via: 'gateway', modelo, costo: { entrada: out.usage.prompt_tokens || 0, salida: out.usage.completion_tokens || 0, seg: out.seg },
+    const b = { ...r, revision, via: 'gateway', modelo, costo: { entrada: out.usage.prompt_tokens || 0, salida: out.usage.completion_tokens || 0, seg: out.seg },
       actividades: [...r.actividades, ...r.faltantes.map((f) => ({ titulo: 'Falta evidencia', detalle: f, aviso: true })), { titulo: 'Listo para revisar', detalle: `${out.seg}s · ${out.usage.prompt_tokens ?? '?'} de entrada · ${out.usage.completion_tokens ?? '?'} de salida` }] };
     await tocar(id, (cur) => {
       if (cur.etapas[n]?.estado !== 'trabajando') return null; // la cancelaron o la movieron: no se pisa

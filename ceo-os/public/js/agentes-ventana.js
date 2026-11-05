@@ -7,6 +7,16 @@ import { html, raw, mount, ico, toast, api, ask, md, esc, drawer, closeDrawer } 
 import { activa, completo, progreso, puede, enServidor, leerOutput, ESTADOS, faltaAporte } from './agentes-flujos.js';
 import { rutaEtapas } from './agentes-ui.js';
 import { fuentes, archivos, mapaFuentes, enlazarCitas, modeloDeEtapa, idChatTrabajo } from './chat-agentes.js';
+import { pideLecturaCompleta } from './revisor.js';
+
+// La decisión corta: qué propone, la alternativa, qué asumió y qué le faltó según el revisor.
+const tarjetaRevision = (e) => {
+  const r = e.revision; if (!r) return '';
+  const fallan = r.criterios.filter((c) => !c.cumple), d = r.decision;
+  return html`<section class="ag-dec ${fallan.length ? 'mal' : ''}"><b>${fallan.length ? `Le faltan ${fallan.length} de ${r.criterios.length} criterios` : `Cumple los ${r.criterios.length} criterios`}${r.vueltas ? ' · se corrigió una vez' : ''}</b>
+    ${d.propone ? html`<p><span>Propone</span>${d.propone}</p>` : ''}${d.alternativa ? html`<p><span>Alternativa</span>${d.alternativa}</p>` : ''}${d.asumio.length ? html`<p><span>Asumió</span>${d.asumio.join(' · ')}</p>` : ''}
+    ${fallan.length ? html`<ul>${fallan.map((c) => html`<li>${c.texto}${c.razon ? `: ${c.razon}` : ''}</li>`)}</ul>` : ''}</section>`;
+};
 
 const enc = encodeURIComponent;
 const quien = (e) => String(e || '').split('@')[0];
@@ -97,7 +107,8 @@ export async function abrirDocumento(run, n, { me, rol, modelos = [], onCambio =
   drawer(html`<div class="ag-rev"><span class="lbl">Etapa ${n + 1} · ${e.nombre}</span><h1>${o.titulo}</h1>
     <p class="sm mut">${ESTADOS[e.estado] || e.estado}${e.confianza ? ` · confianza ${e.confianza}%` : ''}${e.modelo ? ` · ${e.modelo}` : ''}${e.faltantes?.length ? ` · faltó evidencia de: ${e.faltantes.slice(0, 3).join('; ')}` : ''}</p>
     ${e.gate ? html`<p class="ag-gate sm">🚦 ${e.nota_gate || 'Gate del CEO: solo el CEO aprueba esta etapa'}</p>` : ''}
-    <div class="ag-md card">${docHtml(run, n)}</div>
+    ${tarjetaRevision(e)}
+    ${pideLecturaCompleta(run, n) ? html`<div class="ag-md card">${docHtml(run, n)}</div>` : html`<details class="ag-doc"><summary>Leer el documento completo</summary><div class="ag-md card">${docHtml(run, n)}</div></details>`}
     <div class="ag-rev-a">${enRev ? html`<button class="btn" data-act="aprobar" ${noA ? raw(`disabled title="${esc(noA)}"`) : ''}>${ico('check', 14)} Aprobar</button>
       <button class="btn ghost" data-act="ajuste">${ico('rotate-cw', 14)} Pedir ajuste</button>` : ''}
       ${enRev && !noC ? html`<button class="btn ghost" data-act="corregir">${ico('pencil', 14)} Corregir</button>` : ''}
