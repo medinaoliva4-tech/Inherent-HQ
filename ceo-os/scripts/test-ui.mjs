@@ -92,4 +92,19 @@ t('solo oscuro: no quedan selectores de tema en la app', () => {
   for (const [f, s] of JS) if (f !== path.join('js', 'tema.js')) assert.ok(!/themebtn|ponerTema|temaElegido/.test(s), f);
 });
 
+const APP = JS.find(([f]) => f === path.join('js', 'app.js'))[1];
+const NAV_SRC = APP.slice(APP.indexOf('const NAV = ['), APP.indexOf('const navDe'));
+t('barra única: máximo dos niveles y nada repite al Chat', () => {
+  assert.ok(!/company:/.test(NAV_SRC), 'Company era un tercer nivel');
+  assert.ok(!/lat-chat"|Ask InherentOS.*data-lat/.test(APP), 'Ask InherentOS repetía al Chat');
+  for (const n of ['Hoy', 'Chat', 'Agentes', 'Calendario', 'Organización', 'Empresa', 'Áreas', 'Biblioteca']) assert.ok(NAV_SRC.includes(`'${n}'`), n);
+  for (const n of ['Home', 'Organization', 'Library', 'Projects', 'Tasks']) assert.ok(!NAV_SRC.includes(`'${n}'`), `${n} sigue en inglés`);
+});
+t('barra única: en la compu la lista del Chat vive en la barra del shell', () => {
+  assert.match(APP, /id="lat-ctx"/);
+  const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
+  assert.match(llm, /getElementById\('lat-ctx'\)/);
+  assert.ok(!/ el\.addEventListener\('(click|change|keydown|submit)', async/.test(llm.replace("el.addEventListener(tipo, fn)", '')), 'los clics también deben llegar a la lista movida');
+});
+
 console.log(`\n${ok} pruebas del sistema de diseño pasaron`);

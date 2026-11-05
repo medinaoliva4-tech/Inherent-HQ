@@ -114,39 +114,42 @@ const sees = (k) => {
 // [id, nombre, ruta, ve?, ícono, color?]; sin `ve`, la página la ve todo el equipo; con `color`, el ítem lleva el de su área.
 // Home, Calendario y Library son ítems de primer nivel (sin flecha). Library conserva su regla de siempre (area('library')).
 const NAV = [
-  { id: 'home', nombre: 'Home', ruta: 'home', icono: 'nav-home', ve: equipo },
+  { id: 'home', nombre: 'Hoy', ruta: 'home', icono: 'nav-home', ve: equipo },
+  { id: 'chat', nombre: 'Chat', ruta: 'chat', icono: 'chat-ia', ve: equipo },
+  { id: 'agentes', nombre: 'Agentes', ruta: 'ai/agentes', icono: 'agents', ve: equipo },
   { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo },
-  { id: 'library', nombre: 'Library', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
-  { id: 'org', nombre: 'Organization', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
+  { id: 'org', nombre: 'Organización', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
     items: [
-      ['operations', 'Projects', 'org/operations', area('operations'), 'kanban'],
-      ['work', 'Tasks', 'org/work', area('work'), 'square-check'],
+      ['operations', 'Proyectos', 'org/operations', area('operations'), 'kanban'],
+      ['work', 'Tareas', 'org/work', area('work'), 'square-check'],
       ['sales', 'CRM', 'org/sales', area('sales'), 'megaphone'],
-      ['cal', 'Deadlines', 'org/operations/cal', area('operations'), 'calendar-days'],
-      ['clients', 'Clients', 'org/clients', area('clients'), 'folder-open'],
-      ['services', 'Services', 'org/services', () => full('sales'), 'briefcase'],
-      ['finances', 'Finances', 'org/finanzas', area('finanzas'), 'nav-finances'],
-    ],
-    company: [
-      ['team', 'Team', 'org/team', area('team'), 'users'],
-      ['vision', 'Vision', 'org/vision', equipo, 'eye'],
+      ['cal', 'Fechas', 'org/operations/cal', area('operations'), 'calendar-days'],
+      ['clients', 'Clientes', 'org/clients', area('clients'), 'folder-open'],
+      ['services', 'Servicios', 'org/services', () => full('sales'), 'briefcase'],
+      ['finances', 'Finanzas', 'org/finanzas', area('finanzas'), 'nav-finances'],
+    ] },
+  { id: 'empresa', nombre: 'Empresa', ruta: 'org/team', icono: 'users', ve: () => hasOrg(),
+    items: [
+      ['team', 'Equipo', 'org/team', area('team'), 'users'],
+      ['vision', 'Visión', 'org/vision', equipo, 'eye'],
       ['roadmap', 'Roadmap', 'org/roadmap', area('roadmap'), 'rocket'],
       ['laya', 'Laya', 'org/team/laya', ceo, 'message-square'],
-      ['setup', 'Setup', 'org/setup', ceo, 'settings'],
+      ['setup', 'Configuración', 'org/setup', ceo, 'settings'],
     ] },
-  { id: 'ai', nombre: 'Inherent AI', ruta: 'ai', icono: 'nav-ai', ve: equipo, portada: 'ai',
-    items: [['chat', 'Chat', 'chat', null, 'chat-ia'], ['agentes', 'Agentes', 'ai/agentes', null, 'agents'], ['mcps', 'MCPs', 'ai/mcps', null, 'link']] },
   { id: 'areas', nombre: 'Áreas', ruta: 'areas', icono: 'layout-grid', ve: () => sees('areas'),
     items: AREAS.map((a) => [a.id, a.nombre, 'areas/' + a.id, () => puedeVerArea(me, a.id), a.icono, a.color]) },
-  { id: 'ajustes', nombre: 'Ajustes', ruta: 'ajustes/ia', icono: 'settings', ve: equipo },
+  { id: 'library', nombre: 'Biblioteca', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
+  // Abajo, junto a tu cuenta: no son destinos del día a día.
+  { id: 'mcps', nombre: 'Conexiones', ruta: 'ai/mcps', icono: 'link', ve: equipo, pie: true },
+  { id: 'ajustes', nombre: 'Ajustes', ruta: 'ajustes/ia', icono: 'settings', ve: equipo, pie: true },
 ];
 const navDe = (id) => NAV.find((n) => n.id === id);
-const esGrupo = (n) => Boolean(n.items || n.company);
+const esGrupo = (n) => Boolean(n.items);
 const veIt = ([, , , v]) => !v || v();
 const itemsDe = (n, k = 'items') => (n[k] || []).filter(veIt);
 // Todas las páginas de un ítem (sin filtrar por perfil) y solo las que esta persona ve.
-const todasDe = (n) => (esGrupo(n) ? [...(n.items || []), ...(n.company || [])] : [[n.id, n.nombre, n.ruta, null, n.icono]]);
-const paginasDe = (n) => (esGrupo(n) ? [...itemsDe(n), ...itemsDe(n, 'company')] : todasDe(n));
+const todasDe = (n) => (esGrupo(n) ? n.items || [] : [[n.id, n.nombre, n.ruta, null, n.icono]]);
+const paginasDe = (n) => (esGrupo(n) ? itemsDe(n) : todasDe(n));
 // Una página está «abierta» cuando la ruta es ella o empieza por ella; gana la más larga (org/operations/cal antes que org/operations).
 const enRuta = (url, ruta) => url === ruta || url.startsWith(ruta + '/');
 // → [página, ítem de NAV] donde está la ruta, o null.
@@ -155,7 +158,6 @@ function paginaDe(url) {
   for (const n of NAV) if (n.ve()) for (const it of paginasDe(n)) if (enRuta(url, it[2]) && (!mejor || it[2].length > mejor[0][2].length)) mejor = [it, n];
   return mejor;
 }
-const enCompany = (url) => itemsDe(navDe('org'), 'company').some((it) => enRuta(url, it[2]));
 // Un grupo está en su ruta cuando la página abierta es suya; sin página (la portada de Inherent AI, el portal visto por el
 // equipo) vale el prefijo de su ruta.
 const grupoEnRuta = (n, url) => { const pag = paginaDe(url); return pag ? pag[1] === n : enRuta(url, n.ruta); };
@@ -292,7 +294,7 @@ function seccionGuia(cur) {
 let grpCerrado = new Set();
 const grpGuardados = () => { try { return JSON.parse(lsGet('lat.grp') || '{}') || {}; } catch { return {}; } };
 const grpAbierto = (id, enSuRuta) => (enSuRuta && !grpCerrado.has(id)) || grpGuardados()[id] === true;
-const grpEnRuta = (id, cur) => (id === 'company' ? enCompany(cur.url) : grupoEnRuta(navDe(id), cur.url));
+const grpEnRuta = (id, cur) => grupoEnRuta(navDe(id), cur.url);
 function toggleGrp(id) {
   const cur = resolve(hashNow()), en = grpEnRuta(id, cur), g = grpGuardados();
   if (grpAbierto(id, en)) { g[id] = false; if (en) grpCerrado.add(id); } else { g[id] = true; grpCerrado.delete(id); }
@@ -306,15 +308,12 @@ const latIt = (ruta, label, icon, on) => html`<a class="lat-it${on ? ' on' : ''}
 // Organization, Inherent AI y Áreas: el ítem abre su portada (Inherent AI) o su primera página visible; la flecha solo abre
 // o cierra; Company va colapsado adentro de Organization. Un ítem con color (cada área) lleva su ícono con el color del área.
 function latGrupo(n, cur) {
-  const items = itemsDe(n), comp = itemsDe(n, 'company'), pag = paginaDe(cur.url), enEste = grupoEnRuta(n, cur.url), enComp = n.id === 'org' && enCompany(cur.url);
-  const abierto = grpAbierto(n.id, enEste), compAbierto = grpAbierto('company', enComp);
-  const primera = n.portada || (items[0] || comp[0])?.[2] || n.ruta, esOn = (it) => pag?.[0] === it;
-  const link = (it) => html`<a class="${esOn(it) ? 'on' : ''}${it[5] ? ' lat-area' : ''}" href="#/${it[2]}"${esOn(it) ? raw(' aria-current="page"') : ''}${it[5] ? raw(` style="--ac:var(${it[5]})"`) : ''}>${it[5] ? ico(it[4], 14) : ''}${it[1]}</a>`;
-  return html`<div class="lat-grp" data-grp="${n.id}"${abierto ? raw(' open') : ''}>${latIt(primera, n.nombre, ico(n.icono, 16), enEste)}<button type="button" class="lat-grp-tg" data-grp-tg="${n.id}" aria-expanded="${abierto ? 'true' : 'false'}" aria-label="${abierto ? 'Cerrar' : 'Abrir'} ${n.nombre}">${ico('chevron-down', 14)}</button>
-    <div class="lat-subs">${items.map(link)}${comp.length ? html`<div class="lat-sub-grp" data-grp="company"${compAbierto ? raw(' open') : ''}><button type="button" class="lat-sub-tg" data-grp-tg="company" aria-expanded="${compAbierto ? 'true' : 'false'}">Company ${ico('chevron-down', 12)}</button><div class="lat-subs">${comp.map(link)}</div></div>` : ''}</div></div>`;
+  const items = itemsDe(n), pag = paginaDe(cur.url), enEste = grupoEnRuta(n, cur.url), abierto = grpAbierto(n.id, enEste);
+  const esOn = (it) => pag?.[0] === it;
+  const link = (it) => html`<a class="${esOn(it) ? 'on' : ''}${it[5] ? ' lat-area' : ''}" href="#/${it[2]}"${esOn(it) ? raw(' aria-current="page"') : ''}>${it[5] ? ico(it[4], 14) : ''}${it[1]}</a>`;
+  return html`<div class="lat-grp" data-grp="${n.id}"${abierto ? raw(' open') : ''}>${latIt((items[0])?.[2] || n.ruta, n.nombre, ico(n.icono, 16), enEste)}<button type="button" class="lat-grp-tg" data-grp-tg="${n.id}" aria-expanded="${abierto ? 'true' : 'false'}" aria-label="${abierto ? 'Cerrar' : 'Abrir'} ${n.nombre}">${ico('down', 13)}</button>
+    <div class="lat-subs">${items.map(link)}</div></div>`;
 }
-// El subtítulo de «Ask InherentOS»: el modo con el que abriría el Chat (el área abierta, o Organization).
-const chatSub = (cur) => (cur.key === 'areas' ? areaDe(cur.rest[0])?.nombre : '') || 'Organization';
 // El indicador del ítem activo: dos píldoras (span.lat-ind, app.css) que se deslizan de un ítem al siguiente en vez de apagarse
 // en uno y encenderse en otro: la del ítem de la barra y la de la página abierta dentro de su grupo. paintLat vuelve a pintar
 // la barra entera en cada navegación; los indicadores son los únicos nodos que se conservan (se vuelven a meter y se les da un
@@ -346,20 +345,14 @@ function paintLat(cur = resolve(hashNow())) {
   const cab = cur.key === 'me' ? latIt('me', 'Mi perfil', ico('user', 16), true) : '';
   if (me.role === 'client') { mount(nav, html`${cab}${latIt('portal', 'Mi portal', ico('nav-portal', 16), cur.key === 'portal')}`); latIndicador(nav); return; }
   const pag = paginaDe(cur.url);
-  mount(nav, html`${cab}${NAV.filter((n) => n.ve()).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
+  mount(nav, html`${cab}${NAV.filter((n) => n.ve() && !n.pie).map((n) => (esGrupo(n) ? latGrupo(n, cur) : latIt(n.ruta, n.nombre, ico(n.icono, 16), pag?.[0]?.[2] === n.ruta)))}`);
   latIndicador(nav);
   $('.lat-avisos', lat)?.classList.toggle('on', cur.key === 'avisos');
-  const sub = $('#lat-chat-sub', lat); if (sub) sub.textContent = chatSub(cur);
+  const ctx = $('#lat-ctx', lat); if (ctx) { ctx.hidden = cur.key !== 'chat'; if (cur.key !== 'chat') ctx.replaceChildren(); }
   if (foco) [...nav.querySelectorAll('a, button')].find((x) => x.getAttribute('href') === foco || x.dataset.grpTg === foco)?.focus();
   $('.lat-it.on', lat)?.scrollIntoView?.({ block: 'nearest' });
 }
 function markNav(cur = resolve(hashNow())) { paintLat(cur); paintCel(cur); }
-// «Ask InherentOS»: abre el Chat en el modo del área abierta (strategy → estrategia, creative → diseno…) o en Organización;
-// el cliente lo elige el Chat en su caja.
-function preguntarAlChat() {
-  const cur = resolve(hashNow());
-  abrirEnChat(me.email, { modo: (cur.key === 'areas' ? areaDe(cur.rest[0])?.modo : '') || 'organizacion' });
-}
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = desk.matches ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
 // Todo popover propio (el menú de «tú», las hojas del cel) lleva data-popover: aquí se quitan y se apagan sus botones.
@@ -367,7 +360,7 @@ function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (c
 function menuYo(btn) {
   const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
   const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
-  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a>`);
+  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a><a role="menuitem" href="#/ai/mcps">${ico('link', 15)} Conexiones</a>`);
   btn.closest('.lat-yo').append(m); btn.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', (e) => {
     if (e.target.closest('a')) cerrarTodo();
@@ -381,17 +374,16 @@ function latHtml(mac) {
     ${cliente ? '' : html`<button type="button" class="lat-it lat-buscar" data-lat="buscar" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 16)}<span class="lat-t">Buscar</span><kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>
     <a class="lat-it lat-avisos" href="#/avisos" data-avisos title="Avisos">${ico('bell', 16)}<span class="lat-t">Avisos</span><b class="lat-n" data-avisos-n hidden></b></a>`}
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
+    <div class="lat-ctx" id="lat-ctx" hidden></div>
     <div class="lat-pie">
-      ${cliente ? '' : html`<div class="lat-ayuda" id="lat-ayuda"></div>
-      <button type="button" class="lat-chat" data-lat="chat" title="Ask InherentOS: abre el Chat con lo que estás viendo">${ico('chat-ia', 20)}<span><b>Ask InherentOS</b><small id="lat-chat-sub"></small></span></button>`}
-      <div class="lat-yo"><button type="button" class="lat-yo-b" data-lat="yo" aria-haspopup="menu" aria-expanded="false" title="Tú: día y noche, Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<i>${initials(me.name)}</i>`}<span><b>${me.name}</b><small>${me.title || roleName(me.role)}</small></span></button>
-        <button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
+      ${cliente ? '' : html`<div class="lat-ayuda" id="lat-ayuda"></div>`}
+      <div class="lat-yo"><button type="button" class="lat-yo-b" data-lat="yo" aria-haspopup="menu" aria-expanded="false" title="Tu cuenta">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<i>${initials(me.name)}</i>`}<span><b>${me.name}</b><small>${me.title || roleName(me.role)}</small></span></button>
+        <a class="lat-ib" href="#/ajustes/ia" aria-label="Ajustes" title="Ajustes">${ico('settings', 16)}</a><button type="button" class="lat-ib" data-lat="mini" aria-label="Esconder la barra (⌘B)" title="Esconder la barra · ⌘B">${ico('panel-left', 16)}</button></div>
     </div></aside>`;
 }
 // Lo que hacen los botones de la barra (y los mismos dentro de la hoja «Más» del cel).
 function accionLat(k, b) {
   if (k === 'buscar') return search();
-  if (k === 'chat') return preguntarAlChat();
   if (k === 'yo') return menuYo(b);
   if (k === 'mini') return ponerMini(!latMini());
   if (k === 'guia') return $('#guiabtn')?.click();
@@ -418,15 +410,15 @@ document.addEventListener('keydown', (e) => {
 function celHtml() {
   const b = (id, label, icon, hoja = true) => (hoja ? html`<button type="button" class="nc-b" data-nc="${id}" data-hoja="${id}" aria-haspopup="dialog" aria-expanded="false">${ico(icon, 20)}<span>${label}</span></button>` : html`<a class="nc-b" href="#/${id}" data-nc="${id}">${ico(icon, 20)}<span>${label}</span></a>`);
   if (me.role === 'client') return html`<nav class="nav-cel" aria-label="Secciones">${b('portal', 'Mi portal', 'nav-portal', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
-  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Home', 'nav-home', false)}${b('calendario', 'Calendario', 'calendar', false)}${sees('areas') ? b('areas', 'Áreas', 'layout-grid') : ''}${b('ai', 'Inherent AI', 'nav-ai')}${b('mas', 'Más', 'ellipsis')}</nav>`;
+  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Hoy', 'nav-home', false)}${b('chat', 'Chat', 'chat-ia', false)}${b('ai/agentes', 'Agentes', 'agents', false)}${b('calendario', 'Calendario', 'calendar', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
 }
 // El botón de abajo que corresponde a la ruta (Organization y Library viven en la hoja «Más», con Avisos y Mi perfil).
 const celKey = (cur) => {
   const k = cur.key;
-  if (k === 'home' || k === 'calendario' || k === 'areas') return k;
-  if (k === 'chat' || k === 'ai' || k === 'agentes') return 'ai';
+  if (k === 'home' || k === 'calendario' || k === 'chat') return k;
+  if (k === 'agentes') return 'ai/agentes';
   if (k === 'portal' && me.role === 'client') return 'portal';
-  return ['avisos', 'me', 'ajustes'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
+  return ['avisos', 'me', 'ajustes', 'ai', 'areas'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };
 function paintCel(cur = resolve(hashNow())) {
   const k = celKey(cur);
@@ -441,15 +433,13 @@ function abrirHoja(id, btn) {
   // x[5] es el color del área (un token --ui-m-<id> propio, nunca texto de usuario).
   const deNav = (xs) => xs.map((x) => it(x[2], x[1], ico(x[4] || 'dot', 18), pag?.[0] === x, x[5] ? `--ac:var(${x[5]})` : ''));
   let titulo = '', cuerpo = '';
-  if (id === 'ai') { const n = navDe('ai'); titulo = n.nombre; cuerpo = deNav(itemsDe(n)); }
-  else if (id === 'areas') { const n = navDe('areas'); titulo = n.nombre; cuerpo = deNav(itemsDe(n)); }
-  else {
+  {
     titulo = 'Más';
     const guia = $('#guiabtn');
     if (me.role === 'client') cuerpo = html`${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}`;
     else {
-      const org = navDe('org'), comp = itemsDe(org, 'company'), lib = navDe('library'), conOrg = org.ve();
-      cuerpo = html`${conOrg ? html`<span class="lat-k">${org.nombre}</span>${deNav(itemsDe(org))}${comp.length ? html`<span class="lat-k">Company</span>${deNav(comp)}` : ''}<span class="lat-k">Más</span>` : ''}${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${bt('buscar', 'Buscar', ico('search', 18))}${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
+      const grupo = (id) => { const n = navDe(id); return n.ve() ? html`<span class="lat-k">${n.nombre}</span>${deNav(itemsDe(n))}` : ''; }, lib = navDe('library');
+      cuerpo = html`${grupo('org')}${grupo('empresa')}${grupo('areas')}<span class="lat-k">Más</span>${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${it('ai/mcps', 'Conexiones', ico('link', 18), cur.url === 'ai/mcps')}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${bt('buscar', 'Buscar', ico('search', 18))}${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
     }
   }
   const h = document.createElement('div'); h.className = 'hoja'; h.dataset.hoja = id; h.setAttribute('data-popover', ''); h.setAttribute('role', 'dialog'); h.setAttribute('aria-label', titulo);
@@ -476,14 +466,15 @@ function jumpItems() {
   if (me.role === 'client') return [];
   const out = [];
   const push = (title, sub, route, icon) => out.push({ title, sub, route, icon: String(icon) });
-  // Primero lo de todos los días (la lista vacía muestra 12): Chat, MCPs, Calendario, Library y las áreas; luego Home y Organization.
-  for (const it of itemsDe(navDe('ai'))) push(it[1], it[0] === 'chat' ? 'Inherent AI · el Chat con tu información' : 'Inherent AI · conecta tus MCPs', '#/' + it[2], svgIco(it[4], 16));
+  // Primero lo de todos los días (la lista vacía muestra 12): Chat, Agentes, Calendario, Biblioteca y las áreas.
+  push('Chat', 'Conversaciones con tu información', '#/chat', svgIco('chat-ia', 16));
+  push('Agentes', 'Encarga trabajo y revisa su avance', '#/ai/agentes', svgIco('agents', 16));
   push('Calendario', 'Trabajo y contenido: reuniones, entregas, facturas y publicaciones', '#/calendario', svgIco('calendar', 16));
   const lib = navDe('library'); if (lib.ve()) push(lib.nombre, 'SOPs, playbooks y prompts del equipo', '#/' + lib.ruta, svgIco(lib.icono, 16));
   for (const it of itemsDe(navDe('areas'))) push(it[1], 'Áreas', '#/' + it[2], svgIco(it[4], 16));
-  push('Home', 'Tu día, lo importante y lo que necesita tu decisión', '#/home', svgIco('nav-home', 16));
-  const org = navDe('org');
-  if (org.ve()) { for (const it of itemsDe(org)) push(it[1], 'Organization', '#/' + it[2], svgIco(it[4], 16)); for (const it of itemsDe(org, 'company')) push(it[1], 'Organization · Company', '#/' + it[2], svgIco(it[4], 16)); }
+  push('Hoy', 'Tu día, lo importante y lo que necesita tu decisión', '#/home', svgIco('nav-home', 16));
+  for (const id of ['org', 'empresa']) { const n = navDe(id); if (n.ve()) for (const it of itemsDe(n)) push(it[1], n.nombre, '#/' + it[2], svgIco(it[4], 16)); }
+  push('Conexiones', 'Conecta tus herramientas', '#/ai/mcps', svgIco('link', 16));
   push('Avisos', 'Lo que pide atención: tu trabajo, cada cliente y la plataforma', '#/avisos', svgIco('bell', 16));
   return out;
 }
