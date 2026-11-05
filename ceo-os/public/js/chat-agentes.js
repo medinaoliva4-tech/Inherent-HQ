@@ -11,18 +11,19 @@ const plano = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀
 const junto = (s) => plano(s).replace(/[^a-z0-9]/g, '');
 
 // → { agente, resto } si el texto empieza con @<agente>; null si no (un correo o una @cuenta de Instagram no son agentes).
+// Gana el nombre más largo: «@Diagnóstico de marca …» no se confunde con «@Diagnóstico».
 export function leerMencion(texto, agentes = []) {
-  const m = /^@(\S+)\s*([\s\S]*)$/.exec(String(texto || '').trim());
-  if (!m) return null;
-  const k = junto(m[1]);
-  const agente = agentes.find((a) => [a.nombre, a.agente].filter(Boolean).some((n) => junto(n) === k));
-  // Nombres de dos palabras («@Growth Partner …»): se prueba también con la palabra siguiente.
-  if (!agente) {
-    const dos = /^@(\S+\s+\S+)\s*([\s\S]*)$/.exec(String(texto || '').trim());
-    const a2 = dos && agentes.find((a) => [a.nombre, a.agente].filter(Boolean).some((n) => junto(n) === junto(dos[1])));
-    return a2 ? { agente: a2, resto: dos[2].trim() } : null;
+  const t = String(texto || '').trim(); if (!t.startsWith('@')) return null;
+  const palabras = t.slice(1).split(/\s+/);
+  for (let k = Math.min(palabras.length, 6); k >= 1; k--) {
+    const clave = junto(palabras.slice(0, k).join(' '));
+    const agente = agentes.find((a) => [a.nombre, a.agente].filter(Boolean).some((n) => junto(n) === clave));
+    if (agente) {
+      let resto = t.slice(1); for (const w of palabras.slice(0, k)) resto = resto.slice(resto.indexOf(w) + w.length);
+      return { agente, resto: resto.trim() };
+    }
   }
-  return { agente, resto: m[2].trim() };
+  return null;
 }
 
 // El modelo de cada tipo de etapa (§9): analizar y decidir con Pro; investigar, armar y revisar con Flash.
@@ -79,3 +80,14 @@ export function hiloChat(msgs = [], runs = []) {
   for (const run of runs) for (const x of hilo(run, [])) xs.push({ tipo: 'evento', run, x, t: Date.parse(x.at) || 0 });
   return xs.map((y, k) => ({ y, k })).sort((a, b) => a.y.t - b.y.t || a.k - b.k).map(({ y }) => { const { t, ...r } = y; return r; });
 }
+
+// El cliente del plan: si la tarjeta pregunta, hay que elegir (nunca se asume); «interno» es trabajo de Inherent, sin cliente.
+export function clienteDelPlan(p, slug = '', nombre = '') {
+  if (p.sinClientes) return { error: 'No tienes clientes para este trabajo: pídele acceso al CEO' };
+  if (!p.clientes) return { cliente: slug, nombre };
+  if (!p.cliente) return { error: 'Elige para quién es este trabajo' };
+  if (p.cliente === 'interno') return { cliente: '', nombre: '' };
+  return { cliente: p.cliente, nombre: p.clientes.find(([s]) => s === p.cliente)?.[1] || '' };
+}
+// La lectura del CEO/COO: la conversación tiene que ser la del trabajo Y de quien lo encargó.
+export const conversacionLigada = (run, sesion) => Boolean(run?.chat?.sesion && sesion?.id === run.chat.sesion && String(sesion.owner).toLowerCase() === String(run.chat.owner).toLowerCase());

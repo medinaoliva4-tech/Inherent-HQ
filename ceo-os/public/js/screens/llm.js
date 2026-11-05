@@ -23,7 +23,7 @@ import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { ponerTema, temaElegido, esNoche } from '../tema.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
-import { leerMencion, planDe, contextoChat, hiloChat, modeloDeEtapa } from '../chat-agentes.js';
+import { leerMencion, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor } from '../agentes-flujos.js';
@@ -666,23 +666,30 @@ export async function render(el, { me, sub = [], alive }) {
   async function proponerPlan(agente, resto, { run = null } = {}) {
     let w; try { ({ workflow: w } = await api('agentes/workflows/' + enc(agente.id))); } catch (e) { return toast(e.message, true); }
     const desde = run ? activa(run) : 0, plan = planDe(run || w, modelosGw()).filter((e) => e.n >= desde);
-    let clientes = null;
-    if (!run && !slugAhora()) { const xs = (await cargarContexto(me).catch(() => [])).filter((c) => c.slug && c.slug !== 'inherent'); if (xs.length) clientes = [['', 'Inherent (sin cliente)'], ...xs.map((c) => [c.slug, c.name])]; }
-    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
+    // Sin cliente en el modo, la tarjeta pregunta para quién es (nunca se asume). Un modo que pide cliente no admite «interno».
+    let clientes = null, sinClientes = false;
+    if (!run && !slugAhora()) {
+      const xs = (await cargarContexto(me).catch(() => [])).filter((c) => c.slug && c.slug !== 'inherent'), pide = modoDe(S.modo).pide;
+      clientes = [['', 'Elige…'], ...(pide ? [] : [['interno', 'Inherent (trabajo interno)']]), ...xs.map((c) => [c.slug, c.name])];
+      sinClientes = clientes.length < 2;
+    }
+    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, sinClientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
     if (!alive()) return; pintarCentro();
   }
   async function empezarPlan(i) {
     const p = S.msgs[i]?.p; if (!p || !['pendiente', 'error'].includes(p.estado)) return;
+    const cl = p.run ? {} : clienteDelPlan(p, slugAhora(), nombreSlug());
+    if (cl.error) { p.estado = 'error'; p.error = cl.error; return pintarHilo(); }
     p.estado = 'creando'; pintarHilo();
     try {
       let run;
       if (p.run) ({ run } = await api(`agentes/runs/${enc(p.run)}/plan`, { method: 'POST', body: { hasta: p.hasta } }));
       else {
         if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: tituloDe(`@${p.agente.nombre} ${p.resto}`) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
-        const cliente = p.clientes ? p.cliente : slugAhora(), nombre = p.clientes ? p.clientes.find(([sl]) => sl === cliente)?.[1] || '' : nombreSlug();
-        ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente, cliente_nombre: cliente ? nombre : '', chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs) } }));
+        ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente: cl.cliente, cliente_nombre: cl.nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs) } }));
         p.run = run.id;
-        if (p.mensaje) { api(`chat/sesiones/${enc(S.sesion)}/nota`, { method: 'POST', body: { texto: p.mensaje } }).catch(() => {}); p.mensaje = ''; }
+        // En orden (cada escritura usa la versión de la conversación): primero el mensaje, después el lazo.
+        if (p.mensaje) { await api(`chat/sesiones/${enc(S.sesion)}/nota`, { method: 'POST', body: { texto: p.mensaje } }).catch(() => {}); p.mensaje = ''; }
       }
       if (S.sesion) await api(`chat/sesiones/${enc(S.sesion)}/agentes`, { method: 'POST', body: { run: run.id } }); // sin repetir: se puede reintentar
       ponerRun(run); p.estado = 'hecho';
@@ -819,14 +826,15 @@ export async function render(el, { me, sub = [], alive }) {
       S.sesiones = xs; S.modelos = mods; ajustarModelo();
     }
     if (!alive()) return;
-    pintarSide(); pintarCentro();
+    pintarSide(); pintarCentro(); pintarPanel(); // el panel también: «Continuar» depende de los modelos del servidor
   }
   pintarSide(); pintarCentro(); pintarPanel();
   await Promise.all([me.areas?.includes('estrategia') ? loadEstrategia().catch(() => {}) : null, brandAccess(me).any ? loadBrands(me).catch(() => {}) : null]);
   if (!alive()) return;
   await revisar();
-  if (sub[0] === 'trabajo' && sub[1] && listo()) await abrirTrabajo(decodeURIComponent(sub[1]));
-  else if (sub[0] && listo()) await abrirSesion(decodeURIComponent(sub[0]));
+  // Sin servidor también se abre: leer y aprobar no lo necesitan (lo escrito queda en la base).
+  if (sub[0] === 'trabajo' && sub[1]) await abrirTrabajo(decodeURIComponent(sub[1]));
+  else if (sub[0]) await abrirSesion(decodeURIComponent(sub[0]));
   else pintarPanel();
   $('#llm-in', el)?.focus();
 }

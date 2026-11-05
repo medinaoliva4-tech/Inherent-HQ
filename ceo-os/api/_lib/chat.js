@@ -13,6 +13,7 @@ import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
+import { conversacionLigada } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'chat_sesiones';
 const GW = 'gateway_estado';
@@ -102,7 +103,7 @@ export function rutas(on) {
     const s = await db.get(COLL, txt(req.params.id, 120));
     if (!s || s.archivado) return res.status(404).json({ error: 'Esa conversación no existe' });
     const runId = txt(req.query.run, 80), run = runId ? await db.get(RUNS, runId) : null;
-    const ligada = run && run.chat?.sesion === s.id && (await verRun(u, run));
+    const ligada = run && conversacionLigada(run, s) && (await verRun(u, run));
     if (!ligada) return res.status(404).json({ error: 'Esa conversación no está ligada a un trabajo que puedas ver' });
     // Queda en el registro del trabajo quién la leyó.
     const { id, v, _meta, ...data } = run;

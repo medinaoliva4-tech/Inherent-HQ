@@ -179,7 +179,9 @@ export function rutas(on) {
     };
     // F4.5: el trabajo que nace en el Chat queda ligado a esa conversación, con lo platicado y lo hablado como contexto.
     if (b.chat?.sesion) {
-      run.chat = { sesion: txt(b.chat.sesion, 120), owner: lc(u.email) };
+      const ses = await db.get('chat_sesiones', txt(b.chat.sesion, 120));
+      if (!ses || lc(ses.owner) !== lc(u.email)) return res.status(403).json({ error: 'Esa conversación no es tuya' });
+      run.chat = { sesion: ses.id, owner: lc(u.email) };
       const hasta = Number(b.plan_ok?.hasta);
       if (Number.isInteger(hasta) && hasta >= 0) run.plan_ok = { hasta: Math.min(hasta, run.etapas.length - 1), por: u.email, at: ahora() };
       const ctx = txt(b.contexto, MAX_CONTEXTO);
@@ -212,7 +214,7 @@ export function rutas(on) {
     const n = Number(req.params.n), m = puede(r, n, 'encolar', { rol: u.role }); if (m) return motivo(res, m);
     if (r.pausado) return res.status(409).json({ error: 'El agente está en pausa: reanúdalo para ejecutar' });
     const g = await db.get(GW, 'vps').catch(() => null);
-    if (!g?.at || Date.now() - Date.parse(g.at) > 90 * 1000) return res.status(503).json({ error: 'El servidor no está en línea: elige otra IA para esta etapa', code: 'GATEWAY_OFF' });
+    if (!g?.at || Date.now() - Date.parse(g.at) > 90 * 1000) return res.status(503).json({ error: 'El servidor no está en línea: vuelve a intentarlo en un momento', code: 'GATEWAY_OFF' });
     // Sin modelo, el de la etapa según el flujo (F4.5 · §20.11).
     const modelo = txt(body(req).modelo, 120) || modeloDeEtapa(r.etapas[n], g.modelos || []);
     if (!modelo || !(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });

@@ -232,7 +232,7 @@ export const progreso = (run) => { const t = (run?.etapas || []).length, h = (ru
 
 // ¿Qué puede pasar con esta etapa? → null si se puede, o el motivo (texto para la persona).
 // ¿Quién leyó el documento de la etapa después de su último resultado? (F4.5: el OK se activa al abrirlo.)
-const ultimoResultado = (run, n) => (run.historial || []).filter((h) => h.accion === 'ejecutar' && h.etapa === n).map((h) => Date.parse(h.at) || 0).reduce((a, b) => Math.max(a, b), 0);
+const ultimoResultado = (run, n) => (run.historial || []).filter((h) => ['ejecutar', 'corregir'].includes(h.accion) && h.etapa === n).map((h) => Date.parse(h.at) || 0).reduce((a, b) => Math.max(a, b), 0);
 export const leyo = (run, n, email) => { const desde = ultimoResultado(run, n), yo = String(email || '').toLowerCase(); return (run.etapas[n]?.leida_por || []).some((x) => String(x.email).toLowerCase() === yo && (Date.parse(x.at) || 0) >= desde); };
 export function puede(run, n, accion, { rol = '', email = '' } = {}) {
   const e = run?.etapas?.[n];

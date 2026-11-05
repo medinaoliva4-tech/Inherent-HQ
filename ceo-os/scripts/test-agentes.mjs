@@ -9,7 +9,7 @@ import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
 import { idChatTrabajo, sistemaTrabajo, hilo, fuentes, archivos, modoDeArea } from '../public/js/agentes-chat-datos.js';
 import { leerIdSesion } from '../public/js/llm/modos.js';
-import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat } from '../public/js/chat-agentes.js';
+import { leerMencion, modeloDeEtapa, planDe, contextoChat, mapaFuentes, enlazarCitas, hiloChat, clienteDelPlan, conversacionLigada } from '../public/js/chat-agentes.js';
 import { enCola, siguienteAuto, leerWorkflow, ESTRATEGIA_GUIADA, puede, activa, completo, simular, leerRespuesta, pedido, desdePlantilla, normalizarWorkflow, TIPOS, aplicarResultado, soloEvidenciaDeInputs, enServidor } from '../public/js/agentes-flujos.js';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -231,6 +231,27 @@ t('F4.5: el hilo del Chat mezcla mensajes y eventos de varios agentes por hora; 
   const msgs = [{ r: 'u', t: '@A', at: '2026-11-04T10:00:00Z' }, { r: 'u', t: '@B', at: '2026-11-04T10:02:00Z' }, { r: 'a', t: 'escribiendo' }];
   const h = hiloChat(msgs, [runA, runB]);
   assert.deepEqual(h.map((x) => (x.tipo === 'msg' ? `m${x.i}` : `${x.run.id}:${x.x.h.accion}${x.x.ultimo ? '*' : ''}`)), ['m0', 'A:crear', 'm1', 'B:crear', 'A:ejecutar*', 'm2']);
+});
+t('F4.5: nombres de agente de tres o más palabras también se reconocen', () => {
+  const m = leerMencion('@Diagnóstico de marca revisa AKAI', [{ id: 'd', nombre: 'Diagnóstico de marca' }, { id: 'di', nombre: 'Diagnóstico' }]);
+  assert.equal(m.agente.id, 'd'); assert.equal(m.resto, 'revisa AKAI');
+});
+t('F4.5: corregir el resultado también pide volver a leerlo', () => {
+  const r = { etapas: [{ estado: 'revision', leida_por: [{ email: 'c@x', at: '2026-11-04T10:30:00Z' }] }], historial: [{ accion: 'ejecutar', etapa: 0, at: '2026-11-04T10:20:00Z' }, { accion: 'corregir', etapa: 0, at: '2026-11-04T10:40:00Z' }] };
+  assert.match(puede(r, 0, 'aprobar', { rol: 'coo', email: 'c@x' }), /Abre el documento/);
+});
+t('F4.5: el cliente del plan se elige, nunca se asume', () => {
+  assert.deepEqual(clienteDelPlan({ clientes: [['', 'Elige…'], ['akai', 'AKAI']], cliente: '' }), { error: 'Elige para quién es este trabajo' });
+  assert.deepEqual(clienteDelPlan({ clientes: [['akai', 'AKAI']], cliente: 'akai' }), { cliente: 'akai', nombre: 'AKAI' });
+  assert.deepEqual(clienteDelPlan({ clientes: [['', 'Elige…'], ['interno', 'Inherent (trabajo interno)']], cliente: 'interno' }), { cliente: '', nombre: '' });
+  assert.deepEqual(clienteDelPlan({ clientes: null }, 'nao', 'NAO'), { cliente: 'nao', nombre: 'NAO' });
+  assert.deepEqual(clienteDelPlan({ clientes: [], sinClientes: true }), { error: 'No tienes clientes para este trabajo: pídele acceso al CEO' });
+});
+t('F4.5: la lectura del CEO/COO solo vale si la conversación es de quien creó el lazo', () => {
+  assert.equal(conversacionLigada({ chat: { sesion: 's1', owner: 'a@x' } }, { id: 's1', owner: 'A@x' }), true);
+  assert.equal(conversacionLigada({ chat: { sesion: 's1', owner: 'coo@x' } }, { id: 's1', owner: 'a@x' }), false, 'un lazo a la conversación de otra persona no vale');
+  assert.equal(conversacionLigada({ chat: { sesion: 's2', owner: 'a@x' } }, { id: 's1', owner: 'a@x' }), false);
+  assert.equal(conversacionLigada({}, { id: 's1', owner: 'a@x' }), false);
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.
 for (const u of ['http://127.0.0.1:4000/v1/models', 'http://10.0.0.1/', 'http://100.83.31.16/', 'http://169.254.169.254/', 'http://[::1]/', 'file:///etc/passwd', 'http://1.1.1.1:8080/']) {

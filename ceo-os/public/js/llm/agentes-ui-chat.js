@@ -29,7 +29,7 @@ export function planHtml(p, i) {
       ${vivo ? html`<div class="lpl-f">
         ${p.clientes ? html`<label>Para<select data-ch="plan-cliente" data-i="${i}">${p.clientes.map(([s, n]) => html`<option value="${s}" ${s === p.cliente ? raw('selected') : ''}>${n}</option>`)}</select></label>` : ''}
         <label>Sigue solo hasta<select data-ch="plan-hasta" data-i="${i}">${p.plan.map((e) => html`<option value="${e.n}" ${e.n === p.hasta ? raw('selected') : ''}>${e.n + 1} · ${e.nombre}</option>`)}</select></label></div>
-        <p class="lpl-n">Al aprobar cada etapa, la siguiente arranca sola hasta donde digas. Lo que siga después lo platicamos.</p>
+        <p class="lpl-n">Al aprobar cada etapa, la siguiente arranca sola hasta donde digas. Lo que siga después lo platicamos. Lo último de esta conversación entra al trabajo como contexto y lo ve quien vea el trabajo.</p>
         ${p.estado === 'error' ? html`<p class="lm-err">${p.error}</p>` : ''}
         <div class="lm-ops"><button type="button" class="si" data-a="plan-empezar" data-i="${i}">Empezar</button><button type="button" data-a="plan-cancelar" data-i="${i}">Cancelar</button></div>`
       : html`<span class="lm-meta-ok">${p.estado === 'creando' ? 'Creando el trabajo…' : p.estado === 'cancelado' ? 'Cancelado' : html`${ico('check', 13)} En marcha · sigue sola hasta ${p.plan.find((e) => e.n === p.hasta)?.nombre || ''}`}</span>`}
