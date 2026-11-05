@@ -59,7 +59,7 @@ export async function ver(u, run, sc) {
   const s = sc === undefined ? await scoper(u) : sc;
   return !s || s.client(run.cliente);
 }
-const resumen = (r) => ({ id: r.id, v: r.v, titulo: r.titulo, flujo: { id: r.flujo?.id, nombre: r.flujo?.nombre, agente: r.flujo?.agente, depto: r.flujo?.depto, area: r.flujo?.area }, cliente: r.cliente || '', cliente_nombre: r.cliente_nombre || '', archivado: Boolean(r.archivado), pausado: Boolean(r.pausado), completo: completo(r), activa: activa(r), etapas: (r.etapas || []).map((e) => ({ nombre: e.nombre, estado: e.estado, gate: e.gate })), creado_por: r.creado_por, actualizado: r._meta?.updated_at });
+const resumen = (r) => ({ id: r.id, v: r.v, titulo: r.titulo, flujo: { id: r.flujo?.id, nombre: r.flujo?.nombre, agente: r.flujo?.agente, depto: r.flujo?.depto, area: r.flujo?.area }, cliente: r.cliente || '', cliente_nombre: r.cliente_nombre || '', archivado: Boolean(r.archivado), pausado: Boolean(r.pausado), completo: completo(r), activa: activa(r), etapas: (r.etapas || []).map((e) => ({ nombre: e.nombre, estado: e.estado, gate: e.gate, tipo: e.tipo })), creado_por: r.creado_por, actualizado: r._meta?.updated_at });
 const resumenWf = (w, runs = []) => {
   const mios = runs.filter((r) => r.flujo?.id === w.id && !r.archivado);
   const completos = mios.filter((r) => completo(r)).length;
