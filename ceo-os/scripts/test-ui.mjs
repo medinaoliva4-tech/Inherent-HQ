@@ -13,6 +13,7 @@ import { limpiarMarketing, veredicto, analizarCanales, aMovimiento, equilibrio }
 import { rutaAccion, leerReproduccion, motivoSpotify, tiempo, idEquipo, elegirEquipo } from '../public/js/spotify-datos.js';
 import { limpiarEstrategia, analizarMeta, resumenVoces } from '../public/js/estrategia-datos.js';
 import { conLente, LENTE_HORMOZI } from '../public/js/llm/modos.js';
+import { limpiarProduccion, analizarPiezas, estadoEntrega } from '../public/js/produccion-datos.js';
 import { limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads, idEmbudo } from '../public/js/embudo-datos.js';
 import { MESAS, FUERA } from '../public/js/mesas.js';
 import { HERRAMIENTAS, WORKSPACES } from '../public/js/herramientas.js';
@@ -350,6 +351,18 @@ t('voz: cuenta por tipo y agrupa temas sin importar mayúsculas', () => {
 t('Chat: la lente Hormozi se prende y se apaga', () => {
   assert.equal(conLente('base', false), 'base');
   assert.equal(conLente('base', true), `base\n\n${LENTE_HORMOZI}`);
+});
+t('producción: costo, margen y entrega por pieza', () => {
+  const d = limpiarProduccion({ costo_hora: 100, piezas: [{ nombre: 'Reel', horas: 5, costo: 200, cobrado: 1000, promesa: '2026-11-10', entrega: '2026-11-09' }, { nombre: 'Foto', horas: 10, costo: 500, cobrado: 800, promesa: '2026-11-10', entrega: '2026-11-12' }, { nombre: 'Post', horas: 0, cobrado: 300 }, { nombre: '' }] });
+  const r = analizarPiezas(d.piezas, d.costo_hora);
+  assert.equal(r.filas.length, 3); assert.equal(r.total, 2200); assert.equal(r.margen, -100);
+  assert.equal(r.aTiempo, 0.5); assert.equal(r.peor.nombre, 'Foto'); assert.equal(r.peor.margen, -700);
+  assert.equal(estadoEntrega({ entrega: '' }), 'Pendiente'); assert.equal(estadoEntrega({ entrega: '2026-11-01' }), 'Sin promesa');
+  assert.equal(analizarPiezas([], 0).aTiempo, null);
+});
+t('producción: el enlace de costos es solo para el CEO', () => {
+  const e = MESAS.production.mesas.flatMap((m) => m.enlaces).find(([, r]) => r.endsWith('/costo'));
+  assert.equal(e[2], 'ceo');
 });
 t('embudo: encuentra la mayor fuga y le pone valor', () => {
   const d = limpiarEmbudo({ client_slug: 'nao', mes: '2026-11', ticket: '1000', margen_pct: 50, etapas: [{ n: 1000 }, { n: 100 }, { n: 50 }, { n: 10 }, { n: 5 }] });

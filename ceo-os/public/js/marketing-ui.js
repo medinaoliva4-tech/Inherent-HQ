@@ -12,8 +12,9 @@ const TONO = { Escalar: 'bien', Mantener: '', 'Parar o cambiar': 'mal' };
 export async function pintarMarketing(el, { me, area, tabs, vista, alive }) {
   await cargarContexto(me).catch(() => {});
   if (!alive()) return;
-  const lista = contextoLista().filter((c) => c.slug);
-  let slug = contextoActual(me) || lista[0]?.slug || '', mes = mesHoy(), doc = null, d = null;
+  const lista = contextoLista().filter((c) => c.slug && (me.role === 'ceo' || c.slug !== 'inherent'));
+  const pedido = contextoActual(me);
+  let slug = lista.some((c) => c.slug === pedido) ? pedido : lista[0]?.slug || '', mes = mesHoy(), doc = null, d = null;
   const cargar = async () => { doc = await C.get(idMarketing(slug, mes)).catch(() => null); d = limpiarMarketing({ ...(doc || {}), client_slug: slug, mes }); pintar(); };
   const guardar = async () => {
     try {

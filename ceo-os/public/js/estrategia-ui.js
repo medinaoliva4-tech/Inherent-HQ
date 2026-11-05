@@ -12,8 +12,9 @@ const valor = (v, u) => (u === 'pct' ? pct(v) : u === 'q' ? q(v) : Math.round(v)
 export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
   await cargarContexto(me).catch(() => {});
   if (!alive()) return;
-  const lista = contextoLista().filter((c) => c.slug);
-  let slug = contextoActual(me) || lista[0]?.slug || '', doc = null, d = null, fuga = null, nueva = { frase: '', tipo: TIPOS_VOZ[0], tema: '', fuente: '' };
+  const lista = contextoLista().filter((c) => c.slug && (me.role === 'ceo' || c.slug !== 'inherent'));
+  const pedido = contextoActual(me);
+  let slug = lista.some((c) => c.slug === pedido) ? pedido : lista[0]?.slug || '', doc = null, d = null, fuga = null, nueva = { frase: '', tipo: TIPOS_VOZ[0], tema: '', fuente: '' };
   const cargar = async () => {
     doc = await C.get(slug).catch(() => null);
     d = limpiarEstrategia({ ...(doc || {}), client_slug: slug });

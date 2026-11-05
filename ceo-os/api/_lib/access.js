@@ -12,7 +12,7 @@ export const COLLS = {
   leads: 'sales', lead_sources: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
   rates: 'finanzas', packages: 'finanzas', bundles: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', recipes: 'operations', accounts: 'clients',
-  brand_boards: 'clients', budgets: 'clients', campaigns: 'operations', movimientos: 'clients', embudos: 'clients', marketing_mes: 'clients', strategy_meta: 'clients',
+  brand_boards: 'clients', budgets: 'clients', campaigns: 'operations', movimientos: 'clients', embudos: 'clients', marketing_mes: 'clients', strategy_meta: 'clients', costos_produccion: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
@@ -41,11 +41,14 @@ export const COLLS = {
 // (sus tareas, los proyectos y las cuentas de sus clientes). Las tareas también las escribe: ahí entrega.
 export const READ_ALSO = { tasks: ['work'], projects: ['work'], accounts: ['work'], recipes: ['work', 'sales'], campaigns: ['work'] };
 export const WRITE_ALSO = { tasks: ['work'], campaigns: ['work'] };
-const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes', 'invoices', 'bank_moves', 'cost_recipes']);
+const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', 'finance', 'payroll', 'mentors', 'lead_sources', 'recipes', 'invoices', 'bank_moves', 'cost_recipes', 'costos_produccion']);
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
 // lead_sources lleva las claves de las puertas de intake: también solo el CEO. El estado de cuenta del banco (bank_moves), igual.
 // La receta de costos de cada cliente (cost_recipes), igual.
-export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves', 'cost_recipes']);
+export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves', 'cost_recipes', 'costos_produccion']);
+// Las mesas de dinero de un cliente las ve su equipo; las de Inherent mismo son márgenes propios: solo el CEO.
+const DINERO_POR_CLIENTE = new Set(['embudos', 'marketing_mes', 'strategy_meta']);
+export const dineroDeInherent = (coll, d) => DINERO_POR_CLIENTE.has(coll) && String(d?.client_slug || '').toLowerCase() === 'inherent';
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).

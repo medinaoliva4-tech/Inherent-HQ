@@ -577,3 +577,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **App de Mac:** Electron no trae Widevine, así que el play abre la app de Spotify y le pasa la música.
 - **Sin equipo activo:** se prefiere el equipo activo, luego la compu. El player dice dónde está sonando.
 
+### Entrega 5 · Creative y Production
+- **Creative:** su número ya vive en Creative Performance Analyzer. No se agrega nada.
+- **Production:** Costo y entrega por pieza, solo para el CEO, con costo, margen y entregas a tiempo.
+- **Dinero de Inherent:** Embudo, Rentabilidad, Resultados y Mapa de la Meta del cliente `inherent` solo los ve el CEO.
+
