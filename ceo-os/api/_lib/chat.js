@@ -15,6 +15,7 @@ import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
 import { equipoPara } from './conocimiento.js';
 import { bloqueEquipo } from '../../public/js/conocimiento.js';
+import { agenteDeSesion } from '../../public/js/llm/carpetas.js';
 import { conversacionLigada } from '../../public/js/chat-agentes.js';
 
 export const COLL = 'chat_sesiones';
@@ -25,9 +26,9 @@ const ahora = () => new Date().toISOString();
 const MAX_MSGS = 400, MAX_MSG = 60000;
 const enLinea = (g) => Boolean(g?.at && Date.now() - Date.parse(g.at) < 90 * 1000);
 
-const resumenSesion = (s) => {
+const resumenSesion = (s, runs = []) => {
   const ult = [...(s.mensajes || [])].reverse().find((m) => m.role === 'user');
-  return { id: s.id, title: s.title || '', preview: txt(ult?.content, 120), model: s.turno?.modelo || '', last_active: s._meta?.updated_at, started_at: s._meta?.created_at, message_count: (s.mensajes || []).length, en_curso: ['en_cola', 'trabajando'].includes(s.turno?.estado) };
+  return { id: s.id, title: s.title || '', preview: txt(ult?.content, 120), model: s.turno?.modelo || '', last_active: s._meta?.updated_at, started_at: s._meta?.created_at, message_count: (s.mensajes || []).length, en_curso: ['en_cola', 'trabajando'].includes(s.turno?.estado), cliente: s.cliente || '', agente: agenteDeSesion(s.agentes, runs) };
 };
 async function mia(req, res, u) {
   const s = await db.get(COLL, txt(req.params.id, 120));
@@ -53,7 +54,8 @@ export function rutas(on) {
   on('GET', 'chat/sesiones', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
-    const xs = (await db.list(COLL)).filter((s) => lc(s.owner) === lc(u.email) && !s.archivado && !s.oculto).map(resumenSesion)
+    const [todas, runs] = await Promise.all([db.list(COLL), db.list(RUNS)]);
+    const xs = todas.filter((s) => lc(s.owner) === lc(u.email) && !s.archivado && !s.oculto).map((s) => resumenSesion(s, runs))
       .sort((a, b) => String(b.last_active).localeCompare(String(a.last_active)));
     res.json({ sessions: xs.slice(0, 300) });
   });
@@ -78,6 +80,16 @@ export function rutas(on) {
   });
 
   // F4.5 · un mensaje que no pide respuesta del servidor (el «@agente …» que arrancó un trabajo): queda en la conversación.
+  // Mover una conversación a otro cliente: cambia su carpeta. Su id no cambia.
+  on('POST', 'chat/sesiones/:id/mover', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    const cliente = txt(body(req).cliente, 40).toLowerCase();
+    if (!/^[a-z0-9_-]{2,40}$/.test(cliente)) return res.status(400).json({ error: 'Elige un cliente' });
+    const d = await guardar(res, u, s, { cliente });
+    if (d) res.json({ ok: true, cliente });
+  });
+
   on('POST', 'chat/sesiones/:id/nota', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const s = await mia(req, res, u); if (!s) return;

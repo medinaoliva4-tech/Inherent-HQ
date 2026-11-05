@@ -490,3 +490,10 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Celular:** Hoy, Chat, Agentes, Calendario y Más.
 - **Fuera:** «Ask InherentOS» repetía al Chat. Inherent AI dejó de ser un grupo.
 
+### Entrega 3 · el Chat como el prototipo
+- **Carpetas:** cada cliente es una carpeta, con Inherent y Personal al final. Una conversación sin cliente vive en Inherent. Se puede mover a otro cliente; su id no cambia.
+- **Estado del agente:** va en la fila de la conversación: espera tu decisión, trabajando o listo para leer.
+- **Por decidir:** junta las conversaciones que esperan a la persona.
+- **El modo** se elige en la caja de mensaje, no en la barra.
+- **Falta:** la página de cada cliente, con instrucciones, archivos y el equipo de hoy.
+
