@@ -572,3 +572,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Lente Hormozi:** se prende y se apaga en el Chat. Cambia cómo se razona, no las reglas del modo.
 - **Oferta y Dinero:** sigue en Offer Architect y Pricing & Packages Builder.
 
+### Spotify · dónde suena
+- **Navegador de compu:** el OS es un equipo de Spotify con el Web Playback SDK. Pide Premium y reconectar una vez.
+- **App de Mac:** Electron no trae Widevine, así que el play abre la app de Spotify y le pasa la música.
+- **Sin equipo activo:** se prefiere el equipo activo, luego la compu. El player dice dónde está sonando.
+

@@ -5,18 +5,18 @@ import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { seal, open } from './vault.js';
-import { rutaAccion, leerReproduccion, motivoSpotify } from '../../public/js/spotify-datos.js';
+import { rutaAccion, leerReproduccion, motivoSpotify, idEquipo, elegirEquipo } from '../../public/js/spotify-datos.js';
 
 const CONN = 'spotify_conexiones', PEND = 'spotify_pendientes';
 const CLIENT = () => (process.env.SPOTIFY_CLIENT_ID || '70d9110fca724c03b737e631460e968f').trim();
-const SCOPES = 'user-read-playback-state user-modify-playback-state user-read-currently-playing';
+const SCOPES = 'user-read-playback-state user-modify-playback-state user-read-currently-playing streaming user-read-email user-read-private';
 const lc = (x) => String(x || '').toLowerCase();
 const b64u = (b) => Buffer.from(b).toString('base64url');
 const base = () => String(process.env.APP_URL || 'http://127.0.0.1:3000').trim().replace(/\/+$/, '');
 const redirect = () => `${base()}/api/spotify/callback`;
 
 async function guardar(email, t, prev) {
-  const data = { email: lc(email), access: seal(t.access_token), refresh: t.refresh_token ? seal(t.refresh_token) : prev?.refresh || '', expira: Date.now() + (t.expires_in || 3600) * 1000 };
+  const data = { email: lc(email), access: seal(t.access_token), refresh: t.refresh_token ? seal(t.refresh_token) : prev?.refresh || '', scope: t.scope || prev?.scope || '', expira: Date.now() + (t.expires_in || 3600) * 1000 };
   if (prev) await db.update(CONN, lc(email), data, prev.v, email); else await db.create(CONN, data, email, lc(email));
 }
 async function pedirToken(form) {
@@ -33,7 +33,10 @@ async function permiso(email) {
   await guardar(email, t, c);
   return t.access_token;
 }
-const llamar = (token, ruta, init = {}) => fetch(`https://api.spotify.com/v1/me/player${ruta}`, { ...init, headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(10000) });
+const llamar = (token, ruta, init = {}) => fetch(`https://api.spotify.com/v1/me/player${ruta}`, { ...init, headers: { Authorization: `Bearer ${token}`, ...init.headers }, signal: AbortSignal.timeout(10000) });
+
+// Pasa la música a un equipo y sigue donde iba.
+const pasarA = (token, id) => llamar(token, '', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ device_ids: [id], play: true }) });
 
 export function rutas(on) {
   on('POST', 'spotify/conectar', async (req, res) => {
@@ -60,10 +63,18 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const t = await permiso(u.email);
     if (!t) return res.json({ conectado: false });
-    const r = await llamar(t, '');
-    if (r.status === 204) return res.json({ conectado: true, ...leerReproduccion(null) });
-    if (!r.ok) return res.json({ conectado: true, ...leerReproduccion(null), aviso: r.status === 403 ? 'Spotify pide Premium o acceso a esta app.' : 'Spotify no respondió.' });
-    res.json({ conectado: true, ...leerReproduccion(await r.json()) });
+    const streaming = /\bstreaming\b/.test((await db.get(CONN, lc(u.email)))?.scope || ''), r = await llamar(t, '');
+    if (r.status === 204) return res.json({ conectado: true, streaming, ...leerReproduccion(null) });
+    if (!r.ok) return res.json({ conectado: true, streaming, ...leerReproduccion(null), aviso: r.status === 403 ? 'Spotify pide Premium o acceso a esta app.' : 'Spotify no respondió.' });
+    res.json({ conectado: true, streaming, ...leerReproduccion(await r.json()) });
+  });
+  // El reproductor del navegador pide su permiso aquí: es de la misma persona y dura una hora.
+  on('GET', 'spotify/token', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const t = await permiso(u.email);
+    if (!t) return res.status(409).json({ error: 'Conecta Spotify primero' });
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ token: t });
   });
   on('POST', 'spotify/accion', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
@@ -71,11 +82,14 @@ export function rutas(on) {
     if (!ruta) return res.status(400).json({ error: 'Acción no válida' });
     try {
       const t = await permiso(u.email); if (!t) return res.status(409).json({ error: 'Conecta Spotify primero' });
-      let r = await llamar(t, `/${ruta[1]}`, { method: ruta[0] });
-      if (r.status === 404 && accion === 'play') {
-        // Sin equipo activo: lo manda al primero que Spotify tenga abierto.
+      const equipo = accion === 'play' ? idEquipo(b.dispositivo) : '';
+      let r = equipo ? await pasarA(t, equipo) : await llamar(t, `/${ruta[1]}`, { method: ruta[0] });
+      if (r.status === 404 && accion === 'play' && !equipo) {
+        // Sin equipo activo: pasa la música al primero que Spotify tenga abierto.
         const d = await llamar(t, '/devices'), lista = d.ok ? (await d.json()).devices || [] : [];
-        if (lista[0]) r = await llamar(t, `/play?device_id=${encodeURIComponent(lista[0].id)}`, { method: 'PUT' });
+        const elegido = elegirEquipo(lista);
+        if (!elegido) return res.status(409).json({ error: motivoSpotify(404, ''), code: 'SIN_EQUIPO' });
+        r = await pasarA(t, elegido.id);
       }
       if (r.ok) return res.json({ ok: true });
       const j = await r.json().catch(() => ({})), razon = j.error?.reason || '';
