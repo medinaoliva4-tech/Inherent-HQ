@@ -3,14 +3,17 @@
 // su IA y sus conexiones); un TRABAJO es un encargo concreto que el agente hace, etapa por etapa, con tu aprobación.
 import { html, mount, ico, skel, toast, api, ask } from './core.js';
 import { AREAS_AGENTE, ESTADOS_AGENTE, tipoDe } from './agentes-flujos.js';
-import { cargarContexto } from './contexto.js';
+import { abrirEnChat } from './areas.js';
+import { modoDeArea } from './agentes-chat-datos.js';
 
 export const areaNombre = (id) => AREAS_AGENTE.find(([k]) => k === id)?.[1] || 'Strategy';
 const COLOR_AREA = { strategy: '--ui-m-strategy', marketing: '--ui-m-marketing', creative: '--ui-m-creative', consulting: '--ui-m-consulting', production: '--ui-m-production' };
 export const colorArea = (id) => COLOR_AREA[id] || '--ui-m-strategy';
 export const chipEstado = (e) => html`<span class="agx-est ${e}">${ESTADOS_AGENTE.find(([k]) => k === e)?.[1] || e}</span>`;
 export const rutaAgente = (id, tab = '') => `#/ai/agentes/${id}${tab ? '/' + tab : ''}`;
-export const rutaTrabajo = (agente, id) => `#/ai/agentes/${agente}/trabajos/${id}`;
+// F4.5: un trabajo se abre en el Chat, en su pestaña de la ventana de agentes. La vista por etapas queda como historial.
+export const rutaTrabajo = (agente, id) => `#/chat/trabajo/${id}`;
+export const rutaEtapas = (agente, id) => `#/ai/agentes/${agente}/trabajos/${id}/etapas`;
 const hace = (iso) => {
   if (!iso) return '';
   const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -84,17 +87,5 @@ export async function crearAgente(me, { area = '' } = {}) {
 }
 
 // Empezar un trabajo con un agente.
-export async function nuevoTrabajo(me, agente) {
-  const ctx = await cargarContexto(me).catch(() => []);
-  const clientes = [['', 'Sin cliente (Inherent)'], ...ctx.filter((c) => c.slug && c.slug !== 'inherent').map((c) => [c.slug, c.name])];
-  const v = await ask(`Nuevo trabajo · ${agente.nombre}`, [
-    { k: 'titulo', l: 'Qué le encargas', ph: 'Ej.: Estrategia de crecimiento Q1', req: true },
-    { k: 'objetivo', l: 'Objetivo', t: 'textarea', ph: '¿Qué tiene que lograr?' },
-    { k: 'cliente', l: 'Cliente', t: 'select', opts: clientes },
-  ], 'Empezar');
-  if (!v) return;
-  try {
-    const { run } = await api('agentes/runs', { method: 'POST', body: { ...v, workflow: agente.id, cliente_nombre: ctx.find((c) => c.slug === v.cliente)?.name || '' } });
-    location.hash = rutaTrabajo(agente.id, run.id);
-  } catch (e) { toast(e.message, true); }
-}
+// F4.5: un trabajo nuevo no se crea aquí: se abre el Chat con «@agente » escrito, para platicar el plan con el contexto de ahí.
+export function nuevoTrabajo(me, agente) { abrirEnChat(me.email, { modo: modoDeArea(agente.area), borrador: `@${agente.nombre} ` }); }

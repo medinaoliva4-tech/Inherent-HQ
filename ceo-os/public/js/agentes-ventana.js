@@ -5,7 +5,8 @@
 // abrirlo cuenta como leerlo y recién entonces se activa el OK (lo hace cumplir el servidor).
 import { html, raw, mount, ico, toast, api, ask, md, esc, drawer, closeDrawer } from './core.js';
 import { activa, completo, progreso, puede, enServidor, leerOutput, ESTADOS } from './agentes-flujos.js';
-import { fuentes, archivos, mapaFuentes, enlazarCitas, modeloDeEtapa } from './chat-agentes.js';
+import { rutaEtapas } from './agentes-ui.js';
+import { fuentes, archivos, mapaFuentes, enlazarCitas, modeloDeEtapa, idChatTrabajo } from './chat-agentes.js';
 
 const enc = encodeURIComponent;
 const quien = (e) => String(e || '').split('@')[0];
@@ -34,7 +35,9 @@ export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () =
       <span class="wc-chip ${completo(run) ? 'ok' : e.estado}">${completo(run) ? 'Completo' : `${n + 1}/${run.etapas.length}`}</span></header>
     <div class="av-meta"><span class="wc-prog" title="${pr.hechas} de ${pr.total} aprobadas"><i style="width:${pr.pct}%"></i></span>
       ${completo(run) ? '' : html`<span>${e.nombre} · ${e.modelo || modeloDeEtapa(e, modelos)}</span>`}
-      ${ajena && ['ceo', 'coo'].includes(rol) ? html`<button type="button" class="btn ghost xs" data-act="ver-chat">${ico('eye', 11)} Ver la conversación de ${quien(run.chat.owner)}</button>` : ''}</div>
+      ${ajena && ['ceo', 'coo'].includes(rol) ? html`<button type="button" class="btn ghost xs" data-act="ver-chat">${ico('eye', 11)} Ver la conversación de ${quien(run.chat.owner)}</button>` : ''}
+      ${run.chat ? '' : html`<button type="button" class="btn ghost xs" data-act="chat-anterior">${ico('chat', 11)} Conversación anterior</button>`}
+      <a class="btn ghost xs" href="${rutaEtapas(run.flujo.id, run.id)}">${ico('kanban', 11)} Historial</a></div>
 
     <section class="av-sec" aria-label="Etapas"><h3>${ico('list', 12)} Etapas</h3>
       <ol class="wc-queue">${run.etapas.map((x, i) => html`<li class="${x.estado} ${i === n && !completo(run) ? 'act' : ''}">
@@ -79,6 +82,7 @@ async function clic(box, ev) {
   if (a === 'quitar-fuente') return guardar('evidencia', { id: t.dataset.id, etapa: n, quitada: true }, 'Fuente quitada');
   if (a === 'input') return agregarInput(run, onCambio);
   if (a === 'ver-chat') return verConversacion(run);
+  if (a === 'chat-anterior') return conversacionAnterior(run, me);
 }
 
 // El documento de una etapa: abrirlo cuenta como leerlo. Desde aquí se aprueba, se pide un ajuste o se corrige.
@@ -127,6 +131,15 @@ async function agregarInput(run, onCambio) {
   ], 'Añadir');
   if (!v) return;
   try { const r = await post(run, 'inputs', { ...v, interna: Boolean(v.interna) }); toast('Input agregado'); onCambio(r.run); } catch (e) { toast(e.message, true); }
+}
+
+// Los trabajos que se llevaron en el chat de F4 guardaron su conversación aparte: se lee aquí, solo lectura. No se borra.
+async function conversacionAnterior(run, me) {
+  try {
+    const j = await api(`chat/sesiones/${enc(idChatTrabajo(run, me.email))}`);
+    drawer(html`<div class="ag-rev"><p class="av-franja">${ico('eye', 12)} Conversación anterior · solo lectura</p><h1>${run.titulo}</h1>
+      <div class="av-lect">${(j.messages || []).filter((m) => m.content).map((m) => (m.role === 'user' ? html`<div class="wc-msg yo"><div class="wc-bub">${m.content}</div></div>` : html`<div class="ag-md">${raw(md(m.content))}</div>`))}</div></div>`, {}, { title: 'Conversación anterior' });
+  } catch (e) { toast(e.status === 404 ? 'Este trabajo no tiene una conversación anterior' : e.message, true); }
 }
 
 // Solo el CEO y el COO, solo lectura: la conversación de quien llamó al agente, con de quién es, el cliente y el trabajo.
