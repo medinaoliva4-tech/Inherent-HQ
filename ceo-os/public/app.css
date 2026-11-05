@@ -9579,7 +9579,7 @@ a.ch-f{text-decoration:none}
 /* ===== Un mismo lenguaje en páginas y subpáginas (PLAN-GATEWAY §22) ===== */
 #main :not(.qdoc,.qdoc *,.sp-cover,.sp-cover *,.bx,.bx *,.rview,.rview *){text-transform:none}
 #main .lbl,#main .mt-h,#main .lp-k,.lat-k,.hoja .lat-k{letter-spacing:0;font-size:12.5px;font-weight:600;color:var(--ui-mut)}
-.sp-hero h1,.hello h1,.mt-mh h1,.agx-hero h1{font-size:28px;line-height:1.12;font-weight:650;letter-spacing:-.02em;color:var(--ui-ink)}
+.sp-hero h1,.hello h1,.mt-mh h1,.agx-hero h1{font-size:34px;line-height:1.1;font-weight:650;letter-spacing:-.02em;color:var(--ui-ink)}
 .sp-hero p,.hello p,.agx-hero p{font-size:15px;line-height:1.4;color:var(--ui-mut)}
 .sp-hero em,.hello em,.sp-hero p b{font-style:normal;font-weight:400;color:inherit}
 .sp-mono{background:var(--ui-fill2);color:var(--ui-ink);box-shadow:none;border-radius:9px}
@@ -9669,7 +9669,7 @@ html[data-vidrio="real"]::before,html[data-vidrio="real"]::after{display:none}
 #main .agx-espera-ic{background:var(--ui-fill2);color:var(--ui-ink)}
 #main .node,#main .node.dark{border:0;background:var(--ui-surf);color:var(--ui-ink);box-shadow:var(--v-borde)}
 #main .node.dark .mut{color:var(--ui-mut)}
-.cp-hd-t h1,.cp-hd.sm .cp-hd-t h1,.wktop h1,.avs-h h1,.aj-hero h1,.aj-con-h h1,.profhead h1{font-size:28px;line-height:1.12;font-weight:650;letter-spacing:-.02em}
+.cp-hd-t h1,.cp-hd.sm .cp-hd-t h1,.wktop h1,.avs-h h1,.aj-hero h1,.aj-con-h h1,.profhead h1{font-size:34px;line-height:1.1;font-weight:650;letter-spacing:-.02em}
 @media (prefers-reduced-transparency:reduce){#main{--ui-surf:#141415;--surface:#141415;--ui-surf2:#1b1b1d;--ui-side:#111112}#luz,#luz-aro,html::before,html::after{display:none}html[data-vidrio="real"]{background:#0d0d0e}}
 
 /* ===== Foundations de Apple: movimiento breve e interrumpible, contraste y controles cómodos ===== */
@@ -9688,7 +9688,8 @@ html::view-transition{pointer-events:none}
 /* La ventana de la Mac: el OS llega hasta el borde y los botones de la ventana viven en la barra lateral */
 html[data-vidrio="real"]{--ven-h:44px}
 html[data-vidrio="real"] #root::before{content:"";position:fixed;z-index:19;top:0;left:0;right:0;height:14px;-webkit-app-region:drag}
-html[data-vidrio="real"] .lat-top{min-height:34px;padding-left:64px;-webkit-app-region:drag}
+html[data-vidrio="real"] .lat-top{position:relative;min-height:34px;padding-top:36px;-webkit-app-region:drag}
+html[data-vidrio="real"] .lat-top .lat-ib{position:absolute;top:0;right:0}
 html[data-vidrio="real"][data-lat-mini] .lat-top{padding:30px 0 0}
 html[data-vidrio="real"] .llm-head{-webkit-app-region:drag}
 html[data-vidrio="real"] :is(.lat-top,.llm-head) :is(button,a,select,input){-webkit-app-region:no-drag}
@@ -9776,7 +9777,7 @@ html[data-vidrio="real"] .login .side{background:rgb(18 18 19 / .55)}
   /* Chat: el panel derecho solo aparece cuando lo pides, y ocupa toda la pantalla */
   .llm[data-panel="off"] .llm-panel{display:none}
   .llm[data-panel="on"] .llm-panel{inset:0;width:auto;border-radius:0}
-  .sp-hero h1,.hello h1,.mt-mh h1,.agx-hero h1{font-size:26px}
+  .sp-hero h1,.hello h1,.mt-mh h1,.agx-hero h1,.cp-hd-t h1,.wktop h1,.avs-h h1,.aj-hero h1,.profhead h1{font-size:28px}
   .home-hero p{font-size:20px;line-height:1.2;font-weight:600;color:var(--ui-ink)}
   .home-chips,.cal-leg,.agx-chips{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .home-chip{flex:none}
