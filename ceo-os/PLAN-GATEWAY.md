@@ -566,3 +566,9 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Radar:** tres oportunidades al mes de la competencia, con enlace de evidencia y paso a la Hoja de Movimientos.
 - **Campaña:** sigue en Campaign Architect, que ya cubre meta, canales, copy, pauta y landing.
 
+### Entrega 4 · Strategy
+- **Mapa de la Meta:** distancia a la meta, qué haría falta por palanca, cuello de botella desde el Embudo y tres pasos de 90 días.
+- **Voz del comprador:** frases exactas por tipo y tema. Dolor, deseo, objeción y por qué compró.
+- **Lente Hormozi:** se prende y se apaga en el Chat. Cambia cómo se razona, no las reglas del modo.
+- **Oferta y Dinero:** sigue en Offer Architect y Pricing & Packages Builder.
+

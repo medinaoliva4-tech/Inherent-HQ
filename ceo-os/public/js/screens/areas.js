@@ -39,6 +39,7 @@ export async function render(el, { me, sub, alive }) {
   if (!sub?.[1]) { const { pintarMesas } = await import('../area-mesas.js'); return pintarMesas(el, { me, area: areaInfo(sub?.[0]), tabs: tabsArea, alive }); }
   if (sub[1] === 'embudo' || sub[1] === 'rentabilidad') { const { pintarDinero } = await import('../dinero-ui.js'); return pintarDinero(el, { me, area: areaInfo(sub[0]), tabs: tabsArea, vista: sub[1], alive }); }
   if (sub[1] === 'radar' || sub[1] === 'resultados') { const { pintarMarketing } = await import('../marketing-ui.js'); return pintarMarketing(el, { me, area: areaInfo(sub[0]), tabs: tabsArea, vista: sub[1], alive }); }
+  if (sub[1] === 'meta' || sub[1] === 'voz') { const { pintarEstrategia } = await import('../estrategia-ui.js'); return pintarEstrategia(el, { me, area: areaInfo(sub[0]), tabs: tabsArea, vista: sub[1], alive }); }
   if (sub[1] === 'movimientos') {
     const a = areaInfo(sub[0]), { pintarMovimientos } = await import('../movimientos-ui.js');
     mount(el, html`<div class="hello sp-hero ar-head" style="--ar-c:var(${a.color})"><span class="ar-ico">${ico(a.icono, 22)}</span><div class="ar-tit"><h1>${a.nombre}</h1><p>Qué se hizo, qué costó y qué provocó.</p></div></div>${tabsArea(a, 'movimientos')}<div id="mv"></div>`);

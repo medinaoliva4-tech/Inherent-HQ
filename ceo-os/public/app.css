@@ -9825,6 +9825,24 @@ html[data-vidrio="real"] .login .side{background:rgb(30 30 32 / .4)}
 .mk-c>.em-acc{grid-column:2}
 .mk-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgb(255 255 255 / .08);font-weight:600}
 .mk-w{grid-column:1/-1}
+/* Strategy: meta y voz del comprador */
+.mm-dist{display:grid;gap:9px;padding:16px;margin:0 0 12px;border-radius:16px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.mm-num{display:grid;gap:1px}.mm-num span{font-size:13px;color:var(--ui-mut)}.mm-num b{font-size:34px;font-weight:620;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.mm-bar{height:8px;border-radius:5px;background:rgb(255 255 255 / .1);overflow:hidden}.mm-bar i{display:block;height:100%;border-radius:5px;background:var(--ui-azul)}
+.mm-pie{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--ui-mut);font-variant-numeric:tabular-nums}
+.mm-pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.mm-pal article{display:grid;gap:1px;padding:12px 14px;border-radius:14px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.mm-pal span,.mm-pal small{font-size:12.5px;color:var(--ui-mut)}.mm-pal b{font-size:22px;font-weight:620;font-variant-numeric:tabular-nums}
+.mm-pal .no b{color:var(--ui-mut);text-decoration:line-through}
+.mm-pasos{display:block}.mm-w{grid-column:1/-1}.mm-pasos h3{margin:0 0 10px;font-size:15px;font-weight:600}
+.mm-paso{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;margin-bottom:8px}
+.vz-temas{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px}.vz-temas span{padding:4px 10px;border-radius:999px;font-size:13px;background:rgb(255 255 255 / .08);color:var(--ui-ink2)}
+.vz-nueva{display:grid;grid-template-columns:minmax(0,1fr);margin-bottom:12px}.vz-nueva .em-acc{grid-column:auto}
+.vz-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.vz-lista article{display:grid;gap:9px;padding:13px 14px;border-radius:14px;background:var(--ui-surf);box-shadow:var(--v-borde)}
+.vz-lista blockquote{margin:0;font-size:15px;line-height:1.4;color:var(--ui-ink)}
+.vz-lista footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--ui-mut)}.vz-lista footer .lat-ib{margin-left:auto}
+.lc-chip.lc-lente[aria-pressed="true"]{background:rgb(74 134 232 / .2);color:#b6d0fa}
 /* Áreas: propósito, número y tres mesas */
 .ms-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;color:var(--ui-ink2);font-size:14px}
 .ms-bar>span{display:inline-flex;align-items:center;gap:7px}
