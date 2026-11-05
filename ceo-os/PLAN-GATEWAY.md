@@ -542,4 +542,5 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Sin modo:** el CEO puede usar el Chat a secas, sin instrucciones de Inherent ni pedir cliente. El resto del equipo no lo ve.
 - **Luz del mouse:** más chica y más suave.
 - **Dictado en la Mac:** el micrófono abre el dictado del sistema con un toque, sin atajos.
+- **Pocket:** barra de arriba con menú y título, y menú lateral con todas las secciones. Se quita la barra de abajo.
 

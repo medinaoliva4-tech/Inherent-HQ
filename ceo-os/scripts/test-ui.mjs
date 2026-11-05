@@ -250,6 +250,11 @@ t('app de Mac: dictado y conversación usan el dictado del sistema', () => {
   const ui = JS.find(([f]) => f === path.join('js', 'conversacion-ui.js'))[1];
   assert.match(voz, /inherentEscritorio\?\.dictar/); assert.match(ui, /class DictadoMac/);
 });
+t('Pocket: arriba el menú y el título; todo vive en el menú lateral', () => {
+  assert.match(APP, /class="top-menu" data-hoja="mas"/); assert.match(APP, /id="top-t"/); assert.match(APP, /hoja-nueva/);
+  const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
+  assert.match(b, /\.nav-cel\{display:none!important\}/); assert.match(b, /\.hoja\{top:0;right:auto/);
+});
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
   assert.match(de('library.js'), /<h1>Biblioteca<\/h1>/);

@@ -448,6 +448,7 @@ const celKey = (cur) => {
   return ['avisos', 'me', 'ajustes', 'ai', 'areas'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };
 function paintCel(cur = resolve(hashNow())) {
+  const tt = $('#top-t'); if (tt) tt.textContent = paginaDe(cur.url)?.[0]?.[1] || LABEL[cur.key] || 'Inherent';
   const k = celKey(cur);
   for (const b of $$('.nav-cel [data-nc]')) { const on = b.dataset.nc === k; b.classList.toggle('on', on); on ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'); }
 }
@@ -466,11 +467,13 @@ function abrirHoja(id, btn) {
     if (me.role === 'client') cuerpo = html`${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}`;
     else {
       const grupo = (id) => { const n = navDe(id); return n.ve() ? html`<span class="lat-k">${n.nombre}</span>${deNav(itemsDe(n))}` : ''; }, lib = navDe('library');
-      cuerpo = html`${grupo('org')}${grupo('empresa')}${grupo('areas')}<span class="lat-k">Más</span>${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${it('ai/mcps', 'Conexiones', ico('link', 18), cur.url === 'ai/mcps')}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${bt('buscar', 'Buscar', ico('search', 18))}${it('me', 'Mi perfil', ico('user', 18), cur.key === 'me')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
+      const it1 = (n) => it(n.ruta, n.nombre, ico(n.icono, 18), pag?.[0]?.[2] === n.ruta || cur.key === n.id);
+      cuerpo = html`${['home', 'chat', 'agentes', 'calendario'].map((id) => it1(navDe(id)))}${grupo('org')}${grupo('empresa')}${grupo('areas')}<span class="lat-k">Más</span>${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${it('ai/mcps', 'Conexiones', ico('link', 18), cur.url === 'ai/mcps')}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
     }
   }
   const h = document.createElement('div'); h.className = 'hoja'; h.dataset.hoja = id; h.setAttribute('data-popover', ''); h.setAttribute('role', 'dialog'); h.setAttribute('aria-label', titulo);
-  mount(h, html`<div class="hoja-h"><b>${titulo}</b><button type="button" class="lat-ib" data-hoja-x aria-label="Cerrar">${ico('x', 16)}</button></div><div class="hoja-lista">${cuerpo}</div>`);
+  mount(h, html`<div class="hoja-h"><img src="/brand/wordmark-light.svg" alt="Inherent"><span class="sp"></span>${me.role === 'client' ? '' : html`<button type="button" class="lat-ib" data-lat="buscar" aria-label="Buscar">${ico('search', 20)}</button>`}<button type="button" class="lat-ib" data-hoja-x aria-label="Cerrar">${ico('x', 20)}</button></div><div class="hoja-lista">${cuerpo}</div>
+    <div class="hoja-pie"><a class="hoja-yo" href="#/me" aria-label="Mi perfil">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : initials(me.name)}</a>${me.role === 'client' ? '' : html`<a class="hoja-nueva" href="#/chat">${ico('plus', 18)} Nueva conversación</a>`}</div>`);
   document.body.append(h); btn?.setAttribute('aria-expanded', 'true');
   ($('.hoja-it.on', h) || $('.hoja-it', h))?.focus();
 }
@@ -515,6 +518,7 @@ function shell() {
   document.documentElement.dataset.barra = 'lateral';
   mount(root, html`${latHtml(mac)}<div class="app">
     <header class="top">
+      <button type="button" class="top-menu" data-hoja="mas" aria-haspopup="dialog" aria-expanded="false" aria-label="Abrir menú">${raw('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 15h11"/></svg>')}</button><b class="top-t" id="top-t"></b>
       <div class="brand"><div class="emb">${emblemaTema()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <div class="sp"></div>
       ${cliente ? '' : html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>`}
