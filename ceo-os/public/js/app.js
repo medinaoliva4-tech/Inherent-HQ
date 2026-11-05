@@ -399,9 +399,16 @@ function menuWs(btn) {
 function menuYo(btn) {
   const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
   const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
-  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a><a role="menuitem" href="#/ai/mcps">${ico('link', 15)} Conexiones</a>`);
+  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a><a role="menuitem" href="#/ai/mcps">${ico('link', 15)} Conexiones</a><button type="button" role="menuitem" data-modo>${ico('sparkles', 15)} ${document.documentElement.dataset.theme === 'light' ? 'Modo oscuro' : 'Modo claro'}</button>`);
   btn.closest('.lat-yo').append(m); btn.setAttribute('aria-expanded', 'true');
   m.addEventListener('click', (e) => {
+    if (e.target.closest('[data-modo]')) {
+      const h = document.documentElement, claro = h.dataset.theme !== 'light';
+      h.dataset.theme = claro ? 'light' : 'dark';
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', claro ? '#f3f3f4' : '#0d0d0e');
+      try { localStorage.setItem('os.modo', claro ? 'claro' : 'oscuro'); } catch { /* dura esta sesión */ }
+      return cerrarTodo();
+    }
     if (e.target.closest('a')) cerrarTodo();
   });
 }

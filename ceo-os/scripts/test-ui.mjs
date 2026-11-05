@@ -85,7 +85,7 @@ t('el tema arranca antes de pintar y sin destellos', () => {
   assert.ok(idx.indexOf('/js/tema-boot.js') > 0 && idx.indexOf('/js/tema-boot.js') < idx.indexOf('/app.css'), 'tema-boot va en el head, antes del CSS');
   const boot = fs.readFileSync(path.join(RAIZ, 'js/tema-boot.js'), 'utf8');
   assert.ok(boot.includes("'dark'") && boot.includes('#0d0d0e'), 'arranca oscuro y la franja del iPhone usa su fondo');
-  assert.ok(!boot.includes('localStorage'), 'no depende de una elección guardada');
+  assert.match(boot, /try \{ claro = localStorage/, 'la elección guardada no puede romper el arranque');
   assert.equal(NOCHE['ui-bg'], '#0d0d0e');
 });
 
@@ -103,6 +103,12 @@ t('sistema v3: sin texturas ni formas de fondo', () => {
 });
 t('sistema v3: respeta reducir movimiento, reducir transparencia y más contraste', () => {
   for (const m of ['prefers-reduced-motion', 'prefers-reduced-transparency', 'prefers-contrast']) assert.ok(v3.includes(m), m);
+});
+t('light mode: el texto se lee sobre blanco y silver', () => {
+  const b = CSS.slice(CSS.indexOf('/* Light mode: blanco y silver')), v = (k) => b.match(new RegExp(`--${k}:(#[0-9a-f]{6})`))[1];
+  const malos = []; for (const tx of ['ui-ink', 'ui-ink2', 'ui-mut']) for (const f of ['ui-bg', 'ui-surf', 'ui-side']) { const c = contraste(v(tx), v(f)); if (c < 4.5) malos.push(`${tx}/${f}=${c}`); }
+  assert.deepEqual(malos, []);
+  assert.ok(!CSS.split('/* Chat: esconder el panel')[1].slice(0, 3000).includes('rgb(255 255 255 / .08)'));
 });
 t('solo oscuro: no quedan selectores de tema en la app', () => {
   for (const [f, s] of JS) if (f !== path.join('js', 'tema.js')) assert.ok(!/themebtn|ponerTema|temaElegido/.test(s), f);
@@ -158,7 +164,7 @@ t('luz: vive en todo el OS y respeta a quien pide menos movimiento', () => {
 });
 t('vidrio: el fondo se ve a través del contenido, y lo que flota sigue sólido', () => {
   const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
-  assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(255 255 255 \/ \.0/);
+  assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(var\(--tinta\) \/ \.0/);
   assert.match(bloque, /#luz\{/); assert.match(bloque, /#luz-aro/);
   for (const s of ['.avi-menu', '.ctx-pop', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
   assert.match(bloque, /prefers-reduced-transparency/);

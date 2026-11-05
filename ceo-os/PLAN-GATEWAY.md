@@ -605,3 +605,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Flechas y dirección:** atrás, adelante y «Clientes / AKAI / Strategy» arriba de cada pantalla, salvo el Chat.
 - **Overview:** solo la siguiente acción y el resumen. Las herramientas viven en sus pestañas.
 - **Entrada:** cada área abre al cliente elegido con «Abrir …».
+
+### Light mode
+- **Blanco y silver:** se elige en el menú de la cuenta y se recuerda por equipo.
+- **Tokens:** el bloque final de `app.css` redefine la paleta. `--tinta` reemplaza el blanco fijo de las capas nuevas.
+- **Modo oscuro:** sigue siendo el predeterminado.
