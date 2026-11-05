@@ -10058,3 +10058,20 @@ button,a,.lc{touch-action:manipulation}
   .lc-send{position:sticky;right:0;flex:none}
 }
 .llm[data-tema="dia"]{--l-bg:transparent;--l-side:transparent;--l-surf:#fff;--l-surf2:#f4f4f5;--l-acc:#18181b;--l-acc-ink:#fff;--l-mut:#68686f;--l-ink:#18181b;--l-ink2:#46464c;--l-user:#ececee;--l-line:rgb(24 24 27 / .09);--l-line2:rgb(24 24 27 / .16);--l-glass:rgb(255 255 255 / .88)}
+
+/* Chat de entrada: saludo, caja y proyectos de clientes */
+@media (min-width:761px){
+  .llm-main.entrada{display:flex;flex-direction:column;justify-content:center}
+  .llm-main.entrada .llm-head{position:absolute;top:0;left:0;right:0}
+  .llm-main.entrada .llm-conv{flex:none;height:auto;overflow:visible}
+  .llm-main.entrada .llm-compw{position:relative;margin:18px 0 0;padding-bottom:0;background:none}
+  .llm-main.entrada .llm-col{padding:0;min-height:0}
+  .llm-main.entrada .ch-sug{display:none}
+  .llm-main.entrada .ch-nuevo{margin:0 auto;padding:0;min-height:0;text-align:center}
+  .llm-main.entrada .ch-nuevo p{margin-bottom:0}
+}
+.ch-proys{margin-top:22px}.ch-proys h2{margin:0 4px 8px;font-size:13px;font-weight:500;color:var(--ui-mut)}
+.ch-proys>div{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.ch-proy-c{display:grid;gap:2px;padding:12px 13px;border:0;border-radius:13px;background:var(--ui-surf);box-shadow:var(--v-borde);color:var(--ui-ink);font:inherit;text-align:left;cursor:pointer}
+.ch-proy-c:hover{background:rgb(var(--tinta) / .08)}.ch-proy-c b{font-weight:600}.ch-proy-c span{font-size:12.5px;color:var(--ui-mut)}
+@media (max-width:760px){.ch-proys{display:none}}

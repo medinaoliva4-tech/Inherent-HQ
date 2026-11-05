@@ -195,7 +195,14 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function pintarCentro() {
     C('llm-main').classList.toggle('vacio', vacio());
+    C('llm-main').classList.toggle('entrada', vacio() && !S.proyecto && listo());
     pintarTitulo(); pintarCaja(); pintarHilo();
+  }
+  // Abajo de la caja: los clientes con conversaciones recientes, para entrar directo.
+  function proyectosHtml() {
+    const xs = carpetasChat(S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo))).slice(0, 6);
+    if (!xs.length) return '';
+    return html`<section class="ch-proys" aria-label="Proyectos de clientes"><h2>Proyectos de clientes</h2><div>${xs.map((c) => html`<button type="button" class="ch-proy-c" data-a="proyecto" data-c="${c.id}"><b>${c.nombre}</b><span>${c.conv.length ? `${c.conv.length} ${c.conv.length === 1 ? 'conversación' : 'conversaciones'}` : 'Sin conversaciones'}</span></button>`)}</div></section>`;
   }
   function heroHtml() {
     if (!listo()) return setupHtml();
@@ -272,7 +279,7 @@ export async function render(el, { me, sub = [], alive }) {
           <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo del servidor responde">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
-        </div></form></div>`);
+        </div></form>${vacio() && !S.proyecto ? proyectosHtml() : ''}</div>`);
     const ta = $('#llm-in', el); ta.value = prev;
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
