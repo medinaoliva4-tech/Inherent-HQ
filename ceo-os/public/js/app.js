@@ -68,20 +68,20 @@ async function loginView() {
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
   bootSoltar(); // la pantalla de arranque se queda encima mientras el login se pinta, y se desvanece (misma salida que el cascarón)
   mount(root, html`<div class="login">
-    <div class="art"><div class="quote entra"><p>We build cool brands—<br><em>and the growth systems behind them.</em></p></div></div>
     <div class="side entra-lista">
-      <div class="row" style="gap:18px"><div style="width:52px">${emblem()}</div><div><img src="/brand/wordmark-light.svg" alt="Inherent" style="height:58px;display:block"><div style="font-size:11px;letter-spacing:4px;font-weight:700;opacity:.8;margin-top:10px">OPERATING SYSTEM</div></div></div>
-      <p style="font-size:17px;opacity:.8;margin-top:18px;max-width:420px">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
+      <div class="lg-marca"><div>${emblem()}</div><div style="width:auto"><img src="/brand/wordmark-light.svg" alt="Inherent"><small>Operating System</small></div></div>
+      <p class="lg-frase">We build cool brands—and the growth systems behind them.</p>
+      <p class="lg-sub">${pendingConnect() ? 'Entra con tu Google para conectar Inherent OS con tu app.' : 'Entra con tu cuenta de Google de Inherent.'}</p>
       ${err ? html`<div class="warnbox">${ERR[err] || 'No se pudo iniciar sesión.'}${detail ? html`<div class="sm" style="margin-top:4px;opacity:.8">Detalle: ${detail}</div>` : ''}</div>` : ''}
-      ${st.google ? html`<a class="gbtn" href="/api/auth/google" style="text-decoration:none">${IC.google} Continuar con Google</a>
-        <a class="gbtn" href="/api/auth/google?portal=1" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(244,238,229,.3)">Soy cliente · entrar a mi portal</a>`
+      ${st.google ? html`<a class="gbtn" href="/api/auth/google">${IC.google} Continuar con Google</a>
+        <a class="gbtn sec" href="/api/auth/google?portal=1">Soy cliente: entrar a mi portal</a>`
         : html`<div class="warnbox">El login con Google todavía no está configurado.</div>`}
       ${!st.db ? html`<div class="warnbox">La base de datos todavía no está conectada.</div>` : ''}
-      ${local ? html`<a class="gbtn" href="/api/auth/dev" style="text-decoration:none;background:transparent;color:var(--cream);border:1px solid rgba(244,238,229,.3)">Entrar en modo prueba (solo local)</a>` : ''}
-      <div class="sm" style="opacity:.6;text-align:center">Equipo: cuentas <b>@${st.domain}</b> · Clientes: el correo que Inherent aprobó</div>
-      <div class="perm"><span class="sm" style="opacity:.7">Al entrar te pediremos permiso para:</span>
-        <div>${IC.cal} <span><b>Google Calendar</b> · ver y crear eventos de proyectos</span></div>
-        <div>${IC.drive} <span><b>Google Drive</b> · ver y crear archivos de la Library</span></div>
+      ${local ? html`<a class="gbtn sec" href="/api/auth/dev">Entrar en modo prueba (solo local)</a>` : ''}
+      <p class="lg-nota">Equipo: cuentas <b>@${st.domain}</b> · Clientes: el correo que Inherent aprobó</p>
+      <div class="perm"><span>Al entrar te pediremos permiso para:</span>
+        <div>${IC.cal} <span><b>Google Calendar</b>: ver y crear eventos de proyectos</span></div>
+        <div>${IC.drive} <span><b>Google Drive</b>: ver y crear archivos de la Biblioteca</span></div>
       </div>
     </div></div>`);
   if (err) history.replaceState(null, '', '/');

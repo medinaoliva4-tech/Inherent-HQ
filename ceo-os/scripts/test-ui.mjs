@@ -63,8 +63,8 @@ t('el texto se lee: contraste AA (4.5) en los dos temas', () => {
   assert.deepEqual(malos, []);
 });
 
-t('las zonas de papel (cotización, login, portadas) conservan su paleta', () => {
-  const papel = v2.match(/:is\(\.qdoc,\.feat,\.login,\.bx,\.rview,\.recbar,\.inbox,\.sp-cover\)\{([^}]*)\}/);
+t('las zonas de papel (cotización, portadas) conservan su paleta', () => {
+  const papel = v2.match(/:is\(\.qdoc,\.feat,\.bx,\.rview,\.recbar,\.inbox,\.sp-cover\)\{([^}]*)\}/);
   assert.ok(papel, 'falta la regla de papel');
   for (const k of ['--bg:#f1eadf', '--ink:#2c1f16', '--surface:#fcf9f2', '--ui-ink:#2c1f16']) assert.ok(papel[1].includes(k), k);
 });
@@ -236,6 +236,11 @@ t('acentos: azul en lo activo y rojo en lo que borra', () => {
 t('sin café: el buscador es neutro', () => {
   assert.ok(!/rgb\(33 27 22/.test(CSS));
   assert.match(CSS, /\.spot\{border:0;background:rgb\(28 28 30/);
+});
+t('entrada al OS: neutra, sin café ni textura', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Entrada al OS'));
+  assert.match(b, /\.login\{[^}]*#0d0d0e/); assert.ok(!APP.includes('class="art"'), 'la entrada no lleva foto'); assert.match(b, /\.login \.side::after\{display:none\}/);
+  assert.ok(!/style="[^"]*--cream/.test(APP));
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
