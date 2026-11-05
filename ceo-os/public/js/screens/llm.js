@@ -66,7 +66,7 @@ export async function render(el, { me, sub = [], alive }) {
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
-    cliente: '', abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
+    cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
@@ -157,7 +157,7 @@ export async function render(el, { me, sub = [], alive }) {
       </div>
       <div class="ch-k">Clientes</div>
       <div class="ch-lista">${!listo() ? html`<p class="ls-mut">${S.salud ? 'El servidor no está en línea ahora.' : 'Conectando…'}</p>` : !cars.length ? html`<p class="ls-mut">Nada con ese nombre.</p>` : cars.map((c) => html`<div class="ch-car ${abierta(c) ? 'abierta' : ''}">
-        <div class="ch-car-f"><button type="button" class="ch-d" data-a="carpeta" data-c="${c.id}" aria-expanded="${abierta(c) ? 'true' : 'false'}">${ico('chevron-right', 13)}${ico('folder-open', 16)}<span>${c.nombre}</span>${!abierta(c) && c.pendientes ? html`<i class="ch-pend" title="Tiene decisiones pendientes"></i>` : ''}</button><button type="button" class="ch-mas" data-a="nuevo-en" data-c="${c.id}" aria-label="Nueva conversación en ${c.nombre}" title="Nueva conversación">${ico('plus', 14)}</button></div>
+        <div class="ch-car-f ${S.proyecto?.id === c.id ? 'on' : ''}"><button type="button" class="ch-tg" data-a="carpeta" data-c="${c.id}" aria-expanded="${abierta(c) ? 'true' : 'false'}" aria-label="${abierta(c) ? 'Cerrar' : 'Abrir'} ${c.nombre}">${ico('chevron-right', 13)}</button><button type="button" class="ch-d" data-a="proyecto" data-c="${c.id}">${ico('folder-open', 16)}<span>${c.nombre}</span>${!abierta(c) && c.pendientes ? html`<i class="ch-pend" title="Tiene decisiones pendientes"></i>` : ''}</button><button type="button" class="ch-mas" data-a="nuevo-en" data-c="${c.id}" aria-label="Nueva conversación en ${c.nombre}" title="Nueva conversación">${ico('plus', 14)}</button></div>
         <div class="ch-cuerpo"><div>${c.conv.length ? c.conv.map(fila) : html`<p class="ch-vacio">Sin conversaciones</p>`}</div></div></div>`)}</div>`);
     const qi = $('#ls-q', dest); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n2 = $('#ls-q', lado()); n2.focus(); n2.setSelectionRange(pos, pos); };
   }
@@ -167,6 +167,7 @@ export async function render(el, { me, sub = [], alive }) {
   function pintarTitulo() {
     const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
+    if (S.proyecto) return mount(C('llm-titulo'), html`<span class="lt-t">${nombreCliente(S.proyecto.id)}</span>`);
     const cli = S.sesion ? carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) : S.cliente || 'inherent';
     mount(C('llm-titulo'), html`<span class="lt-t">${vacio() ? 'Nueva conversación' : S.titulo || 'Conversación'}</span>${S.sesion ? html`<button type="button" class="ch-chip" data-a="mover" aria-haspopup="listbox" title="Mover a otro cliente">${nombreCliente(cli)}${ico('down', 12)}</button>` : ''}`);
   }
@@ -310,6 +311,13 @@ export async function render(el, { me, sub = [], alive }) {
     if (S.decidir) {
       const xs = S.sesiones.filter((s) => s.agente?.estado === 'decidir');
       mount(col, xs.length ? html`<div class="ch-dl">${xs.map((s) => html`<a href="#/chat/${esc(s.id)}"><span><b>${s.title || 'Conversación'}</b><small>${nombreCliente(carpetaDe(s))} · ${s.agente.nombre}</small></span>${ico('arrow-right', 15)}</a>`)}</div>` : html`<div class="ch-nuevo"><h1>Nada espera tu decisión</h1><p>Cuando un agente te necesite, aparecerá aquí y en su conversación.</p></div>`);
+      flecha(); return;
+    }
+    if (S.proyecto) {
+      const p = S.proyecto, cs = carpetasChat().find((c) => c.id === p.id)?.conv || [];
+      mount(col, html`<div class="ch-proy"><div><p class="ch-sec">Conversaciones</p>${cs.length ? html`<div class="ch-pl">${cs.map((s) => html`<a href="#/chat/${esc(s.id)}"><span>${s.title || s.preview || 'Conversación'}</span>${s.agente ? html`<small>${s.agente.nombre} · ${ESTADO_FILA[s.agente.estado][0]}</small>` : ''}</a>`)}</div>` : html`<p class="ch-nota">Aún no hay conversaciones. Escribe abajo para empezar la primera.</p>`}</div>
+        <div><label class="ch-sec" for="ch-inst">Instrucciones</label>${p.editable ? html`<textarea id="ch-inst" class="ch-inst" maxlength="4000" data-c="${p.id}" placeholder="Qué debe saber cada conversación y agente de este cliente">${p.instrucciones}</textarea>` : html`<p class="ch-nota">${p.instrucciones || 'Todavía no hay instrucciones.'}</p>`}
+        <p class="ch-sec">El equipo hoy</p>${p.equipo ? html`<pre class="ch-eq">${p.equipo}</pre>` : html`<p class="ch-nota">Nadie trabaja en este cliente hoy.</p>`}</div></div>`);
       flecha(); return;
     }
     if (vacio()) { mount(col, heroHtml()); flecha(); return; }
@@ -534,14 +542,14 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    S.decidir = false; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
+    S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
     if (!modos.some((m) => m.id === info.modo)) { toast('Esa conversación es de un modo que tu perfil no abre', true); return nuevo(); }
-    S.decidir = false; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
+    S.decidir = false; S.proyecto = null; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
     S.msgs = []; S.titulo = S.sesiones.find((s) => s.id === id)?.title || ''; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     pintarSide(); pintarCentro(); pintarPanel();
     try {
@@ -787,7 +795,13 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'nuevo') return nuevo();
     if (a === 'nuevo-en') { S.cliente = t.dataset.c === 'inherent' ? '' : t.dataset.c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[t.dataset.c] = true; persistir(); return nuevo(); }
     if (a === 'carpeta') { const c = t.closest('.ch-car'), ab = !c.classList.contains('abierta'); c.classList.toggle('abierta', ab); t.setAttribute('aria-expanded', ab ? 'true' : 'false'); S.abiertas[t.dataset.c] = ab; persistir(); return; }
-    if (a === 'por-decidir') { S.decidir = !S.decidir; S.side = false; R.classList.remove('side-on'); pintarSide(); pintarCentro(); return; }
+    if (a === 'proyecto') {
+      const c = t.dataset.c; S.decidir = false; S.sesion = null; S.msgs = []; S.titulo = ''; S.cliente = c === 'inherent' ? '' : c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[c] = true; S.side = false; R.classList.remove('side-on');
+      if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
+      try { const d = await api(`chat/clientes/${encodeURIComponent(c)}`); S.proyecto = { id: c, ...d }; } catch (e) { return toast(e.message, true); }
+      persistir(); pintarSide(); pintarCentro(); return;
+    }
+    if (a === 'por-decidir') { S.proyecto = null; S.decidir = !S.decidir; S.side = false; R.classList.remove('side-on'); pintarSide(); pintarCentro(); return; }
     if (a === 'mover') return menu(t, 'Mover a', carpetasChat().map((c) => ({ v: c.id, label: c.nombre, on: c.id === carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) })), async (v) => { try { await api(`chat/sesiones/${encodeURIComponent(S.sesion)}/mover`, { method: 'POST', body: { cliente: v } }); const f = S.sesiones.find((x) => x.id === S.sesion); if (f) f.cliente = v; S.cliente = v === 'inherent' ? '' : v; S.abiertas[v] = true; persistir(); pintarSide(); pintarTitulo(); toast(`Movida a ${nombreCliente(v)}`); } catch (e) { toast(e.message, true); } });
     if (a === 'arroba') return elegirArroba(t.dataset.n);
     if (a === 'plan-empezar') return empezarPlan(+t.dataset.i);
@@ -866,7 +880,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
     if (a === 'revisar') return revisar();
   });
-  escucha('change', (e) => {
+  escucha('change', async (e) => {
+    if (e.target.id === 'ch-inst') { try { await api(`chat/clientes/${encodeURIComponent(e.target.dataset.c)}`, { method: 'POST', body: { instrucciones: e.target.value } }); if (S.proyecto) S.proyecto.instrucciones = e.target.value; toast('Instrucciones guardadas'); } catch (er) { toast(er.message, true); } return; }
     const pc = e.target.dataset?.ch; if (pc === 'plan-hasta' || pc === 'plan-cliente') { const p = S.msgs[+e.target.dataset.i]?.p; if (!p) return; if (pc === 'plan-hasta') p.hasta = +e.target.value; else p.cliente = e.target.value; return pintarHilo(); }
     // El selector de modo de la barra. Si no se pudo cambiar (una respuesta en camino), el selector vuelve al modo de ahora.
     if (e.target.matches?.('.ls-modo')) { cambiarModo(e.target.value); if (S.modo !== e.target.value) pintarSide(); }
