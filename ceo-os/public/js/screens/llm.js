@@ -708,7 +708,24 @@ export async function render(el, { me, sub = [], alive }) {
     return msg.err ? null : msg.t;
   }
   // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
+  async function guardarVoz(mensajes) {
+    if (!mensajes.length) return;
+    for (const m of mensajes) S.msgs.push(m.role === 'user' ? { r: 'u', t: m.content, at: ahoraIso() } : { r: 'a', modo: S.modo, t: m.content, tools: [], notas: [], at: ahoraIso() });
+    if (!S.titulo) S.titulo = tituloDe(mensajes[0].content);
+    if (alive()) pintarCentro();
+    try {
+      if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: S.titulo }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+      await api(`chat/sesiones/${enc(S.sesion)}/voz`, { method: 'POST', body: { mensajes } });
+      B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    } catch (e) { toast(`No pude guardar lo hablado: ${e.message}`, true); }
+  }
   async function conversar() {
+    const Ctx = window.AudioContext || window.webkitAudioContext, salida = new Ctx({ sampleRate: 24000 }); salida.resume(); // en el iPhone el audio se activa con este toque
+    const { abrirVozViva } = await import('../voz-viva.js');
+    const libre = S.modo === MODO_LIBRE.id, base = libre ? sistemaDe(S.modo) : sistemaDe(S.modo, await contexto());
+    const viva = await abrirVozViva({ titulo: quien(), sistema: `${base}\n\n${PROMPT_VOZ}`, salida, alTeclado: () => $('#llm-in', el)?.focus(), alCerrar: guardarVoz });
+    if (viva) return;
+    salida.close();
     const { abrirConversacion, vozDisponible } = await import('../conversacion-ui.js');
     if (!vozDisponible()) return toast(window.inherentEscritorio ? 'Actualiza la app de Mac para conversar por voz.' : 'Este navegador no reconoce voz. Usa Chrome o el iPhone.', true);
     if (!listo()) return toast('El servidor no está en línea', true);

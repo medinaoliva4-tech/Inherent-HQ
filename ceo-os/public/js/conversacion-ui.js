@@ -44,8 +44,8 @@ function dibujarAro(cv, leer) {
   return () => cancelAnimationFrame(id);
 }
 
-// enviar(texto, { alDelta }) devuelve la respuesta completa; detener() corta la que va en camino.
-export function abrirConversacion({ titulo, enviar, detener, alTeclado, alCerrar }) {
+// La pantalla: un aro, lo que se dice y tres botones. La usan la voz real y la del navegador.
+export function armarPantalla(titulo, energia) {
   const caja = document.createElement('div');
   caja.className = 'vz'; caja.dataset.popover = ''; caja.setAttribute('role', 'dialog'); caja.setAttribute('aria-label', 'Conversación por voz');
   mount(caja, html`<header class="vz-h"><span class="vz-t">${titulo}</span></header>
@@ -58,6 +58,14 @@ export function abrirConversacion({ titulo, enviar, detener, alTeclado, alCerrar
       <button type="button" class="vz-l" data-v="cerrar" aria-label="Terminar la conversación">${ico('x', 20)}</button>
     </footer>`);
   document.body.append(caja);
+  const parar = dibujarAro(caja.querySelector('.vz-aro'), energia);
+  const claro = caja.querySelector('.vz-txt b'), tenue = caja.querySelector('.vz-txt span');
+  return { caja, mic: caja.querySelector('.vz-m'), etiqueta: caja.querySelector('.vz-est'), texto: (a, b = '') => { claro.textContent = a; tenue.textContent = b; }, quitar: () => { parar(); caja.remove(); } };
+}
+
+// enviar(texto, { alDelta }) devuelve la respuesta completa; detener() corta la que va en camino.
+export function abrirConversacion({ titulo, enviar, detener, alTeclado, alCerrar }) {
+  const { caja, quitar } = armarPantalla(titulo, () => ({ escuchando: oido ? 0.55 : 0.3, pensando: 0.45, hablando: 0.85, pausa: 0.08 }[estado] ?? 0.3));
   const $b = caja.querySelector('.vz-txt b'), $s = caja.querySelector('.vz-txt span'), $e = caja.querySelector('.vz-est'), $m = caja.querySelector('.vz-m');
   let estado = 'pausa', rec = null, silencio = 0, oido = '', abierta = true, cola = 0, dichas = 0, plano = '', turno = 0;
   const texto = (claro, tenue = '') => { $b.textContent = claro; $s.textContent = tenue; };
@@ -106,11 +114,10 @@ export function abrirConversacion({ titulo, enviar, detener, alTeclado, alCerrar
     } catch { if (yo === turno) escuchar(); }
   }
   function cerrar() {
-    if (!abierta) return; abierta = false; turno += 1; callarMic(); callarVoz(); parar(); removeEventListener('keydown', tecla); caja.remove(); alCerrar?.();
+    if (!abierta) return; abierta = false; turno += 1; callarMic(); callarVoz(); removeEventListener('keydown', tecla); quitar(); alCerrar?.();
   }
   const tecla = (e) => { if (e.key === 'Escape') cerrar(); };
   addEventListener('keydown', tecla);
-  const parar = dibujarAro(caja.querySelector('.vz-aro'), () => ({ escuchando: oido ? 0.55 : 0.3, pensando: 0.45, hablando: 0.85, pausa: 0.08 }[estado] ?? 0.3));
   caja.addEventListener('click', (e) => {
     const v = e.target.closest('[data-v]')?.dataset.v; if (!v) return;
     if (v === 'cerrar') return cerrar();

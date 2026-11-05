@@ -9,6 +9,7 @@ import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
 import { aroDe, SUPERFICIES } from '../public/js/luz.js';
 import { soloCompu } from '../public/js/pocket.js';
+import { setupVoz, aPcm16, aFloat, leerMensaje, urlVoz } from '../public/js/voz-gemini.js';
 import { estadoApp } from '../public/js/app-mac-estado.js';
 import { siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from '../public/js/conversacion.js';
 
@@ -254,6 +255,28 @@ t('Pocket: arriba el menú y el título; todo vive en el menú lateral', () => {
   assert.match(APP, /class="top-menu" data-hoja="mas"/); assert.match(APP, /id="top-t"/); assert.match(APP, /hoja-nueva/);
   const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
   assert.match(b, /\.nav-cel\{display:none!important\}/); assert.match(b, /\.hoja\{top:0;right:auto/);
+});
+t('voz real: setup con Kore, transcripción y sin llave en el navegador', () => {
+  const s = setupVoz({ modelo: 'gemini-3.8-live', voz: 'Kore', sistema: 'x' }).setup;
+  assert.equal(s.model, 'models/gemini-3.8-live');
+  assert.equal(s.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, 'Kore');
+  assert.deepEqual(s.inputAudioTranscription, {}); assert.deepEqual(s.outputAudioTranscription, {});
+  assert.equal(setupVoz({ modelo: 'm', voz: 'K', sistema: 'x', handle: 'h' }).setup.sessionResumption.handle, 'h');
+  assert.match(urlVoz('a/b'), /access_token=a%2Fb$/);
+  for (const [f, s2] of JS) assert.ok(!/GEMINI_API_KEY/.test(s2), f);
+  assert.match(fs.readFileSync(path.join(RAIZ, '..', 'vercel.json'), 'utf8'), /connect-src[^;]*wss:\/\/generativelanguage\.googleapis\.com/);
+});
+t('voz real: el audio se convierte bien', () => {
+  const s = aPcm16(new Float32Array([0, 1, -1, 0.5, 0, 0]), 48000);
+  assert.deepEqual([...s], [0, 16383]);
+  assert.equal(aPcm16(new Float32Array(4800), 48000).length, 1600);
+  const f = aFloat(new Uint8Array(new Int16Array([0, 16384]).buffer)); assert.equal(f[1], 0.5);
+});
+t('voz real: lee interrupción, fin, audio y reconexión', () => {
+  const m = leerMensaje({ serverContent: { interrupted: true, turnComplete: true, inputTranscription: { text: 'hola' }, modelTurn: { parts: [{ inlineData: { data: 'QQ' } }] } } });
+  assert.ok(m.interrumpido && m.fin); assert.equal(m.oido, 'hola'); assert.deepEqual(m.audio, ['QQ']);
+  assert.equal(leerMensaje({ sessionResumptionUpdate: { resumable: true, newHandle: 'h' } }).handle, 'h');
+  assert.ok(leerMensaje({ goAway: {} }).salir); assert.ok(leerMensaje({ setupComplete: {} }).listo);
 });
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];

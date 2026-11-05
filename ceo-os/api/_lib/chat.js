@@ -31,6 +31,7 @@ const resumenSesion = (s, runs = []) => {
   const ult = [...(s.mensajes || [])].reverse().find((m) => m.role === 'user');
   return { id: s.id, title: s.title || '', preview: txt(ult?.content, 120), model: s.turno?.modelo || '', last_active: s._meta?.updated_at, started_at: s._meta?.created_at, message_count: (s.mensajes || []).length, en_curso: ['en_cola', 'trabajando'].includes(s.turno?.estado), cliente: s.cliente || '', agente: agenteDeSesion(s.agentes, runs) };
 };
+const VOZ = { modelo: 'gemini-3.8-live', voz: 'Kore' };
 async function mia(req, res, u) {
   const s = await db.get(COLL, txt(req.params.id, 120));
   if (!s || lc(s.owner) !== lc(u.email)) { res.status(404).json({ error: 'Esa conversación no existe' }); return null; }
@@ -119,6 +120,28 @@ export function rutas(on) {
     if (['en_cola', 'trabajando'].includes(s.turno?.estado)) return res.status(409).json({ error: 'Todavía está respondiendo el turno anterior' });
     const texto = txt(body(req).texto, MAX_MSG).trim(); if (!texto) return res.status(400).json({ error: 'Mensaje vacío' });
     const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), { role: 'user', content: texto, at: ahora() }].slice(-MAX_MSGS) });
+    if (d) res.json({ ok: true });
+  });
+
+  // La voz real del Chat: un token de un solo uso para Gemini Live. La llave se queda aquí.
+  on('POST', 'chat/voz/token', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const llave = (process.env.GEMINI_API_KEY || '').trim();
+    if (!llave) return res.status(503).json({ error: 'La voz no está configurada', code: 'NO_VOZ' });
+    const ya = Date.now();
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/auth_tokens', { method: 'POST', headers: { 'x-goog-api-key': llave, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uses: 1, expireTime: new Date(ya + 30 * 60000).toISOString(), newSessionExpireTime: new Date(ya + 60000).toISOString(), bidiGenerateContentSetup: { model: `models/${VOZ.modelo}` } }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.name) { console.error(`chat/voz/token: Gemini respondió ${r.status}`); return res.status(502).json({ error: 'No pude abrir la voz. Inténtalo otra vez.' }); }
+    res.json({ token: j.name, ...VOZ });
+  });
+  // Lo hablado queda en la conversación, como cualquier mensaje.
+  on('POST', 'chat/sesiones/:id/voz', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    const nuevos = (Array.isArray(body(req).mensajes) ? body(req).mensajes : []).slice(0, 200).map((m) => ({ role: m?.role === 'assistant' ? 'assistant' : 'user', content: txt(m?.content, MAX_MSG).trim(), at: ahora() })).filter((m) => m.content);
+    if (!nuevos.length) return res.status(400).json({ error: 'Nada que guardar' });
+    const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), ...nuevos].slice(-MAX_MSGS) });
     if (d) res.json({ ok: true });
   });
 

@@ -3133,6 +3133,6 @@ pieza entregada del plan.
 | **Algo que el plan del cliente no incluye** | 🛑 **Se bloquea.** El plan es el techo.
 
 ## Modo conversación del Chat
-- Probarlo con micrófono real en Chrome y en un iPhone.
-- Decidir si se paga una voz más natural.
+- Probarlo con micrófono real en la Mac, Chrome y un iPhone.
+- La voz usa el plan gratis de Gemini: Google puede usar lo hablado para mejorar sus productos. Decidir si se pasa al plan de pago antes de hablar de datos de clientes.
 
