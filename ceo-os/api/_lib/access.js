@@ -12,7 +12,7 @@ export const COLLS = {
   leads: 'sales', lead_sources: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
   rates: 'finanzas', packages: 'finanzas', bundles: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', recipes: 'operations', accounts: 'clients',
-  brand_boards: 'clients', budgets: 'clients', campaigns: 'operations', movimientos: 'clients', embudos: 'clients',
+  brand_boards: 'clients', budgets: 'clients', campaigns: 'operations', movimientos: 'clients', embudos: 'clients', marketing_mes: 'clients',
   content: 'content', sources: 'content', analytics: 'content',
   folders: 'library', docs: 'library', roadmap: 'roadmap',
   team: 'team', settings: 'home', checks: 'work',
@@ -49,7 +49,7 @@ export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lea
 export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
 export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
 // Las colecciones que filtra el alcance (todos · asignados · propio).
-export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns', 'movimientos', 'embudos'];
+export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns', 'movimientos', 'embudos', 'marketing_mes'];
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();
 const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
@@ -144,6 +144,7 @@ export async function scoper(u, pre = {}) {
     campaigns: (d) => slugs.has(lc(d.client_slug)),
     movimientos: (d) => slugs.has(lc(d.client_slug)),
     embudos: (d) => slugs.has(lc(d.client_slug)),
+    marketing_mes: (d) => slugs.has(lc(d.client_slug)),
     strategy: (d) => lc(d.slug) === 'inherent' || slugs.has(lc(d.slug)),
     // Un entregable (y cada versión) lleva el cliente en client_slug.
     deliverables: (d) => lc(d.client_slug) === 'inherent' || slugs.has(lc(d.client_slug)),

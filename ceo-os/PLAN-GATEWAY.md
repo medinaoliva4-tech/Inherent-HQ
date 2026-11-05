@@ -561,3 +561,8 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Rentabilidad:** ingresos, costos y margen por oferta o canal, con el gasto de la Hoja de Movimientos al lado.
 - **Chat:** el panel se esconde con su botón y `⌘B`.
 
+### Entrega 3 · Marketing
+- **Resultados:** gasto, leads, ventas e ingreso por canal. Con el margen, decide escalar, mantener o parar.
+- **Radar:** tres oportunidades al mes de la competencia, con enlace de evidencia y paso a la Hoja de Movimientos.
+- **Campaña:** sigue en Campaign Architect, que ya cubre meta, canales, copy, pauta y landing.
+
