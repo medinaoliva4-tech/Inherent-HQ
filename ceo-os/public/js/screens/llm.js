@@ -710,7 +710,7 @@ export async function render(el, { me, sub = [], alive }) {
   // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
   async function conversar() {
     const { abrirConversacion, vozDisponible } = await import('../conversacion-ui.js');
-    if (!vozDisponible()) return toast('La conversación por voz funciona en Chrome y en el iPhone. En la app de Mac todavía no.', true);
+    if (!vozDisponible()) return toast(window.inherentEscritorio ? 'Actualiza la app de Mac para conversar por voz.' : 'Este navegador no reconoce voz. Usa Chrome o el iPhone.', true);
     if (!listo()) return toast('El servidor no está en línea', true);
     abrirConversacion({ titulo: quien(), enviar: (t, o) => enviar(t, { ...o, hablado: true }), detener: () => S.enVuelo?.abort(), alTeclado: () => $('#llm-in', el)?.focus() });
   }
@@ -825,7 +825,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Clics, teclado y formularios ----------
   escucha('click', async (e) => {
     const v = e.target.closest('[data-act="voz"]'); if (v && dentro(v)) return dictar(v, $('#llm-in', el));
-    if (e.target.closest('[data-act="conversar"]')) return conversar();
+    const co = e.target.closest('[data-act="conversar"]'); if (co) { co.blur(); return conversar(); }
     // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
     const va = e.target.closest('[data-act="viva-aprobar"]');
     if (va && dentro(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }

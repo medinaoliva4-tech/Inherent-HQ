@@ -9763,6 +9763,10 @@ html[data-vidrio="real"] .login .side{background:rgb(30 30 32 / .4)}
 @keyframes vzLatido{50%{box-shadow:0 0 0 13px rgb(245 241 234 / .07)}}
 @media (prefers-reduced-motion:reduce){.vz,.vz[data-estado="escuchando"] .vz-m{animation:none}}
 
+.vz-oido{position:absolute;width:1px;height:1px;opacity:0;border:0;padding:0;resize:none;pointer-events:none}
+.llm .cx-mic:focus{outline:none;box-shadow:none}
+.llm .cx-mic:focus-visible{outline:2px solid var(--ui-azul);outline-offset:1px}
+
 /* ===== Pocket: el iPhone. Primero lo de hoy; mapas, tablas y tableros cambian de forma ===== */
 .pk-compu{display:grid;justify-items:center;gap:8px;padding:72px 24px;text-align:center;color:var(--ui-mut)}
 .pk-compu b{font-size:18px;font-weight:600;color:var(--ui-ink)}.pk-compu p{margin:0 0 10px;font-size:14.5px}

@@ -3134,5 +3134,5 @@ pieza entregada del plan.
 
 ## Modo conversación del Chat
 - Probarlo con micrófono real en Chrome y en un iPhone.
-- Decidir si se paga una voz más natural y reconocimiento para la app de Mac.
+- Decidir si se paga una voz más natural.
 

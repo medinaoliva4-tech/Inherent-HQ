@@ -4,8 +4,18 @@ import { icoMic } from './voz.js';
 import { etiquetaDe, siguiente, limpiarParaVoz, frasesNuevas, brilloDelAro } from './conversacion.js';
 
 const SILENCIO_MS = 1300; // tras este silencio, lo dicho se envía
-const reconocedor = () => window.SpeechRecognition || window.webkitSpeechRecognition || null;
-export const vozDisponible = () => Boolean(reconocedor()) && 'speechSynthesis' in window && !window.inherentEscritorio;
+// En la app de Mac escucha el dictado del sistema: el texto entra a una caja invisible y aquí se lee igual que en el navegador.
+class DictadoMac {
+  start() {
+    const t = document.createElement('textarea'); t.className = 'vz-oido'; t.setAttribute('aria-hidden', 'true'); t.tabIndex = -1;
+    t.addEventListener('input', () => this.onresult?.({ results: [Object.assign([{ transcript: t.value }], { isFinal: false })] }));
+    document.querySelector('.vz').append(t); this.caja = t; t.focus();
+    window.inherentEscritorio.dictar();
+  }
+  abort() { this.caja?.remove(); this.caja = null; }
+}
+const reconocedor = () => (window.inherentEscritorio ? (window.inherentEscritorio.dictar ? DictadoMac : null) : window.SpeechRecognition || window.webkitSpeechRecognition || null);
+export const vozDisponible = () => Boolean(reconocedor()) && 'speechSynthesis' in window;
 const vozEspanol = () => {
   const xs = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang));
   return xs.find((v) => /premium|enhanced|natural|google/i.test(v.name)) || xs.find((v) => /419|MX|US/i.test(v.lang)) || xs[0] || null;

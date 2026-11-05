@@ -74,6 +74,8 @@ ipcMain.on('inherent:hermes', (e) => { e.returnValue = null; }); // apps viejas 
 ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
 // «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
 ipcMain.on('inherent:actualizar', (e) => { if (delOS(e.senderFrame?.url || '')) buscarActualizacion(true); });
+// El dictado de la Mac, con un toque: funciona en la caja que tenga el cursor.
+ipcMain.on('inherent:dictar', (e) => { if (delOS(e.senderFrame?.url || '') && process.platform === 'darwin') { const iniciar = () => Menu.sendActionToFirstResponder('startDictation:'); if (ventana?.isFocused()) iniciar(); else { ventana?.focus(); setTimeout(iniciar, 500); } } });
 // «Actualizar» junto al perfil: sin más preguntas; el avance se ve en la barra.
 ipcMain.on('inherent:instalar', (e) => { if (delOS(e.senderFrame?.url || '') && !actualizando) actualizar(); });
 

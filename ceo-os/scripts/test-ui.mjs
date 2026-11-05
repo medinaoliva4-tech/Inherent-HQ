@@ -242,6 +242,14 @@ t('entrada al OS: neutra, sin café ni textura', () => {
   assert.match(b, /\.login\{[^}]*#0d0d0e/); assert.ok(!APP.includes('class="art"'), 'la entrada no lleva foto'); assert.match(b, /\.login \.side::after\{display:none\}/);
   assert.ok(!/style="[^"]*--cream/.test(APP));
 });
+t('app de Mac: dictado y conversación usan el dictado del sistema', () => {
+  const main = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'main.js'), 'utf8');
+  const pre = fs.readFileSync(path.join(RAIZ, '..', 'escritorio', 'preload.js'), 'utf8');
+  assert.match(main, /sendActionToFirstResponder\('startDictation:'\)/); assert.match(pre, /dictar:/);
+  const voz = JS.find(([f]) => f === path.join('js', 'voz.js'))[1];
+  const ui = JS.find(([f]) => f === path.join('js', 'conversacion-ui.js'))[1];
+  assert.match(voz, /inherentEscritorio\?\.dictar/); assert.match(ui, /class DictadoMac/);
+});
 t('páginas: cada una se llama como en la barra y sus datos van en español', () => {
   const de = (n) => JS.find(([f]) => f === path.join('js', 'screens', n))[1];
   assert.match(de('library.js'), /<h1>Biblioteca<\/h1>/);
