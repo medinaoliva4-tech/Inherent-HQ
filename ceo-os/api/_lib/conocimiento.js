@@ -6,6 +6,7 @@ import { scoper } from './access.js';
 import { seesTask } from './leer.js';
 import { AGENTES } from '../../public/js/harness/agentes.js';
 import { completo } from '../../public/js/agentes-flujos.js';
+import { bloqueReglas } from '../../public/js/memoria.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, deCliente, bloqueInstrucciones, MAX_SKILLS } from '../../public/js/conocimiento.js';
 
 export const CLIENTES = 'chat_clientes';
@@ -37,7 +38,7 @@ export async function conocimientoDeEtapa(run, n) {
     const texto = await buscarSkill(nombre);
     if (texto) metodo.push({ nombre, texto: metodoDeSkill(texto) });
   }
-  const principios = (await Promise.all(RUTAS_BASE.map(leer))).filter(Boolean).join('\n\n') + bloqueInstrucciones(await instruccionesDe(run.cliente));
+  const principios = (await Promise.all(RUTAS_BASE.map(leer))).filter(Boolean).join('\n\n') + bloqueInstrucciones(await instruccionesDe(run.cliente)) + bloqueReglas((run.flujo?.id ? await db.get('agent_workflows', run.flujo.id).catch(() => null) : null)?.reglas);
   const [runs, tareas, proyectos, nombres] = await Promise.all([db.list('agent_runs'), db.list('tasks'), db.list('projects'), nombresDe()]);
   return { principios, metodo, faltan: metodo.length ? [] : pedidos.slice(0, 1), equipo: equipoHoy({ ...deCliente({ runs, tareas, proyectos, run }), nombres }) };
 }

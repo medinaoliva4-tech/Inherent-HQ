@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
+import { correccionesDe, agregarRegla, bloqueReglas, MAX_REGLAS } from '../public/js/memoria.js';
 import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
@@ -100,6 +101,14 @@ t('normalizarWorkflow limpia lo que manda el editor', () => {
   assert.equal(w.etapas[0].fuentes_min, 10);
   assert.deepEqual(w.etapas[0].herramientas, ['web', 'inherent']);
   assert.equal(w.estado, 'borrador');
+});
+t('memoria: solo lo escrito por el equipo y solo reglas aprobadas', () => {
+  const c = correccionesDe([{ cliente_nombre: 'NAO', etapas: [{ nombre: 'Copy' }], historial: [{ accion: 'ajuste', etapa: 0, nota: 'Más corto', at: '2026-11-02' }, { accion: 'corregir', etapa: 0, nota: 'Resultado corregido a mano', at: '2026-11-03' }, { accion: 'aprobar', etapa: 0, nota: 'ok' }] }]);
+  assert.equal(c.length, 1); assert.deepEqual([c[0].nota, c[0].etapa, c[0].cliente], ['Más corto', 'Copy', 'NAO']);
+  const a = agregarRegla([], ' Di el número ', 'c@x', 'hoy'); assert.equal(a.reglas[0].texto, 'Di el número');
+  assert.ok(agregarRegla(a.reglas, 'di el número').error); assert.ok(agregarRegla([], ' ').error);
+  assert.ok(agregarRegla(Array.from({ length: MAX_REGLAS }, (_, i) => ({ texto: `r${i}` })), 'x').error);
+  assert.match(bloqueReglas(a.reglas), /Di el número/); assert.equal(bloqueReglas(undefined), '');
 });
 t('supervisor: lee varios agentes y sigue una sola vez', () => {
   const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];
