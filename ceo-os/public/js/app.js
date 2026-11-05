@@ -404,7 +404,7 @@ function menuYo(btn) {
   m.addEventListener('click', (e) => {
     if (e.target.closest('[data-modo]')) {
       const h = document.documentElement, claro = h.dataset.theme !== 'light';
-      h.dataset.theme = claro ? 'light' : 'dark';
+      h.dataset.theme = claro ? 'light' : 'dark'; h.dataset.llmTema = claro ? 'dia' : 'noche'; document.querySelector('.llm')?.setAttribute('data-tema', claro ? 'dia' : 'noche');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', claro ? '#f3f3f4' : '#0d0d0e');
       try { localStorage.setItem('os.modo', claro ? 'claro' : 'oscuro'); } catch { /* dura esta sesión */ }
       return cerrarTodo();

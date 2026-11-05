@@ -10025,16 +10025,16 @@ html[data-vidrio="real"] .migas{-webkit-app-region:no-drag}
 /* Light mode: blanco y silver. Todo sale de tokens; el modo oscuro no cambia. */
 :root{--tinta:255 255 255}
 :root[data-theme="light"]{--tinta:24 24 27;color-scheme:light;
-  --ui-bg:#f3f3f4;--ui-side:#ebebed;--ui-surf:#ffffff;--ui-surf2:#f2f2f3;--ui-fill:#f5f5f6;--ui-fill2:#e9e9eb;
+  --ui-bg:#fafafa;--ui-side:#f4f4f5;--ui-surf:#ffffff;--ui-surf2:#f2f2f3;--ui-fill:#f5f5f6;--ui-fill2:#e9e9eb;
   --ui-line:rgb(24 24 27 / .09);--ui-line2:rgb(24 24 27 / .16);
   --ui-ink:#18181b;--ui-ink2:#46464c;--ui-mut:#68686f;--ui-mut2:#7c7c84;--ui-acc:#18181b;--ui-acc-ink:#ffffff;--ui-user:#ececee;
   --ui-azul:#2f6fdb;--ui-rojo:#d6392a;--ui-glass:rgb(255 255 255 / .82);--ui-ink-rgb:24 24 27;--ui-surf-rgb:255 255 255;
   --v-borde:inset 0 1px 0 rgb(255 255 255 / .9),inset 0 0 0 1px rgb(24 24 27 / .07);
   --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 2px rgb(24 24 27 / .04);--ui-sh-2:0 0 0 1px var(--ui-line),0 12px 32px -14px rgb(24 24 27 / .18);--ui-sh-3:0 18px 50px -22px rgb(24 24 27 / .2),0 1px 2px rgb(24 24 27 / .04)}
-html[data-theme="light"]{background:#f3f3f4}
+html[data-theme="light"]{background:#fafafa}
 html[data-theme="light"]::before,html[data-theme="light"]::after{opacity:.1}
 :root[data-theme="light"] #main{--ui-mut:#68686f;--ui-mut2:#7c7c84;--ui-surf:#ffffff;--surface:#ffffff}
-:root[data-theme="light"][data-vidrio="real"]{background:rgb(240 240 242 / .72)}
+:root[data-theme="light"][data-vidrio="real"]{background:rgb(250 250 250 / .55)}
 :root[data-theme="light"] .lat{background:rgb(255 255 255 / .62)}
 :root[data-theme="light"] .mm-bar i,:root[data-theme="light"] .em-f{fill:var(--ui-rojo)}
 :root[data-theme="light"] .mk-v.bien{color:#1e56b4}
@@ -10042,3 +10042,19 @@ html[data-theme="light"]::before,html[data-theme="light"]::after{opacity:.1}
 :root[data-theme="light"] .btn:not(.ghost){background:var(--ui-ink);color:#fff}
 :root[data-theme="light"] .btn:not(.ghost):hover{background:#2c2c31}
 :root[data-theme="light"] .lat-n{color:#fff}
+
+/* iPhone: el chat se siente app. Las opciones salen con el teclado, como en Claude. */
+html,body{overscroll-behavior:none}
+button,a,.lc{touch-action:manipulation}
+@media (max-width:760px){
+  textarea,input,select{font-size:16px!important}
+  .lc:not(:focus-within){display:flex;align-items:center;gap:6px}
+  .lc:not(:focus-within) textarea{flex:1;min-width:0}
+  .lc:not(:focus-within) .lc-row{flex:none;margin:0}
+  .lc:not(:focus-within) .lc-chip,.lc:not(:focus-within) .lc-row>:not(button){display:none}
+  .lc:focus-within .lc-row{overflow-x:auto;scrollbar-width:none}
+  .lc:focus-within .lc-row::-webkit-scrollbar{display:none}
+  .lc:focus-within .lc-chip{flex:none;overflow:visible}
+  .lc-send{position:sticky;right:0;flex:none}
+}
+.llm[data-tema="dia"]{--l-bg:transparent;--l-side:transparent;--l-surf:#fff;--l-surf2:#f4f4f5;--l-acc:#18181b;--l-acc-ink:#fff;--l-mut:#68686f;--l-ink:#18181b;--l-ink2:#46464c;--l-user:#ececee;--l-line:rgb(24 24 27 / .09);--l-line2:rgb(24 24 27 / .16);--l-glass:rgb(255 255 255 / .88)}

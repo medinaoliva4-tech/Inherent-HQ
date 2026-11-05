@@ -610,3 +610,10 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Blanco y silver:** se elige en el menú de la cuenta y se recuerda por equipo.
 - **Tokens:** el bloque final de `app.css` redefine la paleta. `--tinta` reemplaza el blanco fijo de las capas nuevas.
 - **Modo oscuro:** sigue siendo el predeterminado.
+
+## 24 · Lo que encontró el CEO al usar el OS (2026-11-05)
+
+**Primero:** contexto de la empresa en el Chat · voz en la app de Mac · error al cambiar de voz en el iPhone.
+**Después:** Chat de entrada con los proyectos de clientes abajo · teclado del iPhone · instalar como app.
+**Al final (detalles):** salto raro de OS a Chat · light mode sin texto blanco · cosas pequeñas en el iPhone · notificaciones.
+
