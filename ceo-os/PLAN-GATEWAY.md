@@ -532,6 +532,9 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 
 ### Entrega 9 · actualizar desde el perfil
 - **Actualización:** la app de Mac avisa junto al perfil, con instrucciones cortas. Un toque la baja, la cambia y la vuelve a abrir.
-- **Si no puede revisar:** el aviso muestra el motivo real.
 - **Buscador y fondos oscuros:** sin tono café.
+
+### Entrega 10 · acentos
+- **Azul:** interruptores, avance, enfoque y selección. **Rojo:** lo que borra. El botón principal sigue en hueso.
+- **Aviso de actualización:** solo aparece cuando hay una versión nueva.
 

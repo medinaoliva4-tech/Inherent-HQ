@@ -224,6 +224,15 @@ t('app de Mac: la actualización aparece junto al perfil solo si hay una más nu
   assert.equal(estadoApp('0.1.6', { version: null }), 'aldia');
   assert.match(APP, /id="lat-act"/);
 });
+t('app de Mac: el aviso solo existe si hay actualización', () => {
+  const mac = JS.find(([f]) => f === path.join('js', 'app-mac.js'))[1];
+  assert.match(mac, /caja\.hidden = !app\(\) \|\| !hay/); assert.ok(!mac.includes('No pude revisar'));
+});
+t('acentos: azul en lo activo y rojo en lo que borra', () => {
+  const b = CSS.slice(CSS.indexOf('/* ===== Acentos'));
+  assert.match(b, /--ui-azul:#4a86e8/); assert.match(b, /--ui-rojo:#ff6b5e/);
+  assert.match(b, /input\.switch:checked/); assert.match(b, /\.sp-meter i/); assert.match(b, /data-act="del"/);
+});
 t('sin café: el buscador es neutro', () => {
   assert.ok(!/rgb\(33 27 22/.test(CSS));
   assert.match(CSS, /\.spot\{border:0;background:rgb\(28 28 30/);

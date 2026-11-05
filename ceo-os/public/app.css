@@ -9708,6 +9708,19 @@ html[data-vidrio="real"] :is(.lat-top,.llm-head) :is(button,a,select,input){-web
 .lat-act i{height:3px;margin-top:6px;border-radius:2px;background:rgb(255 255 255 / .12);overflow:hidden}
 .lat-act i::after{content:"";display:block;width:var(--pc,4%);height:100%;background:var(--ui-ink);transition:width .3s ease-out}
 
+/* ===== Acentos: azul para lo activo y el avance; rojo para lo que borra. El botón principal sigue en hueso ===== */
+:root{--ui-azul:#4a86e8;--ui-rojo:#ff6b5e}
+input.switch:checked,input[role=switch]:checked{background:var(--ui-azul)}
+input.switch:checked::after,input[role=switch]:checked::after{background:#fff}
+input[type=checkbox]:not(.switch):not([role=switch]),input[type=radio],input[type=range]{accent-color:var(--ui-azul)}
+.sp-meter i,.wc-prog i,.lat-act i::after{background:var(--ui-azul)}
+:focus-visible{outline-color:var(--ui-azul)}
+.in:focus,.in:focus-visible{box-shadow:inset 0 0 0 1.5px var(--ui-azul)}
+:is(button,a,.btn):is([data-act="del"],[data-act="evdel"],[data-x="linkdel"],[data-x="goaldel"],[data-v="del"],[data-rsp="del"],[data-rc="del"],[data-q="del"],[data-pop="del"],[data-pk="delrole"],[data-pk="delph"],[data-act*="borrar"],[data-act*="eliminar"],.danger){color:var(--ui-rojo)}
+.btn:is([data-act="del"],[data-act="evdel"],[data-act*="borrar"],[data-act*="eliminar"],.danger){background:rgb(255 107 94 / .14)}
+.btn:is([data-act="del"],[data-act="evdel"],[data-act*="borrar"],[data-act*="eliminar"],.danger):hover{background:rgb(255 107 94 / .22)}
+.lib-menu button.danger{color:var(--ui-rojo)}
+
 /* ===== Modo conversación: un aro, lo que se dice y tres botones ===== */
 .vz{position:fixed;z-index:80;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto auto;justify-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top)) 24px calc(26px + env(safe-area-inset-bottom));background:radial-gradient(90% 34% at 50% 104%,rgb(235 235 240 / .16),transparent 72%),rgb(8 8 9 / .86);-webkit-backdrop-filter:blur(34px) saturate(130%);backdrop-filter:blur(34px) saturate(130%);color:var(--ui-ink);animation:vzEntra .36s var(--suave)}
 @keyframes vzEntra{from{opacity:0}}
