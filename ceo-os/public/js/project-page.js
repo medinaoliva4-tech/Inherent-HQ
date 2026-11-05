@@ -51,7 +51,7 @@ export function projOwner(p, team) {
   const email = holders(team, '', p.roles_map)(role); const who = team.find((x) => x.email === email || x.id === email);
   return { role, label: roleLabel(role), who };
 }
-const av = (who, s = 24) => who ? html`<span class="av" style="width:${s}px;height:${s}px;font-size:${Math.round(s * 0.4)}px;background:${who.color || '#735741'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="av pp-av0" style="width:${s}px;height:${s}px" title="Sin responsable">${ico('user', Math.round(s * 0.55))}</span>`;
+const av = (who, s = 24) => who ? html`<span class="av" style="width:${s}px;height:${s}px;font-size:${Math.round(s * 0.4)}px;background:${who.color || '#5d5d5e'}" title="${who.name}">${initials(who.name)}</span>` : html`<span class="av pp-av0" style="width:${s}px;height:${s}px" title="Sin responsable">${ico('user', Math.round(s * 0.55))}</span>`;
 const mono = (p) => (p.icon ? String(p.icon) : initials(p.name || '?'));
 const coverStyle = (p) => (okUrl(p.cover_img) ? raw(`style="background-image:linear-gradient(180deg,rgb(0 0 0 / .05),rgb(0 0 0 / .35)),url('${String(p.cover_img).replace(/['"()\\\s]/g, encodeURIComponent)}');background-size:cover;background-position:center"`) : '');
 const driveImg = (u) => { const m = String(u).match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]{10,})/); return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1600` : u; };

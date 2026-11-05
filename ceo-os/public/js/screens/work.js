@@ -25,10 +25,10 @@ const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'cale
 // Workspace: cada persona trabaja desde el perfil (o los perfiles) que tiene asignados en Team.
 // Todos tienen su kanban personal, el de la empresa y sus tareas. Cada perfil agrega lo suyo:
 // checklist del ciclo, SOPs, subir trabajo a revisión y el material del cliente.
-const COLS = [['Por empezar', 'Por hacer', '#b29c87'], ['En curso', 'En progreso', '#a18770'], ['En revisión', 'En revisión', '#a68d77'], ['Hecha', 'Hecha', '#755943']];
+const COLS = [['Por empezar', 'Por hacer', 'var(--ui-ink2)'], ['En curso', 'En progreso', 'var(--ui-ink2)'], ['En revisión', 'En revisión', 'var(--ui-ink2)'], ['Hecha', 'Hecha', 'var(--ui-ink2)']];
 const DEPTS = [['①', 'Strategy'], ['②', 'Growth'], ['②B', 'Branding'], ['③', 'Marketing'], ['④', 'Creatividad'], ['⑤', 'Producción'], ['⑥A', 'Diseño gráfico'], ['⑦', 'Video Editing'], ['⑧', 'Community'], ['⑨', 'Posting'], ['⑩', 'Ads']];
-const PIPES = { contenido: { name: 'Contenido', sub: 'Marketing · producción y entrega', bar: '#795c45' }, growth: { name: 'Business Growth', sub: 'Consultoría que opera', bar: '#81634b' } };
-const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
+const PIPES = { contenido: { name: 'Contenido', sub: 'Marketing · producción y entrega', bar: 'var(--ui-ink2)' }, growth: { name: 'Business Growth', sub: 'Consultoría que opera', bar: 'var(--ui-ink2)' } };
+const COLORS = ['var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)'];
 // El checklist del ciclo de cada perfil (se marca por mes) sale de la receta del Ciclo mensual (Administración → Recetas).
 const COMMUNITY = ['Tono y voz de la marca', 'FAQ y respuestas frecuentes', 'Reglas de escalamiento', 'Plantillas de respuesta'];
 const ymNow = () => today().slice(0, 7);
@@ -102,10 +102,10 @@ export async function render(el, { me, sub, alive }) {
       <div class="mt"><aside class="mt-side">
         <div class="mt-who"><span class="mt-av">${initials(whoP?.name || me.name)}</span><div><b>${asP ? asP.name : 'Mis tareas'}</b><span class="mut sm">${myRoles.map((r) => roleName(r).split(' · ')[0]).join(' · ') || 'Sin rol'}</span></div></div>
         ${viewSel}
-        <div class="mt-tiles">${tile('hoy', 'Hoy', L.hoy.length, '#6b513c', '◷')}${tile('atrasadas', 'Atrasadas', L.atrasadas.length, '#b4472f', '!')}${tile('decisiones', isCeo && !asP ? 'Decisiones' : 'Por revisar', D.length, '#c58a2b', '⚑')}${tile('proximos', 'Próximos', L.proximos.length, '#7d7266', '▦')}</div>
-        <div class="mt-lists"><span class="mt-h">Lo mío</span>${item('proyectos', 'Mis proyectos', '#5a7d6a', '◧', misProyectos().length)}${item('kanban', 'Tablero', '#7a5f48', '▤')}
+        <div class="mt-tiles">${tile('hoy', 'Hoy', L.hoy.length, 'var(--ui-ink2)', '◷')}${tile('atrasadas', 'Atrasadas', L.atrasadas.length, '#b4472f', '!')}${tile('decisiones', isCeo && !asP ? 'Decisiones' : 'Por revisar', D.length, '#c58a2b', '⚑')}${tile('proximos', 'Próximos', L.proximos.length, '#7d7266', '▦')}</div>
+        <div class="mt-lists"><span class="mt-h">Lo mío</span>${item('proyectos', 'Mis proyectos', '#5a7d6a', '◧', misProyectos().length)}${item('kanban', 'Tablero', 'var(--ui-ink2)', '▤')}
           ${Z ? item('zona', Z.title || 'Mi rol', '#8a6fb0', '◈') : ''}
-          ${canCoord ? html`<span class="mt-h">Coordinar</span>${item('pipes', 'Pipelines', '#3c8a5a', '⇢')}${item('equipo', 'Equipo', '#a0785a', '◉')}` : ''}</div>
+          ${canCoord ? html`<span class="mt-h">Coordinar</span>${item('pipes', 'Pipelines', '#3c8a5a', '⇢')}${item('equipo', 'Equipo', 'var(--ui-ink2)', '◉')}` : ''}</div>
       </aside><main class="mt-main card"><div id="wbody"></div></main></div>`);
     const vs = $('#viewAs', el); if (vs) vs.onchange = () => { location.hash = vs.value ? `/work/hoy/_/${vs.value}` : '/work'; };
     const b = $('#wbody', el);
@@ -202,8 +202,8 @@ export async function render(el, { me, sub, alive }) {
   }
   function sops(r) {
     const list = docs.filter((d) => (d.roles || []).includes(r)).slice(0, 6);
-    const KC = { SOP: '#87684e', Playbook: '#a18770', Diagrama: '#84664d', Video: '#36271b', Nota: '#997d65' };
-    return box('Mis SOPs y plantillas', 'De la Library', list.length ? html`<div class="wksops">${list.map((d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${KC[d.kind] || '#9f846d'}">${(d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.title}</span></a>`)}</div>`
+    const KC = { SOP: 'var(--ui-ink2)', Playbook: 'var(--ui-ink2)', Diagrama: 'var(--ui-ink2)', Video: 'var(--ui-ink2)', Nota: 'var(--ui-ink2)' };
+    return box('Mis SOPs y plantillas', 'De la Library', list.length ? html`<div class="wksops">${list.map((d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${KC[d.kind] || 'var(--ui-ink2)'}">${(d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.title}</span></a>`)}</div>`
       : html`<div class="mut sm" style="padding:6px 0">En la Library, abre un SOP → Editar → marca el perfil «${roleName(r).split(' · ')[0]}».</div>`, html`<a class="sm mut" href="#/library">Library →</a>`);
   }
   function uploader(label = 'Subir trabajo para revisión') {
@@ -248,12 +248,12 @@ export async function render(el, { me, sub, alive }) {
   // =================== CEO ===================
   function decisions() {
     const out = [];
-    for (const t of tasks) if (status(t) === 'En revisión' && accOf(t) === ceoKey) out.push({ t: `Revisar: ${t.title}`, sub: `${nameOf(t.assignee)} lo entregó`, tone: '#a68d77', act: 'task', id: t.id });
+    for (const t of tasks) if (status(t) === 'En revisión' && accOf(t) === ceoKey) out.push({ t: `Revisar: ${t.title}`, sub: `${nameOf(t.assignee)} lo entregó`, tone: 'var(--ui-ink2)', act: 'task', id: t.id });
     for (const p of projects) {
-      if (p.pipeline?.['①']?.status === 'now') out.push({ t: 'Aprobar la estrategia', sub: `${p.client || p.name} · gate ① Strategy`, tone: '#654c38', href: '#/operations/pipe' });
-      if (p.pipeline?.['⑩']?.status === 'now') out.push({ t: 'Aprobar plan y presupuesto de pauta', sub: `${p.client || p.name} · gate ⑩ Ads`, tone: '#654c38', href: '#/operations/pipe' });
+      if (p.pipeline?.['①']?.status === 'now') out.push({ t: 'Aprobar la estrategia', sub: `${p.client || p.name} · gate ① Strategy`, tone: 'var(--ui-ink2)', href: '#/operations/pipe' });
+      if (p.pipeline?.['⑩']?.status === 'now') out.push({ t: 'Aprobar plan y presupuesto de pauta', sub: `${p.client || p.name} · gate ⑩ Ads`, tone: 'var(--ui-ink2)', href: '#/operations/pipe' });
     }
-    for (const q of quotes.filter((x) => x.status === 'Borrador')) out.push({ t: `Enviar cotización ${q.number}`, sub: q.client || '', tone: '#a18770', href: '#/sales/quotes' });
+    for (const q of quotes.filter((x) => x.status === 'Borrador')) out.push({ t: `Enviar cotización ${q.number}`, sub: q.client || '', tone: 'var(--ui-ink2)', href: '#/sales/quotes' });
     return out;
   }
   const decRow = (d) => html`<${raw(d.href ? 'a' : 'div')} class="wkdec" ${raw(d.href ? `href="${d.href}"` : `data-act="${d.act}" data-id="${d.id}"`)} style="border-left-color:${d.tone}"><span class="grow"><b style="font-weight:500">${d.t}</b><span class="mut sm"> · ${d.sub}</span></span><span class="mut">›</span></${raw(d.href ? 'a' : 'div')}>`;
@@ -268,7 +268,7 @@ export async function render(el, { me, sub, alive }) {
     const l = tasks.filter((t) => t.assignee === k); const m = ymNow();
     const month = l.filter((t) => String(t.due || t._meta?.created_at || '').slice(0, 7) === m || status(t) !== 'Hecha');
     const late = open(l).filter((t) => t.due && t.due < T0).length;
-    return { total: month.length, done: month.filter((t) => status(t) === 'Hecha').length, late, open: open(l).length, dot: late ? '#654c38' : open(l).length > 8 ? '#aa917b' : '#84654c' };
+    return { total: month.length, done: month.filter((t) => status(t) === 'Hecha').length, late, open: open(l).length, dot: late ? 'var(--ui-ink2)' : open(l).length > 8 ? 'var(--ui-ink2)' : 'var(--ui-ink2)' };
   }
   const people = () => team.filter((p) => p.active !== false && p.kind !== 'ia' && keyOf(p) !== ceoKey);
   const accRows = () => (people().length ? html`${people().map((p) => { const s = stats(keyOf(p)); return html`<div class="wsrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 22)}<span class="grow">${p.name.split(' ')[0]}<span class="mut sm"> · ${(p.roles || []).map((r) => roleName(r).split(' · ')[0]).join(', ') || p.title || ''}</span></span><span class="sm">${s.done}/${s.total}</span><i class="dot" style="background:${s.dot}"></i></div>`; })}` : empty('Sin equipo todavía.'));
@@ -310,7 +310,7 @@ export async function render(el, { me, sub, alive }) {
       const load = people().map((p) => ({ p, n: open(tasks.filter((t) => t.assignee === keyOf(p))).length })).sort((a, z2) => z2.n - a.n), max = Math.max(1, ...load.map((x) => x.n));
       const noOwner = open(tasks).filter((t) => !t.assignee).length, late = open(tasks).filter((t) => t.due && t.due < T0).length;
       mount(z, panel(html`${noOwner || late ? html`<div class="wsnote">${late ? html`<b>${late}</b> atrasadas` : ''}${noOwner && late ? ' · ' : ''}${noOwner ? html`<b>${noOwner}</b> sin responsable` : ''} <button class="sm wslink" data-act="kvGo">Ver en el Kanban ›</button></div>` : ''}
-        ${load.map(({ p, n }) => html`<div class="wsrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 20)}<span class="wsname">${p.name.split(' ')[0]}</span><div class="wkprog grow" style="margin:0"><i style="width:${(n / max) * 100}%;background:${n > 8 ? '#aa917b' : '#795c45'}"></i></div><span class="sm" style="width:20px;text-align:right">${n}</span></div>`)}`));
+        ${load.map(({ p, n }) => html`<div class="wsrow" data-act="person" data-k="${keyOf(p)}">${av(keyOf(p), 20)}<span class="wsname">${p.name.split(' ')[0]}</span><div class="wkprog grow" style="margin:0"><i style="width:${(n / max) * 100}%;background:${n > 8 ? 'var(--ui-ink2)' : 'var(--ui-ink2)'}"></i></div><span class="sm" style="width:20px;text-align:right">${n}</span></div>`)}`));
     },
     more: () => html`${checklist('coo')}${uploader()}${sops('coo')}`,
   };
@@ -333,7 +333,7 @@ export async function render(el, { me, sub, alive }) {
   function quick() {
     const sopsV = docs.filter((d) => (d.roles || []).includes('video') && d.kind !== 'Prompt');
     const gen = docs.filter((d) => d.kind === 'Prompt' && !d.client);
-    const link = (d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${d.kind === 'Prompt' ? '#81634b' : '#87684e'}">${d.kind === 'Prompt' ? ico('spark') : (d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.kind === 'Prompt' ? d.vtype || d.title : d.title}</span></a>`;
+    const link = (d) => html`<a class="wksop" href="#/library/${d.folder_id || '_'}/${d.id}"><span class="ftype" style="background:${d.kind === 'Prompt' ? 'var(--ui-ink2)' : 'var(--ui-ink2)'}">${d.kind === 'Prompt' ? ico('spark') : (d.kind || 'Doc').slice(0, 3).toUpperCase()}</span><span>${d.kind === 'Prompt' ? d.vtype || d.title : d.title}</span></a>`;
     return box('Acceso rápido', 'SOPs y prompts generales', html`${sopsV.length ? html`<div class="lbl" style="color:var(--mut);margin:2px 0 6px">SOPs</div><div class="wksops">${sopsV.slice(0, 4).map(link)}</div>` : ''}
       <div class="lbl" style="color:var(--mut);margin:10px 0 6px">Prompts generales</div>${gen.length ? html`<div class="wksops">${gen.slice(0, 6).map(link)}</div>` : html`<div class="mut sm">Todavía no hay. El CEO los crea en la Library.</div>`}
       ${settings?.root ? html`<a class="wkrow" href="${settings.root}" target="_blank" rel="noopener noreferrer" style="margin-top:6px"><span class="fi">${IC.drive}</span><span class="grow">Carpeta de entregas en Drive</span><span class="mut">↗</span></a>` : ''}`, html`<a class="sm mut" href="#/library">Library →</a>`);
@@ -398,7 +398,7 @@ export async function render(el, { me, sub, alive }) {
     title: 'Tus proyectos de Business Growth',
     body: (k, z) => {
       const gp = projects.filter((p) => lineOf(p) === 'growth');
-      mount(z, panel(gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wsrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow">${p.name}<span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:100px;margin:0;flex:none"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:#81634b"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}`
+      mount(z, panel(gp.length ? html`${gp.map((p) => { const ph = p.phases || []; const d = ph.filter((x) => x.status === 'done').length; return html`<a class="wsrow" href="${p.client_slug ? '#/clients/' + p.client_slug : '#/operations/pipe'}"><span class="grow">${p.name}<span class="mut sm"> · ${ph.find((x) => x.status !== 'done')?.name || 'Terminado'}</span></span><div class="wkprog" style="width:100px;margin:0;flex:none"><i style="width:${ph.length ? (d / ph.length) * 100 : 0}%;background:var(--ui-ink2)"></i></div><span class="sm">${d}/${ph.length}</span></a>`; })}`
         : empty('Sin proyectos de Business Growth. Se crean en Proyectos → «+ Proyecto» → Business Growth.')));
     },
     more: () => html`${checklist('finance')}${uploader('Entregar trabajo')}${sops('finance')}`,
@@ -646,7 +646,7 @@ export async function render(el, { me, sub, alive }) {
         </div>
         ${(t.files || []).length ? html`<div class="lbl" style="color:var(--mut);margin-top:10px">Archivos</div>${t.files.map((f) => html`<a class="wkrow" href="${/^https:\/\//.test(f.link) ? f.link : '#'}" target="_blank" rel="noopener noreferrer"><span class="fi">${IC.drive}</span><span class="grow">${f.name}</span><span class="mut sm">${fdate(String(f.at).slice(0, 10))}</span></a>`)}` : ''}
         ${sopLink(t, docs)}
-        ${(() => { const sop = !t.sop && t.service && docs.find((d) => d.kind === 'SOP' && d.title.slice(6).trim().toLowerCase() === t.service.trim().toLowerCase()); return sop ? html`<a class="sm" href="#/library/${sop.folder_id || '_'}/${sop.id}" style="display:inline-block;margin-top:14px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 13)}</a>` : ''; })()}
+        ${(() => { const sop = !t.sop && t.service && docs.find((d) => d.kind === 'SOP' && d.title.slice(6).trim().toLowerCase() === t.service.trim().toLowerCase()); return sop ? html`<a class="sm" href="#/library/${sop.folder_id || '_'}/${sop.id}" style="display:inline-block;margin-top:14px;color:var(--ui-ink2);font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 13)}</a>` : ''; })()}
         <b class="sm" style="display:block;margin-top:14px">${t.service ? 'Entregable (checklist)' : 'Checklist'}</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="wchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>

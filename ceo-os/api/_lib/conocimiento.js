@@ -48,6 +48,15 @@ export async function equipoDeCliente(slug) {
   return equipoHoy({ ...deCliente({ runs, tareas, proyectos, run: { id: '', cliente: slug === 'inherent' ? '' : slug } }), nombres });
 }
 
+// Los números de la página del cliente: solo cuentas, sin títulos de tareas que la persona quizá no vea.
+export async function resumenDeCliente(slug) {
+  if (slug === 'personal') return {};
+  const [tareas, proyectos] = await Promise.all([db.list('tasks'), db.list('projects')]);
+  const hoy = new Date().toISOString().slice(0, 10), ps = proyectos.filter((p) => (slug === 'inherent' ? !p.client_slug : String(p.client_slug || '').toLowerCase() === slug) && !p.archived && !p.archivado);
+  const ids = new Set(ps.map((p) => p.id)), abiertas = tareas.filter((t) => ids.has(t.project_id) && t.status !== 'Hecha' && t.tipo !== 'Personal');
+  return { proyectos: ps.length, tareas: abiertas.length, vencidas: abiertas.filter((t) => t.due && t.due < hoy).length };
+}
+
 // Para un turno del Chat: lo que ESA persona puede ver. `ver` es la regla de los trabajos (agentes.js).
 export async function equipoPara(u, ver) {
   if (!u || u.role === 'client') return '';

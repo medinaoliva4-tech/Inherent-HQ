@@ -505,3 +505,11 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - **Acciones neutras:** botones y acento sin tonos cálidos. Los estados conservan su color.
 - **Hoy:** las mismas secciones en el mismo orden, compactas y con listas que se deslizan por dentro para reducir el scroll.
 
+### Entrega 5 · ajustes pedidos por el CEO
+- Sin tonos café en la plataforma, salvo las zonas de papel.
+- Divisor con flechas para ajustar el ancho del panel del Chat.
+- Estrategia del panel: primero el paso que sigue y qué hacer; los demás pasos quedan plegados.
+- Página del cliente: datos, para qué sirve cada sección y ejemplos en las instrucciones.
+- Clientes como lista, con el detalle secundario plegado. Tareas con lista lateral simple.
+- Un mismo lenguaje de títulos y etiquetas en páginas y subpáginas, sin mayúsculas forzadas.
+

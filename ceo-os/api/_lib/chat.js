@@ -13,7 +13,7 @@ import { body } from './http.js';
 import { leerIdSesion } from '../../public/js/llm/modos.js';
 import * as mcpOS from './mcp.js';
 import { PROPONIBLES_CHAT, ver as verRun, COLL as RUNS } from './agentes.js';
-import { equipoPara, equipoDeCliente, instruccionesDe, CLIENTES } from './conocimiento.js';
+import { equipoPara, equipoDeCliente, instruccionesDe, resumenDeCliente, CLIENTES } from './conocimiento.js';
 import { scoper } from './access.js';
 import { bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES } from '../../public/js/conocimiento.js';
 import { agenteDeSesion, carpetaDe } from '../../public/js/llm/carpetas.js';
@@ -92,7 +92,7 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const slug = lc(req.params.slug); if (!(await veCliente(u, slug))) return res.status(404).json({ error: 'Ese cliente no existe' });
     const [instrucciones, equipo] = await Promise.all([instruccionesDe(slug), equipoDeCliente(slug).catch(() => '')]);
-    res.json({ instrucciones, equipo: slug === 'personal' ? '' : equipo, editable: ['ceo', 'coo'].includes(u.role) });
+    res.json({ instrucciones, equipo: slug === 'personal' ? '' : equipo, editable: ['ceo', 'coo'].includes(u.role), resumen: await resumenDeCliente(slug).catch(() => ({})) });
   });
   on('POST', 'chat/clientes/:slug', async (req, res) => {
     const u = await guard(req, res); if (!u) return;

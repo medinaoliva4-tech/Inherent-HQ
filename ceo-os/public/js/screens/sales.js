@@ -195,7 +195,7 @@ export async function render(el, { me, sub, alive }) {
         ${card('⚡', '#a8503a', 'Primera respuesta', avg != null ? durText(avg) : '—', 'promedio del mes · meta 1 min')}
         ${card('↻', '#9a7414', 'Seguimientos a tiempo', abiertos.length ? `${Math.round((abiertos.filter((l) => !isLate(l)).length / abiertos.length) * 100)}%` : '—', `${abiertos.filter(isLate).length} vencidos`)}
         ${card('▤', '#7a5aa0', 'Propuestas enviadas', y.semana.propuesta + quotes.filter((x) => x.date && x.date >= lunes).length, `de ${sem.propuestas} esta semana`)}
-        ${card('◎', '#6b513c', 'Pipeline abierto', USD(abiertos.reduce((a, l) => a + (+l.value_usd || 0), 0)), `${abiertos.length} tratos`)}
+        ${card('◎', 'var(--ui-ink2)', 'Pipeline abierto', USD(abiertos.reduce((a, l) => a + (+l.value_usd || 0), 0)), `${abiertos.length} tratos`)}
       </div><p class="mut sm">El volumen sale de lo que se anota: «+1 outreach» en Prospectos y, en cada lead, el tipo de cada nota (llamada, reunión, propuesta, seguimiento). Lo que no se anota, no cuenta.</p></section></div>`;
   }
   function crm(body) {
@@ -209,7 +209,7 @@ export async function render(el, { me, sub, alive }) {
     const usedTags = [...new Set(pipe.flatMap((l) => l.tags || []))];
     const late = open.filter(isLate);
     // Listas inteligentes (como las Smart Views de Close): se llenan solas.
-    const VISTAS = [['abierto', 'Todo abierto', '#6b513c', '◎', (l) => OPEN.includes(l.stage || 'Nuevo')], ['sinpaso', 'Sin siguiente paso', '#b4472f', '!', (l) => sinSiguiente(l)], ['estancados', 'Estancados', '#b4472f', '◷', (l) => estancado(l) > 0],
+    const VISTAS = [['abierto', 'Todo abierto', 'var(--ui-ink2)', '◎', (l) => OPEN.includes(l.stage || 'Nuevo')], ['sinpaso', 'Sin siguiente paso', '#b4472f', '!', (l) => sinSiguiente(l)], ['estancados', 'Estancados', '#b4472f', '◷', (l) => estancado(l) > 0],
       ['hoy', 'Actividad hoy', '#c58a2b', '⚑', (l) => OPEN.includes(l.stage || 'Nuevo') && l.next_date && l.next_date <= T], ['calientes', 'Calientes', '#c2541f', '▲', (l) => OPEN.includes(l.stage || 'Nuevo') && (l.interest || 0) >= 4], ['responder', 'Por responder', '#3f6ea8', '⚡', (l) => m.waiting.includes(l)],
       ['ganados', 'Ganados este mes', '#2f7a4d', '✓', (l) => { const t = ganadoEn(l); return t != null && new Date(t).toISOString().slice(0, 7) === T.slice(0, 7); }], ['perdidos', 'Perdidos', '#9a8f80', '×', (l) => l.stage === 'Perdido']];
     const vf = VISTAS.find((v) => v[0] === vistaF) || VISTAS[0];
@@ -451,7 +451,7 @@ export async function render(el, { me, sub, alive }) {
     drawer(html`<div class="row"><span class="chip">${s.name}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>Registro</h2><p class="mut sm" style="margin-top:6px">Lo último que llegó por esta fuente y lo que falló (últimos 50).</p>
       ${!(s.log || []).length ? html`<div class="empty" style="margin-top:14px"><b>Todavía no llegó nada</b>Manda una prueba al link de entrada.</div>`
-      : (s.log || []).map((x) => html`<div class="comment"><span class="av" style="${x.ok ? '' : 'background:#654c38'}">${x.ok ? '✓' : '!'}</span><p><span class="mut sm">${fdate(String(x.at || '').slice(0, 10))} · ${String(x.at || '').slice(11, 16)}</span><br>${x.ok ? html`${x.name || 'Lead'}${x.duplicate ? html` <span class="chip">ya existía</span>` : ''}${x.lead_id ? html` <a href="#" data-act="openLead" data-id="${x.lead_id}" style="color:#87684e">ver lead</a>` : ''}` : html`<b style="font-weight:500">${x.error}</b>${x.raw ? html`<div class="mut sm" style="word-break:break-all">${x.raw}</div>` : ''}`}</p></div>`)}`,
+      : (s.log || []).map((x) => html`<div class="comment"><span class="av" style="${x.ok ? '' : 'background:var(--ui-ink2)'}">${x.ok ? '✓' : '!'}</span><p><span class="mut sm">${fdate(String(x.at || '').slice(0, 10))} · ${String(x.at || '').slice(11, 16)}</span><br>${x.ok ? html`${x.name || 'Lead'}${x.duplicate ? html` <span class="chip">ya existía</span>` : ''}${x.lead_id ? html` <a href="#" data-act="openLead" data-id="${x.lead_id}" style="color:var(--ui-ink2)">ver lead</a>` : ''}` : html`<b style="font-weight:500">${x.error}</b>${x.raw ? html`<div class="mut sm" style="word-break:break-all">${x.raw}</div>` : ''}`}</p></div>`)}`,
     { openLead: (b, e) => { e.preventDefault(); const l = leads.find((x) => x.id === b.dataset.id); if (l) openLead(l); else toast('Ese lead ya no existe', true); } });
   }
 
@@ -699,7 +699,7 @@ export async function render(el, { me, sub, alive }) {
         <table><thead><tr><th>Servicio</th><th class="n">Cant.</th><th class="n">Precio</th><th class="n">Total</th></tr></thead>
           <tbody>${doc.items.map((i) => html`<tr><td><b style="font-weight:500">${i.name}</b></td><td class="n">${i.qty}</td><td class="n">${money(doc, i.price)}</td><td class="n">${money(doc, (+i.qty || 0) * (+i.price || 0))}</td></tr>`)}</tbody></table>
         <div class="qsum"><div><span>Subtotal</span><span>${money(doc, st)}</span></div>${doc.discount_pct ? html`<div><span>Descuento (${doc.discount_pct}%)</span><span>-${money(doc, st - tt)}</span></div>` : ''}<div class="tot"><span>Total</span><span>${money(doc, tt)}</span></div>${quoteDays(doc) ? html`<div><span>Tiempo estimado</span><span>${quoteDays(doc)} días hábiles</span></div>` : ''}</div>
-        ${fees(doc).length ? html`<div class="qnotes"><div class="lbl2">FEE POR CRECIMIENTO · VARIABLE</div>${fees(doc).map((i) => html`<div><b style="font-weight:500">${i.name}:</b> ${growthText(i.growth)}${i.growth.how ? html` <span style="color:#7a5d46">— ${i.growth.how}</span>` : ''}</div>`)}<div style="color:#7a5d46;font-size:11.5px;margin-top:6px">Se calcula cada mes sobre el crecimiento medido y atribuible a este servicio. Sin atribución clara, no se cobra.</div></div>` : ''}
+        ${fees(doc).length ? html`<div class="qnotes"><div class="lbl2">FEE POR CRECIMIENTO · VARIABLE</div>${fees(doc).map((i) => html`<div><b style="font-weight:500">${i.name}:</b> ${growthText(i.growth)}${i.growth.how ? html` <span style="color:var(--ui-ink2)">— ${i.growth.how}</span>` : ''}</div>`)}<div style="color:var(--ui-ink2);font-size:11.5px;margin-top:6px">Se calcula cada mes sobre el crecimiento medido y atribuible a este servicio. Sin atribución clara, no se cobra.</div></div>` : ''}
         <div class="qsec"><div class="lbl2">SIGUIENTES PASOS</div><ol>${(String(doc.next || '').split('\n').map((l) => l.trim()).filter(Boolean).length ? String(doc.next).split('\n').map((l) => l.trim()).filter(Boolean) : ['Confirmas esta propuesta y el alcance.', 'Hacemos una llamada de arranque para tomar tus datos y accesos.', 'Coordinamos el primer pago y firmamos.', 'Empezamos y te mostramos avances en cada entrega.']).map((l) => html`<li>${l}</li>`)}</ol></div>
         ${doc.notes && !(/no incluye/i.test(doc.intro || '') && /^\s*no incluye/i.test(doc.notes)) ? html`<div class="qnotes"><div class="lbl2">NOTAS Y CONDICIONES</div>${doc.notes.split('\n').map((l) => html`<div>${l}</div>`)}</div>` : ''}
         <div class="qfoot"><span>Inherent · Growth Partner</span><span>inherentglobal.com</span></div>

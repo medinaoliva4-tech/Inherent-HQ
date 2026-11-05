@@ -6,7 +6,7 @@ import { roleTable, changeRole } from '../rolemap.js';
 import { cargarGuias, vistosDe } from '../guia.js';
 import { videosDe } from '../guia-secciones.js';
 
-const COLORS = ['#36271b', '#997d65', '#87684e', '#a18770', '#a68d77', '#735741'];
+const COLORS = ['var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
 const ROLE = { ceo: 'CEO · acceso total', coo: 'COO · todo menos Finanzas', team: 'Equipo · Workspace, Contenido, Conocimiento' };
 const T = col('team'), RV = col('settings');

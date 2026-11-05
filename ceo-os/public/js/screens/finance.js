@@ -59,7 +59,7 @@ export async function render(el, { me, sub }) {
       <div class="grid g21" ${raw(TABS.some(([k]) => k === 'res') ? 'hidden' : '')}>
         <div class="card">
           <div class="chead"><div class="ico">↗</div><h3>Revenue vs. costo · 8 meses</h3><div class="sp"></div>
-            <span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Revenue</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Costo</span></span></div>
+            <span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:var(--ui-ink2);display:inline-block"></i>Revenue</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed var(--ui-ink2);display:inline-block"></i>Costo</span></span></div>
           ${entries.length ? html`<div class="chart" id="chFin" style="height:240px"></div>` : html`<div class="empty" style="margin-top:20px"><b>Sin movimientos todavía</b>Registra ingresos y gastos en «Movimientos» y aquí aparece la gráfica.</div>`}
         </div>
         <div class="card feat ink">
@@ -78,8 +78,8 @@ export async function render(el, { me, sub }) {
       </div>
       <div id="fbody"></div>`);
     if ($('#chFin', el)) lineChart($('#chFin', el), months8.map(mLabel), [
-      { name: 'Revenue', v: months8.map((m) => sum('ingreso', m)), c: '#2c1f16', fill: true },
-      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: '#997d65', dash: true }], { fmt: Q });
+      { name: 'Revenue', v: months8.map((m) => sum('ingreso', m)), c: 'var(--ui-ink2)', fill: true },
+      { name: 'Costo', v: months8.map((m) => sum('gasto', m)), c: 'var(--ui-ink2)', dash: true }], { fmt: Q });
     $('[data-act=month]', el).onchange = (e) => { month = e.target.value; paint(); };
     const b = $('#fbody', el);
     ({ fact, mov, costs, profit, pricing, nomina, res: () => {} })[tab](b);
@@ -145,7 +145,7 @@ export async function render(el, { me, sub }) {
         <div class="fx-row2">
           <section class="card fx-card"><div class="row"><span class="lbl">El reparto · Profit First</span><div class="sp"></div><button class="sm wslink" data-act="repEdit">Ajustar % ›</button></div>
             <div class="fx-li" style="border:0;padding-top:0"><span>Entró ${rev ? Q(rev) : '—'} − terceros ${terceros ? Q(terceros) : '—'} <small>(la pauta del cliente)</small></span><b>Ingreso real ${real ? Q(real) : '—'}</b></div>
-            <div class="fx-split"><span style="width:${R.utilidad}%;background:#2f7a4d">Utilidad ${R.utilidad}%</span><span style="width:${R.impuestos}%;background:#9a7414">Impuestos ${R.impuestos}%</span><span style="width:${R.operacion}%;background:#6b513c">Operación ${R.operacion}%</span></div>
+            <div class="fx-split"><span style="width:${R.utilidad}%;background:#2f7a4d">Utilidad ${R.utilidad}%</span><span style="width:${R.impuestos}%;background:#9a7414">Impuestos ${R.impuestos}%</span><span style="width:${R.operacion}%;background:var(--ui-ink2)">Operación ${R.operacion}%</span></div>
             <div class="fx-sl"><div><small>Utilidad</small><b>${real ? Q(parte('utilidad')) : '—'}</b></div><div><small>Impuestos</small><b>${real ? Q(parte('impuestos')) : '—'}</b></div><div><small>Operación</small><b>${real ? Q(parte('operacion')) : '—'}</b></div><div><small>Gastaste en operación</small><b class="${opGasto > parte('operacion') ? 'bad' : 'ok'}">${opGasto ? Q(opGasto) : '—'} ${!real && !opGasto ? '' : opGasto > parte('operacion') ? '↑' : '✓'}</b></div></div>
             <span class="mut sm">El CEO y el COO cobran de la utilidad. Meta: utilidad sana de ~${R.utilidad}% y margen de ${R.margen}% en cada producto.</span></section>
           <section class="card fx-card"><div class="row"><span class="lbl">Rentabilidad por cliente · ${mLabel(month)}</span><div class="sp"></div><button class="sm wslink" data-act="tab" data-t="profit">Ver todo ›</button></div>
@@ -181,7 +181,7 @@ export async function render(el, { me, sub }) {
     mount(b, !list.length ? html`${note}<div class="empty"><b>Sin movimientos en ${mLabel(month)}</b>${sheet?.url ? 'Agrega filas a tu hoja de Google Sheets y recarga.' : 'Conecta tu Google Sheet o registra un ingreso o gasto.'}</div>`
       : html`${note}<div class="card"><table><thead><tr><th>Fecha</th><th>Concepto</th><th>Cliente</th><th>Categoría</th><th class="n">Monto</th></tr></thead><tbody>
         ${list.map((e) => html`<tr class="click" data-act="${e.sheet ? 'sheet' : 'edit'}" data-id="${e.id}"><td class="mut">${fdate(e.date)}</td><td><b style="font-weight:500">${e.concept}</b>${e.sheet ? html` <span class="mut sm">· Sheet</span>` : ''}${e.source === 'auto' ? html` <span class="chip sm2">auto</span>${e.invoice_id && !resumen ? html` <a class="sm mov-inv" data-act="inv" data-id="${e.invoice_id}">factura</a>` : ''}` : ''}</td><td>${e.client || '—'}</td><td><span class="chip">${e.category || '—'}</span></td>
-          <td class="n"><b style="color:${e.type === 'ingreso' ? '#715640' : '#654c38'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
+          <td class="n"><b style="color:${e.type === 'ingreso' ? 'var(--ui-ink2)' : 'var(--ui-ink2)'}">${e.type === 'ingreso' ? '+' : '−'}${Q(e.amount)}</b></td></tr>`)}
       </tbody></table></div>`);
   }
   async function editEntry(e, type) {
@@ -243,7 +243,7 @@ export async function render(el, { me, sub }) {
           <td>${x.modules.length ? html`<span class="chip">${x.modules.length} módulo${x.modules.length === 1 ? '' : 's'}</span>` : html`<span class="mut sm">sin módulos</span>`}</td>
           <td class="n">${x.cost == null ? html`<span class="mut">—</span>` : html`${x.partial ? ico('alert') : ''} ${Q(x.cost)}`}</td><td class="n">${money(x.quoted)}</td><td class="n">${money(x.received)}</td>
           <td class="n"><b>${money(x.margin)}</b></td>
-          <td>${x.pct == null ? html`<span class="mut sm">${x.income == null ? 'sin ingreso' : 'sin costo'}</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:var(--fill)"><div style="width:${Math.max(0, Math.min(100, x.pct))}%;height:100%;border-radius:99px;background:${x.pct >= 70 ? '#2c1f16' : x.pct >= 55 ? '#a18770' : '#997d65'}"></div></div><span class="sm" style="width:40px;text-align:right">${x.pct}%</span></div>`}</td></tr>`)}
+          <td>${x.pct == null ? html`<span class="mut sm">${x.income == null ? 'sin ingreso' : 'sin costo'}</span>` : html`<div class="row"><div style="flex:1;height:8px;border-radius:99px;background:var(--fill)"><div style="width:${Math.max(0, Math.min(100, x.pct))}%;height:100%;border-radius:99px;background:${x.pct >= 70 ? 'var(--ui-ink2)' : x.pct >= 55 ? 'var(--ui-ink2)' : 'var(--ui-ink2)'}"></div></div><span class="sm" style="width:40px;text-align:right">${x.pct}%</span></div>`}</td></tr>`)}
         <tr><td colspan="2"><b>Total del mes</b></td><td class="n"><b>${money(t.cost)}</b></td><td class="n"><b>${money(t.quoted)}</b></td><td class="n"><b>${money(t.received)}</b></td><td class="n"><b>${money(t.margin)}</b></td><td>${t.pct == null ? '' : html`<b>${t.pct}%</b>`}</td></tr>
       </tbody></table></div>
       ${t.unassigned ? html`<div class="mut sm" style="margin-top:8px">${ico('bulb')} ${Q(t.unassigned)} de ingresos del mes no tienen cliente: asígnalo en «Movimientos» para que cuente en su fila.</div>` : ''}`
@@ -339,8 +339,8 @@ export async function render(el, { me, sub }) {
         <div class="grid g4">
           <div class="card glass"><span class="mut sm">Pagos del mes</span><div class="big" style="font-size:40px">${Q(total)}</div></div>
           <div class="card glass"><span class="mut sm">Pool de rubros</span><div class="big" style="font-size:40px">${Q(poolT)}</div></div>
-          <div class="card glass"><span class="mut sm">Roles sin repartir al 100%</span><div class="big" style="font-size:40px;color:${sin.length ? '#725741' : 'inherit'}">${sin.length}</div></div>
-          <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? '#654c38' : 'inherit'}">${falta.length}</div></div>
+          <div class="card glass"><span class="mut sm">Roles sin repartir al 100%</span><div class="big" style="font-size:40px;color:${sin.length ? 'var(--ui-ink2)' : 'inherit'}">${sin.length}</div></div>
+          <div class="card glass"><span class="mut sm">Montos sin datos</span><div class="big" style="font-size:40px;color:${falta.length ? 'var(--ui-ink2)' : 'inherit'}">${falta.length}</div></div>
         </div>
         <div class="sec-title"><h2>El mes de cada persona</h2><button class="btn ghost" data-act="addP" style="margin-left:auto">+ Persona</button></div>
         <div class="grid g3">${d.personas.map((p) => html`<div class="card"><div class="row"><b style="font-weight:500;font-size:16px">${p.nombre}</b><div class="sp"></div><button class="btn ghost" data-act="rmP" data-id="${p.id}" style="padding:6px 10px">${ico('x', 16)}</button></div>

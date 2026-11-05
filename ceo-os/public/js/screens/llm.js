@@ -71,12 +71,12 @@ export async function render(el, { me, sub = [], alive }) {
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
-    cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
+    panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
-  const persistir = () => guardar(me, { abiertas: S.abiertas, modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
+  const persistir = () => guardar(me, { panelW: S.panelW, abiertas: S.abiertas, modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (LM Studio, Ollama…). El elegido si es local; si no, el primero que haya.
@@ -87,7 +87,7 @@ export async function render(el, { me, sub = [], alive }) {
     return p ? { provider: p.slug, model: p.modelos[0] } : null;
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
-  const slugAhora = () => (modoDe(S.modo).pide ? S.slugs[S.modo] || S.cliente : S.cliente) || '';
+  const slugAhora = () => S.cliente || (modoDe(S.modo).pide ? S.slugs[S.modo] : '') || '';
   const clientesChat = () => { const m = new Map(); for (const c of estrategiaNow()) if (c.slug !== 'inherent') m.set(c.slug, c.nombre); for (const b of brandsNow()) if (b.slug && !m.has(b.slug) && b.slug !== 'inherent' && b.slug !== 'personal') m.set(b.slug, b.nombre || b.name || b.slug); return [...m].map(([slug, nombre]) => ({ slug, nombre })); };
   const carpetasChat = (xs = S.sesiones) => carpetas(xs, clientesChat(), { personal: me.role === 'ceo' });
   const nombreCliente = (id) => carpetasChat().find((c) => c.id === id)?.nombre || '';
@@ -123,6 +123,7 @@ export async function render(el, { me, sub = [], alive }) {
       <button type="button" class="llm-abajo" data-a="abajo" aria-label="Bajar al final" hidden>${ico('down', 16)}</button>
       <div class="llm-compw" id="llm-compw"></div>
     </main>
+    <button type="button" class="llm-div" id="llm-div" aria-label="Ajustar el ancho del panel. Usa las flechas" title="Arrastra para ajustar el ancho">${ico('chevron-left', 12)}${ico('chevron-right', 12)}</button>
     <aside class="llm-panel" id="llm-panel" aria-label="Panel del modo"></aside>
     <div class="llm-velo" data-a="side"></div>
   </div>`);
@@ -142,6 +143,19 @@ export async function render(el, { me, sub = [], alive }) {
   compu.addEventListener('change', () => { if (R.isConnected) pintarSide(); });
   // El día y la noche son los del OS (tema.js): si cambia (aquí, en otra pantalla o en la compu), el Chat lo sigue.
   llmVivo = R;
+  // El ancho del panel: se arrastra el divisor o se mueve con las flechas, y queda guardado.
+  const PN = { min: 300, max: 680 }, ancho = (w) => Math.round(Math.min(PN.max, Math.min(innerWidth - 700, Math.max(PN.min, w))));
+  const ponerAncho = (w) => { const v = ancho(w); R.style.setProperty('--pn-w', v + 'px'); return v; };
+  if (pref.panelW) ponerAncho(+pref.panelW);
+  const div = $('#llm-div', R);
+  div.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); div.setPointerCapture(e.pointerId); R.classList.add('arrastra');
+    const x0 = e.clientX, w0 = $('#llm-panel', R).offsetWidth;
+    const mover = (m) => { S.panelW = ponerAncho(w0 + x0 - m.clientX); };
+    const soltar = () => { R.classList.remove('arrastra'); div.removeEventListener('pointermove', mover); div.removeEventListener('pointerup', soltar); div.removeEventListener('pointercancel', soltar); persistir(); };
+    div.addEventListener('pointermove', mover); div.addEventListener('pointerup', soltar); div.addEventListener('pointercancel', soltar);
+  });
+  div.addEventListener('keydown', (e) => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); S.panelW = ponerAncho($('#llm-panel', R).offsetWidth + (e.key === 'ArrowLeft' ? 24 : -24)); persistir(); });
 
   // ---------- La barra de conversaciones (el modo · nueva · las conversaciones del modo por fecha · tú y el servidor) ----------
   // Sin buscar se ven las conversaciones del modo; al buscar, las de todos (cada una con la letra de su modo).
@@ -320,9 +334,13 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (S.proyecto) {
       const p = S.proyecto, cs = carpetasChat().find((c) => c.id === p.id)?.conv || [];
-      mount(col, html`<div class="ch-proy"><div><p class="ch-sec">Conversaciones</p>${cs.length ? html`<div class="ch-pl">${cs.map((s) => html`<a href="#/chat/${esc(s.id)}"><span>${s.title || s.preview || 'Conversación'}</span>${s.agente ? html`<small>${s.agente.nombre} · ${ESTADO_FILA[s.agente.estado][0]}</small>` : ''}</a>`)}</div>` : html`<p class="ch-nota">Aún no hay conversaciones. Escribe abajo para empezar la primera.</p>`}</div>
-        <div><label class="ch-sec" for="ch-inst">Instrucciones</label>${p.editable ? html`<textarea id="ch-inst" class="ch-inst" maxlength="4000" data-c="${p.id}" placeholder="Qué debe saber cada conversación y agente de este cliente">${p.instrucciones}</textarea>` : html`<p class="ch-nota">${p.instrucciones || 'Todavía no hay instrucciones.'}</p>`}
-        <p class="ch-sec">El equipo hoy</p>${p.equipo ? html`<pre class="ch-eq">${p.equipo}</pre>` : html`<p class="ch-nota">Nadie trabaja en este cliente hoy.</p>`}</div></div>`);
+      const r = p.resumen || {}, dato = (n, l) => html`<div><b>${n ?? '—'}</b><span>${l}</span></div>`;
+      mount(col, html`<div class="ch-cli">
+        <p class="ch-cli-sub">Aquí vive el contexto de este cliente. Todo lo que escribas aquí abajo empieza una conversación nueva con ese contexto.</p>
+        <div class="ch-cli-datos">${dato(r.proyectos, 'Proyectos activos')}${dato(r.tareas, 'Tareas abiertas')}${dato(r.vencidas, 'Vencidas')}${dato(cs.length, 'Conversaciones')}</div>
+        <div class="ch-proy"><section><h2>Conversaciones</h2><p class="ch-nota">Lo que ya se ha hablado de este cliente.</p>${cs.length ? html`<div class="ch-pl">${cs.map((s) => html`<a href="#/chat/${esc(s.id)}"><span>${s.title || s.preview || 'Conversación'}</span>${s.agente ? html`<small>${s.agente.nombre} · ${ESTADO_FILA[s.agente.estado][0]}</small>` : ''}</a>`)}</div>` : html`<div class="ch-vacio-g">Todavía no hay conversaciones. Escribe abajo para empezar.</div>`}</section>
+        <section><h2>Instrucciones</h2><p class="ch-nota">Las siguen el Chat y los agentes en todo lo de este cliente.</p>${p.editable ? html`<textarea id="ch-inst" class="ch-inst" maxlength="4000" data-c="${p.id}" placeholder="Ejemplo: tono cercano, nunca usar Halloween, todo cierre lleva el link.">${p.instrucciones}</textarea>` : html`<div class="ch-vacio-g">${p.instrucciones || 'Todavía no hay instrucciones.'}</div>`}
+        <h2>El equipo hoy</h2><p class="ch-nota">Agentes y personas trabajando en este cliente.</p>${p.equipo ? html`<pre class="ch-eq">${p.equipo}</pre>` : html`<div class="ch-vacio-g">Nadie trabaja en este cliente hoy.</div>`}</section></div></div>`);
       flecha(); return;
     }
     if (vacio()) { mount(col, heroHtml()); flecha(); return; }
@@ -800,6 +818,7 @@ export async function render(el, { me, sub = [], alive }) {
     // Aprobar o reabrir la estrategia desde el panel (solo el CEO; el servidor lo vuelve a revisar).
     const va = e.target.closest('[data-act="viva-aprobar"]');
     if (va && dentro(va)) { const sl = slugAhora(); if (!sl) return; try { const r = await api(`estrategia/${encodeURIComponent(sl)}/viva/aprobar`, { method: 'POST', body: { aprobar: !va.dataset.no } }); toast(r.aprobado ? 'Estrategia aprobada' : 'Estrategia reabierta'); olvidarPanel(`e:${sl}`); pintarPanel(); } catch (er) { toast(er.message, true); } return; }
+    const pasoEst = e.target.closest('.llm-panel .ev-sec>header'); if (pasoEst) return pasoEst.parentElement.classList.toggle('abierto');
     const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
     if (a === 'nuevo') return nuevo();
@@ -847,6 +866,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'menu-modelo') return menuModelo(t);
     if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await B.modelos({ fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
     if (a === 'sugerencia') return enviar(t.dataset.t);
+    if (a === 'a-caja') { const ta = $('#llm-in', el); if (ta) { ta.value = t.dataset.t; crecer(ta); ta.focus(); } return; }
     if (a === 'opcion') return enviar(t.dataset.t);
     // Un botón dibujado por el modelo no manda nada: deja el texto en la caja, a la vista, y la persona decide.
     if (a === 'ui-pedir') { const ta = $('#llm-in', el); if (ta) { ta.value = t.dataset.t; crecer(ta); ta.focus(); } return; }
