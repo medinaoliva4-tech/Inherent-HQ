@@ -4,6 +4,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
+import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
 import { RUTAS_BASE, skillDe } from '../api/_lib/conocimiento.js';
 import { leer, aTexto } from '../gateway/web.mjs';
@@ -98,6 +99,16 @@ t('normalizarWorkflow limpia lo que manda el editor', () => {
   assert.equal(w.etapas[0].fuentes_min, 10);
   assert.deepEqual(w.etapas[0].herramientas, ['web', 'inherent']);
   assert.equal(w.estado, 'borrador');
+});
+t('revisor: lee criterios, falla cerrado y corrige solo una vez', () => {
+  const rv = leerRevision('x {"criterios":[{"n":1,"cumple":true,"razon":"ok"},{"n":2,"cumple":false,"razon":"sin cifra"}],"decision":{"propone":"P","alternativa":"A","asumio":["S"]}}', ['Uno', 'Dos']);
+  assert.equal(rv.pasa, false); assert.equal(rv.decision.propone, 'P'); assert.equal(debeCorregir(rv, 0), true); assert.equal(debeCorregir(rv, 1), false);
+  assert.match(retroalimentacion(rv), /Dos: sin cifra/); assert.ok(!/Uno:/.test(retroalimentacion(rv)));
+  assert.equal(leerRevision('no es json', ['Uno']), null); assert.equal(debeCorregir(null, 0), false);
+  assert.equal(leerRevision('{"criterios":[]}', ['Uno']).pasa, false, 'un criterio sin respuesta no pasa');
+  assert.equal(limpiarRevision(null), null);
+  const r = nuevo(), u = r.etapas.length - 1; r.etapas[0].gate = false; r.etapas[0].revision = rv;
+  assert.equal(pideLecturaCompleta(r, 0), u === 0); r.etapas[0].gate = true; assert.equal(pideLecturaCompleta(r, 0), true);
 });
 t('en pausa no se ejecuta', () => { const r = nuevo(); r.pausado = true; assert.match(puede(r, 0, 'resultado'), /pausa/); });
 // ---------- El servidor (Gateway, F2) ----------

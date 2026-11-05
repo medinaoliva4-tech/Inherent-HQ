@@ -1,3 +1,4 @@
+import { limpiarRevision } from './revisor.js';
 // Agent Area · los flujos por etapas (AGENTS IN OS.pdf) y las reglas de un run. Puro: sin DOM ni red.
 // Lo usan el servidor (api/_lib/agentes.js), la pantalla (screens/agentes.js) y las pruebas (scripts/test-agentes.mjs).
 //
@@ -404,7 +405,7 @@ export function aplicarResultado(run, n, b = {}) {
   const campos = (Array.isArray(b.campos) ? b.campos : []).slice(0, 20).map((c) => ({ campo: recorte(c?.campo, 80), valor: recorte(c?.valor, 1200), items: (Array.isArray(c?.items) ? c.items : []).slice(0, 12).map((x) => recorte(x, 300)), fuentes: (Array.isArray(c?.fuentes) ? c.fuentes : []).slice(0, 10).map((x) => recorte(x, 20)), estado: c?.estado === 'evidencia' && via !== 'simulado' ? 'evidencia' : 'hipotesis' })).filter((c) => c.campo);
   const previas = e.estado === 'ajuste' || via === 'gateway' ? (e.actividades || []) : [];
   const costo = b.costo && typeof b.costo === 'object' ? { entrada: Number(b.costo.entrada) || 0, salida: Number(b.costo.salida) || 0, seg: Number(b.costo.seg) || 0 } : null;
-  const etapas = run.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', ajuste: '', borrador: '', fallas: 0, pregunta: null, intento, actividades: [...previas, ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => recorte(x, 300)), salida: recorte(b.salida, 60000), via, modelo: recorte(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '', ...(costo ? { costo } : {}) }));
+  const etapas = run.etapas.map((x, i) => (i !== n ? x : { ...x, estado: 'revision', revision: limpiarRevision(b.revision), ajuste: '', borrador: '', fallas: 0, pregunta: null, intento, actividades: [...previas, ...acts].slice(-150), campos, confianza: via === 'simulado' ? 0 : Math.max(0, Math.min(100, Number(b.confianza) || 0)), faltantes: (Array.isArray(b.faltantes) ? b.faltantes : []).slice(0, 10).map((x) => recorte(x, 300)), salida: recorte(b.salida, 60000), via, modelo: recorte(b.modelo, 80), stub: via === 'simulado', aprobada_por: '', aprobada_en: '', ...(costo ? { costo } : {}) }));
   const evi = (Array.isArray(b.evidencia) ? b.evidencia : []).slice(0, 30).map((x, k) => ({ id: recorte(x.id, 20) || `${n}-${intento}-${k}`, etapa: n, titulo: recorte(x.titulo, 200) || 'Fuente', url: recorte(x.url, 500), extracto: recorte(x.extracto, 600), verificada: false, por: via }));
   return { etapas, evidencia: [...(run.evidencia || []).filter((x) => x.etapa !== n || x.por === 'persona'), ...evi], intento, via };
 }

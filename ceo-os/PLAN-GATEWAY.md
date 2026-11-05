@@ -452,6 +452,12 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 4. **Memoria y ciclo de mejora.**
 5. **Tablero** estilo Factory: Encargo → Diagnóstico → Plan → Producción → Revisión → Entrega.
 
+### Entrega 2 · reglas
+- **Revisor:** una etapa con criterios se revisa con el modelo de preparación. Si falta algo, el agente corrige una vez.
+- **Tarjeta:** quien aprueba ve si cumple, qué propone, la alternativa y qué asumió. En etapas intermedias el documento queda plegado.
+- **Lectura completa:** sigue abierta en la última etapa, en los gates y si no hay decisión.
+- **Falla segura:** si el revisor no responde, la etapa sigue y no bloquea.
+
 ### Entrega 1 · reglas
 - **Skills bajo demanda:** solo entra la skill que la etapa declara en `metodo` (máximo 2 y 12,000 caracteres cada una), nunca todas. El trabajador se la pide al OS al tomar la etapa (D13: el OS sigue sin llamar al VPS) y la skill no se guarda en el trabajo.
 - **Conocimiento:** además entra `inherent/00-PRINCIPIOS.md`. Es una lista cerrada: `06-ECONOMIA.md` nunca entra.
@@ -586,4 +592,3 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 - **Flechas y dirección:** atrás, adelante y «Clientes / AKAI / Strategy» arriba de cada pantalla, salvo el Chat.
 - **Overview:** solo la siguiente acción y el resumen. Las herramientas viven en sus pestañas.
 - **Entrada:** cada área abre al cliente elegido con «Abrir …».
-
