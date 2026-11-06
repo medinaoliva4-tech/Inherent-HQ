@@ -9,6 +9,8 @@ export const AREAS = VIEW_AREAS;
 
 // Cada colección pertenece a un área. Algunas solo las escribe el CEO.
 export const COLLS = {
+  // Privadas por dueño y conversación; exclusivamente por /api/chat, nunca /api/db.
+  chat_imagenes: 'work',
   leads: 'sales', lead_sources: 'sales', quotes: 'sales', services: 'sales', mentors: 'sales',
   rates: 'finanzas', packages: 'finanzas', bundles: 'finanzas', finance: 'finanzas', payroll: 'finanzas',
   projects: 'operations', tasks: 'operations', recipes: 'operations', accounts: 'clients',
@@ -49,8 +51,8 @@ export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lea
 // Las mesas de dinero de un cliente las ve su equipo; las de Inherent mismo son márgenes propios: solo el CEO.
 const DINERO_POR_CLIENTE = new Set(['embudos', 'marketing_mes', 'strategy_meta']);
 export const dineroDeInherent = (coll, d) => DINERO_POR_CLIENTE.has(coll) && String(d?.client_slug || '').toLowerCase() === 'inherent';
-export const canWrite = (role, coll) => !CEO_WRITE.has(coll) || role === 'ceo';
-export const canRead = (role, coll) => !CEO_READ.has(coll) || role === 'ceo';
+export const canWrite = (role, coll) => coll !== 'chat_imagenes' && (!CEO_WRITE.has(coll) || role === 'ceo');
+export const canRead = (role, coll) => coll !== 'chat_imagenes' && (!CEO_READ.has(coll) || role === 'ceo');
 // Las colecciones que filtra el alcance (todos · asignados · propio).
 export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns', 'movimientos', 'embudos', 'marketing_mes', 'strategy_meta'];
 

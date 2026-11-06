@@ -1,4 +1,5 @@
 import { cambioAviso } from '../../public/js/chat-avisos-datos.js';
+import { validarImagenes, guardarImagenes, cargarImagen, IMAGENES } from './chat-imagenes.js';
 // El Chat en el servidor (PLAN-GATEWAY F3). Las conversaciones viven en la
 // base del OS (como en Claude: se guardan, se retoman desde cualquier compu) y las responde el trabajador del VPS.
 // El OS no llama al VPS (D13): un turno nuevo queda «en_cola» en la conversación; el trabajador lo toma, escribe la respuesta
@@ -72,6 +73,15 @@ export function rutas(on) {
     // oculto: las conversaciones que usan otras pantallas por debajo (Strategy, Diseño, las herramientas): no salen en la lista del Chat.
     const d = await db.create(COLL, { owner: lc(u.email), title: txt(b.titulo, 120), modo: leerIdSesion(id).modo, mensajes: [], turno: null, archivado: false, oculto: Boolean(b.oculto) }, u.email, id);
     res.json(resumenSesion(d));
+  });
+
+  on('GET', 'chat/sesiones/:id/imagenes/:imagen', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    const x = await cargarImagen(s, txt(req.params.imagen, 80));
+    if (!x) return res.status(404).json({ error: 'Esa imagen no existe en esta conversación' });
+    res.setHeader('Content-Type', 'image/jpeg'); res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('X-Content-Type-Options', 'nosniff'); res.end(Buffer.from(x.data.split(',')[1], 'base64'));
   });
 
   // La conversación completa. ?desde=N devuelve solo los mensajes a partir de N (la pantalla relee mientras responde).
@@ -198,12 +208,26 @@ export function rutas(on) {
     const b = body(req), mensaje = txt(b.mensaje, MAX_MSG).trim(), modelo = txt(b.modelo, 120);
     if (!mensaje) return res.status(400).json({ error: 'Mensaje vacío' });
     if (!(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
-    const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora() }].slice(-MAX_MSGS);
+    let nuevas, repetidas = [];
+    try {
+      nuevas = validarImagenes(b.imagenes);
+      if (b.imagenIds !== undefined) {
+        if (!Array.isArray(b.imagenIds) || b.imagenIds.length + nuevas.length > 2) throw new Error('Máximo dos imágenes por mensaje.');
+        for (const id of b.imagenIds) {
+          const x = await cargarImagen(s, String(id)); if (!x) throw new Error('Esa imagen no pertenece a la conversación.');
+          repetidas.push({ id: x.id, nombre: x.nombre, width: x.width, height: x.height });
+        }
+      }
+    } catch (e) { return res.status(400).json({ error: e.message }); }
+    if ((nuevas.length || repetidas.length) && !(g.modelos || []).includes('kimi-k3')) return res.status(409).json({ error: 'El modelo de visión no está disponible ahora. Conserva la imagen y reintenta.' });
+    const guardadas = await guardarImagenes(nuevas, s.owner, s.id), imagenes = [...guardadas, ...repetidas];
+    const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora(), ...(imagenes.length ? { imagenes } : {}) }].slice(-MAX_MSGS);
     const equipo = await equipoPara(u, verRun).catch(() => ''); // ayuda, pero no detiene la respuesta
     const instrucciones = await instruccionesDe(carpetaDe(s)).catch(() => '');
     const empresa = await saberEmpresa(u).catch(() => '');
     const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${empresa}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
-    if (d) res.json({ ok: true, desde: mensajes.length });
+    if (d) res.json({ ok: true, desde: mensajes.length, imagenes });
+    else await Promise.all(guardadas.map((x) => db.remove(IMAGENES, x.id, u.email).catch(() => {})));
   });
 
   // Una propuesta del servidor (crear una tarea, mover un lead…): la decide el dueño de la conversación, con SU sesión.

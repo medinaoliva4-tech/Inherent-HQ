@@ -10099,3 +10099,12 @@ button,a,.lc{touch-action:manipulation}
 .chat-aviso > button:not(.chat-aviso-permiso) { position: absolute; right: 7px; top: 7px; padding: 4px 9px; }
 .chat-aviso button { color: inherit; background: transparent; border: 0; cursor: pointer; }
 .chat-aviso-permiso { margin-top: 10px; text-decoration: underline; font-size: 12px; }
+/* Adjuntos visuales: miniatura en el mensaje y en el paso que los leyó. */
+.lc-adj-img { width: 40px; height: 40px; object-fit: contain; border-radius: 6px; }
+.lm-imagenes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.lm-imagenes button { padding: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.lm-imagenes img { display: block; width: 132px; height: 110px; object-fit: contain; background: var(--surface); }
+.llm-imagen-dialog { max-width: 94vw; max-height: 90dvh; margin: auto; border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: var(--surface); color: rgb(var(--tinta)); overflow: auto; }
+.llm-imagen-dialog::backdrop { background: #0009; }
+.llm-imagen-dialog button { display: block; margin: 0 0 8px auto; }
+.llm-imagen-dialog img { display: block; max-width: 100%; height: auto; }

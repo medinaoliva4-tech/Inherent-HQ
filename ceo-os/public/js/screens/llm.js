@@ -1,3 +1,4 @@
+import { esImagen, prepararImagen, urlImagen } from '../chat-imagenes.js';
 import { espacioMenu } from '../chat-menu-posicion.js';
 // El Inherent LLM (#/chat): el Chat de Inherent OS, una pantalla más dentro del shell (vive en #main, a la derecha de la
 // barra lateral; el elemento donde se monta lleva la clase llm-host): barra de conversaciones · conversación · panel. Responde
@@ -272,7 +273,7 @@ export async function render(el, { me, sub = [], alive }) {
     const m = modoDe(S.modo), sl = slugAhora();
     mount(box, html`<div class="lc-w">
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
-        ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
+        ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.data ? html`<img class="lc-adj-img" src="${a.data}" alt="${a.nombre}">` : ''}${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo, o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
           <button type="button" class="lc-mas" data-a="adjuntar" aria-label="Adjuntar archivo" title="Adjuntar archivo">${ico('plus', 16)}</button>
@@ -329,13 +330,15 @@ export async function render(el, { me, sub = [], alive }) {
     const lector = lectorUi(() => { if (alive()) pintarHilo(); });
     return html`${partes.map((p) => (p.tipo === 'md' ? (p.t.trim() ? md(p.t) : '') : lector ? raw(uiHtml(p.t, lector, { apagado: !ult || x.stream, final: !x.stream })) : lectorFallo() ? html`<pre class="gu-src">${p.t}</pre>` : html`<div class="gu-carga">Dibujando…</div>`))}`;
   }
+  const miniaturas = (xs) => html`<div class="lm-imagenes">${(xs || []).map((a) => html`<button type="button" data-a="ver-adjunto" data-img="${urlImagen(S.sesion, a)}" data-nombre="${a.nombre}" aria-label="Abrir imagen ${a.nombre}"><img src="${urlImagen(S.sesion, a)}" alt="${a.nombre}" loading="lazy"></button>`)}</div>`;
+  const nombrePasoVisual = (p) => p.nombre === 'ver_imagen' ? p.fase === 'fin' ? 'Vio una imagen' : p.fase === 'error' ? 'No pudo ver la imagen' : 'Mirando una imagen…' : nombrePaso(p.nombre);
   function msgHtml(x, i) {
-    if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}</div></div>`;
+    if (x.r === 'u') return html`<div class="lm u"><div class="lm-b">${x.t}${x.imagenes?.length ? miniaturas(x.imagenes) : ''}</div></div>`;
     if (x.r === 'plan') return planAgenteHtml(x.p, i);
     const ult = i === S.msgs.length - 1, busy = x.stream, m = modoDe(x.modo || S.modo);
     const pasos = x.tools || [];
-    const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${nombrePaso(pasos[pasos.length - 1].nombre)}` : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
-      <ol>${pasos.map((p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${nombrePaso(p.nombre)}${p.detalle ? html`<small>${p.detalle}</small>` : ''}</span></li>`)}</ol></details>` : '';
+    const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${nombrePasoVisual(pasos[pasos.length - 1])}` : pasos.length === 1 && pasos[0].nombre === 'ver_imagen' ? nombrePasoVisual(pasos[0]) : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
+      <ol>${pasos.map((p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${nombrePasoVisual(p)}${p.imagen ? miniaturas([{ id: p.imagen, nombre: p.detalle || 'Imagen' }]) : ''}${p.detalle ? html`<small>${p.detalle}</small>` : ''}</span></li>`)}</ol></details>` : '';
     const t = x.tarjetas || {};
     const crit = t.criterios ? html`<div class="lm-crit ${t.criterios.falta.length ? 'falta' : 'ok'}"><div class="lm-crit-h"><b>Criterios${t.criterios.entregable ? ` · ${t.criterios.entregable}` : ''}</b><span>${t.criterios.falta.length ? `Falta ${t.criterios.falta.length}` : 'Listo'}</span></div>
       ${t.criterios.cumple.map((c) => html`<div class="si">${ico('check', 12)}${c}</div>`)}${t.criterios.falta.map((c) => html`<div class="no"><i></i>${c}</div>`)}</div>` : '';
@@ -626,11 +629,11 @@ export async function render(el, { me, sub = [], alive }) {
       const rows = await B.mensajes(id);
       const out = []; let pend = [];
       for (const r of rows) {
-        if (r.role === 'user') { const t = textoDe(r.content).trim(); if (t) { out.push({ r: 'u', t, at: r.at }); if (!S.titulo) S.titulo = tituloDe(t); } }
+        if (r.role === 'user') { const t = textoDe(r.content).trim(); if (t) { out.push({ r: 'u', t, at: r.at, imagenes: r.imagenes || [] }); if (!S.titulo) S.titulo = tituloDe(t); } }
         else if (r.role === 'assistant') {
           for (const tc of r.tool_calls || []) pend.push({ fase: 'fin', nombre: String(tc.function?.name || tc.name || 'herramienta'), detalle: '' });
           const raw0 = textoDe(r.content); if (!raw0.trim()) continue;
-          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: pend, propuestas: r.propuestas || [] }); pend = [];
+          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: r.pasos?.length ? r.pasos : pend, propuestas: r.propuestas || [] }); pend = [];
         }
       }
       if (turno !== abrirGen) return; // ya se pidió otra conversación
@@ -695,12 +698,13 @@ export async function render(el, { me, sub = [], alive }) {
   async function sumarArchivos(archivos) {
     for (const f of archivos || []) {
       const no = motivoRechazo(f, S.adjuntos); if (no) { toast(no, true); continue; }
-      try { S.adjuntos.push({ nombre: f.name, texto: await f.text() }); } catch { toast(`No pude leer ${f.name}`, true); }
+      try { S.adjuntos.push(esImagen(f) ? await prepararImagen(f) : { nombre: f.name, texto: await f.text() }); } catch (e) { toast(`No pude leer ${f.name}: ${e.message}`, true); }
     }
     pintarCaja();
   }
   async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false } = {}) {
     texto = String(texto || '').trim(); if (!texto && S.adjuntos.length) texto = 'Revisa el archivo adjunto.'; if (!texto || S.enVuelo) return;
+    if (S.adjuntos.some((x) => x.data) && (quiereOrquestar(texto) || texto.startsWith('@'))) return toast('Primero envía la imagen con tu pregunta en el Chat; después encarga el trabajo al agente.', true);
     // F6 · «/orquesta …»: el enrutador (modelo barato del servidor) propone qué agente y qué cliente, y se enseña la
     // tarjeta «Así lo voy a trabajar» igual que con «@». Nunca arranca sola: la persona confirma con Empezar.
     if (!reintento && quiereOrquestar(texto)) {
@@ -731,10 +735,13 @@ export async function render(el, { me, sub = [], alive }) {
     const m = modoDe(S.modo);
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
+    if (S.privado && S.adjuntos.some((x) => x.data)) return toast('La lectura de imágenes usa el servidor. Desactiva el modo privado para enviarlas.', true);
     const ctrl = new AbortController(); S.enVuelo = ctrl;
     const adj = reintento ? [] : S.adjuntos; if (adj.length) { S.adjuntos = []; pintarCaja(); }
-    if (!reintento) { S.msgs.push({ r: 'u', t: adj.length ? `${texto}\n\n${adj.map((a) => `📎 ${a.nombre}`).join('\n')}` : texto, at: new Date().toISOString() }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
+    if (!reintento) { S.msgs.push({ r: 'u', t: adj.length ? `${texto}\n\n${adj.map((a) => `📎 ${a.nombre}`).join('\n')}` : texto, at: new Date().toISOString(), imagenes: adj.filter((a) => a.data) }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
     else if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop();
+    const usuario = [...S.msgs].reverse().find((m) => m.r === 'u');
+    let recibido = false;
     const msg = { r: 'a', modo: S.modo, t: '', stream: true, tools: [], notas: [] }; S.msgs.push(msg);
     if (!S.titulo) S.titulo = tituloDe(texto);
     pintarCentro();
@@ -747,16 +754,18 @@ export async function render(el, { me, sub = [], alive }) {
       }
       const libre = S.modo === MODO_LIBRE.id;
       const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      const r = await B.turno(S.sesion, { mensaje: conArchivos(texto, adj), sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+      const r = await B.turno(S.sesion, { mensaje: conArchivos(texto, adj), imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+        recibido: (xs) => { recibido = true; if (usuario) usuario.imagenes = xs; pintarHilo(); },
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
-        tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
+        tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle, imagen: p.imagen || prev.imagen }); else msg.tools.push(p); pintarUltimo(); },
         nota: (n) => { msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
         propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
       } });
       msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
     } catch (e) {
+      if (!recibido && adj.length) S.adjuntos = adj;
       if (e.name === 'AbortError') msg.err = msg.t ? 'Detenido.' : 'Detenido antes de responder.';
       else msg.err = e.message && e.message !== 'Failed to fetch' ? e.message : `No pude hablar con ${quien()}. ¿Sigue encendido?`;
     } finally { S.enVuelo = null; msg.stream = false; msg.aprob = null; msg.at = new Date().toISOString(); }
@@ -989,6 +998,11 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
+    if (a === 'ver-adjunto') {
+      const d = document.createElement('dialog'); d.className = 'llm-imagen-dialog';
+      mount(d, html`<button type="button" aria-label="Cerrar imagen">Cerrar</button><img src="${t.dataset.img}" alt="${t.dataset.nombre || 'Imagen'}">`);
+      document.body.append(d); d.querySelector('button').onclick = () => d.close(); d.onclose = () => d.remove(); d.showModal(); return;
+    }
     if (a === 'adjuntar') { const i = document.createElement('input'); i.type = 'file'; i.multiple = true; i.onchange = () => sumarArchivos(i.files); return i.click(); }
     if (a === 'quitar-adj') { S.adjuntos.splice(+t.dataset.i, 1); return pintarCaja(); }
     if (a === 'lente') { try { localStorage.setItem(LLAVE_LENTE, lenteOn() ? '0' : '1'); } catch { /* sin memoria no cambia */ } const b = el.querySelector('.lc-lente'); b?.setAttribute('aria-pressed', lenteOn() ? 'true' : 'false'); return; }
@@ -1060,7 +1074,7 @@ export async function render(el, { me, sub = [], alive }) {
   });
   escucha('submit', async (e) => {
     e.preventDefault();
-    if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim()) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
+    if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim() && !S.adjuntos.length) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
     if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); el.querySelector('.llm-sheet')?.remove(); return pintarPanel(); }
   });
 

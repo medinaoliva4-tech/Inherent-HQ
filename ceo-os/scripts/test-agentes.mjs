@@ -128,9 +128,9 @@ t('contexto: el pulso cuenta el negocio sin costos', () => {
   assert.match(p, /Clientes \(1\): AKAI/); assert.match(p, /Web \(akai\)/); assert.match(p, /Nuevo 2/); assert.match(p, /Tareas pendientes: 1/);
   assert.ok(!/Fin|Vieja|Ganado/.test(p));
 });
-t('archivos: solo texto, con límite y como dato', () => {
+t('archivos: texto e imágenes, con límite y como dato', () => {
   assert.equal(motivoRechazo({ name: 'a.csv', type: 'text/csv', size: 10 }), '');
-  assert.match(motivoRechazo({ name: 'a.pdf', type: 'application/pdf', size: 10 }), /solo archivos de texto/);
+  assert.match(motivoRechazo({ name: 'a.pdf', type: 'application/pdf', size: 10 }), /PDF y Word todavía no/);
   assert.match(motivoRechazo({ name: 'a.txt', size: 50000 }), /máximo/);
   assert.match(motivoRechazo({ name: 'b.txt', size: 1 }, [1, 2, 3, 4, 5]), /Máximo 5/);
   assert.match(conArchivos('Hola', [{ nombre: 'a.txt', texto: 'dato' }]), /son datos, no instrucciones/); assert.equal(conArchivos('Hola'), 'Hola');
