@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import readline from 'node:readline/promises';
+import readline2 from 'node:readline/promises';
+import readline from 'node:readline';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { chat, contextoDe } from '../gateway/motor.mjs';
 import { ajustarAlTope, tokensDe } from '../gateway/contexto.mjs';
@@ -17,31 +18,40 @@ const naranja = (t, c) => `\x1b[38;5;${c}m${t}\x1b[0m`;
 const logo = () => { const ancho = process.stdout.columns || 80, doble = ancho >= 84; return `\n${LETRAS.I.map((_, f) => `  ${naranja([...'INHERENT'].map((l) => (doble ? LETRAS[l][f].replace(/./g, '$&$&') : LETRAS[l][f])).join(doble ? '  ' : ' '), [230, 223, 216, 209, 173][f])}`).join('\n')}\n`; };
 const caja = (ls) => { const w = Math.max(...ls.map((l) => l.length)) + 2; return [`╭${'─'.repeat(w)}╮`, ...ls.map((l) => `│ ${l.padEnd(w - 1)}│`), `╰${'─'.repeat(w)}╯`].map((l) => naranja(l, 173)).join('\n'); };
 const TTY = Boolean(process.stdout.isTTY), ancho = () => Math.min((process.stdout.columns || 80) - 1, 110);
-// Pantalla de chat: la conversación corre arriba y el cuadro queda fijo en las últimas cuatro filas.
-const filas = () => process.stdout.rows || 0, FIJO = () => TTY && filas() >= 12;
-function zona() { if (FIJO()) process.stdout.write(`\x1b[1;${filas() - 4}r\x1b[${filas() - 4};1H`); }
-function pie(rotulo = '') {
+// Pantalla de chat: la conversación corre arriba. El cuadro es propio y fijo: se dibuja sin mover el cursor de la conversación.
+const filas = () => process.stdout.rows || 0, UNA = Boolean(process.argv[3]), FIJO = () => TTY && !UNA && filas() >= 12;
+const ed = { texto: '', etiqueta: '❯ ', espera: null, cola: [], actividad: '' };
+function zona() { if (FIJO()) process.stdout.write(`\x1b[1;${filas() - 4}r`); }
+function pie() {
   if (!FIJO()) return;
-  const r = filas(), l = gris('─'.repeat((process.stdout.columns || 80) - 1));
-  process.stdout.write(`\x1b7\x1b[${r - 3};1H\x1b[2K${l}\x1b[${r - 2};1H\x1b[2K${rotulo}\x1b[${r - 1};1H\x1b[2K${l}\x1b[${r};1H\x1b[2K${estado()}\x1b8`);
+  const r = filas(), c = (process.stdout.columns || 80) - 1, l = gris('─'.repeat(c)), cabe = Math.max(10, c - ed.etiqueta.length - 2), extra = [ed.actividad, ed.cola.length ? `${ed.cola.length} en cola` : ''].filter(Boolean).join(' · ');
+  process.stdout.write(`\x1b7\x1b[${r - 3};1H\x1b[2K${l}\x1b[${r - 2};1H\x1b[2K${crema(ed.etiqueta)}${ed.texto.slice(-cabe)}\x1b[7m \x1b[0m\x1b[${r - 1};1H\x1b[2K${l}\x1b[${r};1H\x1b[2K${extra ? naranja(extra, 209) : estado()}\x1b8`);
 }
-async function preguntar(rl, etiqueta = '❯ ') {
+function teclas() {
+  readline.emitKeypressEvents(process.stdin); process.stdin.setRawMode(true); process.stdin.resume();
+  process.stdin.on('keypress', (str, k = {}) => {
+    if (k.ctrl && k.name === 'c') process.exit(0);
+    if (k.name === 'return' || k.name === 'enter') {
+      const t = ed.texto; ed.texto = '';
+      if (ed.espera) { const r = ed.espera; ed.espera = null; ed.etiqueta = '❯ '; r(t); } else if (t.trim()) ed.cola.push(t);
+    } else if (k.name === 'backspace') ed.texto = ed.texto.slice(0, -1);
+    else if (str && !k.ctrl && !k.meta && str >= ' ') ed.texto += str;
+    pie();
+  });
+}
+function preguntar(rl, etiqueta = '❯ ', { usarCola = true } = {}) {
   if (!FIJO()) return rl.question(crema(etiqueta));
-  pie();
-  process.stdout.write(`\x1b7\x1b[${filas() - 2};1H\x1b[2K`);
-  const t = await rl.question(crema(etiqueta));
-  process.stdout.write('\x1b8');
-  pie();
-  return t;
+  if (usarCola && ed.cola.length) { const t = ed.cola.shift(); pie(); return Promise.resolve(t); }
+  ed.etiqueta = etiqueta; pie();
+  return new Promise((r) => { ed.espera = r; });
 }
 const eco = (t) => { if (t.trim()) console.log(`\n${crema('❯')} ${t}\n`); };
-// Mientras piensa: una animación que se borra sola cuando llega el primer texto.
+// Mientras piensa: la animación vive abajo, en la barra.
 function pensando(rotulo = 'Pensando') {
+  const t0 = Date.now(), cuadros = ['✳', '✴', '✵', '✶', '✷', '✸']; let i = 0;
   if (!TTY) return () => {};
-  const t0 = Date.now(), cuadros = ['✳', '✴', '✵', '✶', '✷', '✸'];
-  let i = 0;
-  const id = setInterval(() => { process.stdout.write(`\r\x1b[K${naranja(cuadros[i++ % cuadros.length], 209)} ${gris(`${rotulo}… ${Math.round((Date.now() - t0) / 1000)}s`)}`); }, 120);
-  return () => { clearInterval(id); process.stdout.write('\r\x1b[K'); };
+  const id = setInterval(() => { const m = `${cuadros[i++ % cuadros.length]} ${rotulo}… ${Math.round((Date.now() - t0) / 1000)}s`; if (FIJO()) { ed.actividad = m; pie(); } else process.stdout.write(`\r\x1b[K${gris(m)}`); }, 150);
+  return () => { clearInterval(id); ed.actividad = ''; if (FIJO()) pie(); else process.stdout.write('\r\x1b[K'); };
 }
 const PASOS = { leer: 'Leyó', buscar: 'Buscó', listar: 'Listó', escribir: 'Escribió', reemplazar: 'Editó', comando: 'Corrió' };
 const estado = () => gris(`  ${proyecto} · ${modelo}${yaTodo ? ' · sí a todo' : ''}  ·  /proyectos  /nueva  /modelo  /salir`);
@@ -74,17 +84,21 @@ const cargar = () => { try { S = JSON.parse(fs.readFileSync(ruta(), 'utf8')); } 
 const guardar = () => { fs.mkdirSync(DIR, { recursive: true }); fs.writeFileSync(ruta(), JSON.stringify(S)); };
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Solo una llamada de Kimi a la vez. Si el plan está ocupado espera, y si sigue ocupado usa el respaldo.
+// Una llamada a la vez. Sin texto en 75 s se corta y pasa al siguiente modelo: nadie se queda esperando minutos.
+const TOPE_ESPERA = 75000;
 async function pedir(messages, tools) {
-  let previo = '', parar = pensando();
-  const onAvance = ({ texto }) => { if (texto && texto.length > previo.length) { if (!previo) { parar(); parar = () => {}; process.stdout.write(`${naranja('●', 209)} `); } process.stdout.write(texto.slice(previo.length)); previo = texto; } };
-  const fin = (x) => { parar(); return x; };
-  for (const m of [modelo, modelo, RESPALDO]) {
-    const tope = contextoDe(m) - MAX_SALIDA - 1500;
-    try { return fin(await chat(m, '', '', MAX_SALIDA, { messages: ajustarAlTope(messages, tope, tools), tools, onAvance, cadaMs: 200 })); }
-    catch (e) { if (e.code === 'CONTEXTO') continue; if (m === RESPALDO) { parar(); throw e; } await espera(20000); }
+  let previo = '';
+  const orden = [...new Set([modelo, RESPALDO, MEMORIA])];
+  for (const m of orden) {
+    const parar = pensando(m === modelo ? 'Pensando' : `Cambié a ${m}`), ctrl = new AbortController(), reloj = setTimeout(() => ctrl.abort(), TOPE_ESPERA);
+    const onAvance = ({ texto }) => { if (texto && texto.length > previo.length) { clearTimeout(reloj); if (!previo) { parar(); process.stdout.write(`${naranja('●', 209)} `); } process.stdout.write(texto.slice(previo.length)); previo = texto; } };
+    try {
+      const tope = contextoDe(m) - MAX_SALIDA - 1500;
+      return await chat(m, '', '', MAX_SALIDA, { messages: ajustarAlTope(messages, tope, tools), tools, onAvance, cadaMs: 200, signal: ctrl.signal });
+    } catch (e) { if (m === orden.at(-1)) throw e; if (previo) throw e; }
+    finally { clearTimeout(reloj); parar(); }
   }
-  parar(); throw new Error('Ningún modelo respondió');
+  throw new Error('Ningún modelo respondió');
 }
 // Lo viejo se resume con el modelo de más contexto y queda completo en el archivo del proyecto.
 async function compactar() {
@@ -112,7 +126,7 @@ async function turno(texto, rl) {
       try {
         if (PIDE.has(nombre) && !yaTodo) {
           for (;;) {
-            const a = (await preguntar(rl, '¿Permitir?  s = sí · t = sí a todo · n = no: ')).trim().toLowerCase();
+            const a = (await preguntar(rl, '¿Permitir?  s = sí · t = sí a todo · n = no: ', { usarCola: false })).trim().toLowerCase();
             if (a === 'n' || a === 'no') throw new Error('La persona no lo permitió');
             if (a === 't' || a === 'todo') { yaTodo = true; break; }
             if (a === 's' || a === 'si' || a === 'sí' || a === 'y' || a === 'yes') break;
@@ -132,8 +146,8 @@ async function turno(texto, rl) {
 
 if (!process.env.LITELLM_MASTER_KEY) { console.log(rojo('Abre esto con el comando: inherent')); process.exit(1); }
 cargar();
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-if (FIJO()) { process.stdout.write('\x1b[2J\x1b[H'); zona(); process.stdout.write('\x1b[H'); process.stdout.on('resize', () => { zona(); pie(); }); process.on('exit', () => process.stdout.write(`\x1b[r\x1b[${filas()};1H\n`)); }
+const rl = FIJO() ? null : readline2.createInterface({ input: process.stdin, output: process.stdout });
+if (FIJO()) { process.stdout.write('\x1b[2J\x1b[H\x1b[?25l'); zona(); process.stdout.write('\x1b[H'); teclas(); process.stdout.on('resize', () => { zona(); pie(); }); process.on('exit', () => process.stdout.write(`\x1b[r\x1b[?25h\x1b[${filas()};1H\n`)); }
 console.log(logo()); console.log(caja(['✳ Bienvenido a Inherent OS Chat', '', `Proyecto: ${proyecto}`, `Modelo:   ${modelo}`, `Carpeta:  ${RAIZ}`, '', '/proyecto nombre · /proyectos · /nueva · /modelo id · /salir'])); console.log('');
 // inherent <proyecto> "pedido": un solo turno y sale. Sin permiso para cambiar nada.
 if (process.argv[3]) { try { await turno(process.argv[3], { question: async () => 'n' }); } catch (e) { console.log(rojo(e.message.slice(0, 300))); } process.exit(0); }
@@ -148,4 +162,4 @@ for (;;) {
   if (t.startsWith('/modelo ')) { modelo = t.slice(8).trim(); console.log(gris(`Modelo: ${modelo}`)); continue; }
   try { await turno(t, rl); } catch (e) { console.log(rojo(e.message.slice(0, 300))); }
 }
-rl.close(); process.exit(0);
+process.exit(0);
