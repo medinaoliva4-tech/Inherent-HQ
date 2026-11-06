@@ -66,6 +66,17 @@ try {
     }}));
     await assert.rejects(chat('kimi-k3','','',100,{timeoutMs:30,cadaMs:0}),{name:'TimeoutError'});
   });
+  await test('mide y reporta también una cancelación mientras espera en cola', async () => {
+    const release = await acquire('kimi-k3'); let medida;
+    try { await assert.rejects(chat('kimi-k3', '', '', 100, { timeoutMs: 30, onMedida: (m) => { medida = m; } }), { name: 'TimeoutError' }); }
+    finally { release(); }
+    assert.equal(medida.error, 'TimeoutError'); assert.ok(medida.espera_ms >= 20);
+    assert.equal(medida.entrada, null); assert.equal(medida.reintentos, 0);
+  });
+  await test('un fallo del registro no rompe una respuesta válida', async () => {
+    globalThis.fetch=async()=>new Response('data: {"choices":[{"delta":{"content":"OK"},"finish_reason":"stop"}]}\n\n');
+    const r=await chat('kimi-k3','','',100,{onMedida:()=>{throw new Error('disco lleno');}});assert.equal(r.content,'OK');
+  });
   console.log(`${count} pruebas de estabilidad OK`);
 } finally {
   clearInterval(keepAlive);globalThis.fetch=oldFetch;

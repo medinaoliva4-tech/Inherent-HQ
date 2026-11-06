@@ -59,19 +59,24 @@ export async function acquire(m, onEspera = () => {}, signal) {
 // onAvance({ caracteres, razonando, texto }) se llama cada `cadaMs` (20 s por defecto) mientras el modelo trabaja.
 // messages: si se pasa, reemplaza [system, user] (el Chat manda la conversación completa). signal: para detenerlo.
 // tools: herramientas en formato chat/completions; si el modelo pide alguna, vuelven en `toolCalls` (armadas desde el stream).
-export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal: callerSignal, tools = null, timeoutMs = 180000 } = {}) {
+export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal: callerSignal, tools = null, timeoutMs = 180000, onMedida = () => {} } = {}) {
   const deadline = AbortSignal.timeout(timeoutMs);
   const signal = callerSignal ? AbortSignal.any([callerSignal, deadline]) : deadline;
-  const release = await acquire(m, onEspera, signal);
+  const inicio = Date.now(), medida = { modelo: m, espera_ms: 0, espera_reintentos_ms: 0, http_status: null, reintentos: 0, entrada: null, salida: null, error: null };
+  let release;
   try {
+    try { release = await acquire(m, onEspera, signal); }
+    finally { medida.espera_ms = Date.now() - inicio; }
     for (let intento = 1; intento <= 4; intento++) {
+      medida.reintentos = intento - 1;
       const t0 = Date.now();
       const r = await fetch(`${BASE}/chat/completions`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
         body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }], ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
         signal,
       });
-      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); if (intento < 4) await pausa(4000 * intento, undefined, { signal }); continue; }
+      medida.http_status = r.status;
+      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); if (intento < 4) { const inicioPausa = Date.now(); try { await pausa(4000 * intento, undefined, { signal }); } finally { medida.espera_reintentos_ms += Date.now() - inicioPausa; } } continue; }
       if (!r.ok) { const cuerpo = await r.text(); throw errorContexto(m, cuerpo) || new Error(`${m}: HTTP ${r.status} ${cuerpo.slice(0, 300)}`); }
       // En vivo (SSE): evita el límite de espera de la primera respuesta mientras el modelo «piensa».
       let content = '', thinking = 0, usage = {}, finish = '', buf = '', ultimo = Date.now();
@@ -89,7 +94,11 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
             for (const tc of d.tool_calls || []) { const k = tc.index ?? calls.length; calls[k] ||= { id: '', type: 'function', function: { name: '', arguments: '' } }; if (tc.id) calls[k].id = tc.id; if (tc.function?.name) calls[k].function.name += tc.function.name; if (tc.function?.arguments) calls[k].function.arguments += tc.function.arguments; }
             if (d.reasoning_content || d.reasoning) thinking += 1;
             if (j.choices?.[0]?.finish_reason) finish = j.choices[0].finish_reason;
-            if (j.usage) usage = j.usage;
+            if (j.usage) {
+              usage = j.usage;
+              if (Number.isFinite(usage.prompt_tokens)) medida.entrada = usage.prompt_tokens;
+              if (Number.isFinite(usage.completion_tokens)) medida.salida = usage.completion_tokens;
+            }
           } catch {}
         }
         if (Date.now() - ultimo > cadaMs) { ultimo = Date.now(); try { await onAvance({ caracteres: content.length, razonando: thinking, texto: content }); } catch {} }
@@ -100,7 +109,8 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
       return { content, usage, toolCalls, finish, seg: Math.round((Date.now() - t0) / 1000) };
     }
     throw new Error(`${m}: sin respuesta tras reintentos`);
-  } finally { release(); }
+  } catch (e) { medida.error = e.code === 'CONTEXTO' ? 'CONTEXTO' : ['TimeoutError', 'AbortError', 'TypeError'].includes(e.name) ? e.name : 'Error'; throw e; }
+  finally { release?.(); try { onMedida({ ...medida, tiempo_ms: Date.now() - inicio }); } catch {} }
 }
 
 export async function condense(text, target, prepModel, opts = {}) {
