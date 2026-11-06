@@ -6,6 +6,7 @@
 //   · condense(texto, meta) → resume por bloques con el modelo de preparación, sin inventar
 import fs from 'node:fs';
 import path from 'node:path';
+import { leerLimite } from './contexto.mjs';
 import os from 'node:os';
 
 const here = path.dirname(new URL(import.meta.url).pathname);
@@ -14,7 +15,11 @@ export const BASE = process.env.LITELLM_BASE || 'http://127.0.0.1:4000/v1';
 const KEY = () => process.env.LITELLM_MASTER_KEY || '';
 export const est = (t) => Math.ceil(String(t ?? '').length / 3.4);
 export const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
-export const contextoDe = (m) => limits.modelos[m]?.contexto ?? 32768;
+// El tope que el proveedor dijo en un error manda sobre limits.json: sirve para cualquier modelo o plan nuevo.
+const aprendido = new Map();
+export const contextoDe = (m) => Math.min(limits.modelos[m]?.contexto ?? 32768, aprendido.get(m) ?? Infinity);
+export const aprenderTope = (m, n) => { if (n > 1000) aprendido.set(m, n); };
+const errorContexto = (m, texto) => { const l = leerLimite(texto); if (!l) return null; if (l.limite) aprenderTope(m, l.limite); return Object.assign(new Error(`${m}: el pedido no cabe en su contexto`), { code: 'CONTEXTO' }); };
 
 // ---------- cola: semáforo por proveedor, con carpetas (sirve entre procesos) ----------
 const LOCKDIR = path.join(os.tmpdir(), 'gw-locks'); fs.mkdirSync(LOCKDIR, { recursive: true });
@@ -45,8 +50,8 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
         body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }], ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
         signal,
       });
-      if (r.status === 429 || r.status >= 500) { await r.text().catch(() => {}); log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
-      if (!r.ok) throw new Error(`${m}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
+      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
+      if (!r.ok) { const cuerpo = await r.text(); throw errorContexto(m, cuerpo) || new Error(`${m}: HTTP ${r.status} ${cuerpo.slice(0, 300)}`); }
       // En vivo (SSE): evita el límite de espera de la primera respuesta mientras el modelo «piensa».
       let content = '', thinking = 0, usage = {}, finish = '', buf = '', ultimo = Date.now();
       const calls = []; // las llamadas a herramientas llegan en pedazos: por índice, nombre y argumentos
@@ -100,8 +105,8 @@ export async function chatTools(m, messages, tools, maxOut, { onEspera = () => {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
         body: JSON.stringify({ model: m, max_tokens: maxOut, messages, ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
       });
-      if (r.status === 429 || r.status >= 500) { await r.text().catch(() => {}); log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
-      if (!r.ok) throw new Error(`${m}: HTTP ${r.status} ${(await r.text()).slice(0, 300)}`);
+      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
+      if (!r.ok) { const cuerpo = await r.text(); throw errorContexto(m, cuerpo) || new Error(`${m}: HTTP ${r.status} ${cuerpo.slice(0, 300)}`); }
       const j = await r.json();
       return { message: j.choices?.[0]?.message || {}, finish: j.choices?.[0]?.finish_reason || '', usage: j.usage || {}, seg: Math.round((Date.now() - t0) / 1000) };
     }

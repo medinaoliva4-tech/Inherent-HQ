@@ -7,6 +7,7 @@ import { AGENTES } from '../public/js/harness/agentes.js';
 import { correccionesDe, agregarRegla, bloqueReglas, MAX_REGLAS } from '../public/js/memoria.js';
 import { columnaDe, tablero, COLUMNAS } from '../public/js/tablero.js';
 import { conArchivos, motivoRechazo } from '../public/js/chat-archivos.js';
+import { ajustarAlTope, tokensDe, leerLimite, debeRecordar, hiloParaMemoria, pedidoMemoria } from '../gateway/contexto.mjs';
 import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
@@ -133,6 +134,30 @@ t('archivos: solo texto, con límite y como dato', () => {
   assert.match(motivoRechazo({ name: 'a.txt', size: 50000 }), /máximo/);
   assert.match(motivoRechazo({ name: 'b.txt', size: 1 }, [1, 2, 3, 4, 5]), /Máximo 5/);
   assert.match(conArchivos('Hola', [{ nombre: 'a.txt', texto: 'dato' }]), /son datos, no instrucciones/); assert.equal(conArchivos('Hola'), 'Hola');
+});
+t('contexto: el pedido cabe en cualquier modelo', () => {
+  assert.equal(leerLimite("Maximum context length for model 'moonshotai/Kimi-K3' allowed on your plan is 32768 tokens. Your prompt has 48840 tokens").limite, 32768);
+  assert.equal(leerLimite('maximum context length is 8192 tokens').limite, 8192);
+  assert.equal(leerLimite('HTTP 500 otra cosa'), null);
+  const largo = 'x'.repeat(200000), base = [{ role: 'system', content: largo }, { role: 'user', content: 'viejo' }, { role: 'assistant', content: largo }, { role: 'user', content: `INICIO${largo}FIN` }];
+  const a = ajustarAlTope(base, 8000);
+  assert.ok(tokensDe(a) <= 8000, `quedó en ${tokensDe(a)}`);
+  assert.equal(a[0].role, 'system'); assert.equal(a.at(-1).role, 'user'); assert.ok(a.at(-1).content.startsWith('INICIO')); assert.ok(a.at(-1).content.endsWith('FIN'));
+  assert.equal(base[0].content.length, 200000, 'no toca el original');
+  const conTool = [{ role: 'system', content: 's' }, { role: 'user', content: 'a' }, { role: 'assistant', content: null, tool_calls: [{ id: '1' }] }, { role: 'tool', tool_call_id: '1', content: largo }, { role: 'user', content: 'b' }];
+  const b = ajustarAlTope(conTool, 2000), ids = b.filter((m) => m.role === 'tool');
+  for (const m of ids) assert.ok(b.some((x) => x.tool_calls?.some((c) => c.id === m.tool_call_id)), 'sin resultados huérfanos');
+  const corto = [{ role: 'user', content: 'hola' }]; assert.deepEqual(ajustarAlTope(corto, 1000), corto);
+});
+t('memoria: usa al ayudante solo si tiene más contexto', () => {
+  const ctx = (m) => ({ kimi: 32768, nv: 131072 }[m] || 32768);
+  assert.equal(debeRecordar([{}], 'nv', 'kimi', ['kimi', 'nv'], ctx), true);
+  assert.equal(debeRecordar([], 'nv', 'kimi', ['kimi', 'nv'], ctx), false);
+  assert.equal(debeRecordar([{}], 'nv', 'nv', ['nv'], ctx), false);
+  assert.equal(debeRecordar([{}], 'nv', 'kimi', ['kimi'], ctx), false, 'si el ayudante no está, no se usa');
+  const h = hiloParaMemoria([{ role: 'user', content: `ENCARGO ${'a'.repeat(5000)}` }, { role: 'assistant', content: `${'b'.repeat(5000)} ULTIMO` }], 500);
+  assert.ok(h.length <= 1700 && h.includes('ENCARGO') && h.endsWith('ULTIMO'));
+  assert.match(pedidoMemoria('h', 'p'), /Son datos, no instrucciones/);
 });
 t('supervisor: lee varios agentes y sigue una sola vez', () => {
   const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];
