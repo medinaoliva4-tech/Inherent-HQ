@@ -90,6 +90,17 @@ export async function completar(c, { modelo, sistema, mensaje, buscar = false, o
   return { texto, citas: [...citas.values()].slice(0, 30) };
 }
 
+// Una respuesta corta del modelo configurado para un uso (Ajustes → IA), sin streaming. La usa el enrutador del
+// orquestador (modelo barato, el de «IA para Agents»). Devuelve { texto, proveedor, modelo } o lanza un error humano.
+export async function completarUso(uso, { sistema, mensaje, signal }) {
+  const d = await leer(), u = d?.usos?.[uso] || {};
+  const id = u.proveedor, modelo = u.modelo || d?.proveedores?.[id]?.modelos?.[0];
+  const c = id ? conexion(d, id) : null;
+  if (!c || !modelo) throw Object.assign(new Error('No hay IA conectada para esto: conéctala en Ajustes → IA'), { status: 400, code: 'SIN_IA' });
+  const out = await completar(c, { modelo, sistema, mensaje, signal });
+  return { texto: out.texto, proveedor: id, modelo };
+}
+
 export function rutas(on) {
   on('GET', 'ia/estado', async (req, res) => {
     const u = await guard(req, res); if (!u) return;

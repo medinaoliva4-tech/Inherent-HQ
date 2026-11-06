@@ -10,7 +10,7 @@
 // CEO. La IA corre en la compu de la persona (el puente o claude.ai) o en el servidor de Inherent (PLAN-GATEWAY): el servidor guarda lo
 // que llega con su vía; la evidencia de un modelo entra SIN VERIFICAR y un campo sin fuente queda como hipótesis.
 import * as db from './db.js';
-import { guard, scoper } from './access.js';
+import { guard, scoper, inScope } from './access.js';
 import { readFile } from './gh.js';
 import * as intel from './intel.js';
 import { body } from './http.js';
@@ -23,6 +23,8 @@ import { AGENTES } from '../../public/js/harness/agentes.js';
 import { correccionesDe, agregarRegla } from '../../public/js/memoria.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo, puedeRecibir } from '../../public/js/agentes-flujos.js';
 import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto, limpiarCadena } from '../../public/js/chat-agentes.js';
+import { completarUso } from './ia.js';
+import { AREAS_AGENTE, pedidoRuta, leerRuta } from '../../public/js/orquestador.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
@@ -113,6 +115,47 @@ export function rutas(on) {
   on('GET', 'agentes/plantillas', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     res.json({ plantillas: await plantillas() });
+  });
+
+  // ----- F6 · El orquestador (§13): de un pedido en texto a qué workflow y qué cliente -----
+  // El modelo barato (el de «IA para Agents») propone; aquí se valida contra los workflows y clientes que la
+  // persona de verdad puede ver. No arranca nada: devuelve la propuesta para la tarjeta «Así lo voy a trabajar».
+  on('POST', 'agentes/orquestar', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    const texto = txt(body(req).texto, 4000).replace(/^\/orquesta(r)?\s*/i, '');
+    if (!texto) return res.status(400).json({ error: 'Pedido vacío' });
+
+    const sc = await scoper(u);
+    const [ws, cuentas] = await Promise.all([db.list(WF), db.list('accounts')]);
+    const mios = ws.filter((w) => w.estado === 'activo' && !w.archivado);
+    if (!mios.length) return res.status(409).json({ error: 'No hay ningún agente activo. Activa uno en Agents.' });
+    // Un workflow va por área (strategy, marketing, …): el enrutador solo tiene que acertar el área.
+    const porArea = new Map();
+    for (const w of mios) if (!porArea.has(w.area || 'strategy')) porArea.set(w.area || 'strategy', w);
+    const agentes = AREAS_AGENTE.filter((a) => porArea.has(a.id));
+    const clientes = cuentas.filter((c) => inScope(sc, 'accounts', c)).map((c) => ({ slug: String(c.slug || String(c.id).replace(/^acc-/, '')).toLowerCase(), nombre: c.name || c.nombre || '' }));
+
+    let ruta = null;
+    try {
+      const { sistema, usuario } = pedidoRuta(texto, agentes, clientes);
+      const out = await completarUso('agents', { sistema, mensaje: usuario });
+      ruta = leerRuta(out.texto, agentes, clientes);
+    } catch (e) {
+      const s = e.status || 502;
+      return res.status(s === 400 ? 400 : 502).json({ error: e.message || 'El modelo que enruta no pudo responder', code: e.code || 'ENRUTADOR' });
+    }
+    if (!ruta) return res.status(422).json({ error: 'No entendí a qué agente va eso. Dilo con «@» seguido del nombre, o da más detalle.', code: 'SIN_RUTA' });
+
+    const w = porArea.get(ruta.agente);
+    if (!w) return res.status(409).json({ error: `No tienes ningún agente activo de ${ruta.agente}.` });
+    let cliente = '', cliente_nombre = '';
+    if (ruta.cliente) {
+      if (sc && !sc.client(ruta.cliente)) return res.status(403).json({ error: 'Ese cliente no está en lo tuyo.' });
+      const c = cuentas.find((x) => String(x.slug || String(x.id).replace(/^acc-/, '')).toLowerCase() === ruta.cliente);
+      cliente = ruta.cliente; cliente_nombre = c?.name || c?.nombre || ruta.cliente;
+    }
+    res.json({ workflow: resumenWf(w, await db.list(COLL)), cliente, cliente_nombre, objetivo: ruta.objetivo || texto, confianza: ruta.confianza });
   });
 
   // ----- Workflows -----
