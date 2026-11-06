@@ -1,3 +1,4 @@
+import { cambioAviso } from '../../public/js/chat-avisos-datos.js';
 // El Chat en el servidor (PLAN-GATEWAY F3). Las conversaciones viven en la
 // base del OS (como en Claude: se guardan, se retoman desde cualquier compu) y las responde el trabajador del VPS.
 // El OS no llama al VPS (D13): un turno nuevo queda «en_cola» en la conversación; el trabajador lo toma, escribe la respuesta
@@ -39,7 +40,7 @@ async function mia(req, res, u) {
 }
 async function guardar(res, u, s, cambio) {
   const { id, v, _meta, ...data } = s;
-  const d = await db.update(COLL, id, { ...data, ...cambio }, v, u.email);
+  const d = await db.update(COLL, id, { ...data, ...cambio, ...cambioAviso(COLL, s, { ...s, ...cambio }) }, v, u.email);
   if (!d) { res.status(409).json({ error: 'La conversación cambió mientras tanto. Reintenta.', code: 'CONFLICTO' }); return null; }
   return d;
 }

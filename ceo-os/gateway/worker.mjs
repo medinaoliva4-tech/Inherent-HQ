@@ -15,6 +15,7 @@
 import * as db from '../api/_lib/db.js';
 import { consultar } from '../api/_lib/db-transporte.js';
 import { revisarColas, enSegundoPlano } from './resiliencia.mjs';
+import { cambioAviso } from '../public/js/chat-avisos-datos.js';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla, respuestaAbierta } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
@@ -46,7 +47,7 @@ async function tocar(id, fn) {
     const r = await db.get(RUNS, id); if (!r) return null;
     const cambio = fn(r); if (!cambio) return null;
     const { id: _i, v, _meta, ...data } = r;
-    const d = await db.update(RUNS, id, { ...data, ...cambio, historial: [...(data.historial || []), ...(cambio._nota ? [{ at: ahora(), quien: YO, ...cambio._nota }] : [])].slice(-500), _nota: undefined }, v, YO);
+    const d = await db.update(RUNS, id, { ...data, ...cambio, ...cambioAviso(RUNS, r, { ...r, ...cambio }), historial: [...(data.historial || []), ...(cambio._nota ? [{ at: ahora(), quien: YO, ...cambio._nota }] : [])].slice(-500), _nota: undefined }, v, YO);
     if (d) return d;
     await new Promise((x) => setTimeout(x, 300 + i * 400));
   }
@@ -276,7 +277,7 @@ async function tocarChat(id, fn) {
     const s = await db.get(CHATS, id); if (!s) return null;
     const cambio = fn(s); if (!cambio) return null;
     const { id: _i, v, _meta, ...data } = s;
-    const d = await db.update(CHATS, id, { ...data, ...cambio }, v, YO);
+    const d = await db.update(CHATS, id, { ...data, ...cambio, ...cambioAviso(CHATS, s, { ...s, ...cambio }) }, v, YO);
     if (d) return d;
     await new Promise((x) => setTimeout(x, 150 + i * 250));
   }
@@ -462,12 +463,23 @@ async function tomar() {
 
 // ---------- Ciclo ----------
 let ultimoLatido = 0, apagando = false;
+// La entrega de avisos nunca bloquea las colas del modelo. El evento queda en la base hasta entregarse.
+let avisando = false, ultimoAviso = 0;
+function avisosPendientes() {
+  if (avisando || Date.now() - ultimoAviso < 15000 || !OS_URL || GW_TOKEN.length < 32) return;
+  ultimoAviso = Date.now(); avisando = true;
+  void fetch(`${OS_URL}/api/avisos/chat/entregar`, { method: 'POST', headers: { Authorization: `Bearer ${GW_TOKEN}` }, signal: AbortSignal.timeout(12000) })
+    .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); })
+    .catch(() => log('avisos: entrega pendiente, se reintentará'))
+    .finally(() => { avisando = false; });
+}
 async function ciclo() {
   while (!apagando) {
     await revisarColas([
       ['latido', async () => { if (Date.now() - ultimoLatido > 20000) { ultimoLatido = Date.now(); await latido(); } }],
       ['chats', tomarChats],
       ['etapas', tomar],
+      ['avisos', avisosPendientes],
     ], (nombre, e) => log(`ciclo ${nombre}:`, e.name));
     await new Promise((r) => setTimeout(r, 3000));
   }
