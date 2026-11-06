@@ -10067,6 +10067,7 @@ button,a,.lc{touch-action:manipulation}
   .llm-main.entrada .llm-conv{flex:none;height:auto;overflow:visible}
   .llm-main.entrada .llm-compw{position:relative;margin:18px 0 0;padding-bottom:0;background:none}
   .llm-main.entrada .llm-col{padding:0;min-height:0}
+  .llm-main.entrada .llm-compw::before{display:none}
   .llm-main.entrada .ch-sug{display:none}
   .llm-main.entrada .ch-nuevo{margin:0 auto;padding:0;min-height:0;text-align:center}
   .llm-main.entrada .ch-nuevo p{margin-bottom:0}
