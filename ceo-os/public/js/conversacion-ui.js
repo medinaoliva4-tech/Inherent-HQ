@@ -123,7 +123,7 @@ export function abrirConversacion({ titulo, enviar, detener, alTeclado, alCerrar
     if (v === 'cerrar') return cerrar();
     if (v === 'teclado') { cerrar(); return alTeclado?.(); }
     if (estado === 'pensando') { turno += 1; detener?.(); return escuchar(); }
-    if (estado === 'hablando') { turno += 1; return escuchar(); }
+    if (estado === 'hablando') { turno += 1; detener?.(); return escuchar(); }
     if (estado === 'escuchando') { callarMic(); poner('pausa'); return; }
     escuchar();
   });
