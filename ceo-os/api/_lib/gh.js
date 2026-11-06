@@ -35,8 +35,8 @@ async function ghError(r, what) {
   return Object.assign(new Error(human + (msg ? ` (GitHub: ${msg})` : '')), { code: 'GH', ghStatus: r.status });
 }
 
-async function gh(path, init = {}) {
-  const { repo, token } = cfg();
+async function gh(path, init = {}, repoFijo = '') {
+  const { repo: repoCfg, token } = cfg(), repo = repoFijo || repoCfg;
   if (!token) throw Object.assign(new Error('Falta GITHUB_TOKEN en Vercel para escribir en el repo'), { code: 'GH' });
   return fetch(`https://api.github.com/repos/${repo}${path ? '/' + path : ''}`, {
     ...init,
@@ -51,7 +51,7 @@ async function gh(path, init = {}) {
 }
 
 // Otras llamadas a la API de GitHub sobre el repo (ej. las versiones de la app de escritorio). Devuelve la respuesta tal cual.
-export const ghApi = (path, init) => gh(path, init);
+export const ghApi = (path, init, repo) => gh(path, init, repo);
 
 export async function readFile(path) {
   if (LOCAL) { try { const c = fs.readFileSync(lp(path), 'utf8'); return { content: c, sha: sha1(c) }; } catch { return null; } }

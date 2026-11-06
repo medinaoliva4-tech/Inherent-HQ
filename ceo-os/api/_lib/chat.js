@@ -133,7 +133,7 @@ export function rutas(on) {
       body: JSON.stringify({ uses: 1, expireTime: new Date(ya + 30 * 60000).toISOString(), newSessionExpireTime: new Date(ya + 60000).toISOString(), bidiGenerateContentSetup: { model: `models/${VOZ.modelo}` } }) });
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.name) { console.error(`chat/voz/token: Gemini respondió ${r.status}`); return res.status(502).json({ error: 'No pude abrir la voz. Inténtalo otra vez.' }); }
-    res.json({ token: j.name, ...VOZ });
+    res.json({ token: j.name, ...VOZ, contexto: await saberEmpresa(u, { pulso: false }).catch(() => '') });
   });
   // Lo hablado queda en la conversación, como cualquier mensaje.
   on('POST', 'chat/sesiones/:id/voz', async (req, res) => {

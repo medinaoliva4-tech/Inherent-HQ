@@ -4,13 +4,14 @@
 import { guard } from './access.js';
 import { ghApi } from './gh.js';
 
+const REPO_APP = 'medinaoliva4-tech/Inherent-HQ'; // la app siempre se publica aquí, aunque GITHUB_REPO apunte a otro
 const TAG = /^escritorio-v(\d+\.\d+\.\d+)-(\d+)$/;
 let CACHE = { at: 0, v: null };
 
 // La última versión publicada desde main (las de las ramas quedan como «prerelease» y no cuentan).
 async function ultima() {
   if (CACHE.v && Date.now() - CACHE.at < 5 * 60_000) return CACHE.v;
-  const r = await ghApi('releases?per_page=30');
+  const r = await ghApi('releases?per_page=30', undefined, REPO_APP);
   if (!r.ok) { console.error(`escritorio/version: GitHub respondió ${r.status}`); throw Object.assign(new Error(`GitHub ${r.status} leyendo las versiones de la app`), { code: 'GH' }); }
   const rel = (await r.json()).find((x) => !x.draft && !x.prerelease && TAG.test(x.tag_name));
   const v = rel ? { version: TAG.exec(rel.tag_name)[1], n: Number(TAG.exec(rel.tag_name)[2]), tag: rel.tag_name, fecha: rel.published_at,
@@ -33,7 +34,7 @@ export function rutas(on) {
     const v = await ultima();
     const a = v?.assets.find((x) => x.nombre === `Inherent-OS-${arch}.zip`);
     if (!a) return res.status(404).json({ error: 'Esta versión no trae actualización automática: bájala desde la página de descargas.' });
-    const r = await ghApi(`releases/assets/${a.id}`, { headers: { Accept: 'application/octet-stream' }, redirect: 'manual' });
+    const r = await ghApi(`releases/assets/${a.id}`, { headers: { Accept: 'application/octet-stream' }, redirect: 'manual' }, REPO_APP);
     const url = r.headers.get('location');
     if (!url) return res.status(502).json({ error: `GitHub no dio el link de descarga (${r.status})` });
     res.json({ version: v.version, url, tam: a.tam });
