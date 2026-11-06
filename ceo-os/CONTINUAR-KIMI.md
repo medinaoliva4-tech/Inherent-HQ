@@ -2,7 +2,7 @@
 
 Guía de relevo del 2026-11-05. Quien lea esto debe poder seguir el trabajo sin la conversación anterior.
 
-**Cómo correr Kimi K3 sin costo extra:** usa **OpenCode en la terminal**, no Claude Code. Featherless limita Kimi a 32,768 tokens y Claude Code no compacta por debajo de 100,000. OpenCode sí respeta ese límite (`~/.config/opencode/opencode.json`). Trabaja en tareas cortas, una por sesión: en el spike, una tarea larga leyó y cerró sin escribir.
+**Cómo correr Kimi K3 sin costo extra:** usa el comando **`inherent`**, el arnés propio en `ceo-os/scripts/inherent.mjs`. Hace una llamada a la vez, recorta el contexto y resume con NVIDIA. OpenCode queda de respaldo, pero sus llamadas simultáneas chocan con el límite de Featherless. No uses Claude Code. Featherless limita Kimi a 32,768 tokens y Claude Code no compacta por debajo de 100,000. OpenCode sí respeta ese límite (`~/.config/opencode/opencode.json`). Trabaja en tareas cortas, una por sesión: en el spike, una tarea larga leyó y cerró sin escribir.
 
 **Prompt para arrancar:**
 
