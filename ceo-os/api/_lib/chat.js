@@ -1,5 +1,6 @@
 import { cambioAviso } from '../../public/js/chat-avisos-datos.js';
 import { validarImagenes, guardarImagenes, cargarImagen, IMAGENES } from './chat-imagenes.js';
+import { pendiente, seguir } from '../../gateway/ventanas.mjs';
 // El Chat en el servidor (PLAN-GATEWAY F3). Las conversaciones viven en la
 // base del OS (como en Claude: se guardan, se retoman desde cualquier compu) y las responde el trabajador del VPS.
 // El OS no llama al VPS (D13): un turno nuevo queda «en_cola» en la conversación; el trabajador lo toma, escribe la respuesta
@@ -89,7 +90,7 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const s = await mia(req, res, u); if (!s) return;
     const desde = Math.max(0, Number(req.query.desde) || 0);
-    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at } : null });
+    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at, avance: s.turno.trabajo ? { ventana: s.turno.trabajo.ventana, tarea: pendiente(s.turno.trabajo.plan)?.titulo || '', bloqueo: s.turno.trabajo.plan?.bloqueo || '' } : null } : null });
   });
 
   // F4.5 · un mensaje que no pide respuesta del servidor (el «@agente …» que arrancó un trabajo): queda en la conversación.
@@ -208,6 +209,9 @@ export function rutas(on) {
     const b = body(req), mensaje = txt(b.mensaje, MAX_MSG).trim(), modelo = txt(b.modelo, 120);
     if (!mensaje) return res.status(400).json({ error: 'Mensaje vacío' });
     if (!(g.modelos || []).includes(modelo)) return res.status(400).json({ error: 'Ese modelo no está en el servidor' });
+    const retoma = mensaje === '/retomar' && s.turno?.trabajo?.objetivo;
+    if (mensaje === '/retomar' && !retoma) return res.status(409).json({ error: 'No hay un trabajo guardado para retomar.' });
+    const trabajo = retoma ? { ...s.turno.trabajo, ventana: 1, plan: s.turno.trabajo.plan ? { ...s.turno.trabajo.plan, bloqueo: '' } : null } : null;
     let nuevas, repetidas = [];
     try {
       nuevas = validarImagenes(b.imagenes);
@@ -221,11 +225,11 @@ export function rutas(on) {
     } catch (e) { return res.status(400).json({ error: e.message }); }
     if ((nuevas.length || repetidas.length) && !(g.modelos || []).includes('kimi-k3')) return res.status(409).json({ error: 'El modelo de visión no está disponible ahora. Conserva la imagen y reintenta.' });
     const guardadas = await guardarImagenes(nuevas, s.owner, s.id), imagenes = [...guardadas, ...repetidas];
-    const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora(), ...(imagenes.length ? { imagenes } : {}) }].slice(-MAX_MSGS);
+    const mensajes = [...(s.mensajes || []), { role: 'user', content: retoma ? seguir(trabajo.plan) : mensaje, at: ahora(), ...(imagenes.length ? { imagenes } : {}) }].slice(-MAX_MSGS);
     const equipo = await equipoPara(u, verRun).catch(() => ''); // ayuda, pero no detiene la respuesta
     const instrucciones = await instruccionesDe(carpetaDe(s)).catch(() => '');
     const empresa = await saberEmpresa(u).catch(() => '');
-    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${empresa}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length } });
+    const d = await guardar(res, u, s, { mensajes, turno: { estado: 'en_cola', at: ahora(), modelo, sistema: `${txt(b.sistema, 40000)}${empresa}${bloqueInstrucciones(instrucciones)}${bloqueEquipo(equipo)}`, esfuerzo: txt(b.esfuerzo, 20), desde: mensajes.length, ...(trabajo ? { trabajo } : {}) } });
     if (d) res.json({ ok: true, desde: mensajes.length, imagenes });
     else await Promise.all(guardadas.map((x) => db.remove(IMAGENES, x.id, u.email).catch(() => {})));
   });

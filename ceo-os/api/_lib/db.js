@@ -58,6 +58,10 @@ export async function avisoChatEntregado(coll, id, evento) {
   await (await conn())(`UPDATE docs SET data=jsonb_set(data,'{aviso_chat,enviado}','true'), v=v+1
     WHERE coll=$1 AND id=$2 AND data->'aviso_chat'->>'id'=$3`, [coll, id, evento]);
 }
+// Para cancelar una generación sin releer todo el historial.
+export async function estadoChat(id) {
+  return (await (await conn())("SELECT data->'turno'->>'estado' AS estado FROM docs WHERE coll='chat_sesiones' AND id=$1", [id]))[0]?.estado;
+}
 // Cuántas escrituras hubo en esta instancia: las memorias cortas (los Avisos) se olvidan cuando cambia.
 let escrituras = 0;
 export const version = () => escrituras;

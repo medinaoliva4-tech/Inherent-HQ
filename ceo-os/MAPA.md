@@ -920,6 +920,12 @@ El Gateway lee cada adjunto nuevo con Kimi K3 en una llamada acotada a 60 segund
 
 Pruebas: validación del JPEG, aislamiento, API real en memoria, envío multimodal simulado y navegador con adjunto/clic. Una prueba sintética directa en el VPS confirmó visión real de Kimi (cuadrado rojo/círculo azul; 5.9 s, 255 tokens de entrada). Falta probar el circuito web→Gateway desplegado, fotografías complejas e iPhone físico. Publicar requiere web y copiar/reiniciar Gateway con aprobación.
 
+### Proyectos por ventanas de contexto
+
+`gateway/ventanas.mjs` comparte plan, relevo y detección de ciclos entre terminal y Chat. Trabaja por tareas, guarda el avance y sigue automáticamente dentro del alcance autorizado. Se cambia de ventana por presión de contexto o cantidad de pasos; siempre queda reserva para salida y herramientas. Veinte ventanas por ejecución, hasta 24 tareas en el plan y tres repeticiones iguales detienen el ciclo. El límite es operativo, no una certificación de calidad del modelo. La sesión de terminal se escribe con archivo temporal + rename; conserva lo resumido en el historial. Las llamadas que quedaron sin respuesta al interrumpirse se marcan como no confirmadas, sin inventar éxito ni repetir acciones.
+
+La cancelación del Chat consulta solo el estado del turno y puede cortar el modelo aunque todavía no haya emitido texto. El latido del turno se actualiza al avanzar y una reclamación de trabajo colgado revalida el estado antes de tomarlo. Las pruebas usan datos sintéticos y proveedor simulado; falta validar proyectos extensos reales y desplegar web, terminal y Gateway con aprobación. Las aprobaciones humanas se conservan; después de una propuesta aprobada aún se debe retomar el trabajo.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**
