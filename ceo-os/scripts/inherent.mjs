@@ -17,16 +17,24 @@ const naranja = (t, c) => `\x1b[38;5;${c}m${t}\x1b[0m`;
 const logo = () => { const ancho = process.stdout.columns || 80, doble = ancho >= 84; return `\n${LETRAS.I.map((_, f) => `  ${naranja([...'INHERENT'].map((l) => (doble ? LETRAS[l][f].replace(/./g, '$&$&') : LETRAS[l][f])).join(doble ? '  ' : ' '), [230, 223, 216, 209, 173][f])}`).join('\n')}\n`; };
 const caja = (ls) => { const w = Math.max(...ls.map((l) => l.length)) + 2; return [`╭${'─'.repeat(w)}╮`, ...ls.map((l) => `│ ${l.padEnd(w - 1)}│`), `╰${'─'.repeat(w)}╯`].map((l) => naranja(l, 173)).join('\n'); };
 const TTY = Boolean(process.stdout.isTTY), ancho = () => Math.min((process.stdout.columns || 80) - 1, 110);
-// La caja cerrada de escritura: se dibuja completa y el cursor vuelve adentro.
-async function preguntar(rl) {
-  if (!TTY) return rl.question('› ');
-  const w = ancho() - 2;
-  process.stdout.write(`\n${gris(`╭${'─'.repeat(w)}╮`)}\n${gris('│')}${' '.repeat(w)}${gris('│')}\n${gris(`╰${'─'.repeat(w)}╯`)}\n${estado()}\x1b[2A\r\x1b[2C`);
-  const t = await rl.question(crema('› '));
-  process.stdout.write('\r\x1b[1A\x1b[J');
-  if (t.trim()) console.log(`${crema('›')} ${t}`);
+// Pantalla de chat: la conversación corre arriba y el cuadro queda fijo en las últimas cuatro filas.
+const filas = () => process.stdout.rows || 0, FIJO = () => TTY && filas() >= 12;
+function zona() { if (FIJO()) process.stdout.write(`\x1b[1;${filas() - 4}r\x1b[${filas() - 4};1H`); }
+function pie(rotulo = '') {
+  if (!FIJO()) return;
+  const r = filas(), l = gris('─'.repeat((process.stdout.columns || 80) - 1));
+  process.stdout.write(`\x1b7\x1b[${r - 3};1H\x1b[2K${l}\x1b[${r - 2};1H\x1b[2K${rotulo}\x1b[${r - 1};1H\x1b[2K${l}\x1b[${r};1H\x1b[2K${estado()}\x1b8`);
+}
+async function preguntar(rl, etiqueta = '❯ ') {
+  if (!FIJO()) return rl.question(crema(etiqueta));
+  pie();
+  process.stdout.write(`\x1b7\x1b[${filas() - 2};1H\x1b[2K`);
+  const t = await rl.question(crema(etiqueta));
+  process.stdout.write('\x1b8');
+  pie();
   return t;
 }
+const eco = (t) => { if (t.trim()) console.log(`\n${crema('❯')} ${t}\n`); };
 // Mientras piensa: una animación que se borra sola cuando llega el primer texto.
 function pensando(rotulo = 'Pensando') {
   if (!TTY) return () => {};
@@ -104,7 +112,7 @@ async function turno(texto, rl) {
       try {
         if (PIDE.has(nombre) && !yaTodo) {
           for (;;) {
-            const a = (await rl.question(crema('¿Permitir?  s = sí · t = sí a todo · n = no: '))).trim().toLowerCase();
+            const a = (await preguntar(rl, '¿Permitir?  s = sí · t = sí a todo · n = no: ')).trim().toLowerCase();
             if (a === 'n' || a === 'no') throw new Error('La persona no lo permitió');
             if (a === 't' || a === 'todo') { yaTodo = true; break; }
             if (a === 's' || a === 'si' || a === 'sí' || a === 'y' || a === 'yes') break;
@@ -125,11 +133,13 @@ async function turno(texto, rl) {
 if (!process.env.LITELLM_MASTER_KEY) { console.log(rojo('Abre esto con el comando: inherent')); process.exit(1); }
 cargar();
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+if (FIJO()) { process.stdout.write('\x1b[2J\x1b[H'); zona(); process.stdout.write('\x1b[H'); process.stdout.on('resize', () => { zona(); pie(); }); process.on('exit', () => process.stdout.write(`\x1b[r\x1b[${filas()};1H\n`)); }
 console.log(logo()); console.log(caja(['✳ Bienvenido a Inherent OS Chat', '', `Proyecto: ${proyecto}`, `Modelo:   ${modelo}`, `Carpeta:  ${RAIZ}`, '', '/proyecto nombre · /proyectos · /nueva · /modelo id · /salir'])); console.log('');
 // inherent <proyecto> "pedido": un solo turno y sale. Sin permiso para cambiar nada.
 if (process.argv[3]) { try { await turno(process.argv[3], { question: async () => 'n' }); } catch (e) { console.log(rojo(e.message.slice(0, 300))); } process.exit(0); }
 for (;;) {
   let t; try { t = (await preguntar(rl)).trim(); } catch { break; }
+  eco(t);
   if (!t) continue;
   if (t === '/salir') break;
   if (t === '/nueva') { S = { resumen: '', mensajes: [] }; guardar(); console.log(gris('Conversación nueva.')); continue; }
