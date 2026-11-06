@@ -13,6 +13,8 @@
 //
 // Uso: DATABASE_URL=… LITELLM_MASTER_KEY=… node gateway/worker.mjs
 import * as db from '../api/_lib/db.js';
+import { consultar } from '../api/_lib/db-transporte.js';
+import { revisarColas, enSegundoPlano } from './resiliencia.mjs';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla, respuestaAbierta } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
 // y lee antes (web.mjs) y las páginas entran como inputs citables (w1, w2…).
@@ -417,7 +419,7 @@ async function correrChat(id) {
 let sqlq = null;
 async function idsChatsPendientes() {
   sqlq ||= (await import('@neondatabase/serverless')).neon(process.env.DATABASE_URL);
-  return (await sqlq.query("SELECT id FROM docs WHERE coll = $1 AND data->'turno'->>'estado' IN ('en_cola','trabajando') AND coalesce((data->>'archivado')::boolean, false) = false", [CHATS])).map((r) => r.id);
+  return (await consultar(sqlq, "SELECT id FROM docs WHERE coll = $1 AND data->'turno'->>'estado' IN ('en_cola','trabajando') AND coalesce((data->>'archivado')::boolean, false) = false", [CHATS])).map((r) => r.id);
 }
 async function tomarChats() {
   if (chatsEnCurso.size >= PARALELO) return;
@@ -430,7 +432,10 @@ async function tomarChats() {
     const tomado = await tocarChat(s.id, (cur) => (cur.turno?.estado === 'en_cola' || colgado ? { turno: { ...cur.turno, estado: 'trabajando', at: ahora(), gw: VERSION } } : null)).catch(() => null);
     if (!tomado) continue;
     chatsEnCurso.add(s.id);
-    correrChat(s.id).finally(() => chatsEnCurso.delete(s.id));
+    void enSegundoPlano(() => correrChat(s.id), () => chatsEnCurso.delete(s.id), async (e) => {
+      log('chat: fallo al iniciar', e.name);
+      await tocarChat(s.id, (cur) => cur.turno?.estado === 'trabajando' ? { turno: { ...cur.turno, estado: 'error', error: 'Se perdió la conexión al iniciar. Puedes reintentar.', at: ahora() } } : null);
+    });
   }
 }
 
@@ -451,7 +456,7 @@ async function tomar() {
     }).catch(() => null);
     if (!tomado) continue;
     enCurso.add(r.id);
-    correr(r.id, n).finally(() => enCurso.delete(r.id));
+    void enSegundoPlano(() => correr(r.id, n), () => enCurso.delete(r.id), (e) => log('etapa: fallo al iniciar', e.name));
   }
 }
 
@@ -459,11 +464,11 @@ async function tomar() {
 let ultimoLatido = 0, apagando = false;
 async function ciclo() {
   while (!apagando) {
-    try {
-      if (Date.now() - ultimoLatido > 20000) { await latido(); ultimoLatido = Date.now(); }
-      await tomar();
-      await tomarChats();
-    } catch (e) { log('ciclo:', e.message); }
+    await revisarColas([
+      ['latido', async () => { if (Date.now() - ultimoLatido > 20000) { ultimoLatido = Date.now(); await latido(); } }],
+      ['chats', tomarChats],
+      ['etapas', tomar],
+    ], (nombre, e) => log(`ciclo ${nombre}:`, e.name));
     await new Promise((r) => setTimeout(r, 3000));
   }
 }
