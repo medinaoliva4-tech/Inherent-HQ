@@ -1,3 +1,4 @@
+import { espacioMenu } from '../chat-menu-posicion.js';
 // El Inherent LLM (#/chat): el Chat de Inherent OS, una pantalla más dentro del shell (vive en #main, a la derecha de la
 // barra lateral; el elemento donde se monta lleva la clase llm-host): barra de conversaciones · conversación · panel. Responde
 // el SERVIDOR de Inherent (chat-gateway.js · PLAN-GATEWAY F3): las conversaciones se guardan en el OS, con web, los MCPs de la
@@ -301,6 +302,13 @@ export async function render(el, { me, sub = [], alive }) {
   // Los comandos «/»: aparecen al escribir «/» al inicio.
   function comandos(v) {
     const box = $('#lc-cmds', el); if (!box) return;
+    const anchor = box.parentElement.getBoundingClientRect(), view = window.visualViewport;
+    const arriba = Math.max(0, anchor.top - (view?.offsetTop || 0) - 16);
+    const abajo = Math.max(0, (view?.offsetTop || 0) + (view?.height || innerHeight) - anchor.bottom - 16);
+    const sobre = arriba >= Math.min(240, abajo);
+    box.style.maxHeight = Math.min(360, sobre ? arriba : abajo) + 'px';
+    box.style.bottom = sobre ? 'calc(100% + 8px)' : 'auto';
+    box.style.top = sobre ? 'auto' : 'calc(100% + 8px)';
     // F4.5 · «@»: los agentes activos (la lista se trae la primera vez).
     if (/^@\S*$/.test(v.trim())) {
       if (!S.listaAgentes) { listaAgentes().then(() => { if (S.listaAgentes) comandos($('#llm-in', el)?.value || ''); }); return; }
@@ -524,18 +532,33 @@ export async function render(el, { me, sub = [], alive }) {
   function ponerBrujula(b) { S.brujula = b; guardarBrujula(me, S.sesion, b); pintarBrujula(); }
 
   // ---------- Menús (modo, cliente/marca, modelo) ----------
+  let cerrarMenuActual = () => {};
   function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
+    cerrarMenuActual();
     el.querySelector('.llm-menu')?.remove();
     const m = document.createElement('div'); m.className = 'llm-menu'; m.setAttribute('role', 'listbox');
     const pintar = (q = '') => { const xs = items.filter((x) => x.grupo ? !q : !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => x.grupo ? html`<span class="lmn-k lmn-g">${x.grupo}</span>` : html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.fin || ''}${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
     mount(m, pintar());
     R.append(m);
-    const r = anchor.getBoundingClientRect(), rr = R.getBoundingClientRect();
-    m.style.left = Math.max(8, Math.min(r.left - rr.left, rr.width - 300)) + 'px';
-    m.style.bottom = (rr.bottom - r.top + 8) + 'px';
-    const q = m.querySelector('.lmn-q'); if (q) { q.focus(); q.oninput = () => { const v = q.value; mount(m, pintar(v)); const n = m.querySelector('.lmn-q'); n.value = v; n.focus(); n.oninput = q.oninput; }; }
-    m.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b || b.disabled) return; m.remove(); onPick(b.dataset.v); });
-    setTimeout(() => document.addEventListener('pointerdown', function cerrar(e) { if (!m.contains(e.target)) { m.remove(); document.removeEventListener('pointerdown', cerrar); } }));
+    const colocar = () => {
+      if (!m.isConnected) return;
+      const v = window.visualViewport, top = v?.offsetTop || 0, left = v?.offsetLeft || 0;
+      const pos = espacioMenu(anchor.getBoundingClientRect(), R.getBoundingClientRect(), { top, left, bottom: top + (v?.height || innerHeight), right: left + (v?.width || innerWidth) });
+      // La altura real puede ser menor que el máximo: alinear al borde de la caja.
+      for (const k of ['left', 'width', 'maxHeight']) m.style[k] = pos[k] + 'px';
+      m.style.top = (pos.top + (pos.sobre ? pos.maxHeight - Math.min(pos.maxHeight, m.offsetHeight) : 0)) + 'px';
+      m.style.bottom = 'auto';
+    };
+    colocar();
+    const ajuste = new AbortController();
+    window.addEventListener('resize', colocar, { signal: ajuste.signal });
+    window.visualViewport?.addEventListener('resize', colocar, { signal: ajuste.signal });
+    const quitar = () => { ajuste.abort(); m.remove(); };
+    cerrarMenuActual = quitar;
+    window.addEventListener('hashchange', quitar, { signal: ajuste.signal, once: true });
+    const q = m.querySelector('.lmn-q'); if (q) { q.focus(); q.oninput = () => { const v = q.value; mount(m, pintar(v)); const n = m.querySelector('.lmn-q'); n.value = v; n.focus(); n.oninput = q.oninput; colocar(); }; }
+    m.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b || b.disabled) return; quitar(); onPick(b.dataset.v); });
+    setTimeout(() => document.addEventListener('pointerdown', function cerrar(e) { if (!m.contains(e.target)) { quitar(); document.removeEventListener('pointerdown', cerrar); } }));
   }
   const menuModo = (a) => menu(a, 'Modo', modos.map((m) => ({ v: m.id, label: m.nombre, sub: m.sub, on: m.id === S.modo, ico: html`<i class="lmn-m" data-m="${m.id}">${m.letra}</i>` })), (v) => cambiarModo(v));
   const menuSlug = (a) => menu(a, modoDe(S.modo).pide === 'marca' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
