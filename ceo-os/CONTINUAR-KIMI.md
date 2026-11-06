@@ -73,7 +73,7 @@ Staging es `ceo-os-staging`. La base `ep-steep-cake` es **producción**: no la t
 cd ceo-os && node scripts/test-ui.mjs && npm run -s test:llm && node scripts/test-agentes.mjs && node scripts/test-herramientas.mjs
 ```
 
-Hoy deben dar 65, 20, 74 y 50. Si agregas lógica, agrega su prueba.
+Hoy deben dar 65, 20, 77 y 50. Si agregas lógica, agrega su prueba.
 
 ## 6 · Cómo publicar
 
@@ -106,6 +106,14 @@ Reiniciar el trabajador en producción necesita OK del CEO.
 **App de Mac:** un push a `main` que toque `ceo-os/escritorio/**` arma y publica sola por `.github/workflows/escritorio.yml`. Sube la versión en `escritorio/package.json`. Si falla «Publicar en Releases» con HTTP 500, usa `gh run rerun <id> --failed`: ya pasó dos veces y al tercer intento salió.
 
 ## 7 · Trabajo pendiente, en orden
+
+### Trabajo por ventanas (PR pendiente de aplicar)
+
+El arnés y el Chat pueden guardar un plan con `actualizar_plan` y continuar tareas pendientes sin preguntar si siguen. Antes de acercarse al límite de entrada, o al acumular pasos (12 en terminal, 6 en Chat), generan un relevo acotado y abren otra ventana. Se reserva espacio para salida y herramientas; no se usan 30k completos de entrada. El plan no concede permisos. Una decisión real o una acción sin autorización detiene el trabajo. Hay un tope de 20 ventanas por ejecución y un freno ante tres acciones idénticas sin avance.
+
+En terminal, el historial anterior queda en `.historial.jsonl`, la sesión se guarda de forma atómica y `/retomar` recupera el objetivo/plan después de un error o límite. En Chat, el relevo vive en `turno.trabajo`; `/retomar` lo recupera y el botón Detener corta también una generación silenciosa. La UI muestra ventana y tarea actual. Las propuestas siguen exigiendo aprobación; este PR no continúa automáticamente después de aprobar una propuesta.
+
+Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simulado (14 pasos, relevos, permisos y cancelación); `test-ventanas-browser.mjs` comprueba progreso y limpieza de la señal. Falta evaluar un proyecto largo con un modelo real y un corte de red real. No garantiza que el modelo elija bien las tareas ni que un resumen conserve todo. No desplegado.
 
 ### 7.1 · Actualizaciones de la app (urgente, bloqueado por token)
 

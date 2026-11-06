@@ -34,7 +34,8 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
   on.recibido?.(guardadas || []);
   const detener = () => api(`chat/sesiones/${enc(id)}/detener`, { method: 'POST' }).catch(() => {});
   signal?.addEventListener('abort', detener, { once: true });
-  let texto = '', avisoCola = false;
+  let texto = '', avisoCola = false, avanceVisto = '';
+  try {
   const vistos = []; // pasos ya avisados a la pantalla (por posición y fase)
   for (let fallos = 0; ;) {
     if (signal?.aborted) throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
@@ -46,12 +47,15 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
     (a?.pasos || []).forEach((p, i) => { if (vistos[i] !== p.fase) { vistos[i] = p.fase; on.tool?.({ fase: p.fase, nombre: p.nombre, detalle: p.detalle || '', imagen: p.imagen || '' }); } });
     if (a?.propuestas?.length) on.propuestas?.(a.propuestas);
     if (a?.content && a.content !== texto) { texto = a.content; on.delta?.(texto); }
+    const avance = j.turno?.avance;
+    if (avance?.ventana) { const nota = `Ventana ${avance.ventana}${avance.tarea ? ': ' + avance.tarea : ': trabajando'}`; if (nota !== avanceVisto) { avanceVisto = nota; on.nota?.(nota); } }
     const estado = j.turno?.estado;
     if (estado === 'en_cola' && !avisoCola) { avisoCola = true; on.nota?.('En cola en el servidor…'); }
     if (estado === 'listo') return { texto: a?.content || texto, estado: 'completed' };
     if (estado === 'error') throw new Error(j.turno.error || 'El servidor no pudo responder');
     if (estado === 'detenido') throw Object.assign(new Error('Interrumpido.'), { name: 'AbortError' });
   }
+  } finally { signal?.removeEventListener('abort', detener); }
 }
 
 // Aprobar o rechazar una propuesta del servidor (crear una tarea, mover un lead…). La ejecuta el OS con tu sesión.

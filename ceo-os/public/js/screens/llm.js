@@ -759,7 +759,7 @@ export async function render(el, { me, sub = [], alive }) {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle, imagen: p.imagen || prev.imagen }); else msg.tools.push(p); pintarUltimo(); },
-        nota: (n) => { msg.notas.push(n); pintarUltimo(); },
+        nota: (n) => { if (/^Ventana /.test(n)) msg.notas = msg.notas.filter((x) => !/^Ventana /.test(x)); msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
         propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
       } });
