@@ -1,15 +1,21 @@
 // Base de datos: Postgres (Neon en Vercel). En local, PGlite (el mismo Postgres, en WASM).
 // Todo vive en una tabla de documentos: (colección, id) → JSON, con versión para no pisar cambios.
 import crypto from 'node:crypto';
+import { consultar } from './db-transporte.js';
 
-let q;
+let q, conectando;
 async function conn() {
   if (q) return q;
+  if (!conectando) conectando = abrir().then((ejecutar) => (q = ejecutar)).finally(() => { conectando = null; });
+  return conectando;
+}
+async function abrir() {
+  let q;
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
   if (url) {
     const { neon } = await import('@neondatabase/serverless');
     const sql = neon(url);
-    q = (text, params = []) => sql.query(text, params);
+    q = (text, params = []) => consultar(sql, text, params);
   } else if (process.env.LOCAL_DB && !process.env.VERCEL) {
     const mod = '@electric-sql/pglite';
     const { PGlite } = await import(mod);

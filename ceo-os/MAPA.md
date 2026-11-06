@@ -895,6 +895,10 @@ npm run capturas -- home,org/work,ai,ai/mcps,chat,areas/marketing   # solo esas 
 
 ---
 
+### Recuperación del Gateway
+
+El Gateway aísla el latido, la cola del Chat y la de etapas: una falla no evita revisar las otras. Las tareas de fondo capturan errores iniciales y liberan su plaza. `api/_lib/db-transporte.js` limita cada consulta Neon a 10 segundos y reintenta solo SELECT ante errores transitorios (hasta tres intentos); nunca reenvía escrituras automáticamente. La inicialización de la base se comparte y solo queda lista cuando terminan las tablas. Se prueba sin red con `node scripts/test-gateway-recuperacion.mjs`. Esto no certifica la disponibilidad de Neon ni coordina el consumo del proveedor entre Mac y VPS.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**
