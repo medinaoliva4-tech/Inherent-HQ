@@ -13,6 +13,7 @@ import * as db from './db.js';
 import { guard, scoper, inScope } from './access.js';
 import { readFile } from './gh.js';
 import * as intel from './intel.js';
+import { ficha } from './estrategia.js';
 import { body } from './http.js';
 import crypto from 'node:crypto';
 import { toolsDe, llamarTool } from './conectores.js';
@@ -154,6 +155,11 @@ export function rutas(on) {
       if (sc && !sc.client(ruta.cliente)) return res.status(403).json({ error: 'Ese cliente no está en lo tuyo.' });
       const c = cuentas.find((x) => String(x.slug || String(x.id).replace(/^acc-/, '')).toLowerCase() === ruta.cliente);
       cliente = ruta.cliente; cliente_nombre = c?.name || c?.nombre || ruta.cliente;
+      // F6.5: sin ficha de oferta no hay techo contratado: se bloquea (igual que en Estrategia y Entregues).
+      if (cliente !== 'personal' && cliente !== 'inherent') {
+        const f = await ficha(cliente);
+        if (!f.hay) return res.status(409).json({ error: 'Sin ficha de oferta: el alcance contratado es el techo. Créala en Estrategia.', code: 'SIN_FICHA' });
+      }
     }
     res.json({ workflow: resumenWf(w, await db.list(COLL)), cliente, cliente_nombre, objetivo: ruta.objetivo || texto, confianza: ruta.confianza });
   });
