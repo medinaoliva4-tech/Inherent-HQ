@@ -25,7 +25,7 @@ import { correccionesDe, agregarRegla } from '../../public/js/memoria.js';
 import { ESTRATEGIA_GUIADA, leerWorkflow, desdePlantilla, normalizarWorkflow, puede, activa, completo, aplicarResultado, enCola, siguienteAuto, idAporte, leyo, puedeRecibir } from '../../public/js/agentes-flujos.js';
 import { modeloDeEtapa, MAX_CONTEXTO, contextoChat, inputsConContexto, limpiarCadena } from '../../public/js/chat-agentes.js';
 import { completarUso } from './ia.js';
-import { AREAS_AGENTE, pedidoRuta, leerRuta } from '../../public/js/orquestador.js';
+import { AREAS_AGENTE, pedidoRuta, leerRuta, areaRuta } from '../../public/js/orquestador.js';
 
 export const COLL = 'agent_runs';
 export const WF = 'agent_workflows';
@@ -133,18 +133,18 @@ export function rutas(on) {
     if (!mios.length) return res.status(409).json({ error: 'No hay ningún agente activo. Activa uno en Agents.' });
     // Un workflow va por área (strategy, marketing, …): el enrutador solo tiene que acertar el área.
     const porArea = new Map();
-    for (const w of mios) if (!porArea.has(w.area || 'strategy')) porArea.set(w.area || 'strategy', w);
+    for (const w of mios) { const area = areaRuta(w.area); if (!porArea.has(area)) porArea.set(area, w); }
     const agentes = AREAS_AGENTE.filter((a) => porArea.has(a.id));
     const clientes = cuentas.filter((c) => inScope(sc, 'accounts', c)).map((c) => ({ slug: String(c.slug || String(c.id).replace(/^acc-/, '')).toLowerCase(), nombre: c.name || c.nombre || '' }));
 
     let ruta = null;
     try {
       const { sistema, usuario } = pedidoRuta(texto, agentes, clientes);
-      const out = await completarUso('agents', { sistema, mensaje: usuario });
+      const out = await completarUso('agents', { sistema, mensaje: usuario, signal: AbortSignal.timeout(30000) });
       ruta = leerRuta(out.texto, agentes, clientes);
     } catch (e) {
       const s = e.status || 502;
-      return res.status(s === 400 ? 400 : 502).json({ error: e.message || 'El modelo que enruta no pudo responder', code: e.code || 'ENRUTADOR' });
+      return res.status(s === 400 ? 400 : 409).json({ error: e.name === 'TimeoutError' ? 'El enrutador tardó demasiado. Intenta de nuevo o elige un agente con @.' : e.message || 'El modelo que enruta no pudo responder', code: e.code || 'ENRUTADOR' });
     }
     if (!ruta) return res.status(422).json({ error: 'No entendí a qué agente va eso. Dilo con «@» seguido del nombre, o da más detalle.', code: 'SIN_RUTA' });
 

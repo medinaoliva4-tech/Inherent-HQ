@@ -102,3 +102,9 @@ export function quiereOrquestar(texto) {
   const t = String(texto || '').trim().toLowerCase();
   return t.startsWith('/orquesta') || t.startsWith('/orquestar');
 }
+
+// Los workflows guardan áreas en inglés; el enrutador usa identificadores en español.
+export function areaRuta(area) {
+  const a = String(area || 'strategy').trim().toLowerCase();
+  return ({ strategy: 'estrategia', creative: 'diseno', production: 'produccion' })[a] || a;
+}

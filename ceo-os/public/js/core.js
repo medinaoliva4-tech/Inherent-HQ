@@ -36,11 +36,11 @@ export async function api(path, opts = {}) {
   let r;
   try {
     r = await fetch('/api/' + path, {
-      method: opts.method || 'GET', credentials: 'same-origin',
+      method: opts.method || 'GET', credentials: 'same-origin', signal: opts.signal,
       headers: { 'Content-Type': 'application/json', 'X-CEOOS': '1' },
       body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
-  } catch (e) { throw Object.assign(new Error(HUMAN.net), { status: 0, detail: e.message }); }
+  } catch (e) { if (opts.signal?.aborted) throw opts.signal.reason; throw Object.assign(new Error(HUMAN.net), { status: 0, detail: e.message }); }
   const j = await r.json().catch(() => ({}));
   if (r.status === 401 && path !== 'me') events.dispatchEvent(new Event('logout'));
   if (!r.ok) {
