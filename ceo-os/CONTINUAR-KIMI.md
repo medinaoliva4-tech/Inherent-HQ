@@ -2,6 +2,8 @@
 
 Guía de relevo del 2026-11-05. Quien lea esto debe poder seguir el trabajo sin la conversación anterior.
 
+**Cómo correr Kimi K3 sin costo extra:** usa **OpenCode en la terminal**, no Claude Code. Featherless limita Kimi a 32,768 tokens y Claude Code no compacta por debajo de 100,000. OpenCode sí respeta ese límite (`~/.config/opencode/opencode.json`). Trabaja en tareas cortas, una por sesión: en el spike, una tarea larga leyó y cerró sin escribir.
+
 **Prompt para arrancar:**
 
 > Lee `ceo-os/CONTINUAR-KIMI.md` completo y continúa con la primera tarea pendiente. Antes de escribir código, dime en tres líneas qué vas a hacer.
@@ -138,6 +140,18 @@ El contexto fijo es solo un resumen. La pieza correcta son herramientas de lectu
 3. Filtra con `scoper`, `visible` y `dineroDeInherent`. Finanzas solo CEO.
 4. Solo lectura. Toda escritura sigue el flujo de propuestas que ya existe.
 5. Este cambio toca el VPS: sigue la sección 6.
+
+### 7.2b · Selector de modelos del Chat
+
+El CEO lo pidió así. El menú `menuModelo` en `public/js/screens/llm.js` hoy mezcla «Cuánto piensa» y modelos en una lista.
+
+1. Separa dos controles: esfuerzo y modelo. Que no se vean iguales.
+2. En «Modelos», agrupa por proveedor con flecha: Featherless, NVIDIA y otros. Cada grupo despliega sus modelos.
+3. Crea `grupoDeModelo(id)` en un archivo puro: `nv-` es NVIDIA, lo demás del servidor es Featherless. Pruébala. Si `chat/servidor` puede mandar el proveedor, úsalo en lugar del prefijo.
+4. Mantén los recomendados y los íconos (`IAS`, `iaDe`, `PREFERIDOS`). Si faltan para contenido y diseño, agrégalos con una lista por modo.
+5. Agrega «Agregar proveedor». Abre la sección de conexiones (`#/ajustes/ia`). Al guardar la llave, sus modelos deben aparecer solos: los lee `chat/servidor` desde LiteLLM.
+6. La llave se guarda en el servidor y nunca vuelve al navegador. Agregar un proveedor a LiteLLM cambia el VPS: necesita OK del CEO.
+7. Revisa computadora, iPhone y modo claro.
 
 ### 7.3b · Funciones del Chat contra Claude (el CEO quiere todas)
 
