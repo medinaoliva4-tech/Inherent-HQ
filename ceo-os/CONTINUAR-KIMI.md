@@ -221,6 +221,12 @@ El CEO dijo que el sonido ya le funcionó, pero no aclaró dónde. Pregúntale a
 - Notificaciones: ya existen claves VAPID en Vercel. Revisa `pushListo` y prueba con la app instalada desde Safari.
 - Print-and-correct: imprimir, marcar con pluma, subir foto y que la IA lea los cambios.
 
+## Registro local del arnés
+
+Cada turno guarda una línea en `~/.inherent/turnos.jsonl`: identificador, fecha, estado, duración y llamadas con modelo, tiempo, espera en cola, espera de reintentos, reintentos iniciados, HTTP y tokens informados por el proveedor. Si no llegaron tokens, se guarda `null`, no cero. No incluye prompts, resultados ni errores crudos. El archivo se crea con permisos 600. `INHERENT_DIR` permite aislar pruebas; no cambia la ruta predeterminada.
+
+El arnés muestra espera en cola incluso sin TTY y un cierre visible (terminado, fallo o límite de pasos). Para comprobar: `node scripts/test-metricas-turno.mjs` y `node scripts/test-estabilidad.mjs`. La prueba del arnés usa un proveedor HTTP simulado; todavía no certifica métricas de una sesión real larga ni notificaciones del sistema operativo.
+
 ## 8 · Sin probar en real
 
 Haz estas pruebas cuando el CEO pueda, y corrige lo que falle antes de construir encima:
