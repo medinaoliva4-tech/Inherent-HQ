@@ -20,7 +20,7 @@ await test('el resumen cabe, conserva objetivo y no recibe herramientas', async 
  assert.ok(tokensDe(pedido.messages) <= 16000); assert.equal(pedido.tools, undefined); assert.match(JSON.stringify(pedido.messages), /Terminar el encargo/); assert.equal(r.texto, 'Relevo comprobado.');
 });
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'inherent-ventanas-')); fs.writeFileSync(path.join(tmp, 'datos.txt'), Array.from({ length: 30 }, (_, i) => `dato ${i + 1}`).join('\n'));
-let modo = 'cli', llamadas = 0, resumenes = 0, ultimoPedido;
+let modo = 'cli', llamadas = 0, resumenes = 0, ultimoPedido, imagenRecibida = false;
 const planes = (hechas, total = 10) => ({ tareas: Array.from({ length: total }, (_, i) => ({ titulo: `Tarea ${i + 1}`, estado: i < hechas ? 'hecha' : i === hechas ? 'en_curso' : 'pendiente' })) });
 const srv = http.createServer(async (req, res) => {
  if (req.url.endsWith('/models')) { res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({ data: [{ id: 'kimi-k3' }] })); }
@@ -28,7 +28,8 @@ const srv = http.createServer(async (req, res) => {
  assert.ok(tokensDe(j.messages, j.tools) + j.max_tokens < 32768);
  let delta, finish = 'stop';
  if (modo === 'cancelar') return;
- if (j.messages[0]?.content.startsWith('Crea un relevo')) { resumenes++; delta = { content: 'Se verificaron los pasos previos; sigue con la tarea pendiente y conserva los permisos.' }; }
+ if (modo === 'imagen' && Array.isArray(j.messages[0]?.content)) { imagenRecibida = j.messages[0].content.some(x => x.image_url?.url.startsWith('data:image/jpeg;base64,')); delta = { content: 'Cuadrado rojo y círculo azul.' }; }
+ else if (j.messages[0]?.content.startsWith('Crea un relevo')) { resumenes++; delta = { content: 'Se verificaron los pasos previos; sigue con la tarea pendiente y conserva los permisos.' }; }
  else {
   llamadas++;
   let tool;
@@ -69,6 +70,16 @@ try {
   await db.create('chat_sesiones', { owner: 'prueba@example.test', mensajes: [{ role: 'user', content: 'Completa diez tareas de prueba' }], turno: { estado: 'trabajando', modelo: 'kimi-k3', at: new Date().toISOString() } }, 'prueba', 'ventanas');
   await correrChat('ventanas'); const s = await db.get('chat_sesiones', 'ventanas');
   assert.equal(s.turno.estado, 'listo'); assert.equal(llamadas, 12); assert.ok(resumenes >= 1); assert.ok(s.turno.trabajo.ventana >= 2); assert.ok(s.turno.trabajo.plan.tareas.every(t => t.estado === 'hecha')); assert.equal(s.mensajes.at(-1).content, 'Encargo terminado.');
+ });
+ await test('worker integrado lee píxeles, conserva su lectura y genera aviso al terminar', async () => {
+  const db = await import('../api/_lib/db.js'); const { correrChat } = await import('../gateway/worker.mjs'); const { guardarImagenes, validarImagenes } = await import('../api/_lib/chat-imagenes.js'); modo = 'imagen';
+  const data = 'data:image/jpeg;base64,' + fs.readFileSync(new URL('./fixtures/vision-formas.jpg', import.meta.url)).toString('base64');
+  const imagenes = await guardarImagenes(validarImagenes([{ nombre: 'formas.jpg', data }]), 'prueba@example.test', 'imagen');
+  await db.create('chat_sesiones', { owner: 'prueba@example.test', mensajes: [{ role: 'user', content: 'Describe las formas', imagenes }], turno: { estado: 'trabajando', modelo: 'kimi-k3', at: new Date().toISOString() } }, 'prueba', 'imagen');
+  await correrChat('imagen'); const s = await db.get('chat_sesiones', 'imagen');
+  assert.equal(imagenRecibida, true); assert.equal(s.turno.estado, 'listo'); assert.equal(s.aviso_chat.tipo, 'listo'); assert.equal(s.mensajes[0].vision[0].texto, 'Cuadrado rojo y círculo azul.');
+  assert.ok(s.mensajes.at(-1).pasos.some(p => p.nombre === 'ver_imagen' && p.fase === 'fin' && p.imagen === imagenes[0].id));
+  assert.match(JSON.stringify(ultimoPedido.messages), /Cuadrado rojo/); assert.ok(!JSON.stringify(ultimoPedido.messages).includes('base64')); assert.ok(ultimoPedido.tools.some(t => t.function.name === 'ver_imagen')); assert.ok(ultimoPedido.tools.some(t => t.function.name === 'actualizar_plan'));
  });
  await test('retomar conserva una aprobación ejecutada después del último relevo', async () => {
   const db = await import('../api/_lib/db.js'); const { correrChat } = await import('../gateway/worker.mjs'); modo = 'retomar';
