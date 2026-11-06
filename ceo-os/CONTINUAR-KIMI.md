@@ -77,6 +77,8 @@ Hoy deben dar 65, 20, 74 y 50. Si agregas lógica, agrega su prueba.
 
 **Web:** el merge a `main` despliega solo en Vercel. Confirma con `curl` que el texto nuevo ya está en producción.
 
+**Autor de los commits:** usa `269283319+medinaoliva4-tech@users.noreply.github.com`. Con otro correo, Vercel puede bloquear el deploy con «GitHub couldn’t verify an account for the commit».
+
 **Si `git push` falla:** GitHub a veces falla sin razón. Reintenta y confirma con `git ls-remote origin refs/heads/<rama>`.
 
 **Merge, solo con OK:**
@@ -116,16 +118,14 @@ Reiniciar el trabajador en producción necesita OK del CEO.
 
 ### 7.2 · Contexto de la voz
 
-**Síntoma:** por voz en la Mac sigue diciendo que no tiene acceso a clientes ni proyectos. Por escrito falta confirmar.
+**Estado:** el CEO pidió que la voz tenga contexto. Desde el PR de este cambio recibe lo mismo que el Chat: quiénes somos, oferta, clientes, proyectos, leads y tareas. Falta probarlo en la app.
 
-**Causa posible:** `saberEmpresa(u, { pulso: false })` entra por `cred.contexto` en `public/js/voz-viva.js`, sin proyectos a propósito. Además el modelo pudo no leerlo o decir que no tiene acceso.
-
-**Cómo hacerlo:**
+**Prueba:** por voz, «¿quiénes son mis clientes?» y «¿qué proyectos están abiertos?». Si dice que no tiene acceso:
 1. Confirma que `chat/voz/token` devuelve `contexto` con texto.
 2. Confirma que `setupVoz` lo manda en `systemInstruction`.
-3. En «Sin modo», `SISTEMA_LIBRE` dice «asistente útil». Haz que el texto final de `saberEmpresa` mande con claridad: responde con estos datos y solo pide lo que falte.
-4. Decide con el CEO si la voz puede recibir nombres de proyectos. Hoy no, por el plan gratis. Si dice que sí, usa `pulso: true`.
-5. Prueba: «¿quiénes son mis clientes?» debe responder los nombres.
+3. Pon el contexto antes de `PROMPT_VOZ` y refuerza la instrucción final de `saberEmpresa`.
+
+Gemini está en plan gratis: Google puede usar estos datos. El CEO ya lo sabe. Finanzas no entra.
 
 ### 7.3 · Chat que busca en el OS
 
@@ -136,6 +136,16 @@ El contexto fijo es solo un resumen. La pieza correcta son herramientas de lectu
 3. Filtra con `scoper`, `visible` y `dineroDeInherent`. Finanzas solo CEO.
 4. Solo lectura. Toda escritura sigue el flujo de propuestas que ya existe.
 5. Este cambio toca el VPS: sigue la sección 6.
+
+### 7.3b · Funciones del Chat contra Claude
+
+El CEO pidió que el Chat tenga todas las funciones de Claude. Compara con la app real antes de construir y haz una por PR.
+
+**Ya existe, revisar que funcione:** reintentar, ramificar, adjuntar, buscar en la web, voz, proyectos por cliente, instrucciones, memoria y agentes.
+**Falta o no se encontró:** editar un mensaje, compartir, exportar y estilos de respuesta.
+**Revisar con cuidado:** artefactos, pegar imágenes y arrastrar archivos.
+
+Orden sugerido: editar mensaje, adjuntar imágenes y documentos, artefactos. Esto salió de una búsqueda rápida en el código, no de una auditoría completa.
 
 ### 7.4 · Error al cambiar de voz en iPhone
 
