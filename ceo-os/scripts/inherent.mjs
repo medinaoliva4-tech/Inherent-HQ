@@ -49,7 +49,7 @@ const eco = (t) => { if (t.trim()) console.log(`\n${crema('❯')} ${t}\n`); };
 // Mientras piensa: la animación vive abajo, en la barra.
 function pensando(rotulo = 'Pensando') {
   const t0 = Date.now(), cuadros = ['✳', '✴', '✵', '✶', '✷', '✸']; let i = 0;
-  if (!TTY) return () => {};
+  if (!TTY) { console.log(gris(`${rotulo}…`)); return () => {}; }
   const id = setInterval(() => { const m = `${cuadros[i++ % cuadros.length]} ${rotulo}… ${Math.round((Date.now() - t0) / 1000)}s`; if (FIJO()) { ed.actividad = m; pie(); } else process.stdout.write(`\r\x1b[K${gris(m)}`); }, 150);
   return () => { clearInterval(id); ed.actividad = ''; if (FIJO()) pie(); else process.stdout.write('\r\x1b[K'); };
 }
@@ -122,11 +122,11 @@ async function pedir(messages, tools) {
   const orden = [...new Set([modelo, RESPALDO, MEMORIA])];
   for (const m of orden) {
     const parar = pensando(m === modelo ? 'Pensando' : `Cambié a ${m}`), ctrl = new AbortController(), reloj = setTimeout(() => ctrl.abort(), TOPE_ESPERA);
-    const onAvance = ({ texto }) => { if (texto && texto.length > previo.length) { clearTimeout(reloj); if (!previo) { parar(); process.stdout.write(`${naranja('●', 209)} `); } process.stdout.write(texto.slice(previo.length)); previo = texto; } };
+    const onAvance = ({ texto }) => { if (texto && texto.length > previo.length) { reloj.refresh(); if (!previo) { parar(); process.stdout.write(`${naranja('●', 209)} `); } process.stdout.write(texto.slice(previo.length)); previo = texto; } };
     try {
       const tope = contextoDe(m) - MAX_SALIDA - 1500;
       return await chat(m, '', '', MAX_SALIDA, { messages: ajustarAlTope(messages, tope, tools), tools, onAvance, cadaMs: 200, signal: ctrl.signal });
-    } catch (e) { if (m === orden.at(-1)) throw e; if (previo) throw e; }
+    } catch (e) { if (m === orden.at(-1)) throw e; if (previo) throw e; console.log(gris(`Sin respuesta de ${m}; intento con ${orden[orden.indexOf(m) + 1]}.`)); }
     finally { clearTimeout(reloj); parar(); }
   }
   throw new Error('Ningún modelo respondió');
