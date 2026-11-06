@@ -618,3 +618,5 @@ Filtro del CEO: si no mueve dinero, no entra. Antes de construir se pregunta qu�
 **Al final (detalles):** salto raro de OS a Chat · light mode sin texto blanco · cosas pequeñas en el iPhone · notificaciones.
 
 **Hecho:** contexto, micrófono de Mac, teclado de iPhone y Chat de entrada con proyectos. **Falta confirmar:** voz en Mac y el error al cambiar de voz.
+
+**Contexto seguro del Chat:** `gateway/contexto.mjs` recorta antes de cada llamada. Si el proveedor rechaza el tamaño, el trabajador aprende su tope real y reintenta una vez. Sirve para cualquier modelo. Un modelo nuevo debe registrarse en `gateway/limits.json`; sin registro se trata como 32k.

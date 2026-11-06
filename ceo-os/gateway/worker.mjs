@@ -21,6 +21,7 @@ import { investigar, buscar, leer } from './web.mjs';
 const MODELO_BUSQUEDAS = process.env.GW_QUERY_MODEL || 'deepseek-v4-flash';
 import { limits, BASE, est, log, chat, condense, contextoDe } from './motor.mjs';
 import { conectorDe } from '../public/js/conectores.js';
+import { ajustarAlTope } from './contexto.mjs';
 import { pedidoRevisor, leerRevision, debeCorregir, retroalimentacion } from '../public/js/revisor.js';
 
 const RUNS = 'agent_runs', GW = 'gateway_estado', CHATS = 'chat_sesiones', YO = 'gateway';
@@ -311,7 +312,7 @@ async function conversacion(id, s, modelo) {
     await tocarChat(id, () => ({ resumen }));
     msgs = armar();
   }
-  return msgs;
+  return ajustarAlTope(msgs, cap); // último seguro: pase lo que pase, cabe
 }
 
 // Las herramientas del Chat: la web (siempre) y los MCP que el dueño de la conversación tiene conectados (por el OS).
@@ -371,8 +372,10 @@ async function correrChat(id) {
     for (let vuelta = 0; vuelta <= 6; vuelta++) {
       const lleno = est(JSON.stringify(messages)) + est(JSON.stringify(h.defs)) > cap - 2500, ultima = vuelta === 6 || lleno;
       if (ultima && vuelta) messages.push({ role: 'user', content: 'Ya no hay más herramientas: responde ahora con lo que tienes.' });
-      const out = await chat(modelo, '', '', MAX_OUT, { messages, tools: ultima ? null : h.defs, signal: ctrl.signal, cadaMs: 800,
+      const pedir = () => chat(modelo, '', '', MAX_OUT, { messages: ajustarAlTope(messages, contextoDe(modelo) - MAX_OUT - 1500, ultima ? null : h.defs), tools: ultima ? null : h.defs, signal: ctrl.signal, cadaMs: 800,
         onAvance: async ({ texto }) => { if (texto && texto !== ultimoTexto) { ultimoTexto = texto; await escribir(texto); } } });
+      // Si el modelo igual no lo acepta, ya aprendió su tope real: una vez más, recortando a ese tope.
+      const out = await pedir().catch((e) => { if (e.code === 'CONTEXTO') return pedir(); throw e; });
       usage = { prompt_tokens: usage.prompt_tokens + (out.usage.prompt_tokens || 0), completion_tokens: usage.completion_tokens + (out.usage.completion_tokens || 0) }; seg += out.seg;
       if (!out.toolCalls?.length) { final = out.content; break; }
       messages.push({ role: 'assistant', content: out.content || null, tool_calls: out.toolCalls });
