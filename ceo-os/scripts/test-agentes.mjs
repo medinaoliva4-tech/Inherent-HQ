@@ -9,7 +9,7 @@ import { columnaDe, tablero, COLUMNAS } from '../public/js/tablero.js';
 import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
-import { RUTAS_BASE, skillDe } from '../api/_lib/conocimiento.js';
+import { RUTAS_BASE, skillDe, pulsoNegocio } from '../api/_lib/conocimiento.js';
 import { leer, aTexto } from '../gateway/web.mjs';
 import { esEscritura } from '../api/_lib/mcp.js';
 import { PROPONIBLES_CHAT } from '../api/_lib/agentes.js';
@@ -120,6 +120,11 @@ t('tablero: cada trabajo cae en una sola columna', () => {
   const xs = [T('revision', 'decision'), T('revision', 'decision', 1, { archivado: true }), T('revision', 'decision', 1, { flujo: { area: 'creative' } })];
   const c = tablero(xs, { area: 'strategy' }); assert.equal(c.length, COLUMNAS.length); assert.equal(c[4].total, 1);
   assert.equal(tablero(Array.from({ length: 12 }, () => ({ completo: true })))[5].trabajos.length, 8);
+});
+t('contexto: el pulso cuenta el negocio sin costos', () => {
+  const p = pulsoNegocio({ cuentas: [{ name: 'AKAI' }, { name: 'Vieja', archivado: true }], proyectos: [{ name: 'Web', status: 'En curso', client_slug: 'akai' }, { name: 'Fin', status: 'Hecho' }], leads: [{ stage: 'Nuevo' }, { stage: 'Nuevo' }, { stage: 'Ganado', archived: true }], tareas: [{ status: 'Hecha' }, { status: 'Por hacer' }] });
+  assert.match(p, /Clientes \(1\): AKAI/); assert.match(p, /Web \(akai\)/); assert.match(p, /Nuevo 2/); assert.match(p, /Tareas pendientes: 1/);
+  assert.ok(!/Fin|Vieja|Ganado/.test(p));
 });
 t('supervisor: lee varios agentes y sigue una sola vez', () => {
   const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];

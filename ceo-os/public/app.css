@@ -10061,7 +10061,8 @@ button,a,.lc{touch-action:manipulation}
 
 /* Chat de entrada: saludo, caja y proyectos de clientes */
 @media (min-width:761px){
-  .llm-main.entrada{display:flex;flex-direction:column;justify-content:center}
+  .llm-main.entrada{display:flex;flex-direction:column;justify-content:center;background:none}
+  .llm-main.entrada::before,.llm-main.entrada::after{display:none}
   .llm-main.entrada .llm-head{position:absolute;top:0;left:0;right:0}
   .llm-main.entrada .llm-conv{flex:none;height:auto;overflow:visible}
   .llm-main.entrada .llm-compw{position:relative;margin:18px 0 0;padding-bottom:0;background:none}

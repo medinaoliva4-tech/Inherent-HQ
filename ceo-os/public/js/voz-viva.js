@@ -35,7 +35,7 @@ export async function abrirVozViva({ titulo, sistema, salida, alTeclado, alCerra
   };
   const conectar = () => {
     ws = new WebSocket(urlVoz(cred.token));
-    ws.onopen = () => ws.send(JSON.stringify(setupVoz({ modelo: cred.modelo, voz: cred.voz, sistema, handle })));
+    ws.onopen = () => ws.send(JSON.stringify(setupVoz({ modelo: cred.modelo, voz: cred.voz, sistema: `${sistema}${cred.contexto || ''}`, handle })));
     ws.onmessage = async (e) => {
       const m = leerMensaje(JSON.parse(typeof e.data === 'string' ? e.data : await e.data.text()));
       if (m.listo) { reintentos = 0; if (estado !== 'pausa') poner('escuchando'); return; }
