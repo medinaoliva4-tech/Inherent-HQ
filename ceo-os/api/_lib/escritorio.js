@@ -12,7 +12,7 @@ let CACHE = { at: 0, v: null };
 async function ultima() {
   if (CACHE.v && Date.now() - CACHE.at < 5 * 60_000) return CACHE.v;
   const r = await ghApi('releases?per_page=30', undefined, REPO_APP);
-  if (!r.ok) { console.error(`escritorio/version: GitHub respondió ${r.status}`); throw Object.assign(new Error(`GitHub ${r.status} leyendo las versiones de la app`), { code: 'GH' }); }
+  if (!r.ok) { console.error(`escritorio/version: GitHub respondió ${r.status} · permisos: ${r.headers.get('x-accepted-github-permissions') || '—'} · tipo: ${r.headers.get('github-authentication-token-expiration') ? 'con vencimiento' : 'sin vencimiento'}`); throw Object.assign(new Error(`GitHub ${r.status} leyendo las versiones de la app`), { code: 'GH' }); }
   const rel = (await r.json()).find((x) => !x.draft && !x.prerelease && TAG.test(x.tag_name));
   const v = rel ? { version: TAG.exec(rel.tag_name)[1], n: Number(TAG.exec(rel.tag_name)[2]), tag: rel.tag_name, fecha: rel.published_at,
     assets: rel.assets.map((a) => ({ id: a.id, nombre: a.name, tam: a.size })) } : null;

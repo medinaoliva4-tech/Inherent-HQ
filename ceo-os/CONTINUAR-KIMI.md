@@ -107,6 +107,8 @@ Reiniciar el trabajador en producción necesita OK del CEO.
 
 ### 7.1 · Actualizaciones de la app (urgente, bloqueado por token)
 
+**Nota del 6 de noviembre:** con el token nuevo siguió el 404. El registro ahora dice qué permisos pide GitHub. Léelo con `escritorio/version` en Vercel antes de pedirle otro token al CEO. Revisa que el dueño del token sea `medinaoliva4-tech` y que no sea de solo repos públicos.
+
 **Estado:** `GET /api/escritorio/version` sigue dando `GitHub respondió 404` en producción. El código ya consulta el repo correcto. El CEO agregó acceso al token y a las 02:45 UTC del 6 de noviembre seguía el 404.
 
 **Cómo resolverlo:**
@@ -137,15 +139,28 @@ El contexto fijo es solo un resumen. La pieza correcta son herramientas de lectu
 4. Solo lectura. Toda escritura sigue el flujo de propuestas que ya existe.
 5. Este cambio toca el VPS: sigue la sección 6.
 
-### 7.3b · Funciones del Chat contra Claude
+### 7.3b · Funciones del Chat contra Claude (el CEO quiere todas)
 
-El CEO pidió que el Chat tenga todas las funciones de Claude. Compara con la app real antes de construir y haz una por PR.
+Antes de construir, abre Claude real y compara. Marca cada una como hecha solo si la probaste. Una por PR.
 
-**Ya existe, revisar que funcione:** reintentar, ramificar, adjuntar, buscar en la web, voz, proyectos por cliente, instrucciones, memoria y agentes.
-**Falta o no se encontró:** editar un mensaje, compartir, exportar y estilos de respuesta.
-**Revisar con cuidado:** artefactos, pegar imágenes y arrastrar archivos.
+| Función | Estado | Cómo hacerla |
+|---|---|---|
+| Arrastrar, pegar y botón + | Hecho solo para texto | `public/js/chat-archivos.js` y `sumarArchivos` en `llm.js` |
+| Imágenes | Falta | Confirma que el modelo acepta visión. Manda `content` como lista en `worker.mjs`; hoy el mensaje es texto |
+| PDF y Word | Falta | Extrae el texto en el servidor antes de `conArchivos`. Agrega una ruta y una dependencia pequeña |
+| Editar un mensaje enviado | Falta | Botón en el mensaje. Corta `mensajes` hasta ahí y reusa `ramificar` o una ruta nueva con `v` |
+| Artefactos | Por revisar | Parte de `llm/genui.js`. Falta guardarlos, listarlos, editarlos y compartirlos |
+| Memoria entre conversaciones | Por revisar | Debe poder leerse y editarse en Ajustes |
+| Instrucciones personales | Por revisar | Una nota en Ajustes que entra a cada turno |
+| Instrucciones y archivos por proyecto | Parcial | `chat/clientes/:id` e instrucciones por cliente. Faltan archivos del proyecto |
+| Research largo con citas | Por revisar | Usa `investigar` de `gateway/web.mjs` como modo de varios pasos |
+| Conectores | Parcial | MCP por persona ya existe en etapas; revisa el Chat |
+| Compartir y exportar conversación | Falta | Exportar a Markdown primero. Compartir necesita permiso por persona |
+| Estilos de respuesta | Falta | Selector que agrega un bloque al sistema |
+| Chat incógnito | Falta | Conversación que no se guarda. Cuida que no llene la memoria |
+| Mostrar el razonamiento | Por revisar | El worker ya recibe fragmentos |
 
-Orden sugerido: editar mensaje, adjuntar imágenes y documentos, artefactos. Esto salió de una búsqueda rápida en el código, no de una auditoría completa.
+La tabla sale de la documentación pública de Claude y de una búsqueda en el código. No es una auditoría completa.
 
 ### 7.4 · Error al cambiar de voz en iPhone
 
