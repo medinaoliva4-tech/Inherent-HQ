@@ -683,6 +683,7 @@ async function start(u) {
   if (me.role !== 'client') primerDia(me);
   // Avisos: la campanita cuenta lo que pide atención (servidor + tu compu) y se pone al día sola.
   if (me.role !== 'client') import('./avisos-ui.js').then((a) => a.instalarCampana(me)).catch(() => {});
+  if (me.role !== 'client') import('./chat-avisos-ui.js').then((a) => a.instalarAvisosChat(me)).catch(() => {});
   // El service worker de los avisos (web push). Sin él, nada cambia.
   if (me.role !== 'client') import('./avisos.js').then((a) => a.registrarSW()).catch(() => {});
   // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.

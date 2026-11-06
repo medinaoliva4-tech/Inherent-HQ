@@ -1,3 +1,4 @@
+import { rutasChatAvisos, avisosChatDe } from './chat-avisos.js';
 // Los avisos al celular (web push): el OS instalado como app avisa cuando entra un lead y, cada mañana, lo que necesita atención.
 //   GET  avisos/clave      → la clave pública (null si el servidor no tiene las claves VAPID)
 //   POST avisos/suscribir  → guarda la suscripción de este dispositivo (team.<email>.push, hasta 5)
@@ -25,15 +26,16 @@ function conf() {
 const subOk = (s) => s && typeof s.endpoint === 'string' && /^https:\/\//.test(s.endpoint) && s.keys?.p256dh && s.keys?.auth;
 
 // Manda un aviso a todos los dispositivos de una persona. Las suscripciones muertas (404/410) se olvidan solas.
-export async function mandar(email, aviso) {
+export async function mandar(email, aviso, { estricto = false } = {}) {
   if (!conf()) return 0;
   const t = await db.get('team', email); const subs = (t?.push || []).filter(subOk); if (!subs.length) return 0;
-  const vivas = []; let n = 0;
-  for (const s of subs) {
-    try { await webpush.sendNotification(s, JSON.stringify({ title: String(aviso.title || 'Inherent OS').slice(0, 80), body: String(aviso.body || '').slice(0, 200), url: String(aviso.url || '/'), tag: aviso.tag || '' }), { TTL: 6 * 3600 }); vivas.push(s); n++; }
-    catch (e) { if (![404, 410].includes(e.statusCode)) vivas.push(s); }
-  }
+  const vivas = []; let n = 0, fallo = false;
+  await Promise.all(subs.map(async (s) => {
+    try { await webpush.sendNotification(s, JSON.stringify({ title: String(aviso.title || 'Inherent OS').slice(0, 80), body: String(aviso.body || '').slice(0, 200), url: String(aviso.url || '/'), tag: aviso.tag || '' }), { TTL: 6 * 3600, timeout: 4000 }); vivas.push(s); n++; }
+    catch (e) { if (![404, 410].includes(e.statusCode)) { vivas.push(s); fallo = true; } }
+  }));
   if (vivas.length !== subs.length) await db.upsert('team', email, { push: vivas }, 'sistema');
+  if (estricto && fallo) throw new Error('La entrega del aviso sigue pendiente');
   return n;
 }
 // Quién tiene avisos encendidos, con su perfil aplicado (áreas y vistas).
@@ -68,7 +70,8 @@ export async function avisosDe(u, hoy = hoyGT()) {
   const r0 = correr(REGLAS, datos, persona, hoy), errores = r0.errores;
   // El nombre del cliente para la etiqueta del aviso (la regla trae el slug).
   const nombres = Object.fromEntries((datos.clientes || []).map((c) => [c.slug, c.nombre]));
-  const items = r0.items.map((x) => (x.cliente && nombres[x.cliente] ? { ...x, clienteNombre: nombres[x.cliente] } : x));
+  const chats = (await avisosChatDe(u)).map((a) => ({ id: 'chat', clave: a.id, grupo: 'trabajo', area: 'todas', urgencia: a.tipo === 'listo' ? 'baja' : 'alta', titulo: a.title, detalle: a.body, accion: { label: 'Abrir conversación', href: a.url }, huella: a.id, desde: a.at, fijo: false }));
+  const items = [...r0.items, ...chats].map((x) => (x.cliente && nombres[x.cliente] ? { ...x, clienteNombre: nombres[x.cliente] } : x));
   const { visibles, pospuestos } = aplicarPospuestos(items, datos.yo?.avisos_pos || {}, hoy);
   return { hoy, items: visibles, pospuestos, n: contar(visibles), errores, pos: datos.yo?.avisos_pos || {}, todos: items };
 }
@@ -76,6 +79,7 @@ export async function avisosDe(u, hoy = hoyGT()) {
 const COMPU = /^pla-(puente|app-mac)$|^pla-avisos-celular:este$/;
 
 export function rutas(on) {
+  rutasChatAvisos(on, mandar);
   on('GET', 'avisos', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const r = await avisosDe(u);

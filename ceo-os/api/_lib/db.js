@@ -43,6 +43,21 @@ export async function list(coll) {
 export async function get(coll, id) {
   return row((await (await conn())('SELECT * FROM docs WHERE coll=$1 AND id=$2', [coll, id]))[0]);
 }
+// Solo metadatos: no cargar los historiales de todas las conversaciones para sondear.
+export async function avisosChat({ owner, pendientes = false } = {}) {
+  if (!owner && !pendientes) return [];
+  return (await conn())(`SELECT coll, id, data->'aviso_chat' AS aviso,
+    data->>'owner' AS owner, data->>'creado_por' AS creado_por, data->>'cliente' AS cliente FROM docs
+    WHERE coll IN ('chat_sesiones','agent_runs') AND data->'aviso_chat' IS NOT NULL
+    AND coalesce(data->>'archivado','false') <> 'true' AND coalesce(data->>'oculto','false') <> 'true'
+    AND data->'aviso_chat'->>'at' > $1
+    ${owner ? "AND lower(data->'aviso_chat'->>'owner') = $2" : "AND data->'aviso_chat'->>'enviado' = 'false'"}
+    ORDER BY data->'aviso_chat'->>'at' DESC LIMIT 40`, [new Date(Date.now() - 7 * 86400000).toISOString(), ...(owner ? [owner.toLowerCase()] : [])]);
+}
+export async function avisoChatEntregado(coll, id, evento) {
+  await (await conn())(`UPDATE docs SET data=jsonb_set(data,'{aviso_chat,enviado}','true'), v=v+1
+    WHERE coll=$1 AND id=$2 AND data->'aviso_chat'->>'id'=$3`, [coll, id, evento]);
+}
 // Cuántas escrituras hubo en esta instancia: las memorias cortas (los Avisos) se olvidan cuando cambia.
 let escrituras = 0;
 export const version = () => escrituras;

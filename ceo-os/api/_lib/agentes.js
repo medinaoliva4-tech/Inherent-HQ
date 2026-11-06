@@ -1,3 +1,4 @@
+import { cambioAviso } from '../../public/js/chat-avisos-datos.js';
 // Agent Area (#/ai/agentes) · workflows de agentes y runs por etapas, con validación humana obligatoria (AGENTS IN OS.pdf).
 //
 // Dos colecciones propias (NO pasan por /api/db: collGuard las desconoce → 404; solo estas rutas, que aplican las reglas):
@@ -85,7 +86,7 @@ async function cargar(req, res, u) {
 async function guardar(res, u, r, cambio, nota = {}, coll = COLL) {
   const { id, v, _meta, ...data } = r;
   const notas = (Array.isArray(nota) ? nota : [nota]).map((x) => ({ at: ahora(), quien: u.email, ...x }));
-  const nuevo = { ...data, ...cambio, historial: [...(data.historial || []), ...notas].slice(-500) };
+  const nuevo = { ...data, ...cambio, ...(coll === COLL ? cambioAviso(coll, r, { ...r, ...cambio }) : {}), historial: [...(data.historial || []), ...notas].slice(-500) };
   const d = await db.update(coll, id, nuevo, v, u.email);
   if (!d) { res.status(409).json({ error: 'Alguien lo cambió mientras lo veías. Recarga.', code: 'CONFLICTO' }); return null; }
   return d;

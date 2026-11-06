@@ -907,6 +907,12 @@ Los selectores de modo/modelo se limitan al espacio visible junto al botón; la 
 
 `/orquesta` aparece en las sugerencias y deja una espera visible mientras se prepara el plan. La API normaliza las áreas guardadas (`strategy`, `creative`, `production`) a los identificadores del enrutador; sigue validando clientes y ficha. El plazo del modelo es 30 segundos; el navegador cancela a los 35 segundos y muestra el fallo en el hilo. Una propuesta nunca inicia trabajo sin Empezar. Un pedido de otro cliente requiere otra conversación cuando ya hay cliente seleccionado. Sigue necesitando una IA configurada para Agents en Ajustes; no reutiliza automáticamente la conexión LiteLLM del VPS.
 
+### Avisos del Chat
+
+Los cambios a terminado, revisión/pregunta o error guardan un aviso junto al resultado, sin prompts, nombres de clientes ni errores crudos. El Gateway pide a la web entregar los pendientes por el web push existente; un fallo transitorio conserva el aviso. La web comprueba destinatario y alcance, y el clic abre la conversación o el trabajo. El OS sondea solo metadatos cada 20 segundos y muestra una tarjeta incluso al salir del Chat. También quedan en Avisos durante siete días, hasta que el trabajo cambia de estado. Se avisa al dueño de la conversación o a quien creó el trabajo; no a todos los posibles aprobadores. Cada documento conserva su último aviso, no un historial de eventos.
+
+En la app de Mac se usa la [API de notificaciones del renderer de Electron](https://www.electronjs.org/docs/latest/tutorial/notifications), con permiso del dispositivo y la app abierta. Con la app cerrada, web push requiere un navegador/PWA suscrito. La entrega puede repetirse después de un corte al confirmar; el tag del evento permite agrupar duplicados. Pruebas: `test-chat-avisos.mjs` (base en memoria, entrega simulada) y `test-chat-avisos-browser.mjs` (notificación nativa simulada). Falta probar recepción push real, app firmada y iPhone físico. Requiere publicar web y actualizar/reiniciar el Gateway con aprobación.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**
