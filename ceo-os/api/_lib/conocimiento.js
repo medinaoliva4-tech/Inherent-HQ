@@ -45,7 +45,7 @@ export async function conocimientoDeEtapa(run, n) {
 
 // Lo que el equipo trabaja hoy en un cliente (la página del cliente).
 // Lo que el Chat sabe de la empresa: quién es, qué vende y, para el CEO, cómo van clientes, proyectos y ventas.
-// Nunca entra 06-ECONOMIA.md. La voz va a un servicio externo gratuito: recibe solo lo primero (pulso: false).
+// Nunca entra 06-ECONOMIA.md. La voz también lo recibe, por decisión del CEO, aunque Gemini gratis puede usar esos datos.
 const RUTAS_EMPRESA = [['inherent/00-PRINCIPIOS.md', 6000], ['inherent/01-IDENTIDAD.md', 5000], ['inherent/03-OFERTA.md', 5000]];
 export const pulsoNegocio = ({ cuentas = [], proyectos = [], leads = [], tareas = [] }) => {
   const clientes = cuentas.filter((c) => !c.archivado && c.name).map((c) => c.name).slice(0, 40);
