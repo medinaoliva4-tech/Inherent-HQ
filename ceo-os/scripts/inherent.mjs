@@ -107,10 +107,18 @@ async function compactar() {
   let corte = S.mensajes.length - 6; while (corte > 0 && S.mensajes[corte].role !== 'user') corte--;
   if (corte < 2) return;
   const viejo = S.mensajes.slice(0, corte).map((m) => `${m.role}: ${String(m.content || JSON.stringify(m.tool_calls || '')).slice(0, 3000)}`).join('\n');
-  console.log(gris('Resumiendo lo viejo…'));
-  const r = await chat(MEMORIA, 'Resumes trabajo sin inventar. Conservas literal rutas, decisiones, datos y pendientes. Español.', `${S.resumen ? `Resumen previo:\n${S.resumen}\n\n` : ''}Resume en 1,200 tokens:\n\n${viejo.slice(-200000)}`, 1800, { signal: AbortSignal.timeout(60000) });
+  if (FIJO()) { ed.actividad = 'Resumiendo lo viejo…'; pie(); } else console.log(gris('Resumiendo lo viejo…'));
+  const pedido = (n) => `${S.resumen ? `Resumen previo:\n${S.resumen}\n\n` : ''}Resume en 1,200 tokens:\n\n${viejo.slice(-n)}`;
+  const sistema = 'Resumes trabajo sin inventar. Conservas literal rutas, decisiones, datos y pendientes. Español.';
+  let nuevo = '';
+  for (const [m, n] of [[MEMORIA, 60000], [RESPALDO, 40000]]) {
+    try { nuevo = (await chat(m, sistema, pedido(n), 1800, { signal: AbortSignal.timeout(45000) })).content.trim(); if (nuevo) break; } catch { /* sigue con el otro */ }
+  }
+  // Si ninguno responde, guarda lo que pidió la persona: el trabajo sigue y no se reintenta en cada mensaje.
+  if (!nuevo) nuevo = `${S.resumen}\n${S.mensajes.slice(0, corte).filter((m) => m.role === 'user').map((m) => `- ${String(m.content).slice(0, 300)}`).join('\n')}`.slice(-4000);
+  if (FIJO()) { ed.actividad = ''; pie(); }
   fs.appendFileSync(ruta().replace('.json', '.historial.jsonl'), S.mensajes.slice(0, corte).map((m) => JSON.stringify(m)).join('\n') + '\n');
-  S.resumen = r.content.trim(); S.mensajes = S.mensajes.slice(corte);
+  S.resumen = nuevo; S.mensajes = S.mensajes.slice(corte); guardar();
 }
 async function turno(texto, rl) {
   S.mensajes.push({ role: 'user', content: texto }); await compactar().catch((e) => console.log(gris(`Sin resumen: ${e.message}`)));
