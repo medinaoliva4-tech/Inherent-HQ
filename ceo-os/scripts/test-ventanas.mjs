@@ -20,11 +20,11 @@ await test('el resumen cabe, conserva objetivo y no recibe herramientas', async 
  assert.ok(tokensDe(pedido.messages) <= 16000); assert.equal(pedido.tools, undefined); assert.match(JSON.stringify(pedido.messages), /Terminar el encargo/); assert.equal(r.texto, 'Relevo comprobado.');
 });
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'inherent-ventanas-')); fs.writeFileSync(path.join(tmp, 'datos.txt'), Array.from({ length: 30 }, (_, i) => `dato ${i + 1}`).join('\n'));
-let modo = 'cli', llamadas = 0, resumenes = 0;
+let modo = 'cli', llamadas = 0, resumenes = 0, ultimoPedido;
 const planes = (hechas, total = 10) => ({ tareas: Array.from({ length: total }, (_, i) => ({ titulo: `Tarea ${i + 1}`, estado: i < hechas ? 'hecha' : i === hechas ? 'en_curso' : 'pendiente' })) });
 const srv = http.createServer(async (req, res) => {
  if (req.url.endsWith('/models')) { res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({ data: [{ id: 'kimi-k3' }] })); }
- let raw = ''; for await (const c of req) raw += c; const j = JSON.parse(raw);
+ let raw = ''; for await (const c of req) raw += c; const j = JSON.parse(raw); ultimoPedido = j;
  assert.ok(tokensDe(j.messages, j.tools) + j.max_tokens < 32768);
  let delta, finish = 'stop';
  if (modo === 'cancelar') return;
@@ -70,13 +70,19 @@ try {
   await correrChat('ventanas'); const s = await db.get('chat_sesiones', 'ventanas');
   assert.equal(s.turno.estado, 'listo'); assert.equal(llamadas, 12); assert.ok(resumenes >= 1); assert.ok(s.turno.trabajo.ventana >= 2); assert.ok(s.turno.trabajo.plan.tareas.every(t => t.estado === 'hecha')); assert.equal(s.mensajes.at(-1).content, 'Encargo terminado.');
  });
- await test('Detener corta también una generación silenciosa antes de su timeout', async () => {
+ await test('retomar conserva una aprobación ejecutada después del último relevo', async () => {
+  const db = await import('../api/_lib/db.js'); const { correrChat } = await import('../gateway/worker.mjs'); modo = 'retomar';
+  await db.create('chat_sesiones', { owner: 'prueba@example.test', mensajes: [{ role: 'user', content: 'Encargo de prueba' }, { role: 'assistant', content: 'Propuesta pendiente', propuestas: [{ estado: 'aprobada', tool: 'crear_tarea', args: {}, resultado: 'Tarea creada' }] }, { role: 'user', content: 'Retoma el plan' }], turno: { estado: 'trabajando', modelo: 'kimi-k3', at: new Date().toISOString(), trabajo: { objetivo: 'Encargo de prueba', ventana: 1, plan: null, relevo: { texto: 'Quedaba por crear la tarea' } } } }, 'prueba', 'retomar');
+  await correrChat('retomar'); assert.match(JSON.stringify(ultimoPedido.messages), /YA SE HIZO en el OS/); assert.match(JSON.stringify(ultimoPedido.messages), /Tarea creada/);
+ });
+ for (const largo of [false, true]) await test(`Detener corta una ${largo ? 'condensación' : 'generación'} silenciosa antes de su timeout`, async () => {
   const db = await import('../api/_lib/db.js'); const { correrChat } = await import('../gateway/worker.mjs');
   modo = 'cancelar';
-  await db.create('chat_sesiones', { owner: 'prueba@example.test', mensajes: [{ role: 'user', content: 'Prueba de cancelación' }], turno: { estado: 'trabajando', modelo: 'kimi-k3', at: new Date().toISOString() } }, 'prueba', 'cancelar');
-  const inicio = Date.now(), trabajo = correrChat('cancelar');
-  await new Promise(r => setTimeout(r, 100)); await db.upsert('chat_sesiones', 'cancelar', { turno: { estado: 'detenido' } }, 'prueba');
-  await trabajo; assert.ok(Date.now() - inicio < 5000); assert.equal((await db.get('chat_sesiones', 'cancelar')).turno.estado, 'detenido');
+  const id = largo ? 'cancelar-resumen' : 'cancelar';
+  await db.create('chat_sesiones', { owner: 'prueba@example.test', mensajes: [{ role: 'user', content: largo ? 'dato '.repeat(30000) : 'Prueba de cancelación' }], turno: { estado: 'trabajando', modelo: 'kimi-k3', at: new Date().toISOString() } }, 'prueba', id);
+  const inicio = Date.now(), trabajo = correrChat(id);
+  await new Promise(r => setTimeout(r, 100)); await db.upsert('chat_sesiones', id, { turno: { estado: 'detenido' } }, 'prueba');
+  await trabajo; assert.ok(Date.now() - inicio < 5000); assert.equal((await db.get('chat_sesiones', id)).turno.estado, 'detenido');
  });
 
 } finally { await new Promise(r => srv.close(r)); fs.rmSync(tmp, { recursive: true, force: true }); }
