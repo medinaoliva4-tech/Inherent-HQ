@@ -8,7 +8,7 @@ function estado(coll, d) {
     if (d.turno?.estado === 'error') return { tipo: 'error', firma: 'error' };
     if (d.turno?.estado !== 'listo') return null;
     const m = [...(d.mensajes || [])].reverse().find((x) => x.role === 'assistant');
-    const tipo = m?.propuestas?.some((p) => p.estado === 'pendiente') ? 'decidir' : 'listo';
+    const tipo = d.turno?.trabajo?.plan?.bloqueo || m?.propuestas?.some((p) => p.estado === 'pendiente') ? 'decidir' : 'listo';
     return { tipo, firma: tipo };
   }
   if (coll !== 'agent_runs' || d.pausado) return null;

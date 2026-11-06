@@ -17,6 +17,8 @@ await test('solo cambios de estado generan aviso; una propuesta requiere decisi�
   assert.ok(!JSON.stringify(a).includes('PRIVADO'));
   assert.deepEqual(cambioAviso('chat_sesiones', fin, { ...fin, title: 'Cambió título' }), {});
   assert.equal(cambioAviso('chat_sesiones', fin, base).aviso_chat, null);
+  const bloqueado = { ...fin, mensajes: [], turno: { estado: 'listo', trabajo: { plan: { bloqueo: 'Hace falta una decisión' } } } };
+  assert.equal(cambioAviso('chat_sesiones', base, bloqueado).aviso_chat.tipo, 'decidir');
 });
 await test('etapa en revisión/pregunta/error y trabajo completo; sin enlaces externos', () => {
   const r = { id: 'r1', v: 3, creado_por: base.owner, etapas: [{ estado: 'trabajando' }] };
