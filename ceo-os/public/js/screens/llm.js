@@ -892,6 +892,8 @@ export async function render(el, { me, sub = [], alive }) {
       const mo = modoDeArea(run.flujo?.area);
       if (modos.some((m) => m.id === mo)) { S.modo = mo; if (run.cliente && modoDe(mo).pide) S.slugs[mo] = run.cliente; }
       S.agentes = [run];
+      // Conserva el enlace al trabajo al recargar o volver desde una notificación.
+      history.replaceState(null, '', '#/chat/trabajo/' + enc(id));
     }
     ponerRun(run); S.tab = run.id; S.panel = true; R.dataset.panel = 'on';
     if (alive()) { pintarSide(); pintarCentro(); pintarPanel(); vigilar(); }

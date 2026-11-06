@@ -6,9 +6,11 @@ import { execSync } from 'node:child_process';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = createRequire(execSync('npm root -g').toString().trim() + '/')('playwright')); }
-const base = 'http://localhost:3000';
+const base = process.env.TEST_BASE || 'http://localhost:3000';
+if (!['localhost', '127.0.0.1'].includes(new URL(base).hostname)) throw new Error('Solo pruebas locales');
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+await page.addInitScript(() => { document.startViewTransition = undefined; });
 const errors = []; page.on('pageerror', e => errors.push(e.message));
 const api = (path, body) => page.evaluate(async ({path, body}) => {
   const r = await fetch('/api/' + path, { method: body ? 'POST' : 'GET', headers: {'Content-Type':'application/json','X-CEOOS':'1'}, ...(body ? {body:JSON.stringify(body)} : {}) });
@@ -17,6 +19,10 @@ const api = (path, body) => page.evaluate(async ({path, body}) => {
 let id;
 try {
   await page.goto(base + '/api/auth/dev'); await page.waitForTimeout(800);
+  // Una base nueva abre la bienvenida como modal: no se puede editar detrás de ella.
+  const bienvenida = page.locator('[data-pd=pausa]');
+  try { await bienvenida.waitFor({ state: 'visible', timeout: 3000 }); await bienvenida.click(); }
+  catch (e) { if (e.name !== 'TimeoutError') throw e; }
   const { plantillas } = await api('agentes/plantillas');
   const { workflow } = await api('agentes/workflows', {plantilla:plantillas.find(p=>p.etapas.length).id}); id = workflow.id;
   await page.goto(`${base}/#/ai/agentes/${id}/workflow`);
@@ -37,6 +43,9 @@ try {
   // F4.5: el trabajo se abre en el Chat; /etapas queda como historial, sin ejecutar.
   await page.goto(`${base}/#/ai/agentes/${id}/trabajos/${run.id}`); await page.waitForTimeout(900);
   assert.equal(await page.evaluate(()=>location.hash),`#/chat/trabajo/${run.id}`);
+  await page.reload(); await page.waitForTimeout(900);
+  assert.equal(await page.evaluate(()=>location.hash),`#/chat/trabajo/${run.id}`,'el enlace conserva el trabajo al recargar');
+  assert.ok(await page.locator(`[data-a=ag-tab][data-run="${run.id}"]`).count(),'el trabajo sigue abierto');
   await page.goto(`${base}/#/ai/agentes/${id}/trabajos/${run.id}/etapas`); await page.waitForTimeout(900);
   assert.equal(await page.locator('[data-act=ejecutar],[data-ch=runner]').count(),0,'la vista por etapas no ejecuta');
   assert.equal(await page.locator('a:has-text("Abrir en el Chat")').count(),1);
@@ -55,7 +64,7 @@ try {
       assert.deepEqual(clipped, [], `${width} ${route}: controles recortados`);
     }
   }
-  await page.locator('[data-hoja=mas]').click();
+  await page.locator('[data-hoja=mas]:visible').click();
   assert.equal(await page.locator('.hoja a[href="#/ajustes/ia"]').count(),1,'Ajustes accesible desde Más en móvil');
   await page.locator('.hoja a[href="#/ajustes/ia"]').click();
   await page.waitForTimeout(500);
