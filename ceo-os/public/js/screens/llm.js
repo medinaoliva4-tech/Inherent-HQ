@@ -28,6 +28,7 @@ import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { conArchivos, motivoRechazo } from '../chat-archivos.js';
 import { leerMenciones, siguienteDeCadena, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
+import { quiereOrquestar } from '../orquestador.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
@@ -677,6 +678,16 @@ export async function render(el, { me, sub = [], alive }) {
   }
   async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false } = {}) {
     texto = String(texto || '').trim(); if (!texto && S.adjuntos.length) texto = 'Revisa el archivo adjunto.'; if (!texto || S.enVuelo) return;
+    // F6 · «/orquesta …»: el enrutador (modelo barato del servidor) propone qué agente y qué cliente, y se enseña la
+    // tarjeta «Así lo voy a trabajar» igual que con «@». Nunca arranca sola: la persona confirma con Empezar.
+    if (!reintento && quiereOrquestar(texto)) {
+      S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro();
+      let o; try { o = await api('agentes/orquestar', { method: 'POST', body: { texto } }); }
+      catch (e) { toast(e.message || 'No pude enrutar eso', true); return; }
+      const objetivo = o.objetivo || o.workflow.nombre;
+      S.msgs.push({ r: 'a', modo: S.modo, t: `Así lo voy a trabajar:\n\n→ **${o.workflow.nombre}**${o.cliente ? `\n→ Para **${o.cliente_nombre || o.cliente}**` : ''}${typeof o.confianza === 'number' ? `\nConfianza: ${(o.confianza * 100).toFixed(0)}%` : ''}`, tools: [], notas: [], at: ahoraIso() });
+      return proponerPlan({ id: o.workflow.id }, objetivo);
+    }
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
       const ag = leerMenciones(texto, await listaAgentes());
