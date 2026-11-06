@@ -10084,3 +10084,9 @@ button,a,.lc{touch-action:manipulation}
 .lc-mas{display:grid;place-items:center;flex:none;width:30px;height:30px;border:0;border-radius:50%;background:none;color:var(--ui-ink2);cursor:pointer}.lc-mas:hover{background:rgb(var(--tinta) / .09)}
 .llm[data-soltar="on"] .lc{box-shadow:0 0 0 2px var(--ui-azul)}
 
+
+/* Chat: menús accesibles dentro de la ventana y con rueda/trackpad. */
+.llm-menu,.lc-cmds{box-sizing:border-box;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;min-height:0}
+.lc-cmds{display:flex;flex-direction:column}
+.lc-cmds[hidden]{display:none}
+.lc-cmds>button{flex-shrink:0}

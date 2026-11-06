@@ -899,6 +899,10 @@ npm run capturas -- home,org/work,ai,ai/mcps,chat,areas/marketing   # solo esas 
 
 El Gateway aísla el latido, la cola del Chat y la de etapas: una falla no evita revisar las otras. Las tareas de fondo capturan errores iniciales y liberan su plaza. `api/_lib/db-transporte.js` limita cada consulta Neon a 10 segundos y reintenta solo SELECT ante errores transitorios (hasta tres intentos); nunca reenvía escrituras automáticamente. La inicialización de la base se comparte y solo queda lista cuando terminan las tablas. Se prueba sin red con `node scripts/test-gateway-recuperacion.mjs`. Esto no certifica la disponibilidad de Neon ni coordina el consumo del proveedor entre Mac y VPS.
 
+### Menús del Chat
+
+Los selectores de modo/modelo se limitan al espacio visible junto al botón; la lista admite scroll. Las sugerencias de `/` y `@` usan el espacio disponible sobre o debajo del compositor. El teclado virtual se mide mediante `visualViewport`. Geometría: `public/js/chat-menu-posicion.js`; regresión: `node scripts/test-chat-menu-posicion.mjs`. Las capturas de navegador no sustituyen la prueba del teclado en iPhone físico.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**
