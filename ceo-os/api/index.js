@@ -129,6 +129,7 @@ on('GET', 'status', async (req, res) => {
 async function collGuard(req, res, write) {
   const coll = req.params.coll;
   const area = COLLS[coll];
+  if (coll === 'chat_imagenes') { res.status(404).json({ error: 'Colección privada del Chat' }); return null; }
   if (!area) { res.status(404).json({ error: 'Colección desconocida' }); return null; }
   // Los juicios de Laya se leen según el elemento juzgado: solo por /api/laya/juicios.
   if (coll === laya.COLL) { res.status(404).json({ error: 'Los juicios de Laya están en /api/laya/juicios' }); return null; }

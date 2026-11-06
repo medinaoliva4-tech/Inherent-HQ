@@ -160,7 +160,7 @@ Antes de construir, abre Claude real y compara. Marca cada una como hecha solo s
 | Función | Estado | Cómo hacerla |
 |---|---|---|
 | Arrastrar, pegar y botón + | Hecho solo para texto | `public/js/chat-archivos.js` y `sumarArchivos` en `llm.js` |
-| Imágenes | Falta | Confirma que el modelo acepta visión. Manda `content` como lista en `worker.mjs`; hoy el mensaje es texto |
+| Imágenes | PR: construido y probado localmente; pendiente desplegar | JPEG/PNG/WebP, miniatura y lectura real con Kimi mediante `gateway/vision.mjs`. El historial conserva la lectura y referencias; los píxeles viven aparte. Falta circuito desplegado e iPhone |
 | PDF y Word | Falta | Extrae el texto en el servidor antes de `conArchivos`. Agrega una ruta y una dependencia pequeña |
 | Editar un mensaje enviado | Falta | Botón en el mensaje. Corta `mensajes` hasta ahí y reusa `ramificar` o una ruta nueva con `v` |
 | Artefactos | Por revisar | Parte de `llm/genui.js`. Falta guardarlos, listarlos, editarlos y compartirlos |

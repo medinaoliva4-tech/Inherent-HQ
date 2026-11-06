@@ -27,10 +27,11 @@ export const ramificarServidor = (id, { nuevoId, titulo }) => api(`chat/sesiones
 
 // Un turno: lo deja en cola y relee la conversación hasta que el servidor termina. on.delta(texto) con lo que lleva escrito.
 // Detenerlo (signal) le avisa al servidor, que corta la respuesta y deja lo que alcanzó a escribir.
-export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerzo = '', signal, on = {} }) {
+export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerzo = '', imagenes = [], imagenIds = [], signal, on = {} }) {
   // Un modelo que no es del servidor (p. ej. el que quedó guardado de Hermes) se cambia por el del servidor por defecto.
   const m = modelo.provider === PROVEEDOR && modelo.model ? modelo.model : (await modelosServidor()).actual.model;
-  const { desde } = await api(`chat/sesiones/${enc(id)}/turno`, { method: 'POST', body: { mensaje, sistema, modelo: m, esfuerzo } });
+  const { desde, imagenes: guardadas } = await api(`chat/sesiones/${enc(id)}/turno`, { method: 'POST', body: { mensaje, sistema, modelo: m, esfuerzo, imagenes, imagenIds }, signal });
+  on.recibido?.(guardadas || []);
   const detener = () => api(`chat/sesiones/${enc(id)}/detener`, { method: 'POST' }).catch(() => {});
   signal?.addEventListener('abort', detener, { once: true });
   let texto = '', avisoCola = false;
@@ -42,7 +43,7 @@ export async function turnoServidor(id, { mensaje, sistema, modelo = {}, esfuerz
     try { j = await api(`chat/sesiones/${enc(id)}?desde=${desde}`); fallos = 0; }
     catch (e) { if (++fallos > 8) throw e; continue; } // un corte de red no tumba la respuesta
     const a = (j.messages || []).find((m) => m.role === 'assistant');
-    (a?.pasos || []).forEach((p, i) => { if (vistos[i] !== p.fase) { vistos[i] = p.fase; on.tool?.({ fase: p.fase, nombre: p.nombre, detalle: p.detalle || '' }); } });
+    (a?.pasos || []).forEach((p, i) => { if (vistos[i] !== p.fase) { vistos[i] = p.fase; on.tool?.({ fase: p.fase, nombre: p.nombre, detalle: p.detalle || '', imagen: p.imagen || '' }); } });
     if (a?.propuestas?.length) on.propuestas?.(a.propuestas);
     if (a?.content && a.content !== texto) { texto = a.content; on.delta?.(texto); }
     const estado = j.turno?.estado;

@@ -912,6 +912,13 @@ Los selectores de modo/modelo se limitan al espacio visible junto al botón; la 
 Los cambios a terminado, revisión/pregunta o error guardan un aviso junto al resultado, sin prompts, nombres de clientes ni errores crudos. El Gateway pide a la web entregar los pendientes por el web push existente; un fallo transitorio conserva el aviso. La web comprueba destinatario y alcance, y el clic abre la conversación o el trabajo. El OS sondea solo metadatos cada 20 segundos y muestra una tarjeta incluso al salir del Chat. También quedan en Avisos durante siete días, hasta que el trabajo cambia de estado. Se avisa al dueño de la conversación o a quien creó el trabajo; no a todos los posibles aprobadores. Cada documento conserva su último aviso, no un historial de eventos.
 
 En la app de Mac se usa la [API de notificaciones del renderer de Electron](https://www.electronjs.org/docs/latest/tutorial/notifications), con permiso del dispositivo y la app abierta. Con la app cerrada, web push requiere un navegador/PWA suscrito. La entrega puede repetirse después de un corte al confirmar; el tag del evento permite agrupar duplicados. Pruebas: `test-chat-avisos.mjs` (base en memoria, entrega simulada) y `test-chat-avisos-browser.mjs` (notificación nativa simulada). Falta probar recepción push real, app firmada y iPhone físico. Requiere publicar web y actualizar/reiniciar el Gateway con aprobación.
+### Imágenes en el Chat
+
+El Chat recibe hasta dos PNG/JPEG/WebP por mensaje: el navegador convierte a JPEG de hasta 1280 px y 180 KB. La API comprueba firma, dimensiones y tamaño, y guarda los píxeles en `chat_imagenes`; los mensajes llevan solo referencias. La colección está cerrada a `/api/db` y a lectura/escritura genérica. La ruta de imagen comprueba dueño y referencia en esa conversación, también después de ramificar.
+
+El Gateway lee cada adjunto nuevo con Kimi K3 en una llamada acotada a 60 segundos, guarda la interpretación textual y muestra el paso «Vio una imagen» con miniatura. El modelo principal recibe esa lectura, no el base64, y puede volver a inspeccionarla mediante `ver_imagen`. La lectura inicial agrega una llamada por imagen y no sustituye los píxeles como evidencia infalible. La miniatura abre una vista ampliada de la copia comprimida. No soporta PDF, Word, GIF ni HEIC en este PR.
+
+Pruebas: validación del JPEG, aislamiento, API real en memoria, envío multimodal simulado y navegador con adjunto/clic. Una prueba sintética directa en el VPS confirmó visión real de Kimi (cuadrado rojo/círculo azul; 5.9 s, 255 tokens de entrada). Falta probar el circuito web→Gateway desplegado, fotografías complejas e iPhone físico. Publicar requiere web y copiar/reiniciar Gateway con aprobación.
 
 ## 10 · Límites conocidos
 
