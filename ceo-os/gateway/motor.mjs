@@ -8,6 +8,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { leerLimite } from './contexto.mjs';
 import os from 'node:os';
+import { setTimeout as dormir } from 'node:timers/promises';
+// Conserva TimeoutError: el worker distingue plazo agotado de cancelación humana.
+const pausa = (ms, value, opts) => dormir(ms, value, opts).catch((e) => { throw opts?.signal?.aborted ? opts.signal.reason : e; });
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 export const limits = JSON.parse(fs.readFileSync(path.join(here, 'limits.json'), 'utf8'));
@@ -23,25 +26,43 @@ const errorContexto = (m, texto) => { const l = leerLimite(texto); if (!l) retur
 
 // ---------- cola: semáforo por proveedor, con carpetas (sirve entre procesos) ----------
 const LOCKDIR = path.join(os.tmpdir(), 'gw-locks'); fs.mkdirSync(LOCKDIR, { recursive: true });
-export async function acquire(m, onEspera = () => {}) {
-  const info = limits.modelos[m] || { proveedor: 'otro', costo: 1 };
-  const cap = Math.max(1, Math.floor((limits.proveedores[info.proveedor]?.unidades ?? 1) / info.costo));
-  for (let waited = 0; ; waited += 1) {
-    for (let s = 0; s < cap; s++) {
-      const f = path.join(LOCKDIR, `${info.proveedor}.${info.costo}.${s}`);
-      try { fs.mkdirSync(f); return () => { try { fs.rmdirSync(f); } catch {} }; }
-      catch { try { if (Date.now() - fs.statSync(f).mtimeMs > 15 * 60 * 1000) fs.rmdirSync(f); } catch {} } // candado viejo
+export async function acquire(m, onEspera = () => {}, signal) {
+  const proveedor = limits.modelos[m]?.proveedor || 'otro';
+  // Conservador: una llamada por proveedor en esta máquina, independientemente del costo.
+  // La coordinación Mac/VPS requiere una cola central en el servidor.
+  const f = path.join(LOCKDIR, `${proveedor}.turno`);
+  for (let waited = 0; ; waited++) {
+    signal?.throwIfAborted();
+    try {
+      fs.mkdirSync(f);
+      try { fs.writeFileSync(path.join(f, 'pid'), String(process.pid)); }
+      catch (e) { fs.rmdirSync(f); throw e; }
+      return () => { try { fs.unlinkSync(path.join(f, 'pid')); fs.rmdirSync(f); } catch {} };
+    } catch (e) {
+      if (e.code !== 'EEXIST') throw e;
+      try {
+        const pid = Number(fs.readFileSync(path.join(f, 'pid'), 'utf8'));
+        if (Number.isInteger(pid) && pid > 0) {
+          try { process.kill(pid, 0); }
+          catch (err) { if (err.code === 'ESRCH') { fs.unlinkSync(path.join(f, 'pid')); fs.rmdirSync(f); } }
+        }
+      } catch (err) {
+        // El dueño puede estar escribiendo el pid: no quitar un candado recién creado.
+        if (err.code === 'ENOENT') { try { if (Date.now() - fs.statSync(f).mtimeMs > 900000) fs.rmdirSync(f); } catch {} }
+      }
     }
-    if (waited % 10 === 0) onEspera(cap);
-    await new Promise((r) => setTimeout(r, 1500));
+    if (waited % 10 === 0) onEspera(1);
+    await pausa(1500, undefined, { signal });
   }
 }
 
 // onAvance({ caracteres, razonando, texto }) se llama cada `cadaMs` (20 s por defecto) mientras el modelo trabaja.
 // messages: si se pasa, reemplaza [system, user] (el Chat manda la conversación completa). signal: para detenerlo.
 // tools: herramientas en formato chat/completions; si el modelo pide alguna, vuelven en `toolCalls` (armadas desde el stream).
-export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal, tools = null } = {}) {
-  const release = await acquire(m, onEspera);
+export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEspera = () => {}, cadaMs = 20000, messages = null, signal: callerSignal, tools = null, timeoutMs = 180000 } = {}) {
+  const deadline = AbortSignal.timeout(timeoutMs);
+  const signal = callerSignal ? AbortSignal.any([callerSignal, deadline]) : deadline;
+  const release = await acquire(m, onEspera, signal);
   try {
     for (let intento = 1; intento <= 4; intento++) {
       const t0 = Date.now();
@@ -50,7 +71,7 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
         body: JSON.stringify({ model: m, max_tokens: maxOut, stream: true, stream_options: { include_usage: true }, messages: messages || [{ role: 'system', content: system }, { role: 'user', content: user }], ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
         signal,
       });
-      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
+      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); if (intento < 4) await pausa(4000 * intento, undefined, { signal }); continue; }
       if (!r.ok) { const cuerpo = await r.text(); throw errorContexto(m, cuerpo) || new Error(`${m}: HTTP ${r.status} ${cuerpo.slice(0, 300)}`); }
       // En vivo (SSE): evita el límite de espera de la primera respuesta mientras el modelo «piensa».
       let content = '', thinking = 0, usage = {}, finish = '', buf = '', ultimo = Date.now();
@@ -73,6 +94,7 @@ export async function chat(m, system, user, maxOut, { onAvance = () => {}, onEsp
         }
         if (Date.now() - ultimo > cadaMs) { ultimo = Date.now(); try { await onAvance({ caracteres: content.length, razonando: thinking, texto: content }); } catch {} }
       }
+      await onAvance({ caracteres: content.length, razonando: thinking, texto: content });
       const toolCalls = calls.filter((c) => c?.function?.name).map((c, i) => ({ ...c, id: c.id || `call_${i}_${Date.now().toString(36)}` }));
       if (!content.trim() && !toolCalls.length) throw new Error(`${m} devolvió vacío (finish=${finish}). Sube la salida máxima o usa otro modelo.`);
       return { content, usage, toolCalls, finish, seg: Math.round((Date.now() - t0) / 1000) };
@@ -96,16 +118,19 @@ export async function condense(text, target, prepModel, opts = {}) {
 
 // Una vuelta con herramientas (sin streaming: hace falta el mensaje completo con sus tool_calls).
 // messages y tools en el formato de chat/completions. → { message, usage, seg }
-export async function chatTools(m, messages, tools, maxOut, { onEspera = () => {} } = {}) {
-  const release = await acquire(m, onEspera);
+export async function chatTools(m, messages, tools, maxOut, { onEspera = () => {}, signal: callerSignal, timeoutMs = 180000 } = {}) {
+  const deadline = AbortSignal.timeout(timeoutMs);
+  const signal = callerSignal ? AbortSignal.any([callerSignal, deadline]) : deadline;
+  const release = await acquire(m, onEspera, signal);
   try {
     for (let intento = 1; intento <= 4; intento++) {
       const t0 = Date.now();
       const r = await fetch(`${BASE}/chat/completions`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${KEY()}` },
+        signal,
         body: JSON.stringify({ model: m, max_tokens: maxOut, messages, ...(tools?.length ? { tools, tool_choice: 'auto' } : {}) }),
       });
-      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); await new Promise((x) => setTimeout(x, 4000 * intento)); continue; }
+      if (r.status === 429 || r.status >= 500) { const cuerpo = await r.text().catch(() => ''), ec = errorContexto(m, cuerpo); if (ec) throw ec; log(`  ${m}: HTTP ${r.status}, reintento ${intento}`); if (intento < 4) await pausa(4000 * intento, undefined, { signal }); continue; }
       if (!r.ok) { const cuerpo = await r.text(); throw errorContexto(m, cuerpo) || new Error(`${m}: HTTP ${r.status} ${cuerpo.slice(0, 300)}`); }
       const j = await r.json();
       return { message: j.choices?.[0]?.message || {}, finish: j.choices?.[0]?.finish_reason || '', usage: j.usage || {}, seg: Math.round((Date.now() - t0) / 1000) };

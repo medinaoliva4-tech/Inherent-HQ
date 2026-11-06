@@ -34,6 +34,8 @@ export function ajustarAlTope(messages, tope, tools) {
   // 4. Lo que queda, parejo y sin tirarlo: un archivo grande conserva inicio y final.
   const resto = xs.slice(1).filter(texto);
   if (medir() > tope && resto.length) { const cuota = Math.max(300, Math.floor(tope * 0.45 / resto.length)); for (const m of resto) m.content = recortarTexto(m.content, cuota); }
+  // Los argumentos son JSON ejecutable: nunca truncarlos ni enviar un pedido que no cabe.
+  if (medir() > tope) throw Object.assign(new Error('El contexto no cabe: reduce el pedido o abre una conversación nueva.'), { code: 'CONTEXTO' });
   return xs;
 }
 
