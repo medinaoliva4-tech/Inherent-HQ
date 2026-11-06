@@ -26,6 +26,7 @@ import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, 
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
+import { conArchivos, motivoRechazo } from '../chat-archivos.js';
 import { leerMenciones, siguienteDeCadena, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
 import { menuArroba, menuArrobaHtml, planHtml as planAgenteHtml, eventoHtml, vivoHtml, pestanasHtml } from '../llm/agentes-ui-chat.js';
 import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
@@ -73,7 +74,7 @@ export async function render(el, { me, sub = [], alive }) {
     slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: false, porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
     agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
-    salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
+    adjuntos: [], salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
     panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
@@ -269,8 +270,10 @@ export async function render(el, { me, sub = [], alive }) {
     const m = modoDe(S.modo), sl = slugAhora();
     mount(box, html`<div class="lc-w">
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
+        ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo, o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
+          <button type="button" class="lc-mas" data-a="adjuntar" aria-label="Adjuntar archivo" title="Adjuntar archivo">${ico('plus', 16)}</button>
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox">${m.nombre}<span class="lc-car">▾</span></button>
           ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
           ${S.modo === MODO_LIBRE.id ? '' : html`<button type="button" class="lc-chip lc-lente" data-a="lente" aria-pressed="${lenteOn() ? 'true' : 'false'}" title="Razona la oferta con la lente de Hormozi">Hormozi</button>`}
@@ -284,9 +287,14 @@ export async function render(el, { me, sub = [], alive }) {
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
     ta.oninput = () => { crecer(ta); comandos(ta.value); };
+    ta.onpaste = (e) => { const fs = [...(e.clipboardData?.files || [])]; if (fs.length) { e.preventDefault(); sumarArchivos(fs); } };
     // En el iPhone las opciones viven con el teclado abierto: tocarlas no debe cerrarlo.
     $('.lc-row', box)?.addEventListener('mousedown', (e) => { if (angosto() && e.target.closest('.lc-chip')) e.preventDefault(); });
   }
+  // Soltar archivos en cualquier parte de la conversación.
+  R.addEventListener('dragover', (e) => { if (e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); R.dataset.soltar = 'on'; } });
+  R.addEventListener('dragleave', (e) => { if (!e.relatedTarget) delete R.dataset.soltar; });
+  R.addEventListener('drop', (e) => { if (!e.dataTransfer?.files?.length) return; e.preventDefault(); delete R.dataset.soltar; sumarArchivos(e.dataTransfer.files); });
   const crecer = (ta) => { ta.style.height = 'auto'; ta.style.height = Math.min(240, ta.scrollHeight) + 'px'; };
 
   // Los comandos «/»: aparecen al escribir «/» al inicio.
@@ -660,8 +668,15 @@ export async function render(el, { me, sub = [], alive }) {
     return { ...base, extra: [`Secciones que ve en el OS: ${(me.areas || []).join(', ') || '—'}`] };
   }
   // sinGiro: lo que la persona manda desde la Brújula (aceptar la meta, volver a la tarea) no cuenta como turno perdido.
+  async function sumarArchivos(archivos) {
+    for (const f of archivos || []) {
+      const no = motivoRechazo(f, S.adjuntos); if (no) { toast(no, true); continue; }
+      try { S.adjuntos.push({ nombre: f.name, texto: await f.text() }); } catch { toast(`No pude leer ${f.name}`, true); }
+    }
+    pintarCaja();
+  }
   async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false } = {}) {
-    texto = String(texto || '').trim(); if (!texto || S.enVuelo) return;
+    texto = String(texto || '').trim(); if (!texto && S.adjuntos.length) texto = 'Revisa el archivo adjunto.'; if (!texto || S.enVuelo) return;
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
       const ag = leerMenciones(texto, await listaAgentes());
@@ -673,7 +688,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (m.pide && !slugAhora()) { toast(m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente', true); const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return; }
     if (S.privado && !modeloLocal()) { toast('El modo privado necesita un modelo en tu compu', true); pintarCaja(); return; }
     const ctrl = new AbortController(); S.enVuelo = ctrl;
-    if (!reintento) { S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
+    const adj = reintento ? [] : S.adjuntos; if (adj.length) { S.adjuntos = []; pintarCaja(); }
+    if (!reintento) { S.msgs.push({ r: 'u', t: adj.length ? `${texto}\n\n${adj.map((a) => `📎 ${a.nombre}`).join('\n')}` : texto, at: new Date().toISOString() }); if (S.brujula && !sinGiro) ponerBrujula(contarGiro(S.brujula)); }
     else if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop();
     const msg = { r: 'a', modo: S.modo, t: '', stream: true, tools: [], notas: [] }; S.msgs.push(msg);
     if (!S.titulo) S.titulo = tituloDe(texto);
@@ -687,7 +703,7 @@ export async function render(el, { me, sub = [], alive }) {
       }
       const libre = S.modo === MODO_LIBRE.id;
       const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      const r = await B.turno(S.sesion, { mensaje: texto, sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+      const r = await B.turno(S.sesion, { mensaje: conArchivos(texto, adj), sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
         tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle }); else msg.tools.push(p); pintarUltimo(); },
@@ -926,6 +942,8 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
+    if (a === 'adjuntar') { const i = document.createElement('input'); i.type = 'file'; i.multiple = true; i.onchange = () => sumarArchivos(i.files); return i.click(); }
+    if (a === 'quitar-adj') { S.adjuntos.splice(+t.dataset.i, 1); return pintarCaja(); }
     if (a === 'lente') { try { localStorage.setItem(LLAVE_LENTE, lenteOn() ? '0' : '1'); } catch { /* sin memoria no cambia */ } const b = el.querySelector('.lc-lente'); b?.setAttribute('aria-pressed', lenteOn() ? 'true' : 'false'); return; }
     if (a === 'side' && matchMedia('(min-width:761px)').matches) return document.querySelector('.lat-top [data-lat="mini"]')?.click();
     if (a === 'side') { S.side = !S.side; R.classList.toggle('side-on', S.side); return; }

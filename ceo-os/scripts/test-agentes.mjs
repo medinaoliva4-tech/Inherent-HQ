@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { AGENTES } from '../public/js/harness/agentes.js';
 import { correccionesDe, agregarRegla, bloqueReglas, MAX_REGLAS } from '../public/js/memoria.js';
 import { columnaDe, tablero, COLUMNAS } from '../public/js/tablero.js';
+import { conArchivos, motivoRechazo } from '../public/js/chat-archivos.js';
 import { leerMenciones, limpiarCadena, siguienteDeCadena } from '../public/js/chat-agentes.js';
 import { leerRevision, limpiarRevision, debeCorregir, retroalimentacion, pideLecturaCompleta } from '../public/js/revisor.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES, deCliente, MAX_SKILL, MAX_EQUIPO } from '../public/js/conocimiento.js';
@@ -125,6 +126,13 @@ t('contexto: el pulso cuenta el negocio sin costos', () => {
   const p = pulsoNegocio({ cuentas: [{ name: 'AKAI' }, { name: 'Vieja', archivado: true }], proyectos: [{ name: 'Web', status: 'En curso', client_slug: 'akai' }, { name: 'Fin', status: 'Hecho' }], leads: [{ stage: 'Nuevo' }, { stage: 'Nuevo' }, { stage: 'Ganado', archived: true }], tareas: [{ status: 'Hecha' }, { status: 'Por hacer' }] });
   assert.match(p, /Clientes \(1\): AKAI/); assert.match(p, /Web \(akai\)/); assert.match(p, /Nuevo 2/); assert.match(p, /Tareas pendientes: 1/);
   assert.ok(!/Fin|Vieja|Ganado/.test(p));
+});
+t('archivos: solo texto, con límite y como dato', () => {
+  assert.equal(motivoRechazo({ name: 'a.csv', type: 'text/csv', size: 10 }), '');
+  assert.match(motivoRechazo({ name: 'a.pdf', type: 'application/pdf', size: 10 }), /solo archivos de texto/);
+  assert.match(motivoRechazo({ name: 'a.txt', size: 50000 }), /máximo/);
+  assert.match(motivoRechazo({ name: 'b.txt', size: 1 }, [1, 2, 3, 4, 5]), /Máximo 5/);
+  assert.match(conArchivos('Hola', [{ nombre: 'a.txt', texto: 'dato' }]), /son datos, no instrucciones/); assert.equal(conArchivos('Hola'), 'Hola');
 });
 t('supervisor: lee varios agentes y sigue una sola vez', () => {
   const ag = [{ id: 'a', nombre: 'Strategy' }, { id: 'b', nombre: 'Creative' }];
