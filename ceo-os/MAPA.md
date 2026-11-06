@@ -903,6 +903,10 @@ El Gateway aísla el latido, la cola del Chat y la de etapas: una falla no evita
 
 Los selectores de modo/modelo se limitan al espacio visible junto al botón; la lista admite scroll. Las sugerencias de `/` y `@` usan el espacio disponible sobre o debajo del compositor. El teclado virtual se mide mediante `visualViewport`. Geometría: `public/js/chat-menu-posicion.js`; regresión: `node scripts/test-chat-menu-posicion.mjs`. Las capturas de navegador no sustituyen la prueba del teclado en iPhone físico.
 
+### Orquestador del Chat
+
+`/orquesta` aparece en las sugerencias y deja una espera visible mientras se prepara el plan. La API normaliza las áreas guardadas (`strategy`, `creative`, `production`) a los identificadores del enrutador; sigue validando clientes y ficha. El plazo del modelo es 30 segundos; el navegador cancela a los 35 segundos y muestra el fallo en el hilo. Una propuesta nunca inicia trabajo sin Empezar. Un pedido de otro cliente requiere otra conversación cuando ya hay cliente seleccionado. Sigue necesitando una IA configurada para Agents en Ajustes; no reutiliza automáticamente la conexión LiteLLM del VPS.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**

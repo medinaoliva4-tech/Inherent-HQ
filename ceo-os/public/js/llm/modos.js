@@ -237,6 +237,7 @@ export function textoAlcanceConsulting(nivel, ficha) {
 
 // Los comandos «/» de la caja: atajos del OS y los ajustes.
 export const COMANDOS = [
+  ['/orquesta', 'Proponer un agente y un plan para tu pedido'],
   ['/estrategia', 'Cambiar al modo Strategy'],
   ['/organizacion', 'Cambiar al modo Organization'],
   ['/marketing', 'Cambiar al modo Marketing'],

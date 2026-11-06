@@ -51,7 +51,8 @@ t('comandos «/»: con y sin acento, con argumento, y lo demás es texto', () =>
   assert.deepEqual(leerComando('/ajustes x'), { cmd: '/ajustes', arg: 'x' });
   assert.equal(leerComando('/inventado'), null);
   assert.equal(leerComando('hola /nuevo'), null);
-  assert.equal(COMANDOS.length, 12);
+  assert.equal(COMANDOS.length, 13);
+  assert.deepEqual(leerComando('/orquesta prepara un plan'), { cmd: '/orquesta', arg: 'prepara un plan' });
   assert.deepEqual(leerComando('/producción'), { cmd: '/produccion', arg: '' });
   assert.deepEqual(leerComando('/marketing'), { cmd: '/marketing', arg: '' });
   assert.deepEqual(leerComando('/consulting nao'), { cmd: '/consulting', arg: 'nao' });

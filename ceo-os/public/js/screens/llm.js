@@ -704,12 +704,22 @@ export async function render(el, { me, sub = [], alive }) {
     // F6 · «/orquesta …»: el enrutador (modelo barato del servidor) propone qué agente y qué cliente, y se enseña la
     // tarjeta «Así lo voy a trabajar» igual que con «@». Nunca arranca sola: la persona confirma con Empezar.
     if (!reintento && quiereOrquestar(texto)) {
-      S.msgs.push({ r: 'u', t: texto, at: new Date().toISOString() }); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro();
-      let o; try { o = await api('agentes/orquestar', { method: 'POST', body: { texto } }); }
-      catch (e) { toast(e.message || 'No pude enrutar eso', true); return; }
-      const objetivo = o.objetivo || o.workflow.nombre;
-      S.msgs.push({ r: 'a', modo: S.modo, t: `Así lo voy a trabajar:\n\n→ **${o.workflow.nombre}**${o.cliente ? `\n→ Para **${o.cliente_nombre || o.cliente}**` : ''}${typeof o.confianza === 'number' ? `\nConfianza: ${(o.confianza * 100).toFixed(0)}%` : ''}`, tools: [], notas: [], at: ahoraIso() });
-      return proponerPlan({ id: o.workflow.id }, objetivo);
+      const ctrl = new AbortController(); S.enVuelo = ctrl;
+      const avance = { r: 'a', modo: S.modo, t: 'Preparando una propuesta de trabajo…', stream: true, tools: [], notas: [] };
+      S.msgs.push({ r: 'u', t: texto, at: ahoraIso() }, avance); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro();
+      const reloj = setTimeout(() => ctrl.abort(), 35000);
+      try {
+        const o = await api('agentes/orquestar', { method: 'POST', body: { texto }, signal: ctrl.signal });
+        if (o.cliente && slugAhora() && o.cliente !== slugAhora()) throw new Error('El pedido corresponde a otro cliente. Abre su conversación para no mezclar información.');
+        avance.t = `Así lo voy a trabajar:\n\n→ **${o.workflow.nombre}**${o.cliente ? `\n→ Para **${o.cliente_nombre || o.cliente}**` : ''}`;
+        await proponerPlan({ id: o.workflow.id }, o.objetivo || o.workflow.nombre, { clientePropuesto: o.cliente });
+      } catch (e) {
+        avance.t = ctrl.signal.aborted ? 'Se detuvo la preparación. Puedes volver a intentar.' : 'No pude preparar el plan.';
+        avance.err = ctrl.signal.aborted ? 'La espera terminó o cancelaste el pedido.' : e.message || 'Intenta de nuevo o elige un agente con @.';
+      } finally {
+        clearTimeout(reloj); avance.stream = false; S.enVuelo = null; if (alive()) pintarCentro();
+      }
+      return;
     }
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
@@ -795,6 +805,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
   async function comando({ cmd, arg }) {
     const ta = $('#llm-in', el); if (ta) { ta.value = ''; crecer(ta); comandos(''); }
+    if (cmd === '/orquesta') { if (arg) return enviar('/orquesta ' + arg); if (ta) { ta.value = '/orquesta '; ta.focus(); crecer(ta); } return; }
     if (cmd === '/nuevo') return nuevo();
     if (MODOS.some((m) => '/' + m.id === cmd)) return modos.some((m) => m.id === cmd.slice(1)) ? (cambiarModo(cmd.slice(1)), arg && enviar(arg)) : toast('Tu perfil no tiene ese modo', true);
     if (cmd === '/modelo') { const b = el.querySelector('[data-a="menu-modelo"]'); if (b) menuModelo(b); return; }
@@ -826,7 +837,7 @@ export async function render(el, { me, sub = [], alive }) {
     } catch {}
   }
   // La tarjeta «Así lo voy a trabajar». Con `run`, es lo que sigue de un trabajo que ya existe (más allá de lo platicado).
-  async function proponerPlan(agente, resto, { run = null, equipo = [] } = {}) {
+  async function proponerPlan(agente, resto, { run = null, equipo = [], clientePropuesto = '' } = {}) {
     let w; try { ({ workflow: w } = await api('agentes/workflows/' + enc(agente.id))); } catch (e) { return toast(e.message, true); }
     const desde = run ? activa(run) : 0, plan = planDe(run || w, modelosGw()).filter((e) => e.n >= desde);
     // Sin cliente en el modo, la tarjeta pregunta para quién es (nunca se asume). Un modo que pide cliente no admite «interno».
@@ -836,7 +847,7 @@ export async function render(el, { me, sub = [], alive }) {
       clientes = [['', 'Elige…'], ...(pide ? [] : [['interno', 'Inherent (trabajo interno)']]), ...xs.map((c) => [c.slug, c.name])];
       sinClientes = clientes.length < 2;
     }
-    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { equipo, modo: 'secuencia', agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, sinClientes, cliente: '', estado: 'pendiente', run: run?.id || '' } });
+    S.msgs.push({ r: 'plan', at: ahoraIso(), p: { equipo, modo: 'secuencia', agente: w, resto: run ? `Lo que sigue de «${run.titulo}»` : resto, mensaje: run ? '' : [...S.msgs].reverse().find((x) => x.r === 'u')?.t || '', plan, hasta: plan.at(-1)?.n ?? 0, clientes, sinClientes, cliente: clientes?.some(([id]) => id === clientePropuesto) ? clientePropuesto : '', estado: 'pendiente', run: run?.id || '' } });
     if (!alive()) return; pintarCentro();
   }
   async function empezarPlan(i) {

@@ -2,7 +2,7 @@
 // Todo puro: sin red, sin base, sin modelo. Cubrimos el prompt del pedido y la limpieza de la respuesta.
 // npm run test:orquestador
 import assert from 'node:assert/strict';
-import { AREAS_AGENTE, pedidoRuta, leerRuta, quiereOrquestar } from '../public/js/orquestador.js';
+import { AREAS_AGENTE, pedidoRuta, leerRuta, quiereOrquestar, areaRuta } from '../public/js/orquestador.js';
 
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
@@ -93,3 +93,12 @@ t('quiereOrquestar solo con /orquesta o /orquestar al inicio', () => {
 });
 
 console.log(`\n${ok} pruebas del orquestador en verde`);
+
+t('las áreas guardadas del workflow llegan al enrutador correcto', () => {
+  for (const [a,b] of [['strategy','estrategia'],['creative','diseno'],['production','produccion'],['marketing','marketing'],['consulting','consulting'],['estrategia','estrategia']]) {
+    assert.equal(areaRuta(a),b);
+    const agentes=AREAS_AGENTE.filter(x=>x.id===areaRuta(a));
+    assert.equal(agentes.length,1);
+    assert.equal(leerRuta({agente:b,cliente:''},agentes,[]).agente,b);
+  }
+});
