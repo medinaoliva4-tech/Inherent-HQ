@@ -242,6 +242,8 @@ test('/me y /cuotas: estado de la sesión de Claude y proxy de solo lectura al m
   assert.equal((await t.api('GET', '/me', undefined, TOKEN_B)).json.claude.active, false);
   assert.equal((await t.api('GET', '/cuotas')).json.proveedores[0].id, 'cline');
   assert.equal((await t.api('POST', '/cuotas', {})).status, 404);
+  assert.deepEqual((await t.api('GET', '/health')).json.claude, { activa: true, instalada: true });
+  assert.equal((await t.api('GET', '/health', undefined, null)).json.claude, undefined);
   assert.equal((await t.api('GET', '/cuotas', undefined, null)).status, 401);
   await t.close();
   const down = fakeServices({ cuotas: { get: async () => null, reportClaudeLogin: async () => {} } });
@@ -263,5 +265,49 @@ test('interfaz estática: se sirve sin token, sin salirse de su carpeta y sin ta
   for (const p of ['/..%2Ffuera', '/%2e%2e/%2e%2e/etc/passwd', '/assets/..%2f..%2fx']) { const r = await get(p); assert.ok(!/secreto|root:/.test(r.text), p); }
   assert.equal((await get('/sessions')).status, 401);
   assert.equal(readFileSync(join(ui, 'index.html'), 'utf8').length > 0, true);
+  await t.close();
+});
+
+test('interfaz: con flag configurado, solo se sirve si el asistente la activó; la API sigue funcionando', async () => {
+  const ui = mkdtempSync(join(tmpdir(), 'ui-')); writeFileSync(join(ui, 'index.html'), '<h1>Code OS</h1>');
+  const flag = join(mkdtempSync(join(tmpdir(), 'fl-')), 'activada');
+  const t = await boot(fakeQuery(simple), testConfig(undefined, { uiDir: ui, flagFile: flag }));
+  const r1 = await fetch(t.base + '/'); assert.equal(r1.status, 503); assert.match(await r1.text(), /asistente/);
+  assert.equal((await t.api('GET', '/me')).status, 200);
+  writeFileSync(flag, 'ok');
+  const r2 = await fetch(t.base + '/'); assert.equal(r2.status, 200);
+  await t.close();
+});
+
+// ---------- archivos y diff para la pestaña Code (siempre dentro de la carpeta del proyecto) ----------
+const hasGit = spawnSync('git', ['--version']).status === 0;
+test('archivos: árbol, lectura y escritura solo dentro del proyecto; ni .., ni symlinks, ni otros usuarios', async () => {
+  const t = await boot(fakeQuery(simple));
+  const s = (await t.api('POST', '/sessions', { projectId: 'p', model: 'nivel-medio', mode: 'chat' })).json;
+  const f = (p: string) => `/sessions/${s.id}/files/${encodeURIComponent(p)}`;
+  writeFileSync(join(s.cwd, 'hola.txt'), 'hola'); mkdirSync(join(s.cwd, 'src')); writeFileSync(join(s.cwd, 'src', 'a.ts'), 'x'); mkdirSync(join(s.cwd, 'node_modules')); writeFileSync(join(s.cwd, 'node_modules', 'basura.js'), 'x');
+  const outside = join(t.cfg.workspacesDir, 'fuera.txt'); writeFileSync(outside, 'secreto'); symlinkSync(outside, join(s.cwd, 'enlace.txt'));
+  const tree = (await t.api('GET', `/sessions/${s.id}/files`)).json.archivos;
+  assert.deepEqual(tree.map((n: any) => n.nombre).sort(), ['enlace.txt', 'hola.txt', 'src']);
+  assert.equal(tree.find((n: any) => n.nombre === 'src').hijos[0].ruta, 'src/a.ts');
+  assert.equal((await t.api('GET', f('hola.txt'))).json.contenido, 'hola');
+  assert.equal((await t.api('GET', f('../../fuera.txt'))).status, 403);
+  assert.equal((await t.api('GET', f('/etc/passwd'))).status, 403);
+  assert.equal((await t.api('GET', f('enlace.txt'))).status, 403);
+  assert.equal((await t.api('PUT', f('nuevo/b.txt'), { contenido: 'b' })).status, 200);
+  assert.equal(readFileSync(join(s.cwd, 'nuevo', 'b.txt'), 'utf8'), 'b');
+  assert.equal((await t.api('PUT', f('../escape.txt'), { contenido: 'x' })).status, 403);
+  assert.equal((await t.api('PUT', f('enlace.txt'), { contenido: 'pisado' })).status, 403);
+  assert.equal(readFileSync(outside, 'utf8'), 'secreto');
+  assert.equal((await t.api('PUT', f('.git/config'), { contenido: '[core]' })).status, 403);
+  assert.equal((await t.api('GET', f('hola.txt'), undefined, TOKEN_B)).status, 404);
+  await t.close();
+});
+
+test('diff: muestra lo que cambió desde que se creó la sesión', { skip: !hasGit && 'sin git' }, async () => {
+  const t = await boot(fakeQuery(simple));
+  const s = (await t.api('POST', '/sessions', { projectId: 'p', model: 'nivel-medio', mode: 'chat' })).json;
+  writeFileSync(join(s.cwd, 'a.txt'), 'uno\n');
+  assert.deepEqual((await t.api('GET', `/sessions/${s.id}/diff`)).json.archivos.map((a: any) => a.ruta), ['a.txt']);
   await t.close();
 });

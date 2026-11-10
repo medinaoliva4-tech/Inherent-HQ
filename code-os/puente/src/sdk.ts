@@ -1,15 +1,12 @@
 import { query } from '@anthropic-ai/claude-agent-sdk';
-import { accessSync, constants } from 'node:fs';
-import { delimiter } from 'node:path';
 import { userHome } from './claude.js';
+import { bwrapWorks } from './confine.js';
 import type { Config, UserRecord } from './config.js';
 import type { QueryFn } from './types.js';
 
-/** ¿Hay bubblewrap en el PATH? Claude Code lo exige para el scrub de entorno en Linux. */
-export function bwrapAvailable(path = process.env.PATH ?? '', platform = process.platform): boolean {
-  if (platform !== 'linux') return true;
-  return path.split(delimiter).some((d) => { try { accessSync(`${d}/bwrap`, constants.X_OK); return true; } catch { return false; } });
-}
+/** ¿bubblewrap FUNCIONA aquí? (no basta con que exista: en Ubuntu 24.04 sin perfil de AppArmor falla). Se calcula una vez. */
+let bw: boolean | undefined;
+export function bwrapAvailable(): boolean { return (bw ??= bwrapWorks()); }
 
 export interface Route { via: 'claude_login' | 'litellm'; model: string }
 

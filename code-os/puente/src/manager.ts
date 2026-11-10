@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import type { Config, UserRecord } from './config.js';
 import { modelAllowed } from './auth.js';
 import type { Services } from './services.js';
+import { asegurarBase } from './files.js';
 import type { ModelCatalog } from './models.js';
 import { Session } from './session.js';
 import { SessionStore } from './store.js';
@@ -48,6 +49,7 @@ export class SessionManager {
       agents, mcp, totals: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheCreationTokens: 0, turns: 0 },
     };
     this.store.save(meta);
+    void asegurarBase(cwd).catch(() => {});
     return this.wrap(meta);
   }
 

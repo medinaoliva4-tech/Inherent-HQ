@@ -1,0 +1,24 @@
+[Unit]
+Description=Code OS · puente (Claude Agent SDK detrás de HTTP+SSE, solo localhost)
+After=network-online.target litellm.service cuotas.service
+Wants=litellm.service cuotas.service
+
+[Service]
+User=deploy
+WorkingDirectory=/home/deploy/code-os/puente
+# Sin EnvironmentFile del Gateway: el puente NUNCA ve la master key ni las llaves de proveedores.
+Environment=PUENTE_HOST=127.0.0.1
+Environment=PUENTE_PORT=4300
+Environment=PUENTE_DATA_DIR=/home/deploy/code-os-data
+Environment=PUENTE_USERS_FILE=/home/deploy/code-os-data/users.json
+Environment=PUENTE_UI_DIR=/home/deploy/code-os/ui/dist
+Environment=PUENTE_FLAG_FILE=/home/deploy/code-os-data/interfaz-activada
+Environment=LITELLM_URL=http://127.0.0.1:4000
+Environment=CUOTAS_URL=http://127.0.0.1:4200
+Environment=PUENTE_DEFAULT_MODEL=nivel-medio
+ExecStart=/usr/bin/node dist/server.js
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

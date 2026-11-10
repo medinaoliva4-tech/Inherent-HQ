@@ -1,8 +1,10 @@
+import { existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http';
 import { makeAuthenticator } from './auth.js';
 import type { Config } from './config.js';
 import type { Services } from './services.js';
 import { serveStatic } from './static.js';
+import * as fx from './files.js';
 import type { SessionManager } from './manager.js';
 import type { ModelCatalog } from './models.js';
 import { HttpError } from './types.js';
@@ -30,8 +32,19 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       const url = new URL(req.url ?? '/', 'http://x');
       const path = url.pathname.replace(/\/+$/, '') || '/';
       const method = req.method ?? 'GET';
-      if (method === 'GET' && path === '/health') return send(res, 200, { ok: true });
-      if (!API.test(path) && cfg.uiDir && (method === 'GET' || method === 'HEAD') && serveStatic(cfg.uiDir, url.pathname, res)) return;
+      if (method === 'GET' && path === '/health') {
+        // Sin token solo dice que está vivo; con token válido añade el estado de la sesión de Claude de esa persona.
+        const u = authed(req);
+        const claude = u ? await svc.claude.status(u).catch(() => null) : null;
+        return send(res, 200, { ok: true, ...(claude ? { claude: { activa: claude.active, instalada: claude.installed } } : {}) });
+      }
+      if (!API.test(path) && cfg.uiDir && (method === 'GET' || method === 'HEAD')) {
+        if (cfg.flagFile && !existsSync(cfg.flagFile)) {
+          const msg = '<!doctype html><meta charset=utf-8><title>Code OS</title><body style="font:16px system-ui;padding:3rem"><h1>Code OS aún no está activado</h1><p>Falta correr el asistente en el servidor: <code>asistente.sh</code></p>';
+          res.writeHead(503, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(msg); return;
+        }
+        if (serveStatic(cfg.uiDir, url.pathname, res)) return;
+      }
       const user = authed(req);
       if (!user) { res.setHeader('www-authenticate', 'Bearer'); return send(res, 401, { error: 'Token inválido o ausente' }); }
 
@@ -48,6 +61,15 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       if (method === 'POST' && path === '/sessions') { const s = await mgr.create(user, await readJson(req)); return send(res, 201, s.summary()); }
       if (method === 'GET' && path === '/sessions') return send(res, 200, { sessions: mgr.list(user, url.searchParams.get('projectId') ?? undefined) });
 
+      const fm = /^\/sessions\/([0-9a-f-]{36})\/(files|diff)(?:\/(.*))?$/.exec(url.pathname.replace(/\/+$/, ''));
+      if (fm) {
+        const cwd = mgr.get(user, fm[1]!).meta.cwd;
+        if (fm[2] === 'diff' && method === 'GET') return send(res, 200, { archivos: await fx.diff(cwd) });
+        if (fm[2] === 'files' && !fm[3] && method === 'GET') return send(res, 200, { archivos: fx.arbol(cwd) });
+        if (fm[2] === 'files' && fm[3] && method === 'GET') { const ruta = decodeURIComponent(fm[3]); return send(res, 200, { ruta, contenido: fx.leer(cwd, ruta) }); }
+        if (fm[2] === 'files' && fm[3] && method === 'PUT') { fx.escribir(cwd, decodeURIComponent(fm[3]), (await readJson(req)).contenido); return send(res, 200, { ok: true }); }
+        throw new HttpError(404, 'Ruta no encontrada');
+      }
       const m = /^\/sessions\/([0-9a-f-]{36})(?:\/([a-z]+)(?:\/([0-9a-f-]{36}))?)?$/.exec(path);
       if (!m) throw new HttpError(404, 'Ruta no encontrada');
       const [, id, sub, sub2] = m as unknown as [string, string, string?, string?];
