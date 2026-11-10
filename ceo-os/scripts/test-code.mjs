@@ -53,15 +53,15 @@ assert.ok(modosDe('ceo', []).some((m) => m.id === 'code') && modosDe('team', [])
 assert.ok(!modosDe('client', []).some((m) => m.id === 'code'));
 assert.equal(modoDe('code'), MODO_CODE); assert.equal(MODO_CODE.pide, 'cliente'); assert.ok(HARNESS.code);
 // El router por tarea (el «equipo de cocina»).
-const n = (t, o) => rutear(t, o).nivel, c = (t, o) => rutear(t, o).cocinero;
-assert.equal(c('Planea cómo construir el módulo de reportes'), 'chef'); assert.equal(n('Planea cómo construir el módulo de reportes'), 'nivel-alto');
-assert.equal(c('Haz una auditoría de seguridad del login'), 'chef', 'seguridad gana sobre auth');
-assert.equal(c('Arregla el login con Stripe'), 'sous');
-assert.equal(c('Hay un bug raro: falla intermitente al guardar'), 'sous');
-assert.equal(c('Ajusta la interfaz y el css del panel'), 'sous');
-assert.equal(c('Escribe las pruebas de este módulo'), 'linea');
-assert.equal(c('Renombra la variable cliente a cuenta'), 'prep'); assert.equal(n('Busca dónde está definido guardar()'), 'nivel-bajo');
-assert.equal(c('Agrega un botón de exportar'), 'linea', 'lo demás es construir');
-assert.equal(n('Revisa este código', { ultimo: 'nivel-medio' }), 'nivel-alto'); assert.equal(n('Haz un code review', { ultimo: 'nivel-alto' }), 'nivel-medio', 'otro cocinero revisa');
+const nv = (t, o) => rutear(t, o).nivel, ck = (t, o) => rutear(t, o).cocinero;
+assert.equal(ck('Planea cómo construir el módulo de reportes'), 'chef'); assert.equal(nv('Planea cómo construir el módulo de reportes'), 'nivel-alto');
+assert.equal(ck('Haz una auditoría de seguridad del login'), 'chef', 'seguridad gana sobre auth');
+assert.equal(ck('Arregla el login con Stripe'), 'sous');
+assert.equal(ck('Hay un bug raro: falla intermitente al guardar'), 'sous');
+assert.equal(ck('Ajusta la interfaz y el css del panel'), 'sous');
+assert.equal(ck('Escribe las pruebas de este módulo'), 'linea');
+assert.equal(ck('Renombra la variable cliente a cuenta'), 'prep'); assert.equal(nv('Busca dónde está definido guardar()'), 'nivel-bajo');
+assert.equal(ck('Agrega un botón de exportar'), 'linea', 'lo demás es construir');
+assert.equal(nv('Revisa este código', { ultimo: 'nivel-medio' }), 'nivel-alto'); assert.equal(nv('Haz un code review', { ultimo: 'nivel-alto' }), 'nivel-medio', 'otro cocinero revisa');
 assert.ok(Object.values(COCINEROS).every((x) => x.nivel.startsWith('nivel-')));
 console.log('✓ test-code: pase firmado, aceptable por el puente, con caducidad y sin sesión no se entrega');
