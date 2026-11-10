@@ -36,6 +36,7 @@ Si el mapa y el código no coinciden, manda el código. Corrige el mapa en el mi
 | El chat de Estrategia o de Diseño | `public/js/screens/strategy.js`, `public/js/diseno-chat.js` y `public/laya/puente.py` |
 | El Chat (Inherent LLM) | `public/js/screens/llm.js`, `public/js/llm/modos.js` (el harness de cada modo), `public/js/llm/paneles.js` y `public/js/hermes.js` |
 | La barra lateral y las rutas | `public/js/app.js` (`NAV`, `resolve`, `alias`, `paintLat`, el hook de `replaceState`) |
+| Code (modo del Chat: el motor es el puente del VPS, cada cliente es un proyecto) | `public/js/chat-code.js` (pase, sesiones y turno por SSE), `public/js/chat-code-puro.js` (traducción de eventos, pura), `api/_lib/code.js` (`POST /api/code/pase`: el pase corto con la sesión del OS) y `code-os/puente/` · `scripts/test-code.mjs` |
 | Los modos del Chat | `public/js/llm/modos.js` (`MODOS`) y `public/js/areas.js` (`AREAS`, `abrirEnChat`) |
 | Las campañas y los eventos de una marca (Campaign Architect) | `public/js/campanas.js` (la regla de mk-campana, el plan de canales y los briefs), `public/js/campanas-ui.js` y `api/_lib/campanas.js` |
 | El conector MCP | `api/_lib/mcp.js` (herramientas) y `api/_lib/oauth.js` (la conexión) |

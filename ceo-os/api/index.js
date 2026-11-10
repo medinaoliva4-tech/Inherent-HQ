@@ -1,5 +1,6 @@
 // Una sola función serverless para toda la API (vercel.json reescribe /api/* → aquí).
 import * as db from './_lib/db.js';
+import * as code from './_lib/code.js';
 import * as session from './_lib/session.js';
 import * as google from './_lib/google.js';
 import { dineroDeInherent, seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
@@ -1169,6 +1170,7 @@ buscar.rutas(on);
 laya.rutas(on);
 agentes.rutas(on);
 ia.rutas(on);
+code.rutas(on);
 conectores.rutas(on);
 spotify.rutas(on);
 chat.rutas(on);

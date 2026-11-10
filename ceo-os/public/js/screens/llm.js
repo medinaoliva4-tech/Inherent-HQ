@@ -26,6 +26,7 @@ import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
+import { turnoCode } from '../chat-code.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { conArchivos, motivoRechazo } from '../chat-archivos.js';
@@ -343,7 +344,10 @@ export async function render(el, { me, sub = [], alive }) {
     const crit = t.criterios ? html`<div class="lm-crit ${t.criterios.falta.length ? 'falta' : 'ok'}"><div class="lm-crit-h"><b>Criterios${t.criterios.entregable ? ` · ${t.criterios.entregable}` : ''}</b><span>${t.criterios.falta.length ? `Falta ${t.criterios.falta.length}` : 'Listo'}</span></div>
       ${t.criterios.cumple.map((c) => html`<div class="si">${ico('check', 12)}${c}</div>`)}${t.criterios.falta.map((c) => html`<div class="no"><i></i>${c}</div>`)}</div>` : '';
     const preg = t.pregunta ? html`<div class="lm-preg ${ult ? '' : 'hecha'}"><span class="lm-k">Una pregunta antes de seguir</span><b>${t.pregunta.texto}</b>${t.pregunta.por_que ? html`<small>${t.pregunta.por_que}</small>` : ''}${t.pregunta.opciones.length ? html`<div class="lm-ops">${t.pregunta.opciones.map((o) => html`<button type="button" data-a="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : '';
-    const apr = ''; // los permisos de Hermes se retiraron: lo que cambia algo llega como propuesta (props)
+    // Code: cada permiso que pide el motor es una tarjeta; la persona decide aquí (el motor espera su respuesta).
+    const apr = (x.permisos || []).map((p, k) => html`<div class="lm-apr lm-prop"><span class="lm-k">${ico('alert', 12)} Code pide permiso</span><b>${p.titulo || p.herramienta}</b><code>${p.herramienta}</code>
+      ${p.descripcion ? html`<small>${p.descripcion}</small>` : ''}${p.entrada && Object.keys(p.entrada).length ? html`<dl class="lm-prop-d">${Object.entries(p.entrada).slice(0, 6).map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v).slice(0, 300) : String(v).slice(0, 300)}</dd>`)}</dl>` : ''}
+      ${p.estado ? html`<span class="${p.estado === 'no' ? 'lm-enc-no' : 'lm-meta-ok'}">${p.estado === 'no' ? 'Rechazado' : 'Permitido'}</span>` : html`<div class="lm-ops"><button type="button" class="si" data-a="code-permiso" data-d="allow" data-i="${i}" data-k="${k}">Permitir</button><button type="button" class="si" data-a="code-permiso" data-d="allow_all" data-i="${i}" data-k="${k}">Siempre en esta sesión</button><button type="button" class="no" data-a="code-permiso" data-d="deny" data-i="${i}" data-k="${k}">Rechazar</button></div>`}</div>`);
     // Lo que el servidor propone cambiar en el OS: no pasa nada hasta que la persona lo aprueba (lo ejecuta el OS con su sesión).
     const props = (x.propuestas || []).map((p, k) => {
       const datos = Object.entries(p.args || {}).filter(([, v]) => v !== '' && v != null).slice(0, 10);
@@ -753,8 +757,10 @@ export async function render(el, { me, sub = [], alive }) {
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
       const libre = S.modo === MODO_LIBRE.id;
-      const sistema = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      const r = await B.turno(S.sesion, { mensaje: conArchivos(texto, adj), imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+      const esCode = S.modo === 'code'; // Code: el motor es el puente del VPS; Claude Code trae su propio sistema
+      const sistema = esCode ? '' : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
+      const turnoMotor = esCode ? (id, o) => turnoCode(id, { ...o, email: me.email, proyecto: slugAhora(), modelo: S.nivelCode || 'nivel-medio', modo: 'code', titulo: tituloDe(texto) }) : (id, o) => B.turno(id, o);
+      const r = await turnoMotor(S.sesion, { mensaje: conArchivos(texto, adj), imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         recibido: (xs) => { recibido = true; if (usuario) usuario.imagenes = xs; pintarHilo(); },
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
@@ -762,6 +768,8 @@ export async function render(el, { me, sub = [], alive }) {
         nota: (n) => { if (/^Ventana /.test(n)) msg.notas = msg.notas.filter((x) => !/^Ventana /.test(x)); msg.notas.push(n); pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
         propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
+        // Code pide permiso para una herramienta (editar, correr un comando…): tarjeta con Sí / Siempre / No.
+        permiso: (p, responder) => { (msg.permisos ||= []).push({ ...p, estado: '', responder }); pintarUltimo(); },
       } });
       msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
     } catch (e) {
@@ -947,6 +955,10 @@ export async function render(el, { me, sub = [], alive }) {
     const pasoEst = e.target.closest('.llm-panel .ev-sec>header'); if (pasoEst) return pasoEst.parentElement.classList.toggle('abierto');
     const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
+    if (a === 'code-permiso') { // la persona decidió un permiso de Code: se lo decimos al motor y la tarjeta queda marcada
+      const p = S.msgs[+t.dataset.i]?.permisos?.[+t.dataset.k]; if (!p || p.estado) return;
+      p.estado = t.dataset.d === 'deny' ? 'no' : 'si'; p.responder?.(t.dataset.d); return pintarUltimo();
+    }
     if (a === 'nuevo') return nuevo();
     if (a === 'nuevo-en') { S.cliente = t.dataset.c === 'inherent' ? '' : t.dataset.c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[t.dataset.c] = true; persistir(); return nuevo(); }
     if (a === 'carpeta') { const c = t.closest('.ch-car'), ab = !c.classList.contains('abierta'); c.classList.toggle('abierta', ab); t.setAttribute('aria-expanded', ab ? 'true' : 'false'); S.abiertas[t.dataset.c] = ab; persistir(); return; }

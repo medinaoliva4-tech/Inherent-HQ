@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Publica Code OS en https://work.inherentglobal.com (corre en el VPS como deploy). Idempotente.
+# Publica el motor de Code OS en https://code.inherentglobal.com (el OS vive en work.inherentglobal.com) (corre en el VPS como deploy). Idempotente.
 # Antes: registro A  work → IP del VPS en el DNS, y `sudo ufw allow 80,443/tcp`.
 # Pone el secreto del pase del OS (si hay ~/code-os-data/pase.secret, creado por code-os-pase.sh desde tu Mac) y Caddy.
 set -euo pipefail
-D="$HOME/code-os-data"; C="$HOME/code-os"; DOM="${CODEOS_DOMINIO:-work.inherentglobal.com}"; ORIGEN="${CODEOS_ORIGEN_OS:-https://inherent-work.vercel.app}"
+D="$HOME/code-os-data"; C="$HOME/code-os"; DOM="${CODEOS_DOMINIO:-code.inherentglobal.com}"; ORIGEN="${CODEOS_ORIGEN_OS:-https://inherent-work.vercel.app,https://work.inherentglobal.com}"
 R="$HOME/respaldo-codeos-$(date +%Y%m%d%H%M)"; mkdir -p "$R"; chmod 700 "$R"; [ -f /etc/caddy/Caddyfile ] && sudo cp -a /etc/caddy/Caddyfile "$R/" || true
 dig +short "$DOM" | grep -q . || { echo "✗ $DOM aún no resuelve: revisa el registro A en Squarespace"; exit 1; }
 [ -f "$D/pase.secret" ] || { echo "✗ Falta el secreto del pase: corre desde tu Mac  bash code-os/despliegue/code-os-pase.sh"; exit 1; }
 ( umask 077; printf 'PUENTE_PASE_SECRET=%s\nPUENTE_ALLOWED_ORIGINS=%s\n' "$(cat "$D/pase.secret")" "$ORIGEN" > "$D/puente.env" )
 command -v caddy >/dev/null || sudo apt-get install -y caddy >/dev/null
-sed "s#{\$CODEOS_DOMINIO:work.inherentglobal.com}#$DOM#" "$C/despliegue/Caddyfile" | sudo tee /etc/caddy/Caddyfile >/dev/null
+sed "s#{\$CODEOS_DOMINIO:code.inherentglobal.com}#$DOM#" "$C/despliegue/Caddyfile" | sudo tee /etc/caddy/Caddyfile >/dev/null
 sudo caddy validate --config /etc/caddy/Caddyfile >/dev/null 2>&1 && echo "✓ Caddyfile válido"
 sudo install -m 644 "$C/despliegue/code-os-puente.service" /etc/systemd/system/code-os-puente.service; sudo systemctl daemon-reload
 sudo systemctl enable --now caddy >/dev/null 2>&1; sudo systemctl reload caddy || sudo systemctl restart caddy
