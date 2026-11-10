@@ -8,7 +8,7 @@ set -euo pipefail
 HOST="${CODEOS_HOST:-inherent-gw}"; ID="${CODEOS_USER:-rodrigo}"; SVC="code-os-puente"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 token() { security find-generic-password -a "$ID" -s "$SVC" -w 2>/dev/null || true; }
-PUBLICO="${CODEOS_DOMINIO:-work.inherentglobal.com}"
+PUBLICO="${CODEOS_DOMINIO:-code.inherentglobal.com}"
 publico_ok() { curl -s -m6 -o /dev/null -w '%{http_code}' "https://$PUBLICO/health" 2>/dev/null | grep -q 200; }
 dominio() { ssh -n "$HOST" "tailscale status --self --json | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"Self\"][\"DNSName\"].rstrip(\".\"))'"; }
 
