@@ -1,0 +1,254 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* El tema vive en <html data-theme="dark|light">, igual que ceo-os/public (oscuro por defecto). */
+@custom-variant dark (&:is([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------
+   1) Tokens del OS (ceo-os/public/app.css, bloque «SISTEMA v3»).
+      Mismos nombres y valores: --ui-* y --tinta. Oscuro = por defecto.
+   ------------------------------------------------------------------ */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --tinta: 255 255 255;
+  --ui-bg: #0d0d0e;
+  --ui-side: #111112;
+  --ui-surf: #141415;
+  --ui-surf2: #1b1b1d;
+  --ui-fill: #18181a;
+  --ui-fill2: #232325;
+  --ui-line: rgb(235 235 240 / 0.09);
+  --ui-line2: rgb(235 235 240 / 0.16);
+  --ui-ink: #efebe4;
+  --ui-ink2: #bdb9b2;
+  --ui-mut: #a39f9a;
+  --ui-mut2: #8f8b86;
+  --ui-acc: #f5f5f7;
+  --ui-acc-ink: #000000;
+  --ui-user: #252527;
+  --ui-ok: #a7f3d0;
+  --ui-warn: #e8c98f;
+  --ui-bad: #f4b3a6;
+  --ui-glass: rgb(30 30 32 / 0.52);
+  --ui-ink-rgb: 239 235 228;
+  --ui-surf-rgb: 20 20 21;
+  --ui-sh-1: 0 0 0 1px var(--ui-line);
+  --ui-sh-2: 0 0 0 1px var(--ui-line), 0 14px 30px rgb(0 0 0 / 0.36);
+  --ui-sh-3: inset 0 1px 0 rgb(255 255 255 / 0.13), inset 0 0 0 1px rgb(255 255 255 / 0.055),
+    0 18px 44px rgb(0 0 0 / 0.5);
+  /* borde de luz del vidrio */
+  --v-blur: blur(28px) saturate(150%);
+  --v-borde: inset 0 1px 0 rgb(var(--tinta) / 0.13), inset 0 0 0 1px rgb(var(--tinta) / 0.055);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --tinta: 24 24 27;
+  --ui-bg: #fafafa;
+  --ui-side: #f4f4f5;
+  --ui-surf: #ffffff;
+  --ui-surf2: #f2f2f3;
+  --ui-fill: #f5f5f6;
+  --ui-fill2: #e9e9eb;
+  --ui-line: rgb(24 24 27 / 0.09);
+  --ui-line2: rgb(24 24 27 / 0.16);
+  --ui-ink: #18181b;
+  --ui-ink2: #46464c;
+  --ui-mut: #68686f;
+  --ui-mut2: #7c7c84;
+  --ui-acc: #18181b;
+  --ui-acc-ink: #ffffff;
+  --ui-user: #ececee;
+  --ui-ok: #3f7a46;
+  --ui-warn: #a4532f;
+  --ui-bad: #b3402e;
+  --ui-glass: rgb(255 255 255 / 0.82);
+  --ui-ink-rgb: 24 24 27;
+  --ui-surf-rgb: 255 255 255;
+  --ui-sh-1: 0 0 0 1px var(--ui-line), 0 1px 2px rgb(24 24 27 / 0.04);
+  --ui-sh-2: 0 0 0 1px var(--ui-line), 0 12px 32px -14px rgb(24 24 27 / 0.18);
+  --ui-sh-3: 0 18px 50px -22px rgb(24 24 27 / 0.2), 0 1px 2px rgb(24 24 27 / 0.04);
+  --v-borde: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 0 0 1px rgb(24 24 27 / 0.07);
+}
+
+/* ------------------------------------------------------------------
+   2) Mapeo a las variables de shadcn (una sola fuente: --ui-*).
+   ------------------------------------------------------------------ */
+:root {
+  --background: var(--ui-bg);
+  --foreground: var(--ui-ink);
+  --card: var(--ui-surf);
+  --card-foreground: var(--ui-ink);
+  --popover: var(--ui-surf2);
+  --popover-foreground: var(--ui-ink);
+  --primary: var(--ui-acc);
+  --primary-foreground: var(--ui-acc-ink);
+  --secondary: var(--ui-fill);
+  --secondary-foreground: var(--ui-ink);
+  --muted: var(--ui-fill);
+  --muted-foreground: var(--ui-mut);
+  --accent: var(--ui-fill2);
+  --accent-foreground: var(--ui-ink);
+  --destructive: var(--ui-bad);
+  --border: var(--ui-line);
+  --input: var(--ui-line2);
+  --ring: color-mix(in srgb, var(--ui-ink) 45%, transparent);
+  --chart-1: #b07a45;
+  --chart-2: #4f8a62;
+  --chart-3: #7563b5;
+  --chart-4: var(--ui-mut);
+  --chart-5: var(--ui-ink2);
+  --sidebar: var(--ui-side);
+  --sidebar-foreground: var(--ui-ink);
+  --sidebar-primary: var(--ui-acc);
+  --sidebar-primary-foreground: var(--ui-acc-ink);
+  --sidebar-accent: rgb(var(--tinta) / 0.08);
+  --sidebar-accent-foreground: var(--ui-ink);
+  --sidebar-border: var(--ui-line);
+  --sidebar-ring: var(--ring);
+  /* Redondeos concéntricos del OS: control 10 · tarjeta 14 · panel 20 */
+  --radius: 14px;
+
+  /* Movimiento: resorte sin rebote (curva) y entrada rápida; el OS usa linear() donde existe */
+  --e-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --e-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --d-1: 100ms;
+  --d-2: 150ms;
+  --d-3: 200ms;
+  --d-4: 300ms;
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --e-spring: linear(0, 0.057, 0.18, 0.32, 0.454, 0.572, 0.67, 0.749, 0.812, 0.86, 0.896, 0.924, 0.944, 0.959, 0.971, 0.979, 0.985, 0.989, 0.992, 0.994, 1);
+  }
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", system-ui, "Segoe UI", sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* extras del OS */
+  --color-ok: var(--ui-ok);
+  --color-warn: var(--ui-warn);
+  --color-bad: var(--ui-bad);
+  --color-user: var(--ui-user);
+  --color-surf2: var(--ui-surf2);
+  --color-mut2: var(--ui-mut2);
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: var(--radius);
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-4xl: 32px;
+  --ease-out-soft: var(--e-out);
+  --ease-spring: var(--e-spring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01";
+    overscroll-behavior: none;
+  }
+  button,
+  a {
+    touch-action: manipulation;
+  }
+}
+
+/* Vidrio: solo para navegar y controlar; el contenido va sólido (regla del OS). */
+.vidrio {
+  background: var(--ui-glass);
+  -webkit-backdrop-filter: var(--v-blur);
+  backdrop-filter: var(--v-blur);
+  box-shadow: var(--v-borde);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .vidrio {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--ui-surf2);
+  }
+}
+
+/* Luz ambiental de fondo, como el html del OS en oscuro. */
+html[data-theme="dark"],
+html:not([data-theme]) {
+  background:
+    radial-gradient(760px 820px at 3% 0%, rgb(var(--tinta) / 0.1), transparent 72%) fixed,
+    linear-gradient(160deg, #121213, #09090a) fixed #09090a;
+}
+html[data-theme="light"] {
+  background: #fafafa;
+}
+
+/* Cursor parpadeante del texto en streaming */
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.cursor-stream::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: cursor-blink 1s steps(2) infinite;
+}
+
+/* Reduced motion: sin transiciones ni animaciones; los resortes (motion) se desactivan en <MotionConfig>. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
