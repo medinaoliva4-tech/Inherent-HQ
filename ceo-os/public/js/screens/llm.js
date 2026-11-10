@@ -27,6 +27,7 @@ import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
 import { turnoCode } from '../chat-code.js';
+import { rutear } from '../llm/router-code.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { conArchivos, motivoRechazo } from '../chat-archivos.js';
@@ -759,7 +760,12 @@ export async function render(el, { me, sub = [], alive }) {
       const libre = S.modo === MODO_LIBRE.id;
       const esCode = S.modo === 'code'; // Code: el motor es el puente del VPS; Claude Code trae su propio sistema
       const sistema = esCode ? '' : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      const turnoMotor = esCode ? (id, o) => turnoCode(id, { ...o, email: me.email, proyecto: slugAhora(), modelo: S.nivelCode || 'nivel-medio', modo: 'code', titulo: tituloDe(texto) }) : (id, o) => B.turno(id, o);
+      // El router por tarea (Auto): el modelo caro solo donde un error sale caro; lo repetitivo, en el barato. Fijar un nivel lo apaga.
+      const ruta = esCode && (!S.nivelCode || S.nivelCode === 'auto') ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
+      const nivelCode = ruta ? ruta.nivel : S.nivelCode || 'nivel-medio';
+      if (esCode) S.ultimoNivelCode = nivelCode;
+      if (ruta) { msg.notas.push(`${ruta.nombre} · ${ruta.nivel}: ${ruta.motivo}`); pintarUltimo(); }
+      const turnoMotor = esCode ? (id, o) => turnoCode(id, { ...o, email: me.email, proyecto: slugAhora(), modelo: nivelCode, modo: 'code', titulo: tituloDe(texto) }) : (id, o) => B.turno(id, o);
       const r = await turnoMotor(S.sesion, { mensaje: conArchivos(texto, adj), imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
         recibido: (xs) => { recibido = true; if (usuario) usuario.imagenes = xs; pintarHilo(); },
         run: (id) => { S.runId = id; },

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { firmarPase, urlCode, rutas } from '../api/_lib/code.js';
 import { traducir, proyectoDe } from '../public/js/chat-code-puro.js';
+import { rutear, COCINEROS } from '../public/js/llm/router-code.js';
 import { modosDe, modoDe, MODO_CODE, HARNESS } from '../public/js/llm/modos.js';
 
 const SECRET = 'secreto-compartido-con-el-puente-0123456789abcdef';
@@ -51,4 +52,16 @@ assert.equal(proyectoDe('Cerantola Marca!'), 'cerantola-marca-'); assert.equal(p
 assert.ok(modosDe('ceo', []).some((m) => m.id === 'code') && modosDe('team', []).some((m) => m.id === 'code'));
 assert.ok(!modosDe('client', []).some((m) => m.id === 'code'));
 assert.equal(modoDe('code'), MODO_CODE); assert.equal(MODO_CODE.pide, 'cliente'); assert.ok(HARNESS.code);
+// El router por tarea (el «equipo de cocina»).
+const n = (t, o) => rutear(t, o).nivel, c = (t, o) => rutear(t, o).cocinero;
+assert.equal(c('Planea cómo construir el módulo de reportes'), 'chef'); assert.equal(n('Planea cómo construir el módulo de reportes'), 'nivel-alto');
+assert.equal(c('Haz una auditoría de seguridad del login'), 'chef', 'seguridad gana sobre auth');
+assert.equal(c('Arregla el login con Stripe'), 'sous');
+assert.equal(c('Hay un bug raro: falla intermitente al guardar'), 'sous');
+assert.equal(c('Ajusta la interfaz y el css del panel'), 'sous');
+assert.equal(c('Escribe las pruebas de este módulo'), 'linea');
+assert.equal(c('Renombra la variable cliente a cuenta'), 'prep'); assert.equal(n('Busca dónde está definido guardar()'), 'nivel-bajo');
+assert.equal(c('Agrega un botón de exportar'), 'linea', 'lo demás es construir');
+assert.equal(n('Revisa este código', { ultimo: 'nivel-medio' }), 'nivel-alto'); assert.equal(n('Haz un code review', { ultimo: 'nivel-alto' }), 'nivel-medio', 'otro cocinero revisa');
+assert.ok(Object.values(COCINEROS).every((x) => x.nivel.startsWith('nivel-')));
 console.log('✓ test-code: pase firmado, aceptable por el puente, con caducidad y sin sesión no se entrega');
