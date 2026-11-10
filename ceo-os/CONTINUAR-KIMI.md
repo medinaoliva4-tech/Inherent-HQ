@@ -107,13 +107,13 @@ Reiniciar el trabajador en producción necesita OK del CEO.
 
 ## 7 · Trabajo pendiente, en orden
 
-### Trabajo por ventanas (PR pendiente de aplicar)
+### Trabajo por ventanas (PR #274 aplicado)
 
 El arnés y el Chat pueden guardar un plan con `actualizar_plan` y continuar tareas pendientes sin preguntar si siguen. Antes de acercarse al límite de entrada, o al acumular pasos (12 en terminal, 6 en Chat), generan un relevo acotado y abren otra ventana. Se reserva espacio para salida y herramientas; no se usan 30k completos de entrada. El plan no concede permisos. Una decisión real o una acción sin autorización detiene el trabajo. Hay un tope de 20 ventanas por ejecución y un freno ante tres acciones idénticas sin avance.
 
 En terminal, el historial anterior queda en `.historial.jsonl`, la sesión se guarda de forma atómica y `/retomar` recupera el objetivo/plan después de un error o límite. En Chat, el relevo vive en `turno.trabajo`; `/retomar` lo recupera y el botón Detener corta también una generación silenciosa. La UI muestra ventana y tarea actual. Las propuestas siguen exigiendo aprobación; este PR no continúa automáticamente después de aprobar una propuesta.
 
-Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simulado (14 pasos, relevos, permisos y cancelación); `test-ventanas-browser.mjs` comprueba progreso y limpieza de la señal. Falta evaluar un proyecto largo con un modelo real y un corte de red real. No garantiza que el modelo elija bien las tareas ni que un resumen conserve todo. No desplegado.
+Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simulado (14 pasos, relevos, permisos y cancelación); `test-ventanas-browser.mjs` comprueba progreso y limpieza de la señal. Falta evaluar un proyecto largo con un modelo real y un corte de red real. No garantiza que el modelo elija bien las tareas ni que un resumen conserve todo. Web, arnés y Gateway desplegados con aprobación el 6 de noviembre; 11 pruebas de ventanas pasaron.
 
 ### 7.1 · Actualizaciones de la app (urgente, bloqueado por token)
 
@@ -130,14 +130,9 @@ Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simul
 
 ### 7.2 · Contexto de la voz
 
-**Estado:** el CEO pidió que la voz tenga contexto. Desde el PR de este cambio recibe lo mismo que el Chat: quiénes somos, oferta, clientes, proyectos, leads y tareas. Falta probarlo en la app.
+**Corrección en PR, pendiente de publicar:** la voz abría Gemini Live en otra conversación, sin las herramientas ni el historial del Chat. Ahora el dictado se envía por el mismo turno del Chat, con el modelo elegido, cliente, contexto, permisos y propuestas. La respuesta se lee con la voz del sistema. El endpoint antiguo devuelve `NO_VOZ` para que las versiones viejas usen el mismo fallback, sin enviar un contexto separado a Gemini.
 
-**Prueba:** por voz, «¿quiénes son mis clientes?» y «¿qué proyectos están abiertos?». Si dice que no tiene acceso:
-1. Confirma que `chat/voz/token` devuelve `contexto` con texto.
-2. Confirma que `setupVoz` lo manda en `systemInstruction`.
-3. Pon el contexto antes de `PROMPT_VOZ` y refuerza la instrucción final de `saberEmpresa`.
-
-Gemini está en plan gratis: Google puede usar estos datos. El CEO ya lo sabe. Finanzas no entra.
+`test-voz-chat-browser.mjs` comprueba que escribir y dictar usan el mismo id/modelo, conserva el hilo, lee la respuesta y detiene la generación al interrumpir. Reconocimiento, síntesis y respuesta del proveedor son simulados. Falta probar micrófono/Dictado y sonido reales en la app Mac e iPhone. Esta corrección no mejora por sí sola la latencia del modelo.
 
 ### 7.3 · Chat que busca en el OS
 
@@ -168,7 +163,7 @@ Antes de construir, abre Claude real y compara. Marca cada una como hecha solo s
 | Función | Estado | Cómo hacerla |
 |---|---|---|
 | Arrastrar, pegar y botón + | Hecho solo para texto | `public/js/chat-archivos.js` y `sumarArchivos` en `llm.js` |
-| Imágenes | PR: construido y probado localmente; pendiente desplegar | JPEG/PNG/WebP, miniatura y lectura real con Kimi mediante `gateway/vision.mjs`. El historial conserva la lectura y referencias; los píxeles viven aparte. Falta circuito desplegado e iPhone |
+| Imágenes | PR #273 aplicado; prueba sintética real en staging pasó | JPEG/PNG/WebP, miniatura y lectura real con Kimi mediante `gateway/vision.mjs`. El historial conserva la lectura y referencias; los píxeles viven aparte. Falta circuito desplegado e iPhone |
 | PDF y Word | Falta | Extrae el texto en el servidor antes de `conArchivos`. Agrega una ruta y una dependencia pequeña |
 | Editar un mensaje enviado | Falta | Botón en el mensaje. Corta `mensajes` hasta ahí y reusa `ramificar` o una ruta nueva con `v` |
 | Artefactos | Por revisar | Parte de `llm/genui.js`. Falta guardarlos, listarlos, editarlos y compartirlos |

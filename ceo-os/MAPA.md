@@ -926,6 +926,12 @@ Pruebas: validación del JPEG, aislamiento, API real en memoria, envío multimod
 
 La cancelación del Chat consulta solo el estado del turno y puede cortar el modelo aunque todavía no haya emitido texto. El latido del turno se actualiza al avanzar y una reclamación de trabajo colgado revalida el estado antes de tomarlo. Las pruebas usan datos sintéticos y proveedor simulado; falta validar proyectos extensos reales y desplegar web, terminal y Gateway con aprobación. Las aprobaciones humanas se conservan; después de una propuesta aprobada aún se debe retomar el trabajo.
 
+### Voz con el contexto del Chat
+
+La conversación hablada usa Dictado del sistema en Mac o reconocimiento del navegador, envía el texto por el mismo turno del Chat y lee la respuesta con síntesis del dispositivo. Conserva hilo, modelo elegido, cliente, herramientas y aprobaciones. El modo hablado pide respuestas breves. Interrumpir mientras habla también cancela la generación. El endpoint antiguo de Gemini devuelve `NO_VOZ` para activar el fallback de las versiones anteriores. Ya no se crea una conversación aparte con Gemini ni se envía allí un contexto adicional. No es audio nativo del modelo; la naturalidad depende de la voz instalada.
+
+Prueba de navegador con dictado/audio/proveedor simulados; falta micrófono, sonido y Dictado reales en Mac/iPhone. Pendiente publicar este cambio de voz.
+
 ## 10 · Límites conocidos
 
 **El puente y los chats**
