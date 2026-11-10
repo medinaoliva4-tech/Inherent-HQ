@@ -8,10 +8,6 @@ export const PROVEEDORES = {
     // Sin números públicos: medimos llamadas y avisamos si el proveedor responde 402/429.
     ventanas: { '5h': { tipo: 'rodante', horas: 5, llamadas: null }, semana: { tipo: 'rodante', horas: 168, llamadas: null }, mes: { tipo: 'rodante', horas: 720, llamadas: null } },
   },
-  modelscope: {
-    nombre: 'ModelScope', tipo: 'gratis',
-    ventanas: { dia: { tipo: 'dia_utc8', llamadas: 2000 } }, // 2,000 llamadas/día en total, reinicia 00:00 UTC+8
-  },
   nvidia: {
     nombre: 'NVIDIA', tipo: 'gratis',
     ventanas: { dia: { tipo: 'dia_utc', llamadas: null } },
@@ -38,7 +34,6 @@ export const PROVEEDORES = {
 export function proveedorDe({ api_base = '', modelo = '' } = {}) {
   const s = `${api_base} ${modelo}`.toLowerCase();
   if (s.includes('cline.bot')) return 'cline';
-  if (s.includes('modelscope')) return 'modelscope';
   if (s.includes('nvidia.com')) return 'nvidia';
   if (s.includes('featherless')) return 'featherless';
   if (s.includes('frontier')) return 'frontier';

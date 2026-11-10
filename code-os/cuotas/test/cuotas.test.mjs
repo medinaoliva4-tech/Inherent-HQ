@@ -25,25 +25,25 @@ test('rodante 5h reinicia cuando sale el evento más viejo', () => {
 
 function medidor(limites) {
   const config = cargarConfig();
-  Object.assign(config.modelscope.ventanas.dia, limites?.ms ?? {});
+  Object.assign(config.nvidia.ventanas.dia, limites?.ms ?? {});
   return crearMedidor({ config, ahora: () => T0 });
 }
-test('ModelScope: aviso al 80% y agotado al 100%', () => {
+test('NVIDIA: aviso al 80% y agotado al 100%', () => {
   const m = medidor({ ms: { llamadas: 10 } });
-  for (let i = 0; i < 7; i++) m.registrar({ proveedor: 'modelscope', ts: T0 - i * 1000, http: 200 });
-  assert.equal(m.estadoProveedor('modelscope').ventanas.dia.nivel, 'ok');
-  m.registrar({ proveedor: 'modelscope', ts: T0, http: 200 });
-  const w = m.estadoProveedor('modelscope').ventanas.dia;
+  for (let i = 0; i < 7; i++) m.registrar({ proveedor: 'nvidia', ts: T0 - i * 1000, http: 200 });
+  assert.equal(m.estadoProveedor('nvidia').ventanas.dia.nivel, 'ok');
+  m.registrar({ proveedor: 'nvidia', ts: T0, http: 200 });
+  const w = m.estadoProveedor('nvidia').ventanas.dia;
   assert.equal(w.nivel, 'aviso'); assert.equal(w.pct, 0.8);
-  assert.ok(m.estado().avisos.some((a) => a.proveedor === 'modelscope' && a.nivel === 'aviso'));
-  m.registrar({ proveedor: 'modelscope', ts: T0, http: 200 }); m.registrar({ proveedor: 'modelscope', ts: T0, http: 200 });
-  assert.equal(m.estadoProveedor('modelscope').ventanas.dia.nivel, 'agotado');
-  assert.equal(m.restante('modelscope', 'dia').llamadas, 0);
+  assert.ok(m.estado().avisos.some((a) => a.proveedor === 'nvidia' && a.nivel === 'aviso'));
+  m.registrar({ proveedor: 'nvidia', ts: T0, http: 200 }); m.registrar({ proveedor: 'nvidia', ts: T0, http: 200 });
+  assert.equal(m.estadoProveedor('nvidia').ventanas.dia.nivel, 'agotado');
+  assert.equal(m.restante('nvidia', 'dia').llamadas, 0);
 });
-test('llamadas de ayer (antes de las 00:00 UTC+8) no cuentan', () => {
+test('llamadas de ayer (antes de las 00:00 UTC) no cuentan', () => {
   const m = medidor({ ms: { llamadas: 10 } });
-  m.registrar({ proveedor: 'modelscope', ts: Date.parse('2026-11-09T15:59:00Z'), http: 200 });
-  assert.equal(m.estadoProveedor('modelscope').ventanas.dia.llamadas, 0);
+  m.registrar({ proveedor: 'nvidia', ts: Date.parse('2026-11-09T23:59:00Z'), http: 200 });
+  assert.equal(m.estadoProveedor('nvidia').ventanas.dia.llamadas, 0);
 });
 test('Cline sin tope conocido: un 429 reciente lo marca agotado', () => {
   const m = medidor();
@@ -66,12 +66,11 @@ test('DeepSeek por gasto: 80% de tope USD avisa', () => {
 });
 test('llamada sin llave no gasta cupo', () => {
   const m = medidor({ ms: { llamadas: 10 } });
-  m.registrar({ proveedor: 'modelscope', ts: T0, http: 401, error_tipo: 'sin_llave' });
-  assert.equal(m.estadoProveedor('modelscope').ventanas.dia.llamadas, 0);
+  m.registrar({ proveedor: 'nvidia', ts: T0, http: 401, error_tipo: 'sin_llave' });
+  assert.equal(m.estadoProveedor('nvidia').ventanas.dia.llamadas, 0);
 });
 test('proveedorDe', () => {
   assert.equal(proveedorDe({ api_base: 'https://api.cline.bot/api/v1' }), 'cline');
-  assert.equal(proveedorDe({ api_base: 'https://api-inference.modelscope.cn/v1' }), 'modelscope');
   assert.equal(proveedorDe({ api_base: 'https://integrate.api.nvidia.com/v1' }), 'nvidia');
   assert.equal(proveedorDe({ modelo: 'deepseek/deepseek-v4-flash' }), 'deepseek');
   assert.equal(proveedorDe({ modelo: 'openai/FRONTIER-POR-ELEGIR' }), 'frontier');

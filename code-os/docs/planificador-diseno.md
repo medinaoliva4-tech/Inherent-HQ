@@ -1,12 +1,12 @@
 # Planificador por deadline · diseño corto
 
-**Problema.** Los créditos son finitos (Cline Pass por ventanas, ModelScope 2,000/día, NVIDIA inestable) y cada tarea del OS tiene deadline. Hay que repartirlos para que cada entrega llegue a tiempo sin quemar dinero.
+**Problema.** Los créditos son finitos (Cline Pass por ventanas, NVIDIA inestable) y cada tarea del OS tiene deadline. Hay que repartirlos para que cada entrega llegue a tiempo sin quemar dinero.
 
 **Módulo.** `code-os/planificador/planificador.mjs` (puro: sin red ni disco) + `capacidad.mjs` (puente con el medidor de `code-os/cuotas/`). Tests: `node --test code-os/planificador/test/ code-os/cuotas/test/`.
 
 ## Entrada
 - `trabajos[]`: `{id, titulo, deadline, partes:[{nivel: alto|medio|bajo, llamadas, repetitivo?, nombre?}]}`. La estimación es en **llamadas** por nivel.
-- `capacidad(nivel, desde, hasta)`: llamadas sin pago por token que caben en ese intervalo. `capacidadDesdeMedidor` la calcula como `restante hoy + tope × reinicios hasta el deadline`, tomando el mínimo entre las ventanas de cada proveedor (5h/semana/mes en Cline, día UTC+8 en ModelScope).
+- `capacidad(nivel, desde, hasta)`: llamadas sin pago por token que caben en ese intervalo. `capacidadDesdeMedidor` la calcula como `restante hoy + tope × reinicios hasta el deadline`, tomando el mínimo entre las ventanas de cada proveedor (5h/semana/mes en Cline, día UTC en NVIDIA).
 - `aprobaciones[idTrabajo] = {usd}`: gasto por token ya aprobado por el CEO.
 
 ## Reglas

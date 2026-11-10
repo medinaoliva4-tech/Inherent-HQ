@@ -1,4 +1,4 @@
-// Ventanas de tiempo para cuotas. Todo en milisegundos UTC; la "hora local" de ModelScope es UTC+8.
+// Ventanas de tiempo para cuotas. Todo en milisegundos UTC. El tipo dia_utc8 queda disponible para proveedores con reinicio en hora de China.
 const H = 3600e3;
 const UTC8 = 8 * H;
 

@@ -20,18 +20,16 @@ Pruebas por alias: (a) chat corto, (b) tool calling por `/v1/messages` (formato 
 | `nv-glm-5.3-flash` | NVIDIA | ❌ timeout | ❌ | ❌ | Fuera de los niveles |
 | `nv-minimax-m3.1-flash` | NVIDIA | ❌ timeout (una vez 76 s) | ❌ | ❌ | Fuera de los niveles |
 | `nv-kimi-k2.6` | NVIDIA | ❌ 404 "Function not found for account" | ❌ | ❌ | Fuera: la cuenta no lo tiene desplegado |
-| `ms-*` (ModelScope) | ModelScope | sin llave | — | — | **Pendiente**: falta `MODELSCOPE_API_KEY` |
 | `ds-v4-*` / `nivel-bajo-pago` | DeepSeek | sin llave (responde 401) | — | — | **Pendiente**: falta `DEEPSEEK_API_KEY` |
 | `fr-frontier` / `nivel-alto` | Frontier | sin llave | — | — | **Pendiente**: proveedor por elegir |
 
-El nombre exacto de los modelos de ModelScope (`ms-deepseek-v4-flash`, `ms-glm-5.3`) es una **suposición** que hay que confirmar con la llave puesta.
 
 ## Hallazgos que importan
 
 1. **(Resuelto en producción)** El callback `cuotas_callback.py` sube `max_tokens` a un piso (1,000; 2,000 en `nivel-alto`/`cp-kimi-k3.1-pro`) en los alias `nivel-*`, `cp-*` y `nv-*`. Verificado: con `max_tokens=20` las tres rutas responden. Antes, **Cline Pass devolvía HTTP 500 `empty response content` si `max_tokens` es muy bajo** (con 20 falla, con 200 pasa). Son modelos que razonan y gastan el presupuesto pensando. Cualquier cliente que use los niveles debe pedir `max_tokens` ≥ 200 (mejor ≥ 1000). Con valores bajos el nivel medio cae a NVIDIA por culpa de esto, no de un tope.
 2. **NVIDIA gratuito es inestable**: de 84 modelos listados, solo ~8 respondían en 15 s; los de la familia "flash" (deepseek, glm, minimax) dan timeout. Los que sí sirven son los Nemotron, `mistral-large-4` y `step-5`.
 3. **Modelos de razonamiento y `max_tokens`** (NVIDIA también): con 100 tokens devolvían contenido vacío. Mismo consejo.
-4. Fallback verificado: con Cline fallando (máx. 20 tokens), `nivel-medio` recorrió los `cp-*` y terminó en `nv-nemotron-3-ultra` (cabecera `x-litellm-attempted-fallbacks: 1`). Con llaves ausentes (ModelScope, frontier) el router salta al siguiente en ~25 ms.
+4. Fallback verificado: con Cline fallando (máx. 20 tokens), `nivel-medio` recorrió los `cp-*` y terminó en `nv-nemotron-3-ultra` (cabecera `x-litellm-attempted-fallbacks: 1`). Con llave ausente (frontier) el router salta al siguiente en ~25 ms.
 5. Límite conocido del medidor: LiteLLM solo avisa al callback del primer intento y del resultado final, no de cada eslabón intermedio de un fallback. Todo éxito sí queda contado; un 429 en un eslabón intermedio no.
 
 ## Niveles (config en `code-os/litellm/litellm.yaml`)
@@ -40,7 +38,7 @@ El nombre exacto de los modelos de ModelScope (`ms-deepseek-v4-flash`, `ms-glm-5
 |---|---|---|
 | `nivel-alto` | frontier por API key (placeholder, 120 s) | `cp-kimi-k3.1-pro` → `cp-kimi-k3` → `cp-glm-5.3` → `cp-deepseek-v4-pro` → `cp-minimax-m3` → `nv-nemotron-3-ultra` → `nv-mistral-large-4` |
 | `nivel-medio` | `cp-kimi-k3` (90 s) | `cp-glm-5.3` → `cp-deepseek-v4-pro` → `cp-minimax-m3` → `nv-nemotron-3-ultra` → `nv-mistral-large-4` |
-| `nivel-bajo` | ModelScope DeepSeek-V4-Flash (45 s, placeholder) | `nv-nemotron-3-ultra` → `nv-mistral-large-4` → `nv-nemotron-lightning` → `nv-deepseek-v4.1-flash` (20 s) |
+| `nivel-bajo` | `nv-nemotron-3-ultra` (45 s) | `nv-mistral-large-4` → `nv-nemotron-lightning` → `nv-deepseek-v4.1-flash` (20 s) |
 | `nivel-bajo-pago` | DeepSeek por token | ninguno. **No es respaldo de nadie**: solo se llama a mano tras aprobar el gasto |
 
 `num_retries: 0` (el fallback ya es el reintento), `allowed_fails: 2`, `cooldown_time: 60`. 402, 429, timeout, 5xx y llave ausente disparan el siguiente eslabón.

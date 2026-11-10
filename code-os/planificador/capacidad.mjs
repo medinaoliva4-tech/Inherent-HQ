@@ -3,7 +3,7 @@
 export const PROVEEDORES_POR_NIVEL = {
   alto: [],                          // frontier es por token: solo con aprobación/tope
   medio: ['cline'],
-  bajo: ['modelscope', 'nvidia'],
+  bajo: ['nvidia'],
 };
 
 // Supuestos mientras no haya tope publicado (Cline Pass, NVIDIA). Se reemplazan al calibrar con el medidor.

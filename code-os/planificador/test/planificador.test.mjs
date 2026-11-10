@@ -64,14 +64,12 @@ test('deadlines compiten por el mismo cupo: el más cercano se reserva primero',
   assert.equal(r.trabajos[1].id, 'tarde'); assert.equal(r.trabajos[1].estado, 'requiere_aprobacion');
 });
 
-test('capacidad desde medidor: ModelScope 2,000/día y reinicios 00:00 UTC+8', () => {
+test('capacidad desde medidor: NVIDIA supuesto 1,000/día, reinicia 00:00 UTC', () => {
   const config = cargarConfig();
   const m = crearMedidor({ config, ahora: () => T0 });
-  for (let i = 0; i < 500; i++) m.registrar({ proveedor: 'modelscope', ts: T0 - 1000, http: 200 });
+  for (let i = 0; i < 300; i++) m.registrar({ proveedor: 'nvidia', ts: T0 - 1000, http: 200 });
   const c = capacidadDesdeMedidor(m, { config });
-  // en 2 días: 2 reinicios de ModelScope (16:00 UTC) y 2 de NVIDIA (00:00 UTC)
-  assert.equal(c('bajo', T0, T0 + 2 * DIA) - c('bajo', T0, T0 + 3600e3), 2 * 2000 + 2 * 1000); // + NVIDIA (supuesto 1000/día, reinicia 00:00 UTC)
-  const hoy = c('bajo', T0, T0 + 3600e3);
-  assert.equal(hoy, 1500 + 1000); // ModelScope restante + supuesto NVIDIA (1000/día)
+  assert.equal(c('bajo', T0, T0 + 3600e3), 700); // 1000 supuestos − 300 usados hoy
+  assert.equal(c('bajo', T0, T0 + 2 * DIA) - 700, 2 * 1000); // 2 reinicios a las 00:00 UTC
   assert.equal(c('alto', T0, T0 + DIA), 0);
 });
