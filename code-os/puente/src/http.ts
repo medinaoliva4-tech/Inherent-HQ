@@ -5,6 +5,8 @@ import type { Config } from './config.js';
 import type { Services } from './services.js';
 import { serveStatic } from './static.js';
 import * as fx from './files.js';
+import { acceptWebSocket } from './ws.js';
+import { openTerminal } from './terminal.js';
 import { listSkills } from './skills.js';
 import type { SessionManager } from './manager.js';
 import type { ModelCatalog } from './models.js';
@@ -30,7 +32,7 @@ const LOGIN = (err = '') => PAGE(`<form method=post action=/entrar style="width:
 
 export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog, svc: Services): Server {
   const authed = makeAuthenticator(cfg.users);
-  return createServer(async (req, res) => {
+  const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', 'http://x');
       const path = url.pathname.replace(/\/+$/, '') || '/';
@@ -133,4 +135,26 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       send(res, 500, { error: 'Error interno' });
     }
   });
+  // Terminal real por WebSocket: GET /sessions/:id/terminal (Upgrade). Misma autenticación que la API (token o cookie).
+  const sockets = new Set<import('node:stream').Duplex>();
+  const cerrarTodo = server.closeAllConnections.bind(server);
+  server.closeAllConnections = () => { cerrarTodo(); for (const s of sockets) s.destroy(); };
+  server.on('upgrade', (req, socket) => {
+    sockets.add(socket); socket.on('close', () => sockets.delete(socket));
+    const refuse = (code: number, msg: string) => { socket.end(`HTTP/1.1 ${code} ${msg}\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`); };
+    try {
+      const m = /^\/sessions\/([0-9a-f-]{36})\/terminal$/.exec(new URL(req.url ?? '/', 'http://x').pathname);
+      if (!m) return refuse(404, 'Not Found');
+      const user = authed(req);
+      if (!user) return refuse(401, 'Unauthorized');
+      const origin = req.headers.origin;
+      if (origin && !req.headers.authorization && new URL(origin).host !== req.headers.host) return refuse(403, 'Forbidden'); // CSRF por cookie
+      const ses = mgr.get(user, m[1]!);
+      if (cfg.requireConfine && !mgr.confined) return refuse(503, 'Service Unavailable');
+      const ws = acceptWebSocket(req, socket);
+      if (!ws) return refuse(400, 'Bad Request');
+      openTerminal(cfg, user, ses.meta.cwd, svc.spawner?.(user, ses.meta.cwd), ws);
+    } catch (e) { refuse(e instanceof HttpError ? e.status : 500, 'Error'); }
+  });
+  return server;
 }
