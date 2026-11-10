@@ -111,6 +111,11 @@ export function crearTraductor() {
         const ok = !!e.ok
         const detenido = e.reason === 'aborted'
         const out: Evento[] = []
+        // Los totales del turno son más fiables que los `usage` parciales.
+        const u = e.usage as Record<string, number> | undefined
+        if (u && (u.inputTokens || u.outputTokens)) {
+          out.push({ tipo: 'uso', modelo, tokens_entrada: Number(u.inputTokens ?? 0), tokens_salida: Number(u.outputTokens ?? 0), tokens_cache: Number(u.cacheReadTokens ?? 0) + Number(u.cacheCreationTokens ?? 0) })
+        }
         if (!ok && !detenido) out.push({ tipo: 'error', mensaje: String(e.error ?? e.reason ?? 'El turno falló') })
         out.push({ tipo: 'fin', motivo: ok ? 'completo' : detenido ? 'detenido' : 'error', duracionMs: Number(e.durationMs ?? 0) || undefined })
         return out
@@ -158,6 +163,8 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
       /* sin almacenamiento */
     }
   }
+  /** El puente de main no tiene /me: tras el primer 404 se usa /health. */
+  let sinMe = false
   /** requestId → id de sesión del puente (para responder permisos). */
   const permisos = new Map<string, string>()
 
@@ -264,14 +271,16 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
       const url = cfg.cuotasUrl ?? base
       const token = cfg.cuotasToken ?? cfg.token
       const res = await fetchFn(`${url}/cuotas`, { headers: token ? { authorization: `Bearer ${token}` } : {} })
+      if (res.status === 404) throw new NoDisponible('GET /cuotas (que el puente reenvíe el medidor de code-os/cuotas)')
       if (!res.ok) throw new Error(`Cuotas respondió ${res.status}`)
       return (await res.json()) as EstadoCuotas
     },
     async estado(): Promise<EstadoServidor> {
       // `GET /me` (puente con usuarios) trae { claude: { installed, active, hint } }. Si no existe, se cae a /health.
       try {
-        const r = await fetchFn(`${base}/me`, { headers: cab() })
-        if (r.ok) {
+        const r = sinMe ? null : await fetchFn(`${base}/me`, { headers: cab() })
+        if (r?.status === 404) sinMe = true
+        if (r?.ok) {
           const j = (await r.json()) as { claude?: { active?: boolean; hint?: string } }
           const activa = j.claude?.active
           return { claude: typeof activa === 'boolean' ? (activa ? 'activa' : 'inactiva') : 'desconocido', puente: 'conectado', pista: j.claude?.hint }

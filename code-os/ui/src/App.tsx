@@ -1,5 +1,5 @@
 import { GhostIcon, MenuIcon, PanelRightIcon } from 'lucide-react'
-import { AnimatePresence, MotionConfig, motion } from 'motion/react'
+import { AnimatePresence, MotionConfig, motion, useDragControls } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from '@/components/ai-elements/conversation'
@@ -83,16 +83,20 @@ export default function App({ cliente: clienteProp }: Props) {
   const [artefactoActivo, setArtefactoActivo] = useState<string | null>(null)
   const [servidor, setServidor] = useState<EstadoServidor | null>(null)
   const { estado: cuotas, error: errorCuotas } = useCuotas(cliente)
+  const arrastreHoja = useDragControls()
   const catalogo = useDatos(() => cliente.modelos(), [cliente])
 
   // Conversación activa de la pestaña (si no hay, la más reciente; si no hay ninguna, se crea).
   const delaPestana = espacio.conversaciones.filter((c) => c.pestana === pestana && !c.archivada)
   const conv: Conversacion | undefined = espacio.conversaciones.find((c) => c.id === activaPor[pestana]) ?? delaPestana[0]
+  const creando = useRef<Partial<Record<Pestana, boolean>>>({})
   useEffect(() => {
-    if (!conv) {
+    // El ref evita crear dos (React en modo estricto corre los efectos dos veces en desarrollo).
+    if (!conv && !creando.current[pestana]) {
+      creando.current[pestana] = true
       const c = crearConversacion({ proyectoId: espacio.proyectos[0]?.id ?? 'general', pestana, modeloId: espacio.ajustes.modeloPorDefecto })
       setActivaPor((s) => ({ ...s, [pestana]: c.id }))
-    }
+    } else if (conv) creando.current[pestana] = false
   }, [conv, pestana, crearConversacion, espacio.proyectos, espacio.ajustes.modeloPorDefecto])
   const convId = conv?.id ?? ''
   const convIdRef = useRef(convId)
@@ -486,12 +490,16 @@ export default function App({ cliente: clienteProp }: Props) {
                       exit={{ y: '100%' }}
                       drag="y"
                       dragListener={false}
+                      dragControls={arrastreHoja}
                       dragConstraints={{ top: 0, bottom: 0 }}
                       dragElastic={{ top: 0, bottom: 0.6 }}
                       onDragEnd={(_, i) => (i.offset.y > 120 || i.velocity.y > 500) && setPanel(false)}
                     >
                       <div className="flex h-full flex-col bg-card">
-                        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-muted-foreground/30" aria-hidden />
+                        {/* Asa: se arrastra hacia abajo para cerrar (el resto del panel hace scroll normal). */}
+                        <div className="flex h-5 shrink-0 cursor-grab touch-none items-center justify-center active:cursor-grabbing" onPointerDown={(e) => arrastreHoja.start(e)} aria-hidden>
+                          <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+                        </div>
                         <div className="min-h-0 flex-1">{panelLateral}</div>
                       </div>
                     </motion.div>

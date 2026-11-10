@@ -92,7 +92,7 @@ export function TarjetaHerramienta({ p, abierta, vieja }: { p: ParteHerramienta;
   }
   if (p.hijos) return <TarjetaSubagente p={p} abierta={abierta} />
   return (
-    <Tool className="bg-card/60" defaultOpen={abierta}>
+    <Tool key={abierta ? "abierta" : "cerrada"} className="bg-card/60" defaultOpen={abierta}>
       <ToolHeader type="dynamic-tool" toolName={p.nombre} title={tituloHerramienta(p)} state={estadoTool(p)} />
       <ToolContent>
         <ToolInput input={p.entrada} />
@@ -106,8 +106,10 @@ export function TarjetaHerramienta({ p, abierta, vieja }: { p: ParteHerramienta;
 export function TarjetaSubagente({ p, abierta }: { p: ParteHerramienta; abierta?: boolean }) {
   const desc = String(p.entrada.description ?? 'Subagente')
   const tipo = typeof p.entrada.subagent_type === 'string' ? p.entrada.subagent_type : undefined
+  // Base UI no deja cambiar defaultOpen después de montar: se fija una sola vez.
+  const [abiertaInicial] = useState(() => abierta ?? p.estado === 'ejecutando')
   return (
-    <Tool className="bg-card/60" defaultOpen={abierta ?? p.estado === 'ejecutando'}>
+    <Tool className="bg-card/60" defaultOpen={abiertaInicial}>
       <ToolHeader type="dynamic-tool" toolName="Subagente" title={`Subagente${tipo ? ` (${tipo})` : ''} · ${desc}`} state={estadoTool(p)} />
       <ToolContent className="space-y-2">
         {p.hijos?.length ? (
@@ -437,7 +439,7 @@ export function MensajeVista({ mensaje: m, detallada, onPermiso, onPregunta, onP
       {m.partes.map((p, i) => (
         <motion.div key={p.id} {...entrada} className="min-w-0">
           {p.tipo === 'razonamiento' && (
-            <Reasoning isStreaming={!p.cerrado} defaultOpen={detallada} className="mb-3">
+            <Reasoning key={detallada ? "d" : "n"} isStreaming={!p.cerrado} defaultOpen={detallada} className="mb-3">
               <ReasoningTrigger />
               <ReasoningContent>{p.texto}</ReasoningContent>
             </Reasoning>

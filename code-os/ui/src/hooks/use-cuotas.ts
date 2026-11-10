@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import type { Cliente, EstadoCuotas } from '@/lib/cliente'
+import { NoDisponible, type Cliente, type EstadoCuotas } from '@/lib/cliente'
 import { avisosDe, cuandoReinicia } from '@/lib/cuotas'
 
 const CADA_MS = 60_000
@@ -31,11 +31,15 @@ export function useCuotas(cliente: Cliente) {
           else toast.warning(a.mensaje, opts)
         }
       } catch (err) {
-        if (vivo) setError(err instanceof Error ? err.message : 'No se pudieron leer las cuotas')
+        if (!vivo) return
+        if (err instanceof NoDisponible) {
+          setError('El puente aún no expone las cuotas')
+          clearInterval(t) // no tiene caso seguir preguntando
+        } else setError(err instanceof Error ? err.message : 'No se pudieron leer las cuotas')
       }
     }
-    leer()
     const t = setInterval(leer, CADA_MS)
+    leer()
     return () => {
       vivo = false
       clearInterval(t)

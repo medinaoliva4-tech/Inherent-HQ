@@ -262,7 +262,7 @@ export function Composer(props: Props) {
         globalDrop
         maxFileSize={MAX_ARCHIVO_BYTES}
         onError={(e) => toast.error(e.code === 'max_file_size' ? 'Ese archivo pasa de 30 MB.' : e.message)}
-        className="vidrio relative rounded-xl [&_[data-slot=input-group]]:rounded-xl"
+        className="vidrio relative rounded-xl [&_[data-slot=input-group]]:overflow-visible [&_[data-slot=input-group]]:rounded-xl"
       >
         <Caja {...props} />
       </PromptInput>
