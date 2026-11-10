@@ -6,6 +6,7 @@ import { loadConfig } from './config.js';
 import { bwrapWorks, makeBwrapSpawner } from './confine.js';
 import { makeCuotasClient } from './cuotas.js';
 import { createApp } from './http.js';
+import { gitDirDe } from './files.js';
 import { verifyUserKeys } from './keys.js';
 import { SessionManager } from './manager.js';
 import { makeModelCatalog } from './models.js';
@@ -27,7 +28,7 @@ if (cfg.confine === 'bwrap' && !canBwrap) { console.error('[puente] PUENTE_CONFI
 const svc: Services = {
   claude: makeClaudeProbe(cfg),
   cuotas: makeCuotasClient(cfg),
-  spawner: canBwrap ? (u, cwd) => makeBwrapSpawner({ workspace: cwd, home: userHome(cfg, u), readOnly: [join(here, 'node_modules')] }) : undefined,
+  spawner: canBwrap ? (u, cwd) => makeBwrapSpawner({ workspace: cwd, home: userHome(cfg, u), readOnly: [join(here, 'node_modules')], rw: gitDirDe(cwd) }) : undefined,
 };
 const models = makeModelCatalog(cfg);
 const mgr = new SessionManager(cfg, new SessionStore(cfg.dataDir), models, realQuery, svc);

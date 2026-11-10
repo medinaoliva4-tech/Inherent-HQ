@@ -10,6 +10,8 @@ export interface ConfineSpec {
   home: string;
   /** Rutas extra de solo lectura (p. ej. donde vive el binario del arnés). */
   readOnly: string[];
+  /** Rutas extra de lectura y escritura (p. ej. el .git del proyecto cuando la sesión corre en un worktree). */
+  rw?: string[];
   bwrapPath?: string;
 }
 export interface ProcSpec { command: string; args: string[]; cwd?: string; env: Record<string, string | undefined> }
@@ -29,6 +31,7 @@ export function bwrapArgv(spec: ConfineSpec, p: ProcSpec): string[] {
   a.push('--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp');
   for (const r of spec.readOnly) a.push('--ro-bind', r, r);
   a.push('--bind', spec.workspace, spec.workspace, '--bind', spec.home, spec.home);
+  for (const r of spec.rw ?? []) a.push('--bind', r, r);
   for (const [k, v] of Object.entries(p.env)) if (v !== undefined) a.push('--setenv', k, v);
   a.push('--chdir', p.cwd ?? spec.workspace);
   a.push('--', p.command, ...p.args);

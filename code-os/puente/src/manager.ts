@@ -2,14 +2,15 @@ import { randomUUID } from 'node:crypto';
 import type { Config, UserRecord } from './config.js';
 import { modelAllowed } from './auth.js';
 import type { Services } from './services.js';
-import { asegurarBase } from './files.js';
+import { asegurarBase, crearWorktree } from './files.js';
+import { join } from 'node:path';
 import type { ModelCatalog } from './models.js';
 import { Session } from './session.js';
 import { SessionStore } from './store.js';
 import { workspaceFor } from './workspace.js';
 import { HttpError, MODES, type Mode, type QueryFn, type SessionMeta } from './types.js';
 
-export interface CreateBody { projectId?: unknown; model?: unknown; mode?: unknown; title?: unknown; systemPrompt?: unknown; agents?: unknown; mcp?: unknown }
+export interface CreateBody { isolate?: unknown; projectId?: unknown; model?: unknown; mode?: unknown; title?: unknown; systemPrompt?: unknown; agents?: unknown; mcp?: unknown }
 
 export class SessionManager {
   private live = new Map<string, Session>();
@@ -38,18 +39,21 @@ export class SessionManager {
     await this.assertModel(u, model);
     const mode = this.parseMode(b.mode ?? 'code');
     this.assertMode(mode);
-    const cwd = workspaceFor(this.cfg.workspacesDir, u.id, projectId);
+    const proyecto = workspaceFor(this.cfg.workspacesDir, u.id, projectId);
+    const id = randomUUID();
+    let cwd = proyecto; let worktree: SessionMeta['worktree'];
+    if (b.isolate === true) { cwd = join(proyecto, '.codeos', 'wt', id); worktree = { repo: proyecto, branch: `code/${id.slice(0, 8)}` }; await crearWorktree(proyecto, cwd, worktree.branch); }
     const agents = this.parseAgents(b.agents);
     const mcp = this.parseMcp(b.mcp);
     const now = new Date().toISOString();
     const meta: SessionMeta = {
-      id: randomUUID(), userId: u.id, projectId, cwd, model, mode, createdAt: now, updatedAt: now,
+      id, userId: u.id, projectId, cwd, ...(worktree ? { worktree } : {}), model, mode, createdAt: now, updatedAt: now,
       title: typeof b.title === 'string' ? b.title.slice(0, 120) : undefined,
       systemPrompt: typeof b.systemPrompt === 'string' ? b.systemPrompt.slice(0, 8000) : undefined,
       agents, mcp, totals: { inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheCreationTokens: 0, turns: 0 },
     };
     this.store.save(meta);
-    void asegurarBase(cwd).catch(() => {});
+    if (!worktree) void asegurarBase(cwd).catch(() => {});
     return this.wrap(meta);
   }
 
