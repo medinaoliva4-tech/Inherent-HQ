@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http';
-import { makeAuthenticator } from './auth.js';
+import { COOKIE, makeAuthenticator } from './auth.js';
 import type { Config } from './config.js';
 import type { Services } from './services.js';
 import { serveStatic } from './static.js';
@@ -24,7 +24,9 @@ function send(res: ServerResponse, status: number, body: unknown) {
   res.end(s);
 }
 
-const API = /^\/(sessions|models|me|cuotas|health|mcp|skills)(\/|$)/;
+const API = /^\/(sessions|models|me|cuotas|health|mcp|skills|entrar|salir)(\/|$)/;
+const PAGE = (body: string) => `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Code OS · Entrar</title><body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0b;color:#eee;font:16px system-ui">${body}`;
+const LOGIN = (err = '') => PAGE(`<form method=post action=/entrar style="width:min(360px,90vw);display:grid;gap:12px"><h1 style="font-size:20px;margin:0">Code OS</h1><input name=token type=password autocomplete=current-password placeholder="Tu token" autofocus required style="padding:12px;border-radius:8px;border:1px solid #444;background:#151515;color:#eee"><button style="padding:12px;border-radius:8px;border:0;background:#eee;color:#111;font-weight:600">Entrar</button>${err ? `<p style="color:#f88;margin:0">${err}</p>` : '<p style="color:#888;margin:0;font-size:13px">Solo hace falta una vez en este navegador.</p>'}</form>`);
 
 export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog, svc: Services): Server {
   const authed = makeAuthenticator(cfg.users);
@@ -39,7 +41,19 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         const claude = u ? await svc.claude.status(u).catch(() => null) : null;
         return send(res, 200, { ok: true, ...(claude ? { claude: { activa: claude.active, instalada: claude.installed } } : {}) });
       }
+      if (path === '/entrar' && method === 'GET') { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN()); return; }
+      if (path === '/entrar' && method === 'POST') {
+        const chunks: Buffer[] = []; let n = 0;
+        for await (const c of req) { n += (c as Buffer).length; if (n > 4096) throw new HttpError(413, 'Cuerpo demasiado grande'); chunks.push(c as Buffer); }
+        const token = (new URLSearchParams(Buffer.concat(chunks).toString('utf8')).get('token') ?? '').trim();
+        const fake = { headers: { authorization: `Bearer ${token}` } } as IncomingMessage;
+        if (!token || !authed(fake)) { res.writeHead(401, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN('Ese token no es válido.')); return; }
+        res.writeHead(303, { location: '/', 'set-cookie': `${COOKIE}=${encodeURIComponent(token)}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict`, 'cache-control': 'no-store' }); res.end(); return;
+      }
+      if (path === '/salir') { res.writeHead(303, { location: '/entrar', 'set-cookie': `${COOKIE}=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict` }); res.end(); return; }
       if (!API.test(path) && cfg.uiDir && (method === 'GET' || method === 'HEAD')) {
+        // La página (no los assets) exige entrar: sin sesión se manda a /entrar.
+        if (!/\.[a-z0-9]{1,6}$/i.test(path) && !authed(req)) { res.writeHead(302, { location: '/entrar', 'cache-control': 'no-store' }); res.end(); return; }
         if (cfg.flagFile && !existsSync(cfg.flagFile)) {
           const msg = '<!doctype html><meta charset=utf-8><title>Code OS</title><body style="font:16px system-ui;padding:3rem"><h1>Code OS aún no está activado</h1><p>Falta correr el asistente en el servidor: <code>asistente.sh</code></p>';
           res.writeHead(503, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(msg); return;

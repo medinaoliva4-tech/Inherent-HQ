@@ -259,9 +259,11 @@ test('interfaz estática: se sirve sin token, sin salirse de su carpeta y sin ta
   writeFileSync(join(ui, '..', 'fuera-' + Date.now()), 'secreto');
   const t = await boot(fakeQuery(simple), testConfig(undefined, { uiDir: ui }));
   const get = async (p: string, h: Record<string, string> = {}) => { const r = await fetch(t.base + p, { headers: h }); return { status: r.status, text: await r.text(), type: r.headers.get('content-type') }; };
-  assert.match((await get('/')).text, /Code OS/);
+  const auth = { authorization: `Bearer ${TOKEN}` };
+  assert.match((await get('/', auth)).text, /<h1>Code OS<\/h1>/);
+  assert.match((await get('/')).text, /Tu token/); // sin sesión: pantalla de entrada
   assert.equal((await get('/assets/a.js')).type?.includes('javascript'), true);
-  assert.match((await get('/proyecto/algo')).text, /Code OS/);
+  assert.match((await get('/proyecto/algo', auth)).text, /<h1>Code OS<\/h1>/);
   for (const p of ['/..%2Ffuera', '/%2e%2e/%2e%2e/etc/passwd', '/assets/..%2f..%2fx']) { const r = await get(p); assert.ok(!/secreto|root:/.test(r.text), p); }
   assert.equal((await get('/sessions')).status, 401);
   assert.equal(readFileSync(join(ui, 'index.html'), 'utf8').length > 0, true);
@@ -272,10 +274,11 @@ test('interfaz: con flag configurado, solo se sirve si el asistente la activó; 
   const ui = mkdtempSync(join(tmpdir(), 'ui-')); writeFileSync(join(ui, 'index.html'), '<h1>Code OS</h1>');
   const flag = join(mkdtempSync(join(tmpdir(), 'fl-')), 'activada');
   const t = await boot(fakeQuery(simple), testConfig(undefined, { uiDir: ui, flagFile: flag }));
-  const r1 = await fetch(t.base + '/'); assert.equal(r1.status, 503); assert.match(await r1.text(), /asistente/);
+  const h = { authorization: `Bearer ${TOKEN}` };
+  const r1 = await fetch(t.base + '/', { headers: h }); assert.equal(r1.status, 503); assert.match(await r1.text(), /asistente/);
   assert.equal((await t.api('GET', '/me')).status, 200);
   writeFileSync(flag, 'ok');
-  const r2 = await fetch(t.base + '/'); assert.equal(r2.status, 200);
+  const r2 = await fetch(t.base + '/', { headers: h }); assert.equal(r2.status, 200);
   await t.close();
 });
 
@@ -352,5 +355,21 @@ test('interfaz: comprime (br/gzip) lo que lo merece para el enlace lento y no ca
   const plain = await fetch(t.base + '/assets/a.js', { headers: { 'accept-encoding': 'identity' } });
   assert.equal(plain.headers.get('content-encoding'), null); assert.equal(await plain.text(), big);
   assert.equal((await fetch(t.base + '/', { headers: { 'accept-encoding': 'br' } })).headers.get('content-encoding'), null);
+  await t.close();
+});
+
+test('entrar: el token se canjea una vez por una cookie HttpOnly; sin sesión la página manda a /entrar', async () => {
+  const ui = mkdtempSync(join(tmpdir(), 'ui-')); writeFileSync(join(ui, 'index.html'), '<h1>Code OS</h1>');
+  const t = await boot(fakeQuery(simple), testConfig(undefined, { uiDir: ui }));
+  const red = await fetch(t.base + '/', { redirect: 'manual' }); assert.equal(red.status, 302); assert.equal(red.headers.get('location'), '/entrar');
+  const form = (tok: string) => fetch(t.base + '/entrar', { method: 'POST', redirect: 'manual', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token: tok }) });
+  const bad = await form('x'.repeat(30)); assert.equal(bad.status, 401); assert.equal(bad.headers.get('set-cookie'), null);
+  const ok = await form(TOKEN); assert.equal(ok.status, 303);
+  const cookie = ok.headers.get('set-cookie')!; assert.match(cookie, /HttpOnly/); assert.match(cookie, /SameSite=Strict/);
+  const c = cookie.split(';')[0]!;
+  assert.match(await (await fetch(t.base + '/', { headers: { cookie: c } })).text(), /<h1>Code OS<\/h1>/);
+  assert.equal((await fetch(t.base + '/me', { headers: { cookie: c } })).status, 200);
+  assert.equal((await fetch(t.base + '/me', { headers: { cookie: 'codeos_token=otro-token-que-no-existe-1234567' } })).status, 401);
+  assert.equal((await fetch(t.base + '/salir', { redirect: 'manual' })).headers.get('set-cookie')?.includes('Max-Age=0'), true);
   await t.close();
 });

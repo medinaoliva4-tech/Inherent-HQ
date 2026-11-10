@@ -17,30 +17,22 @@ Tailscale ──▶ tailscale serve :8080 ──▶ 127.0.0.1:4300 puente ──
 - Dos capas: estar en la tailnet **y** el token de cada persona. La interfaz estática se sirve sin token (hace falta para cargar la pantalla de entrada); no contiene datos ni llaves.
 - Se descartó abrir un puerto público con login propio: más superficie de ataque y habría que construir y mantener un login. Se descartó escuchar en la IP de Tailscale: rompe la regla de «solo 127.0.0.1».
 - Hoy se sirve por `http://<nombre-del-vps>:8080` (el túnel de Tailscale ya va cifrado). Si quieres `https://` con certificado, se activa «HTTPS Certificates» en el panel de Tailscale (DNS) y se cambia a `tailscale serve --bg https+insecure://…` / `--https=443`; la interfaz no cambia.
+- La página exige sesión (cookie de `/entrar`); los archivos estáticos no.
 - La interfaz solo se sirve cuando existe el flag `~/code-os-data/interfaz-activada`, que el **asistente** crea únicamente si todas las revisiones críticas pasan.
 
-## Una sola vez: tres comandos
-
-Desde tu Mac (el código ya está copiado al VPS en `~/code-os`; si cambia, repite el primero):
+## Un solo comando (desde tu Mac)
 
 ```bash
-bash code-os/despliegue/sincronizar.sh          # copia puente, interfaz y scripts; compila (sin tocar producción)
-```
-```bash
-ssh -t inherent-gw 'bash ~/code-os/despliegue/habilitar-bwrap.sh'   # perfil de AppArmor solo para /usr/bin/bwrap (respaldo incluido)
-```
-```bash
-ssh -t inherent-gw 'bash ~/code-os/despliegue/instalar.sh'          # respaldo, LiteLLM con base de datos, servicio del puente, Tailscale Serve
+bash code-os/despliegue/code-os.sh
 ```
 
-Luego, en el VPS:
+La primera vez configura todo (copia el código, instala con respaldo y verificación, crea tu usuario, te pregunta si quieres iniciar tu sesión de Claude) y te deja **dentro**. Las siguientes veces solo abre Code OS ya con tu sesión.
 
-```bash
-code-os-asistente usuario rodrigo --directos cp-,nv-   # crea tu llave virtual y tu token (se muestra una vez)
-sudo systemctl restart code-os-puente
-code-os-login rodrigo                                   # inicias sesión de Claude con TU cuenta (opcional)
-code-os-asistente                                       # revisa todo y activa la interfaz si pasa
-```
+- **Sin pegar token:** tu token queda en el Llavero de macOS (nunca se imprime). El comando abre una página local que lo envía al puente (`POST /entrar`); el puente responde con una cookie `HttpOnly` y `SameSite=Strict`, y entras directo. El token **no** va en el JavaScript de la interfaz. Si abres la dirección sin sesión, sale una pantalla para pegarlo (una vez por navegador); `/salir` cierra la sesión.
+- **Tu sesión de Claude** es opcional y la haces tú con tu cuenta (`code-os-login <usuario>` en el servidor, o la pregunta del comando).
+- Para actualizar después de un cambio: el mismo comando con `configurar`.
+
+Los pasos sueltos (por si prefieres hacerlos a mano): `sincronizar.sh` (Mac) → `habilitar-bwrap.sh` (una vez, con sudo en el VPS) → `instalar.sh` (VPS) → `code-os-asistente usuario <id>` → `sudo systemctl restart code-os-puente` → `code-os-asistente`.
 
 `instalar.sh` deshace solo el cambio de LiteLLM si no vuelve con base de datos, y no continúa si `litellm`, `gw-worker` o `cuotas` quedan inactivos. Para revertir a mano: `sudo rm /etc/systemd/system/litellm.service.d/db.conf && sudo systemctl daemon-reload && sudo systemctl restart litellm`.
 
