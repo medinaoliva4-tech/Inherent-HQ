@@ -373,3 +373,49 @@ test('entrar: el token se canjea una vez por una cookie HttpOnly; sin sesión la
   assert.equal((await fetch(t.base + '/salir', { redirect: 'manual' })).headers.get('set-cookie')?.includes('Max-Age=0'), true);
   await t.close();
 });
+
+// ---------- terminal real por WebSocket ----------
+import { connect } from 'node:net';
+import { randomBytes } from 'node:crypto';
+const hasPy = spawnSync('python3', ['--version']).status === 0;
+async function wsClient(base: string, path: string, headers: Record<string, string>) {
+  const u = new URL(base); const sock = connect(Number(u.port), u.hostname);
+  await new Promise<void>((r) => sock.once('connect', () => r()));
+  const key = randomBytes(16).toString('base64');
+  sock.write(`GET ${path} HTTP/1.1\r\nHost: ${u.host}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Key: ${key}\r\nSec-WebSocket-Version: 13\r\n${Object.entries(headers).map(([k, v]) => `${k}: ${v}\r\n`).join('')}\r\n`);
+  let buf = Buffer.alloc(0); let head: string | null = null; let out = '';
+  const waiters: (() => void)[] = [];
+  sock.on('data', (c: Buffer) => {
+    buf = Buffer.concat([buf, c]);
+    if (head === null) { const i = buf.indexOf('\r\n\r\n'); if (i < 0) return; head = buf.subarray(0, i).toString(); buf = buf.subarray(i + 4); }
+    while (buf.length >= 2) { let len = buf[1]! & 127, off = 2; if (len === 126) { if (buf.length < 4) break; len = buf.readUInt16BE(2); off = 4; } if (buf.length < off + len) break; if ((buf[0]! & 15) === 2) out += buf.subarray(off, off + len).toString(); buf = buf.subarray(off + len); }
+    waiters.splice(0).forEach((w) => w());
+  });
+  await new Promise<void>((r) => { const t = setInterval(() => { if (head !== null || sock.destroyed) { clearInterval(t); r(); } }, 10); });
+  const send = (data: Buffer | string, op = typeof data === 'string' ? 1 : 2) => { const p = typeof data === 'string' ? Buffer.from(data) : data; const m = randomBytes(4); const body = Buffer.from(Uint8Array.from(p, (b, i) => b ^ m[i % 4]!)); sock.write(Buffer.concat([Buffer.from([0x80 | op, 0x80 | p.length]), m, body])); };
+  const waitFor = async (re: RegExp, ms = 5000) => { const t0 = Date.now(); while (!re.test(out)) { if (Date.now() - t0 > ms) throw new Error('no llegó ' + re + ' · salida: ' + out.slice(-200)); await new Promise((r) => setTimeout(r, 25)); } };
+  return { head: head ?? '', send, waitFor, out: () => out, close: () => sock.destroy() };
+}
+test('terminal: shell real en la carpeta del proyecto, con tamaño, y rechaza a quien no entró o a otro usuario', { skip: !hasPy && 'sin python3' }, async () => {
+  const t = await boot(fakeQuery(simple));
+  const s = (await t.api('POST', '/sessions', { projectId: 'term', model: 'nivel-medio', mode: 'chat' })).json;
+  const A = { authorization: `Bearer ${TOKEN}` };
+  assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, {})).head, /401/); 
+  assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { authorization: `Bearer ${TOKEN_B}` })).head, /404/);
+  assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { cookie: `codeos_token=${TOKEN}`, origin: 'http://otro-sitio.com' })).head, /403/);
+  const c = await wsClient(t.base, `/sessions/${s.id}/terminal`, A); 
+  assert.match(c.head, /101/);
+  c.send(JSON.stringify({ t: 'resize', cols: 100, rows: 30 }));
+  c.send('pwd; echo COLS=$(tput cols) ROWS=$(tput lines); echo hola > desde-terminal.txt\n');
+  await c.waitFor(/COLS=100 ROWS=30/);
+  assert.ok(c.out().includes(s.cwd.split('/').slice(-2).join('/')));
+  await c.waitFor(/\$ $/).catch(() => {});
+  assert.equal(readFileSync(join(s.cwd, 'desde-terminal.txt'), 'utf8'), 'hola\n');
+  c.close(); await t.close();
+});
+test('terminal: sin confinamiento y con requireConfine se rechaza (es un shell)', async () => {
+  const t = await boot(fakeQuery(simple), testConfig(undefined, { requireConfine: true, confine: 'none' }));
+  const s = (await t.api('POST', '/sessions', { projectId: 'term', mode: 'chat' })).json;
+  assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { authorization: `Bearer ${TOKEN}` })).head, /503/);
+  await t.close();
+});
