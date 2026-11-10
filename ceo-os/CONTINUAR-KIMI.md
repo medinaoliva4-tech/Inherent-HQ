@@ -115,6 +115,18 @@ En terminal, el historial anterior queda en `.historial.jsonl`, la sesión se gu
 
 Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simulado (14 pasos, relevos, permisos y cancelación); `test-ventanas-browser.mjs` comprueba progreso y limpieza de la señal. Falta evaluar un proyecto largo con un modelo real y un corte de red real. No garantiza que el modelo elija bien las tareas ni que un resumen conserve todo. Web, arnés y Gateway desplegados con aprobación el 6 de noviembre; 11 pruebas de ventanas pasaron.
 
+### 7.0 · BLOQUEO: la base de datos de producción está sin cuota (revisado el 9-10 de noviembre)
+
+**Síntoma:** el Chat y las etapas se quedan en silencio. **Causa confirmada:** Neon (proyecto `ep-steep-cake`, la misma base de la web y del trabajador) responde `HTTP 402: Your account or project has exceeded the quota`. Empezó el **7 de noviembre ~13:49 UTC**. El último chat que el trabajador completó fue el 6 de noviembre. Fallan la web (4,730 errores) y todos los `cron settle` y `cron laya` de cada cliente.
+
+**Lo que NO se sabe:** cuál cuota se acabó (cómputo, transferencia o almacenamiento). Solo el CEO lo ve en la consola de Neon, en Billing › Usage. **No intentes arreglarlo con código hasta que lo diga.** Subir de plan o liberar espacio es decisión del CEO.
+
+**Causa probable de consumo (en el código):** `gateway/worker.mjs` consultaba la base cada 3 s sin parar, y `tomar()` descargaba **todas las corridas completas** cada vez (28,800 lecturas al día). Eso mantiene el cómputo despierto las 24 horas y gasta transferencia. Con la base bloqueada además insistía cada 3 s: 118,563 errores en cinco días.
+
+**Qué se hizo (rama `fix/worker-menos-base`):** consulta ligera que devuelve solo ids (`gateway/consultas.mjs`), espera creciente al fallar y pausa de 10 min si la base dice 402 (`siguienteEspera` en `gateway/resiliencia.mjs`). Está probado con un Postgres real (`scripts/test-worker-base.mjs`). **Para que aplique hay que copiarlo al VPS y reiniciar `gw-worker`, con OK del CEO.**
+
+**Pendiente tras recuperar la base:** medir cuántas consultas y cuántos bytes hace el trabajador por hora, y decidir si conviene avisarle desde la web en lugar de preguntar cada 3 s. Revisa si las miniaturas de imágenes del Chat (`PR #273`) hacen crecer el almacenamiento.
+
 ### 7.1 · Actualizaciones de la app (urgente, bloqueado por token)
 
 **Nota del 6 de noviembre:** con el token nuevo siguió el 404. El registro ahora dice qué permisos pide GitHub. Léelo con `escritorio/version` en Vercel antes de pedirle otro token al CEO. Revisa que el dueño del token sea `medinaoliva4-tech` y que no sea de solo repos públicos.

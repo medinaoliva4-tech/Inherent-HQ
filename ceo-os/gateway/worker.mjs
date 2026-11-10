@@ -18,7 +18,8 @@ import { TOOL_PLAN, INSTRUCCION_PLAN, MAX_VENTANAS, validarPlan, pendiente, segu
 // Uso: DATABASE_URL=… LITELLM_MASTER_KEY=… node gateway/worker.mjs
 import * as db from '../api/_lib/db.js';
 import { consultar } from '../api/_lib/db-transporte.js';
-import { revisarColas, enSegundoPlano } from './resiliencia.mjs';
+import { revisarColas, enSegundoPlano, cuotaAgotada, siguienteEspera } from './resiliencia.mjs';
+import { SQL_ETAPAS_PENDIENTES } from './consultas.mjs';
 import { cambioAviso } from '../public/js/chat-avisos-datos.js';
 import { activa, pedido as pedidoOS, leerRespuesta, aplicarResultado, soloEvidenciaDeInputs, leerPregunta, salidaParcial, trasFalla, respuestaAbierta } from '../public/js/agentes-flujos.js';
 // El servidor no le da herramientas al modelo: la evidencia se limita a los inputs. Si la etapa pide web, el servidor busca
@@ -495,9 +496,23 @@ async function tomarChats() {
 }
 
 // ---------- Tomar trabajo ----------
+// Solo los ids de las corridas con una etapa esperando. Si esa consulta falla por algo distinto a la red o la cuota,
+// se usa la lista completa de antes: es más pesada pero correcta.
+let avisoLista = false;
+async function corridasPendientes() {
+  try {
+    sqlq ||= (await import('@neondatabase/serverless')).neon(process.env.DATABASE_URL);
+    const ids = (await consultar(sqlq, SQL_ETAPAS_PENDIENTES, [RUNS])).map((r) => r.id).filter((id) => !enCurso.has(id));
+    return (await Promise.all(ids.map((id) => db.get(RUNS, id)))).filter(Boolean);
+  } catch (e) {
+    if (cuotaAgotada(e) || /fetch failed|network|timeout|timed out|ECONN|ETIMEDOUT|EAI_AGAIN/i.test(`${e?.name} ${e?.message}`)) throw e;
+    if (!avisoLista) { avisoLista = true; log('etapas: la consulta ligera falló, uso la lista completa', e.message?.slice(0, 120)); }
+    return db.list(RUNS);
+  }
+}
 async function tomar() {
   if (enCurso.size >= PARALELO) return;
-  const runs = await db.list(RUNS);
+  const runs = await corridasPendientes();
   for (const r of runs) {
     if (enCurso.size >= PARALELO) return;
     if (r.archivado || r.pausado || enCurso.has(r.id)) continue;
@@ -528,14 +543,20 @@ function avisosPendientes() {
     .finally(() => { avisando = false; });
 }
 async function ciclo() {
+  let fallos = 0, caida = false;
   while (!apagando) {
+    let hubo = false, cuota = false;
     await revisarColas([
       ['latido', async () => { if (Date.now() - ultimoLatido > 20000) { ultimoLatido = Date.now(); await latido(); } }],
       ['chats', tomarChats],
       ['etapas', tomar],
       ['avisos', avisosPendientes],
-    ], (nombre, e) => log(`ciclo ${nombre}:`, e.name));
-    await new Promise((r) => setTimeout(r, 3000));
+    ], (nombre, e) => { hubo = true; cuota ||= cuotaAgotada(e); if (!caida) log(`ciclo ${nombre}:`, e.name, String(e.message).slice(0, 160)); });
+    // Una sola línea al caer y otra al volver: con la base bloqueada se llegaron a escribir 118,000 líneas en cinco días.
+    if (hubo && !caida) { caida = true; log(cuota ? 'La base dice que se acabó la cuota (402). Reviso cada 10 minutos.' : 'La base no responde. Espero y reintento.'); }
+    if (!hubo && caida) { caida = false; log('La base volvió. Sigo normal.'); }
+    fallos = hubo ? fallos + 1 : 0;
+    await new Promise((r) => setTimeout(r, siguienteEspera({ normal: 3000, fallos, cuota: hubo && cuota })));
   }
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
