@@ -30,10 +30,12 @@
     "test:harness": "node scripts/test-harness.mjs",
     "test:visual": "node scripts/test-visual.mjs",
     "test:avisos": "node scripts/test-avisos.mjs && node scripts/test-avisos-trabajo.mjs && node scripts/test-avisos-estrategia.mjs && node scripts/test-avisos-marcas.mjs && node scripts/test-avisos-plataforma.mjs",
-    "test:agentes": "node scripts/test-agentes.mjs"
+    "test:agentes": "node scripts/test-agentes.mjs",
+    "test:db": "node scripts/test-db-cliente.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
+    "pg": "^8.23.1",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
