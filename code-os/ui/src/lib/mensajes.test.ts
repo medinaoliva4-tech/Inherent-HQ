@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Evento } from './eventos'
-import { aplicarEvento, registrarRespuesta, type Mensaje } from './mensajes'
+import { aplicarEvento, pendienteDe, registrarPlan, registrarPregunta, registrarRespuesta, subagentesDe, tareasDe, usoTotal, type Mensaje } from './mensajes'
 
 const vacio = (): Mensaje => ({ id: 'a', rol: 'asistente', partes: [], enCurso: true })
 const correr = (es: Evento[]) => es.reduce(aplicarEvento, vacio())
@@ -52,5 +52,51 @@ describe('aplicarEvento', () => {
     const m = vacio()
     aplicarEvento(m, { tipo: 'texto', id: 'x', delta: 'a' })
     expect(m.partes).toHaveLength(0)
+  })
+})
+
+describe('subagentes, preguntas, plan y tareas', () => {
+  it('anida los pasos y el texto del subagente bajo su tarjeta', () => {
+    const m = correr([
+      { tipo: 'herramienta_inicio', id: 'sub', nombre: 'Task', entrada: { description: 'Buscar' } },
+      { tipo: 'herramienta_inicio', id: 'g', nombre: 'Grep', entrada: {}, padre: 'sub' },
+      { tipo: 'herramienta_fin', id: 'g', salida: 'ok', padre: 'sub' },
+      { tipo: 'texto', id: 'x', delta: 'encontré', padre: 'sub' },
+    ])
+    expect(m.partes).toHaveLength(1)
+    expect(m.partes[0]).toMatchObject({ tipo: 'herramienta', hijos: [{ id: 'g', estado: 'listo' }], textoHijo: 'encontré' })
+  })
+
+  it('AskUserQuestion y ExitPlanMode se vuelven pregunta y plan', () => {
+    let m = correr([
+      { tipo: 'permiso_pedido', id: 'q', herramienta: 'AskUserQuestion', descripcion: '', entrada: { questions: [{ question: '¿Cuál?', options: [{ label: 'A' }, { label: 'B' }] }] } },
+      { tipo: 'permiso_pedido', id: 'p', herramienta: 'ExitPlanMode', descripcion: '', entrada: { plan: '1. leer' } },
+    ])
+    expect(m.partes[0]).toMatchObject({ tipo: 'pregunta', preguntas: [{ question: '¿Cuál?', options: [{ label: 'A' }, { label: 'B' }] }] })
+    expect(m.partes[1]).toMatchObject({ tipo: 'plan', plan: '1. leer' })
+    expect(pendienteDe([m])?.id).toBe('q')
+    m = registrarPregunta(m, 'q', { '¿Cuál?': 'A' })
+    expect(pendienteDe([m])?.id).toBe('p')
+    m = registrarPlan(m, 'p', 'aprobado')
+    expect(pendienteDe([m])).toBeUndefined()
+  })
+
+  it('tareasDe devuelve la última lista y subagentesDe los Task', () => {
+    const m = correr([
+      { tipo: 'herramienta_inicio', id: 't1', nombre: 'TodoWrite', entrada: { todos: [{ content: 'a', status: 'pending' }] } },
+      { tipo: 'herramienta_inicio', id: 's', nombre: 'Agent', entrada: {} },
+      { tipo: 'herramienta_inicio', id: 't2', nombre: 'TodoWrite', entrada: { todos: [{ content: 'a', status: 'completed' }] } },
+    ])
+    expect(tareasDe([m])).toEqual([{ content: 'a', status: 'completed' }])
+    expect(subagentesDe([m]).map((s) => s.id)).toEqual(['s'])
+  })
+
+  it('modo y uso total', () => {
+    const m = correr([
+      { tipo: 'modo', modo: 'code' },
+      { tipo: 'uso', modelo: 'x', tokens_entrada: 100, tokens_salida: 5, tokens_cache: 900 },
+    ])
+    expect(m.partes[0]).toMatchObject({ tipo: 'modo', modo: 'code' })
+    expect(usoTotal([m])).toEqual({ entrada: 100, salida: 5, ultimaEntrada: 1000 })
   })
 })

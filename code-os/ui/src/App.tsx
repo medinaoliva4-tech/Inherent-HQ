@@ -1,45 +1,258 @@
-import { MenuIcon, PanelRightIcon } from 'lucide-react'
-import { AnimatePresence, MotionConfig, motion } from 'motion/react'
-import { useEffect, useMemo, useState } from 'react'
+import { GhostIcon, MenuIcon, PanelRightIcon } from 'lucide-react'
+import { AnimatePresence, MotionConfig, motion, useDragControls } from 'motion/react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { toast } from 'sonner'
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from '@/components/ai-elements/conversation'
+import { Suggestion } from '@/components/ai-elements/suggestion'
+import { Ajustes, type SeccionAjustes } from '@/components/os/Ajustes'
 import { Composer } from '@/components/os/Composer'
 import { MensajeVista } from '@/components/os/Mensajes'
 import { PanelLateral, type PestanaPanel } from '@/components/os/PanelLateral'
 import { Paleta } from '@/components/os/Paleta'
+import { ProyectoDialogo } from '@/components/os/ProyectoDialogo'
 import { Sidebar } from '@/components/os/Sidebar'
 import { Button } from '@/components/ui/button'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
+import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { historialInicial, modeloPorDefecto, proyectos } from '@/data/ejemplo'
+import { historialEjemplo } from '@/data/ejemplo'
+import { useAtajos } from '@/hooks/use-atajos'
 import { useChat } from '@/hooks/use-chat'
+import { useCuotas } from '@/hooks/use-cuotas'
+import { useDatos } from '@/hooks/use-datos'
+import { useEspacio, type Conversacion, type Pestana } from '@/hooks/use-espacio'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTheme } from '@/hooks/use-theme'
-import { crearClienteMock } from '@/lib/cliente-mock'
-import type { ClienteEventos } from '@/lib/eventos'
+import { prepararEnvio } from '@/lib/adjuntos'
+import { extraerArtefactos, type Artefacto } from '@/lib/artefactos'
+import type { Cliente, EstadoServidor, NodoArchivo } from '@/lib/cliente'
+import type { Comando } from '@/lib/comandos'
+import { crearCliente } from '@/lib/crear-cliente'
+import type { ModoSesion } from '@/lib/eventos'
+import { pendienteDe, textoDe, usoTotal, type Mensaje } from '@/lib/mensajes'
 import { resorte } from '@/lib/movimiento'
+import { cn } from '@/lib/utils'
 
-type Props = { cliente?: ClienteEventos }
+type Props = { cliente?: Cliente }
 
-export default function App({ cliente }: Props) {
-  const clienteActivo = useMemo(() => cliente ?? crearClienteMock(), [cliente])
-  const { tema, alternar } = useTheme()
+const CLAVE_MENSAJES = 'code-os:mensajes:v2'
+
+function leerMensajes(mock: boolean): Record<string, Mensaje[]> {
+  try {
+    const g = localStorage.getItem(`${CLAVE_MENSAJES}:${mock ? 'mock' : 'http'}`)
+    if (g) return JSON.parse(g)
+  } catch {
+    /* sin almacenamiento */
+  }
+  return mock ? historialEjemplo : {}
+}
+
+/** Al guardar se quitan las imágenes pesadas (data URL) para no llenar el almacenamiento del navegador. */
+function aligerar(lista: Mensaje[]): Mensaje[] {
+  return lista.map((m) =>
+    m.adjuntos?.some((a) => (a.url?.length ?? 0) > 150_000) ? { ...m, adjuntos: m.adjuntos.map((a) => ((a.url?.length ?? 0) > 150_000 ? { ...a, url: undefined } : a)) } : m,
+  )
+}
+
+const rutasDe = (ns: NodoArchivo[]): string[] => ns.flatMap((n) => (n.tipo === 'archivo' ? [n.ruta] : rutasDe(n.hijos ?? [])))
+
+const SUGERENCIAS: Record<Pestana, string[]> = {
+  chat: ['Hazme una página con la paleta del OS', 'Explícame la diferencia entre plan y manual', 'Resume esto en tres puntos'],
+  code: ['Mapea los tokens del OS a shadcn', 'Pregúntame qué tema revisar primero', 'Revisa los cambios de la sesión'],
+}
+
+export default function App({ cliente: clienteProp }: Props) {
+  const cliente = useMemo(() => clienteProp ?? crearCliente(), [clienteProp])
+  const mock = cliente.tipo === 'mock'
+  const { tema, setTema, alternar } = useTheme()
   const escritorio = useMediaQuery('(min-width: 900px)')
-  const [conv, setConv] = useState('c1')
-  const [modeloId, setModeloId] = useState(modeloPorDefecto)
+  const { espacio, crearConversacion, editarConversacion, borrarConversacion, crearProyecto, editarProyecto, borrarProyecto, guardarMemorias, cambiarAjustes } = useEspacio(mock)
+  const inicial = useMemo(() => leerMensajes(mock), [mock])
+  const { porConv, enCurso, enviar, detener, responderPermiso, responderPregunta, responderPlan, olvidar } = useChat(cliente, inicial)
+
+  const [pestana, setPestana] = useState<Pestana>('code')
+  const [activaPor, setActivaPor] = useState<Record<Pestana, string | null>>(mock ? { chat: 's2', code: 's1' } : { chat: null, code: null })
   const [panel, setPanel] = useState(escritorio)
-  const [pestana, setPestana] = useState<PestanaPanel>('archivos')
+  const [pestanaPanel, setPestanaPanel] = useState<PestanaPanel>('tareas')
   const [menu, setMenu] = useState(false)
   const [paleta, setPaleta] = useState(false)
-  const [nuevas, setNuevas] = useState(0)
-  const { porConv, enCurso, enviar, detener, responderPermiso } = useChat(clienteActivo, historialInicial)
+  const [ajustes, setAjustes] = useState<{ abierto: boolean; seccion: SeccionAjustes }>({ abierto: false, seccion: 'general' })
+  const [proyectoEditado, setProyectoEditado] = useState<string | null>(null)
+  const [modeloAbierto, setModeloAbierto] = useState(false)
+  const [borrador, setBorrador] = useState<{ texto: string; n: number } | undefined>()
+  const [artefactoActivo, setArtefactoActivo] = useState<string | null>(null)
+  const [servidor, setServidor] = useState<EstadoServidor | null>(null)
+  const { estado: cuotas, error: errorCuotas } = useCuotas(cliente)
+  const arrastreHoja = useDragControls()
+  const catalogo = useDatos(() => cliente.modelos(), [cliente])
 
-  const mensajes = porConv[conv] ?? []
-  const titulo = proyectos.flatMap((p) => p.conversaciones).find((c) => c.id === conv)?.titulo ?? 'Conversación nueva'
-  const permisoPendiente = mensajes.flatMap((m) => m.partes).find((p) => p.tipo === 'permiso' && !p.respuesta)
-
-  // S / N / T responden al permiso pendiente (si el foco no está escribiendo)
+  // Conversación activa de la pestaña (si no hay, la más reciente; si no hay ninguna, se crea).
+  const delaPestana = espacio.conversaciones.filter((c) => c.pestana === pestana && !c.archivada)
+  const conv: Conversacion | undefined = espacio.conversaciones.find((c) => c.id === activaPor[pestana]) ?? delaPestana[0]
+  const creando = useRef<Partial<Record<Pestana, boolean>>>({})
   useEffect(() => {
-    if (!permisoPendiente) return
+    // El ref evita crear dos (React en modo estricto corre los efectos dos veces en desarrollo).
+    if (!conv && !creando.current[pestana]) {
+      creando.current[pestana] = true
+      const c = crearConversacion({ proyectoId: espacio.proyectos[0]?.id ?? 'general', pestana, modeloId: espacio.ajustes.modeloPorDefecto })
+      setActivaPor((s) => ({ ...s, [pestana]: c.id }))
+    } else if (conv) creando.current[pestana] = false
+  }, [conv, pestana, crearConversacion, espacio.proyectos, espacio.ajustes.modeloPorDefecto])
+  const convId = conv?.id ?? ''
+  const convIdRef = useRef(convId)
+  useEffect(() => {
+    convIdRef.current = convId
+  }, [convId])
+  const proyecto = espacio.proyectos.find((p) => p.id === conv?.proyectoId)
+  const mensajes = useMemo(() => porConv[convId] ?? [], [porConv, convId])
+  const pendiente = pendienteDe(mensajes)
+
+  // Estado del servidor (login de Claude) cada minuto.
+  useEffect(() => {
+    let vivo = true
+    const leer = () => cliente.estado().then((e) => vivo && setServidor(e))
+    leer()
+    const t = setInterval(leer, 60_000)
+    return () => {
+      vivo = false
+      clearInterval(t)
+    }
+  }, [cliente])
+
+  // Guardar mensajes (sin incógnito).
+  const incognitos = useMemo(() => new Set(espacio.conversaciones.filter((c) => c.incognito).map((c) => c.id)), [espacio.conversaciones])
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        const guardar: Record<string, Mensaje[]> = {}
+        for (const [id, lista] of Object.entries(porConv)) if (!incognitos.has(id)) guardar[id] = aligerar(lista.map((m) => (m.enCurso ? { ...m, enCurso: false } : m)))
+        localStorage.setItem(`${CLAVE_MENSAJES}:${mock ? 'mock' : 'http'}`, JSON.stringify(guardar))
+      } catch {
+        /* lleno o sin almacenamiento */
+      }
+    }, 400)
+    return () => clearTimeout(t)
+  }, [porConv, incognitos, mock])
+
+  // Rutas para @ (solo Code; si el puente no tiene archivos, no hay autocompletado).
+  const archivos = useDatos(() => (pestana === 'code' && convId ? cliente.archivos(convId) : Promise.resolve([])), [cliente, convId, pestana])
+  const rutas = useMemo(() => rutasDe(archivos.datos ?? []), [archivos.datos])
+
+  const artefactos = useMemo<Artefacto[]>(
+    () => mensajes.filter((m) => m.rol === 'asistente' && !m.enCurso).flatMap((m) => m.partes.flatMap((p) => (p.tipo === 'texto' ? extraerArtefactos(p.texto, p.id) : []))),
+    [mensajes],
+  )
+  const uso = usoTotal(mensajes)
+  const esperando = useMemo(() => Object.fromEntries(Object.entries(porConv).map(([id, l]) => [id, !!pendienteDe(l)])), [porConv])
+
+  const elegir = useCallback(
+    (id: string) => {
+      const c = espacio.conversaciones.find((x) => x.id === id)
+      if (!c) return
+      // Un incógnito que se deja atrás se olvida.
+      if (conv?.incognito && conv.id !== id) {
+        olvidar(conv.id)
+        borrarConversacion(conv.id)
+        cliente.cerrarSesion(conv.id).catch(() => {})
+      }
+      setPestana(c.pestana)
+      setActivaPor((s) => ({ ...s, [c.pestana]: id }))
+      setMenu(false)
+      setArtefactoActivo(null)
+    },
+    [espacio.conversaciones, conv, olvidar, borrarConversacion, cliente],
+  )
+
+  const nueva = useCallback(
+    (proyectoId?: string, incognito = false) => {
+      const pid = proyectoId ?? conv?.proyectoId ?? espacio.proyectos[0]?.id ?? 'general'
+      // Si la actual está vacía y es del mismo tipo, se reutiliza.
+      if (conv && !incognito && !conv.incognito && !(porConv[conv.id]?.length) && conv.proyectoId === pid) {
+        setMenu(false)
+        return
+      }
+      if (conv?.incognito) {
+        olvidar(conv.id)
+        borrarConversacion(conv.id)
+      }
+      const c = crearConversacion({
+        proyectoId: pid,
+        pestana,
+        modeloId: espacio.ajustes.modeloPorDefecto,
+        incognito,
+        titulo: incognito ? 'Incógnito' : pestana === 'code' ? 'Sesión nueva' : 'Chat nuevo',
+      })
+      setActivaPor((s) => ({ ...s, [pestana]: c.id }))
+      setMenu(false)
+    },
+    [conv, espacio.proyectos, espacio.ajustes.modeloPorDefecto, porConv, crearConversacion, pestana, olvidar, borrarConversacion],
+  )
+
+  const cambiarModo = useCallback((m: ModoSesion) => conv && editarConversacion(conv.id, { modo: m }), [conv, editarConversacion])
+  const cambiarModelo = useCallback((id: string) => conv && editarConversacion(conv.id, { modeloId: id }), [conv, editarConversacion])
+  const abrirPanel = (p?: PestanaPanel) => {
+    if (p) {
+      setPestanaPanel(p)
+      setPanel(true)
+    } else setPanel((v) => !v)
+  }
+  const abrirAjustes = (seccion: SeccionAjustes = 'general') => setAjustes({ abierto: true, seccion })
+  const ponerEnCaja = (texto: string) => setBorrador((b) => ({ texto, n: (b?.n ?? 0) + 1 }))
+
+  const comando = (c: Comando) => {
+    const acciones: Record<string, () => void> = {
+      '/nueva': () => nueva(),
+      '/plan': () => cambiarModo('plan'),
+      '/manual': () => cambiarModo('code'),
+      '/modelo': () => setModeloAbierto(true),
+      '/incognito': () => nueva(undefined, true),
+      '/memoria': () => abrirAjustes('memoria'),
+      '/ajustes': () => abrirAjustes(),
+      '/tema': alternar,
+    }
+    acciones[c.nombre]?.()
+  }
+
+  const onEnviar = (texto: string, adjuntos: { nombre: string; tipo: string; url?: string }[]) => {
+    if (!conv) return
+    const { texto: paraMotor, sinEnviar } = prepararEnvio(texto, adjuntos)
+    if (sinEnviar.length) toast.warning(`${sinEnviar.join(', ')}: el puente aún no recibe imágenes ni PDF, solo texto.`)
+    const titulo = /^(Conversación nueva|Sesión nueva|Chat nuevo)$/.test(conv.titulo) && texto ? texto.replace(/\s+/g, ' ').slice(0, 60) : conv.titulo
+    editarConversacion(conv.id, { titulo, actualizada: new Date().toISOString() })
+    const memoria = conv.incognito ? [] : espacio.memorias.map((m) => `- ${m.texto}`)
+    const instrucciones = [
+      proyecto?.instrucciones?.trim() ? `Instrucciones del proyecto «${proyecto.nombre}»:\n${proyecto.instrucciones.trim()}` : '',
+      memoria.length ? `Lo que sabes de quien te escribe:\n${memoria.join('\n')}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n')
+    const id = conv.id
+    enviar(id, texto, adjuntos, {
+      modeloId: conv.modeloId,
+      modo: conv.pestana === 'chat' ? 'chat' : conv.modo,
+      proyectoId: conv.proyectoId,
+      titulo,
+      instrucciones: instrucciones || undefined,
+      textoParaMotor: paraMotor,
+      alCambiarModo: (m) => editarConversacion(id, { modo: m }),
+      alTerminar: (m) => {
+        // Como en Claude: si la respuesta trae un artefacto visual, se abre solo en el panel.
+        const nuevos = m.partes.flatMap((x) => (x.tipo === 'texto' ? extraerArtefactos(x.texto, x.id) : [])).filter((a) => a.tipo !== 'codigo')
+        if (nuevos.length && id === convIdRef.current) {
+          setArtefactoActivo(nuevos[nuevos.length - 1].id)
+          setPestanaPanel('artefactos')
+          setPanel(true)
+        }
+        if (espacio.ajustes.notificaciones && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('Code OS', { body: `${titulo}: ${m.error ? 'terminó con un error' : 'listo'}`, tag: id })
+        }
+      },
+    })
+  }
+
+  // S / N / T responden al permiso pendiente (si el foco no está escribiendo).
+  useEffect(() => {
+    if (!pendiente || pendiente.tipo !== 'permiso') return
     const h = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement | null
       if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.isContentEditable)) return
@@ -47,51 +260,65 @@ export default function App({ cliente }: Props) {
       const k = e.key.toLowerCase()
       if (k === 's' || k === 'n' || k === 't') {
         e.preventDefault()
-        responderPermiso(conv, permisoPendiente.id, k)
+        responderPermiso(convId, pendiente.id, k)
       }
     }
     window.addEventListener('keydown', h)
     return () => window.removeEventListener('keydown', h)
-  }, [permisoPendiente, conv, responderPermiso])
+  }, [pendiente, convId, responderPermiso])
 
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'j') {
-        e.preventDefault()
-        setPanel((v) => !v)
-      }
-    }
-    window.addEventListener('keydown', h)
-    return () => window.removeEventListener('keydown', h)
-  }, [])
+  useAtajos({
+    'mod+k': () => setPaleta((v) => !v),
+    'mod+shift+o': () => nueva(),
+    'mod+j': () => setPanel((v) => !v),
+    'mod+shift+m': () => pestana === 'code' && cambiarModo(conv?.modo === 'plan' ? 'code' : 'plan'),
+    'mod+shift+i': () => setModeloAbierto(true),
+    'mod+o': () => cambiarAjustes({ vista: espacio.ajustes.vista === 'detallada' ? 'normal' : 'detallada' }),
+    'mod+,': () => abrirAjustes(),
+    'mod+/': () => abrirAjustes('atajos'),
+  })
 
-  const nueva = () => {
-    const id = `n${nuevas + 1}`
-    setNuevas((n) => n + 1)
-    setConv(id)
-    setMenu(false)
-  }
-  const abrirPanel = (p?: PestanaPanel) => {
-    if (p) {
-      setPestana(p)
-      setPanel(true)
-    } else setPanel((v) => !v)
-  }
+  const buscarEnMensajes = useCallback((id: string, q: string) => (porConv[id] ?? []).some((m) => textoDe(m).toLowerCase().includes(q)), [porConv])
+  const visiblesSidebar = useMemo(() => espacio.conversaciones.filter((c) => !c.incognito), [espacio.conversaciones])
 
   const sidebar = (
     <Sidebar
-      proyectos={proyectos}
-      activa={conv}
-      onElegir={(id) => {
-        setConv(id)
+      pestana={pestana}
+      onPestana={(p) => {
+        setPestana(p)
         setMenu(false)
       }}
-      onNueva={nueva}
-      onPaleta={() => setPaleta(true)}
+      proyectos={espacio.proyectos}
+      conversaciones={visiblesSidebar}
+      activa={convId}
+      enCurso={enCurso}
+      esperando={esperando}
+      buscarEnMensajes={buscarEnMensajes}
+      onElegir={elegir}
+      onNueva={(pid) => nueva(pid)}
+      onIncognito={() => nueva(undefined, true)}
+      onEditar={editarConversacion}
+      onBorrar={(id) => {
+        olvidar(id)
+        borrarConversacion(id)
+        cliente.cerrarSesion(id).catch(() => {})
+      }}
+      onNuevoProyecto={() => {
+        const p = crearProyecto('Proyecto nuevo')
+        setProyectoEditado(p.id)
+      }}
+      onProyecto={setProyectoEditado}
+      onAjustes={() => abrirAjustes()}
       tema={tema}
       onTema={alternar}
+      cuotas={cuotas}
+      errorCuotas={errorCuotas}
+      servidor={servidor}
+      mock={mock}
     />
   )
+
+  const bloqueado = pendiente ? (pendiente.tipo === 'pregunta' ? 'Responde la pregunta de arriba para seguir…' : pendiente.tipo === 'plan' ? 'Revisa el plan de arriba para seguir…' : 'Responde el permiso de arriba (S · N · T)…') : undefined
 
   const chat = (
     <main className="flex h-full min-w-0 flex-1 flex-col">
@@ -101,7 +328,20 @@ export default function App({ cliente }: Props) {
             <MenuIcon />
           </Button>
         )}
-        <h1 className="flex-1 truncate text-sm font-medium">{titulo}</h1>
+        <div className="flex min-w-0 flex-1 items-baseline gap-2">
+          {proyecto && <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">{proyecto.nombre} /</span>}
+          <h1 className="truncate text-sm font-medium">{conv?.titulo ?? 'Conversación'}</h1>
+          {conv?.incognito && (
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px]">
+              <GhostIcon className="size-3" /> no se guarda
+            </span>
+          )}
+        </div>
+        {uso.ultimaEntrada > 0 && (
+          <span className="hidden text-[11px] text-muted-foreground tabular-nums sm:inline" title="Tokens de contexto en el último turno">
+            {(uso.ultimaEntrada / 1000).toFixed(1)} k de contexto
+          </span>
+        )}
         <Button variant={panel ? 'secondary' : 'ghost'} size="icon-sm" onClick={() => abrirPanel()} aria-label="Mostrar u ocultar panel lateral" aria-pressed={panel}>
           <PanelRightIcon />
         </Button>
@@ -109,23 +349,87 @@ export default function App({ cliente }: Props) {
       <Conversation className="min-h-0 flex-1">
         <ConversationContent className="mx-auto w-full max-w-3xl gap-6 px-4 py-6">
           {mensajes.length === 0 ? (
-            <ConversationEmptyState title="¿En qué trabajamos hoy?" description="Escribe abajo. Esta vista usa datos de ejemplo; el puente real se conecta después." />
+            <ConversationEmptyState>
+              <div className="grid justify-items-center gap-3">
+                <p className="text-base font-medium">{pestana === 'code' ? '¿Qué hacemos en el proyecto?' : conv?.incognito ? 'Chat incógnito' : '¿En qué te ayudo?'}</p>
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  {conv?.incognito
+                    ? 'No entra al historial ni a la memoria.'
+                    : pestana === 'code'
+                      ? `Claude trabaja en la carpeta de ${proyecto?.nombre ?? 'este proyecto'} y te pide permiso antes de tocar algo.`
+                      : 'Conversación sin herramientas. Si pides algo visual, lo abres como artefacto.'}
+                </p>
+                <div className="mt-2 flex flex-wrap justify-center gap-2">
+                  {SUGERENCIAS[pestana].map((s) => (
+                    <Suggestion key={s} suggestion={s} onClick={ponerEnCaja} />
+                  ))}
+                </div>
+                {mock && <p className="text-[11px] text-mut2">Modo ejemplo: sin VITE_PUENTE_URL las respuestas son simuladas.</p>}
+              </div>
+            </ConversationEmptyState>
           ) : (
-            mensajes.map((m) => <MensajeVista key={m.id} mensaje={m} onPermiso={(id, r) => responderPermiso(conv, id, r)} />)
+            mensajes.map((m) => (
+              <MensajeVista
+                key={m.id}
+                mensaje={m}
+                detallada={espacio.ajustes.vista === 'detallada'}
+                onPermiso={(id, r) => responderPermiso(convId, id, r)}
+                onPregunta={(id, qs, r) => responderPregunta(convId, id, qs, r)}
+                onPlan={(id, a, c) => responderPlan(convId, id, a, c)}
+                onArtefacto={(a) => {
+                  setArtefactoActivo(a.id)
+                  abrirPanel('artefactos')
+                }}
+              />
+            ))
           )}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
-      <div className="mx-auto w-full max-w-3xl shrink-0 px-4 pb-4">
+      <div className="mx-auto w-full max-w-3xl shrink-0 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <Composer
-          modeloId={modeloId}
-          onModelo={setModeloId}
-          enCurso={!!enCurso[conv]}
-          onEnviar={(t, a) => enviar(conv, t, a, modeloId)}
-          onDetener={() => detener(conv)}
+          key={convId}
+          pestana={pestana}
+          modo={conv?.modo ?? 'code'}
+          onModo={cambiarModo}
+          modeloId={conv?.modeloId ?? espacio.ajustes.modeloPorDefecto}
+          onModelo={cambiarModelo}
+          disponibles={catalogo.datos?.ids}
+          claude={servidor?.claude}
+          modeloAbierto={modeloAbierto}
+          onModeloAbierto={setModeloAbierto}
+          enCurso={!!enCurso[convId]}
+          incognito={conv?.incognito}
+          bloqueado={enCurso[convId] ? bloqueado : undefined}
+          onEnviar={onEnviar}
+          onDetener={() => detener(convId)}
+          onComando={comando}
+          rutas={pestana === 'code' ? rutas : undefined}
+          borrador={borrador}
         />
       </div>
     </main>
+  )
+
+  const panelLateral = (
+    <PanelLateral
+      pestana={pestanaPanel}
+      onPestana={setPestanaPanel}
+      onCerrar={() => setPanel(false)}
+      modo={pestana}
+      cliente={cliente}
+      conversacionId={convId}
+      mensajes={mensajes}
+      artefactos={artefactos}
+      artefactoActivo={artefactoActivo}
+      onArtefacto={setArtefactoActivo}
+      tema={tema}
+      onMencionar={(r) => ponerEnCaja(`@${r} `)}
+      onTextoAlMensaje={(t) => {
+        ponerEnCaja(t)
+        if (!escritorio) setPanel(false)
+      }}
+    />
   )
 
   return (
@@ -139,7 +443,17 @@ export default function App({ cliente }: Props) {
               {menu && (
                 <>
                   <motion.div key="velo" className="fixed inset-0 z-40 bg-black/40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenu(false)} />
-                  <motion.div key="cajon" className="vidrio fixed inset-y-0 left-0 z-50 w-[82%] max-w-80" initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}>
+                  <motion.div
+                    key="cajon"
+                    className="vidrio fixed inset-y-0 left-0 z-50 w-[86%] max-w-80"
+                    initial={{ x: '-100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '-100%' }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={{ left: 0.6, right: 0 }}
+                    onDragEnd={(_, i) => (i.offset.x < -80 || i.velocity.x < -400) && setMenu(false)}
+                  >
                     {sidebar}
                   </motion.div>
                 </>
@@ -150,12 +464,12 @@ export default function App({ cliente }: Props) {
           {escritorio ? (
             panel ? (
               <ResizablePanelGroup orientation="horizontal" className="min-w-0 flex-1">
-                <ResizablePanel defaultSize="68%" minSize="35%">
+                <ResizablePanel defaultSize="60%" minSize="35%">
                   {chat}
                 </ResizablePanel>
                 <ResizableHandle withHandle aria-label="Redimensionar panel lateral" />
-                <ResizablePanel defaultSize="32%" minSize="20%" maxSize="55%">
-                  <PanelLateral pestana={pestana} onPestana={setPestana} onCerrar={() => setPanel(false)} />
+                <ResizablePanel defaultSize="40%" minSize="22%" maxSize="60%">
+                  {panelLateral}
                 </ResizablePanel>
               </ResizablePanelGroup>
             ) : (
@@ -166,15 +480,75 @@ export default function App({ cliente }: Props) {
               {chat}
               <AnimatePresence>
                 {panel && (
-                  <motion.div key="hoja" className="fixed inset-x-0 bottom-0 z-40 h-[70dvh] overflow-hidden rounded-t-2xl border-t shadow-2xl" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}>
-                    <PanelLateral pestana={pestana} onPestana={setPestana} onCerrar={() => setPanel(false)} />
-                  </motion.div>
+                  <>
+                    <motion.div key="velo-panel" className="fixed inset-0 z-30 bg-black/30" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setPanel(false)} />
+                    <motion.div
+                      key="hoja"
+                      className={cn('fixed inset-x-0 bottom-0 z-40 h-[78dvh] overflow-hidden rounded-t-2xl border-t shadow-2xl')}
+                      initial={{ y: '100%' }}
+                      animate={{ y: 0 }}
+                      exit={{ y: '100%' }}
+                      drag="y"
+                      dragListener={false}
+                      dragControls={arrastreHoja}
+                      dragConstraints={{ top: 0, bottom: 0 }}
+                      dragElastic={{ top: 0, bottom: 0.6 }}
+                      onDragEnd={(_, i) => (i.offset.y > 120 || i.velocity.y > 500) && setPanel(false)}
+                    >
+                      <div className="flex h-full flex-col bg-card">
+                        {/* Asa: se arrastra hacia abajo para cerrar (el resto del panel hace scroll normal). */}
+                        <div className="flex h-5 shrink-0 cursor-grab touch-none items-center justify-center active:cursor-grabbing" onPointerDown={(e) => arrastreHoja.start(e)} aria-hidden>
+                          <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+                        </div>
+                        <div className="min-h-0 flex-1">{panelLateral}</div>
+                      </div>
+                    </motion.div>
+                  </>
                 )}
               </AnimatePresence>
             </>
           )}
         </div>
-        <Paleta abierta={paleta} onAbierta={setPaleta} onNueva={nueva} onTema={alternar} onPanel={abrirPanel} onModelo={setModeloId} />
+        <Paleta
+          abierta={paleta}
+          onAbierta={setPaleta}
+          pestana={pestana}
+          conversaciones={visiblesSidebar}
+          onConversacion={elegir}
+          onNueva={() => nueva()}
+          onIncognito={() => nueva(undefined, true)}
+          onPestana={setPestana}
+          onTema={alternar}
+          onPanel={abrirPanel}
+          onModelo={cambiarModelo}
+          onAjustes={abrirAjustes}
+          onModo={() => cambiarModo(conv?.modo === 'plan' ? 'code' : 'plan')}
+        />
+        <Ajustes
+          abierto={ajustes.abierto}
+          onAbierto={(v) => setAjustes((s) => ({ ...s, abierto: v }))}
+          seccion={ajustes.seccion}
+          onSeccion={(s) => setAjustes((x) => ({ ...x, seccion: s }))}
+          cliente={cliente}
+          ajustes={espacio.ajustes}
+          onAjustes={cambiarAjustes}
+          memorias={espacio.memorias}
+          onMemorias={guardarMemorias}
+          cuotas={cuotas}
+          errorCuotas={errorCuotas}
+          servidor={servidor}
+          disponibles={catalogo.datos?.ids}
+          tema={tema}
+          onTema={setTema}
+        />
+        <ProyectoDialogo
+          proyecto={espacio.proyectos.find((p) => p.id === proyectoEditado) ?? null}
+          total={espacio.proyectos.length}
+          onCerrar={() => setProyectoEditado(null)}
+          onGuardar={(c) => proyectoEditado && editarProyecto(proyectoEditado, c)}
+          onBorrar={() => proyectoEditado && borrarProyecto(proyectoEditado)}
+        />
+        <Toaster position={escritorio ? 'bottom-right' : 'top-center'} theme={tema} />
       </TooltipProvider>
     </MotionConfig>
   )

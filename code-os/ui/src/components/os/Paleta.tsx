@@ -1,68 +1,92 @@
-import { useEffect } from 'react'
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandShortcut,
-} from '@/components/ui/command'
-import { niveles } from '@/data/ejemplo'
-import { pestanas, type PestanaPanel } from './PanelLateral'
+import { CodeIcon, MessageSquareIcon } from 'lucide-react'
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from '@/components/ui/command'
+import type { Conversacion } from '@/hooks/use-espacio'
+import { teclas } from '@/hooks/use-atajos'
+import { NIVELES } from '@/lib/niveles'
+import type { SeccionAjustes } from './Ajustes'
+import { pestanasPanel, type PestanaPanel } from './PanelLateral'
 
 type Props = {
   abierta: boolean
   onAbierta: (v: boolean) => void
+  pestana: 'chat' | 'code'
+  conversaciones: Conversacion[]
+  onConversacion: (id: string) => void
   onNueva: () => void
+  onIncognito: () => void
+  onPestana: (p: 'chat' | 'code') => void
   onTema: () => void
   onPanel: (p?: PestanaPanel) => void
   onModelo: (id: string) => void
+  onAjustes: (s?: SeccionAjustes) => void
+  onModo: () => void
 }
 
-export function Paleta({ abierta, onAbierta, onNueva, onTema, onPanel, onModelo }: Props) {
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        onAbierta(!abierta)
-      }
-    }
-    window.addEventListener('keydown', h)
-    return () => window.removeEventListener('keydown', h)
-  }, [abierta, onAbierta])
-
+export function Paleta(p: Props) {
   const ejecutar = (fn: () => void) => () => {
-    onAbierta(false)
+    p.onAbierta(false)
     fn()
   }
   return (
-    <CommandDialog open={abierta} onOpenChange={onAbierta} title="Paleta de comandos" description="Busca una acción">
-      <CommandInput placeholder="Escribe un comando…" />
+    <CommandDialog open={p.abierta} onOpenChange={p.onAbierta} title="Paleta de comandos" description="Busca una acción o una conversación">
+      <CommandInput placeholder="Escribe un comando o el nombre de un chat…" />
       <CommandList>
         <CommandEmpty>Nada con ese nombre.</CommandEmpty>
         <CommandGroup heading="General">
-          <CommandItem onSelect={ejecutar(onNueva)}>Nueva conversación</CommandItem>
-          <CommandItem onSelect={ejecutar(onTema)}>Cambiar tema claro / oscuro</CommandItem>
-          <CommandItem onSelect={ejecutar(() => onPanel())}>
-            Mostrar u ocultar panel lateral <CommandShortcut>⌘ J</CommandShortcut>
+          <CommandItem onSelect={ejecutar(p.onNueva)}>
+            {p.pestana === 'code' ? 'Nueva sesión' : 'Nuevo chat'} <CommandShortcut>{teclas('mod+n')}</CommandShortcut>
+          </CommandItem>
+          <CommandItem onSelect={ejecutar(p.onIncognito)}>Chat incógnito</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onPestana(p.pestana === 'chat' ? 'code' : 'chat'))}>Ir a {p.pestana === 'chat' ? 'Code' : 'Chat'}</CommandItem>
+          {p.pestana === 'code' && (
+            <CommandItem onSelect={ejecutar(p.onModo)}>
+              Alternar Manual / Plan <CommandShortcut>{teclas('mod+shift+m')}</CommandShortcut>
+            </CommandItem>
+          )}
+          <CommandItem onSelect={ejecutar(p.onTema)}>Cambiar tema claro / oscuro</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onPanel())}>
+            Mostrar u ocultar panel <CommandShortcut>{teclas('mod+j')}</CommandShortcut>
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Panel">
-          {pestanas.map((p) => (
-            <CommandItem key={p.id} onSelect={ejecutar(() => onPanel(p.id))}>
-              Abrir {p.nombre.toLowerCase()}
-            </CommandItem>
-          ))}
+          {pestanasPanel
+            .filter((x) => (p.pestana === 'code' ? x.code : x.chat))
+            .map((x) => (
+              <CommandItem key={x.id} onSelect={ejecutar(() => p.onPanel(x.id))}>
+                Abrir {x.nombre.toLowerCase()}
+              </CommandItem>
+            ))}
+        </CommandGroup>
+        <CommandGroup heading="Ajustes">
+          <CommandItem onSelect={ejecutar(() => p.onAjustes('uso'))}>Uso y cuotas</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onAjustes('memoria'))}>Memoria</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onAjustes('mcp'))}>Conectores (MCP)</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onAjustes('skills'))}>Skills</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onAjustes('atajos'))}>
+            Atajos de teclado <CommandShortcut>{teclas('mod+/')}</CommandShortcut>
+          </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Modelo">
-          {niveles.flatMap((n) =>
-            n.modelos.map((m) => (
-              <CommandItem key={m.id} value={`${n.nombre} ${m.nombre}`} onSelect={ejecutar(() => onModelo(m.id))}>
+          {NIVELES.flatMap((n) => [
+            <CommandItem key={n.alias} value={`${n.nombre} automático ${n.alias}`} onSelect={ejecutar(() => p.onModelo(n.alias))}>
+              {n.nombre} · Automático
+            </CommandItem>,
+            ...n.modelos.map((m) => (
+              <CommandItem key={m.id} value={`${n.nombre} ${m.nombre} ${m.id}`} onSelect={ejecutar(() => p.onModelo(m.id))}>
                 {n.nombre} · {m.nombre}
               </CommandItem>
             )),
-          )}
+          ])}
+        </CommandGroup>
+        <CommandGroup heading="Conversaciones">
+          {p.conversaciones
+            .filter((c) => !c.archivada)
+            .slice(0, 30)
+            .map((c) => (
+              <CommandItem key={c.id} value={`${c.titulo} ${c.id}`} onSelect={ejecutar(() => p.onConversacion(c.id))}>
+                {c.pestana === 'code' ? <CodeIcon /> : <MessageSquareIcon />} {c.titulo}
+              </CommandItem>
+            ))}
         </CommandGroup>
       </CommandList>
     </CommandDialog>
