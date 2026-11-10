@@ -1,4 +1,5 @@
 import { cambioAviso } from '../../public/js/chat-avisos-datos.js';
+import { leerOS } from './chat-os.js';
 // Agent Area (#/ai/agentes) · workflows de agentes y runs por etapas, con validación humana obligatoria (AGENTS IN OS.pdf).
 //
 // Dos colecciones propias (NO pasan por /api/db: collGuard las desconoce → 404; solo estas rutas, que aplican las reglas):
@@ -324,12 +325,13 @@ export function rutas(on) {
     const a = Buffer.from(dado), b = Buffer.from(esperado);
     if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return res.status(401).json({ error: 'Token del Gateway inválido' });
     const q = body(req);
-    let persona = '', pide = [];
+    let persona = '', pide = [], sesionChat = null;
     if (q.chat) {
       // Una conversación del Chat que el servidor está respondiendo ahora: las conexiones que su dueño tiene conectadas.
       const s = await db.get('chat_sesiones', txt(q.chat, 120));
       if (!s || s.turno?.estado !== 'trabajando' || s.archivado) return res.status(409).json({ error: 'Esa conversación no la está respondiendo el servidor' });
       persona = lc(s.owner);
+      sesionChat = s;
       pide = ['inherent', ...(await db.list('mcp_conexiones')).filter((c) => c.id.startsWith(`${persona}|`)).map((c) => c.id.split('|')[1]).filter((id) => ['mcp', 'token'].includes(conectorDe(id)?.tipo)).slice(0, 4)];
     } else {
       const r = await db.get(COLL, txt(q.run, 60)), n = Number(q.etapa), e = r?.etapas?.[n];
@@ -341,6 +343,11 @@ export function rutas(on) {
     // El MCP del propio OS: corre aquí mismo, como esa persona (sus áreas, «solo ver», lo que es solo del CEO) y solo lo
     // que lee. Lo que escribe (crear tareas, mover leads, subir documentos…) no se da al servidor hasta que haya confirmación.
     const usuarioOS = pide.includes('inherent') ? await mcpOS.userOf(persona) : null;
+    if (q.accion === 'leer_os') {
+      if (!sesionChat || !usuarioOS) return res.status(403).json({ error: 'La lectura requiere una conversación activa y acceso al OS.' });
+      try { return res.json({ texto: JSON.stringify(await leerOS(usuarioOS, sesionChat, q.args || {})), error: false }); }
+      catch (e) { return res.status(403).json({ error: e.message }); }
+    }
     const todasOS = async () => (usuarioOS ? (await mcpOS.run(usuarioOS, { jsonrpc: '2.0', id: 1, method: 'tools/list' })).json?.result?.tools || [] : []);
     if (q.accion === 'listar') {
       const ts = await toolsDe(persona, pide.filter((id) => id !== 'inherent')), os = await todasOS();
