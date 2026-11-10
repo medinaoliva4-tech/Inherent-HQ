@@ -53,7 +53,11 @@ Todas llevan `Authorization: Bearer <token de la persona>`. Sin token solo respo
 | `POST /sessions/:id/interrupt` · `DELETE /sessions/:id` | Interrumpe el turno / cierra la sesión viva |
 | `GET /sessions/:id/files` | `{archivos: NodoArchivo[]}` (sin `.git`, `node_modules`, …; máx. 2000 nodos) |
 | `GET /sessions/:id/files/<ruta>` · `PUT …` `{contenido}` | Leer (≤1 MB, texto) / escribir (≤2 MB). `ruta` URL-encoded. 403 si sale de la carpeta (`..`, absoluta, symlink que escapa, `.git`) |
-| `GET /sessions/:id/diff` | `{archivos: [{ruta, diff, mas, menos}]}` contra la foto inicial de la sesión (git endurecido: sin hooks, fsmonitor ni programas externos) |
+| `GET/PUT /sessions/:id/files?path=<ruta>` | Igual que la forma con ruta en el path, pero con `?path=` |
+| `GET /mcp` · `GET /skills` | Catálogo MCP del servidor `[{nombre, descripcion, estado}]` · skills de `PUENTE_SKILLS_DIR` (`<nombre>/SKILL.md`) `[{nombre, descripcion, contenido}]` |
+| `GET /sessions/:id/history[?after=]` | Eventos en memoria de la sesión (últimos 2000) |
+| `POST …/messages` con `queue:true` | Si hay turno en curso, encola el mensaje (`202 {turnId, queued:true}`) en vez de 409; corre al terminar el turno |
+| `GET /sessions/:id/diff` | `{archivos: [{ruta, anterior?, nuevo?, diff, mas, menos}]}` contra la foto inicial de la sesión (git endurecido: sin hooks, fsmonitor ni programas externos) |
 
 **Reanudar**: las sesiones se guardan en disco; tras reiniciar el puente basta usar el mismo `id` y se retoma la conversación (`resume` del SDK).
 

@@ -26,6 +26,8 @@ export class Session {
   constructor(public meta: SessionMeta, private deps: Deps) {}
 
   get running() { return this.current !== null; }
+  /** Historial en memoria (últimos 2000 eventos) para que la interfaz reconstruya la conversación. */
+  history(after = 0) { return this.log.filter((e) => e.seq > after); }
   get lastSeq() { return this.seq; }
   pendingPermissions() { return [...this.pending.values()].map((p) => p.event); }
   summary() { return { ...this.meta, running: this.running, allowAll: this.allowAll, pendingPermissions: this.pending.size }; }
@@ -69,14 +71,24 @@ export class Session {
     this.current.abort.abort();
   }
 
-  sendMessage(text: string): string {
+  private queue: { turnId: string; text: string }[] = [];
+  get queued() { return this.queue.length; }
+  /** Con `queueIfBusy`, un mensaje que llega con turno en curso se encola (corrige mientras trabaja) en vez de dar 409. */
+  sendMessage(text: string, queueIfBusy = false): string {
+    if (this.running && queueIfBusy) { const turnId = randomUUID(); this.queue.push({ turnId, text }); return turnId; }
     if (this.running) throw new HttpError(409, 'Ya hay un turno en curso');
+    return this.start(randomUUID(), text);
+  }
+  private start(turnId: string, text: string): string {
     if (!this.deps.slots.acquire()) throw new HttpError(429, 'Demasiados turnos simultáneos; reintenta en unos segundos');
-    const turnId = randomUUID();
     const abort = new AbortController();
     this.current = { turnId, abort };
     this.emit({ type: 'user_message', text, turnId });
-    void this.runTurn(turnId, text, abort).finally(() => { this.current = null; this.deps.slots.release(); });
+    void this.runTurn(turnId, text, abort).finally(() => {
+      this.current = null; this.deps.slots.release();
+      const next = abort.signal.aborted ? undefined : this.queue.shift();
+      if (!abort.signal.aborted && next) { try { this.start(next.turnId, next.text); } catch { this.queue.unshift(next); } } else this.queue = [];
+    });
     return turnId;
   }
 

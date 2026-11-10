@@ -39,6 +39,8 @@ export interface Config {
   cuotasToken?: string;
   /** Carpeta con la compilación de la interfaz (se sirve sin token; el acceso lo limita Tailscale). */
   uiDir?: string;
+  /** Carpeta con skills (cada una: <nombre>/SKILL.md). */
+  skillsDir: string;
   /** Si se define, la interfaz solo se sirve mientras exista este archivo (lo crea el asistente cuando todo pasa). */
   flagFile?: string;
 }
@@ -92,5 +94,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, readJson: (p: s
     cuotasUrl: (env.CUOTAS_URL ?? 'http://127.0.0.1:4200').replace(/\/$/, ''), cuotasToken: env.CUOTAS_TOKEN || undefined,
     uiDir: env.PUENTE_UI_DIR ? resolve(env.PUENTE_UI_DIR) : undefined,
     flagFile: env.PUENTE_FLAG_FILE || undefined,
+    skillsDir: resolve(env.PUENTE_SKILLS_DIR ?? `${dataDir}/skills`),
   };
 }

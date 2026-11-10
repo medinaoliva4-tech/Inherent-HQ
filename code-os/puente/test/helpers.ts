@@ -19,7 +19,7 @@ export const USER_A: UserRecord = { id: 'ana', tokenHash: sha(TOKEN), litellmKey
 export const USER_B: UserRecord = { id: 'bea', tokenHash: sha(TOKEN_B), litellmKey: 'sk-bea-limitada', levels: ['nivel-bajo'], modelPrefixes: [] };
 
 export function testConfig(dataDir = mkdtempSync(join(tmpdir(), 'puente-')), over: Partial<Config> = {}): Config {
-  return { port: 0, host: '127.0.0.1', users: [USER_A, USER_B], litellmUrl: 'http://litellm.fake', envScrub: false, defaultModel: 'cp-glm-5.3', subscriptionModel: 'opus', dataDir, workspacesDir: join(dataDir, 'workspaces'), maxConcurrentTurns: 3, maxTurns: 10, turnTimeoutMs: 5000, permissionTimeoutMs: 2000, mcpCatalog: { demo: { type: 'stdio', command: 'x' } }, confine: 'none', requireConfine: false, cuotasUrl: 'http://cuotas.fake', ...over };
+  return { port: 0, host: '127.0.0.1', users: [USER_A, USER_B], litellmUrl: 'http://litellm.fake', envScrub: false, defaultModel: 'cp-glm-5.3', subscriptionModel: 'opus', dataDir, workspacesDir: join(dataDir, 'workspaces'), maxConcurrentTurns: 3, maxTurns: 10, turnTimeoutMs: 5000, permissionTimeoutMs: 2000, mcpCatalog: { demo: { type: 'stdio', command: 'x' } }, confine: 'none', requireConfine: false, cuotasUrl: 'http://cuotas.fake', skillsDir: join(dataDir, 'skills'), ...over };
 }
 
 export interface FakeServices extends Services { reports: { user: string; ok: boolean }[]; claudeActive: Record<string, boolean> }

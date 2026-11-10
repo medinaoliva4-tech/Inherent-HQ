@@ -5,7 +5,7 @@ import { isInside } from './workspace.js';
 import { HttpError } from './types.js';
 
 export type NodoArchivo = { nombre: string; ruta: string; tipo: 'carpeta' | 'archivo'; hijos?: NodoArchivo[] };
-export type ArchivoDiff = { ruta: string; diff: string; mas: number; menos: number };
+export type ArchivoDiff = { ruta: string; anterior?: string; nuevo?: string; diff: string; mas: number; menos: number };
 
 const IGNORAR = new Set(['.git', 'node_modules', '.next', 'dist', '.venv', '__pycache__']);
 const MAX_LEER = 1_000_000, MAX_ESCRIBIR = 2_000_000, MAX_NODOS = 2000, MAX_PROF = 6;
@@ -74,7 +74,9 @@ export async function diff(cwd: string): Promise<ArchivoDiff[]> {
   const out: ArchivoDiff[] = [];
   for (const ruta of names.slice(0, 200)) {
     const d = await git(cwd, ['diff', 'HEAD', '--no-ext-diff', '--no-textconv', '--', ruta]);
-    out.push({ ruta, diff: d.slice(0, 200_000), mas: (d.match(/^\+(?!\+\+)/gm) ?? []).length, menos: (d.match(/^-(?!--)/gm) ?? []).length });
+    const ant = (await git(cwd, ['show', `HEAD:${ruta}`])).slice(0, 200_000);
+    let nuevo: string | undefined; try { nuevo = leer(cwd, ruta); } catch { /* borrado o binario */ }
+    out.push({ ruta, anterior: ant || undefined, nuevo, diff: d.slice(0, 200_000), mas: (d.match(/^\+(?!\+\+)/gm) ?? []).length, menos: (d.match(/^-(?!--)/gm) ?? []).length });
   }
   return out;
 }

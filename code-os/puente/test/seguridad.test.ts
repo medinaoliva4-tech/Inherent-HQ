@@ -311,3 +311,32 @@ test('diff: muestra lo que cambió desde que se creó la sesión', { skip: !hasG
   assert.deepEqual((await t.api('GET', `/sessions/${s.id}/diff`)).json.archivos.map((a: any) => a.ruta), ['a.txt']);
   await t.close();
 });
+
+test('interfaz v2: archivos por ?path=, diff con anterior/nuevo, /mcp, /skills, historial y cola de mensajes', { skip: !hasGit && 'sin git' }, async () => {
+  const skills = mkdtempSync(join(tmpdir(), 'sk-')); mkdirSync(join(skills, 'revisar')); writeFileSync(join(skills, 'revisar', 'SKILL.md'), '---\nname: revisar\ndescription: Revisa código\n---\ncuerpo');
+  let release!: () => void; const gate = new Promise<void>((r) => { release = r; });
+  let n = 0;
+  const slow = async function* () { n++; yield init(); if (n === 1) await gate; yield { type: 'assistant', message: { content: [{ type: 'text', text: 'ok' + n }] } }; yield result(); };
+  const t = await boot(fakeQuery(slow), testConfig(undefined, { skillsDir: skills }));
+  const s = (await t.api('POST', '/sessions', { projectId: 'p', model: 'nivel-medio', mode: 'chat' })).json;
+  await new Promise((r) => setTimeout(r, 300));
+  writeFileSync(join(s.cwd, 'a.txt'), 'uno\n');
+  assert.equal((await t.api('GET', `/sessions/${s.id}/files?path=a.txt`)).json.contenido, 'uno\n');
+  assert.equal((await t.api('PUT', `/sessions/${s.id}/files?path=b.txt`, { contenido: 'dos' })).status, 200);
+  assert.equal((await t.api('GET', `/sessions/${s.id}/files?path=../x`)).status, 403);
+  const d = (await t.api('GET', `/sessions/${s.id}/diff`)).json.archivos.find((a: any) => a.ruta === 'a.txt');
+  assert.equal(d.nuevo, 'uno\n'); assert.equal(d.mas, 1);
+  assert.deepEqual((await t.api('GET', '/mcp')).json.mcp.map((m: any) => m.nombre), ['demo']);
+  assert.equal((await t.api('GET', '/skills')).json.skills[0].descripcion, 'Revisa código');
+  await t.api('POST', `/sessions/${s.id}/messages`, { text: 'uno' });
+  assert.equal((await t.api('POST', `/sessions/${s.id}/messages`, { text: 'dos' })).status, 409);
+  const q = await t.api('POST', `/sessions/${s.id}/messages`, { text: 'dos', queue: true });
+  assert.equal(q.status, 202); assert.equal(q.json.queued, true);
+  release();
+  for (let i = 0; i < 50 && n < 2; i++) await new Promise((r) => setTimeout(r, 100));
+  await new Promise((r) => setTimeout(r, 300));
+  const h = (await t.api('GET', `/sessions/${s.id}/history`)).json.events;
+  assert.equal(h.filter((e: any) => e.type === 'turn_end').length, 2);
+  assert.deepEqual(h.filter((e: any) => e.type === 'user_message').map((e: any) => e.text), ['uno', 'dos']);
+  await t.close();
+});

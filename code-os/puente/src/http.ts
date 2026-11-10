@@ -5,6 +5,7 @@ import type { Config } from './config.js';
 import type { Services } from './services.js';
 import { serveStatic } from './static.js';
 import * as fx from './files.js';
+import { listSkills } from './skills.js';
 import type { SessionManager } from './manager.js';
 import type { ModelCatalog } from './models.js';
 import { HttpError } from './types.js';
@@ -23,7 +24,7 @@ function send(res: ServerResponse, status: number, body: unknown) {
   res.end(s);
 }
 
-const API = /^\/(sessions|models|me|cuotas|health)(\/|$)/;
+const API = /^\/(sessions|models|me|cuotas|health|mcp|skills)(\/|$)/;
 
 export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog, svc: Services): Server {
   const authed = makeAuthenticator(cfg.users);
@@ -52,6 +53,8 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         const claude = await svc.claude.status(user, url.searchParams.get('refresh') === '1').catch(() => ({ installed: false, active: false }));
         return send(res, 200, { user: user.id, levels: user.levels, modelPrefixes: user.modelPrefixes, defaultModel: cfg.defaultModel, claude, confinamiento: { activo: mgr.confined, modo: mgr.confined ? 'bwrap' : 'ninguno', code: !cfg.requireConfine || mgr.confined } });
       }
+      if (method === 'GET' && path === '/mcp') return send(res, 200, { mcp: Object.keys(cfg.mcpCatalog).map((n) => ({ nombre: n, descripcion: String((cfg.mcpCatalog[n] as any)?.description ?? 'Servidor MCP del catálogo'), estado: 'activo' })) });
+      if (method === 'GET' && path === '/skills') return send(res, 200, { skills: listSkills(cfg.skillsDir) });
       if (method === 'GET' && path === '/cuotas') {
         const c = await svc.cuotas.get();
         if (!c) throw new HttpError(503, 'El medidor de cuotas no responde');
@@ -65,6 +68,9 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       if (fm) {
         const cwd = mgr.get(user, fm[1]!).meta.cwd;
         if (fm[2] === 'diff' && method === 'GET') return send(res, 200, { archivos: await fx.diff(cwd) });
+        const q = url.searchParams.get('path');
+        if (fm[2] === 'files' && !fm[3] && q && method === 'GET') return send(res, 200, { ruta: q, contenido: fx.leer(cwd, q) });
+        if (fm[2] === 'files' && !fm[3] && q && method === 'PUT') { fx.escribir(cwd, q, (await readJson(req)).contenido); return send(res, 200, { ok: true }); }
         if (fm[2] === 'files' && !fm[3] && method === 'GET') return send(res, 200, { archivos: fx.arbol(cwd) });
         if (fm[2] === 'files' && fm[3] && method === 'GET') { const ruta = decodeURIComponent(fm[3]); return send(res, 200, { ruta, contenido: fx.leer(cwd, ruta) }); }
         if (fm[2] === 'files' && fm[3] && method === 'PUT') { fx.escribir(cwd, decodeURIComponent(fm[3]), (await readJson(req)).contenido); return send(res, 200, { ok: true }); }
@@ -83,8 +89,10 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         const b = await readJson(req);
         if (typeof b.text !== 'string' || !b.text.trim()) throw new HttpError(400, 'text es obligatorio');
         if (b.text.length > 100_000) throw new HttpError(413, 'text demasiado largo');
-        return send(res, 202, { turnId: mgr.get(user, id).sendMessage(b.text) });
+        const ses = mgr.get(user, id); const queued = b.queue === true && ses.running;
+        return send(res, 202, { turnId: ses.sendMessage(b.text, b.queue === true), ...(queued ? { queued: true } : {}) });
       }
+      if (sub === 'history' && method === 'GET') return send(res, 200, { events: mgr.get(user, id).history(Number(url.searchParams.get('after') ?? 0) || 0) });
       if (sub === 'interrupt' && method === 'POST') { await mgr.get(user, id).interrupt(); return send(res, 200, { ok: true }); }
       if (sub === 'permissions' && method === 'GET' && !sub2) return send(res, 200, { pending: mgr.get(user, id).pendingPermissions() });
       if (sub === 'permissions' && method === 'POST' && sub2) {
