@@ -10,6 +10,8 @@ export interface UserRecord {
   litellmKey: string;
   /** Niveles permitidos: nivel-alto | nivel-medio | nivel-bajo | nivel-bajo-pago. */
   levels: string[];
+  /** Correos del OS que entran como esta persona (el pase del OS trae el correo). */
+  emails: string[];
   /** Prefijos de alias directos permitidos (p. ej. cp-, nv-). */
   modelPrefixes: string[];
 }
@@ -41,6 +43,12 @@ export interface Config {
   uiDir?: string;
   /** Carpeta con skills (cada una: <nombre>/SKILL.md). */
   skillsDir: string;
+  /** Secreto compartido con el OS para verificar su pase (HS256). Sin él, solo entran los tokens del puente. */
+  paseSecret?: string;
+  /** Orígenes del OS con permiso CORS (p. ej. https://inherent-work.vercel.app). */
+  allowedOrigins: string[];
+  /** Intentos fallidos por IP en 10 min antes de bloquear (429). */
+  maxAuthFailures: number;
   /** Si se define, la interfaz solo se sirve mientras exista este archivo (lo crea el asistente cuando todo pasa). */
   flagFile?: string;
 }
@@ -62,7 +70,8 @@ function validateUser(u: any): UserRecord {
   const levels = Array.isArray(u.levels) ? u.levels : [];
   if (levels.some((l: unknown) => !LEVELS.includes(l as string))) throw new Error(`Usuario ${u.id}: nivel desconocido (válidos: ${LEVELS.join(', ')})`);
   const modelPrefixes = Array.isArray(u.modelPrefixes) ? u.modelPrefixes.filter((p: unknown) => typeof p === 'string') : [];
-  return { id: u.id, tokenHash: u.tokenHash, litellmKey: u.litellmKey, levels, modelPrefixes };
+  const emails = Array.isArray(u.emails) ? u.emails.filter((e: unknown) => typeof e === 'string' && /^[^@\s]+@[^@\s]+$/.test(e)).map((e: string) => e.toLowerCase()) : [];
+  return { id: u.id, tokenHash: u.tokenHash, litellmKey: u.litellmKey, levels, modelPrefixes, emails };
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env, readJson: (p: string) => any = readUsersFile): Config {
@@ -78,6 +87,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, readJson: (p: s
   if (new Set(users.map((u) => u.id)).size !== users.length || new Set(users.map((u) => u.tokenHash)).size !== users.length) throw new Error('Usuarios o tokens repetidos');
   let mcpCatalog: Record<string, unknown> = {};
   if (env.PUENTE_MCP_CONFIG) mcpCatalog = (JSON.parse(readFileSync(env.PUENTE_MCP_CONFIG, 'utf8')) as { mcpServers?: Record<string, unknown> }).mcpServers ?? {};
+  if (env.PUENTE_PASE_SECRET && env.PUENTE_PASE_SECRET.length < 32) throw new Error('PUENTE_PASE_SECRET debe tener al menos 32 caracteres');
   const confine = (env.PUENTE_CONFINE ?? 'auto') as Config['confine'];
   if (!['auto', 'bwrap', 'none'].includes(confine)) throw new Error('PUENTE_CONFINE debe ser auto, bwrap o none');
   return {
@@ -94,6 +104,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, readJson: (p: s
     cuotasUrl: (env.CUOTAS_URL ?? 'http://127.0.0.1:4200').replace(/\/$/, ''), cuotasToken: env.CUOTAS_TOKEN || undefined,
     uiDir: env.PUENTE_UI_DIR ? resolve(env.PUENTE_UI_DIR) : undefined,
     flagFile: env.PUENTE_FLAG_FILE || undefined,
+    paseSecret: env.PUENTE_PASE_SECRET || undefined,
+    allowedOrigins: (env.PUENTE_ALLOWED_ORIGINS ?? '').split(',').map((o) => o.trim().replace(/\/$/, '')).filter(Boolean),
+    maxAuthFailures: Number(env.PUENTE_MAX_AUTH_FAILURES ?? 20),
     skillsDir: resolve(env.PUENTE_SKILLS_DIR ?? `${dataDir}/skills`),
   };
 }

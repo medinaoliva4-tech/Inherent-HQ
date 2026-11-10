@@ -81,3 +81,12 @@ test('revisión: si algo falla no activa la interfaz y dice el siguiente paso; s
   assert.ok(!t.includes('CLINE_API_KEY=x'));
   l.close();
 });
+
+test('usuario: guarda el correo del OS (minúsculas) y lo conserva al rotar la llave', async () => {
+  const { l, env } = await setup();
+  await crearUsuario(env, MASTER, 'ana', { emails: ['Ana@InherentGlobal.com'] });
+  assert.deepEqual(leerUsuarios(env.usersFile).users[0].emails, ['ana@inherentglobal.com']);
+  await crearUsuario(env, MASTER, 'ana');
+  assert.deepEqual(leerUsuarios(env.usersFile).users[0].emails, ['ana@inherentglobal.com']);
+  l.close();
+});

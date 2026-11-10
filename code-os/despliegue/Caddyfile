@@ -1,0 +1,16 @@
+# Code OS público: HTTPS automático (Let's Encrypt) y proxy al puente, que escucha solo en 127.0.0.1:4300.
+# La autenticación la hace el puente (pase del OS o token); aquí solo TLS, cabeceras de seguridad y WebSocket/SSE.
+{$CODEOS_DOMINIO:work.inherentglobal.com} {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:4300 {
+		flush_interval -1
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+}

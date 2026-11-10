@@ -419,3 +419,77 @@ test('terminal: sin confinamiento y con requireConfine se rechaza (es un shell)'
   assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { authorization: `Bearer ${TOKEN}` })).head, /503/);
   await t.close();
 });
+
+// ---------- acceso público: pase del OS, CORS y límite de intentos ----------
+import { firmar, verificar } from '../src/pase.js';
+const SECRET = 'secreto-compartido-con-el-os-0123456789abcdef';
+const now = () => Math.floor(Date.now() / 1000);
+const OS = 'https://inherent-work.vercel.app';
+const conPase = () => testConfig(undefined, { paseSecret: SECRET, allowedOrigins: [OS] });
+
+test('pase: firma, caducidad, tipo y audiencia', () => {
+  const ok = firmar(SECRET, { typ: 'pase', sub: 'ana@inherentglobal.com', exp: now() + 300 });
+  assert.equal(verificar(SECRET, ok, 'pase')?.sub, 'ana@inherentglobal.com');
+  assert.equal(verificar('otro-secreto-otro-secreto-otro-secreto', ok, 'pase'), null);
+  assert.equal(verificar(SECRET, firmar(SECRET, { typ: 'pase', sub: 'a@b.c', exp: now() - 5 }), 'pase'), null);
+  assert.equal(verificar(SECRET, firmar(SECRET, { typ: 'pase', sub: 'a@b.c', exp: now() + 3600 }), 'pase'), null); // más de 15 min
+  assert.equal(verificar(SECRET, ok, 'sesion'), null);
+  assert.equal(verificar(SECRET, ok.slice(0, -3) + 'xxx', 'pase'), null);
+  const none = `${Buffer.from('{"alg":"none"}').toString('base64url')}.${ok.split('.')[1]}.`;
+  assert.equal(verificar(SECRET, none, 'pase'), null);
+});
+
+test('pase: el OS entra como el usuario de su correo; correos desconocidos y pases malos, no', async () => {
+  const t = await boot(fakeQuery(simple), conPase());
+  const H = (c: object) => ({ authorization: `Bearer ${firmar(SECRET, { typ: 'pase', exp: now() + 300, ...c } as any)}` });
+  const me = await fetch(t.base + '/me', { headers: H({ sub: 'ANA@inherentglobal.com' }) });
+  assert.equal(me.status, 200); assert.equal((await me.json() as any).user, 'ana');
+  assert.equal((await fetch(t.base + '/me', { headers: H({ sub: 'intruso@inherentglobal.com' }) })).status, 401);
+  assert.equal((await fetch(t.base + '/me', { headers: { authorization: 'Bearer aaa.bbb.ccc' } })).status, 401);
+  assert.equal((await fetch(t.base + '/me?pase=' + firmar(SECRET, { typ: 'pase', sub: 'ana@inherentglobal.com', exp: now() + 300 }))).status, 200); // WebSocket/EventSource
+  await t.close();
+  const sin = await boot(fakeQuery(simple)); // sin PUENTE_PASE_SECRET el pase no existe
+  assert.equal((await fetch(sin.base + '/me', { headers: H({ sub: 'ana@inherentglobal.com' }) })).status, 401);
+  await sin.close();
+});
+
+test('pase: /entrar?pase= lo cambia por una cookie de sesión HttpOnly y redirige', async () => {
+  const ui = mkdtempSync(join(tmpdir(), 'ui-')); writeFileSync(join(ui, 'index.html'), '<h1>Code OS</h1>');
+  const t = await boot(fakeQuery(simple), { ...conPase(), uiDir: ui });
+  const pase = firmar(SECRET, { typ: 'pase', sub: 'ana@inherentglobal.com', exp: now() + 300 });
+  const r = await fetch(t.base + '/entrar?pase=' + pase, { redirect: 'manual' });
+  assert.equal(r.status, 303); const c = r.headers.get('set-cookie')!; assert.match(c, /HttpOnly/); assert.match(c, /SameSite=Lax/);
+  assert.equal((await fetch(t.base + '/me', { headers: { cookie: c.split(';')[0]! } })).status, 200);
+  assert.equal((await fetch(t.base + '/entrar?pase=basura', { redirect: 'manual' })).status, 401);
+  await t.close();
+});
+
+test('CORS: solo el origen del OS; preflight sin pasar por auth; el resto, sin cabeceras CORS', async () => {
+  const t = await boot(fakeQuery(simple), conPase());
+  const pre = await fetch(t.base + '/sessions', { method: 'OPTIONS', headers: { origin: OS, 'access-control-request-method': 'POST', 'access-control-request-headers': 'authorization,content-type' } });
+  assert.equal(pre.status, 204); assert.equal(pre.headers.get('access-control-allow-origin'), OS); assert.match(pre.headers.get('access-control-allow-headers')!, /authorization/i);
+  const bad = await fetch(t.base + '/sessions', { method: 'OPTIONS', headers: { origin: 'https://malo.example', 'access-control-request-method': 'GET' } });
+  assert.equal(bad.headers.get('access-control-allow-origin'), null);
+  const get = await fetch(t.base + '/health', { headers: { origin: OS } });
+  assert.equal(get.headers.get('access-control-allow-origin'), OS);
+  assert.equal((await fetch(t.base + '/health', { headers: { origin: 'https://malo.example' } })).headers.get('access-control-allow-origin'), null);
+  await t.close();
+});
+
+test('límite de intentos: tras muchos fallos desde una IP se bloquea (429), incluso con credenciales buenas', async () => {
+  const t = await boot(fakeQuery(simple), testConfig(undefined, { maxAuthFailures: 5 }));
+  for (let i = 0; i < 5; i++) assert.equal((await t.api('GET', '/me', undefined, 'x'.repeat(30 + i))).status, 401);
+  assert.equal((await t.api('GET', '/me', undefined, 'x'.repeat(99))).status, 429);
+  assert.equal((await t.api('GET', '/me')).status, 429);
+  await t.close();
+});
+
+test('terminal con pase del OS: entra por ?pase= desde el origen del OS; un origen ajeno con cookie, no', { skip: !hasPy && 'sin python3' }, async () => {
+  const t = await boot(fakeQuery(simple), conPase());
+  const s = (await t.api('POST', '/sessions', { projectId: 'term', model: 'nivel-medio', mode: 'chat' })).json;
+  const pase = firmar(SECRET, { typ: 'pase', sub: 'ana@inherentglobal.com', exp: now() + 300 });
+  const c = await wsClient(t.base, `/sessions/${s.id}/terminal?pase=${pase}`, { origin: OS });
+  assert.match(c.head, /101/); c.close();
+  assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { cookie: `codeos_token=${TOKEN}`, origin: 'https://malo.example' })).head, /403/);
+  await t.close();
+});
