@@ -106,7 +106,8 @@ nadie edita nada todo sale igual. Un doc con el mismo id reemplaza la de siempre
 
 | Variable | Qué es |
 |---|---|
-| `DATABASE_URL` | La pone Vercel sola al conectar Neon (Storage) |
+| `DATABASE_URL` | Cadena de conexión Postgres. Supabase: la del *pooler* en modo transacción (puerto 6543). Si es de Neon, usa su driver; si no, `pg` |
+| `DB_SSL_CA` / `DB_SSL_CA_FILE` | Certificado CA de Supabase (PEM con `\n`, o ruta al archivo en el servidor). TLS siempre verificado |
 | `SESSION_SECRET` | 32+ caracteres al azar (`openssl rand -hex 32`) |
 | `APP_URL` | `https://inherent-work.vercel.app` |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Del cliente OAuth de Google Cloud |

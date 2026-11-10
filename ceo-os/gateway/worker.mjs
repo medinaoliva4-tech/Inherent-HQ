@@ -473,7 +473,7 @@ export async function correrChat(id) {
 // Solo los ids de las conversaciones que esperan (o se colgaron): leer todas completas cada 3 s sería caro.
 let sqlq = null;
 async function idsChatsPendientes() {
-  sqlq ||= (await import('@neondatabase/serverless')).neon(process.env.DATABASE_URL);
+  sqlq ||= await (await import('../api/_lib/db-cliente.js')).crearSql(process.env.DATABASE_URL);
   return (await consultar(sqlq, "SELECT id FROM docs WHERE coll = $1 AND data->'turno'->>'estado' IN ('en_cola','trabajando') AND coalesce((data->>'archivado')::boolean, false) = false", [CHATS])).map((r) => r.id);
 }
 async function tomarChats() {
