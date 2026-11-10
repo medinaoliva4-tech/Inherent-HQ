@@ -1,7 +1,8 @@
 import { query } from '@anthropic-ai/claude-agent-sdk';
 import { accessSync, constants } from 'node:fs';
 import { delimiter } from 'node:path';
-import type { Config } from './config.js';
+import { userHome } from './claude.js';
+import type { Config, UserRecord } from './config.js';
 import type { QueryFn } from './types.js';
 
 /** ¿Hay bubblewrap en el PATH? Claude Code lo exige para el scrub de entorno en Linux. */
@@ -10,28 +11,48 @@ export function bwrapAvailable(path = process.env.PATH ?? '', platform = process
   return path.split(delimiter).some((d) => { try { accessSync(`${d}/bwrap`, constants.X_OK); return true; } catch { return false; } });
 }
 
-/** Entorno mínimo para el proceso del arnés: nada de llaves del puente ni del host. */
-export function buildAgentEnv(cfg: Config, model: string): Record<string, string> {
-  const base = `${cfg.dataDir}/home`;
+export interface Route { via: 'claude_login' | 'litellm'; model: string }
+
+/**
+ * Nivel alto con suscripción: si la persona tiene su `claude` logueado en el servidor, `nivel-alto` corre con esa
+ * sesión (Claude). Si no, cae al `nivel-alto` de LiteLLM (Cline Pass top). Lo demás va siempre por LiteLLM.
+ */
+export function pickRoute(cfg: Pick<Config, 'subscriptionModel'>, requested: string, claudeActive: boolean): Route {
+  if (requested === 'nivel-alto' && claudeActive) return { via: 'claude_login', model: cfg.subscriptionModel };
+  return { via: 'litellm', model: requested };
+}
+
+/**
+ * Entorno mínimo para el proceso del arnés: nada de llaves del puente ni del host. Por LiteLLM recibe la llave
+ * virtual DE ESA PERSONA (con tope y niveles limitados); por suscripción no recibe ninguna llave: usa el login
+ * guardado en el HOME propio de la persona.
+ */
+export function buildAgentEnv(cfg: Config, user: UserRecord, route: Route, confined: boolean): Record<string, string> {
+  const home = userHome(cfg, user);
   const env: Record<string, string> = {
     PATH: process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin',
-    HOME: base,
-    CLAUDE_CONFIG_DIR: `${cfg.dataDir}/claude-config`,
+    HOME: home,
+    CLAUDE_CONFIG_DIR: `${home}/.claude`,
     LANG: process.env.LANG ?? 'C.UTF-8',
-    TMPDIR: process.env.TMPDIR ?? '/tmp',
-    ANTHROPIC_BASE_URL: cfg.litellmUrl,
-    ANTHROPIC_AUTH_TOKEN: cfg.agentKey,
-    ANTHROPIC_API_KEY: '',
-    ANTHROPIC_CUSTOM_MODEL_OPTION: model,
-    ANTHROPIC_DEFAULT_SONNET_MODEL: model,
-    ANTHROPIC_DEFAULT_OPUS_MODEL: model,
-    ANTHROPIC_DEFAULT_HAIKU_MODEL: model,
-    CLAUDE_CODE_SUBAGENT_MODEL: model,
-    CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: (cfg.envScrub ?? bwrapAvailable()) ? '1' : '0',
+    TMPDIR: confined ? '/tmp' : (process.env.TMPDIR ?? '/tmp'),
+    // Dentro de bwrap ya no hay nada que ocultar; fuera, Claude Code oculta las llaves a Bash si hay bwrap.
+    CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: confined ? '0' : ((cfg.envScrub ?? bwrapAvailable()) ? '1' : '0'),
     DISABLE_TELEMETRY: '1',
     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1',
     DISABLE_AUTOUPDATER: '1',
   };
+  if (route.via === 'litellm') {
+    Object.assign(env, {
+      ANTHROPIC_BASE_URL: cfg.litellmUrl,
+      ANTHROPIC_AUTH_TOKEN: user.litellmKey,
+      ANTHROPIC_API_KEY: '',
+      ANTHROPIC_CUSTOM_MODEL_OPTION: route.model,
+      ANTHROPIC_DEFAULT_SONNET_MODEL: route.model,
+      ANTHROPIC_DEFAULT_OPUS_MODEL: route.model,
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: route.model,
+      CLAUDE_CODE_SUBAGENT_MODEL: route.model,
+    });
+  }
   return env;
 }
 

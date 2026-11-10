@@ -18,8 +18,8 @@ test('auth: /health abierto, el resto exige token de la plataforma', async () =>
 test('modelos: lista los alias de LiteLLM y rechaza uno que no existe', async () => {
   const t = await boot(fakeQuery(simple));
   const m = await t.api('GET', '/models');
-  assert.deepEqual(m.json.models.map((x: any) => x.id), ['cp-glm-5.3', 'cp-kimi-k3', 'nv-x']);
-  assert.equal((await t.api('POST', '/sessions', { projectId: 'demo', model: 'no-existe' })).status, 400);
+  assert.deepEqual(m.json.models.map((x: any) => x.id), ['cp-glm-5.3', 'cp-kimi-k3', 'nivel-alto', 'nivel-bajo', 'nivel-medio', 'nv-x']);
+  assert.equal((await t.api('POST', '/sessions', { projectId: 'demo', model: 'cp-no-existe' })).status, 400);
   const ok = await t.api('POST', '/sessions', { projectId: 'demo', model: 'cp-kimi-k3' });
   assert.equal(ok.status, 201); assert.equal(ok.json.model, 'cp-kimi-k3');
   await t.close();
@@ -50,7 +50,7 @@ test('modos: chat sin herramientas, plan y code con permisos; el entorno del arn
   for (const o of seen) {
     assert.equal(o.model, 'cp-glm-5.3'); assert.deepEqual(o.settingSources, []); assert.equal(o.strictMcpConfig, true);
     assert.equal(o.env.ANTHROPIC_DEFAULT_SONNET_MODEL, 'cp-glm-5.3'); assert.equal(o.env.ANTHROPIC_BASE_URL, 'http://litellm.fake');
-    assert.equal(o.env.ANTHROPIC_AUTH_TOKEN, 'sk-agente-limitada'); assert.equal(o.env.PUENTE_TOKENS, undefined); assert.equal(o.env.LITELLM_KEY, undefined);
+    assert.equal(o.env.ANTHROPIC_AUTH_TOKEN, 'sk-ana-limitada'); assert.equal(o.env.PUENTE_TOKENS, undefined); assert.equal(o.env.LITELLM_KEY, undefined);
   }
   await t.close();
 });

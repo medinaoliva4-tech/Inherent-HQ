@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { pathViolation } from './guard.js';
 import type { Config } from './config.js';
-import { buildAgentEnv } from './sdk.js';
+import { buildAgentEnv, pickRoute, type Route } from './sdk.js';
+import type { UserRecord } from './config.js';
+import type { Services } from './services.js';
 import { HttpError, type AgentQuery, type EventBody, type Mode, type PuenteEvent, type QueryFn, type SessionMeta } from './types.js';
 
 const LOG_CAP = 2000;
@@ -9,7 +11,9 @@ const RESULT_CAP = 8000;
 
 export type Decision = { decision: 'allow' | 'deny' | 'allow_all'; message?: string; updatedInput?: Record<string, unknown> };
 interface Pending { event: Extract<EventBody, { type: 'permission_request' }>; resolve: (d: Decision) => void }
-export interface Deps { cfg: Config; query: QueryFn; save: (m: SessionMeta) => void; slots: { acquire(): boolean; release(): void } }
+export interface Deps { cfg: Config; user: UserRecord; svc: Services; query: QueryFn; save: (m: SessionMeta) => void; slots: { acquire(): boolean; release(): void } }
+const LIMIT_RE = /usage limit|limit reached|rate.?limit|quota|credit balance|429|overloaded/i;
+interface TurnState { via: Route['via']; tools: number; t0: number; fallback?: string }
 
 export class Session {
   private log: PuenteEvent[] = [];
@@ -18,6 +22,7 @@ export class Session {
   private pending = new Map<string, Pending>();
   private allowAll = false;
   private current: { turnId: string; abort: AbortController; q?: AgentQuery } | null = null;
+  private turn: TurnState = { via: 'litellm', tools: 0, t0: 0 };
   constructor(public meta: SessionMeta, private deps: Deps) {}
 
   get running() { return this.current !== null; }
@@ -75,14 +80,15 @@ export class Session {
     return turnId;
   }
 
-  private buildOptions(abort: AbortController): Record<string, any> {
+  private buildOptions(abort: AbortController, route: Route): Record<string, any> {
     const { cfg } = this.deps;
     const m = this.meta;
+    const spawner = this.deps.svc.spawner?.(this.deps.user, m.cwd);
     const opts: Record<string, any> = {
       cwd: m.cwd,
-      model: m.model,
+      model: route.model,
       maxTurns: cfg.maxTurns,
-      env: buildAgentEnv(cfg, m.model),
+      env: buildAgentEnv(cfg, this.deps.user, route, !!spawner),
       settingSources: [],
       strictMcpConfig: true,
       includePartialMessages: true,
@@ -97,7 +103,7 @@ export class Session {
     if (m.mcp?.length && m.mode !== 'chat') {
       opts.mcpServers = Object.fromEntries(m.mcp.filter((n) => n in cfg.mcpCatalog).map((n) => [n, cfg.mcpCatalog[n]]));
     }
-    if (cfg.sandbox) opts.sandbox = { enabled: true, autoAllowBashIfSandboxed: false };
+    if (spawner) opts.spawnClaudeCodeProcess = spawner;
     if (cfg.claudePath) opts.pathToClaudeCodeExecutable = cfg.claudePath;
     return opts;
   }
@@ -130,10 +136,13 @@ export class Session {
     return { behavior: 'allow' as const, updatedInput };
   }
 
-  private async runTurn(turnId: string, text: string, abort: AbortController) {
+  private async runTurn(turnId: string, text: string, abort: AbortController, forceLitellm = false): Promise<void> {
     const t0 = Date.now();
     const m = this.meta;
-    this.emit({ type: 'turn_start', turnId, model: m.model, mode: m.mode });
+    const st = forceLitellm ? { active: false } : await this.deps.svc.claude.status(this.deps.user).catch(() => ({ active: false }));
+    const route = pickRoute(this.deps.cfg, m.model, st.active);
+    this.turn = { via: route.via, tools: 0, t0 };
+    if (!forceLitellm) this.emit({ type: 'turn_start', turnId, model: route.model, requestedModel: m.model, via: route.via, mode: m.mode });
     let finish!: () => void;
     const done = new Promise<void>((r) => { finish = r; });
     async function* input() {
@@ -143,7 +152,7 @@ export class Session {
     const timer = setTimeout(() => abort.abort(), this.deps.cfg.turnTimeoutMs);
     let ended = false;
     try {
-      const q = this.deps.query({ prompt: input(), options: this.buildOptions(abort) });
+      const q = this.deps.query({ prompt: input(), options: this.buildOptions(abort, route) });
       this.current!.q = q;
       for await (const msg of q) {
         if (this.handle(msg, turnId, t0)) { ended = true; finish(); }
@@ -153,13 +162,21 @@ export class Session {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
+      if (route.via === 'claude_login' && this.turn.tools === 0 && LIMIT_RE.test(message)) { this.turn.fallback = message; void this.deps.svc.cuotas.reportClaudeLogin(this.deps.user, false, Date.now() - t0); }
+      else {
+      if (route.via === 'claude_login') void this.deps.svc.cuotas.reportClaudeLogin(this.deps.user, false, Date.now() - t0);
       this.emit({ type: 'error', message });
       if (!ended) this.emit({ type: 'turn_end', turnId, ok: false, reason: abort.signal.aborted ? 'aborted' : 'error', turns: 0, durationMs: Date.now() - t0, usage: zero(), error: message });
+      }
     } finally {
       clearTimeout(timer); finish();
       for (const [id] of this.pending) this.answer(id, { decision: 'deny', message: 'Turno terminado' });
       try { this.current?.q?.close?.(); } catch { /* nada */ }
       this.touch();
+    }
+    if (this.turn.fallback && !abort.signal.aborted) {
+      this.emit({ type: 'route_fallback', from: 'claude_login', to: 'litellm', reason: this.turn.fallback.slice(0, 300) });
+      return this.runTurn(turnId, text, abort, true);
     }
   }
 
@@ -181,6 +198,7 @@ export class Session {
         const t = blocks.filter((b) => b.type === 'text').map((b) => b.text).join('');
         const th = blocks.filter((b) => b.type === 'thinking').map((b) => b.thinking).join('');
         if (t || th) this.emit({ type: 'assistant_message', text: t, thinking: th || undefined, parentToolUseId: parent });
+        for (const b of blocks) if (b.type === 'tool_use') this.turn.tools++;
         for (const b of blocks) if (b.type === 'tool_use') this.emit({ type: 'tool_call', toolUseId: b.id, name: b.name, input: b.input, parentToolUseId: parent });
         const u = msg.message?.usage;
         if (u) this.emit({ type: 'usage', inputTokens: u.input_tokens ?? 0, outputTokens: u.output_tokens ?? 0, cacheReadTokens: u.cache_read_input_tokens ?? 0, cacheCreationTokens: u.cache_creation_input_tokens ?? 0 });
@@ -200,6 +218,9 @@ export class Session {
         const t = this.meta.totals;
         t.inputTokens += usage.inputTokens; t.outputTokens += usage.outputTokens; t.cacheReadTokens += usage.cacheReadTokens; t.cacheCreationTokens += usage.cacheCreationTokens; t.turns += 1;
         const ok = msg.subtype === 'success' && !msg.is_error;
+        if (this.turn.via === 'claude_login') void this.deps.svc.cuotas.reportClaudeLogin(this.deps.user, ok, Date.now() - t0);
+        const why = String(msg.result ?? msg.errors ?? '');
+        if (!ok && this.turn.via === 'claude_login' && this.turn.tools === 0 && LIMIT_RE.test(why)) { this.turn.fallback = why; return true; }
         this.emit({ type: 'turn_end', turnId, ok, reason: msg.subtype ?? 'unknown', turns: msg.num_turns ?? 0, durationMs: msg.duration_ms ?? Date.now() - t0, usage, result: typeof msg.result === 'string' ? msg.result : undefined, error: ok ? undefined : (msg.errors?.join('; ') || msg.result || msg.subtype) });
         return true;
       }

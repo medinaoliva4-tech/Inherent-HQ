@@ -2,7 +2,9 @@ import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { AddressInfo } from 'node:net';
-import type { Config } from '../src/config.js';
+import { createHash } from 'node:crypto';
+import type { Config, UserRecord } from '../src/config.js';
+import type { Services } from '../src/services.js';
 import { createApp } from '../src/http.js';
 import { SessionManager } from '../src/manager.js';
 import { makeModelCatalog } from '../src/models.js';
@@ -10,18 +12,33 @@ import { SessionStore } from '../src/store.js';
 import type { QueryFn } from '../src/types.js';
 
 export const TOKEN = 'token-de-prueba-0123456789abcdef';
-export const MODELS = ['cp-glm-5.3', 'cp-kimi-k3', 'nv-x'];
+export const TOKEN_B = 'token-de-bea-0123456789abcdef0123';
+export const MODELS = ['cp-glm-5.3', 'cp-kimi-k3', 'nv-x', 'nivel-alto', 'nivel-medio', 'nivel-bajo'];
+export const sha = (t: string) => createHash('sha256').update(t).digest('hex');
+export const USER_A: UserRecord = { id: 'ana', tokenHash: sha(TOKEN), litellmKey: 'sk-ana-limitada', levels: ['nivel-alto', 'nivel-medio', 'nivel-bajo'], modelPrefixes: ['cp-', 'nv-'] };
+export const USER_B: UserRecord = { id: 'bea', tokenHash: sha(TOKEN_B), litellmKey: 'sk-bea-limitada', levels: ['nivel-bajo'], modelPrefixes: [] };
 
 export function testConfig(dataDir = mkdtempSync(join(tmpdir(), 'puente-')), over: Partial<Config> = {}): Config {
-  return { port: 0, host: '127.0.0.1', tokens: [TOKEN], litellmUrl: 'http://litellm.fake', litellmKey: 'sk-litellm-secreta', agentKey: 'sk-agente-limitada', envScrub: false, defaultModel: 'cp-glm-5.3', modelAllow: [], dataDir, workspacesDir: join(dataDir, 'workspaces'), maxConcurrentTurns: 3, maxTurns: 10, turnTimeoutMs: 5000, permissionTimeoutMs: 2000, mcpCatalog: { demo: { type: 'stdio', command: 'x' } }, sandbox: false, ...over };
+  return { port: 0, host: '127.0.0.1', users: [USER_A, USER_B], litellmUrl: 'http://litellm.fake', envScrub: false, defaultModel: 'cp-glm-5.3', subscriptionModel: 'opus', dataDir, workspacesDir: join(dataDir, 'workspaces'), maxConcurrentTurns: 3, maxTurns: 10, turnTimeoutMs: 5000, permissionTimeoutMs: 2000, mcpCatalog: { demo: { type: 'stdio', command: 'x' } }, confine: 'none', requireConfine: false, cuotasUrl: 'http://cuotas.fake', ...over };
+}
+
+export interface FakeServices extends Services { reports: { user: string; ok: boolean }[]; claudeActive: Record<string, boolean> }
+export function fakeServices(over: Partial<Services> = {}): FakeServices {
+  const reports: { user: string; ok: boolean }[] = []; const claudeActive: Record<string, boolean> = {};
+  return {
+    reports, claudeActive,
+    claude: { status: async (u) => ({ installed: true, active: !!claudeActive[u.id], hint: 'haz claude login' }) },
+    cuotas: { get: async () => ({ proveedores: [{ id: 'cline' }] }), reportClaudeLogin: async (u, ok) => { reports.push({ user: u.id, ok }); } },
+    ...over,
+  };
 }
 
 const fakeFetch = (async () => new Response(JSON.stringify({ data: MODELS.map((id) => ({ id })) }), { status: 200 })) as unknown as typeof fetch;
 
-export async function boot(query: QueryFn, cfg = testConfig()) {
+export async function boot(query: QueryFn, cfg = testConfig(), svc: Services = fakeServices()) {
   const models = makeModelCatalog(cfg, fakeFetch);
-  const mgr = new SessionManager(cfg, new SessionStore(cfg.dataDir), models, query);
-  const server = createApp(cfg, mgr, models);
+  const mgr = new SessionManager(cfg, new SessionStore(cfg.dataDir), models, query, svc);
+  const server = createApp(cfg, mgr, models, svc);
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
   const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
   const api = async (method: string, path: string, body?: unknown, token: string | null = TOKEN) => {
@@ -29,9 +46,9 @@ export async function boot(query: QueryFn, cfg = testConfig()) {
     return { status: res.status, json: (await res.json().catch(() => null)) as any };
   };
   /** Lee el SSE hasta que `stop` devuelva true; devuelve todos los eventos. */
-  const events = async (id: string, stop: (e: any) => boolean, after = 0, onEvent?: (e: any) => Promise<void> | void) => {
+  const events = async (id: string, stop: (e: any) => boolean, after = 0, onEvent?: (e: any) => Promise<void> | void, token = TOKEN) => {
     const ac = new AbortController();
-    const res = await fetch(`${base}/sessions/${id}/events`, { headers: { authorization: `Bearer ${TOKEN}`, 'last-event-id': String(after) }, signal: ac.signal });
+    const res = await fetch(`${base}/sessions/${id}/events`, { headers: { authorization: `Bearer ${token}`, 'last-event-id': String(after) }, signal: ac.signal });
     const out: any[] = []; let buf = '';
     const dec = new TextDecoder();
     try {
@@ -50,7 +67,7 @@ export async function boot(query: QueryFn, cfg = testConfig()) {
     } catch (err) { if ((err as Error).name !== 'AbortError') throw err; }
     return out;
   };
-  return { base, api, events, mgr, cfg, close: () => new Promise<void>((r) => { server.closeAllConnections(); server.close(() => r()); }) };
+  return { base, api, events, mgr, cfg, svc, close: () => new Promise<void>((r) => { server.closeAllConnections(); server.close(() => r()); }) };
 }
 
 /** Modelo falso: `script` recibe las opciones del SDK y emite los mensajes que emitiría el arnés. */

@@ -4,11 +4,12 @@ import { HttpError } from './types.js';
 
 const ID_RE = /^[a-z0-9][a-z0-9_-]{0,62}$/;
 
-/** Carpeta de trabajo aislada por proyecto: <workspacesDir>/<projectId>. */
-export function workspaceFor(root: string, projectId: string): string {
+/** Carpeta de trabajo aislada por usuario y proyecto: <workspacesDir>/<userId>/<projectId>. */
+export function workspaceFor(root: string, userId: string, projectId: string): string {
   if (typeof projectId !== 'string' || !ID_RE.test(projectId)) throw new HttpError(400, 'projectId inválido (a-z, 0-9, _ y -, máx. 63)');
-  const dir = resolve(root, projectId);
-  if (dirname(dir) !== resolve(root) || basename(dir) !== projectId) throw new HttpError(400, 'projectId inválido');
+  const userDir = resolve(root, userId);
+  const dir = resolve(userDir, projectId);
+  if (dirname(userDir) !== resolve(root) || dirname(dir) !== userDir || basename(dir) !== projectId) throw new HttpError(400, 'projectId inválido');
   mkdirSync(dir, { recursive: true });
   return dir;
 }
