@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Asistente de arranque de Code OS (corre en el VPS). Uso:
 //   asistente.sh                     revisa todo y, si todo pasa, activa la interfaz
-//   asistente.sh usuario <id> [--niveles nivel-alto,nivel-medio,nivel-bajo] [--directos cp-,nv-] [--presupuesto 5] [--dias 30]
+//   asistente.sh usuario <id> [--email nombre@inherentglobal.com] [--niveles nivel-alto,nivel-medio,nivel-bajo] [--directos cp-,nv-] [--presupuesto 5] [--dias 30]
 //   asistente.sh desactivar          apaga la interfaz (quita el flag)
 // Nunca imprime ni lee contraseñas, tokens de login ni llaves: solo dice si están o no.
 import { createHash, randomBytes } from 'node:crypto';
@@ -72,7 +72,7 @@ function guardarUsuarios(path, data) {
 }
 
 /** Crea (o rota) un usuario: llave virtual en LiteLLM con presupuesto y modelos limitados + token del puente (solo se muestra una vez). */
-export async function crearUsuario(env, master, id, { niveles = NIVELES, directos = [], presupuesto = 5, dias = 30 } = {}) {
+export async function crearUsuario(env, master, id, { niveles = NIVELES, directos = [], presupuesto = 5, dias = 30, emails } = {}) {
   if (!/^[a-z0-9][a-z0-9_-]{0,31}$/.test(id ?? '')) throw new Error('El id debe ser en minúsculas, números, - o _ (máx. 32)');
   if (niveles.some((n) => !NIVELES.concat('nivel-bajo-pago').includes(n))) throw new Error('Nivel desconocido');
   const auth = { authorization: `Bearer ${master}`, 'content-type': 'application/json' };
@@ -87,7 +87,7 @@ export async function crearUsuario(env, master, id, { niveles = NIVELES, directo
   const k = await j(`${env.litellm}/key/generate`, { method: 'POST', headers: auth, body: JSON.stringify({ key_alias: `code-os-${id}`, user_id: id, models: modelos, max_budget: presupuesto, budget_duration: `${dias}d`, max_parallel_requests: 3, metadata: { origen: 'code-os-asistente' } }) });
   if (!k.ok || !k.body?.key) throw new Error(`LiteLLM no creó la llave (HTTP ${k.status}: ${String(k.body?.error?.message ?? '').slice(0, 160)}). ¿Tiene base de datos conectada?`);
   const token = randomBytes(24).toString('base64url');
-  const reg = { id, tokenHash: createHash('sha256').update(token).digest('hex'), litellmKey: k.body.key, levels: niveles, modelPrefixes: directos };
+  const reg = { id, tokenHash: createHash('sha256').update(token).digest('hex'), litellmKey: k.body.key, levels: niveles, modelPrefixes: directos, emails: (emails ?? previo?.emails ?? []).map((e) => e.toLowerCase()) };
   datos.users = datos.users.filter((u) => u.id !== id).concat(reg);
   guardarUsuarios(env.usersFile, datos);
   mkdirSync(join(env.data, 'users', id, 'home'), { recursive: true });
@@ -171,7 +171,7 @@ export async function main(argv = process.argv.slice(2), e = process.env, log = 
   if (cmd === 'usuario') {
     const id = rest[0]; const o = {}; for (let i = 1; i < rest.length; i += 2) o[rest[i].replace(/^--/, '')] = rest[i + 1];
     const master = leerEnv(env.envFile).LITELLM_MASTER_KEY; if (!master) { log('✗ No encuentro la llave maestra en el .env del Gateway'); return 1; }
-    const u = await crearUsuario(env, master, id, { niveles: o.niveles?.split(','), directos: o.directos?.split(',').filter(Boolean), presupuesto: o.presupuesto ? Number(o.presupuesto) : undefined, dias: o.dias ? Number(o.dias) : undefined });
+    const u = await crearUsuario(env, master, id, { niveles: o.niveles?.split(','), directos: o.directos?.split(',').filter(Boolean), presupuesto: o.presupuesto ? Number(o.presupuesto) : undefined, dias: o.dias ? Number(o.dias) : undefined, emails: o.email?.split(',').filter(Boolean) });
     log(`✓ Usuario ${id} creado: llave virtual con tope de $${u.presupuesto} cada ${u.dias} días y ${u.modelos.length} modelos/niveles.`);
     log(`  Su token del puente (se muestra UNA vez, guárdalo en su gestor de contraseñas):\n\n    ${u.token}\n`);
     log(`→ Siguiente: sudo systemctl restart code-os-puente · luego la persona corre: code-os-login ${id}`);

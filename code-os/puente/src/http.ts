@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse, type Server } from 'node:http';
-import { COOKIE, makeAuthenticator } from './auth.js';
+import { COOKIE, makeAuthenticator, traeCredencial } from './auth.js';
+import { firmar, verificar } from './pase.js';
 import type { Config } from './config.js';
 import type { Services } from './services.js';
 import { serveStatic } from './static.js';
@@ -31,17 +32,41 @@ const PAGE = (body: string) => `<!doctype html><meta charset=utf-8><meta name=vi
 const LOGIN = (err = '') => PAGE(`<form method=post action=/entrar style="width:min(360px,90vw);display:grid;gap:12px"><h1 style="font-size:20px;margin:0">Code OS</h1><input name=token type=password autocomplete=current-password placeholder="Tu token" autofocus required style="padding:12px;border-radius:8px;border:1px solid #444;background:#151515;color:#eee"><button style="padding:12px;border-radius:8px;border:0;background:#eee;color:#111;font-weight:600">Entrar</button>${err ? `<p style="color:#f88;margin:0">${err}</p>` : '<p style="color:#888;margin:0;font-size:13px">Solo hace falta una vez en este navegador.</p>'}</form>`);
 
 export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog, svc: Services): Server {
-  const authed = makeAuthenticator(cfg.users);
+  const authed = makeAuthenticator(cfg.users, cfg.paseSecret);
+  // Límite de intentos fallidos por IP (en memoria): tras `maxAuthFailures` en 10 min, todo da 429 durante esa ventana.
+  const fallos = new Map<string, { n: number; desde: number }>();
+  const ipDe = (req: IncomingMessage) => {
+    const local = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress ?? '');
+    const xff = String(req.headers['x-forwarded-for'] ?? '').split(',')[0]!.trim();
+    return local && xff ? xff : (req.socket.remoteAddress ?? '?');
+  };
+  const bloqueada = (ip: string) => { const f = fallos.get(ip); if (!f) return false; if (Date.now() - f.desde > 600_000) { fallos.delete(ip); return false; } return f.n >= cfg.maxAuthFailures; };
+  const falla = (ip: string) => { const f = fallos.get(ip); if (!f || Date.now() - f.desde > 600_000) fallos.set(ip, { n: 1, desde: Date.now() }); else f.n++; if (fallos.size > 5000) fallos.clear(); };
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', 'http://x');
       const path = url.pathname.replace(/\/+$/, '') || '/';
       const method = req.method ?? 'GET';
+      const origin = req.headers.origin;
+      if (origin && cfg.allowedOrigins.includes(origin)) {
+        res.setHeader('access-control-allow-origin', origin); res.setHeader('vary', 'Origin');
+        if (method === 'OPTIONS') { res.writeHead(204, { 'access-control-allow-methods': 'GET, POST, PUT, PATCH, DELETE', 'access-control-allow-headers': 'authorization, content-type, last-event-id', 'access-control-max-age': '600' }); res.end(); return; }
+      }
+      const ip = ipDe(req);
+      if (API.test(path) && path !== '/health' && bloqueada(ip)) { res.setHeader('retry-after', '600'); return send(res, 429, { error: 'Demasiados intentos fallidos; espera unos minutos' }); }
       if (method === 'GET' && path === '/health') {
         // Sin token solo dice que está vivo; con token válido añade el estado de la sesión de Claude de esa persona.
         const u = authed(req);
         const claude = u ? await svc.claude.status(u).catch(() => null) : null;
         return send(res, 200, { ok: true, ...(claude ? { claude: { activa: claude.active, instalada: claude.installed } } : {}) });
+      }
+      if (path === '/entrar' && method === 'GET' && url.searchParams.has('pase')) {
+        const c = cfg.paseSecret ? verificar(cfg.paseSecret, url.searchParams.get('pase')!, 'pase') : null;
+        const u = c ? cfg.users.find((x) => x.emails.includes(c.sub.toLowerCase())) : null;
+        if (!c || !u) { falla(ip); res.writeHead(401, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN('Ese pase no es válido o caducó. Vuelve a entrar desde el OS.')); return; }
+        const sesion = firmar(cfg.paseSecret!, { typ: 'sesion', sub: c.sub, exp: Math.floor(Date.now() / 1000) + 7 * 86400 });
+        const seguro = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+        res.writeHead(303, { location: '/', 'set-cookie': `${COOKIE}=${encodeURIComponent(sesion)}; Path=/; Max-Age=604800; HttpOnly; SameSite=Lax${seguro}`, 'cache-control': 'no-store' }); res.end(); return;
       }
       if (path === '/entrar' && method === 'GET') { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN()); return; }
       if (path === '/entrar' && method === 'POST') {
@@ -49,7 +74,7 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         for await (const c of req) { n += (c as Buffer).length; if (n > 4096) throw new HttpError(413, 'Cuerpo demasiado grande'); chunks.push(c as Buffer); }
         const token = (new URLSearchParams(Buffer.concat(chunks).toString('utf8')).get('token') ?? '').trim();
         const fake = { headers: { authorization: `Bearer ${token}` } } as IncomingMessage;
-        if (!token || !authed(fake)) { res.writeHead(401, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN('Ese token no es válido.')); return; }
+        if (!token || !authed(fake)) { falla(ip); res.writeHead(401, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(LOGIN('Ese token no es válido.')); return; }
         res.writeHead(303, { location: '/', 'set-cookie': `${COOKIE}=${encodeURIComponent(token)}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict`, 'cache-control': 'no-store' }); res.end(); return;
       }
       if (path === '/salir') { res.writeHead(303, { location: '/entrar', 'set-cookie': `${COOKIE}=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict` }); res.end(); return; }
@@ -63,6 +88,7 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         if (serveStatic(cfg.uiDir, url.pathname, res, String(req.headers['accept-encoding'] ?? ''))) return;
       }
       const user = authed(req);
+      if (!user && traeCredencial(req)) falla(ip);
       if (!user) { res.setHeader('www-authenticate', 'Bearer'); return send(res, 401, { error: 'Token inválido o ausente' }); }
 
       if (method === 'GET' && path === '/me') {
@@ -148,7 +174,7 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       const user = authed(req);
       if (!user) return refuse(401, 'Unauthorized');
       const origin = req.headers.origin;
-      if (origin && !req.headers.authorization && new URL(origin).host !== req.headers.host) return refuse(403, 'Forbidden'); // CSRF por cookie
+      if (origin && !req.headers.authorization && !cfg.allowedOrigins.includes(origin) && !new URL(req.url ?? '/', 'http://x').searchParams.has('pase') && new URL(origin).host !== req.headers.host) return refuse(403, 'Forbidden'); // CSRF por cookie
       const ses = mgr.get(user, m[1]!);
       if (cfg.requireConfine && !mgr.confined) return refuse(503, 'Service Unavailable');
       const ws = acceptWebSocket(req, socket);
