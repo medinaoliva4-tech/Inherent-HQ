@@ -4,13 +4,21 @@ import type { UserRecord } from './config.js';
 
 const digest = (s: string) => createHash('sha256').update(s).digest();
 
+export const COOKIE = 'codeos_token';
+/** Token guardado en la cookie de acceso (HttpOnly) que pone /entrar. */
+export function cookieToken(req: IncomingMessage): string | null {
+  const m = new RegExp(`(?:^|;\\s*)${COOKIE}=([^;]+)`).exec(req.headers.cookie ?? '');
+  try { return m ? decodeURIComponent(m[1]!) : null; } catch { return null; }
+}
+
 /** Identifica al usuario por `Authorization: Bearer <token>` comparando hashes en tiempo constante. */
 export function makeAuthenticator(users: UserRecord[]) {
   const table = users.map((u) => ({ u, d: Buffer.from(u.tokenHash, 'hex') }));
   return (req: IncomingMessage): UserRecord | null => {
     const m = /^Bearer\s+(.+)$/i.exec(req.headers.authorization ?? '');
-    if (!m) return null;
-    const d = digest(m[1]!.trim());
+    const token = m ? m[1]!.trim() : cookieToken(req);
+    if (!token) return null;
+    const d = digest(token);
     let found: UserRecord | null = null;
     for (const t of table) if (timingSafeEqual(t.d, d)) found = t.u;
     return found;
