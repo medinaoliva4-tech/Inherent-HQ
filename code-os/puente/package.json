@@ -1,0 +1,25 @@
+{
+  "name": "code-os-puente",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Puente entre la interfaz de Code OS y el Claude Agent SDK (arnés) contra el Gateway LiteLLM",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "dev": "node --import tsx --watch src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.322"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
