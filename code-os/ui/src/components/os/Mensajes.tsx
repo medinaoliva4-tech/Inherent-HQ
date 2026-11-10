@@ -17,7 +17,7 @@ import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { esImagen } from '@/lib/adjuntos'
-import { extraerArtefactos, type Artefacto } from '@/lib/artefactos'
+import { extraerArtefactos, ocultarBloquesVisibles, type Artefacto } from '@/lib/artefactos'
 import type { RespuestaPermiso } from '@/lib/eventos'
 import type { Mensaje, ParteHerramienta, PartePermiso, PartePlan, PartePregunta, Tarea } from '@/lib/mensajes'
 import { entrada } from '@/lib/movimiento'
@@ -358,6 +358,28 @@ function TarjetasArtefacto({ texto, base, onAbrir }: { texto: string; base: stri
   )
 }
 
+function ParteTextoVista({ texto, id, enCurso, onArtefacto }: { texto: string; id: string; enCurso: boolean; onArtefacto: (a: Artefacto) => void }) {
+  const visible = useMemo(() => ocultarBloquesVisibles(texto), [texto])
+  return (
+    <>
+      {visible.texto && (
+        <MessageContent className={enCurso && !visible.escribiendo ? 'cursor-stream' : undefined}>
+          <MessageResponse>{visible.texto}</MessageResponse>
+        </MessageContent>
+      )}
+      {visible.escribiendo && (
+        <div className="mt-2 flex items-center gap-3 rounded-xl border bg-card/70 p-3" role="status">
+          <span className="grid size-9 place-items-center rounded-lg bg-accent">
+            <FileCodeIcon className="size-4 animate-pulse" />
+          </span>
+          <span className="text-sm text-muted-foreground">Escribiendo artefacto…</span>
+        </div>
+      )}
+      {!enCurso && <TarjetasArtefacto texto={texto} base={id} onAbrir={onArtefacto} />}
+    </>
+  )
+}
+
 type Props = {
   mensaje: Mensaje
   detallada?: boolean
@@ -420,14 +442,7 @@ export function MensajeVista({ mensaje: m, detallada, onPermiso, onPregunta, onP
               <ReasoningContent>{p.texto}</ReasoningContent>
             </Reasoning>
           )}
-          {p.tipo === 'texto' && (
-            <>
-              <MessageContent className={m.enCurso && i === ultimo ? 'cursor-stream' : undefined}>
-                <MessageResponse>{p.texto}</MessageResponse>
-              </MessageContent>
-              {!m.enCurso && <TarjetasArtefacto texto={p.texto} base={p.id} onAbrir={onArtefacto} />}
-            </>
-          )}
+          {p.tipo === 'texto' && <ParteTextoVista texto={p.texto} id={p.id} enCurso={!!m.enCurso && i === ultimo} onArtefacto={onArtefacto} />}
           {p.tipo === 'herramienta' && <TarjetaHerramienta p={p} abierta={detallada} vieja={p.nombre === 'TodoWrite' && p.id !== ultimaLista} />}
           {p.tipo === 'permiso' && <TarjetaPermiso p={p} onResponder={(r) => onPermiso(p.id, r)} />}
           {p.tipo === 'pregunta' && <TarjetaPregunta p={p} onResponder={(r) => onPregunta(p.id, p.preguntas, r)} />}

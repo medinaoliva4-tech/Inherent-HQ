@@ -19,7 +19,10 @@ export function useCuotas(cliente: Cliente) {
         if (!vivo) return
         setEstado(e)
         setError(null)
-        for (const a of avisosDe(e)) {
+        const avisos = avisosDe(e)
+        // Si algo bajó del umbral, se olvida: si vuelve a cruzarlo, se avisa otra vez.
+        for (const k of [...vistos.current]) if (!avisos.some((a) => a.clave === k)) vistos.current.delete(k)
+        for (const a of avisos) {
           if (vistos.current.has(a.clave)) continue
           vistos.current.add(a.clave)
           const cuando = cuandoReinicia(a.reinicia_en)

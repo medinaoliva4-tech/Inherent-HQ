@@ -24,18 +24,18 @@ export function peorVentana(p: ProveedorCuota): [string, VentanaCuota] | null {
   })
 }
 
-/** Lo que merece aviso (≥ 80% o agotado), con una clave estable para no repetir el mismo aviso. */
+/** Lo que merece aviso (≥ 80% o agotado). La clave no cambia mientras siga igual: así no se repite el aviso. */
 export function avisosDe(e: EstadoCuotas) {
   const out: { clave: string; nivel: 'aviso' | 'agotado'; mensaje: string; reinicia_en: string | null }[] = []
   for (const p of e.proveedores) {
     for (const [nombre, w] of Object.entries(p.ventanas)) {
       const n = nivelDe(w)
       if (n !== 'aviso' && n !== 'agotado') continue
-      const pct = w.pct === null ? '' : ` (${Math.round(w.pct * 100)}%)`
+      const pct = w.pct === null ? 'casi todo' : `${Math.round(w.pct * 100)}%`
       out.push({
-        clave: `${p.id}:${nombre}:${n}:${w.desde}`,
+        clave: `${p.id}:${nombre}:${n}`,
         nivel: n,
-        mensaje: n === 'agotado' ? `${p.nombre} se quedó sin cupo en la ventana de ${ventanaLegible(nombre)}.` : `${p.nombre} va en${pct} de su cupo de ${ventanaLegible(nombre)}.`,
+        mensaje: n === 'agotado' ? `${p.nombre} se quedó sin cupo en la ventana de ${ventanaLegible(nombre)}.` : `${p.nombre} va en ${pct} de su cupo de ${ventanaLegible(nombre)}.`,
         reinicia_en: w.reinicia_en,
       })
     }

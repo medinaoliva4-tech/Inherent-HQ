@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Streamdown (Markdown de las respuestas) trae sus clases dentro del paquete: Tailwind tiene que leerlas. */
+@source "../node_modules/streamdown/dist/*.js";
+
 /* El tema vive en <html data-theme="dark|light">, igual que ceo-os/public (oscuro por defecto). */
 @custom-variant dark (&:is([data-theme="dark"], [data-theme="dark"] *));
 

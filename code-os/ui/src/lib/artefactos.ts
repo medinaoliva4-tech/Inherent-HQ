@@ -44,3 +44,14 @@ export function documentoSandbox(a: Artefacto): string {
 }
 
 export const SANDBOX_ARTEFACTO = 'allow-scripts allow-modals'
+
+/**
+ * Quita del texto visible los bloques HTML/SVG (se ven como tarjeta de artefacto, no como código).
+ * Si el último bloque sigue abierto (streaming), lo cambia por un aviso.
+ */
+export function ocultarBloquesVisibles(texto: string): { texto: string; escribiendo: boolean } {
+  let limpio = texto.replace(/```(html|svg)[^\n]*\n[\s\S]*?```\n?/gi, '')
+  const abierto = /```(html|svg)[^\n]*\n[\s\S]*$/i.exec(limpio)
+  if (abierto) limpio = limpio.slice(0, abierto.index)
+  return { texto: limpio.trim(), escribiendo: !!abierto }
+}

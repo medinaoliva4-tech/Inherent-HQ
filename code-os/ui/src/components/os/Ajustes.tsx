@@ -243,7 +243,8 @@ export function Ajustes(p: Props) {
                     {p.servidor?.claude === 'activa' ? 'activa' : p.servidor?.claude === 'inactiva' ? 'no activa' : 'sin dato'}
                   </span>
                 </Fila>
-                {p.servidor?.claude === 'desconocido' && <FaltaEnPuente que="GET /health → { claude: { activa } }" />}
+                {p.servidor?.pista && <p className="mt-2 rounded-lg bg-muted/60 px-3 py-2 text-xs">{p.servidor.pista}</p>}
+                {p.servidor?.claude === 'desconocido' && p.cliente.tipo === 'http' && <FaltaEnPuente que="GET /me → { claude: { active } }" />}
               </div>
             )}
             {p.seccion === 'uso' && (

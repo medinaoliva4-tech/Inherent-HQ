@@ -1,6 +1,6 @@
 import { GhostIcon, MenuIcon, PanelRightIcon } from 'lucide-react'
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton } from '@/components/ai-elements/conversation'
 import { Suggestion } from '@/components/ai-elements/suggestion'
@@ -95,6 +95,10 @@ export default function App({ cliente: clienteProp }: Props) {
     }
   }, [conv, pestana, crearConversacion, espacio.proyectos, espacio.ajustes.modeloPorDefecto])
   const convId = conv?.id ?? ''
+  const convIdRef = useRef(convId)
+  useEffect(() => {
+    convIdRef.current = convId
+  }, [convId])
   const proyecto = espacio.proyectos.find((p) => p.id === conv?.proyectoId)
   const mensajes = useMemo(() => porConv[convId] ?? [], [porConv, convId])
   const pendiente = pendienteDe(mensajes)
@@ -228,6 +232,13 @@ export default function App({ cliente: clienteProp }: Props) {
       textoParaMotor: paraMotor,
       alCambiarModo: (m) => editarConversacion(id, { modo: m }),
       alTerminar: (m) => {
+        // Como en Claude: si la respuesta trae un artefacto visual, se abre solo en el panel.
+        const nuevos = m.partes.flatMap((x) => (x.tipo === 'texto' ? extraerArtefactos(x.texto, x.id) : [])).filter((a) => a.tipo !== 'codigo')
+        if (nuevos.length && id === convIdRef.current) {
+          setArtefactoActivo(nuevos[nuevos.length - 1].id)
+          setPestanaPanel('artefactos')
+          setPanel(true)
+        }
         if (espacio.ajustes.notificaciones && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
           new Notification('Code OS', { body: `${titulo}: ${m.error ? 'terminó con un error' : 'listo'}`, tag: id })
         }

@@ -123,7 +123,7 @@ export function crearTraductor() {
 
 /** Cliente real: HTTP + SSE contra code-os/puente. */
 export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (...a) => fetch(...a)): Cliente {
-  if (!cfg.url) throw new Error('Falta VITE_PUENTE_URL')
+  if (cfg.url === undefined) throw new Error('Falta VITE_PUENTE_URL')
   const base = cfg.url
   const cab = (json = false): HeadersInit => ({
     ...(cfg.token ? { authorization: `Bearer ${cfg.token}` } : {}),
@@ -268,13 +268,16 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
       return (await res.json()) as EstadoCuotas
     },
     async estado(): Promise<EstadoServidor> {
+      // `GET /me` (puente con usuarios) trae { claude: { installed, active, hint } }. Si no existe, se cae a /health.
       try {
+        const r = await fetchFn(`${base}/me`, { headers: cab() })
+        if (r.ok) {
+          const j = (await r.json()) as { claude?: { active?: boolean; hint?: string } }
+          const activa = j.claude?.active
+          return { claude: typeof activa === 'boolean' ? (activa ? 'activa' : 'inactiva') : 'desconocido', puente: 'conectado', pista: j.claude?.hint }
+        }
         const h = await fetchFn(`${base}/health`)
-        if (!h.ok) return { claude: 'desconocido', puente: 'sin_conexion' }
-        const j = (await h.json().catch(() => ({}))) as { claude?: { activa?: boolean } }
-        // El puente aún no expone el login de Claude; si algún día manda `claude.activa`, se muestra.
-        const claude = typeof j.claude?.activa === 'boolean' ? (j.claude.activa ? 'activa' : 'inactiva') : 'desconocido'
-        return { claude, puente: 'conectado' }
+        return { claude: 'desconocido', puente: h.ok ? 'conectado' : 'sin_conexion' }
       } catch {
         return { claude: 'desconocido', puente: 'sin_conexion' }
       }

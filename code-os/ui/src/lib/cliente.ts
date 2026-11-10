@@ -34,7 +34,7 @@ export type EstadoCuotas = { generado: string; proveedores: ProveedorCuota[]; av
 export type Catalogo = { porDefecto: string; ids: string[] }
 
 /** Lo que el servidor sabe del login de Claude. `desconocido` = el puente aún no lo expone. */
-export type EstadoServidor = { claude: 'activa' | 'inactiva' | 'desconocido'; puente: 'conectado' | 'sin_conexion' | 'mock' }
+export type EstadoServidor = { claude: 'activa' | 'inactiva' | 'desconocido'; puente: 'conectado' | 'sin_conexion' | 'mock'; pista?: string }
 
 export type NodoArchivo = { nombre: string; ruta: string; tipo: 'carpeta' | 'archivo'; hijos?: NodoArchivo[] }
 export type ArchivoDiff = { ruta: string; anterior?: string; nuevo?: string; diff: string; mas: number; menos: number }
@@ -82,9 +82,12 @@ export interface Cliente extends ClienteEventos {
 
 export type ConfigCliente = { url?: string; token?: string; cuotasUrl?: string; cuotasToken?: string }
 
-/** Lee la configuración de las variables de Vite. Sin `VITE_PUENTE_URL` se usa el mock. */
+/**
+ * Lee la configuración de las variables de Vite. Sin `VITE_PUENTE_URL` se usa el mock.
+ * `VITE_PUENTE_URL=.` = mismo origen (cuando el puente sirve la interfaz compilada).
+ */
 export function configDesdeEntorno(env: Record<string, string | undefined> = import.meta.env): ConfigCliente {
-  const limpio = (v?: string) => (v && v.trim() ? v.trim().replace(/\/+$/, '') : undefined)
+  const limpio = (v?: string) => (v && v.trim() ? (v.trim() === '.' ? '' : v.trim().replace(/\/+$/, '')) : undefined)
   return {
     url: limpio(env.VITE_PUENTE_URL),
     token: env.VITE_PUENTE_TOKEN?.trim() || undefined,
