@@ -1,0 +1,43 @@
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import type { Cliente, EstadoCuotas } from '@/lib/cliente'
+import { avisosDe, cuandoReinicia } from '@/lib/cuotas'
+
+const CADA_MS = 60_000
+
+/** Lee `GET /cuotas` cada minuto y avisa una sola vez por ventana cuando algo pasa del 80%. */
+export function useCuotas(cliente: Cliente) {
+  const [estado, setEstado] = useState<EstadoCuotas | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const vistos = useRef(new Set<string>())
+
+  useEffect(() => {
+    let vivo = true
+    const leer = async () => {
+      try {
+        const e = await cliente.cuotas()
+        if (!vivo) return
+        setEstado(e)
+        setError(null)
+        for (const a of avisosDe(e)) {
+          if (vistos.current.has(a.clave)) continue
+          vistos.current.add(a.clave)
+          const cuando = cuandoReinicia(a.reinicia_en)
+          const opts = { id: a.clave, description: cuando ? `Se libera ${cuando}.` : undefined, duration: 8000 }
+          if (a.nivel === 'agotado') toast.error(a.mensaje, opts)
+          else toast.warning(a.mensaje, opts)
+        }
+      } catch (err) {
+        if (vivo) setError(err instanceof Error ? err.message : 'No se pudieron leer las cuotas')
+      }
+    }
+    leer()
+    const t = setInterval(leer, CADA_MS)
+    return () => {
+      vivo = false
+      clearInterval(t)
+    }
+  }, [cliente])
+
+  return { estado, error }
+}
