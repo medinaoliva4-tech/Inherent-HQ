@@ -2,16 +2,19 @@
 # Code OS en UN comando, desde tu Mac.
 #   bash code-os/despliegue/code-os.sh            abre Code OS ya con tu sesión (si no está configurado, lo configura)
 #   bash code-os/despliegue/code-os.sh configurar  instala/actualiza todo en el VPS y te deja dentro
+#   bash code-os/despliegue/code-os.sh publicar     lo deja en https://work.inherentglobal.com con el login del OS (secreto + Caddy)
 # Tu token queda en el Llavero de macOS (nunca se imprime). Variables: CODEOS_HOST (inherent-gw) · CODEOS_USER (rodrigo)
 set -euo pipefail
 HOST="${CODEOS_HOST:-inherent-gw}"; ID="${CODEOS_USER:-rodrigo}"; SVC="code-os-puente"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 token() { security find-generic-password -a "$ID" -s "$SVC" -w 2>/dev/null || true; }
+PUBLICO="${CODEOS_DOMINIO:-work.inherentglobal.com}"
+publico_ok() { curl -s -m6 -o /dev/null -w '%{http_code}' "https://$PUBLICO/health" 2>/dev/null | grep -q 200; }
 dominio() { ssh -n "$HOST" "tailscale status --self --json | python3 -c 'import sys,json;print(json.load(sys.stdin)[\"Self\"][\"DNSName\"].rstrip(\".\"))'"; }
 
 abrir() {
   local t u f; t="$(token)"; [ -n "$t" ] || { echo "✗ Aún no hay sesión guardada: corre  bash $0 configurar"; exit 1; }
-  u="http://$(dominio):8080"
+  if publico_ok; then u="https://$PUBLICO"; else u="http://$(dominio):8080"; fi
   f="$(mktemp -t codeos).html"; chmod 600 "$f"
   # Página local que envía el token al puente y se borra sola: el puente responde con una cookie y entras directo.
   printf '<!doctype html><meta charset=utf-8><body onload="document.f.submit()"><form name=f method=post action="%s/entrar"><input type=hidden name=token value="%s"></form>Entrando a Code OS…' "$u" "$t" > "$f"
@@ -38,4 +41,11 @@ configurar() {
   abrir
 }
 
-case "${1:-abrir}" in configurar) configurar ;; abrir) [ -n "$(token)" ] && abrir || configurar ;; *) echo "Uso: $0 [abrir|configurar]"; exit 1 ;; esac
+publicar() {
+  bash "$DIR/sincronizar.sh" >/dev/null
+  bash "$DIR/code-os-pase.sh"
+  ssh -t "$HOST" 'bash ~/code-os/despliegue/publicar.sh'
+  publico_ok && echo "✓ Listo: https://$PUBLICO" || echo "! Aún no responde: espera 1 minuto (certificado) y repite"
+}
+
+case "${1:-abrir}" in publicar) publicar ;; configurar) configurar ;; abrir) [ -n "$(token)" ] && abrir || configurar ;; *) echo "Uso: $0 [abrir|configurar|publicar]"; exit 1 ;; esac
