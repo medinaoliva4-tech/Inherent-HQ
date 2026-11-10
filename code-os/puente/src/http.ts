@@ -44,7 +44,7 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
           const msg = '<!doctype html><meta charset=utf-8><title>Code OS</title><body style="font:16px system-ui;padding:3rem"><h1>Code OS aún no está activado</h1><p>Falta correr el asistente en el servidor: <code>asistente.sh</code></p>';
           res.writeHead(503, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' }); res.end(msg); return;
         }
-        if (serveStatic(cfg.uiDir, url.pathname, res)) return;
+        if (serveStatic(cfg.uiDir, url.pathname, res, String(req.headers['accept-encoding'] ?? ''))) return;
       }
       const user = authed(req);
       if (!user) { res.setHeader('www-authenticate', 'Bearer'); return send(res, 401, { error: 'Token inválido o ausente' }); }
