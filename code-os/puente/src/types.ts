@@ -6,6 +6,8 @@ export interface Totals { inputTokens: number; outputTokens: number; cacheReadTo
 
 export interface SessionMeta {
   id: string;
+  /** Dueño de la sesión: nadie más puede verla ni usarla. */
+  userId: string;
   projectId: string;
   cwd: string;
   model: string;
@@ -26,7 +28,8 @@ export interface SessionMeta {
 /** Eventos que la interfaz recibe por SSE. Cada uno lleva seq creciente por sesión. */
 export type EventBody =
   | { type: 'user_message'; text: string; turnId: string }
-  | { type: 'turn_start'; turnId: string; model: string; mode: Mode }
+  | { type: 'turn_start'; turnId: string; model: string; requestedModel: string; via: 'claude_login' | 'litellm'; mode: Mode }
+  | { type: 'route_fallback'; from: 'claude_login'; to: 'litellm'; reason: string }
   | { type: 'text_delta'; text: string; parentToolUseId?: string }
   | { type: 'thinking_delta'; text: string; parentToolUseId?: string }
   | { type: 'assistant_message'; text: string; thinking?: string; parentToolUseId?: string }
