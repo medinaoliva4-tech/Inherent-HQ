@@ -340,3 +340,17 @@ test('interfaz v2: archivos por ?path=, diff con anterior/nuevo, /mcp, /skills, 
   assert.deepEqual(h.filter((e: any) => e.type === 'user_message').map((e: any) => e.text), ['uno', 'dos']);
   await t.close();
 });
+
+test('interfaz: comprime (br/gzip) lo que lo merece para el enlace lento y no cambia el contenido', async () => {
+  const ui = mkdtempSync(join(tmpdir(), 'ui-')); mkdirSync(join(ui, 'assets'));
+  const big = 'console.log("hola");\n'.repeat(500); writeFileSync(join(ui, 'index.html'), '<h1>Code OS</h1>'); writeFileSync(join(ui, 'assets', 'a.js'), big);
+  const t = await boot(fakeQuery(simple), testConfig(undefined, { uiDir: ui }));
+  const r = await fetch(t.base + '/assets/a.js', { headers: { 'accept-encoding': 'br' } });
+  assert.equal(r.headers.get('content-encoding'), 'br'); assert.ok(Number(r.headers.get('content-length')) < big.length / 5); assert.equal(await r.text(), big);
+  const g = await fetch(t.base + '/assets/a.js', { headers: { 'accept-encoding': 'gzip' } });
+  assert.equal(g.headers.get('content-encoding'), 'gzip'); assert.equal(await g.text(), big);
+  const plain = await fetch(t.base + '/assets/a.js', { headers: { 'accept-encoding': 'identity' } });
+  assert.equal(plain.headers.get('content-encoding'), null); assert.equal(await plain.text(), big);
+  assert.equal((await fetch(t.base + '/', { headers: { 'accept-encoding': 'br' } })).headers.get('content-encoding'), null);
+  await t.close();
+});
