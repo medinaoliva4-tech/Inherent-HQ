@@ -1,7 +1,7 @@
 // Puente medidor → planificador: cuántas llamadas "sin pago por token" caben entre ahora y un deadline.
 // Nivel → proveedores gratis/de suscripción que lo atienden (pago por token NO cuenta: requiere aprobación).
 export const PROVEEDORES_POR_NIVEL = {
-  alto: [],                          // frontier es por token: solo con aprobación/tope
+  alto: ['claude_login'],            // Claude con la suscripción del usuario (cliente oficial). Frontier por token: solo con aprobación
   medio: ['cline'],
   bajo: ['nvidia'],
 };
@@ -10,6 +10,7 @@ export const PROVEEDORES_POR_NIVEL = {
 export const SUPUESTOS_LLAMADAS = {
   cline: { '5h': 120, semana: 1500, mes: 5000 },
   nvidia: { dia: 1000 },
+  claude_login: { '5h': 30, semana: 400 }, // supuesto conservador: la suscripción no publica topes; calibrar con el medidor
 };
 
 const H = 3600e3;

@@ -71,5 +71,6 @@ test('capacidad desde medidor: NVIDIA supuesto 1,000/día, reinicia 00:00 UTC', 
   const c = capacidadDesdeMedidor(m, { config });
   assert.equal(c('bajo', T0, T0 + 3600e3), 700); // 1000 supuestos − 300 usados hoy
   assert.equal(c('bajo', T0, T0 + 2 * DIA) - 700, 2 * 1000); // 2 reinicios a las 00:00 UTC
-  assert.equal(c('alto', T0, T0 + DIA), 0);
+  // alto = Claude por suscripción: mínimo entre 5h (30 + 4 reinicios×30) y semana (400)
+  assert.equal(c('alto', T0, T0 + DIA), 30 + 4 * 30);
 });
