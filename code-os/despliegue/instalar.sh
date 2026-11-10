@@ -42,7 +42,8 @@ for u in litellm gw-worker cuotas; do [ "$(systemctl is-active $u)" = active ] |
 
 # 4. Comandos de ayuda y cliente oficial de Claude (cada persona hace su login por su cuenta)
 sudo install -m 755 "$C/despliegue/code-os-login" /usr/local/bin/code-os-login
-sudo install -m 755 "$C/asistente/asistente.sh" /usr/local/bin/code-os-asistente 2>/dev/null || sudo ln -sf "$C/asistente/asistente.sh" /usr/local/bin/code-os-asistente
+# Enlace simbólico (no copia): asistente.sh busca asistente.mjs junto a sí mismo (readlink -f) y así sigue las actualizaciones.
+sudo ln -sf "$C/asistente/asistente.sh" /usr/local/bin/code-os-asistente
 command -v claude >/dev/null || sudo npm i -g @anthropic-ai/claude-code >/dev/null 2>&1 || echo "! No pude instalar el cliente de Claude (opcional): sudo npm i -g @anthropic-ai/claude-code"
 ok "comandos code-os-login y code-os-asistente"
 
