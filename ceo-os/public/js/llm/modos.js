@@ -15,9 +15,11 @@ export const MODOS = [
 ];
 // El Chat a secas, solo para el CEO: sin instrucciones de Inherent, sin harness y sin pedir cliente.
 export const MODO_LIBRE = { id: 'libre', nombre: 'Sin modo', letra: '·', icono: 'chat-ia', sub: 'Chat directo, sin instrucciones de Inherent', pide: '', depto: 'Chat' };
+// Code: el motor es el puente del VPS (chat-code.js), no el gateway. Cada cliente es un proyecto (una carpeta en el servidor).
+export const MODO_CODE = { id: 'code', nombre: 'Code', letra: '›', icono: 'chat-ia', sub: 'Código, archivos y terminal en el servidor, por cliente', pide: 'cliente', depto: 'Code' };
 export const SISTEMA_LIBRE = 'Eres un asistente útil. Responde en el idioma de la persona.';
-export const modosDe = (rol, permitidos) => [...permitidos, ...(rol === 'ceo' ? [MODO_LIBRE] : [])];
-export const modoDe = (id) => (id === MODO_LIBRE.id ? MODO_LIBRE : MODOS.find((m) => m.id === id) || MODOS[0]);
+export const modosDe = (rol, permitidos) => [...permitidos, ...(rol !== 'client' ? [MODO_CODE] : []), ...(rol === 'ceo' ? [MODO_LIBRE] : [])];
+export const modoDe = (id) => (id === MODO_LIBRE.id ? MODO_LIBRE : id === MODO_CODE.id ? MODO_CODE : MODOS.find((m) => m.id === id) || MODOS[0]);
 
 // Lo que vale en todos los modos. Sale de inherent/00-PRINCIPIOS.md y CLAUDE.md (resumido; el agente los lee completos).
 export const REGLAS_COMUNES = [
@@ -143,6 +145,7 @@ export const HARNESS = {
 // ctx = { persona, puesto, fecha, cliente, carpeta, nivel, extra: [líneas], instrucciones: texto (p. ej. la estrategia en vivo) }
 // «Sin modo» no tiene harness: el panel solo dice qué es.
 HARNESS[MODO_LIBRE.id] = { rol: MODO_LIBRE.sub, criterios: [] };
+HARNESS[MODO_CODE.id] = { rol: MODO_CODE.sub, criterios: [] };
 
 // Lente Hormozi: cambia cómo se razona la oferta. Se prende y se apaga; no toca las reglas del modo.
 export const LENTE_HORMOZI = ['LENTE HORMOZI (prendido por la persona):',

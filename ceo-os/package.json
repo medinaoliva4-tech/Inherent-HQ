@@ -31,7 +31,8 @@
     "test:visual": "node scripts/test-visual.mjs",
     "test:avisos": "node scripts/test-avisos.mjs && node scripts/test-avisos-trabajo.mjs && node scripts/test-avisos-estrategia.mjs && node scripts/test-avisos-marcas.mjs && node scripts/test-avisos-plataforma.mjs",
     "test:agentes": "node scripts/test-agentes.mjs",
-    "test:db": "node scripts/test-db-cliente.mjs"
+    "test:db": "node scripts/test-db-cliente.mjs",
+    "test:code": "node scripts/test-code.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
