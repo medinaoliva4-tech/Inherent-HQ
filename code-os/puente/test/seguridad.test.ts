@@ -493,3 +493,47 @@ test('terminal con pase del OS: entra por ?pase= desde el origen del OS; un orig
   assert.match((await wsClient(t.base, `/sessions/${s.id}/terminal`, { cookie: `codeos_token=${TOKEN}`, origin: 'https://malo.example' })).head, /403/);
   await t.close();
 });
+
+// ---------- sesiones aisladas (worktree de git): paralelas por cliente, con diff y fusión ----------
+import { execFileSync } from 'node:child_process';
+const gitIn = (cwd: string, ...a: string[]) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd, encoding: 'utf8' });
+test('worktree: dos sesiones del mismo cliente no se pisan; el diff es de cada una y fusionar trae los cambios', { skip: !hasGit && 'sin git' }, async () => {
+  const t = await boot(fakeQuery(simple));
+  const mk = async () => (await t.api('POST', '/sessions', { projectId: 'cli', model: 'nivel-medio', mode: 'chat', isolate: true })).json;
+  const a = await mk(), b = await mk();
+  assert.notEqual(a.cwd, b.cwd);
+  const main = join(t.cfg.workspacesDir, 'ana', 'cli');
+  assert.ok(a.cwd.startsWith(join(main, '.codeos', 'wt')) && existsSync(a.cwd));
+  assert.ok(a.worktree?.branch.startsWith('code/'));
+  writeFileSync(join(a.cwd, 'a.txt'), 'de a\n'); writeFileSync(join(b.cwd, 'b.txt'), 'de b\n');
+  assert.deepEqual((await t.api('GET', `/sessions/${a.id}/diff`)).json.archivos.map((x: any) => x.ruta), ['a.txt']);
+  assert.deepEqual((await t.api('GET', `/sessions/${b.id}/diff`)).json.archivos.map((x: any) => x.ruta), ['b.txt']);
+  assert.equal(existsSync(join(main, 'a.txt')), false, 'el proyecto principal no cambia hasta fusionar');
+  const m = await t.api('POST', `/sessions/${a.id}/merge`, {});
+  assert.equal(m.status, 200); assert.equal(m.json.ok, true);
+  assert.equal(readFileSync(join(main, 'a.txt'), 'utf8'), 'de a\n'); assert.equal(existsSync(join(main, 'b.txt')), false);
+  assert.equal((await t.api('POST', `/sessions/${b.id}/merge`, {})).json.ok, true);
+  assert.ok(existsSync(join(main, 'b.txt')));
+  assert.equal((await t.api('POST', `/sessions/${a.id}/merge`, undefined, TOKEN_B)).status, 404);
+  await t.close();
+});
+
+test('worktree: un conflicto no deja el proyecto a medias (se aborta y se explica)', { skip: !hasGit && 'sin git' }, async () => {
+  const t = await boot(fakeQuery(simple));
+  const mk = async () => (await t.api('POST', '/sessions', { projectId: 'cli2', model: 'nivel-medio', mode: 'chat', isolate: true })).json;
+  const a = await mk(), b = await mk();
+  const main = join(t.cfg.workspacesDir, 'ana', 'cli2');
+  writeFileSync(join(a.cwd, 'x.txt'), 'version a\n'); writeFileSync(join(b.cwd, 'x.txt'), 'version b\n');
+  assert.equal((await t.api('POST', `/sessions/${a.id}/merge`, {})).json.ok, true);
+  const r = (await t.api('POST', `/sessions/${b.id}/merge`, {})).json;
+  assert.equal(r.ok, false); assert.equal(r.conflicto, true);
+  assert.equal(readFileSync(join(main, 'x.txt'), 'utf8'), 'version a\n');
+  assert.equal(gitIn(main, 'status', '--porcelain').includes('UU'), false);
+  await t.close();
+});
+
+test('worktree: dentro de la jaula el git de la sesión llega al .git del proyecto y a nada más', () => {
+  const a = bwrapArgv({ workspace: '/d/ws/ana/cli/.codeos/wt/s1', home: '/d/users/ana/home', readOnly: [], rw: ['/d/ws/ana/cli/.git'] }, { command: '/bin/sh', args: [], env: {} });
+  const binds = a.flatMap((x, i) => (x === '--bind' ? [a[i + 1]] : [])).sort();
+  assert.deepEqual(binds, ['/d/users/ana/home', '/d/ws/ana/cli/.codeos/wt/s1', '/d/ws/ana/cli/.git']);
+});

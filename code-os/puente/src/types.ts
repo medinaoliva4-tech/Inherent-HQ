@@ -18,6 +18,8 @@ export interface SessionMeta {
   agents?: Record<string, { description: string; prompt: string; tools?: string[]; model?: string }>;
   /** Nombres de servidores MCP del catálogo del servidor (nunca comandos que mande el cliente). */
   mcp?: string[];
+  /** Sesión aislada: corre en un worktree de git del proyecto (rama propia) y se fusiona cuando la persona lo decide. */
+  worktree?: { repo: string; branch: string };
   /** Id de la conversación en el SDK; permite reanudar tras reiniciar el puente. */
   sdkSessionId?: string;
   createdAt: string;

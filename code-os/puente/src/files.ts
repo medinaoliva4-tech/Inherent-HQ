@@ -56,9 +56,37 @@ export function escribir(cwd: string, ruta: string, contenido: unknown) {
 
 // ---- diff con git, endurecido: nada de fsmonitor, hooks, programas externos ni configuración global ----
 const GIT_SEGURO = ['-c', 'core.fsmonitor=false', '-c', 'core.hooksPath=/dev/null', '-c', 'core.pager=cat', '-c', 'core.sshCommand=false', '-c', 'protocol.allow=never', '-c', 'user.name=code-os', '-c', 'user.email=code-os@localhost', '-c', 'commit.gpgsign=false', '--no-pager', '--no-optional-locks'];
-const git = (cwd: string, args: string[]) => new Promise<string>((resolve) => {
-  execFile('git', [...GIT_SEGURO, ...args], { cwd, timeout: 15000, maxBuffer: 8_000_000, env: { PATH: process.env.PATH ?? '/usr/bin:/bin', HOME: '/nonexistent', GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null', GIT_TERMINAL_PROMPT: '0' } }, (_e, out) => resolve(String(out ?? '')));
+const gitR = (cwd: string, args: string[]) => new Promise<{ code: number; out: string }>((resolve) => {
+  execFile('git', [...GIT_SEGURO, ...args], { cwd, timeout: 30000, maxBuffer: 8_000_000, env: { PATH: process.env.PATH ?? '/usr/bin:/bin', HOME: '/nonexistent', GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null', GIT_TERMINAL_PROMPT: '0' } }, (e, out, err) => resolve({ code: e ? ((e as any).code ?? 1) : 0, out: String(out ?? '') + (e ? String(err ?? '') : '') }));
 });
+const git = async (cwd: string, args: string[]) => (await gitR(cwd, args)).out;
+
+/** Sesión aislada: un worktree del proyecto en <proyecto>/.codeos/wt/<id>, con su rama. Las sesiones del mismo cliente no se pisan. */
+export async function crearWorktree(repo: string, dir: string, branch: string) {
+  await asegurarBase(repo);
+  const ex = join(repo, '.git', 'info', 'exclude');
+  try { const cur = existsSync(ex) ? readFileSync(ex, 'utf8') : ''; if (!/^\.codeos\/$/m.test(cur)) { mkdirSync(dirname(ex), { recursive: true }); writeFileSync(ex, cur + (cur.endsWith('\n') || !cur ? '' : '\n') + '.codeos/\n'); } } catch { /* sin exclude */ }
+  mkdirSync(dirname(dir), { recursive: true });
+  const r = await gitR(repo, ['worktree', 'add', '-q', '-b', branch, dir, 'HEAD']);
+  if (r.code !== 0) throw new HttpError(500, `No pude crear la copia aislada: ${r.out.slice(0, 200)}`);
+}
+
+/** Lo que el .git de un worktree necesita: la carpeta .git del proyecto (el worktree trae un archivo .git que apunta a ella). */
+export function gitDirDe(cwd: string): string[] {
+  try { const m = /^gitdir:\s*(.+)$/m.exec(readFileSync(join(cwd, '.git'), 'utf8')); return m ? [dirname(dirname(m[1]!.trim()))] : []; } catch { return []; }
+}
+
+/** Guarda lo hecho en la rama de la sesión y lo fusiona al proyecto. Con conflicto no deja nada a medias. */
+export async function fusionar(repo: string, wt: string, branch: string, titulo = 'sesión') {
+  await gitR(wt, ['add', '-A']);
+  const c = await gitR(wt, ['commit', '-q', '-m', `Code: ${titulo}`.slice(0, 100)]);
+  const hay = c.code === 0;
+  const m = await gitR(repo, ['merge', '--no-ff', '--no-edit', '-m', `Fusionar ${branch}`, branch]);
+  if (m.code === 0) return { ok: true as const, vacio: !hay && /Already up to date/i.test(m.out) };
+  const conflictos = (await gitR(repo, ['diff', '--name-only', '--diff-filter=U'])).out.split('\n').filter(Boolean);
+  await gitR(repo, ['merge', '--abort']);
+  return { ok: false as const, conflicto: conflictos.length > 0, archivos: conflictos, mensaje: conflictos.length ? `Hay cambios que chocan en: ${conflictos.join(', ')}. Resuélvelo en la sesión y vuelve a fusionar.` : `No se pudo fusionar: ${m.out.slice(0, 200)}` };
+}
 
 /** Foto inicial de la carpeta (si aún no es un repo) para poder mostrar después qué cambió. */
 export async function asegurarBase(cwd: string) {

@@ -106,9 +106,10 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       if (method === 'POST' && path === '/sessions') { const s = await mgr.create(user, await readJson(req)); return send(res, 201, s.summary()); }
       if (method === 'GET' && path === '/sessions') return send(res, 200, { sessions: mgr.list(user, url.searchParams.get('projectId') ?? undefined) });
 
-      const fm = /^\/sessions\/([0-9a-f-]{36})\/(files|diff)(?:\/(.*))?$/.exec(url.pathname.replace(/\/+$/, ''));
+      const fm = /^\/sessions\/([0-9a-f-]{36})\/(files|diff|merge)(?:\/(.*))?$/.exec(url.pathname.replace(/\/+$/, ''));
       if (fm) {
-        const cwd = mgr.get(user, fm[1]!).meta.cwd;
+        const sesion = mgr.get(user, fm[1]!); const cwd = sesion.meta.cwd;
+        if (fm[2] === 'merge' && method === 'POST') { const w = sesion.meta.worktree; if (!w) throw new HttpError(409, 'Esta sesión no es aislada: no hay nada que fusionar'); if (sesion.running) throw new HttpError(409, 'Hay un turno en curso; espera a que termine'); return send(res, 200, await fx.fusionar(w.repo, cwd, w.branch, sesion.meta.title)); }
         if (fm[2] === 'diff' && method === 'GET') return send(res, 200, { archivos: await fx.diff(cwd) });
         const q = url.searchParams.get('path');
         if (fm[2] === 'files' && !fm[3] && q && method === 'GET') return send(res, 200, { ruta: q, contenido: fx.leer(cwd, q) });
