@@ -20,6 +20,7 @@ model_list:
   - {model_name: nv-nemotron-lightning,  litellm_params: {model: hosted_vllm/nvidia/nemotron-3.5-lightning-30b-a3b, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
 
   # ---------- Cline Pass ----------
+  - {model_name: cp-kimi-k3.1-pro,    litellm_params: {model: openai/cline-pass/kimi-k3.1-pro,    api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}, timeout: 150}}
   - {model_name: cp-glm-5.3,          litellm_params: {model: openai/cline-pass/glm-5.3,          api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
   - {model_name: cp-kimi-k3,          litellm_params: {model: openai/cline-pass/kimi-k3,          api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
   - {model_name: cp-deepseek-v4-pro,  litellm_params: {model: openai/cline-pass/deepseek-v4-pro,  api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
@@ -39,7 +40,9 @@ model_list:
   # ================= NIVELES =================
   # Cada nivel = un primer modelo; si falla (402/429/timeout/5xx/llave ausente) el router recorre
   # la lista de `fallbacks` en orden (abajo). Así el orden es explícito y verificable.
-  # ALTO: planear/decidir. Frontier por llave con tope (placeholder hasta elegir proveedor).
+  # ALTO: planear/decidir. 1º frontier por API key con tope (placeholder: sin llave se salta en ~25 ms);
+  # 2º Cline Pass top (kimi-k3.1-pro) mientras no haya frontier por llave. El login/OAuth de frontier
+  # NO pasa por aquí: se usa con los clientes oficiales (ver docs/niveles-y-frontier.md).
   - {model_name: nivel-alto, litellm_params: {model: openai/FRONTIER-POR-ELEGIR, api_base: os.environ/FRONTIER_API_BASE, api_key: os.environ/FRONTIER_API_KEY, timeout: 120, stream_timeout: 60}}
   # MEDIO: ejecución diaria en Cline Pass.
   - {model_name: nivel-medio, litellm_params: {model: openai/cline-pass/kimi-k3, api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}, timeout: 90, stream_timeout: 45}}
@@ -55,7 +58,7 @@ router_settings:
   timeout: 90
   # 402 (sin crédito), 429 (tope), timeout, 5xx y llave ausente disparan el siguiente de la lista.
   fallbacks:
-    - nivel-alto:  [cp-kimi-k3, cp-glm-5.3, cp-deepseek-v4-pro, cp-minimax-m3, nv-nemotron-3-ultra, nv-mistral-large-4]
+    - nivel-alto:  [cp-kimi-k3.1-pro, cp-kimi-k3, cp-glm-5.3, cp-deepseek-v4-pro, cp-minimax-m3, nv-nemotron-3-ultra, nv-mistral-large-4]
     - nivel-medio: [cp-glm-5.3, cp-deepseek-v4-pro, cp-minimax-m3, nv-nemotron-3-ultra, nv-mistral-large-4]
     - nivel-bajo:  [nv-nemotron-3-ultra, nv-mistral-large-4, nv-nemotron-lightning, nv-deepseek-v4.1-flash]
   context_window_fallbacks:

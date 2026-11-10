@@ -24,6 +24,10 @@ export const PROVEEDORES = {
     nombre: 'Frontier (por llave)', tipo: 'pago',
     ventanas: { dia: { tipo: 'dia_utc', usd: null }, mes: { tipo: 'mes_utc', usd: null } },
   },
+  // Suscripciones con login (OAuth) usadas con los clientes OFICIALES en el servidor; no pasan por LiteLLM.
+  // Su uso se reporta a mano con POST /evento ({proveedor:'claude_login'|'codex_login'}). Sin tope público.
+  claude_login: { nombre: 'Claude (login de suscripción)', tipo: 'suscripcion', ventanas: { '5h': { tipo: 'rodante', horas: 5, llamadas: null }, semana: { tipo: 'rodante', horas: 168, llamadas: null } } },
+  codex_login: { nombre: 'Codex/ChatGPT (login de suscripción)', tipo: 'suscripcion', ventanas: { '5h': { tipo: 'rodante', horas: 5, llamadas: null }, semana: { tipo: 'rodante', horas: 168, llamadas: null } } },
   featherless: {
     nombre: 'Featherless (se cancela)', tipo: 'suscripcion',
     ventanas: { dia: { tipo: 'dia_utc', llamadas: null } },

@@ -2,7 +2,10 @@
 Se activa con litellm_settings.callbacks: cuotas_callback.cuotas_handler
 No guarda prompts ni llaves: solo proveedor, modelo, tokens, costo, estado HTTP y duración."""
 import json, os, time
-from litellm.integrations.custom_logger import CustomLogger
+try:
+    from litellm.integrations.custom_logger import CustomLogger
+except ImportError:  # permite probar piso_max_tokens fuera del servidor
+    class CustomLogger: pass
 
 RUTA = os.environ.get("CUOTAS_EVENTOS", "/home/deploy/gateway/cuotas/eventos.jsonl")
 
@@ -24,7 +27,30 @@ def _base(kwargs):
             "api_base": lp.get("api_base") or ""}
 
 
+# Cline Pass da 500 "empty response content" si max_tokens no alcanza para razonar + responder.
+PISOS = {"nivel-alto": 2000, "cp-kimi-k3.1-pro": 2000}
+PISO_DEFECTO = 1000
+
+
+def piso_max_tokens(modelo, valor):
+    """Sube max_tokens al piso del modelo; si el cliente no lo manda, no se toca."""
+    if valor is None or not isinstance(modelo, str):
+        return valor
+    if modelo.startswith(("nivel-", "cp-", "nv-")):
+        return max(valor, PISOS.get(modelo, PISO_DEFECTO))
+    return valor
+
+
 class CuotasHandler(CustomLogger):
+    async def async_pre_call_hook(self, user_api_key_dict, cache, data, call_type):
+        try:
+            for k in ("max_tokens", "max_completion_tokens"):
+                if k in data:
+                    data[k] = piso_max_tokens(data.get("model"), data[k])
+        except Exception:
+            pass  # nunca romper una llamada por esto
+        return data
+
     async def async_log_success_event(self, kwargs, response_obj, start_time, end_time):
         u = getattr(response_obj, "usage", None)
         ev = _base(kwargs)
