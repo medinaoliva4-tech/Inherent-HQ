@@ -1,0 +1,63 @@
+# Code OS · capa LiteLLM con niveles (alto / medio / bajo).
+# Cada nivel es un alias con una lista ORDENADA de respaldos (router_settings.fallbacks).
+# Llaves siempre por os.environ/NOMBRE; las que faltan quedan como placeholder.
+model_list:
+  # ---------- Featherless (se cancela; alias viejos se conservan por ahora) ----------
+  - {model_name: kimi-k3,           litellm_params: {model: hosted_vllm/moonshotai/Kimi-K3,        api_base: https://api.featherless.ai/v1, api_key: os.environ/FEATHERLESS_API_KEY}}
+  - {model_name: deepseek-v4-pro,   litellm_params: {model: hosted_vllm/deepseek-ai/DeepSeek-V4-Pro,   api_base: https://api.featherless.ai/v1, api_key: os.environ/FEATHERLESS_API_KEY}}
+  - {model_name: deepseek-v4-flash, litellm_params: {model: hosted_vllm/deepseek-ai/DeepSeek-V4-Flash, api_base: https://api.featherless.ai/v1, api_key: os.environ/FEATHERLESS_API_KEY}}
+  - {model_name: glm-5.3,           litellm_params: {model: hosted_vllm/zai-org/GLM-5.3,               api_base: https://api.featherless.ai/v1, api_key: os.environ/FEATHERLESS_API_KEY}}
+
+  # ---------- NVIDIA ----------
+  - {model_name: nv-kimi-k2.6,           litellm_params: {model: hosted_vllm/moonshotai/kimi-k2.6,        api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-deepseek-v4.1-flash, litellm_params: {model: hosted_vllm/deepseek-ai/deepseek-v4.1-flash, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-glm-5.3-flash,       litellm_params: {model: hosted_vllm/z-ai/glm-5.3-flash,          api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-minimax-m3.1-flash,  litellm_params: {model: hosted_vllm/minimaxai/minimax-m3.1-flash, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+
+  - {model_name: nv-nemotron-3-ultra,    litellm_params: {model: hosted_vllm/nvidia/nemotron-3-ultra-550b-a55b, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-mistral-large-4,     litellm_params: {model: hosted_vllm/mistralai/mistral-large-4-1t-a52b, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-step-5,              litellm_params: {model: hosted_vllm/stepfun-ai/step-5-preview,         api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+  - {model_name: nv-nemotron-lightning,  litellm_params: {model: hosted_vllm/nvidia/nemotron-3.5-lightning-30b-a3b, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY}}
+
+  # ---------- Cline Pass ----------
+  - {model_name: cp-kimi-k3.1-pro,    litellm_params: {model: openai/cline-pass/kimi-k3.1-pro,    api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}, timeout: 150}}
+  - {model_name: cp-glm-5.3,          litellm_params: {model: openai/cline-pass/glm-5.3,          api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
+  - {model_name: cp-kimi-k3,          litellm_params: {model: openai/cline-pass/kimi-k3,          api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
+  - {model_name: cp-deepseek-v4-pro,  litellm_params: {model: openai/cline-pass/deepseek-v4-pro,  api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
+  - {model_name: cp-minimax-m3,       litellm_params: {model: openai/cline-pass/minimax-m3,       api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}}}
+
+  # ---------- DeepSeek por token (válvula) · llave: DEEPSEEK_API_KEY ----------
+  - {model_name: ds-v4-flash, litellm_params: {model: deepseek/deepseek-v4-flash, api_key: os.environ/DEEPSEEK_API_KEY}}
+  - {model_name: ds-v4-pro,   litellm_params: {model: deepseek/deepseek-v4-pro,   api_key: os.environ/DEEPSEEK_API_KEY}}
+
+  # ---------- Frontier (por elegir) · FRONTIER_API_KEY y FRONTIER_API_BASE; el modelo (openai/FRONTIER-POR-ELEGIR) se edita al elegir proveedor ----------
+  - {model_name: fr-frontier, litellm_params: {model: openai/FRONTIER-POR-ELEGIR, api_base: os.environ/FRONTIER_API_BASE, api_key: os.environ/FRONTIER_API_KEY}}
+
+  # ================= NIVELES =================
+  # Cada nivel = un primer modelo; si falla (402/429/timeout/5xx/llave ausente) el router recorre
+  # la lista de `fallbacks` en orden (abajo). Así el orden es explícito y verificable.
+  # ALTO: planear/decidir. 1º frontier por API key con tope (placeholder: sin llave se salta en ~25 ms);
+  # 2º Cline Pass top (kimi-k3.1-pro) mientras no haya frontier por llave. El login/OAuth de frontier
+  # NO pasa por aquí: se usa con los clientes oficiales (ver docs/niveles-y-frontier.md).
+  - {model_name: nivel-alto, litellm_params: {model: openai/FRONTIER-POR-ELEGIR, api_base: os.environ/FRONTIER_API_BASE, api_key: os.environ/FRONTIER_API_KEY, timeout: 120, stream_timeout: 60}}
+  # MEDIO: ejecución diaria en Cline Pass.
+  - {model_name: nivel-medio, litellm_params: {model: openai/cline-pass/kimi-k3, api_base: https://api.cline.bot/api/v1, api_key: os.environ/CLINE_API_KEY, extra_headers: {X-Response-Format: openai}, timeout: 90, stream_timeout: 45}}
+  # BAJO: repetitivo y respaldo, modelos abiertos gratis en NVIDIA.
+  - {model_name: nivel-bajo, litellm_params: {model: hosted_vllm/nvidia/nemotron-3-ultra-550b-a55b, api_base: https://integrate.api.nvidia.com/v1, api_key: os.environ/NVIDIA_API_KEY, timeout: 45, stream_timeout: 30}}
+  # VÁLVULA DE PAGO: NO es fallback de nada. Solo se usa a mano tras aprobar el gasto (planificador).
+  - {model_name: nivel-bajo-pago, litellm_params: {model: deepseek/deepseek-v4-flash, api_key: os.environ/DEEPSEEK_API_KEY, timeout: 60}}
+
+router_settings:
+  num_retries: 0                    # el fallback ya es el reintento; no sumar esperas
+  allowed_fails: 2                  # tras 2 fallos seguidos el despliegue entra en cooldown
+  cooldown_time: 60
+  timeout: 90
+  # 402 (sin crédito), 429 (tope), timeout, 5xx y llave ausente disparan el siguiente de la lista.
+  fallbacks:
+    - nivel-alto:  [cp-kimi-k3.1-pro, cp-kimi-k3, cp-glm-5.3, cp-deepseek-v4-pro, cp-minimax-m3, nv-nemotron-3-ultra, nv-mistral-large-4]
+    - nivel-medio: [cp-glm-5.3, cp-deepseek-v4-pro, cp-minimax-m3, nv-nemotron-3-ultra, nv-mistral-large-4]
+    - nivel-bajo:  [nv-mistral-large-4, nv-nemotron-lightning, nv-deepseek-v4.1-flash]
+  context_window_fallbacks:
+    - nivel-bajo: [cp-glm-5.3]
+litellm_settings: {callbacks: cuotas_callback.cuotas_handler, drop_params: true, use_chat_completions_url_for_anthropic_messages: true, request_timeout: 120}
+general_settings: {master_key: os.environ/LITELLM_MASTER_KEY}
