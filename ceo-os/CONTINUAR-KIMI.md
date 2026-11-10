@@ -148,6 +148,8 @@ Pruebas: `test-ventanas.mjs` usa terminal y worker reales contra proveedor simul
 
 ### 7.3 · Chat que busca en el OS
 
+**Estado (10 nov):** implementado en la rama `feat/chat-lectura-os` como la herramienta `leer_os` (`api/_lib/chat-os.js`, 7 pruebas). Es solo lectura, limitada al cliente del hilo y a los permisos de la persona; costos y márgenes solo para el CEO. **Falta probarla con la base viva**, que hoy está bloqueada (ver §7.0). No la reescribas: revísala y pruébala.
+
 El contexto fijo es solo un resumen. La pieza correcta son herramientas de lectura.
 
 1. En `worker.mjs`, `herramientasChat` ya arma herramientas. Agrega `leer_os` con acciones cerradas: `clientes`, `proyectos`, `leads`, `tareas`, `movimientos`, `embudo`.
