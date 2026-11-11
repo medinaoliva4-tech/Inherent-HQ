@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { argsDerivada, argsEscena, argsUnir, argsFinal, assTexto, nombreTipografia, correr as correrFfmpeg, sondear as sondearFfprobe } from './ffmpeg.mjs';
 import { normalizarCorte, duracionCorte, FORMATOS, ErrorCorte } from './corte.mjs';
 import { aplicarEstilo as aplicarEstiloACorte } from './estilos.mjs';
+import { desglosar, desgloseAReceta } from './desglose.mjs';
+import { cargarReferencias, guardarReferencia } from './referencias.mjs';
 
 export class ErrorEntrada extends Error {}
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -56,6 +58,7 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
   mkdirSync(join(datos, 'salidas'), { recursive: true });
   mkdirSync(join(datos, 'cortes'), { recursive: true });
   mkdirSync(join(datos, 'tmp'), { recursive: true });
+  const dirReferencias = join(datos, 'referencias');
   const archivo = join(datos, 'trabajos.json');
   const trabajos = new Map();
   if (existsSync(archivo)) {
@@ -123,6 +126,16 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
   }
 
   // máscara de persona (para «detrás de la persona»): python + MediaPipe; queda en <raíz>/mascaras/ para que el corte la cite
+  // desglose por escena (cortes con ffmpeg + visión barata por LiteLLM, o sin IA); si es de una referencia, se le guarda
+  async function hacerDesglose(t) {
+    const d = await desglosar(fuente(t.pedido.ruta));
+    if (t.pedido.referencia) {
+      const r = cargarReferencias({ datos: dirReferencias }).find((x) => x.id === t.pedido.referencia);
+      if (r) guardarReferencia(dirReferencias, { ...r, breakdown: d });
+    }
+    t.resultado = { desglose: d };
+  }
+
   async function hacerMascara(t) {
     const clip = fuente(t.pedido.clip);
     const python = process.env.VIDEO_PYTHON || 'python3';
@@ -152,7 +165,8 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
     guardar();
     const t0 = Date.now();
     try {
-      await (t.tipo === 'corte' ? hacerCorte(t, dir) : t.tipo === 'mascara' ? hacerMascara(t) : hacerDerivada(t, dir));
+      const hacer = { corte: hacerCorte, mascara: hacerMascara, desglose: hacerDesglose }[t.tipo] ?? hacerDerivada;
+      await hacer(t, dir);
       Object.assign(t, { estado: 'listo', progreso: 1, terminado: ahora(), segundos: Number(((Date.now() - t0) / 1000).toFixed(1)) });
     } catch (e) {
       Object.assign(t, { estado: 'error', error: String(e.message ?? e), terminado: ahora() });
@@ -219,6 +233,18 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
       return { corte: cortes.guardar(corte, { esperaVersion }), pendientes };
     },
     mascara: (clip) => { fuente(clip); return encolar('mascara', { clip }); },
+    desglose: (ruta, referencia = null) => { fuente(ruta); return encolar('desglose', { ruta, referencia }); },
+    referencias: () => cargarReferencias({ datos: dirReferencias }),
+    /** «Imitar este»: desglose de la referencia → receta → se aplica al corte. Sin desglose, usa su estilo sugerido. */
+    imitar(idReferencia, idCorte, { estilos, recursos = {}, version } = {}) {
+      const r = cargarReferencias({ datos: dirReferencias }).find((x) => x.id === idReferencia);
+      if (!r) throw new ErrorEntrada(`no existe la referencia ${idReferencia}`);
+      const receta = r.breakdown
+        ? desgloseAReceta(r.breakdown, { id: `imitar-${r.id}`, nombre: `Imitar: ${r.titulo}`.slice(0, 80), prompt: `Imita «${r.titulo}» (${r.fuente_url ?? r.id}) en este video.` })
+        : estilos.find((e) => e.id === r.estilo_sugerido);
+      if (!receta) throw new ErrorEntrada(`la referencia ${r.id} no tiene desglose ni un estilo sugerido que exista`);
+      return { ...this.aplicarEstilo(idCorte, receta, recursos, version), receta, metodo: r.breakdown ? 'desglose' : 'estilo-sugerido' };
+    },
     renderizar: (idCorte) => { const c = cortes.leer(idCorte); return encolar('corte', { corte: c, idCorte, version: c.version }); },
     trabajo: (id) => trabajos.get(id) ?? null,
     lista: () => [...trabajos.values()].reverse(),

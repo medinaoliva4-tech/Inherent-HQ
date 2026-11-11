@@ -115,12 +115,40 @@ test('servicio de video de punta a punta', { skip: !hayFfmpeg && 'sin ffmpeg' },
     assert.ok(Math.abs((await sondear(tr.salida)).duracion - 3.6) < 0.2);
   });
 
+  await t.test('referencias: desglose de un video → se guarda en la referencia → «Imitar este» lo aplica', async () => {
+    // video «de referencia» local: 3 tomas (2 s, 1.5 s, 2 s), la última entra con fundido desde negro
+    ff('-f', 'lavfi', '-i', 'testsrc2=s=720x1280:r=30:d=2', '-f', 'lavfi', '-i', 'mandelbrot=s=720x1280:r=30', '-f', 'lavfi', '-i', 'color=c=0xe9c79a:s=720x1280:r=30:d=2',
+      '-filter_complex', '[1:v]trim=0:1.5,setpts=PTS-STARTPTS[b];[2:v]fade=t=in:st=0:d=0.5[c];[0:v][b][c]concat=n=3:v=1[v]', '-map', '[v]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', join(raiz, 'crudo/ref.mp4'));
+    const refs = (await api('GET', '/referencias')).cuerpo.referencias;
+    assert.ok(refs.length >= 5 && refs.every((r) => r.fuente_url?.startsWith('https://')));
+    const d = await api('POST', '/desglose', { ruta: 'crudo/ref.mp4', referencia: 'me-at-the-zoo' });
+    assert.equal(d.estado, 202);
+    await cola.vaciar();
+    const tr = cola.trabajo(d.cuerpo.trabajo.id);
+    assert.equal(tr.estado, 'listo', tr.error);
+    assert.deepEqual(tr.resultado.desglose.escenas.map((e) => [e.inicio, e.fin, e.rol]), [[0, 2, 'gancho'], [2, 3.5, 'cuerpo'], [3.5, 5.5, 'cierre']]);
+    assert.equal(tr.resultado.desglose.escenas[2].fundido_entrada, true);
+    assert.equal(tr.resultado.desglose.formato, '9:16');
+    assert.ok((await api('GET', '/referencias')).cuerpo.referencias.find((r) => r.id === 'me-at-the-zoo').breakdown, 'el desglose quedó en la referencia');
+    const escenas = [0, 1, 2].map((i) => ({ id: `r${i}`, clip: 'crudo/E01.mp4', inicio: 0, fin: 3, texto: hayLibass ? `Frase ${i}` : null }));
+    const c = (await api('POST', '/cortes', { titulo: 'Imitando', escenas })).cuerpo.corte;
+    const im = await api('POST', '/referencias/me-at-the-zoo/imitar', { corte: c.id });
+    assert.equal(im.estado, 200, JSON.stringify(im.cuerpo));
+    assert.equal(im.cuerpo.metodo, 'desglose');
+    assert.deepEqual(im.cuerpo.corte.escenas.map((e) => +(e.fin - e.inicio).toFixed(2)), [2, 1.5, 2], 'imita el ritmo');
+    assert.match(im.cuerpo.corte.escenas[2].referencia, /entra con fundido/);
+    assert.ok(im.cuerpo.corte.escenas[2].estilos.some((s) => s.tipo === 'transicion'));
+    const sin = await api('POST', '/referencias/simon-sinek-start-with-why/imitar', { corte: c.id });
+    assert.equal(sin.cuerpo.metodo, 'estilo-sugerido');
+    assert.equal(sin.cuerpo.corte.estilo, 'entrevista-larga');
+  });
+
   await t.test('las listas de medios y el MCP', async () => {
     assert.deepEqual((await api('GET', '/medios/musica')).cuerpo.archivos, ['musica/pista.m4a']);
     assert.deepEqual((await api('GET', '/medios/imagenes')).cuerpo.archivos, ['imagenes/sol.png']);
     const cliente = crearCliente({ base, token: 'secreto' });
     const lista = await responder({ jsonrpc: '2.0', id: 1, method: 'tools/list' }, cliente);
-    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'estilos_aplicar', 'estilos_listar', 'video_derive', 'video_mascara', 'video_trabajo']);
+    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'estilos_aplicar', 'estilos_listar', 'referencia_imitar', 'referencias_listar', 'video_derive', 'video_desglose', 'video_mascara', 'video_trabajo']);
     const d = await responder({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'video_derive', arguments: { videoId: 'crudo/E02-sin-audio', formato: '1:1' } } }, cliente);
     const id = JSON.parse(d.result.content[0].text).trabajo.id;
     await cola.vaciar();

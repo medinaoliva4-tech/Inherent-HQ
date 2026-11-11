@@ -13,6 +13,9 @@
 //   POST /mascaras               {clip} → 202 {trabajo}; al terminar, resultado.mascara (para «detrás de la persona»)
 //   GET  /estilos[?completo=1] · /estilos/:id   catálogo de estilos (recetas en estilos/*.json)
 //   POST /cortes/:id/estilo      {estilo, recursos?, version?} → aplica el estilo al corte → {corte, pendientes}
+//   GET  /referencias            biblioteca de videos de referencia (semilla del repo + radar + desgloses)
+//   POST /desglose               {ruta, referencia?} → 202 {trabajo}; resultado.desglose (escenas, ritmo, plano, texto, efecto)
+//   POST /referencias/:id/imitar {corte, recursos?, version?} → desglose → receta → aplicada al corte
 //   GET  /editor/                Retoque (el editor del rol de editor)
 // Variables: VIDEO_RAIZ (medios, obligatoria), VIDEO_DATOS (./datos), VIDEO_PUERTO (4310), VIDEO_TOKEN,
 //            VIDEO_FFMPEG / VIDEO_FFPROBE (binarios), VIDEO_FUENTE_TEXTO (ttf para drawtext).
@@ -102,6 +105,10 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
         if (!e) return json(404, { error: `no existe el estilo ${id}; usa GET /estilos` });
         return json(200, cola.aplicarEstilo(m[1], e, recursos, version));
       }
+      if (req.method === 'GET' && ruta === '/referencias') return json(200, { referencias: cola.referencias() });
+      if (req.method === 'POST' && ruta === '/desglose') { const b = await leerJson(req); return json(202, { trabajo: publico(cola.desglose(b.ruta, b.referencia ?? null)) }); }
+      m = ruta.match(/^\/referencias\/([\w-]+)\/imitar$/);
+      if (req.method === 'POST' && m) { const b = await leerJson(req); return json(200, cola.imitar(m[1], b.corte, { estilos: estilos(), recursos: b.recursos, version: b.version })); }
       if (req.method === 'POST' && ruta === '/mascaras') return json(202, { trabajo: publico(cola.mascara((await leerJson(req)).clip)) });
       if (req.method === 'GET' && ruta === '/medios/fuentes') return json(200, { fuentes: cola.fuentes() });
       m = ruta.match(/^\/medios\/(musica|imagenes)$/);

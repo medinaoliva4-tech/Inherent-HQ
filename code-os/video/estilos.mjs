@@ -7,7 +7,8 @@
 //   formato?: '9:16'|'1:1'|'16:9',                    // si el estilo pide un formato, lo fija al aplicarse
 //   requiere?: [{ recurso: 'reels', cantidad: 3, descripcion }],   // lo que el agente debe pasar en `recursos`
 //   ejemplo?: { textos: ['…'] },                      // textos de la vista previa del catálogo
-//   escenas_plantilla: [{ rol: 'gancho'|'cuerpo'|'cierre', capas: [...], estilos: [...] }]
+//   escenas_plantilla: [{ rol: 'gancho'|'cuerpo'|'cierre', duracion?, referencia?, capas: [...], estilos: [...] }]
+//   (duracion: acorta la escena a ese largo para imitar el ritmo; referencia: texto que el tablero muestra en vivo)
 // }
 // Comodines en las plantillas: texto '{texto}' = el texto de la escena (del guion); ruta '{reels.0}' = recursos.reels[0].
 import { readdirSync, readFileSync } from 'node:fs';
@@ -29,7 +30,10 @@ export function validarEstilo(e, origen = '') {
   if (!/^[a-z0-9-]+$/.test(e.id)) throw new ErrorEstilo(`estilo ${e.id}: el id solo lleva minúsculas, números y guiones`);
   if (!CATEGORIAS[e.categoria]) throw new ErrorEstilo(`estilo ${e.id}: categoría «${e.categoria}» no existe (${Object.keys(CATEGORIAS).join(', ')})`);
   if (!Array.isArray(e.escenas_plantilla) || !e.escenas_plantilla.length) throw new ErrorEstilo(`estilo ${e.id}: necesita escenas_plantilla`);
-  for (const p of e.escenas_plantilla) if (!['gancho', 'cuerpo', 'cierre'].includes(p.rol)) throw new ErrorEstilo(`estilo ${e.id}: rol «${p.rol}» no existe (gancho, cuerpo, cierre)`);
+  for (const p of e.escenas_plantilla) {
+    if (!['gancho', 'cuerpo', 'cierre'].includes(p.rol)) throw new ErrorEstilo(`estilo ${e.id}: rol «${p.rol}» no existe (gancho, cuerpo, cierre)`);
+    if (p.duracion != null && !(typeof p.duracion === 'number' && p.duracion > 0)) throw new ErrorEstilo(`estilo ${e.id}: duracion de plantilla inválida`);
+  }
   // la receta tiene que ser un corte válido: se prueba con un clip de mentira y los recursos de ejemplo
   const recursos = Object.fromEntries((e.requiere ?? []).map((r) => [r.recurso, Array.from({ length: r.cantidad ?? 1 }, (_, i) => `ejemplo/${r.recurso}-${i}.png`)]));
   const escenas = e.escenas_plantilla.map((_, i) => ({ id: `p${i}`, clip: 'ejemplo.mp4', inicio: 0, fin: 3, texto: 'Ejemplo' }));
@@ -92,7 +96,9 @@ export function aplicarEstilo(corte, estilo, recursos = {}) {
     });
     // el atajo texto/fuente manda sobre la capa principal: se quita para que gane la plantilla
     const { texto: _t, fuente: _f, ...resto } = e;
-    return { ...resto, capas, estilos };
+    // imitar el ritmo: la plantilla puede traer su duración (nunca alarga la escena: no sabemos cuánto clip queda)
+    const fin = p.duracion > 0 ? Math.min(e.fin, e.inicio + p.duracion) : e.fin;
+    return { ...resto, fin, capas, estilos, referencia: p.referencia ?? e.referencia ?? null };
   });
   try {
     return { corte: normalizarCorte({ ...corte, formato: estilo.formato ?? corte.formato, estilo: estilo.id, escenas }), pendientes };

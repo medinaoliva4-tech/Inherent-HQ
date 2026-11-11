@@ -8,6 +8,7 @@
 //   origen: { agente, shotlist, faltantes },
 //   escenas: [{
 //     id, clip, inicio, fin, nota,                            // clip = ruta del video; inicio/fin en segundos del clip
+//     referencia,                                             // qué escena de la referencia imita (si se usó «Imitar este»)
 //     texto, fuente,                                          // atajo: texto principal y su tipografía (= capa 'principal')
 //     capas: [                                                // encima del video, de abajo hacia arriba
 //       { id, tipo: 'texto',  texto, fuente, x, y, tam, color, caja, visible },  // x/y = centro (0..1), tam = alto relativo, caja = #hex|null
@@ -100,6 +101,7 @@ function normalizarEscena(e, i) {
   for (const t of TIPOS_ESTILO) if (estilos.filter((s) => s.tipo === t).length > 1 && !REPETIBLES.has(t)) throw new ErrorCorte(`escena ${esc}: el estilo ${t} está repetido`);
   return {
     id: e.id ?? nuevoId('e'), clip: e.clip, inicio, fin, nota: e.nota ?? '',
+    referencia: typeof e.referencia === 'string' && e.referencia ? e.referencia : null, // la escena de la referencia que imita (desglose en vivo)
     texto: principal?.texto ?? null, fuente: principal?.fuente ?? null,
     capas: capas.filter((c) => c.tipo !== 'texto' || c.texto.trim()),
     estilos,
