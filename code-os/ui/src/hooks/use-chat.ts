@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import type { Adjunto, ClienteEventos, ModoSesion, RespuestaPermiso } from '@/lib/eventos'
+import { EDICIONES, type Adjunto, type ClienteEventos, type ModoSesion, type RespuestaPermiso } from '@/lib/eventos'
 import { aplicarEvento, registrarPlan, registrarPregunta, registrarRespuesta, type Mensaje } from '@/lib/mensajes'
 
 let n = 0
@@ -13,6 +13,9 @@ export type OpcionesEnvio = {
   instrucciones?: string
   /** Subagentes para `@agente` (se registran al crear la sesión en el puente). */
   agentes?: Record<string, { description: string; prompt: string }>
+  aislada?: boolean
+  /** Lo que eligió el router (modo Auto): se ve en el hilo, encima de la respuesta. */
+  ruta?: Mensaje['ruta']
   /** Lo que de verdad viaja al motor (p. ej. con archivos de texto pegados). Por defecto, el texto visible. */
   textoParaMotor?: string
   /** Se llama al terminar el turno (para notificar). */
@@ -63,7 +66,7 @@ export function useChat(cliente: ClienteEventos, inicial: Record<string, Mensaje
         partes: [{ tipo: 'texto', id: id('ut'), texto }],
         adjuntos: adjuntos.length ? adjuntos : undefined,
       }
-      const asistente: Mensaje = { id: id('a'), rol: 'asistente', partes: [], enCurso: true }
+      const asistente: Mensaje = { id: id('a'), rol: 'asistente', partes: [], enCurso: true, ...(o.ruta ? { ruta: o.ruta } : {}) }
       setPorConv((s) => ({ ...s, [convId]: [...(s[convId] ?? []), usuario, asistente] }))
       setEnCurso((s) => ({ ...s, [convId]: true }))
       let final = asistente
@@ -82,10 +85,16 @@ export function useChat(cliente: ClienteEventos, inicial: Record<string, Mensaje
           titulo: o.titulo,
           instrucciones: o.instrucciones,
           agentes: o.agentes,
+          aislada: o.aislada,
           signal: ctrl.signal,
         })) {
           if (e.tipo === 'modo') o.alCambiarModo?.(e.modo)
           aplicar((m) => aplicarEvento(m, e))
+          // «Aceptar ediciones»: las ediciones de archivos se aprueban solas; lo demás sigue pidiendo permiso.
+          if (e.tipo === 'permiso_pedido' && o.modo === 'aceptar' && EDICIONES.has(e.herramienta)) {
+            aplicar((m) => registrarRespuesta(m, e.id, 's', true))
+            cliente.responderPermiso(e.id, 's')
+          }
         }
       } catch (err) {
         aplicar((m) =>

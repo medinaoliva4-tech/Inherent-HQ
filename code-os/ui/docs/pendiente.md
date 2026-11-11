@@ -24,25 +24,45 @@ Se piden a `VITE_HERRAMIENTAS_URL` o, si no está, al puente. Forma acordada; la
 - Las preguntas del agente usan `AskUserQuestion`: salen en el chat, nunca en el panel.
 - Falta en el puente: etapas reales, aporte obligatorio, «leído» del servidor y trabajos del equipo (§20 de `ceo-os/PLAN-GATEWAY.md`). Las sesiones creadas antes de este cambio no tienen `agents`: hay que abrir un chat nuevo.
 
+# Code dentro del Chat del OS (v3.1)
+
+## Lo que quedó
+- **Embebido** (`?embed=1`): solo paneles, con el pase del OS por `postMessage`. Contrato: `docs/embebido.md`.
+- **Router por tarea y modo Auto**: `src/lib/cocina.ts` es copia de `ceo-os/public/js/llm/router-code.js` (la prueba compara las dos). El hilo muestra «Sous chef · nivel-alto: interfaz» y el esfuerzo. Si la persona fija un nivel, el router no se mete.
+- **Cambios**: comentarios por línea → «Enviar comentarios» (va directo a la sesión), «Revisar» (otro nivel distinto al que construyó) y «Fusionar» (`POST /sessions/:id/merge`, solo en sesiones aisladas). Interruptor «Sesión aislada» al crear una sesión de Code (`isolate: true`).
+- **Permisos**: Manual, Plan y Aceptar ediciones. Sin «Saltar permisos».
+- **Memoria y skills**: la página del cliente dice qué `CLAUDE.md` y qué skills cargó la sesión; `/` lista las skills del servidor.
+- **Terminal**: la real del puente por WebSocket (`?pase=` con el pase del OS; si no, la cookie de `/entrar`).
+
+## Lo que necesita el puente
+- **Modelos de Claude por cocinero**: el orden del CEO (chef = Fable/Astra, sous = Sonnet, línea = Opus, prep = Haiku) está en `MODELOS_CLAUDE` de `src/lib/cocina.ts`, pero sin `id`: hoy se manda el nivel (`nivel-alto`…) y el puente usa tu Claude primero si está activo. Cuando el puente exponga un alias por modelo de Claude, se pone su `id` ahí y listo.
+- **«Aceptar ediciones» nativo**: hoy viaja como `code` y la interfaz aprueba sola `Edit`, `MultiEdit`, `Write` y `NotebookEdit` (lo demás sigue pidiendo permiso). Mejor: que el puente acepte `mode: "acceptEdits"` (el SDK lo tiene).
+- **Esfuerzo** (máximo, alto, medio, bajo): se muestra como información; el puente aún no recibe esfuerzo por turno.
+- **Memoria del cliente (mock)**: falta `GET /clientes/:id/memoria` (o en la sesión) que diga qué `clients/<slug>/CLAUDE.md` cargó. Hoy lo dice el mock.
+- **Skills de `agents/`**: `GET /skills` lee `PUENTE_SKILLS_DIR`; falta apuntarlo (o sincronizar) a las skills de `agents/` del repo. `/nombre` se manda como texto al motor.
+- **Primera carga embebida sin pase en la URL**: `/entrar?pase=…&volver=/?embed=1`.
+- **Cabecera `frame-ancestors`** en el Caddy de `code.` (ver `docs/embebido.md`).
+
+## Lo que necesita el OS
+- Montar el iframe (`?embed=1&pase=`) en el panel del Chat en modo Code, escuchar `codeos:listo` / `codeos:pedir-pase` / `codeos:al-chat` y mandar `codeos:pase` y `codeos:contexto` (cliente, sesión del puente, rol, tema, nivel, aislada).
+- Crear sesiones aisladas desde su Chat (`isolate: true`) si la persona lo pide, y avisar `aislada: true` en el contexto.
+- Usar el mismo router (`router-code.js`) cuando `codeos:al-chat` traiga `modelo` (Revisar).
+
 # Lo que no entró en la v2 de la interfaz
 
 Funciones del inventario (`code-os/docs/inventario-claude.md`) que quedaron fuera, con la razón en una línea.
 **Mock** = se ve en la interfaz con datos de ejemplo, pero falta el endpoint del puente para que sea real.
 
 ## Faltan endpoints o eventos del puente (la pantalla ya existe o está a medias)
-- **Árbol y edición de archivos (mock)**: falta `GET/PUT /sessions/:id/files`.
-- **Cambios / diff con comentarios (mock)**: falta `GET /sessions/:id/diff`.
-- **Terminal (mock)**: falta una terminal real (`node-pty`) por WebSocket en la carpeta de la sesión.
-- **@ mencionar archivos**: solo autocompleta con el árbol del punto anterior.
-- **Conectores MCP y skills en ajustes (mock)**: faltan `GET /mcp` y `GET /skills`.
-- **Estado de la sesión de Claude y cuotas**: `GET /me` y `GET /cuotas` existen en la rama `feat/code-os-puente-despliegue`, no en `main`.
+- **Ya reales con el puente de `main`** (antes mock): archivos (`GET/PUT /sessions/:id/files`), cambios (`GET /sessions/:id/diff`), fusionar (`POST /sessions/:id/merge`), terminal por WebSocket, `GET /mcp`, `GET /skills`, `GET /me`, `GET /cuotas`.
+- **@ mencionar archivos**: solo autocompleta con el árbol de archivos de la sesión.
 - **Imágenes y PDF al modelo**: el puente solo acepta `{text}`; hoy los archivos de texto se pegan dentro del mensaje.
-- **Corregir mientras trabaja** (mandar otro mensaje sin detener): el puente responde 409 si hay un turno en curso.
+- **Corregir mientras trabaja** (mandar otro mensaje sin detener): el puente ya acepta `queue: true`; falta usarlo en la interfaz.
 - **Reglas de permisos editables**: falta `GET/PUT` de reglas permitir/negar.
-- **Modo «Aceptar ediciones» y «Saltar permisos»**: el puente solo tiene `chat`, `plan` y `code`.
+- **«Saltar permisos»**: fuera a propósito (decisión del CEO).
 - **Checkpoints y rebobinar**: el puente no expone `rewindFiles()`.
 - **Separador de compactación**: el puente no emite `compact_boundary`.
-- **Historial en el servidor**: hoy se guarda en el navegador (localStorage); falta leer los mensajes de una sesión.
+- **Historial en el servidor**: hoy se guarda en el navegador (localStorage); falta leer los mensajes de una sesión (`GET /sessions/:id/history` existe: falta usarlo).
 - **Vista previa del servidor de desarrollo del VPS**: falta un proxy por puerto en el puente (hoy solo URLs alcanzables).
 - **Panel de detalles de sesión (+líneas, qué corre)**: solo se muestra el contexto; falta el dato del puente.
 

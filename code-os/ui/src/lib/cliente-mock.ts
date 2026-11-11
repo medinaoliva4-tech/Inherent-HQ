@@ -97,6 +97,8 @@ export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {
     return fn()
   }
   const pendientes = new Map<string, (r: Respuesta) => void>()
+  const aisladas = new Set<string>()
+  const vinculadas = new Map<string, string>()
   const siempre = new Set<string>()
   const guardados: Record<string, string> = {}
   const ms = (n: number) => n * velocidad
@@ -106,6 +108,7 @@ export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {
     const parar = () => !!signal?.aborted
     const t0 = Date.now()
     const conv = p.conversacionId
+    if (p.aislada) aisladas.add(conv)
     const decir = async function* (texto: string, tipo: 'texto' | 'razonamiento' = 'texto', padre?: string, pausa = 18) {
       const id = nuevoId(tipo === 'texto' ? 'x' : 'r')
       for (const palabra of texto.split(/(\s+)/)) {
@@ -156,7 +159,7 @@ export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {
       return yield* cerrar(parar() ? 'detenido' : 'completo')
     }
 
-    const modo = p.modo ?? 'code'
+    const modo = p.modo === 'aceptar' ? 'code' : (p.modo ?? 'code')
 
     // ——— @agente: el orquestador lanza su subagente; su texto es el documento en vivo y termina con una propuesta.
     const llamado = /subagent_type "([\w-]+)"/.exec(texto)?.[1]
@@ -361,6 +364,20 @@ export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {
         cerrar() {},
       }
     },
+    async fusionar(conv) {
+      await sleep(ms(300))
+      if (!aisladas.has(conv)) throw new Error('Esta sesión no es aislada: no hay nada que fusionar')
+      return { ok: true }
+    },
+    vincularSesion(conv, sid) {
+      vinculadas.set(conv, sid)
+    },
+    sesionDe: (conv) => vinculadas.get(conv) ?? `mock-${conv}`,
+    memoriaCliente: (c) =>
+      responder(() => [
+        { ruta: `clients/${c}/CLAUDE.md`, resumen: 'Router del cliente: alcance contratado, tono y dónde vive cada cosa (ejemplo).', cargada: true },
+        { ruta: `clients/${c}/00-onboarding/plan-contratado.md`, resumen: 'Ficha de oferta: el techo de lo que se entrega (ejemplo).', cargada: true },
+      ]),
     async mcp() {
       return mcpEjemplo
     },

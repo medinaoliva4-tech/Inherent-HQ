@@ -1,6 +1,7 @@
-import { CheckIcon, ChevronDownIcon } from 'lucide-react'
+import { CheckIcon, ChefHatIcon, ChevronDownIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { AUTO, COCINEROS, MODELOS_CLAUDE, type Cocinero } from '@/lib/cocina'
 import { describirModelo, disponible, NIVELES } from '@/lib/niveles'
 import { cn } from '@/lib/utils'
 
@@ -40,6 +41,7 @@ export function ModelSelector({ modeloId, onChange, disponibles, claude = 'desco
   const abierto = abiertoExt ?? abiertoInt
   const setAbierto = onAbierto ?? setAbiertoInt
   const sel = describirModelo(modeloId)
+  const auto = modeloId === AUTO
   const elegir = (id: string) => {
     onChange(id)
     setAbierto(false)
@@ -50,17 +52,45 @@ export function ModelSelector({ modeloId, onChange, disponibles, claude = 'desco
         aria-label="Elegir modelo"
         className="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
       >
-        <span className="font-medium text-foreground">{sel.nivel.nombre}</span>
-        <span aria-hidden>·</span>
-        <span className="max-w-28 truncate">{sel.etiqueta}</span>
+        {auto ? (
+          <>
+            <ChefHatIcon className="size-3.5" />
+            <span className="font-medium text-foreground">Auto</span>
+            <span aria-hidden>·</span>
+            <span className="max-w-28 truncate">por tarea</span>
+          </>
+        ) : (
+          <>
+            <span className="font-medium text-foreground">{sel.nivel.nombre}</span>
+            <span aria-hidden>·</span>
+            <span className="max-w-28 truncate">{sel.etiqueta}</span>
+          </>
+        )}
         <ChevronDownIcon className={cn('size-3.5 transition-transform duration-200', abierto && 'rotate-180')} />
       </PopoverTrigger>
       <PopoverContent side="top" align="start" sideOffset={8} className="vidrio max-h-[70dvh] w-[min(22rem,calc(100vw-2rem))] gap-1 overflow-y-auto rounded-xl p-1.5">
+        <div role="group" aria-label="Auto" className="p-1">
+          <Opcion activo={auto} deshabilitado={false} onClick={() => elegir(AUTO)} titulo="Auto" nota="el router elige el nivel por la tarea" />
+          <ul className="grid gap-0.5 px-2 pt-1 pb-1 text-[11px] text-muted-foreground">
+            {(Object.keys(COCINEROS) as Cocinero[]).map((c) => (
+              <li key={c} className="flex items-baseline gap-1.5">
+                <span className="text-foreground">{COCINEROS[c].nombre}</span>{' '}
+                <span>
+                  · {COCINEROS[c].nivel} · esfuerzo {COCINEROS[c].esfuerzo}
+                  {claude === 'activa' && ` · ${MODELOS_CLAUDE[c].nombre}`}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="px-2 text-[11px] leading-snug text-mut2">Si fijas un nivel, el router no se mete.</p>
+        </div>
         {NIVELES.map((n) => (
           <div key={n.id} role="group" aria-label={`Nivel ${n.nombre}`} className="p-1">
             <div className="flex items-baseline justify-between gap-2 px-2 pt-1 pb-1">
               <span className="text-xs font-semibold tracking-wide uppercase">{n.nombre}</span>
-              <span className="truncate text-[11px] text-muted-foreground">{n.descripcion}</span>
+              <span className="truncate text-[11px] text-muted-foreground">
+                {n.descripcion} · esfuerzo {n.id === 'alto' ? 'máximo o alto' : n.id === 'medio' ? 'medio' : 'bajo'}
+              </span>
             </div>
             <Opcion
               activo={modeloId === n.alias}

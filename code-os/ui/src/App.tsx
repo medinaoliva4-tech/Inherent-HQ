@@ -12,6 +12,8 @@ import { PanelLateral, type DestinoPanel, type PestanaPanel, type SeccionPanel, 
 import { Paleta } from '@/components/os/Paleta'
 import { ProyectoDialogo } from '@/components/os/ProyectoDialogo'
 import { SelectorCliente } from '@/components/os/Selectores'
+import { Embebido } from '@/components/os/Embebido'
+import { Switch } from '@/components/ui/switch'
 import { Sidebar } from '@/components/os/Sidebar'
 import { Button } from '@/components/ui/button'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
@@ -27,6 +29,8 @@ import { useEspacio, type Conversacion, type Pestana } from '@/hooks/use-espacio
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTheme } from '@/hooks/use-theme'
 import { prepararEnvio } from '@/lib/adjuntos'
+import { AUTO, MODELOS_CLAUDE, modeloDeRuta, rutear } from '@/lib/cocina'
+import { leerEmbebido } from '@/lib/embebido'
 import { AGENTES, agenteMencionado, agentesParaPuente, instruccionAgente, type Agente } from '@/lib/agentes'
 import { extraerArtefactos, type Artefacto } from '@/lib/artefactos'
 import type { Cliente, EstadoServidor, NodoArchivo } from '@/lib/cliente'
@@ -38,7 +42,11 @@ import { resorte } from '@/lib/movimiento'
 import { PERSONAS, ROLES, type Persona } from '@/lib/roles'
 import { cn } from '@/lib/utils'
 
-type Props = { cliente?: Cliente }
+type Props = {
+  cliente?: Cliente
+  /** Dentro del Chat del OS (`?embed=1`). Por defecto se lee de la URL. */
+  embebido?: boolean
+}
 
 const CLAVE_MENSAJES = 'code-os:mensajes:v2'
 
@@ -74,6 +82,17 @@ function guardarLocal(clave: string, valor: string) {
   }
 }
 
+/** Nivel con el que se construyó lo último (para que la revisión la haga otro). */
+function ultimoNivel(ms: Mensaje[]): string {
+  for (let i = ms.length - 1; i >= 0; i--) {
+    const m = ms[i]
+    if (m.rol !== 'asistente') continue
+    if (m.ruta) return m.ruta.nivel
+    if (m.uso?.modelo?.startsWith('nivel-')) return m.uso.modelo
+  }
+  return ''
+}
+
 const rutasDe = (ns: NodoArchivo[]): string[] => ns.flatMap((n) => (n.tipo === 'archivo' ? [n.ruta] : rutasDe(n.hijos ?? [])))
 
 const SUGERENCIAS: Record<Pestana, string[]> = {
@@ -81,7 +100,13 @@ const SUGERENCIAS: Record<Pestana, string[]> = {
   code: ['Mapea los tokens del OS a shadcn', 'Pregúntame qué tema revisar primero', 'Revisa los cambios de la sesión'],
 }
 
-export default function App({ cliente: clienteProp }: Props) {
+/** `?embed=1` → solo los paneles, dentro del Chat del OS (docs/embebido.md). Si no, la app completa. */
+export default function App({ cliente, embebido }: Props) {
+  const emb = useMemo(() => (embebido === undefined ? leerEmbebido() : { activo: embebido, pase: undefined }), [embebido])
+  return emb.activo ? <Embebido cliente={cliente} pase={emb.pase} /> : <AppCompleta cliente={cliente} />
+}
+
+function AppCompleta({ cliente: clienteProp }: { cliente?: Cliente }) {
   const cliente = useMemo(() => clienteProp ?? crearCliente(), [clienteProp])
   const mock = cliente.tipo === 'mock'
   const { tema, setTema, alternar } = useTheme()
@@ -124,6 +149,7 @@ export default function App({ cliente: clienteProp }: Props) {
   const { estado: cuotas, error: errorCuotas } = useCuotas(cliente)
   const arrastreHoja = useDragControls()
   const catalogo = useDatos(() => cliente.modelos(), [cliente])
+  const skills = useDatos(() => cliente.skills(), [cliente])
 
   // Conversación activa de la pestaña (si no hay, la más reciente; si no hay ninguna, se crea).
   const delaPestana = espacio.conversaciones.filter((c) => c.pestana === pestana && !c.archivada)
@@ -275,8 +301,13 @@ export default function App({ cliente: clienteProp }: Props) {
       setSeccion('agentes')
       setPanel(true)
     }
+    // Modo Auto: el router elige el nivel por la tarea (si la persona fijó uno, no se mete).
+    const claudeActiva = servidor?.claude === 'activa'
+    const ruta = conv.modeloId === AUTO ? rutear(texto, { ultimo: ultimoNivel(mensajes) }) : null
     enviar(id, texto, adjuntos, {
-      modeloId: conv.modeloId,
+      modeloId: ruta ? modeloDeRuta(ruta, claudeActiva) : conv.modeloId,
+      ruta: ruta ? { nombre: ruta.nombre, nivel: ruta.nivel, motivo: ruta.motivo, esfuerzo: ruta.esfuerzo, ...(claudeActiva ? { claude: MODELOS_CLAUDE[ruta.cocinero].nombre } : {}) } : undefined,
+      aislada: conv.pestana === 'code' && !!conv.aislada,
       // En Chat la sesión no tiene herramientas: para lanzar al subagente, ese turno va en modo plan (solo lectura).
       modo: conv.pestana === 'chat' ? (llamado ? 'plan' : 'chat') : conv.modo,
       agentes: agentesParaPuente(),
@@ -418,6 +449,15 @@ export default function App({ cliente: clienteProp }: Props) {
                     <Suggestion key={s} suggestion={s} onClick={ponerEnCaja} />
                   ))}
                 </div>
+                {pestana === 'code' && conv && !conv.incognito && (
+                  <label className="mt-1 flex items-center gap-2 rounded-lg border bg-card/60 px-3 py-2 text-left text-xs">
+                    <Switch checked={!!conv.aislada} onCheckedChange={(v) => editarConversacion(conv.id, { aislada: v })} aria-label="Sesión aislada" />
+                    <span className="grid">
+                      <span className="font-medium text-foreground">Sesión aislada</span>
+                      <span className="text-muted-foreground">Trabaja en una rama propia y la fusionas al final desde Cambios.</span>
+                    </span>
+                  </label>
+                )}
                 {mock && <p className="text-[11px] text-mut2">Modo ejemplo: sin VITE_PUENTE_URL las respuestas son simuladas.</p>}
               </div>
             </ConversationEmptyState>
@@ -460,6 +500,7 @@ export default function App({ cliente: clienteProp }: Props) {
           onComando={comando}
           rutas={pestana === 'code' ? rutas : undefined}
           agentes={agentesOrdenados}
+          skills={skills.datos ?? undefined}
           borrador={borrador}
         />
       </div>
@@ -492,6 +533,20 @@ export default function App({ cliente: clienteProp }: Props) {
       onArtefacto={setArtefactoActivo}
       tema={tema}
       onMencionar={(r) => ponerEnCaja(`@${r} `)}
+      onEnviar={(t) => onEnviar(t, [])}
+      onRevisar={() => {
+        // La revisión la hace OTRO nivel distinto al que construyó.
+        const r = rutear('revisa los cambios', { ultimo: ultimoNivel(mensajes) })
+        if (!conv) return
+        enviar(conv.id, 'Revisa los cambios de esta sesión: busca errores, riesgos y lo que falte probar. No edites nada; dame la lista.', [], {
+          modeloId: modeloDeRuta(r, servidor?.claude === 'activa'),
+          modo: conv.pestana === 'chat' ? 'chat' : 'plan',
+          ruta: { nombre: r.nombre, nivel: r.nivel, motivo: r.motivo, esfuerzo: r.esfuerzo },
+          agentes: agentesParaPuente(),
+        })
+        return `${r.nombre} · ${r.nivel}`
+      }}
+      aislada={!!conv?.aislada}
       onTextoAlMensaje={(t) => {
         ponerEnCaja(t)
         if (!escritorio) setPanel(false)

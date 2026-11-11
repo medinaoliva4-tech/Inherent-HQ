@@ -1,11 +1,11 @@
 import { DiffModeEnum, DiffView, SplitSide } from '@git-diff-view/react'
 import '@git-diff-view/react/styles/diff-view-pure.css'
-import { ChevronRightIcon, GitCompareIcon, MessageSquarePlusIcon, RefreshCwIcon, SendIcon, XIcon } from 'lucide-react'
+import { ChevronRightIcon, GitCompareIcon, GitMergeIcon, MessageSquarePlusIcon, RefreshCwIcon, ScanSearchIcon, SendIcon, XIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useDatos } from '@/hooks/use-datos'
-import type { ArchivoDiff, Cliente } from '@/lib/cliente'
+import type { ArchivoDiff, Cliente, ResultadoFusion } from '@/lib/cliente'
 import { cn } from '@/lib/utils'
 import { Vacio } from './Vacio'
 
@@ -115,14 +115,40 @@ function ArchivoCambiado({
   )
 }
 
-type Props = { cliente: Cliente; conversacionId: string; tema: 'dark' | 'light'; onEnviarComentarios: (texto: string) => void }
+type Props = {
+  cliente: Cliente
+  conversacionId: string
+  tema: 'dark' | 'light'
+  /** Manda los comentarios como mensaje a la sesión. */
+  onEnviarComentarios: (texto: string) => void
+  /** Pide la revisión a OTRO nivel distinto al que construyó (lo decide el router). Devuelve quién revisa. */
+  onRevisar?: () => string | void
+  /** Sesión aislada (worktree propio): solo entonces se puede fusionar. */
+  aislada?: boolean
+}
 
-export default function Cambios({ cliente, conversacionId, tema, onEnviarComentarios }: Props) {
+export default function Cambios({ cliente, conversacionId, tema, onEnviarComentarios, onRevisar, aislada }: Props) {
   const diffs = useDatos(() => cliente.diff(conversacionId), [cliente, conversacionId])
   const [comentarios, setComentarios] = useState<Comentario[]>([])
+  const [fusion, setFusion] = useState<ResultadoFusion | { error: string } | null>(null)
+  const [fusionando, setFusionando] = useState(false)
+  const [revisor, setRevisor] = useState<string | null>(null)
+  const fusionar = async () => {
+    setFusionando(true)
+    try {
+      setFusion(await cliente.fusionar(conversacionId))
+      diffs.recargar()
+    } catch (e) {
+      setFusion({ error: e instanceof Error ? e.message : 'No se pudo fusionar' })
+    } finally {
+      setFusionando(false)
+    }
+  }
 
   if (diffs.falta) return <Vacio icono={GitCompareIcon} titulo="Los cambios aún no llegan" texto="Cuando el puente comparta el git diff de la sesión, lo revisas aquí." falta={diffs.falta} />
   if (diffs.error) return <Vacio icono={GitCompareIcon} titulo="No se pudieron leer los cambios" texto={diffs.error} />
+  if (diffs.datos && !diffs.datos.length && fusion && 'ok' in fusion && fusion.ok)
+    return <Vacio icono={GitMergeIcon} titulo="Fusionado con el proyecto." texto="La rama de esta sesión ya está en el proyecto. No quedan cambios pendientes." />
   if (diffs.datos && !diffs.datos.length) return <Vacio icono={GitCompareIcon} titulo="Sin cambios" texto="Claude todavía no ha tocado archivos en esta sesión." />
 
   const total = diffs.datos?.reduce((a, d) => ({ mas: a.mas + d.mas, menos: a.menos + d.menos }), { mas: 0, menos: 0 })
@@ -138,10 +164,37 @@ export default function Cambios({ cliente, conversacionId, tema, onEnviarComenta
           <span className="text-ok">+{total?.mas ?? 0}</span> <span className="text-bad">−{total?.menos ?? 0}</span>
           {cliente.tipo === 'mock' && ' · ejemplo'}
         </span>
+        {onRevisar && (
+          <Button variant="outline" size="xs" onClick={() => setRevisor(onRevisar() || null)} title="Lo revisa otro nivel distinto al que lo construyó">
+            <ScanSearchIcon /> Revisar
+          </Button>
+        )}
+        <Button
+          variant="outline"
+          size="xs"
+          onClick={fusionar}
+          disabled={!aislada || fusionando}
+          title={aislada ? 'Fusiona la rama de esta sesión con el proyecto' : 'Solo las sesiones aisladas se fusionan; esta trabaja directo en el proyecto'}
+        >
+          <GitMergeIcon /> Fusionar
+        </Button>
         <Button variant="ghost" size="icon-xs" onClick={diffs.recargar} aria-label="Recargar cambios">
           <RefreshCwIcon className={cn(diffs.cargando && 'animate-spin')} />
         </Button>
       </div>
+      {(fusion || revisor) && (
+        <div role="status" className="grid gap-1 border-b px-3 py-2 text-xs">
+          {revisor && <p className="text-muted-foreground">Revisión pedida a {revisor}.</p>}
+          {fusion &&
+            ('error' in fusion ? (
+              <p className="text-bad">{fusion.error}</p>
+            ) : fusion.ok ? (
+              <p className="text-ok">{fusion.vacio ? 'No había nada nuevo que fusionar.' : 'Fusionado con el proyecto.'}</p>
+            ) : (
+              <p className="text-warn">{fusion.mensaje}</p>
+            ))}
+        </div>
+      )}
       <div className="grid min-h-0 flex-1 content-start gap-3 overflow-auto p-3">
         <p className="text-[11px] text-muted-foreground">Pasa el mouse por una línea y toca «+» para comentarla. Los comentarios se mandan juntos.</p>
         {diffs.datos?.map((d) => (
@@ -161,7 +214,7 @@ export default function Cambios({ cliente, conversacionId, tema, onEnviarComenta
             {comentarios.length} {comentarios.length === 1 ? 'comentario' : 'comentarios'}
           </span>
           <Button size="sm" onClick={enviar}>
-            <SendIcon /> Pasar al mensaje
+            <SendIcon /> Enviar comentarios
           </Button>
         </div>
       )}

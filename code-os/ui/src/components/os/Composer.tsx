@@ -1,4 +1,4 @@
-import { AtSignIcon, BotIcon, FileIcon, GhostIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon, SlashIcon, XIcon } from 'lucide-react'
+import { AtSignIcon, BotIcon, FileIcon, FilePenLineIcon, SparklesIcon, GhostIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon, SlashIcon, XIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { toast } from 'sonner'
@@ -55,13 +55,14 @@ function BotonAdjuntar() {
   )
 }
 
-type Sugerencia = { clave: string; titulo: string; detalle?: string; icono: 'comando' | 'archivo' | 'agente'; aplicar: () => void }
+type Sugerencia = { clave: string; titulo: string; detalle?: string; icono: 'comando' | 'archivo' | 'agente' | 'skill'; aplicar: () => void }
 
 /** Selector Manual / Plan (solo en Code). */
 function SelectorModo({ modo, onModo }: { modo: ModoSesion; onModo: (m: ModoSesion) => void }) {
   const opciones = [
     { id: 'code' as const, nombre: 'Manual', icono: ShieldCheckIcon, ayuda: 'Pide permiso antes de cada acción' },
     { id: 'plan' as const, nombre: 'Plan', icono: ListChecksIcon, ayuda: 'Propone un plan y no toca nada hasta que lo apruebes' },
+    { id: 'aceptar' as const, nombre: 'Aceptar ediciones', icono: FilePenLineIcon, ayuda: 'Las ediciones de archivos se aprueban solas; comandos y red siguen pidiendo permiso' },
   ]
   return (
     <div role="radiogroup" aria-label="Modo de permisos" className="relative flex h-8 items-center rounded-md bg-muted/60 p-0.5">
@@ -108,6 +109,8 @@ type Props = {
   rutas?: string[]
   /** Agentes para `@agente` al inicio del mensaje (los del rol primero). */
   agentes?: { id: string; nombre: string; descripcion: string }[]
+  /** Skills cargadas en el servidor: salen en `/` y se mandan al motor como `/nombre`. */
+  skills?: { nombre: string; descripcion: string }[]
   /** Texto que se pone en la caja desde fuera (sugerencias, comentarios del diff). */
   borrador?: { texto: string; n: number }
 }
@@ -131,7 +134,12 @@ function Caja(p: Props) {
   const sugerencias = useMemo<Sugerencia[]>(() => {
     if (cerrado) return []
     if (/^\/\S*$/.test(valor)) {
-      return filtrarComandos(valor, p.pestana).map((c) => ({
+      const q = valor.slice(1).toLowerCase()
+      const skills: Sugerencia[] = (p.skills ?? [])
+        .filter((k) => k.nombre.toLowerCase().includes(q))
+        .slice(0, 8)
+        .map((k) => ({ clave: `skill:${k.nombre}`, titulo: `/${k.nombre}`, detalle: k.descripcion, icono: 'skill', aplicar: () => textInput.setInput(`/${k.nombre} `) }))
+      const comandos = filtrarComandos(valor, p.pestana).map<Sugerencia>((c) => ({
         clave: c.nombre,
         titulo: c.nombre,
         detalle: c.descripcion,
@@ -143,6 +151,7 @@ function Caja(p: Props) {
           } else textInput.setInput(c.nombre + ' ')
         },
       }))
+      return [...comandos, ...skills]
     }
     const mencion = mencionEnCurso(valor)
     // `@agente` solo al inicio: arranca el flujo de ese agente con lo ya hablado.
@@ -195,7 +204,7 @@ function Caja(p: Props) {
         {sugerencias.length > 0 && (
           <motion.ul
             role="listbox"
-            aria-label={sugerencias[0].icono === 'comando' ? 'Comandos' : sugerencias[0].icono === 'agente' ? 'Agentes' : 'Archivos'}
+            aria-label={sugerencias[0].icono === 'comando' || sugerencias[0].icono === 'skill' ? 'Comandos' : sugerencias[0].icono === 'agente' ? 'Agentes' : 'Archivos'}
             initial={{ opacity: 0, y: 6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.98 }}
@@ -211,7 +220,7 @@ function Caja(p: Props) {
                   onClick={() => s.aplicar()}
                   className={cn('flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm', i === indice && 'bg-accent')}
                 >
-                  {s.icono === 'comando' ? <SlashIcon className="size-3.5 text-muted-foreground" /> : s.icono === 'agente' ? <BotIcon className="size-3.5 text-muted-foreground" /> : <AtSignIcon className="size-3.5 text-muted-foreground" />}
+                  {s.icono === 'skill' ? <SparklesIcon className="size-3.5 text-muted-foreground" /> : s.icono === 'comando' ? <SlashIcon className="size-3.5 text-muted-foreground" /> : s.icono === 'agente' ? <BotIcon className="size-3.5 text-muted-foreground" /> : <AtSignIcon className="size-3.5 text-muted-foreground" />}
                   <span className="font-mono text-xs">{s.titulo}</span>
                   {s.detalle && <span className="truncate text-xs text-muted-foreground">{s.detalle}</span>}
                 </button>

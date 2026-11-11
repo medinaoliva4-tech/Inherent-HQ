@@ -44,6 +44,9 @@ export type ArchivoDiff = { ruta: string; anterior?: string; nuevo?: string; dif
 /** Servidor MCP del catálogo del puente (solo nombres: el cliente nunca manda comandos). */
 export type ServidorMcp = { nombre: string; descripcion: string; estado: 'activo' | 'apagado' | 'error' }
 export type Skill = { nombre: string; descripcion: string; contenido: string }
+export type ResultadoFusion = { ok: true; vacio?: boolean } | { ok: false; conflicto: boolean; archivos: string[]; mensaje: string }
+/** Un archivo de memoria del cliente (p. ej. `clients/<slug>/CLAUDE.md`) y si está cargado en la sesión. */
+export type MemoriaCliente = { ruta: string; resumen: string; cargada: boolean }
 
 /** Lo que algunas pantallas necesitan y el puente todavía no tiene: lanza este error en `http`. */
 export class NoDisponible extends Error {
@@ -77,6 +80,14 @@ export interface Cliente extends ClienteEventos {
   guardarArchivo(conversacionId: string, ruta: string, contenido: string): Promise<void>
   diff(conversacionId: string): Promise<ArchivoDiff[]>
   abrirTerminal(conversacionId: string, alRecibir: (datos: string) => void): Promise<Terminal>
+  /** `POST /sessions/:id/merge`: fusiona una sesión aislada con el proyecto. */
+  fusionar(conversacionId: string): Promise<ResultadoFusion>
+  /** Liga una conversación a una sesión del puente que ya existe (modo embebido: la crea el Chat del OS). */
+  vincularSesion(conversacionId: string, sesionId: string): void
+  /** ¿Esa conversación ya tiene sesión en el puente? (para saber si hay cambios, terminal, etc.) */
+  sesionDe(conversacionId: string): string | null
+  /** Memoria del cliente cargada en la sesión: qué CLAUDE.md entró. */
+  memoriaCliente(clienteId: string): Promise<MemoriaCliente[]>
   // Ajustes
   mcp(): Promise<ServidorMcp[]>
   skills(): Promise<Skill[]>
@@ -108,7 +119,17 @@ export interface Cliente extends ClienteEventos {
 export type CambiosNodo = Partial<Pick<Nodo, 'titulo' | 'contenido' | 'fuente' | 'viene_de'>>
 
 /** `herramientasUrl`: backend de herramientas (code-os/herramientas). Sin él, se piden al puente. */
-export type ConfigCliente = { url?: string; token?: string; cuotasUrl?: string; cuotasToken?: string; herramientasUrl?: string }
+export type ConfigCliente = {
+  url?: string
+  token?: string
+  /** Token que cambia (el pase del OS en modo embebido, que caduca): se lee en cada petición y gana sobre `token`. */
+  obtenerToken?: () => string | undefined
+  /** El puente respondió 401 (p. ej. caducó el pase del OS): en modo embebido se pide uno nuevo. */
+  alNoAutorizado?: () => void
+  cuotasUrl?: string
+  cuotasToken?: string
+  herramientasUrl?: string
+}
 
 /**
  * Lee la configuración de las variables de Vite. Sin `VITE_PUENTE_URL` se usa el mock.

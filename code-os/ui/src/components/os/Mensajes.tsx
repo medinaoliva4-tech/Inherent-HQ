@@ -1,4 +1,4 @@
-import { BotIcon, CheckIcon, CircleDashedIcon, CircleIcon, CopyIcon, FileCodeIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon } from 'lucide-react'
+import { BotIcon, CheckIcon, ChefHatIcon, CircleDashedIcon, CircleIcon, CopyIcon, FileCodeIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo, useState } from 'react'
 import {
@@ -160,7 +160,7 @@ export function TarjetaPermiso({ p, onResponder }: { p: PartePermiso; onResponde
           quiere hacer esto: {p.descripcion}
         </ConfirmationRequest>
         <ConfirmationAccepted>
-          {p.respuesta === 't' ? 'Permitido a todo en esta sesión' : 'Permitido esta vez'}: {p.descripcion}
+          {p.auto ? 'Aprobado solo (Aceptar ediciones)' : p.respuesta === 't' ? 'Permitido a todo en esta sesión' : 'Permitido esta vez'}: {p.descripcion}
         </ConfirmationAccepted>
         <ConfirmationRejected>Denegado: {p.descripcion}</ConfirmationRejected>
       </ConfirmationTitle>
@@ -452,6 +452,14 @@ export function MensajeVista({ mensaje: m, detallada, onPermiso, onPregunta, onP
   const textoCompleto = m.partes.map((p) => (p.tipo === 'texto' ? p.texto : '')).join('\n\n')
   return (
     <Message from="assistant" className="max-w-full">
+      {m.ruta && (
+        <p className="flex flex-wrap items-center gap-x-1.5 text-[11px] text-muted-foreground" role="note" aria-label="Elección del router">
+          <ChefHatIcon className="size-3.5" />
+          <span className="font-medium text-foreground">{m.ruta.nombre}</span> · {m.ruta.nivel}
+          {m.ruta.claude && ` (${m.ruta.claude})`}: {m.ruta.motivo.charAt(0).toLowerCase() + m.ruta.motivo.slice(1)}
+          <span className="text-mut2"> · esfuerzo {m.ruta.esfuerzo}</span>
+        </p>
+      )}
       {m.partes.map((p, i) => (
         <motion.div key={p.id} {...entrada} className="min-w-0">
           {p.tipo === 'razonamiento' && (

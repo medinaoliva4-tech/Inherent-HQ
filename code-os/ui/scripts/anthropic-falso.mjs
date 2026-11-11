@@ -15,6 +15,8 @@ const msg = (id, blocks, stop) => [
 let n = 0;
 createServer(async (req, res) => {
   const chunks = []; for await (const c of req) chunks.push(c);
+  // Como LiteLLM con una llave virtual: las rutas de administrador dicen 403 (el puente lo comprueba al arrancar).
+  if (req.url?.startsWith('/user/')) { res.writeHead(403); return res.end(); }
   if (req.url?.startsWith('/v1/models')) { res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ data: ['nivel-alto','nivel-medio','nivel-bajo','cp-glm-5.3','cp-kimi-k3'].map((id) => ({ id })) })); }
   const body = chunks.length ? JSON.parse(Buffer.concat(chunks).toString()) : {};
   if (body.stream === false) { res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ id: 'm', type: 'message', role: 'assistant', model: 'x', content: [{ type: 'text', text: 'ok' }], stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 } })); }

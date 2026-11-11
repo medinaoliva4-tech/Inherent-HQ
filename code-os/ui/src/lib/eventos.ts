@@ -7,8 +7,17 @@
 /** Respuesta a un permiso: s = sí, solo esta vez · n = no · t = sí a todo en esta sesión. */
 export type RespuestaPermiso = 's' | 'n' | 't'
 
-/** Modo de la sesión en el puente: chat = sin herramientas · plan = solo lectura + plan · code = herramientas con permiso. */
-export type ModoSesion = 'chat' | 'plan' | 'code'
+/**
+ * Modo de la sesión: chat = sin herramientas · plan = solo lectura + plan · code = «Manual», pide permiso para todo ·
+ * aceptar = «Aceptar ediciones»: las ediciones de archivos se aprueban solas y lo demás pide permiso.
+ * El puente solo conoce chat/plan/code: `aceptar` viaja como `code` y la interfaz aprueba las ediciones (ver `EDICIONES`).
+ * «Saltar permisos» NO existe a propósito.
+ */
+export type ModoSesion = 'chat' | 'plan' | 'code' | 'aceptar'
+
+/** Herramientas que «Aceptar ediciones» aprueba solas. Bash, red y lo demás siguen pidiendo permiso. */
+export const EDICIONES = new Set(['Edit', 'MultiEdit', 'Write', 'NotebookEdit'])
+export const modoPuente = (m: ModoSesion): 'chat' | 'plan' | 'code' => (m === 'aceptar' ? 'code' : m)
 
 /** `padre` = id de la herramienta Task/Agent que lanzó a un subagente (parentToolUseId en el puente). */
 export type EventoTexto = { tipo: 'texto'; id: string; delta: string; padre?: string }
@@ -88,6 +97,8 @@ export type PeticionEnvio = {
   instrucciones?: string
   /** Subagentes (`@agente`) que el puente registra al crear la sesión (`agents` del SDK). */
   agentes?: Record<string, { description: string; prompt: string }>
+  /** Sesión aislada: el puente la corre en un worktree de git propio (`isolate: true`) y luego se fusiona. */
+  aislada?: boolean
   signal?: AbortSignal
 }
 

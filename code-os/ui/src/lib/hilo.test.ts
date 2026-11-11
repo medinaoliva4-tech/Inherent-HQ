@@ -89,6 +89,12 @@ describe('hilo en el cliente http', () => {
     expect(await c.calcOutbound({ meta: 5, conversion: 0.01, probabilidad: 0.95, semanas: 4 })).toEqual({ prospectos: 913, porSemana: 229, porDiaHabil: 46 })
   })
 
+  it('si el puente responde con la página HTML (ruta que no es de su API), es «aún no está»', async () => {
+    const f = (async () => new Response('<!doctype html><title>Code OS</title>', { status: 200, headers: { 'content-type': 'text/html' } })) as typeof fetch
+    const c = crearClienteHttp({ url: '' }, f)
+    await expect(c.clientes()).rejects.toBeInstanceOf(NoDisponible)
+  })
+
   it('409 al aprobar sin leer se explica en español', async () => {
     const f = (async () => respuesta(409, {})) as typeof fetch
     const c = crearClienteHttp({ url: 'http://puente' }, f)

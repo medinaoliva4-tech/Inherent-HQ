@@ -75,7 +75,7 @@ type Props = {
   agente: string
   onAgente: (id: string) => void
   onEmpezarAgente: (a: Agente) => void
-  onCerrar: () => void
+  onCerrar?: () => void
   modo: 'chat' | 'code'
   cliente: Cliente
   conversacionId: string
@@ -86,6 +86,14 @@ type Props = {
   tema: 'dark' | 'light'
   onMencionar: (ruta: string) => void
   onTextoAlMensaje: (texto: string) => void
+  /** Manda un texto como mensaje (comentarios del diff). */
+  onEnviar: (texto: string) => void
+  /** «Revisar»: lo revisa otro nivel; devuelve quién. */
+  onRevisar?: () => string | void
+  /** La sesión corre aislada (worktree): se puede fusionar. */
+  aislada?: boolean
+  /** Dentro del Chat del OS (`?embed=1`): sin chat propio; Código solo con Cambios y Terminal. */
+  embebido?: boolean
   rutaAbierta?: string | null
 }
 
@@ -106,11 +114,12 @@ export function PanelLateral(p: Props) {
     { id: 'cliente', nombre: 'Cliente', icono: Building2Icon, n: h.avisos.length, aviso: true },
     { id: 'agentes', nombre: 'Agentes', icono: BotIcon, n: new Set(trabajosVivos(p.mensajes).map((t) => t.agente)).size },
     { id: 'herramientas', nombre: 'Herramientas', icono: LayoutGridIcon, n: p.artefactos.length },
-    ...(p.modo === 'code' ? [{ id: 'codigo' as const, nombre: 'Código', icono: CodeIcon, n: tareasDe(p.mensajes).filter((t) => t.status !== 'completed').length }] : []),
+    ...(p.modo === 'code' || p.embebido ? [{ id: 'codigo' as const, nombre: 'Código', icono: CodeIcon, n: tareasDe(p.mensajes).filter((t) => t.status !== 'completed').length }] : []),
   ]
   const seccion = secciones.some((s) => s.id === p.seccion) ? p.seccion : 'herramientas'
   const vistas: VistaHerramienta[] = [...p.herramientas, ...(p.artefactos.length ? (['artefactos'] as const) : [])]
   const herramienta = vistas.includes(p.herramienta) ? p.herramienta : vistas[0]
+  const pestanaCodigo: PestanaPanel = p.embebido && !['cambios', 'terminal', 'archivos'].includes(p.pestana) ? 'cambios' : p.pestana
 
   return (
     <aside aria-label="Panel lateral" className="@container flex h-full min-w-0 flex-col bg-card">
@@ -129,14 +138,16 @@ export function PanelLateral(p: Props) {
             >
               {seccion === s.id && <motion.span layoutId="seccion-panel" className="absolute inset-0 -z-10 rounded-md bg-accent" transition={resortePop} />}
               <s.icono className="size-4" />
-              <span className="hidden @[27rem]:inline">{s.nombre}</span>
+              <span className="hidden @[30rem]:inline">{s.nombre}</span>
               <Insignia n={s.n ?? 0} aviso={s.aviso} />
             </button>
           ))}
         </div>
-        <Button variant="ghost" size="icon-sm" onClick={p.onCerrar} aria-label="Cerrar panel">
-          <XIcon />
-        </Button>
+        {!p.embebido && (
+          <Button variant="ghost" size="icon-sm" onClick={p.onCerrar} aria-label="Cerrar panel">
+            <XIcon />
+          </Button>
+        )}
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden text-sm">
@@ -183,9 +194,9 @@ export function PanelLateral(p: Props) {
         )}
 
         {seccion === 'codigo' && (
-          <Tabs value={p.pestana} onValueChange={(v) => p.onPestana(v as PestanaPanel)} className="flex h-full min-h-0 flex-col gap-0">
+          <Tabs value={pestanaCodigo} onValueChange={(v) => p.onPestana(v as PestanaPanel)} className="flex h-full min-h-0 flex-col gap-0">
             <TabsList variant="line" className="w-full shrink-0 justify-start overflow-x-auto border-b px-2 [scrollbar-width:none]">
-              {pestanasCodigo.map((x) => (
+              {pestanasCodigo.filter((x) => !p.embebido || x.id === 'cambios' || x.id === 'terminal' || x.id === 'archivos').map((x) => (
                 <TabsTrigger key={x.id} value={x.id} className="shrink-0 gap-1 px-1.5 text-xs" title={x.nombre} aria-label={x.nombre}>
                   <x.icono className="size-3.5" />
                   <span className="hidden @[30rem]:inline">{x.nombre}</span>
@@ -194,28 +205,28 @@ export function PanelLateral(p: Props) {
             </TabsList>
             <div className="min-h-0 flex-1 overflow-hidden">
               <Suspense fallback={<Cargando />}>
-                {p.pestana === 'archivos' && (
+                {pestanaCodigo === 'archivos' && (
                   <TabsContent value="archivos" className="h-full">
                     <Archivos cliente={p.cliente} conversacionId={p.conversacionId} tema={p.tema} onMencionar={p.onMencionar} rutaInicial={p.rutaAbierta} />
                   </TabsContent>
                 )}
-                {p.pestana === 'cambios' && (
+                {pestanaCodigo === 'cambios' && (
                   <TabsContent value="cambios" className="h-full">
-                    <Cambios cliente={p.cliente} conversacionId={p.conversacionId} tema={p.tema} onEnviarComentarios={p.onTextoAlMensaje} />
+                    <Cambios cliente={p.cliente} conversacionId={p.conversacionId} tema={p.tema} onEnviarComentarios={p.onEnviar} onRevisar={p.onRevisar} aislada={p.aislada} />
                   </TabsContent>
                 )}
-                {p.pestana === 'terminal' && (
+                {pestanaCodigo === 'terminal' && (
                   <TabsContent value="terminal" className="h-full">
                     <Terminal cliente={p.cliente} conversacionId={p.conversacionId} tema={p.tema} />
                   </TabsContent>
                 )}
               </Suspense>
-              {p.pestana === 'tareas' && (
+              {pestanaCodigo === 'tareas' && (
                 <TabsContent value="tareas" className="h-full overflow-auto">
                   <Tareas mensajes={p.mensajes} />
                 </TabsContent>
               )}
-              {p.pestana === 'vista' && (
+              {pestanaCodigo === 'vista' && (
                 <TabsContent value="vista" className="h-full">
                   <VistaPrevia />
                 </TabsContent>

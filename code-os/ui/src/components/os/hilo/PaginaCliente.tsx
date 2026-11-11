@@ -6,6 +6,7 @@ import { useHilo } from '@/hooks/use-hilo'
 import { AREAS, ancestrosDe, areaDe, dependientesDe, etiquetaNodo, type Area, type Aviso, type Nodo } from '@/lib/hilo'
 import { resorte } from '@/lib/movimiento'
 import { cn } from '@/lib/utils'
+import { ContextoSesion } from './ContextoSesion'
 import { ChipArea, TarjetaDecision } from './TarjetaDecision'
 
 const COLUMNAS: { area: Area[]; titulo: string }[] = [
@@ -122,7 +123,13 @@ export function PaginaCliente() {
   const [seleccion, setSeleccion] = useState<string | null>(null)
   const aprobados = h.nodos.filter((n) => n.estado === 'aprobado').length
 
-  if (h.falta) return <p className="p-4 text-sm text-muted-foreground">Falta en el backend: {h.falta}</p>
+  if (h.falta)
+    return (
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-4">
+        <p className="text-sm text-muted-foreground">El hilo del cliente todavía no está en el backend ({h.falta}).</p>
+        <ContextoSesion />
+      </div>
+    )
   if (h.error) return <p className="p-4 text-sm text-bad">{h.error}</p>
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-4">
@@ -136,6 +143,7 @@ export function PaginaCliente() {
           {aprobados} aprobados · {h.nodos.length - aprobados} hipótesis{h.cliente.tipo === 'mock' ? ' · datos de ejemplo' : ''}
         </p>
       </header>
+      <ContextoSesion />
       {h.avisos.length > 0 && (
         <section aria-label="Avisos" className="grid gap-2">
           <h3 className="text-sm font-medium">Cambió algo de lo que dependes</h3>

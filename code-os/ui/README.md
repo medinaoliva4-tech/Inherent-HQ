@@ -46,6 +46,11 @@ deseos, pilares × ángulos, radar, campañas, Production Pre imprimible, editor
   portal. Aprobar se activa solo después de abrir esa versión. Guardar vuelve a hipótesis y avisa a lo que depende.
 - El workspace se arma por **rol** («Ver como» abajo a la izquierda; `src/lib/roles.ts`). El cliente se elige arriba del chat.
 - `VITE_HERRAMIENTAS_URL` (opcional): backend de herramientas; sin ella se piden al puente. Lo que falta: `docs/pendiente.md`.
+- **Dentro del Chat del OS**: `?embed=1` muestra solo los paneles y usa el pase del OS por `postMessage`
+  (`VITE_EMBED_ORIGENES`, por defecto `https://work.inherentglobal.com`). Contrato: `docs/embebido.md`.
+- **Auto** en el selector de modelo: el router por tarea (`src/lib/cocina.ts`, copia probada de
+  `ceo-os/public/js/llm/router-code.js`) elige el nivel; permisos Manual / Plan / Aceptar ediciones; Cambios con
+  Enviar comentarios, Revisar (otro nivel) y Fusionar (sesiones aisladas).
 
 ## Qué hay
 - **Barra lateral**: Chat / Code, proyectos (carpetas con instrucciones), búsqueda en títulos y mensajes, fijar,
