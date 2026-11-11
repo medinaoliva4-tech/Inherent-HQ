@@ -1,0 +1,50 @@
+{
+  "_nota": "Fuentes del radar. Tipos: rss · hn · github_busqueda · github_releases · mcp_registro. «activa»: false la apaga sin borrarla. «peso» sube o baja su puntaje. {{desde}} = fecha de la última corrida. Agregar las del CEO al final.",
+  "fuentes": [
+    { "id": "mcp-registro", "tipo": "mcp_registro", "url": "https://registry.modelcontextprotocol.io/v0.1/servers", "paginas": 5, "peso": 1 },
+
+    { "id": "gh-mcp-nuevos", "tipo": "github_busqueda", "peso": 2, "max": 25, "estrellas_min": 100,
+      "consultas": ["topic:mcp-server created:>{{desde}}", "topic:mcp created:>{{desde}}", "mcp server in:name,description created:>{{desde}} stars:>100"] },
+    { "id": "gh-agentes-nuevos", "tipo": "github_busqueda", "peso": 1.5, "max": 20, "estrellas_min": 150,
+      "consultas": ["topic:ai-agents created:>{{desde}}", "claude code skills in:name,description created:>{{desde}} stars:>100"] },
+    { "id": "gh-departamentos", "tipo": "github_busqueda", "peso": 2, "max": 10, "estrellas_min": 50,
+      "consultas": [
+        "topic:marketing-automation pushed:>{{desde}} stars:>200",
+        "topic:video-editing pushed:>{{desde}} stars:>300",
+        "topic:web-scraping created:>{{desde}}",
+        "ads mcp in:name,description pushed:>{{desde}} stars:>30",
+        "crm mcp in:name,description pushed:>{{desde}} stars:>50",
+        "figma mcp in:name,description pushed:>{{desde}} stars:>100",
+        "instagram OR tiktok in:name,description created:>{{desde}} stars:>50",
+        "agent memory knowledge graph in:name,description created:>{{desde}} stars:>100"
+      ] },
+    { "id": "gh-vigilados", "tipo": "github_releases", "peso": 2,
+      "repos": ["storytold/filmcraft", "awdr74100/figwright", "Graphify-Labs/graphify", "googleads/google-ads-mcp", "pipeboard-co/meta-ads-mcp",
+        "apify/apify-mcp-server", "D4Vinci/Scrapling", "unclecode/crawl4ai", "firecrawl/firecrawl-mcp-server", "microsoft/playwright-mcp",
+        "getzep/graphiti", "topoteretes/cognee", "twentyhq/twenty", "remotion-dev/remotion", "BerriAI/litellm", "yt-dlp/yt-dlp"] },
+
+    { "id": "hn", "tipo": "hn", "peso": 1.5, "puntos_min": 80, "max": 15,
+      "consultas": ["MCP", "agent", "Claude", "open source video", "scraping", "marketing", "ads"] },
+
+    { "id": "claude-code-releases", "tipo": "rss", "url": "https://github.com/anthropics/claude-code/releases.atom", "peso": 1, "max": 5 },
+    { "id": "mcp-blog", "tipo": "rss", "url": "https://blog.modelcontextprotocol.io/index.xml", "peso": 2 },
+    { "id": "simon-willison", "tipo": "rss", "url": "https://simonwillison.net/atom/everything/", "peso": 1.5, "max": 30 },
+    { "id": "latent-space", "tipo": "rss", "url": "https://www.latent.space/feed", "peso": 1.5 },
+    { "id": "tldr-ai", "tipo": "rss", "url": "https://tldr.tech/api/rss/ai", "peso": 1 },
+    { "id": "bens-bites", "tipo": "rss", "url": "https://www.bensbites.com/feed", "peso": 1 },
+    { "id": "smol-ainews", "tipo": "rss", "url": "https://news.smol.ai/rss.xml", "peso": 1, "max": 10 },
+    { "id": "vercel-changelog", "tipo": "rss", "url": "https://vercel.com/atom", "peso": 0.5, "max": 25 },
+    { "id": "openai-news", "tipo": "rss", "url": "https://openai.com/news/rss.xml", "peso": 0.5, "max": 15 },
+    { "id": "huggingface-blog", "tipo": "rss", "url": "https://huggingface.co/blog/feed.xml", "peso": 0.5, "max": 15 },
+    { "id": "product-hunt", "tipo": "rss", "url": "https://www.producthunt.com/feed", "peso": 0.5, "max": 50 },
+
+    { "id": "social-media-today", "tipo": "rss", "url": "https://www.socialmediatoday.com/feeds/news/", "peso": 1.5 },
+    { "id": "jon-loomer", "tipo": "rss", "url": "https://www.jonloomer.com/feed/", "peso": 1.5, "max": 20 },
+    { "id": "ppc-land", "tipo": "rss", "url": "https://ppc.land/rss/", "peso": 1.5, "max": 40 },
+
+    { "id": "reddit-mcp", "tipo": "rss", "pausa_ms": 10000, "url": "https://www.reddit.com/r/mcp/top/.rss?t=week", "peso": 1, "max": 15 },
+    { "id": "reddit-claudeai", "activa": false, "tipo": "rss", "pausa_ms": 10000, "url": "https://www.reddit.com/r/ClaudeAI/top/.rss?t=week", "peso": 0.5, "max": 15 },
+    { "id": "reddit-ppc", "activa": false, "tipo": "rss", "pausa_ms": 10000, "url": "https://www.reddit.com/r/PPC/top/.rss?t=week", "peso": 1, "max": 10 },
+    { "id": "reddit-n8n", "activa": false, "tipo": "rss", "pausa_ms": 10000, "url": "https://www.reddit.com/r/n8n/top/.rss?t=week", "peso": 0.5, "max": 10 }
+  ]
+}
