@@ -14,6 +14,7 @@
 //   GET  /estilos[?completo=1] · /estilos/:id   catálogo de estilos (recetas en estilos/*.json)
 //   POST /cortes/:id/estilo      {estilo, recursos?, version?} → aplica el estilo al corte → {corte, pendientes}
 //   GET  /referencias            biblioteca de videos de referencia (semilla del repo + radar + desgloses)
+//   POST /referencias            {id, titulo, plataforma, fuente_url|ruta, duracion, …} → agrega una referencia (propia o del radar)
 //   POST /desglose               {ruta, referencia?} → 202 {trabajo}; resultado.desglose (escenas, ritmo, plano, texto, efecto)
 //   POST /referencias/:id/imitar {corte, recursos?, version?} → desglose → receta → aplicada al corte
 //   GET  /editor/                Retoque (el editor del rol de editor)
@@ -27,6 +28,7 @@ import { crearCola, ErrorEntrada } from './cola.mjs';
 import { ErrorCorte } from './corte.mjs';
 import { primerCorte } from './primer-corte.mjs';
 import { cargarEstilos, resumen, CATEGORIAS, ErrorEstilo } from './estilos.mjs';
+import { ErrorReferencia } from './referencias.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const TIPOS = { '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.wav': 'audio/wav', '.srt': 'text/plain; charset=utf-8', '.html': 'text/html; charset=utf-8',
@@ -83,7 +85,9 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
       if (req.method === 'POST' && ruta === '/cortes/primer') {
         const { shotlist, clips, agente } = await leerJson(req);
         const { corte, faltantes } = primerCorte({ shotlist, clips, agente });
-        return json(201, { corte: cola.cortes.guardar(corte), faltantes });
+        const g = cola.cortes.guardar(corte);
+        // video nuevo: el editor abre en el catálogo de estilos y referencias
+        return json(201, { corte: g, faltantes, editor: `/editor/?corte=${g.id}&nuevo=1` });
       }
       m = ruta.match(/^\/cortes\/([\w-]+)(\/render)?$/);
       if (m) {
@@ -106,6 +110,7 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
         return json(200, cola.aplicarEstilo(m[1], e, recursos, version));
       }
       if (req.method === 'GET' && ruta === '/referencias') return json(200, { referencias: cola.referencias() });
+      if (req.method === 'POST' && ruta === '/referencias') return json(201, { referencia: cola.agregarReferencia(await leerJson(req)) });
       if (req.method === 'POST' && ruta === '/desglose') { const b = await leerJson(req); return json(202, { trabajo: publico(cola.desglose(b.ruta, b.referencia ?? null)) }); }
       m = ruta.match(/^\/referencias\/([\w-]+)\/imitar$/);
       if (req.method === 'POST' && m) { const b = await leerJson(req); return json(200, cola.imitar(m[1], b.corte, { estilos: estilos(), recursos: b.recursos, version: b.version })); }
@@ -121,7 +126,7 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
       if (req.method === 'GET' && ruta === '/medios') return servirArchivo(req, res, cola.fuente(url.searchParams.get('ruta')));
       return json(404, { error: 'no existe' });
     } catch (e) {
-      const usuario = e instanceof ErrorEntrada || e instanceof ErrorCorte || e instanceof ErrorEstilo || /shot list|toma|clip/.test(e.message);
+      const usuario = e instanceof ErrorReferencia || e instanceof ErrorEntrada || e instanceof ErrorCorte || e instanceof ErrorEstilo || /shot list|toma|clip/.test(e.message);
       if (!usuario) console.error(e);
       return json(usuario ? (/conflicto/.test(e.message) ? 409 : 400) : 500, { error: e.message });
     }

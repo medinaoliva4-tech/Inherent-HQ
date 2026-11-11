@@ -158,14 +158,15 @@
   <span class="chip" id="formato">9:16</span>
   <span class="meta" id="meta"></span>
   <span class="esp"></span>
-  <div class="vistas vidrio"><button id="verEstilos">Estilos</button><button id="verTablero" class="on">Tablero</button><button id="verEscena">Escena</button></div>
+  <div class="vistas vidrio"><button id="verTablero" class="on">Tablero</button><button id="verEscena">Escena</button></div>
   <button class="btn" id="deshacer" title="Deshacer (⌘Z)">Deshacer</button>
   <button class="btn" id="guardar">Guardar</button>
   <button class="btn primario" id="render">Exportar video</button>
 </header>
 
 <div id="catalogo" hidden>
-  <div class="pasos vidrio"><span><b>1</b>Elige un estilo</span><span><b>2</b>Copia el prompt o pulsa «Aplicar»</span><span><b>3</b>El agente edita tu video con ese estilo y tú revisas en el tablero</span></div>
+  <div class="pasos vidrio"><button class="btn chico" id="volverTablero">← Tablero</button><span><b>1</b>Elige un estilo o una referencia</span><span><b>2</b>Copia el prompt o pulsa «Aplicar» / «Imitar este»</span><span><b>3</b>El agente edita tu video y tú revisas en el tablero</span></div>
+  <div class="categorias" id="secciones"></div>
   <div class="categorias" id="categorias"></div>
   <div class="estilos" id="estilos"></div>
 </div>
@@ -446,7 +447,9 @@ function pintarTablero() {
   barra.append(h('span', { textContent: '♪ Música de todo el video' }), pista);
   if (corte.musica) barra.append(h('span', { textContent: 'Volumen' }), Object.assign(h('input', { type: 'range', min: 0, max: 1, step: 0.01, value: corte.musica.volumen }), { onpointerdown: marcar, oninput: (ev) => (corte.musica.volumen = Number(ev.target.value)) }));
   const f = corte.origen?.faltantes?.length ? h('span', { style: 'color:#e9c79a', textContent: `⚠︎ ${corte.origen.faltantes.length === 1 ? 'Falta 1 toma' : `Faltan ${corte.origen.faltantes.length} tomas`}: ${corte.origen.faltantes.map((x) => x.toma).join(', ')}` }) : null;
-  barra.append(h('span', { className: 'esp' }), f, h('span', { textContent: 'Arrastra las tarjetas para cambiar el orden' }));
+  const ref = corte.estilo?.startsWith('imitar-') ? referencias.find((r) => `imitar-${r.id}` === corte.estilo) : null;
+  barra.append(h('span', { className: 'esp' }), f, ref ? h('span', { textContent: `Imitando: ${ref.titulo.slice(0, 40)}`, style: 'color:var(--crema)' }) : null,
+    h('button', { className: 'btn chico', textContent: 'Estilos y referencias', onclick: () => cambiarModo('estilos') }));
 
   const rej = $('rejilla');
   const vivas = new Set(corte.escenas.map((e) => e.id));
@@ -476,6 +479,7 @@ function pintarTablero() {
         h('button', { className: 'btn icono', textContent: 'Editar', onclick: () => { sel = i; capaSel = null; cambiarModo('escena'); } })),
       reg.caja,
       e.nota ? h('div', { className: 'nota', textContent: e.nota }) : null,
+      e.referencia ? h('div', { className: 'nota', style: 'color:var(--crema);opacity:.8', textContent: `Imita ${e.referencia}` }) : null,
       receta, h('div', { className: 'agregar' }, agregar));
     t.ondragstart = (ev) => { if (ev.target !== t) return; ev.dataTransfer.setData('text/plain', String(i)); t.classList.add('arrastrando'); };
     t.ondragend = () => t.classList.remove('arrastrando');
@@ -568,15 +572,16 @@ function pintarPanel() {
 function cambiarModo(m) {
   if (!corte && m !== 'estilos') return aviso('Abre un corte para ver su tablero');
   modo = m;
-  for (const [id, boton] of [['catalogo', 'verEstilos'], ['tablero', 'verTablero'], ['escena', 'verEscena']]) {
+  for (const [id, boton] of [['catalogo', null], ['tablero', 'verTablero'], ['escena', 'verEscena']]) {
     const on = (id === 'catalogo' ? 'estilos' : id) === m;
-    $(id).hidden = !on; $(boton).classList.toggle('on', on);
+    $(id).hidden = !on; if (boton) $(boton).classList.toggle('on', on);
   }
+  $('volverTablero').hidden = !corte;
   if (m !== 'escena') parar();
   for (const { vista } of vistasTarjeta.values()) m === 'tablero' ? vista.video.play().catch(() => {}) : vista.video.pause(); // los loops no gastan si no se ven
   pintarTodo();
 }
-$('verEstilos').onclick = () => cambiarModo('estilos');
+$('volverTablero').onclick = () => cambiarModo('tablero');
 $('verTablero').onclick = () => cambiarModo('tablero');
 $('verEscena').onclick = () => cambiarModo('escena');
 function pintarTodo() {
@@ -584,12 +589,12 @@ function pintarTodo() {
   if (!corte) return;
   sel = Math.min(sel, corte.escenas.length - 1);
   $('titulo').textContent = corte.titulo; $('formato').textContent = corte.formato;
-  $('meta').textContent = `${corte.escenas.length} escenas · ${fmt(total())} · versión ${corte.version}${corte.estilo ? ` · estilo ${catalogo.find((x) => x.id === corte.estilo)?.nombre ?? corte.estilo}` : ''}`;
+  $('meta').textContent = `${corte.escenas.length} escenas · ${fmt(total())} · versión ${corte.version}${corte.estilo ? (corte.estilo.startsWith('imitar-') ? ` · imitando ${referencias.find((r) => `imitar-${r.id}` === corte.estilo)?.titulo.slice(0, 40) ?? corte.estilo.slice(7)}` : ` · estilo ${catalogo.find((x) => x.id === corte.estilo)?.nombre ?? corte.estilo}`) : ''}`;
   if (modo === 'tablero') pintarTablero(); else if (modo === 'escena') pintarEscena();
 }
 
 // ── catálogo de estilos: elegir cómo se edita el video ──
-let catalogo = [], categorias = {}, categoria = 'todos', preparando = null;
+let catalogo = [], categorias = {}, categoria = 'todos', preparando = null, referencias = [], seccion = 'estilos';
 const favoritos = new Set((() => { try { return JSON.parse(localStorage.getItem('retoque.favoritos') ?? '[]'); } catch { return []; } })());
 const guardarFavoritos = () => { try { localStorage.setItem('retoque.favoritos', JSON.stringify([...favoritos])); } catch {} };
 const textoPrompt = (s) => [s.prompt, ...(s.requiere ?? []).map((r) => `Recursos: ${r.cantidad ?? 1} × ${r.recurso} (${r.descripcion}).`), corte ? `Corte: ${corte.id}.` : null].filter(Boolean).join(' ');
@@ -645,6 +650,10 @@ function crearVistaSintetica(caja, s) {
 }
 
 function pintarCatalogo() {
+  $('secciones').replaceChildren(...[['estilos', `Estilos · ${catalogo.length}`], ['referencias', `Videos de referencia · ${referencias.length}`]].map(([id, t]) =>
+    h('button', { className: seccion === id ? 'on' : '', textContent: t, onclick: () => { seccion = id; pintarCatalogo(); } })));
+  $('categorias').hidden = seccion !== 'estilos';
+  if (seccion === 'referencias') return pintarReferencias();
   const cuenta = (c) => catalogo.filter((s) => c === 'todos' || (c === 'favoritos' ? favoritos.has(s.id) : s.categoria === c)).length;
   $('categorias').replaceChildren(...[['todos', 'Todos'], ['favoritos', '♥ Favoritos'], ...Object.entries(categorias)].map(([id, nombre]) =>
     h('button', { className: categoria === id ? 'on' : '', onclick: () => { categoria = id; pintarCatalogo(); } }, nombre, h('span', { textContent: cuenta(id) }))));
@@ -671,6 +680,47 @@ function pintarCatalogo() {
     rej.append(tarjeta);
   }
 }
+// ── videos de referencia: jalar o imitar lo que ya funciona (solo enlace y metadatos; el video no se guarda) ──
+const durTxt = (s) => (s >= 60 ? `${Math.floor(s / 60)} min ${Math.round(s % 60)} s` : `${Math.round(s)} s`);
+function tiraDesglose(d) {
+  const color = { gancho: 'var(--crema)', cuerpo: 'rgba(236,230,218,.35)', cierre: '#e8735a' };
+  return h('div', { style: 'display:flex;gap:2px;height:8px;border-radius:4px;overflow:hidden;margin:0 2px', title: 'Desglose: gancho · cuerpo · cierre' },
+    d.escenas.map((e) => h('span', { style: `flex:${e.duracion};background:${color[e.rol]}`, title: `${e.rol} · ${e.duracion.toFixed(1)} s${e.plano ? ` · ${e.plano}` : ''}${e.texto ? ` · «${e.texto}»` : ''}` })));
+}
+function pintarReferencias() {
+  const rej = $('estilos'); rej.replaceChildren();
+  for (const r of referencias) {
+    const d = r.breakdown;
+    const sugerido = catalogo.find((s) => s.id === r.estilo_sugerido);
+    const prompt = `Imita la referencia «${r.titulo}» (${r.id}, ${r.fuente_url ?? 'video propio'})${corte ? ` en el corte ${corte.id}` : ''}: usa referencia_imitar.${d ? '' : ' Si no tiene desglose, primero video_desglose sobre el video y luego imítala.'}`;
+    const imitando = corte?.estilo === `imitar-${r.id}`;
+    rej.append(h('div', { className: `estilo vidrio${imitando ? ' aplicado' : ''}` },
+      h('div', { className: 'marco', style: 'height:auto;aspect-ratio:16/9' },
+        r.miniatura_url ? h('img', { src: r.miniatura_url, alt: '', loading: 'lazy', referrerPolicy: 'no-referrer', style: 'width:100%;height:100%;object-fit:cover' }) : h('div', { className: 'vacio', textContent: 'Sin miniatura' }),
+        h('span', { className: 'chip', style: 'position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.6)', textContent: durTxt(r.duracion) })),
+      h('h3', { textContent: r.titulo }),
+      h('div', { className: 'etiquetas' }, h('span', { textContent: r.plataforma }), r.autor ? h('span', { textContent: r.autor }) : null, h('span', { textContent: r.origen }),
+        r.metricas?.winner ? h('span', { textContent: '★ winner del radar', style: 'color:var(--crema)' }) : null, imitando ? h('span', { textContent: '✓ imitando', style: 'color:var(--crema)' }) : null),
+      h('p', { textContent: r.por_que_funciona }),
+      d ? h('div', {}, tiraDesglose(d), h('div', { className: 'etiquetas', style: 'margin-top:6px' }, h('span', { textContent: `desglose: ${d.escenas.length} escenas · ritmo ${d.ritmo.lectura}` }), h('span', { textContent: d.metodo })))
+        : h('div', { className: 'etiquetas' }, h('span', { textContent: `sin desglose · se imita con «${sugerido?.nombre ?? r.estilo_sugerido}»` })),
+      r.fuente_url ? h('a', { href: r.fuente_url, target: '_blank', rel: 'noopener noreferrer', textContent: 'Ver original ↗', style: 'font-size:12px;color:var(--tenue);margin:0 2px' }) : null,
+      h('div', { className: 'acciones' },
+        h('button', { className: 'btn chico', textContent: 'Copiar prompt', onclick: () => copiar(prompt) }),
+        h('button', { className: 'btn chico primario', textContent: 'Imitar este', disabled: !corte, title: corte ? 'Aplicar su desglose a este corte' : 'Abre un corte para imitarla', onclick: () => imitar(r) }))));
+  }
+}
+async function imitar(r) {
+  if (sucio && !(await guardar())) return;
+  try {
+    const anterior = JSON.stringify(corte);
+    const x = await pedir('POST', `/referencias/${r.id}/imitar`, { corte: corte.id, version: corte.version });
+    historia.push(anterior); corte = x.corte; abierto = null; vistasTarjeta.clear();
+    cambiarModo('tablero');
+    aviso(x.metodo === 'desglose' ? `Imitando «${r.titulo.slice(0, 40)}»: mismo orden y ritmo. Cada tarjeta muestra qué escena imita.` : `Sin desglose: se aplicó su estilo sugerido «${x.receta.nombre}».`, 4500);
+  } catch (e) { aviso(`No se pudo imitar: ${e.message}`, 5000); }
+}
+
 // confirmación (y recursos, si el estilo los pide) antes de reescribir la receta de todas las escenas
 function panelAplicar(s) {
   const elegidos = {};
@@ -735,6 +785,7 @@ async function iniciar() {
   const lista = (r) => pedir('GET', r).catch(() => ({}));
   const est = await lista('/estilos?completo=1');
   catalogo = est.estilos ?? []; categorias = est.categorias ?? {};
+  referencias = (await lista('/referencias')).referencias ?? [];
   if (!id) { $('titulo').textContent = 'Estilos'; cambiarModo('estilos'); return; } // sin corte: solo el catálogo (Copiar prompt)
   try {
     const [c, m, i, f] = await Promise.all([pedir('GET', `/cortes/${id}`), lista('/medios/musica'), lista('/medios/imagenes'), lista('/medios/fuentes')]);
@@ -743,7 +794,7 @@ async function iniciar() {
     for (const t of medios.fuentes) new FontFace(t.nombre, `url(${medio(t.ruta)})`).load().then((ff) => document.fonts.add(ff)).catch(() => {});
     const vista = q.get('vista');
     if (vista === 'escena') { sel = Number(q.get('escena') ?? 0); cambiarModo('escena'); }
-    else cambiarModo(vista === 'estilos' || (!vista && !corte.estilo) ? 'estilos' : 'tablero'); // sin estilo todavía: se entra por el catálogo
+    else cambiarModo(vista === 'estilos' || q.get('nuevo') ? 'estilos' : 'tablero'); // el catálogo solo al arrancar un video nuevo o a pedido
   } catch (e) { $('rejilla').append(h('div', { className: 'vacio', textContent: `No se pudo abrir el corte: ${e.message}` })); }
 }
 iniciar();

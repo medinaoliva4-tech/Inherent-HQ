@@ -235,6 +235,7 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
     mascara: (clip) => { fuente(clip); return encolar('mascara', { clip }); },
     desglose: (ruta, referencia = null) => { fuente(ruta); return encolar('desglose', { ruta, referencia }); },
     referencias: () => cargarReferencias({ datos: dirReferencias }),
+    agregarReferencia: (r) => guardarReferencia(dirReferencias, { origen: 'propio', ...r }),
     /** «Imitar este»: desglose de la referencia → receta → se aplica al corte. Sin desglose, usa su estilo sugerido. */
     imitar(idReferencia, idCorte, { estilos, recursos = {}, version } = {}) {
       const r = cargarReferencias({ datos: dirReferencias }).find((x) => x.id === idReferencia);
