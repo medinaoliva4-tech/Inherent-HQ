@@ -1,0 +1,39 @@
+{
+  "nota": "Lista base editable. Cada marca elige de aquí su style menu. «render: false» = se puede elegir y pedir al agente, pero el render con ffmpeg todavía no lo hace. Agregar o quitar elementos aquí no rompe nada: las marcas que eligieron uno que ya no existe solo lo pierden de su guía.",
+  "actualizado": "2026-11-11",
+  "transiciones": [
+    { "id": "corte", "nombre": "Corte directo", "descripcion": "Pasa de una escena a otra sin efecto. La más usada en talking heads.", "receta": { "tipo": "transicion", "entrada": "corte" }, "render": true },
+    { "id": "fundido-negro", "nombre": "Fundido desde negro", "descripcion": "La escena entra desde negro en 0.4 s.", "receta": { "tipo": "transicion", "entrada": "fundido", "duracion": 0.4 }, "render": true },
+    { "id": "fundido-lento", "nombre": "Fundido lento", "descripcion": "Entrada suave de 0.8 s: producto, comida, lugares.", "receta": { "tipo": "transicion", "entrada": "fundido", "duracion": 0.8 }, "render": true },
+    { "id": "fundido-cruzado", "nombre": "Fundido cruzado", "descripcion": "Una escena se disuelve en la siguiente.", "receta": null, "render": false },
+    { "id": "barrido", "nombre": "Barrido rápido (whip pan)", "descripcion": "Movimiento borroso de cámara que une dos tomas.", "receta": null, "render": false },
+    { "id": "deslizar", "nombre": "Deslizar", "descripcion": "La escena nueva entra empujando a la anterior.", "receta": null, "render": false },
+    { "id": "zoom-entrada", "nombre": "Zoom de entrada", "descripcion": "Entra acercándose de golpe a la cara.", "receta": null, "render": false },
+    { "id": "destello", "nombre": "Destello blanco", "descripcion": "Un flash corto entre escenas, para ritmo alto.", "receta": null, "render": false }
+  ],
+  "efectos": [
+    { "id": "zoom-lento", "nombre": "Zoom lento", "descripcion": "Se acerca poco a poco durante la escena (100→110 %).", "receta": { "tipo": "zoom", "desde": 1, "hasta": 1.1, "x": 0.5, "y": 0.45 }, "render": true },
+    { "id": "punch-in", "nombre": "Acercamiento fijo (punch-in)", "descripcion": "La escena va más cerca (118 %) para marcar una frase fuerte.", "receta": { "tipo": "zoom", "desde": 1.18, "hasta": 1.18, "x": 0.5, "y": 0.38 }, "render": true },
+    { "id": "alejar", "nombre": "Alejarse", "descripcion": "Empieza cerca y se abre (112→100 %). Bueno para cierres.", "receta": { "tipo": "zoom", "desde": 1.12, "hasta": 1, "x": 0.5, "y": 0.5 }, "render": true },
+    { "id": "color-calido", "nombre": "Color cálido", "descripcion": "Tonos cálidos, un poco más de saturación.", "receta": { "tipo": "color", "preset": "calido" }, "render": true },
+    { "id": "color-frio", "nombre": "Color frío", "descripcion": "Tonos fríos y limpios.", "receta": { "tipo": "color", "preset": "frio" }, "render": true },
+    { "id": "color-contraste", "nombre": "Contraste", "descripcion": "Más contraste y color: pauta y ganchos.", "receta": { "tipo": "color", "preset": "contraste" }, "render": true },
+    { "id": "blanco-y-negro", "nombre": "Blanco y negro", "descripcion": "Sin color, con un poco de contraste.", "receta": { "tipo": "color", "preset": "bn" }, "render": true },
+    { "id": "detras-de-persona", "nombre": "Algo detrás de la persona", "descripcion": "Un título o imagen queda detrás de la cabeza (necesita recortar a la persona).", "receta": { "tipo": "detras-de-persona" }, "render": true },
+    { "id": "imagen-sube", "nombre": "Imagen que sube", "descripcion": "Una imagen o tarjeta entra subiendo.", "receta": { "tipo": "animacion-capa", "animacion": "subir" }, "render": true },
+    { "id": "imagen-abanico", "nombre": "Imágenes en abanico", "descripcion": "Varias imágenes suben y se abren en abanico.", "receta": { "tipo": "animacion-capa", "animacion": "abanico" }, "render": true },
+    { "id": "imagen-flota", "nombre": "Imagen que flota", "descripcion": "Una tarjeta flota suave mientras hablas.", "receta": { "tipo": "animacion-capa", "animacion": "flotar" }, "render": true },
+    { "id": "subtitulos", "nombre": "Subtítulos quemados", "descripcion": "Subtítulos del .srt del video, abajo.", "receta": null, "render": true },
+    { "id": "vineta", "nombre": "Viñeta", "descripcion": "Bordes oscurecidos para centrar la mirada.", "receta": null, "render": false },
+    { "id": "grano", "nombre": "Grano de película", "descripcion": "Textura de cine, sutil.", "receta": null, "render": false },
+    { "id": "rampa-velocidad", "nombre": "Rampa de velocidad", "descripcion": "Acelera y frena dentro de una toma.", "receta": null, "render": false }
+  ],
+  "animaciones_texto": [
+    { "id": "aparecer", "nombre": "Aparece", "descripcion": "El texto entra con un fundido de 0.5 s.", "receta": { "tipo": "animacion-texto", "animacion": "aparecer" }, "render": true },
+    { "id": "subir", "nombre": "Sube", "descripcion": "El texto sube un poco mientras aparece.", "receta": { "tipo": "animacion-texto", "animacion": "subir" }, "render": true },
+    { "id": "caja", "nombre": "Texto en caja", "descripcion": "La frase va sobre una caja de color sólido.", "receta": null, "render": true },
+    { "id": "maquina-escribir", "nombre": "Máquina de escribir", "descripcion": "Letra por letra.", "receta": null, "render": false },
+    { "id": "palabra-por-palabra", "nombre": "Palabra por palabra", "descripcion": "Cada palabra aparece cuando se dice (subtítulo dinámico).", "receta": null, "render": false },
+    { "id": "rebote", "nombre": "Rebote", "descripcion": "Entra con un pequeño rebote.", "receta": null, "render": false }
+  ]
+}
