@@ -1,4 +1,4 @@
-import { BotIcon, CheckIcon, CircleDashedIcon, CircleIcon, CopyIcon, FileCodeIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon } from 'lucide-react'
+import { BotIcon, CheckIcon, ChefHatIcon, CircleDashedIcon, CircleIcon, CopyIcon, FileCodeIcon, ListChecksIcon, PaperclipIcon, ShieldCheckIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useMemo, useState } from 'react'
 import {
@@ -16,7 +16,10 @@ import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-e
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from '@/components/ai-elements/tool'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useHiloOpcional } from '@/hooks/use-hilo'
 import { esImagen } from '@/lib/adjuntos'
+import { extraerNodos } from '@/lib/hilo'
+import { TarjetaDecision } from './hilo/TarjetaDecision'
 import { extraerArtefactos, ocultarBloquesVisibles, type Artefacto } from '@/lib/artefactos'
 import type { RespuestaPermiso } from '@/lib/eventos'
 import type { Mensaje, ParteHerramienta, PartePermiso, PartePlan, PartePregunta, Tarea } from '@/lib/mensajes'
@@ -157,7 +160,7 @@ export function TarjetaPermiso({ p, onResponder }: { p: PartePermiso; onResponde
           quiere hacer esto: {p.descripcion}
         </ConfirmationRequest>
         <ConfirmationAccepted>
-          {p.respuesta === 't' ? 'Permitido a todo en esta sesión' : 'Permitido esta vez'}: {p.descripcion}
+          {p.auto ? 'Aprobado solo (Aceptar ediciones)' : p.respuesta === 't' ? 'Permitido a todo en esta sesión' : 'Permitido esta vez'}: {p.descripcion}
         </ConfirmationAccepted>
         <ConfirmationRejected>Denegado: {p.descripcion}</ConfirmationRejected>
       </ConfirmationTitle>
@@ -378,7 +381,20 @@ function ParteTextoVista({ texto, id, enCurso, onArtefacto }: { texto: string; i
         </div>
       )}
       {!enCurso && <TarjetasArtefacto texto={texto} base={id} onAbrir={onArtefacto} />}
+      {!enCurso && <TarjetasNodo texto={texto} />}
     </>
+  )
+}
+
+/** Las tarjetas de decisión que deja un agente (```nodo```): la misma tarjeta que en la herramienta y el portal. */
+function TarjetasNodo({ texto }: { texto: string }) {
+  const hilo = useHiloOpcional()
+  const refs = useMemo(() => extraerNodos(texto), [texto])
+  if (!refs.length || !hilo) return null
+  return (
+    <div className="mt-2 grid gap-2">
+      {refs.map((r, i) => ('id' in r ? <TarjetaDecision key={r.id} nodo={hilo.nodo(r.id)} /> : <TarjetaDecision key={`p${i}`} propuesta={r} />))}
+    </div>
   )
 }
 
@@ -436,6 +452,14 @@ export function MensajeVista({ mensaje: m, detallada, onPermiso, onPregunta, onP
   const textoCompleto = m.partes.map((p) => (p.tipo === 'texto' ? p.texto : '')).join('\n\n')
   return (
     <Message from="assistant" className="max-w-full">
+      {m.ruta && (
+        <p className="flex flex-wrap items-center gap-x-1.5 text-[11px] text-muted-foreground" role="note" aria-label="Elección del router">
+          <ChefHatIcon className="size-3.5" />
+          <span className="font-medium text-foreground">{m.ruta.nombre}</span> · {m.ruta.nivel}
+          {m.ruta.claude && ` (${m.ruta.claude})`}: {m.ruta.motivo.charAt(0).toLowerCase() + m.ruta.motivo.slice(1)}
+          <span className="text-mut2"> · esfuerzo {m.ruta.esfuerzo}</span>
+        </p>
+      )}
       {m.partes.map((p, i) => (
         <motion.div key={p.id} {...entrada} className="min-w-0">
           {p.tipo === 'razonamiento' && (

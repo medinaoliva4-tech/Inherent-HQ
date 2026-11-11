@@ -15,6 +15,7 @@ export function extraerArtefactos(texto: string, base: string): Artefacto[] {
   while ((m = re.exec(texto))) {
     const lenguaje = (m[1] || 'texto').toLowerCase()
     const contenido = m[3]
+    if (lenguaje === 'nodo') continue // tarjeta de decisión, no artefacto
     const tipo = LENGUAJES_VISIBLES[lenguaje] ?? 'codigo'
     if (tipo === 'codigo' && contenido.split('\n').length < MIN_LINEAS_CODIGO) continue
     if (tipo === 'html' && !/<\w/.test(contenido)) continue
@@ -50,8 +51,8 @@ export const SANDBOX_ARTEFACTO = 'allow-scripts allow-modals'
  * Si el último bloque sigue abierto (streaming), lo cambia por un aviso.
  */
 export function ocultarBloquesVisibles(texto: string): { texto: string; escribiendo: boolean } {
-  let limpio = texto.replace(/```(html|svg)[^\n]*\n[\s\S]*?```\n?/gi, '')
-  const abierto = /```(html|svg)[^\n]*\n[\s\S]*$/i.exec(limpio)
+  let limpio = texto.replace(/```(html|svg|nodo)[^\n]*\n[\s\S]*?```\n?/gi, '')
+  const abierto = /```(html|svg|nodo)[^\n]*\n[\s\S]*$/i.exec(limpio)
   if (abierto) limpio = limpio.slice(0, abierto.index)
   return { texto: limpio.trim(), escribiendo: !!abierto }
 }

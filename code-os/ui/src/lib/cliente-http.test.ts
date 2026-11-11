@@ -130,10 +130,38 @@ describe('cliente http', () => {
     expect(await c.cuotas()).toMatchObject({ proveedores: [] })
   })
 
-  it('lo que el puente no tiene avisa con NoDisponible', async () => {
-    const { fetchFn } = puenteFalso()
-    const c = crearClienteHttp({ url: 'http://puente.test' }, fetchFn)
-    await expect(c.diff('c1')).rejects.toMatchObject({ name: 'NoDisponible' })
-    await expect(c.abrirTerminal('c1', () => {})).rejects.toMatchObject({ name: 'NoDisponible' })
+  it('usa lo que el puente ya tiene: diff, fusionar, skills; lo demás avisa con NoDisponible', async () => {
+    localStorage.clear()
+    const { fetchFn, llamadas } = puenteFalso()
+    const c = crearClienteHttp({ url: 'http://puente.test', obtenerToken: () => 'pase-del-os' }, fetchFn)
+    expect(await c.diff('sin-sesion')).toEqual([]) // aún no hay sesión: nada que mostrar
+    c.vincularSesion('c9', '33333333-3333-3333-3333-333333333333')
+    expect(c.sesionDe('c9')).toBe('33333333-3333-3333-3333-333333333333')
+    await c.diff('c9').catch(() => {})
+    await c.fusionar('c9').catch(() => {})
+    await c.skills().catch(() => {})
+    expect(llamadas.map((l) => `${l.metodo} ${l.ruta}`)).toEqual([
+      'GET /sessions/33333333-3333-3333-3333-333333333333/diff',
+      'POST /sessions/33333333-3333-3333-3333-333333333333/merge',
+      'GET /skills',
+    ])
+    expect(llamadas[0].auth).toBe('Bearer pase-del-os')
+    await expect(c.memoriaCliente('lumbre')).rejects.toMatchObject({ name: 'NoDisponible' })
+  })
+
+  it('«Aceptar ediciones» viaja como code y la sesión aislada pide isolate', async () => {
+    localStorage.clear()
+    const { fetchFn, llamadas } = puenteFalso()
+    const c = crearClienteHttp({ url: 'http://puente.test', token: 't' }, fetchFn)
+    for await (const e of c.enviar({ conversacionId: 'c2', texto: 'hola', adjuntos: [], modeloId: 'nivel-medio', modo: 'aceptar', aislada: true })) void e
+    expect(llamadas[0]).toMatchObject({ metodo: 'POST', ruta: '/sessions', cuerpo: { mode: 'code', isolate: true } })
+  })
+
+  it('un 401 pide un pase nuevo al OS', async () => {
+    let pedido = 0
+    const f = (async () => new Response(JSON.stringify({ error: 'no' }), { status: 401 })) as typeof fetch
+    const c = crearClienteHttp({ url: 'http://puente.test', alNoAutorizado: () => pedido++ }, f)
+    await expect(c.modelos()).rejects.toThrow()
+    expect(pedido).toBe(1)
   })
 })

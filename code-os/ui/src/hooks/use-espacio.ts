@@ -20,6 +20,8 @@ export type Conversacion = {
   fijada?: boolean
   /** No se guarda en el historial ni en la búsqueda. */
   incognito?: boolean
+  /** Code: la sesión corre en un worktree de git propio y se fusiona al final (se decide antes del primer mensaje). */
+  aislada?: boolean
 }
 export type Memoria = { id: string; texto: string; creada: string }
 export type Ajustes = {

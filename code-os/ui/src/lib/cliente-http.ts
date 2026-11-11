@@ -1,5 +1,7 @@
-import { NoDisponible, type Catalogo, type Cliente, type ConfigCliente, type EstadoCuotas, type EstadoServidor } from './cliente'
-import type { Evento, ExtraPermiso, ModoSesion, PeticionEnvio, RespuestaPermiso } from './eventos'
+import { calcularInbound, calcularOutbound, type Calibracion, type EntradaInbound, type ResultadoInbound, type ResultadoOutbound } from './calculadora'
+import { NoDisponible, type ArchivoDiff, type Catalogo, type Cliente, type ConfigCliente, type EstadoCuotas, type EstadoServidor, type NodoArchivo, type ResultadoFusion, type ServidorMcp, type Skill, type Terminal } from './cliente'
+import type { Aviso, Marca, Nodo } from './hilo'
+import { modoPuente, type Evento, type ExtraPermiso, type ModoSesion, type PeticionEnvio, type RespuestaPermiso } from './eventos'
 import { leerSse } from './sse'
 
 /** Evento tal como lo manda el puente (code-os/puente/src/types.ts). */
@@ -130,12 +132,14 @@ export function crearTraductor() {
 export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (...a) => fetch(...a)): Cliente {
   if (cfg.url === undefined) throw new Error('Falta VITE_PUENTE_URL')
   const base = cfg.url
+  const token = () => cfg.obtenerToken?.() ?? cfg.token
   const cab = (json = false): HeadersInit => ({
-    ...(cfg.token ? { authorization: `Bearer ${cfg.token}` } : {}),
+    ...(token() ? { authorization: `Bearer ${token()}` } : {}),
     ...(json ? { 'content-type': 'application/json' } : {}),
   })
   async function pedir<T>(ruta: string, init: RequestInit = {}): Promise<T> {
     const res = await fetchFn(`${base}${ruta}`, { ...init, headers: { ...cab(!!init.body), ...(init.headers ?? {}) } })
+    if (res.status === 401) cfg.alNoAutorizado?.()
     if (!res.ok) {
       let msg = `El puente respondió ${res.status}`
       try {
@@ -146,8 +150,61 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
       }
       throw new Error(msg)
     }
+    try {
+      return (await res.json()) as T
+    } catch {
+      // Una página HTML en vez de JSON: esa ruta no es del puente (o un proxy se metió en medio).
+      throw new NoDisponible(`${init.method ?? 'GET'} ${ruta.split('?')[0]}`)
+    }
+  }
+
+  /**
+   * Herramientas y el hilo: `VITE_HERRAMIENTAS_URL` o, si no está, el mismo puente.
+   * Un 404/501 = el backend aún no tiene esa ruta → `NoDisponible` (la pantalla lo dice).
+   */
+  const baseH = cfg.herramientasUrl ?? base
+  const cid = (id: string) => encodeURIComponent(id)
+  async function herr<T>(ruta: string, que: string, init: RequestInit = {}): Promise<T> {
+    const res = await fetchFn(`${baseH}${ruta}`, { ...init, headers: { ...cab(!!init.body), ...(init.headers ?? {}) } })
+    if (res.status === 404 || res.status === 501) throw new NoDisponible(que)
+    // El puente sirve la interfaz para rutas que no son de su API: una página HTML aquí = la ruta aún no existe.
+    if (res.ok && !(res.headers.get('content-type') ?? '').includes('json')) throw new NoDisponible(que)
+    if (!res.ok) {
+      let msg = `Herramientas respondió ${res.status}`
+      try {
+        const j = await res.json()
+        if (j?.error) msg = String(j.error)
+      } catch {
+        /* sin cuerpo */
+      }
+      if (res.status === 409) msg = msg.startsWith('Herramientas') ? 'Abre el contenido (la versión actual) antes de aprobar.' : msg
+      throw new Error(msg)
+    }
     return (await res.json()) as T
   }
+  /** Las calculadoras tienen la misma fórmula aquí: si el backend aún no la tiene, se calcula en el navegador. */
+  async function calc<T>(ruta: string, cuerpo: unknown, local: () => T | null): Promise<T> {
+    try {
+      return await herr<T>(ruta, `POST ${ruta}`, { method: 'POST', body: JSON.stringify(cuerpo) })
+    } catch (e) {
+      if (!(e instanceof NoDisponible)) throw e
+      const r = local()
+      if (!r) throw new Error('Con esos datos no se puede calcular.', { cause: e })
+      return r
+    }
+  }
+  const planoInbound = (e: EntradaInbound) => ({
+    meta: e.meta,
+    ctr: e.ctr.valor,
+    clicALead: e.clicALead.valor,
+    leadACliente: e.leadACliente.valor,
+    engagement: e.engagement.valor,
+    cpm: e.cpm.valor,
+    frecuencia: e.frecuencia,
+    presupuesto: e.presupuesto,
+    segmentacion: e.segmentacion,
+    angulos: e.angulos,
+  })
 
   const sesiones: Record<string, SesionLocal> = (() => {
     try {
@@ -169,7 +226,7 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
   const permisos = new Map<string, string>()
 
   async function asegurarSesion(p: PeticionEnvio): Promise<SesionLocal> {
-    const modo = p.modo ?? 'code'
+    const modo = modoPuente(p.modo ?? 'code')
     let s = sesiones[p.conversacionId]
     if (!s) {
       const r = await pedir<{ id: string }>('/sessions', {
@@ -180,6 +237,8 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
           mode: modo,
           title: p.titulo,
           systemPrompt: p.instrucciones || undefined,
+          agents: p.agentes,
+          ...(p.aislada ? { isolate: true } : {}),
         }),
       })
       s = sesiones[p.conversacionId] = { id: r.id, seq: 0, modelo: p.modeloId, modo }
@@ -247,7 +306,7 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
 
   const sid = (conv: string) => {
     const s = sesiones[conv]
-    if (!s) throw new Error('Esta conversación aún no existe en el puente')
+    if (!s) throw new Error('Esta conversación aún no tiene sesión en el puente: manda un mensaje primero.')
     return s.id
   }
 
@@ -269,8 +328,8 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
     },
     async cuotas(): Promise<EstadoCuotas> {
       const url = cfg.cuotasUrl ?? base
-      const token = cfg.cuotasToken ?? cfg.token
-      const res = await fetchFn(`${url}/cuotas`, { headers: token ? { authorization: `Bearer ${token}` } : {} })
+      const tk = cfg.cuotasToken ?? token()
+      const res = await fetchFn(`${url}/cuotas`, { headers: tk ? { authorization: `Bearer ${tk}` } : {} })
       if (res.status === 404) throw new NoDisponible('GET /cuotas (que el puente reenvíe el medidor de code-os/cuotas)')
       if (!res.ok) throw new Error(`Cuotas respondió ${res.status}`)
       return (await res.json()) as EstadoCuotas
@@ -294,9 +353,10 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
     async ajustarSesion(conv, c) {
       const s = sesiones[conv]
       if (!s) return // se aplicará al crearla
-      await pedir(`/sessions/${s.id}`, { method: 'PATCH', body: JSON.stringify({ model: c.modeloId, mode: c.modo, title: c.titulo }) })
+      const mode = c.modo ? modoPuente(c.modo) : undefined
+      await pedir(`/sessions/${s.id}`, { method: 'PATCH', body: JSON.stringify({ model: c.modeloId, mode, title: c.titulo }) })
       if (c.modeloId) s.modelo = c.modeloId
-      if (c.modo) s.modo = c.modo
+      if (mode) s.modo = mode
       guardar()
     },
     async interrumpir(conv) {
@@ -309,12 +369,67 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
       delete sesiones[conv]
       guardar()
     },
-    archivos: () => Promise.reject(new NoDisponible('GET /sessions/:id/files (árbol de archivos)')),
-    leerArchivo: () => Promise.reject(new NoDisponible('GET /sessions/:id/files/:ruta (leer un archivo)')),
-    guardarArchivo: () => Promise.reject(new NoDisponible('PUT /sessions/:id/files/:ruta (guardar un archivo)')),
-    diff: () => Promise.reject(new NoDisponible('GET /sessions/:id/diff (cambios con git diff)')),
-    abrirTerminal: () => Promise.reject(new NoDisponible('WebSocket /sessions/:id/terminal (terminal con node-pty)')),
-    mcp: () => Promise.reject(new NoDisponible('GET /mcp (catálogo de servidores MCP)')),
-    skills: () => Promise.reject(new NoDisponible('GET /skills (skills del servidor)')),
+    async archivos(conv) {
+      const s = sesiones[conv]
+      if (!s) return []
+      return (await pedir<{ archivos: NodoArchivo[] }>(`/sessions/${s.id}/files`)).archivos
+    },
+    async leerArchivo(conv, ruta) {
+      return (await pedir<{ contenido: string }>(`/sessions/${sid(conv)}/files?path=${encodeURIComponent(ruta)}`)).contenido
+    },
+    async guardarArchivo(conv, ruta, contenido) {
+      await pedir(`/sessions/${sid(conv)}/files?path=${encodeURIComponent(ruta)}`, { method: 'PUT', body: JSON.stringify({ contenido }) })
+    },
+    async diff(conv) {
+      const s = sesiones[conv]
+      if (!s) return []
+      return (await pedir<{ archivos: ArchivoDiff[] }>(`/sessions/${s.id}/diff`)).archivos
+    },
+    async fusionar(conv) {
+      return pedir<ResultadoFusion>(`/sessions/${sid(conv)}/merge`, { method: 'POST' })
+    },
+    vincularSesion(conv, sesionId) {
+      const s = sesiones[conv]
+      if (s?.id === sesionId) return
+      sesiones[conv] = { id: sesionId, seq: 0, modelo: s?.modelo ?? '', modo: s?.modo ?? 'code' }
+      guardar()
+    },
+    sesionDe: (conv) => sesiones[conv]?.id ?? null,
+    async abrirTerminal(conv, alRecibir): Promise<Terminal> {
+      // WebSocket no puede mandar cabeceras: el pase del OS (JWT) va en ?pase=; un token simple usa la cookie de /entrar.
+      const tk = token()
+      const url = new URL(`${base || location.origin}/sessions/${sid(conv)}/terminal`, location.href)
+      url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+      if (tk && tk.split('.').length === 3) url.searchParams.set('pase', tk)
+      const ws = new WebSocket(url)
+      ws.binaryType = 'arraybuffer'
+      const dec = new TextDecoder()
+      await new Promise<void>((ok, mal) => {
+        ws.onopen = () => ok()
+        ws.onerror = () => mal(new Error('No se pudo abrir la terminal (WebSocket)'))
+      })
+      ws.onmessage = (e) => alRecibir(typeof e.data === 'string' ? e.data : dec.decode(new Uint8Array(e.data as ArrayBuffer), { stream: true }))
+      ws.onclose = () => alRecibir('\r\n\x1b[2m[terminal cerrada]\x1b[0m\r\n')
+      return {
+        escribir: (d) => ws.readyState === WebSocket.OPEN && ws.send(d),
+        redimensionar: (cols, rows) => ws.readyState === WebSocket.OPEN && ws.send(JSON.stringify({ t: 'resize', cols, rows })),
+        cerrar: () => ws.close(),
+      }
+    },
+    mcp: async () => (await pedir<{ mcp: ServidorMcp[] }>('/mcp')).mcp,
+    skills: async () => (await pedir<{ skills: Skill[] }>('/skills')).skills,
+    memoriaCliente: () => Promise.reject(new NoDisponible('GET /clientes/:id/memoria (qué CLAUDE.md del cliente cargó la sesión)')),
+    clientes: () => herr<Marca[]>('/clientes', 'GET /clientes'),
+    nodos: (c) => herr<Nodo[]>(`/clientes/${cid(c)}/nodos`, 'GET /clientes/:id/nodos'),
+    nodo: (c, id) => herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}`, 'GET /clientes/:id/nodos/:nid'),
+    crearNodo: (c, nuevo) => herr<Nodo>(`/clientes/${cid(c)}/nodos`, 'POST /clientes/:id/nodos', { method: 'POST', body: JSON.stringify(nuevo) }),
+    guardarNodo: (c, id, cambios) => herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}`, 'PUT /clientes/:id/nodos/:nid', { method: 'PUT', body: JSON.stringify(cambios) }),
+    aprobarNodo: (c, id, leida) =>
+      herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}/aprobar`, 'POST /clientes/:id/nodos/:nid/aprobar', { method: 'POST', body: JSON.stringify({ version: leida.version }) }),
+    dependientes: (c, id) => herr<Nodo[]>(`/clientes/${cid(c)}/nodos/${cid(id)}/dependientes`, 'GET /clientes/:id/nodos/:nid/dependientes'),
+    avisos: (c) => herr<Aviso[]>(`/clientes/${cid(c)}/avisos`, 'GET /clientes/:id/avisos'),
+    calcOutbound: (e) => calc<ResultadoOutbound>('/calc/outbound', e, () => calcularOutbound(e)),
+    calcInbound: (e) => calc<ResultadoInbound>('/calc/inbound', planoInbound(e), () => calcularInbound(e)),
+    calibrar: (c) => herr<Calibracion>(`/clientes/${cid(c)}/calibrar`, 'POST /clientes/:id/calibrar (tasas reales de Zernio)', { method: 'POST' }),
   }
 }

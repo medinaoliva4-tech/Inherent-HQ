@@ -7,9 +7,13 @@ import { Suggestion } from '@/components/ai-elements/suggestion'
 import { Ajustes, type SeccionAjustes } from '@/components/os/Ajustes'
 import { Composer } from '@/components/os/Composer'
 import { MensajeVista } from '@/components/os/Mensajes'
-import { PanelLateral, type PestanaPanel } from '@/components/os/PanelLateral'
+import { NodoDetalle } from '@/components/os/hilo/NodoDetalle'
+import { PanelLateral, type DestinoPanel, type PestanaPanel, type SeccionPanel, type VistaHerramienta } from '@/components/os/PanelLateral'
 import { Paleta } from '@/components/os/Paleta'
 import { ProyectoDialogo } from '@/components/os/ProyectoDialogo'
+import { SelectorCliente } from '@/components/os/Selectores'
+import { Embebido } from '@/components/os/Embebido'
+import { Switch } from '@/components/ui/switch'
 import { Sidebar } from '@/components/os/Sidebar'
 import { Button } from '@/components/ui/button'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
@@ -20,10 +24,14 @@ import { useAtajos } from '@/hooks/use-atajos'
 import { useChat } from '@/hooks/use-chat'
 import { useCuotas } from '@/hooks/use-cuotas'
 import { useDatos } from '@/hooks/use-datos'
+import { HiloProvider } from '@/hooks/use-hilo'
 import { useEspacio, type Conversacion, type Pestana } from '@/hooks/use-espacio'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useTheme } from '@/hooks/use-theme'
 import { prepararEnvio } from '@/lib/adjuntos'
+import { AUTO, MODELOS_CLAUDE, modeloDeRuta, rutear } from '@/lib/cocina'
+import { leerEmbebido } from '@/lib/embebido'
+import { AGENTES, agenteMencionado, agentesParaPuente, instruccionAgente, type Agente } from '@/lib/agentes'
 import { extraerArtefactos, type Artefacto } from '@/lib/artefactos'
 import type { Cliente, EstadoServidor, NodoArchivo } from '@/lib/cliente'
 import type { Comando } from '@/lib/comandos'
@@ -31,9 +39,14 @@ import { crearCliente } from '@/lib/crear-cliente'
 import type { ModoSesion } from '@/lib/eventos'
 import { pendienteDe, textoDe, usoTotal, type Mensaje } from '@/lib/mensajes'
 import { resorte } from '@/lib/movimiento'
+import { PERSONAS, ROLES, type Persona } from '@/lib/roles'
 import { cn } from '@/lib/utils'
 
-type Props = { cliente?: Cliente }
+type Props = {
+  cliente?: Cliente
+  /** Dentro del Chat del OS (`?embed=1`). Por defecto se lee de la URL. */
+  embebido?: boolean
+}
 
 const CLAVE_MENSAJES = 'code-os:mensajes:v2'
 
@@ -54,14 +67,46 @@ function aligerar(lista: Mensaje[]): Mensaje[] {
   )
 }
 
+function leerLocal(clave: string, porDefecto: string) {
+  try {
+    return localStorage.getItem(clave) ?? porDefecto
+  } catch {
+    return porDefecto
+  }
+}
+function guardarLocal(clave: string, valor: string) {
+  try {
+    localStorage.setItem(clave, valor)
+  } catch {
+    /* sin almacenamiento */
+  }
+}
+
+/** Nivel con el que se construyó lo último (para que la revisión la haga otro). */
+function ultimoNivel(ms: Mensaje[]): string {
+  for (let i = ms.length - 1; i >= 0; i--) {
+    const m = ms[i]
+    if (m.rol !== 'asistente') continue
+    if (m.ruta) return m.ruta.nivel
+    if (m.uso?.modelo?.startsWith('nivel-')) return m.uso.modelo
+  }
+  return ''
+}
+
 const rutasDe = (ns: NodoArchivo[]): string[] => ns.flatMap((n) => (n.tipo === 'archivo' ? [n.ruta] : rutasDe(n.hijos ?? [])))
 
 const SUGERENCIAS: Record<Pestana, string[]> = {
-  chat: ['Hazme una página con la paleta del OS', 'Explícame la diferencia entre plan y manual', 'Resume esto en tres puntos'],
+  chat: ['@estrategia arma los dolores de este cliente', 'Hazme una página con la paleta del OS', 'Resume esto en tres puntos'],
   code: ['Mapea los tokens del OS a shadcn', 'Pregúntame qué tema revisar primero', 'Revisa los cambios de la sesión'],
 }
 
-export default function App({ cliente: clienteProp }: Props) {
+/** `?embed=1` → solo los paneles, dentro del Chat del OS (docs/embebido.md). Si no, la app completa. */
+export default function App({ cliente, embebido }: Props) {
+  const emb = useMemo(() => (embebido === undefined ? leerEmbebido() : { activo: embebido, pase: undefined }), [embebido])
+  return emb.activo ? <Embebido cliente={cliente} pase={emb.pase} /> : <AppCompleta cliente={cliente} />
+}
+
+function AppCompleta({ cliente: clienteProp }: { cliente?: Cliente }) {
   const cliente = useMemo(() => clienteProp ?? crearCliente(), [clienteProp])
   const mock = cliente.tipo === 'mock'
   const { tema, setTema, alternar } = useTheme()
@@ -74,6 +119,25 @@ export default function App({ cliente: clienteProp }: Props) {
   const [activaPor, setActivaPor] = useState<Record<Pestana, string | null>>(mock ? { chat: 's2', code: 's1' } : { chat: null, code: null })
   const [panel, setPanel] = useState(escritorio)
   const [pestanaPanel, setPestanaPanel] = useState<PestanaPanel>('tareas')
+  const [seccion, setSeccion] = useState<SeccionPanel>('codigo')
+  const [herramienta, setHerramienta] = useState<VistaHerramienta>('icp')
+  const [agentePanel, setAgentePanel] = useState('estrategia')
+  // Cliente activo y persona de demostración (el workspace se arma según su rol).
+  const [clienteId, setClienteIdEstado] = useState(() => leerLocal('code-os:cliente', mock ? 'lumbre' : ''))
+  const setClienteId = useCallback((id: string) => {
+    setClienteIdEstado(id)
+    guardarLocal('code-os:cliente', id)
+  }, [])
+  const [persona, setPersonaEstado] = useState<Persona>(() => PERSONAS.find((p) => p.id === leerLocal('code-os:persona', 'demo-ceo')) ?? PERSONAS[0])
+  const rol = ROLES[persona.rol]
+  const setPersona = useCallback((p: Persona) => {
+    setPersonaEstado(p)
+    guardarLocal('code-os:persona', p.id)
+    // El workspace cambia: la primera herramienta del rol queda a mano.
+    setHerramienta(ROLES[p.rol].herramientas[0])
+    setAgentePanel(ROLES[p.rol].agentes[0])
+  }, [])
+  const agentesOrdenados = useMemo(() => [...AGENTES].sort((a, b) => (rol.agentes.indexOf(a.id) + 1 || 99) - (rol.agentes.indexOf(b.id) + 1 || 99)), [rol])
   const [menu, setMenu] = useState(false)
   const [paleta, setPaleta] = useState(false)
   const [ajustes, setAjustes] = useState<{ abierto: boolean; seccion: SeccionAjustes }>({ abierto: false, seccion: 'general' })
@@ -85,6 +149,7 @@ export default function App({ cliente: clienteProp }: Props) {
   const { estado: cuotas, error: errorCuotas } = useCuotas(cliente)
   const arrastreHoja = useDragControls()
   const catalogo = useDatos(() => cliente.modelos(), [cliente])
+  const skills = useDatos(() => cliente.skills(), [cliente])
 
   // Conversación activa de la pestaña (si no hay, la más reciente; si no hay ninguna, se crea).
   const delaPestana = espacio.conversaciones.filter((c) => c.pestana === pestana && !c.archivada)
@@ -190,9 +255,11 @@ export default function App({ cliente: clienteProp }: Props) {
 
   const cambiarModo = useCallback((m: ModoSesion) => conv && editarConversacion(conv.id, { modo: m }), [conv, editarConversacion])
   const cambiarModelo = useCallback((id: string) => conv && editarConversacion(conv.id, { modeloId: id }), [conv, editarConversacion])
-  const abrirPanel = (p?: PestanaPanel) => {
-    if (p) {
-      setPestanaPanel(p)
+  const abrirPanel = (d?: DestinoPanel) => {
+    if (d) {
+      setSeccion(d.seccion)
+      if (d.pestana) setPestanaPanel(d.pestana)
+      if (d.herramienta) setHerramienta(d.herramienta)
       setPanel(true)
     } else setPanel((v) => !v)
   }
@@ -227,20 +294,35 @@ export default function App({ cliente: clienteProp }: Props) {
       .filter(Boolean)
       .join('\n\n')
     const id = conv.id
+    // `@agente …` arranca el flujo de ese agente con lo ya hablado; su pestaña se abre en el panel.
+    const llamado = agenteMencionado(paraMotor)
+    if (llamado) {
+      setAgentePanel(llamado.agente.id)
+      setSeccion('agentes')
+      setPanel(true)
+    }
+    // Modo Auto: el router elige el nivel por la tarea (si la persona fijó uno, no se mete).
+    const claudeActiva = servidor?.claude === 'activa'
+    const ruta = conv.modeloId === AUTO ? rutear(texto, { ultimo: ultimoNivel(mensajes) }) : null
     enviar(id, texto, adjuntos, {
-      modeloId: conv.modeloId,
-      modo: conv.pestana === 'chat' ? 'chat' : conv.modo,
+      modeloId: ruta ? modeloDeRuta(ruta, claudeActiva) : conv.modeloId,
+      ruta: ruta ? { nombre: ruta.nombre, nivel: ruta.nivel, motivo: ruta.motivo, esfuerzo: ruta.esfuerzo, ...(claudeActiva ? { claude: MODELOS_CLAUDE[ruta.cocinero].nombre } : {}) } : undefined,
+      aislada: conv.pestana === 'code' && !!conv.aislada,
+      // En Chat la sesión no tiene herramientas: para lanzar al subagente, ese turno va en modo plan (solo lectura).
+      modo: conv.pestana === 'chat' ? (llamado ? 'plan' : 'chat') : conv.modo,
+      agentes: agentesParaPuente(),
       proyectoId: conv.proyectoId,
       titulo,
       instrucciones: instrucciones || undefined,
-      textoParaMotor: paraMotor,
+      textoParaMotor: llamado ? instruccionAgente(llamado.agente, llamado.resto) : paraMotor,
       alCambiarModo: (m) => editarConversacion(id, { modo: m }),
       alTerminar: (m) => {
         // Como en Claude: si la respuesta trae un artefacto visual, se abre solo en el panel.
         const nuevos = m.partes.flatMap((x) => (x.tipo === 'texto' ? extraerArtefactos(x.texto, x.id) : [])).filter((a) => a.tipo !== 'codigo')
         if (nuevos.length && id === convIdRef.current) {
           setArtefactoActivo(nuevos[nuevos.length - 1].id)
-          setPestanaPanel('artefactos')
+          setSeccion('herramientas')
+          setHerramienta('artefactos')
           setPanel(true)
         }
         if (espacio.ajustes.notificaciones && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
@@ -315,6 +397,8 @@ export default function App({ cliente: clienteProp }: Props) {
       errorCuotas={errorCuotas}
       servidor={servidor}
       mock={mock}
+      persona={persona}
+      onPersona={setPersona}
     />
   )
 
@@ -337,6 +421,7 @@ export default function App({ cliente: clienteProp }: Props) {
             </span>
           )}
         </div>
+        <SelectorCliente />
         {uso.ultimaEntrada > 0 && (
           <span className="hidden text-[11px] text-muted-foreground tabular-nums sm:inline" title="Tokens de contexto en el último turno">
             {(uso.ultimaEntrada / 1000).toFixed(1)} k de contexto
@@ -364,6 +449,15 @@ export default function App({ cliente: clienteProp }: Props) {
                     <Suggestion key={s} suggestion={s} onClick={ponerEnCaja} />
                   ))}
                 </div>
+                {pestana === 'code' && conv && !conv.incognito && (
+                  <label className="mt-1 flex items-center gap-2 rounded-lg border bg-card/60 px-3 py-2 text-left text-xs">
+                    <Switch checked={!!conv.aislada} onCheckedChange={(v) => editarConversacion(conv.id, { aislada: v })} aria-label="Sesión aislada" />
+                    <span className="grid">
+                      <span className="font-medium text-foreground">Sesión aislada</span>
+                      <span className="text-muted-foreground">Trabaja en una rama propia y la fusionas al final desde Cambios.</span>
+                    </span>
+                  </label>
+                )}
                 {mock && <p className="text-[11px] text-mut2">Modo ejemplo: sin VITE_PUENTE_URL las respuestas son simuladas.</p>}
               </div>
             </ConversationEmptyState>
@@ -378,7 +472,7 @@ export default function App({ cliente: clienteProp }: Props) {
                 onPlan={(id, a, c) => responderPlan(convId, id, a, c)}
                 onArtefacto={(a) => {
                   setArtefactoActivo(a.id)
-                  abrirPanel('artefactos')
+                  abrirPanel({ seccion: 'herramientas', herramienta: 'artefactos' })
                 }}
               />
             ))
@@ -405,6 +499,8 @@ export default function App({ cliente: clienteProp }: Props) {
           onDetener={() => detener(convId)}
           onComando={comando}
           rutas={pestana === 'code' ? rutas : undefined}
+          agentes={agentesOrdenados}
+          skills={skills.datos ?? undefined}
           borrador={borrador}
         />
       </div>
@@ -413,8 +509,20 @@ export default function App({ cliente: clienteProp }: Props) {
 
   const panelLateral = (
     <PanelLateral
+      seccion={seccion}
+      onSeccion={setSeccion}
       pestana={pestanaPanel}
       onPestana={setPestanaPanel}
+      herramienta={herramienta}
+      onHerramienta={setHerramienta}
+      herramientas={rol.herramientas}
+      agentesRol={rol.agentes}
+      agente={agentePanel}
+      onAgente={setAgentePanel}
+      onEmpezarAgente={(a: Agente) => {
+        ponerEnCaja(`@${a.id} `)
+        if (!escritorio) setPanel(false)
+      }}
       onCerrar={() => setPanel(false)}
       modo={pestana}
       cliente={cliente}
@@ -425,6 +533,20 @@ export default function App({ cliente: clienteProp }: Props) {
       onArtefacto={setArtefactoActivo}
       tema={tema}
       onMencionar={(r) => ponerEnCaja(`@${r} `)}
+      onEnviar={(t) => onEnviar(t, [])}
+      onRevisar={() => {
+        // La revisión la hace OTRO nivel distinto al que construyó.
+        const r = rutear('revisa los cambios', { ultimo: ultimoNivel(mensajes) })
+        if (!conv) return
+        enviar(conv.id, 'Revisa los cambios de esta sesión: busca errores, riesgos y lo que falte probar. No edites nada; dame la lista.', [], {
+          modeloId: modeloDeRuta(r, servidor?.claude === 'activa'),
+          modo: conv.pestana === 'chat' ? 'chat' : 'plan',
+          ruta: { nombre: r.nombre, nivel: r.nivel, motivo: r.motivo, esfuerzo: r.esfuerzo },
+          agentes: agentesParaPuente(),
+        })
+        return `${r.nombre} · ${r.nivel}`
+      }}
+      aislada={!!conv?.aislada}
       onTextoAlMensaje={(t) => {
         ponerEnCaja(t)
         if (!escritorio) setPanel(false)
@@ -434,6 +556,7 @@ export default function App({ cliente: clienteProp }: Props) {
 
   return (
     <MotionConfig reducedMotion="user" transition={resorte}>
+      <HiloProvider cliente={cliente} clienteId={clienteId} onClienteId={setClienteId}>
       <TooltipProvider>
         <div className="flex h-dvh w-full overflow-hidden">
           {escritorio ? (
@@ -520,6 +643,7 @@ export default function App({ cliente: clienteProp }: Props) {
           onPestana={setPestana}
           onTema={alternar}
           onPanel={abrirPanel}
+          herramientas={rol.herramientas}
           onModelo={cambiarModelo}
           onAjustes={abrirAjustes}
           onModo={() => cambiarModo(conv?.modo === 'plan' ? 'code' : 'plan')}
@@ -548,8 +672,10 @@ export default function App({ cliente: clienteProp }: Props) {
           onGuardar={(c) => proyectoEditado && editarProyecto(proyectoEditado, c)}
           onBorrar={() => proyectoEditado && borrarProyecto(proyectoEditado)}
         />
+        <NodoDetalle />
         <Toaster position={escritorio ? 'bottom-right' : 'top-center'} theme={tema} />
       </TooltipProvider>
+      </HiloProvider>
     </MotionConfig>
   )
 }

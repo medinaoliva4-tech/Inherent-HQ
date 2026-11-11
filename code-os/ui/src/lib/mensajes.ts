@@ -21,6 +21,8 @@ export type PartePermiso = {
   descripcion: string
   entrada: Record<string, unknown>
   respuesta?: RespuestaPermiso
+  /** Lo aprobó solo el modo «Aceptar ediciones». */
+  auto?: boolean
 }
 export type OpcionPregunta = { label: string; description?: string }
 export type Pregunta = { question: string; header?: string; options: OpcionPregunta[]; multiSelect?: boolean }
@@ -50,6 +52,8 @@ export type Mensaje = {
   enCurso?: boolean
   detenido?: boolean
   duracionMs?: number
+  /** Modo Auto: qué cocinero eligió el router y por qué («Sous chef · nivel-alto: interfaz»). */
+  ruta?: { nombre: string; nivel: string; motivo: string; esfuerzo: string; claude?: string }
 }
 
 export type Tarea = { content: string; status: 'pending' | 'in_progress' | 'completed'; activeForm?: string }
@@ -157,10 +161,10 @@ export function aplicarEvento(m: Mensaje, e: Evento): Mensaje {
   }
 }
 
-export function registrarRespuesta(m: Mensaje, id: string, r: RespuestaPermiso): Mensaje {
+export function registrarRespuesta(m: Mensaje, id: string, r: RespuestaPermiso, auto = false): Mensaje {
   return {
     ...m,
-    partes: m.partes.map((p) => (p.tipo === 'permiso' && p.id === id ? { ...p, respuesta: r } : p)),
+    partes: m.partes.map((p) => (p.tipo === 'permiso' && p.id === id ? { ...p, respuesta: r, ...(auto ? { auto } : {}) } : p)),
   }
 }
 

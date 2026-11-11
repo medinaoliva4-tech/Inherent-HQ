@@ -4,7 +4,8 @@ import type { Conversacion } from '@/hooks/use-espacio'
 import { teclas } from '@/hooks/use-atajos'
 import { NIVELES } from '@/lib/niveles'
 import type { SeccionAjustes } from './Ajustes'
-import { pestanasPanel, type PestanaPanel } from './PanelLateral'
+import { HERRAMIENTAS, type IdHerramienta } from '@/lib/roles'
+import { pestanasCodigo, type DestinoPanel } from './PanelLateral'
 
 type Props = {
   abierta: boolean
@@ -16,7 +17,9 @@ type Props = {
   onIncognito: () => void
   onPestana: (p: 'chat' | 'code') => void
   onTema: () => void
-  onPanel: (p?: PestanaPanel) => void
+  onPanel: (d?: DestinoPanel) => void
+  /** Herramientas del rol (en su orden). */
+  herramientas: IdHerramienta[]
   onModelo: (id: string) => void
   onAjustes: (s?: SeccionAjustes) => void
   onModo: () => void
@@ -49,10 +52,16 @@ export function Paleta(p: Props) {
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Panel">
-          {pestanasPanel
-            .filter((x) => (p.pestana === 'code' ? x.code : x.chat))
-            .map((x) => (
-              <CommandItem key={x.id} onSelect={ejecutar(() => p.onPanel(x.id))}>
+          <CommandItem onSelect={ejecutar(() => p.onPanel({ seccion: 'cliente' }))}>Abrir el cliente y el hilo</CommandItem>
+          <CommandItem onSelect={ejecutar(() => p.onPanel({ seccion: 'agentes' }))}>Abrir el portal de agentes</CommandItem>
+          {p.herramientas.map((h) => (
+            <CommandItem key={h} onSelect={ejecutar(() => p.onPanel({ seccion: 'herramientas', herramienta: h }))}>
+              Abrir {HERRAMIENTAS[h].nombre.toLowerCase()}
+            </CommandItem>
+          ))}
+          {p.pestana === 'code' &&
+            pestanasCodigo.map((x) => (
+              <CommandItem key={x.id} onSelect={ejecutar(() => p.onPanel({ seccion: 'codigo', pestana: x.id }))}>
                 Abrir {x.nombre.toLowerCase()}
               </CommandItem>
             ))}
