@@ -1,11 +1,41 @@
 import { archivosEjemplo, arbolEjemplo, cuotasEjemplo, diffsEjemplo, mcpEjemplo, skillsEjemplo, terminalEjemplo } from '@/data/ejemplo'
+import { agentePorId } from './agentes'
+import { calcularInbound, calcularOutbound } from './calculadora'
 import type { Cliente, Terminal } from './cliente'
 import type { Evento, ExtraPermiso, PeticionEnvio, RespuestaPermiso } from './eventos'
+import { crearHiloMemoria, type HiloMemoria } from './hilo-memoria'
 import { NIVELES } from './niveles'
 
 type Opciones = {
   /** Multiplicador de las pausas. 0 = instantáneo (pruebas). */
   velocidad?: number
+  /** El hilo en memoria; las pruebas pasan uno sin localStorage. */
+  hilo?: HiloMemoria
+}
+
+/** Lo que cada agente de ejemplo escribe (documento en vivo) y propone al final (tarjeta de decisión). */
+const TRABAJO_AGENTE: Record<string, { etapa: string; doc: string; propuesta: Record<string, unknown>; revisar?: string }> = {
+  estrategia: {
+    etapa: 'Dolores y deseos',
+    doc: '## Dolores y deseos — borrador\n\n1. **Nadie confirma cuántas personas van.** Cambia el número dos veces antes del evento [hipótesis].\n2. **La comida llega tarde** y la reunión empieza sin nada (entrevista 2).\n3. **La factura llega a fin de mes** y contabilidad se queja [hipótesis].\n\n**Deseo central:** quedar bien con gerencia sin pensar en la comida.\n\n_Fuentes: entrevistas 1–4 · lo hablado en este chat._',
+    propuesta: { tipo: 'dolor', titulo: 'Nadie confirma cuántas personas van', contenido: { decide: 'Nuevo dolor: el número de personas cambia y nadie confirma.', texto: 'La asistente cambia el número dos veces antes del evento.' }, viene_de: ['lu-icp'] },
+    revisar: 'lu-dolor-2',
+  },
+  creativo: {
+    etapa: 'Pilares y ángulos',
+    doc: '## Ángulos nuevos\n\n- **La factura del mismo día** — sale del dolor #3. Winner parecido: «Rating our clients’ reactions» (610 k vistas).\n- **Quemado:** unboxing cenital de bandejas (ya lo hacen 4 cuentas del radar).\n\n_Fuentes: radar (3 referentes) · dolores aprobados._',
+    propuesta: { tipo: 'angulo', titulo: 'La factura del mismo día', contenido: { decide: 'Ángulo para el dolor de contabilidad.' }, viene_de: ['lu-dolor-3'] },
+  },
+  produccion: {
+    etapa: 'Pre',
+    doc: '## Pre-producción — borrador\n\n**Jornada:** 18 nov · llamado 6:00 a. m.\n\n| # | Plano | Toma |\n|---|---|---|\n| 1 | Cenital | Teléfono con 40 notificaciones |\n| 2 | Medio | Un solo mensaje |\n| 3 | Detalle | Cronómetro sobre la bandeja |\n\n**Permisos:** oficina del cliente, imagen de la asistente.',
+    propuesta: { tipo: 'pieza', titulo: 'Story «Faltan 15 minutos»', contenido: { decide: 'Derivada vertical de la pieza 2.', formato: 'Story' }, viene_de: ['lu-campana-1'] },
+  },
+  diseno: {
+    etapa: 'Borrador',
+    doc: '## Carrusel — borrador\n\n1. Portada: «Tu reunión empieza a las 9. La comida, a las 8:45.»\n2. Cómo funciona en 3 pasos.\n3. Cierre: escribe «REUNIÓN».\n\n_Plantilla: carrusel 4:5 del kit._',
+    propuesta: { tipo: 'pieza', titulo: 'Carrusel «Reunión a tiempo»', contenido: { decide: 'Carrusel 4:5 de 3 láminas.', formato: 'Carrusel' }, viene_de: ['lu-campana-1'] },
+  },
 }
 
 type Respuesta = { r: RespuestaPermiso; extra?: ExtraPermiso }
@@ -59,7 +89,13 @@ No toco nada hasta que lo apruebes.`
  * Cliente de ejemplo: reproduce sesiones típicas (chat con artefacto, plan, code con tareas,
  * subagente, pregunta y permiso) con el mismo contrato que el puente real. No hace llamadas de red.
  */
-export function crearClienteMock({ velocidad = 1 }: Opciones = {}): Cliente {
+export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {}): Cliente {
+  const hilo = hiloDado ?? crearHiloMemoria()
+  /** Respuesta asíncrona con la misma pausa que tendría la red (y los errores del hilo como rechazos). */
+  const responder = async <T,>(fn: () => T, pausa = 60): Promise<T> => {
+    await sleep(ms(pausa))
+    return fn()
+  }
   const pendientes = new Map<string, (r: Respuesta) => void>()
   const siempre = new Set<string>()
   const guardados: Record<string, string> = {}
@@ -121,6 +157,44 @@ export function crearClienteMock({ velocidad = 1 }: Opciones = {}): Cliente {
     }
 
     const modo = p.modo ?? 'code'
+
+    // ——— @agente: el orquestador lanza su subagente; su texto es el documento en vivo y termina con una propuesta.
+    const llamado = /subagent_type "([\w-]+)"/.exec(texto)?.[1]
+    const agente = llamado ? agentePorId(llamado) : undefined
+    if (agente) {
+      const t = TRABAJO_AGENTE[agente.id]
+      yield* decir(`Me llamaron con @${agente.id}. Primero digo cómo lo trabajo y después lanzo al subagente.`, 'razonamiento', undefined, 8)
+      yield* decir(`**Así lo voy a trabajar:** ${agente.etapas.map((e) => e.nombre).join(' → ')}. Empiezo por **${t.etapa}** con lo que ya hablamos.\n\n`, 'texto', undefined, 10)
+      if (agente.id === 'estrategia') {
+        const r = yield* pedir('AskUserQuestion', 'Tu aporte para esta etapa', {
+          questions: [
+            {
+              header: 'Tu aporte',
+              question: '¿Quién te ha comprado más y por qué?',
+              multiSelect: false,
+              options: [
+                { label: 'Asistentes de gerencia', description: 'Piden para reuniones de directorio' },
+                { label: 'Recursos humanos', description: 'Piden para capacitaciones y eventos internos' },
+              ],
+            },
+          ],
+        })
+        const elegido = r.extra?.entradaNueva?.answers as Record<string, string> | undefined
+        if (elegido) yield* decir(`Anotado: **${Object.values(elegido)[0]}** (aporte tuyo, fuente interna).\n\n`, 'texto', undefined, 6)
+      }
+      if (parar()) return yield* cerrar('detenido')
+      const sub = nuevoId('t')
+      yield { tipo: 'herramienta_inicio', id: sub, nombre: 'Task', entrada: { description: `${agente.nombre} · ${t.etapa}`, subagent_type: agente.id, prompt: texto.slice(0, 400) } }
+      await sleep(ms(200), signal)
+      yield* herramienta('Read', { file_path: `clientes/lumbre/${t.etapa.toLowerCase()}.md` }, '(ejemplo)', sub, 300)
+      yield* decir(t.doc, 'texto', sub, 14)
+      yield { tipo: 'herramienta_fin', id: sub, salida: `Etapa «${t.etapa}» lista para revisar.` }
+      if (parar()) return yield* cerrar('detenido')
+      const bloques = ['```nodo\n' + JSON.stringify(t.propuesta) + '\n```']
+      if (t.revisar) bloques.push('Y esto cambió hace poco; revísalo antes de seguir:\n\n```nodo\n' + JSON.stringify({ id: t.revisar }) + '\n```')
+      yield* decir(`Listo el borrador de **${t.etapa}** (lo ves en la pestaña del agente). Propongo esto para el hilo; ábrelo para aprobar:\n\n${bloques.join('\n\n')}`, 'texto', undefined, 4)
+      return yield* cerrar(parar() ? 'detenido' : 'completo')
+    }
 
     // ——— Chat: sin herramientas. Si pides algo visual, responde con un artefacto HTML.
     if (modo === 'chat') {
@@ -292,5 +366,34 @@ export function crearClienteMock({ velocidad = 1 }: Opciones = {}): Cliente {
     async skills() {
       return skillsEjemplo
     },
+    clientes: () => responder(() => hilo.clientes()),
+    nodos: (c) => responder(() => hilo.nodos(c)),
+    nodo: (c, id) => responder(() => hilo.nodo(c, id)),
+    crearNodo: (c, nuevo) => responder(() => hilo.crear(c, nuevo)),
+    guardarNodo: (c, id, cambios) => responder(() => hilo.guardar(c, id, cambios)),
+    aprobarNodo: (c, id, leida) => responder(() => hilo.aprobar(c, id, leida)),
+    dependientes: (c, id) => responder(() => hilo.dependientes(c, id)),
+    avisos: (c) => responder(() => hilo.avisos(c)),
+    calcOutbound: (e) =>
+      responder(() => {
+        const r = calcularOutbound(e)
+        if (!r) throw new Error('Con esa conversión no se alcanza la meta: sube la conversión o baja la probabilidad.')
+        return r
+      }, 0),
+    calcInbound: (e) =>
+      responder(() => {
+        const r = calcularInbound(e)
+        if (!r) throw new Error('Revisa las tasas del embudo: deben ir de 0 a 100 %.')
+        return r
+      }, 0),
+    calibrar: () =>
+      responder(
+        () => ({
+          desde: 'Zernio · últimos 30 días (ejemplo)',
+          muestra: '6 reels · 41,300 impresiones',
+          tasas: { ctr: 0.009, engagement: 0.052, cpm: 3.8 },
+        }),
+        400,
+      ),
   }
 }

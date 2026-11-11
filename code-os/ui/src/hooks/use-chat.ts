@@ -11,6 +11,8 @@ export type OpcionesEnvio = {
   proyectoId?: string
   titulo?: string
   instrucciones?: string
+  /** Subagentes para `@agente` (se registran al crear la sesión en el puente). */
+  agentes?: Record<string, { description: string; prompt: string }>
   /** Lo que de verdad viaja al motor (p. ej. con archivos de texto pegados). Por defecto, el texto visible. */
   textoParaMotor?: string
   /** Se llama al terminar el turno (para notificar). */
@@ -79,6 +81,7 @@ export function useChat(cliente: ClienteEventos, inicial: Record<string, Mensaje
           proyectoId: o.proyectoId,
           titulo: o.titulo,
           instrucciones: o.instrucciones,
+          agentes: o.agentes,
           signal: ctrl.signal,
         })) {
           if (e.tipo === 'modo') o.alCambiarModo?.(e.modo)

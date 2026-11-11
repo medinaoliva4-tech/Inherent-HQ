@@ -86,6 +86,8 @@ export type PeticionEnvio = {
   titulo?: string
   /** Instrucciones del proyecto (memoria). Viajan como systemPrompt al crear la sesión. */
   instrucciones?: string
+  /** Subagentes (`@agente`) que el puente registra al crear la sesión (`agents` del SDK). */
+  agentes?: Record<string, { description: string; prompt: string }>
   signal?: AbortSignal
 }
 

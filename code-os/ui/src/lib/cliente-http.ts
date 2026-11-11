@@ -1,4 +1,6 @@
+import { calcularInbound, calcularOutbound, type Calibracion, type EntradaInbound, type ResultadoInbound, type ResultadoOutbound } from './calculadora'
 import { NoDisponible, type Catalogo, type Cliente, type ConfigCliente, type EstadoCuotas, type EstadoServidor } from './cliente'
+import type { Aviso, Marca, Nodo } from './hilo'
 import type { Evento, ExtraPermiso, ModoSesion, PeticionEnvio, RespuestaPermiso } from './eventos'
 import { leerSse } from './sse'
 
@@ -149,6 +151,52 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
     return (await res.json()) as T
   }
 
+  /**
+   * Herramientas y el hilo: `VITE_HERRAMIENTAS_URL` o, si no está, el mismo puente.
+   * Un 404/501 = el backend aún no tiene esa ruta → `NoDisponible` (la pantalla lo dice).
+   */
+  const baseH = cfg.herramientasUrl ?? base
+  const cid = (id: string) => encodeURIComponent(id)
+  async function herr<T>(ruta: string, que: string, init: RequestInit = {}): Promise<T> {
+    const res = await fetchFn(`${baseH}${ruta}`, { ...init, headers: { ...cab(!!init.body), ...(init.headers ?? {}) } })
+    if (res.status === 404 || res.status === 501) throw new NoDisponible(que)
+    if (!res.ok) {
+      let msg = `Herramientas respondió ${res.status}`
+      try {
+        const j = await res.json()
+        if (j?.error) msg = String(j.error)
+      } catch {
+        /* sin cuerpo */
+      }
+      if (res.status === 409) msg = msg.startsWith('Herramientas') ? 'Abre el contenido (la versión actual) antes de aprobar.' : msg
+      throw new Error(msg)
+    }
+    return (await res.json()) as T
+  }
+  /** Las calculadoras tienen la misma fórmula aquí: si el backend aún no la tiene, se calcula en el navegador. */
+  async function calc<T>(ruta: string, cuerpo: unknown, local: () => T | null): Promise<T> {
+    try {
+      return await herr<T>(ruta, `POST ${ruta}`, { method: 'POST', body: JSON.stringify(cuerpo) })
+    } catch (e) {
+      if (!(e instanceof NoDisponible)) throw e
+      const r = local()
+      if (!r) throw new Error('Con esos datos no se puede calcular.', { cause: e })
+      return r
+    }
+  }
+  const planoInbound = (e: EntradaInbound) => ({
+    meta: e.meta,
+    ctr: e.ctr.valor,
+    clicALead: e.clicALead.valor,
+    leadACliente: e.leadACliente.valor,
+    engagement: e.engagement.valor,
+    cpm: e.cpm.valor,
+    frecuencia: e.frecuencia,
+    presupuesto: e.presupuesto,
+    segmentacion: e.segmentacion,
+    angulos: e.angulos,
+  })
+
   const sesiones: Record<string, SesionLocal> = (() => {
     try {
       return JSON.parse(localStorage.getItem(CLAVE) ?? '{}')
@@ -180,6 +228,7 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
           mode: modo,
           title: p.titulo,
           systemPrompt: p.instrucciones || undefined,
+          agents: p.agentes,
         }),
       })
       s = sesiones[p.conversacionId] = { id: r.id, seq: 0, modelo: p.modeloId, modo }
@@ -316,5 +365,17 @@ export function crearClienteHttp(cfg: ConfigCliente, fetchFn: typeof fetch = (..
     abrirTerminal: () => Promise.reject(new NoDisponible('WebSocket /sessions/:id/terminal (terminal con node-pty)')),
     mcp: () => Promise.reject(new NoDisponible('GET /mcp (catálogo de servidores MCP)')),
     skills: () => Promise.reject(new NoDisponible('GET /skills (skills del servidor)')),
+    clientes: () => herr<Marca[]>('/clientes', 'GET /clientes'),
+    nodos: (c) => herr<Nodo[]>(`/clientes/${cid(c)}/nodos`, 'GET /clientes/:id/nodos'),
+    nodo: (c, id) => herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}`, 'GET /clientes/:id/nodos/:nid'),
+    crearNodo: (c, nuevo) => herr<Nodo>(`/clientes/${cid(c)}/nodos`, 'POST /clientes/:id/nodos', { method: 'POST', body: JSON.stringify(nuevo) }),
+    guardarNodo: (c, id, cambios) => herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}`, 'PUT /clientes/:id/nodos/:nid', { method: 'PUT', body: JSON.stringify(cambios) }),
+    aprobarNodo: (c, id, leida) =>
+      herr<Nodo>(`/clientes/${cid(c)}/nodos/${cid(id)}/aprobar`, 'POST /clientes/:id/nodos/:nid/aprobar', { method: 'POST', body: JSON.stringify({ version: leida.version }) }),
+    dependientes: (c, id) => herr<Nodo[]>(`/clientes/${cid(c)}/nodos/${cid(id)}/dependientes`, 'GET /clientes/:id/nodos/:nid/dependientes'),
+    avisos: (c) => herr<Aviso[]>(`/clientes/${cid(c)}/avisos`, 'GET /clientes/:id/avisos'),
+    calcOutbound: (e) => calc<ResultadoOutbound>('/calc/outbound', e, () => calcularOutbound(e)),
+    calcInbound: (e) => calc<ResultadoInbound>('/calc/inbound', planoInbound(e), () => calcularInbound(e)),
+    calibrar: (c) => herr<Calibracion>(`/clientes/${cid(c)}/calibrar`, 'POST /clientes/:id/calibrar (tasas reales de Zernio)', { method: 'POST' }),
   }
 }
