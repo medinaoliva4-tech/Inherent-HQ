@@ -64,4 +64,13 @@ assert.equal(ck('Renombra la variable cliente a cuenta'), 'prep'); assert.equal(
 assert.equal(ck('Agrega un botón de exportar'), 'linea', 'lo demás es construir');
 assert.equal(nv('Revisa este código', { ultimo: 'nivel-medio' }), 'nivel-alto'); assert.equal(nv('Haz un code review', { ultimo: 'nivel-alto' }), 'nivel-medio', 'otro cocinero revisa');
 assert.ok(Object.values(COCINEROS).every((x) => x.nivel.startsWith('nivel-')));
+// Los departamentos: el puente solo acepta los lineamientos al CREAR la sesión (systemPrompt ≤ 8000); /api/code/pase dice dónde está la interfaz.
+{
+  const fs = await import('node:fs');
+  const src = fs.readFileSync(new URL('../public/js/chat-code.js', import.meta.url), 'utf8');
+  assert.match(src, /systemPrompt: String\(sistema\)\.slice\(0, 8000\)/);
+  assert.match(src, /export const sesionCode = /);
+  const code = fs.readFileSync(new URL('../api/_lib/code.js', import.meta.url), 'utf8');
+  assert.match(code, /ui: urlUi\(\)/);
+}
 console.log('✓ test-code: pase firmado, aceptable por el puente, con caducidad y sin sesión no se entrega');

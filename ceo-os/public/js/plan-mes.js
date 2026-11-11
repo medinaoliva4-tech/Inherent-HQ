@@ -1,4 +1,4 @@
-// Marca › Crear › Plan del mes: el plan de ③ Marketing de cada mes (agents/03-marketing/brain/WORKFLOW.md).
+// Marca › Crear › Plan del mes: el plan de ③ Marketing de cada mes (agents/03-marketing-creative/brain/WORKFLOW.md).
 // ① Strategy decide el rumbo; ③ Marketing lo reparte en el tiempo y en los canales: qué se dice, en qué canal, en qué semana
 // y qué trabajo hace cada pieza (el slot). No escribe piezas ni hooks: eso es de ④ Creatividad.
 // Sin imports del DOM: lo usan la pantalla, el servidor y las pruebas.
@@ -30,7 +30,7 @@ export function limpiarPlan(p = {}) {
   }
   if (Array.isArray(p.mensaje)) o.mensaje = lista(p.mensaje, 5, (m) => {
     if (!m || !txt(m.titulo, 120)) return null;
-    const nivel = nivelC(m.consciencia); // opcional: el nivel de consciencia al que le habla este mensaje (mk-mensaje § 3)
+    const nivel = nivelC(m.consciencia); // opcional: el nivel de consciencia al que le habla este mensaje (mc-pilares-angulos § 3)
     return { titulo: txt(m.titulo, 120), para: txt(m.para, 160), ...(nivel ? { consciencia: nivel } : {}) };
   });
   if (Array.isArray(p.pilares)) o.pilares = lista(p.pilares, 6, (x) => (x && txt(x.nombre, 60) ? { nombre: txt(x.nombre, 60), peso: Math.max(0, Math.min(100, Math.round(+x.peso || 0))), para: txt(x.para, 160) } : null));
@@ -95,14 +95,14 @@ export function promptPlan(m) {
     '- No escribas piezas, hooks ni copy: eso es de ④ Creatividad. Si la estrategia está mal, dilo y devuélvela a ① Strategy.',
   ].join('\n');
   const actual = m.plan && Object.keys(limpiarPlan(m.plan)).length ? `\nEL PLAN COMO VA (datos):\n${JSON.stringify(limpiarPlan(m.plan)).slice(0, 12000)}` : '';
-  const extra = [m.contexto ? `\nCONTEXTO QUE AGREGÓ LA PERSONA:\n${String(m.contexto).slice(0, 20000)}` : '', m.hormozi ? '\nUsa el lente de Hormozi (hormozi-brain) en cada decisión: la oferta que se empuja, el valor percibido y la demanda.' : ''].join('');
+  const extra = [m.contexto ? `\nCONTEXTO QUE AGREGÓ LA PERSONA:\n${String(m.contexto).slice(0, 20000)}` : '', m.hormozi ? '\nUsa el lente de Hormozi (la biblioteca de Hormozi) en cada decisión: la oferta que se empuja, el valor percibido y la demanda.' : ''].join('');
   if (!m.primera) return [`Seguimos con el plan de ${nombreMes(m.mes)} de ${m.marca}.`, actual, extra, '', cierre, '', `Pedido: ${txt(m.pedido, 4000)}`].join('\n');
   return [
     `Eres ③ Marketing de Inherent, en ${m.donde || 'el chat de Diseño gráfico de Inherent OS (etapa 1 · Plan del mes)'}. Armas el plan de ${nombreMes(m.mes)} de ${m.marca} (carpeta ${root}).`,
     '',
     'ANTES DE PLANEAR, LEE:',
     '- inherent/00-PRINCIPIOS.md',
-    '- agents/03-marketing/brain/WORKFLOW.md y las skills que indica (mk-encargo, mk-campana, mk-pilares, mk-mensaje, mk-canales, mk-calendario)',
+    '- agents/03-marketing-creative/brain/WORKFLOW.md y las skills que indica (recepcion, mc-campanas-piezas, mc-pilares-angulos, mc-campanas-piezas)',
     `- ${root}/00-onboarding/plan-contratado.md: el alcance contratado es el techo (cuántas piezas y qué canales). Sin ficha, no planees: dilo.`,
     `- ${root}/01-estrategia/ y ${root}/03-marketing/ si hay algo del mes`,
     '- El lente de Hormozi (la oferta que se empuja, el valor percibido) siempre pensando en la meta del mes.',

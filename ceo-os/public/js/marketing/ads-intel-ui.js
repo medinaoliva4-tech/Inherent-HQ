@@ -182,7 +182,7 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
     S.calc = calc;
     const corriendo = S.ia?.fase === 'corriendo';
     mount(el, html`<div class="ain-sec-h"><h3>Recomendaciones</h3><button type="button" class="btn xs" data-ain="ia" ${!c || corriendo || S.ocupado ? raw('disabled') : ''} title="${c ? 'Le pasa la tabla a la IA: solo puede usar esos números' : 'Sin datos de Windsor no hay qué pedirle a la IA'}">${ico('sparkles', 13)} Pedir recomendaciones a la IA</button></div>
-      <p class="mut sm">Un cambio a la vez, y nada sin datos suficientes (ad-optimizacion §1). Cada recomendación trae su evidencia: sin números no se muestra.</p>
+      <p class="mut sm">Un cambio a la vez, y nada sin datos suficientes (ad-corrida §1). Cada recomendación trae su evidencia: sin números no se muestra.</p>
       ${S.alcance?.abierto === false ? html`<div class="warnbox sm">${S.alcance.texto || 'Este cliente no tiene ficha de oferta: no se pueden guardar recomendaciones.'}</div>` : ''}
       ${S.docsError ? html`<div class="warnbox sm">No pude leer las recomendaciones guardadas: ${S.docsError}</div>` : !S.puede.editar && S.docs ? html`<p class="mut sm">Tu perfil solo las lee: guardarlas y crear tareas es de quien edita Contenido.</p>` : ''}
       ${panelIA()}

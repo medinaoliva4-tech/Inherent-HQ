@@ -4,7 +4,7 @@ import * as db from './db.js';
 import { readFile } from './gh.js';
 import { scoper } from './access.js';
 import { seesTask } from './leer.js';
-import { AGENTES } from '../../public/js/harness/agentes.js';
+import { AGENTES, CARPETAS_COMUNES } from '../../public/js/harness/agentes.js';
 import { completo } from '../../public/js/agentes-flujos.js';
 import { bloqueReglas } from '../../public/js/memoria.js';
 import { nombresSkill, metodoDeSkill, equipoHoy, deCliente, bloqueInstrucciones, MAX_SKILLS } from '../../public/js/conocimiento.js';
@@ -22,8 +22,10 @@ async function leer(ruta) {
   return texto;
 }
 async function buscarSkill(nombre) {
-  for (const a of AGENTES) {
-    const ruta = skillDe(a.carpeta, nombre); if (!ruta) return null;
+  // Las carpetas de los 9 agentes y, al final, las comunes (recepcion, resultados) y el router (inherent).
+  const comunes = CARPETAS_COMUNES.map((c) => (/^[a-z][a-z0-9-]{1,60}$/.test(nombre) ? `${c}skills/${nombre}/SKILL.md` : null));
+  for (const ruta of [...AGENTES.map((a) => skillDe(a.carpeta, nombre)), ...comunes]) {
+    if (!ruta) return null;
     const texto = await leer(ruta); if (texto) return texto;
   }
   return null;

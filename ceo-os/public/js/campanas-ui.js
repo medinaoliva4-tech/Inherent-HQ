@@ -27,7 +27,7 @@ const ICO_CANAL = { instagram: 'image', tiktok: 'music', pauta: 'megaphone', wha
 const FORMATOS = ['reel', 'carrusel', 'story', 'post', 'video corto', 'anuncio', 'correo', 'mensaje de WhatsApp', 'invitación', 'activación en sitio'];
 // De dónde sale cada dato cuando falta («⚠️ SIN DATOS: sale de …»).
 const SD = {
-  frase: 'la prueba de la frase de mk-campana: la que el equipo repite de memoria',
+  frase: 'la prueba de la frase de mc-campanas-piezas: la que el equipo repite de memoria',
   mbt: 'la estrategia aprobada: la MUST BE TRUE que mueve, con su letra',
   se_nota: 'el objetivo del ciclo: el cambio que se ve al cierre',
   no_es: 'el malentendido más probable, escrito antes de que pase',
@@ -261,7 +261,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
   function pintarGantt() {
     const el_ = R('gantt'); if (!el_) return;
     const c = S.W, g = ganttDe(c), hoy = hoyISO();
-    const cab = html`<div class="cma-sec-h"><h3>${ico('calendar-days', 15)} Anticipación</h3><span class="mut sm">cuándo se avisa: lo que fija mk-campana según el tipo</span></div>`;
+    const cab = html`<div class="cma-sec-h"><h3>${ico('calendar-days', 15)} Anticipación</h3><span class="mut sm">cuándo se avisa: lo que fija mc-campanas-piezas según el tipo</span></div>`;
     if (!g) return mount(el_, html`${cab}<p class="cma-sd">${c.ancla ? 'Una campaña del ciclo no avisa con anticipación: sostiene un ángulo durante todo el ciclo.' : `${SIN_DATOS}: sin fecha no hay anticipación. Sale de la fecha de la campaña.`}</p>`);
     mount(el_, html`${cab}<div class="cma-gantt" role="group" aria-label="Anticipación de ${fdate(g.desde)} a ${fdate(g.hasta)}">
       <div class="cma-g-eje"><span>${fdate(g.desde)}</span><span>${fdate(g.hasta)}</span></div>
@@ -294,7 +294,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
     const el_ = R('canales'); if (!el_) return;
     const c = S.W, n = canalesActivos(c).length;
     mount(el_, html`<div class="cma-sec-h"><h3>${ico('layers', 15)} Plan de canales</h3><span class="mut sm">qué se hace en cada canal y en cada fase${costos ? '' : ' · los montos los ve quien ve presupuestos'}</span></div>
-      ${n ? '' : html`<p class="cma-sd">${SIN_DATOS}: enciende las celdas donde sí se va a avisar. Un canal entra solo si existe la cuenta, hay quien la opere y la ficha lo cubre (mk-canales).</p>`}
+      ${n ? '' : html`<p class="cma-sd">${SIN_DATOS}: enciende las celdas donde sí se va a avisar. Un canal entra solo si existe la cuenta, hay quien la opere y la ficha lo cubre (mc-campanas-piezas).</p>`}
       <div class="cma-sc"><table class="cma-tabla" aria-label="Plan de canales por fase">
         <thead><tr><td><span class="sr-only">Canal</span></td>${FASES_C.map((f) => html`<th scope="col"><b>${NOMBRE_FASE_C[f]}</b><span class="mut sm">${fechaDeFase(c, f) ? fdate(fechaDeFase(c, f)) : ''}</span></th>`)}</tr></thead>
         <tbody>${CANALES_C.map((ca) => html`<tr data-canal="${ca}"><th scope="row"><span class="cma-canal">${ico(ICO_CANAL[ca], 14)} ${NOMBRE_CANAL_C[ca]}</span>${ca === 'pauta' && c.pauta_id ? html`<span class="chip sm2" title="Ligada a una campaña de pauta">Ligada</span>` : ''}</th>${FASES_C.map((f) => celdaHtml(f, ca))}</tr>`)}</tbody></table></div>

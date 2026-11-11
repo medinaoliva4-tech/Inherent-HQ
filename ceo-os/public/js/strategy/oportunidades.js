@@ -130,7 +130,7 @@ export function prompt(ctx) {
   const extra = [xr ? `Entrada aprobada · Business X-Ray v${Number(xr.version) || 1}: ${corta(resumenXray(xr.contenido), 380)}` : '', cd ? `Commercial Diagnosis: ${cd}` : ''].filter(Boolean);
   const cuerpo = [
     'MÉTODO',
-    `Fuentes (el contexto las trae si existen; lo que no está va ${SIN_DATOS} y dices de dónde saldría): la ficha de oferta, el Business X-Ray aprobado, el Commercial Diagnosis, la Library y la Investigación del cliente. Lee en hormozi-brain: ${RUTAS_HORMOZI.overview}.`,
+    `Fuentes (el contexto las trae si existen; lo que no está va ${SIN_DATOS} y dices de dónde saldría): la ficha de oferta, el Business X-Ray aprobado, el Commercial Diagnosis, la Library y la Investigación del cliente. Lee en la biblioteca de Hormozi: ${RUTAS_HORMOZI.overview}.`,
     `1) items (máximo 12): cada oportunidad = titulo (un resultado), origen (de dónde sale: business-xray, commercial-diagnosis, investigación o chat), impacto, dificultad, costo, tiempo y confianza (enteros de 1 a 5; costo y tiempo altos = caro y lento; confianza alta = lo prueba un dato del cliente), evidencia (la RAZÓN de los puntajes, con su fuente o [dice el cliente, sin verificar]) y fuera_alcance (true si la ficha de oferta no lo incluye${fuera ? `; fuera de la ficha: ${fuera}` : ''}).`,
     '2) Un puntaje sin dato va null, nunca 0 ni «de memoria». Si la empresa no aguanta más demanda, sube primero las oportunidades de capacidad.',
     `3) El OS ordena con ${FORMULA}: tú solo puntúas. Lo fuera_alcance se escala al CEO y no va al roadmap.`,

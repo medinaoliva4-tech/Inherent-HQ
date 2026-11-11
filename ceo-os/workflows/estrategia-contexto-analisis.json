@@ -35,10 +35,10 @@
           ]
         },
         {
-          "file": "agents/01-strategy/brain/skills/context/SKILL.md"
+          "file": "agents/01-strategy/brain/skills/st-producto-icp/SKILL.md"
         },
         {
-          "file": "agents/01-strategy/brain/skills/analysis/SKILL.md"
+          "file": "agents/01-strategy/brain/skills/st-dolores-historia/SKILL.md"
         }
       ],
       "instruccion": "Resume en un máximo de 2,500 tokens el método de trabajo de Strategy para los bloques 01 CONTEXTO y 02 ANÁLISIS: qué se anota primero (alcance contratado), qué debe contener cada bloque, las 3 preguntas del análisis (MUST BE TRUE · UNFAIR · GO GET), qué NO hace Strategy y las reglas duras. Conserva los nombres exactos de los conceptos. No agregues nada que no esté en el texto.",

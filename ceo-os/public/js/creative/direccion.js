@@ -78,7 +78,7 @@ export function resumenTexto(contenido) {
 
 // ---------- El pedido a la IA (< 5 000 caracteres) ----------
 const F = '```';
-const SK = 'agents/04-creative/brain/skills';
+const SK = 'agents/03-marketing-creative/brain/skills';
 export function prompt(ctx) {
   const cli = plano(ctx?.cliente) ? ctx.cliente : {}, slug = corta(cli.slug, 40);
   const carpeta = slug ? (slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${slug}`) : 'clients/<cliente>';
@@ -94,9 +94,9 @@ export function prompt(ctx) {
   ].join('\n');
   const metodo = [
     'MÉTODO (en este orden; sin big idea elegida no se escribe hook)',
-    `1) cr-brief (${SK}/cr-brief/SKILL.md): lee el brief del ciclo y el lenguaje literal del comprador. Saca UN insight específico, con sus palabras.`,
-    `2) cr-big-idea (${SK}/cr-big-idea/SKILL.md): aplica 1 o 2 técnicas (${TECNICAS.join(', ')}) y baja a UNA big idea de una frase. Pasa el filtro Distinctiveness / Novelty / Relevance y la prueba del logo.`,
-    `3) cr-storytelling (${SK}/cr-storytelling/SKILL.md): cada concepto tiene nombre, idea en 1-2 frases, hook, técnica y formato (Reel, Carrusel, Story, Estático, TikTok o YouTube). Entre 3 y 5, distintos entre sí.`,
+    `1) recepcion (agents/_comun/skills/recepcion/SKILL.md): lee el brief del ciclo y el lenguaje literal del comprador. Saca UN insight específico, con sus palabras.`,
+    `2) mc-campanas-piezas (${SK}/mc-campanas-piezas/SKILL.md): aplica 1 o 2 técnicas (${TECNICAS.join(', ')}) y baja a UNA big idea de una frase. Pasa el filtro Distinctiveness / Novelty / Relevance y la prueba del logo.`,
+    `3) mc-campanas-piezas (${SK}/mc-campanas-piezas/SKILL.md): cada concepto tiene nombre, idea en 1-2 frases, hook, técnica y formato (Reel, Carrusel, Story, Estático, TikTok o YouTube). Entre 3 y 5, distintos entre sí.`,
     '4) imagenes: índices (desde 0) de las imágenes del moodboard que lo ilustran, máximo 3; sin moodboard, []. laya: lo que Laya mide de ese concepto, si hay dato; si no, vacío.',
   ];
   const salida = [

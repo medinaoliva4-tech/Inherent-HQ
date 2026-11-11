@@ -151,7 +151,7 @@ SIN_APROBAR.calcular = (d, p, hoy, { d: dia, Mc }) => conNivel(d).flatMap((c) =>
 });
 
 // est-brief-comunicacion · agents/01-strategy/brain/WORKFLOW.md §2 04B («🛑 Es el gate de ③ Marketing») y
-// agents/03-marketing/brain/WORKFLOW.md §5 («BLOQUEADO — falta el brief de comunicación»). Del 1 al 20, si corre ③ Marketing (nunca
+// agents/03-marketing-creative/brain/WORKFLOW.md §5 («BLOQUEADO — falta el brief de comunicación»). Del 1 al 20, si corre ③ Marketing (nunca
 // en Brand Foundation) y no está 01-estrategia/brief-de-comunicacion-<mes>.md. Vale el del mes del ciclo o el del contenido: el
 // manual no dice cuál de los dos lleva el nombre. Media el día 1; alta desde el 2, cuando se arma el calendario.
 const BRIEF = { id: 'est-brief-comunicacion', grupo: 'clientes', area: 'estrategia', urgencia: 'alta', necesita: { area: 'estrategia', nivel: 'edita' } };

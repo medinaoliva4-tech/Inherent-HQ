@@ -27,7 +27,7 @@ t('El bloque final se lee y se quita del texto', () => {
 });
 t('La primera vez el pedido lleva el método de Marketing y la estrategia', () => {
   const p = promptPlan({ marca: 'Ejemplo', slug: 'ejemplo', mes: '2026-10', estrategia: '{"meta":1}', pedido: 'Arma el plan', primera: true });
-  for (const x of ['③ Marketing', 'agents/03-marketing/brain/WORKFLOW.md', 'plan-contratado.md', 'LA ESTRATEGIA EN EL OS', '```plan', 'octubre 2026', 'Pedido: Arma el plan']) assert.ok(p.includes(x), x);
+  for (const x of ['③ Marketing', 'agents/03-marketing-creative/brain/WORKFLOW.md', 'plan-contratado.md', 'LA ESTRATEGIA EN EL OS', '```plan', 'octubre 2026', 'Pedido: Arma el plan']) assert.ok(p.includes(x), x);
   assert.ok(!promptPlan({ marca: 'E', slug: 'e', mes: '2026-10', pedido: 'Sigue', primera: false }).includes('WORKFLOW.md'));
 });
 t('Cada slot es una pieza del calendario, con id fijo y su semana', () => {
@@ -61,9 +61,9 @@ t('La línea del trabajo apunta a herramientas que existen; Marketing planea y D
   assert.deepEqual([...new Set(todos)].sort(), [...keys].sort(), 'todos los módulos tienen grupo');
 });
 
-// Campañas y eventos (mk-campana): la anticipación, lo que falta y una por ciclo.
+// Campañas y eventos (mc-campanas-piezas): la anticipación, lo que falta y una por ciclo.
 const C = await import('../public/js/campanas.js');
-t('Campañas: la anticipación de mk-campana, lo que falta y una por ciclo', () => {
+t('Campañas: la anticipación de mc-campanas-piezas, lo que falta y una por ciclo', () => {
   const ev = C.limpiarCampana({ nombre: '  Cata de vinos ', tipo: 'Evento con cupo', ancla: '2026-11-28', frase: 'Que vengan a probar', mbt: 'B', se_nota: '+40 reservas', no_es: 'No es una fiesta', evento: { objetivo: 'Vender la membresía', medicion: 'Membresías vendidas', cupo: '60' }, canales: { 'primer-aviso': { instagram: { activo: true } } }, briefs: [{ fase: 'primer-aviso', canal: 'instagram', objetivo: 'Que se enteren' }], raro: 1 });
   assert.equal(ev.nombre, 'Cata de vinos'); assert.equal(ev.tipo, 'evento'); assert.equal(ev.evento.cupo, 60); assert.equal(ev.raro, undefined);
   assert.deepEqual(C.anticipacion(ev).map((x) => [x.fecha, x.que]), [['2026-11-07', 'Primer aviso'], ['2026-11-21', 'Recordatorio'], ['2026-11-26', 'Último empujón'], ['2026-11-28', 'El día']]);

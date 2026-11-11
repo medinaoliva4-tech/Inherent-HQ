@@ -25,18 +25,18 @@ import { respuestaAbierta, puedeRecibir, enCola, siguienteAuto, leerPregunta, sa
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
-t('los 12 agentes del repo tienen al menos 4 etapas', () => {
+t('los 9 agentes del repo (PR #297) tienen al menos 2 etapas con nombre', () => {
   for (const a of AGENTES) {
     const md = fs.readFileSync(path.join(repo, a.carpeta, 'brain/WORKFLOW.md'), 'utf8');
     const w = leerWorkflow(md, { codigo: a.n });
-    assert.ok(w.etapas.length >= 4, `${a.id}: ${w.etapas.length} etapas`);
+    assert.ok(w.etapas.length >= 2, `${a.id}: ${w.etapas.length} etapas`);
     for (const e of w.etapas) assert.ok(e.nombre, `${a.id}: etapa sin nombre`);
   }
 });
 t('Strategy cierra con gate del CEO y Ads trae sus dos 🚦', () => {
   const st = leerWorkflow(fs.readFileSync(path.join(repo, 'agents/01-strategy/brain/WORKFLOW.md'), 'utf8'), { codigo: '01' });
   assert.ok(st.etapas.filter((e) => !e.loop).at(-1).gate);
-  const ads = leerWorkflow(fs.readFileSync(path.join(repo, 'agents/10-ads-management/brain/WORKFLOW.md'), 'utf8'), { codigo: '10' });
+  const ads = leerWorkflow(fs.readFileSync(path.join(repo, 'agents/08-ads/brain/WORKFLOW.md'), 'utf8'), { codigo: '08' });
   assert.equal(ads.etapas.filter((e) => e.gate).length, 2);
 });
 
@@ -92,7 +92,7 @@ t('importar una plantilla la desacopla: tipos de nodo válidos, sin loops y con 
   for (const a of AGENTES) {
     const w = leerWorkflow(fs.readFileSync(path.join(repo, a.carpeta, 'brain/WORKFLOW.md'), 'utf8'), { codigo: a.n });
     const wf = desdePlantilla({ ...w, id: a.id, nombre: a.nombre, fuente: a.carpeta });
-    assert.ok(wf.etapas.length >= 3, a.id);
+    assert.ok(wf.etapas.length >= 2, a.id);
     for (const e of wf.etapas) { assert.ok(TIPOS.some((t) => t.id === e.tipo), `${a.id}: tipo ${e.tipo}`); assert.ok(e.id && e.entrega.titulo, a.id); }
     assert.equal(wf.origen.tipo, 'repo');
   }
@@ -492,8 +492,8 @@ t('E3 revisión: también se entiende con espacios y saltos de Windows', () => {
 });
 // F4.6 · Entrega 1: el agente sabe (PLAN-GATEWAY §21).
 t('skills: salen del método de la etapa, sin repetir y aunque venga en frase', () => {
-  assert.deepEqual(nombresSkill({ metodo: 'cr-hook-copy' }), ['cr-hook-copy']);
-  assert.deepEqual(nombresSkill({ metodo: 'cr-big-idea, cr-storytelling, cr-big-idea' }), ['cr-big-idea', 'cr-storytelling']);
+  assert.deepEqual(nombresSkill({ metodo: 'mc-campanas-piezas' }), ['mc-campanas-piezas']);
+  assert.deepEqual(nombresSkill({ metodo: 'mc-radar, mc-campanas-piezas, mc-radar' }), ['mc-radar', 'mc-campanas-piezas']);
   assert.deepEqual(nombresSkill({ skill: 'Analysis' }), ['analysis']);
   assert.deepEqual(nombresSkill({}), []);
 });
@@ -508,8 +508,8 @@ t('skills: se quita el encabezado y lo largo se corta en una sección', () => {
 t('conocimiento: la lista cerrada nunca trae la economía y una skill rara no sale del repo', () => {
   assert.ok(RUTAS_BASE.includes('inherent/00-PRINCIPIOS.md'));
   assert.ok(!RUTAS_BASE.some((p) => /ECONOMIA|clients\//.test(p)));
-  assert.equal(skillDe('agents/04-creative/', '../../inherent/06-ECONOMIA'), null);
-  assert.equal(skillDe('agents/04-creative/', 'cr-hook-copy'), 'agents/04-creative/brain/skills/cr-hook-copy/SKILL.md');
+  assert.equal(skillDe('agents/03-marketing-creative/', '../../inherent/06-ECONOMIA'), null);
+  assert.equal(skillDe('agents/03-marketing-creative/', 'mc-campanas-piezas'), 'agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md');
 });
 const hoyRuns = [
   { id: 'r1', titulo: 'Estrategia Q1', flujo: { nombre: 'Strategy' }, cliente: 'akai', cliente_nombre: 'AKAI', creado_por: 'ana@x.gt', etapas: [{ nombre: 'ICP', estado: 'aprobada' }, { nombre: 'Oferta', estado: 'revision' }] },
@@ -551,8 +551,8 @@ t('instrucciones del cliente: se agregan con tope y sin texto vacío', () => {
 });
 t('pedido: lleva principios, método y equipo; sin ellos queda igual', () => {
   const run = { titulo: 'T', flujo: { agente: 'A' }, inputs: [], etapas: [{ nombre: 'E', tipo: 'analisis', entrega: 'Doc' }] };
-  const con = pedido(run, 0, { principios: 'PRINCIPIO-1', metodo: [{ nombre: 'cr-hook-copy', texto: 'METODO-1' }], equipo: 'EQUIPO-1' });
-  assert.match(con, /PRINCIPIO-1/); assert.match(con, /### cr-hook-copy\nMETODO-1/); assert.match(con, /EQUIPO-1/); assert.match(con, /no lo cites/i); assert.match(con, /no bloquees/i);
+  const con = pedido(run, 0, { principios: 'PRINCIPIO-1', metodo: [{ nombre: 'mc-campanas-piezas', texto: 'METODO-1' }], equipo: 'EQUIPO-1' });
+  assert.match(con, /PRINCIPIO-1/); assert.match(con, /### mc-campanas-piezas\nMETODO-1/); assert.match(con, /EQUIPO-1/); assert.match(con, /no lo cites/i); assert.match(con, /no bloquees/i);
   assert.ok(!/PRINCIPIO|Método de esta etapa|equipo trabaja/.test(pedido(run, 0, {})));
 });
 // El servidor nunca lee direcciones internas (LiteLLM, SearXNG, Tailscale, metadatos de la nube) ni esquemas raros.

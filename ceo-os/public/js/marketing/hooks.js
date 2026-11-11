@@ -1,4 +1,4 @@
-// Hook Laboratory (herramienta hook-laboratory de Marketing): la biblioteca de hooks (las 7 cajas de cr-hook-copy × consciencia × pilar)
+// Hook Laboratory (herramienta hook-laboratory de Marketing): la biblioteca de hooks (las 7 cajas de mc-campanas-piezas × consciencia × pilar)
 // y la matriz de pruebas (hooks × variantes, con métrica real). Se guarda como un entregable (contenido = { hooks, variantes, pruebas }).
 // Existe para que el hook, su limpieza, lo que falta, la matriz, el pedido a la IA y la lectura de su respuesta vivan en un solo módulo
 // puro (sin DOM ni red) que comparten la vista, el servidor y las pruebas. Los hooks SALEN del research sin reescribirlos (hookDe).
@@ -9,7 +9,7 @@ import { plano, corta, entero, numeroONull, sinAcentos, SIN_DATOS, armarPrompt, 
 
 export const BLOQUE = 'hooks';
 export const MAX_HOOKS = 60, MAX_VARIANTES = 6;
-// Las 7 cajas de cr-hook-copy (agents/04-creative/brain/skills/cr-hook-copy/SKILL.md § 1).
+// Las 7 cajas de mc-campanas-piezas (agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md § 1).
 export const CAJAS = [
   { id: 'pattern-interrupt', nombre: 'Pattern Interrupt', activa: 'Desconcierto → atención', pide: 'define el frame 1 visual', cierre: false },
   { id: 'list-number', nombre: 'List / Number', activa: 'Promesa de estructura', pide: 'cada número = un slide o una toma', cierre: false },
@@ -139,7 +139,7 @@ export function prompt(ctx) {
   const research = (Array.isArray(ctx?.research) ? ctx.research : []).slice(0, 8).map((x) => `«${corta(x.texto, 110)}»${x.mult ? ` ×${x.mult}` : ''}`).filter(Boolean);
   const cuerpo = [
     'MÉTODO',
-    'Lee agents/04-creative/brain/skills/cr-hook-copy/SKILL.md (§ 1 las 7 cajas y § 1B el gancho por consciencia).',
+    'Lee agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md (§ 1 las 7 cajas y § 1B el gancho por consciencia).',
     `1) Los hooks SALEN del research y van IGUAL, palabra por palabra: no los reescribas. fuente "research" con la clave del post; si no hay post real, fuente "nuevo" y multiplicador null (⚠️ SIN DATOS).${research.length ? ` Hooks del research hoy: ${research.join(' · ')}` : ''}`,
     `2) Cada hook va en UNA de las 7 cajas (${CAJA_IDS.join(', ')}), con su nivel de consciencia (1 a 5) y su pilar. Curiosity Gap y Story/Tease traen su "cierre". Pattern Interrupt trae su "frame1" (qué se ve antes del texto).`,
     '3) No repitas la misma caja en todo el ciclo. Un Bold Claim con dato o promesa pide el OK de Branding o Ads: déjalo en "aprobacion" vacío, no lo apruebes tú.',

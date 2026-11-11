@@ -20,7 +20,7 @@ const SD = {
   problemas: 'entrevistas y reseñas del cliente', soluciones: 'cada problema: qué hace el cliente para resolverlo', vehiculos: 'cómo entrega hoy: sesión, kit, plataforma…', bonos: 'lo que ya hace y no cobra por separado',
   garantia: 'lo que el cliente puede respaldar', escasez: 'su capacidad real: cupos y fechas', nombre: 'el resultado que promete la propuesta', propuesta: 'el stack y la ecuación de valor',
   variaciones: 'las ofertas y precios que el cliente ya tiene', var_nombre: 'la oferta que el cliente ya vende', var_precio: 'el precio actual del cliente (todo precio es propuesta)', var_para: 'su cliente ideal y sus avatares aprobados', var_dif: 'lo que cambia de una a otra',
-  hoy: 'lo que el cliente vende hoy en este escalón', esc_prop: 'los 4 tipos de oferta de Money Models', cita: 'hormozi-brain, con el formato del INDEX',
+  hoy: 'lo que el cliente vende hoy en este escalón', esc_prop: 'los 4 tipos de oferta de Money Models', cita: 'la biblioteca de Hormozi, con el formato del INDEX',
 };
 const nivelDe = (ctx) => (ctx && typeof ctx === 'object' && ctx.cliente?.nivel?.id) || null;
 const varVacia = () => ({ nombre: '', precio: '', para_quien: '', diferencia: '' });

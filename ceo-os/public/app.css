@@ -2987,7 +2987,7 @@ html.kb-drag,html.kb-drag *{cursor:grabbing!important;-webkit-user-select:none;u
 .es-empty{display:flex;flex-direction:column;gap:4px;background:transparent;border:1.5px dashed var(--hair-strong);box-shadow:none}
 .es-empty b{font-weight:500}
 
-/* Fuentes: links a hormozi-brain */
+/* Fuentes: links a la biblioteca de Hormozi */
 .es-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .es-src,.es-cite{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:5px 10px;border-radius:99px;background:var(--fill);border:1px solid var(--hair);font-size:12.5px;font-weight:500;color:var(--ink2);transition:background var(--t) var(--ease),border-color var(--t) var(--ease)}
 .es-src span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -10169,3 +10169,11 @@ button,a,.lc{touch-action:manipulation}
 #main .home-kpi:active{background:var(--ui-fill2)}
 :is(.cp-tl,.ms-h,.home-kpi,.sp-con,.lat-it,.lat-subs a,.ar-vista,.agp-tabs a):focus-visible{outline:2px solid var(--ui-azul);outline-offset:2px}
 @media (max-width:760px){#main .home-kpis{border-radius:12px}}
+/* Los departamentos en el Chat (llm/departamentos-ui.js) y la pestaña «Herramientas» con Code OS embebido (llm/herramientas-code.js) */
+.lc-cmds-h{margin:4px 10px 2px;font-size:11.5px;font-weight:600;color:var(--l-mut)}
+.lm-dep{display:inline-flex;align-items:center;gap:4px;margin:0 0 6px;padding:2px 9px;border-radius:99px;font-size:12px;color:var(--l-ink2);background:var(--l-surf2);border:1px solid var(--l-line)}
+.lm-dep code{font-size:11.5px}
+.lm-pase .lm-ops button[disabled]{opacity:.5;cursor:not-allowed}
+.lm-pase-no{display:block;margin-top:6px;color:var(--l-mut);font-size:12px}
+.llm-panel .llm-herr{flex:1 1 auto;min-height:420px;display:flex;margin:0 -4px;border-radius:12px;overflow:hidden;border:1px solid var(--l-line)}
+.llm-herr-if{flex:1;width:100%;min-height:420px;border:0;background:var(--l-surf)}
