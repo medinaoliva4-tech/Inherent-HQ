@@ -16,6 +16,7 @@
 |---|---|---|
 | 0 | Recepción | `recepcion` |
 | 1 | Borradores sobre las plantillas, con copy literal e imagen | Agente · `gd-figma` |
+| 1b | Assets que van encima *(texturas, formas, recortes, fondos)* con modelo de imagen, con costo aprobado antes | Agente · `gd-assets` |
 | 2 | Corregir y aprobar en Figma | **Operador** |
 | 3 | Export con el id de la pieza | Agente · `gd-figma` |
 
@@ -35,7 +36,8 @@ Los borradores en una página por ciclo del Figma del cliente, los exports en el
 | Acción | MCP |
 |---|---|
 | Leer y escribir el archivo del cliente | Figma *(Figwright)* — desde la Mac con el plugin abierto |
-| Guardar exports | Google Drive |
+| Generar assets que van encima | OpenAI gpt-image por API *(llave de Inherent en la variable `OPENAI_API_KEY` de cada máquina)* |
+| Guardar exports y assets | Google Drive |
 
 ## 5 · Lo que NO hace
 

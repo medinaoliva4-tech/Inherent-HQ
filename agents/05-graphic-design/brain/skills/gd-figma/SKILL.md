@@ -32,8 +32,10 @@ description: >
 1. **Una página por ciclo** *(`<AAAA-MM> · borradores`)* y un frame por pieza, nombrado con su id.
 2. **Instancia de la plantilla** del formato → texto literal en sus capas → imagen en su zona.
 3. **Lotes de 15 a 40 operaciones**: primero crear, después estilizar.
-4. **Imagen:** banco propio → material del rodaje → pedirle al cliente. No se genera imagen con IA
-   desde cero. Se verifica resolución, encuadre y derechos antes de componer.
+4. **Imagen base:** banco propio → material del rodaje → pedirle al cliente; la foto base no se
+   genera. Se verifica resolución, encuadre y derechos antes de componer.
+5. **Lo que va encima** *(texturas, formas, recortes, ilustraciones, fondos)* y no sale en Figma se
+   pide con `gd-assets`.
 
 ## 3 · Auto-revisión por pieza
 

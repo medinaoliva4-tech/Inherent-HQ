@@ -183,6 +183,7 @@
 | 6 | **Probar la corrida programada de ⑥ Community con los nombres nuevos** | `cm-ficha`, `cm-escalado` y `cm-envio` se juntaron en `community`, `cm-triage` y `cm-respuesta`; el cron del VPS llama `/community` |
 | 7 | **Correr un cliente de punta a punta con las áreas nuevas** | Del producto al reel de prueba y su validación en `resultados` |
 | 8 | **Radar de tecnología** | Que el sistema se mantenga al día de MCPs, open source y tendencias |
+| 9 | **Cuenta de OpenAI por API a nombre de Inherent para `gd-assets`** | La llave va en la variable `OPENAI_API_KEY` de cada máquina que diseña *(y del VPS si corre ahí)*, nunca en el repo ni en el chat. Falta probar un lote real con PNG transparente y anotarlo en «Capacidades reales» de `inherent/06-ECONOMIA.md`, y fijar un techo de gasto por cliente al mes |
 
 ---
 

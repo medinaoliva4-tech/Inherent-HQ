@@ -25,7 +25,7 @@ agents/<NN>-<área>/
 | **02** | [Branding](02-branding/) | Territorio, voz y sistema visual; valida piezas y claims | `/branding` |
 | **03** | [Marketing y Creative](03-marketing-creative/) | Radar, pilares × ángulos, campañas con su copy, ideas y piezas | `/marketing-creative` |
 | **04** | [Producción](04-production/) | **Pre:** jornada, guiones, shot list, permisos, compras · **Post:** primer corte y derivadas | `/produccion` |
-| **05** | [Diseño gráfico](05-graphic-design/) | Borradores de carruseles, posts y stories en Figma | `/graphic-design` |
+| **05** | [Diseño gráfico](05-graphic-design/) | Borradores de carruseles, posts y stories en Figma, y los assets que van encima con modelo de imagen | `/graphic-design` |
 | **06** | [Community](06-community/) | Comentarios y mensajes atendidos | `/community` |
 | **07** | [Posting](07-posting/) | Lo aprobado, programado y publicado | `/posting` |
 | **08** | [Ads](08-ads/) | La pauta corriendo y medida | `/ads` |

@@ -27,5 +27,11 @@ Piezas aprobadas sin video [n] · techo de la ficha [n] · Figma del cliente con
 ## 2 · El orden
 
 ```
-gd-figma (borradores) → la persona corrige y aprueba → gd-figma (export) → br-guardian → ⑦ Posting
+gd-figma (borradores) → gd-assets (lo que va encima, si hace falta) → la persona corrige y aprueba
+→ gd-figma (export) → br-guardian → ⑦ Posting
 ```
+
+| El pedido suena a… | Corre |
+|---|---|
+| *«armá los carruseles»*, *«los borradores»*, *«exportá»* | `gd-figma` |
+| *«una textura»*, *«un recorte»*, *«un fondo»*, *«algo detrás de la cabeza»*, *«esto no sale en Figma»* | `gd-assets` — muestra el costo y pide OK antes de generar |

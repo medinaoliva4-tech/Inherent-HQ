@@ -5,7 +5,7 @@ con el copy literal de ③ Marketing y Creative; el operador corrige y aprueba.
 
 ## Herramientas
 
-Conexión con Figma *(Figwright)*.
+Conexión con Figma *(Figwright)* · modelo de imagen de OpenAI para los assets que van encima.
 
 ## Skills
 
@@ -13,6 +13,7 @@ Conexión con Figma *(Figwright)*.
 |---|---|
 | `graphic-design` | El orquestador |
 | `gd-figma` | Borradores, auto-revisión y export en Figma |
+| `gd-assets` | Assets que van encima de la pieza, generados con modelo de imagen *(costo aprobado antes)* |
 
 **El proceso está en `brain/WORKFLOW.md`.**
 
