@@ -204,16 +204,22 @@ export async function render(el, { me, sub = [], alive }) {
     C('llm-main').classList.toggle('entrada', vacio() && !S.proyecto && listo());
     pintarTitulo(); pintarCaja(); pintarHilo();
   }
-  // Abajo de la caja: los clientes con conversaciones recientes, para entrar directo.
+  // Abajo de la caja: vistas del trabajo real que se puede retomar.
   function proyectosHtml() {
-    const xs = carpetasChat(S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo))).slice(0, 6);
+    const xs = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo))
+      .sort((a, b) => String(b.last_active || b.started_at || '').localeCompare(String(a.last_active || a.started_at || ''))).slice(0, 3);
     if (!xs.length) return '';
-    return html`<section class="ch-proys" aria-label="Proyectos de clientes"><h2>Proyectos de clientes</h2><div>${xs.map((c) => html`<button type="button" class="ch-proy-c" data-a="proyecto" data-c="${c.id}"><b>${c.nombre}</b><span>${c.conv.length ? `${c.conv.length} ${c.conv.length === 1 ? 'conversación' : 'conversaciones'}` : 'Sin conversaciones'}</span></button>`)}</div></section>`;
+    return html`<section class="ch-proys" aria-label="Trabajo reciente"><div class="ch-proys-head"><h2>Continúa donde lo dejaste</h2></div><div class="ch-proys-grid">${xs.map((s) => {
+      const titulo = s.title || 'Conversación', extracto = s.preview || 'Abre esta conversación para continuar.',
+        cliente = nombreCliente(carpetaDe(s)) || 'Inherent', fecha = s.last_active || s.started_at,
+        dia = fecha && !Number.isNaN(Date.parse(fecha)) ? new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short' }).format(new Date(fecha)) : '';
+      return html`<a class="ch-proy-c ${s.en_curso ? 'en-curso' : ''}" href="#/chat/${esc(s.id)}" aria-label="Continuar ${titulo}"><span class="ch-proy-thumb"><span class="ch-proy-kind">${s.en_curso ? 'EN CURSO' : cliente}</span><strong>${titulo}</strong><span class="ch-proy-excerpt">${extracto}</span></span><span class="ch-proy-foot"><b>${titulo}</b><span>${dia}</span></span></a>`;
+    })}</div></section>`;
   }
   function heroHtml() {
     if (!listo()) return setupHtml();
-    const cli = S.cliente ? nombreCliente(S.cliente) : '', m = modoDe(S.modo);
-    return html`<div class="ch-nuevo"><h1>${cli ? `¿Qué necesitas para ${cli}?` : '¿En qué trabajamos?'}</h1><p>${m.nombre} · ${m.sub}.</p><div class="ch-sug">${(SUGERENCIAS[S.modo] || []).slice(0, 4).map(([t]) => html`<button type="button" data-a="sugerencia" data-t="${t}">${ico('arrow-right', 15)}<span>${t}</span></button>`)}</div></div>`;
+    const cli = S.cliente ? nombreCliente(S.cliente) : '', primero = String(me.name || '').trim().split(/\s+/)[0], nombre = /^(ceo|admin|usuario|user)$/i.test(primero) ? '' : primero;
+    return html`<div class="ch-nuevo"><h1>${cli ? `¿En qué trabajamos para ${cli}?` : nombre ? `De vuelta, ${nombre}` : '¿En qué trabajamos?'}</h1><div class="ch-sug">${(SUGERENCIAS[S.modo] || []).slice(0, 4).map(([t]) => html`<button type="button" data-a="sugerencia" data-t="${t}">${ico('arrow-right', 15)}<span>${t}</span></button>`)}</div></div>`;
   }
   // El servidor fuera de línea (raro): se dice y se puede reintentar; mientras, los chats por el puente siguen.
   function setupHtml() {
@@ -276,7 +282,7 @@ export async function render(el, { me, sub = [], alive }) {
     mount(box, html`<div class="lc-w">
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.data ? html`<img class="lc-adj-img" src="${a.data}" alt="${a.nombre}">` : ''}${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
-        <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : 'Pide algo, o usa @ para un agente'}" aria-label="Mensaje"></textarea>
+        <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : vacio() ? '¿Cómo puedo ayudarte hoy?' : 'Escribe un mensaje o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
           <button type="button" class="lc-mas" data-a="adjuntar" aria-label="Adjuntar archivo" title="Adjuntar archivo">${ico('plus', 16)}</button>
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox">${m.nombre}<span class="lc-car">▾</span></button>
