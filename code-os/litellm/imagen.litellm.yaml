@@ -1,0 +1,42 @@
+# PROPUESTA (no activa) · niveles de imagen para el Gateway. Fusionar a litellm.yaml DESPUÉS de revisar:
+#   - model_list: pegar las entradas de abajo al final de `model_list` del config activo.
+#   - router_settings.fallbacks: agregar las dos líneas imagen-* a la lista que ya existe.
+# Llaves nuevas (las pone el CEO con `ssh -t inherent-gw 'bash ~/set-keys.sh'`, jamás en el repo ni en el chat):
+#   OPENAI_API_KEY   -> imagen-alta e imagen-media (modelos gpt-image-2.5-*)
+#   GEMINI_API_KEY   -> imagen-google (Gemini / Nano Banana)
+#   NVIDIA_API_KEY   -> ya existe; imagen-gratis NO pasa por LiteLLM (ver nota), la usa el cliente directo.
+# Precios y límites leídos el 2026-11-11: ver code-os/docs/imagen.md. Verificar con una llamada de prueba antes de fiarse.
+model_list:
+  # ALTA: assets finales; fondo transparente y edición con referencia (precisión). Primero Sunburst.
+  - model_name: imagen-alta
+    model_info: {mode: image_generation}
+    litellm_params: {model: openai/gpt-image-2.5-sunburst, api_key: os.environ/OPENAI_API_KEY, timeout: 180}
+  # MEDIA: uso diario; mismo contrato (transparente + edita), más rápida y barata.
+  - model_name: imagen-media
+    model_info: {mode: image_generation}
+    litellm_params: {model: openai/gpt-image-2.5-flare, api_key: os.environ/OPENAI_API_KEY, timeout: 120}
+  # Último respaldo OpenAI, más barato. Su soporte de fondo transparente NO se confirmó en la doc leída: el validador lo detecta.
+  - model_name: img-gpt-mini
+    model_info: {mode: image_generation}
+    litellm_params: {model: openai/gpt-image-1-mini, api_key: os.environ/OPENAI_API_KEY}
+  # GOOGLE: opaco (no documenta fondo transparente). Fondos, ideas visuales y borradores. Soporta hasta 14 referencias.
+  # OJO: la doc de LiteLLM que se leyó solo muestra Gemini por /chat/completions (modalities) y en /images/edits (gemini-2.5-flash-image);
+  # /images/generations con gemini-nano-banana-2.1 NO está confirmado. Probar con verificar-modelos antes de activar; si falla, llamada directa
+  # (POST https://generativelanguage.googleapis.com/v1beta/interactions, header x-goog-api-key, Api-Revision: 2026-05-20).
+  - model_name: imagen-google
+    model_info: {mode: image_generation}
+    litellm_params: {model: gemini/gemini-nano-banana-2.1, api_key: os.environ/GEMINI_API_KEY, timeout: 120}
+  - model_name: img-google-lite
+    model_info: {mode: image_generation}
+    litellm_params: {model: gemini/gemini-3.1-flash-lite-image, api_key: os.environ/GEMINI_API_KEY}
+
+  # GRATIS: NVIDIA FLUX.1-schnell (build.nvidia.com, servicio de prueba). NO se enruta por LiteLLM: su API
+  # (POST https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-schnell, JSON {prompt,width,height,steps,seed})
+  # no es compatible con OpenAI. El cliente de code-os/imagen lo llama directo con NVIDIA_API_KEY.
+
+router_settings_fallbacks_propuesta:   # <- copiar estas líneas dentro de router_settings.fallbacks
+  # Orden explícito. La transparencia solo la dan OpenAI; por eso alta y media NO caen a Google ni a NVIDIA
+  # (devolverían un fondo opaco). Si OpenAI falla, el cliente avisa y la persona decide.
+  - imagen-alta:  [imagen-media, img-gpt-mini]
+  - imagen-media: [img-gpt-mini]
+  - imagen-google: [img-google-lite]

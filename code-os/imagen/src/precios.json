@@ -1,0 +1,41 @@
+{
+  "_nota": "Precios en USD leídos el 2026-11-11 de las páginas oficiales (OpenAI developers.openai.com/api/docs/pricing y guía de imágenes; Google aistudio.google.com/docs/pricing). 'verificado' dice qué tan firme es el número. Sin precio => el estimador NO inventa: devuelve null y exige --precio-usd.",
+  "leido": "2026-11-11",
+  "modelos": {
+    "gpt-image-2.5-sunburst": {
+      "proveedor": "openai", "transparente": true, "edita": true, "maxLado": 3840, "tokens_usd_por_millon": { "texto_in": 5, "imagen_in": 8, "imagen_out": 30 },
+      "por_imagen_1024": { "medium": 0.01317, "high": 0.05268 },
+      "verificado": "tarifa por token oficial; USD por imagen derivado de 439 y 1756 tokens de salida (Grida), solo salida"
+    },
+    "gpt-image-2.5-flare": {
+      "proveedor": "openai", "transparente": true, "edita": true, "maxLado": 3840, "tokens_usd_por_millon": { "texto_in": 5, "imagen_in": 8, "imagen_out": 30 },
+      "por_imagen_1024": { "medium": 0.01317, "high": 0.05268 },
+      "verificado": "tarifa por token oficial; USD por imagen de la familia 2.5 derivado de tokens (Grida)"
+    },
+    "gpt-image-1-mini": {
+      "proveedor": "openai", "transparente": "sin confirmar en la documentación leída", "edita": true, "maxLado": 1536, "tokens_usd_por_millon": { "texto_in": 2, "imagen_in": 2.5, "imagen_out": 8 },
+      "por_imagen_1024": { "low": 0.005, "medium": 0.011, "high": 0.036 },
+      "verificado": "tabla oficial de OpenAI (1024x1024)"
+    },
+    "gemini-nano-banana-2.1": {
+      "proveedor": "google", "transparente": false, "edita": true, "maxLado": 4096,
+      "por_imagen_resolucion": { "1K": 0.0336, "2K": 0.0504, "4K": 0.113 },
+      "verificado": "página oficial de precios de Gemini; sin fondo transparente documentado; marca de agua SynthID"
+    },
+    "gemini-3.1-flash-lite-image": {
+      "proveedor": "google", "transparente": false, "edita": true, "maxLado": 1024,
+      "por_imagen_resolucion": { "1K": 0.0336 },
+      "verificado": "página oficial de precios de Gemini"
+    },
+    "gemini-3-pro-image": {
+      "proveedor": "google", "transparente": false, "edita": true, "maxLado": 4096,
+      "por_imagen_resolucion": { "1K": 0.134, "2K": 0.134, "4K": 0.24 },
+      "verificado": "página oficial de precios de Gemini"
+    },
+    "nvidia-flux.1-schnell": {
+      "proveedor": "nvidia", "transparente": false, "edita": false, "maxLado": 1344,
+      "por_imagen_fija": 0,
+      "verificado": "build.nvidia.com: servicio de prueba (NVIDIA API Trial Terms); sin precio ni límite publicados; reportes de 403/500 en oct 2026"
+    }
+  }
+}

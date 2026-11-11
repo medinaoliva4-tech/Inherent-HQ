@@ -1,0 +1,10 @@
+{
+  "name": "code-os-imagen",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Imágenes por API (vía LiteLLM) para Code OS y el Chat del OS: estimar, generar, validar y registrar gasto",
+  "engines": { "node": ">=22.2" },
+  "bin": { "imagen": "src/cli.mjs", "imagen-mcp": "src/mcp.mjs" },
+  "scripts": { "test": "node --test test/*.test.mjs" }
+}
