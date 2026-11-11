@@ -58,6 +58,7 @@ Todas llevan `Authorization: Bearer <token de la persona>`. Sin token solo respo
 | `GET /sessions/:id/history[?after=]` | Eventos en memoria de la sesión (últimos 2000) |
 | `POST …/messages` con `queue:true` | Si hay turno en curso, encola el mensaje (`202 {turnId, queued:true}`) en vez de 409; corre al terminar el turno |
 | `GET /sessions/:id/diff` | `{archivos: [{ruta, anterior?, nuevo?, diff, mas, menos}]}` contra la foto inicial de la sesión (git endurecido: sin hooks, fsmonitor ni programas externos) |
+| `/clientes…` · `/calc/…` | **Herramientas** (memoria viva del cliente, ICP, calculadoras outbound/inbound, calibración con Zernio). Misma autenticación; datos en `<data>/herramientas/<cliente>.json`; 503 si no están activas. Formas exactas: `code-os/docs/herramientas-api.md`. El build compila antes `code-os/herramientas` |
 
 **Reanudar**: las sesiones se guardan en disco; tras reiniciar el puente basta usar el mismo `id` y se retoma la conversación (`resume` del SDK).
 

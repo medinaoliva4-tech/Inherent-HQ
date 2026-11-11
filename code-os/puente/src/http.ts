@@ -12,6 +12,7 @@ import { listSkills } from './skills.js';
 import type { SessionManager } from './manager.js';
 import type { ModelCatalog } from './models.js';
 import { HttpError } from './types.js';
+import { esRutaHerramientas, manejarHerramientas } from 'code-os-herramientas';
 
 const MAX_BODY = 1_000_000;
 
@@ -27,7 +28,7 @@ function send(res: ServerResponse, status: number, body: unknown) {
   res.end(s);
 }
 
-const API = /^\/(sessions|models|me|cuotas|health|mcp|skills|entrar|salir)(\/|$)/;
+const API = /^\/(sessions|models|me|cuotas|health|mcp|skills|entrar|salir|clientes|calc)(\/|$)/;
 const PAGE = (body: string) => `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Code OS · Entrar</title><body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0b;color:#eee;font:16px system-ui">${body}`;
 const LOGIN = (err = '') => PAGE(`<form method=post action=/entrar style="width:min(360px,90vw);display:grid;gap:12px"><h1 style="font-size:20px;margin:0">Code OS</h1><input name=token type=password autocomplete=current-password placeholder="Tu token" autofocus required style="padding:12px;border-radius:8px;border:1px solid #444;background:#151515;color:#eee"><button style="padding:12px;border-radius:8px;border:0;background:#eee;color:#111;font-weight:600">Entrar</button>${err ? `<p style="color:#f88;margin:0">${err}</p>` : '<p style="color:#888;margin:0;font-size:13px">Solo hace falta una vez en este navegador.</p>'}</form>`);
 
@@ -101,6 +102,13 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         const c = await svc.cuotas.get();
         if (!c) throw new HttpError(503, 'El medidor de cuotas no responde');
         return send(res, 200, c);
+      }
+      if (esRutaHerramientas(path)) {
+        // Memoria viva del cliente y calculadoras: misma autenticación (ya resuelta arriba); la lógica vive en code-os/herramientas.
+        if (!svc.herramientas) throw new HttpError(503, 'Las herramientas no están activas en este servidor');
+        const body = method === 'POST' || method === 'PUT' ? await readJson(req) : undefined;
+        const r = await manejarHerramientas(svc.herramientas, { method, path, query: url.searchParams, body, usuario: user.id });
+        if (r) return send(res, r.status, r.body);
       }
       if (method === 'GET' && path === '/models') return send(res, 200, { default: cfg.defaultModel, models: await models.list(user).catch((e) => { throw new HttpError(502, e.message); }) });
       if (method === 'POST' && path === '/sessions') { const s = await mgr.create(user, await readJson(req)); return send(res, 201, s.summary()); }

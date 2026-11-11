@@ -8,14 +8,19 @@
     "node": ">=22"
   },
   "scripts": {
+    "herramientas": "tsc -p ../herramientas/tsconfig.build.json --typeRoots ./node_modules/@types",
+    "prebuild": "npm run herramientas",
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/server.js",
     "dev": "node --import tsx --watch src/server.ts",
+    "pretypecheck": "npm run herramientas",
     "typecheck": "tsc --noEmit",
+    "pretest": "npm run herramientas",
     "test": "node --import tsx --test test/*.test.ts"
   },
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "0.3.322"
+    "@anthropic-ai/claude-agent-sdk": "0.3.322",
+    "code-os-herramientas": "file:../herramientas"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
