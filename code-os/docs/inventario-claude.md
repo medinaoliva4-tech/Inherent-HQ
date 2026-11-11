@@ -1,7 +1,9 @@
 # Inventario de la app de Claude (escritorio): Chat y Code
 
-Fecha: 2026-11-09 · Versión instalada en esta Mac: Claude 4.23118.1 · Propósito: base para decidir qué replica Code OS (interfaz cerrada en el VPS, motor = Claude Code oficial apuntado a LiteLLM).
+Fecha: 2026-11-09 (v1) · **v2: 2026-11-11, con videos de 2026 (ver sección G y `inventario-videos.md`)** · Versión instalada en esta Mac: Claude 4.23118.1 · Propósito: base para decidir qué replica Code OS (interfaz cerrada en el VPS, motor = Claude Code oficial apuntado a LiteLLM).
 
+> **v2**: el Chat del OS debe ser un área «como Claude, en todo sentido» pero solo con add-ons realistas. Las secciones **G a J** (al final) recogen lo nuevo o corregido, con veredicto de realismo y orden de construcción. Donde una fila de A o B contradice a G, **manda G**.
+>
 > Esto es solo investigación. Replicamos **estructura y funciones con marca Inherent**, no el aspecto: Anthropic no permite imitar visualmente Claude Code (arte, ASCII, marca).
 
 ## Cómo leer las tablas
@@ -112,7 +114,7 @@ Fecha: 2026-11-09 · Versión instalada en esta Mac: Claude 4.23118.1 · Propós
 | Crear PR | Empuja rama y abre PR con `gh` | Servidor (`git`, `gh`) | Botón + tarjeta | P1 | ✅ |
 | Estado de PR y CI | Tarjeta con checks; **Auto-fix** (arregla CI y comentarios), **Merge when ready** | Servidor (`gh`, GraphQL de GitHub) + SDK | Tarjeta + polling | P1 | ✅ |
 | Notificaciones | Aviso del sistema cuando una sesión termina y no la miras | Interfaz (Notification API / web push) | Web Push | P1 | ✅ |
-| Tareas programadas | Tareas recurrentes (cron) en Code | Servidor (cron) | Formulario cron | P2 | ✅ |
+| Tareas programadas | Tareas recurrentes (cron) en Code y Cowork. **Subida a P1 en v2** (ver G8) | Servidor (cron) | Formulario cron | P1 | ✅ |
 | Nube y rutinas (routines) | Sesiones en infraestructura de Anthropic | No replicable | — | fuera | ✅ |
 
 ---
@@ -132,8 +134,8 @@ Nota: esta pestaña **no usa Claude Code**; es el producto claude.ai. Casi todo 
 | Artefactos con IA y conectores | El artefacto llama a Claude o a conectores con los permisos del usuario | No replicable (usa cuota del usuario en Anthropic); se puede rehacer vía LiteLLM | — | P2 | ✅ |
 | Almacenamiento de artefactos | Privado o compartido, solo texto, 20 MB | Servidor (DB) | — | P2 | ✅ |
 | Publicar/compartir artefactos | Enlace con permisos | Servidor | Enlace firmado | P1 | 🟡 (los artefactos legacy ya no se crean desde 16-sep-2026) |
-| Proyectos | Espacio con instrucciones propias y base de conocimiento (archivos), chats dentro; RAG automático en planes de pago; compartir con permisos «ver/editar» en equipos | Servidor (DB + vectores) | shadcn + pgvector | P1 | ✅ |
-| Memoria | Guarda temas durante el chat; «recuerda esto»; ver/editar/borrar; pausar; reiniciar; exportar/importar; memoria por proyecto aislable | Servidor (DB) + SDK-like (herramienta) | Tabla `memorias` + UI de edición | P1 | ✅ |
+| Proyectos | Espacio con instrucciones propias y base de conocimiento (archivos), chats dentro; RAG automático en planes de pago; compartir con permisos «ver/editar» en equipos. **Corregido en v2: desde oct 2026 los proyectos se reconstruyeron (objetivo, coordinador, hilos, biblioteca, rutinas); ver G5** | Servidor (DB + vectores) | shadcn + pgvector | P1 | ✅ |
+| Memoria | Guarda temas durante el chat; «recuerda esto»; ver/editar/borrar; pausar; reiniciar; exportar/importar; memoria por proyecto aislable. **Corregido en v2: en Cowork y proyectos la memoria son archivos `memory.md` y `CLAUDE.md` visibles en la carpeta; replicar así, no con tabla (G4)** | Servidor (archivos Markdown) | Editor Markdown | P1 | ✅ |
 | Búsqueda en chats | Claude busca conversaciones pasadas (alcance: fuera de proyectos o dentro de uno); cita con enlace | Servidor (herramienta propia sobre la DB) | Herramienta MCP interna | P2 | ✅ |
 | Incógnito | Chat que no entra al historial, a la memoria ni a la búsqueda (ícono de fantasma) | Interfaz + Servidor (no guardar) | Interruptor | P1 | ✅ |
 | Estilos | Preajustes y estilos personalizados de tono y formato | Servidor (prompt de sistema) | Select + editor | P2 | ❓ (la página oficial consultada no existía; función conocida, no leída hoy) |
@@ -146,7 +148,8 @@ Nota: esta pestaña **no usa Claude Code**; es el producto claude.ai. Casi todo 
 | Extensiones de escritorio y MCP local | Servidores locales en `claude_desktop_config.json` | No replicable (es de la app instalada) | — | fuera | ✅ |
 | Creación de archivos | Claude ejecuta código en un contenedor aislado y entrega `.xlsx`, `.pptx`, `.docx`, `.pdf`, `.csv`, `.md`, `.html`, PNG; se descargan o se guardan en Drive; límite 30 MB | Servidor (sandbox de código) | Contenedor aislado por usuario (gVisor/Firecracker/Docker), enlaces de descarga firmados | P0 (entrega por descarga) | ✅ |
 | Compartir chat | Enlace de solo lectura de una conversación | Servidor | Ruta pública con token | P2 | ❓ (página oficial no leída) |
-| Cowork / Dispatch / Proyectos con memoria nueva | Tareas largas con archivos locales; envío desde móvil | No replicable | — | fuera | 🟡 |
+| Cowork | **Corregido en v2: sí es replicable en su parte útil** (tarea sobre carpeta, memoria en archivos, skills, conectores, programadas): es el modo Code con otra cara; ver G1 | Puente + SDK | — | P0 (G1) | ✅ video |
+| Dispatch (mandar tarea desde el teléfono) | Fuera como función de Anthropic; el OS ya es web y se abre desde el celular (Pocket) | No replicable | — | fuera | ✅ video |
 
 ---
 
@@ -193,3 +196,106 @@ Observación sobre el gateway oficial: Anthropic documenta un «Claude apps gate
 
 - Documentación oficial de Claude Code: `desktop.md`, `permission-modes.md`, `agent-sdk/streaming-output.md`, `agent-sdk/user-input.md`, `agent-sdk/file-checkpointing.md`, `agent-sdk/claude-code-features.md`, `claude-apps-gateway.md` (índice: `https://code.claude.com/docs/llms.txt`).
 - Centro de ayuda de Claude (support.claude.com): artefactos, proyectos, búsqueda y memoria, voz, creación de archivos, conectores personalizados.
+
+---
+
+## G. Novedades y correcciones de la v2 (videos de 2026)
+
+Fuente: 9 videos (detalle, fecha y enlaces en `inventario-videos.md`). **Visto** = fotogramas + transcripción (videos 1 a 3); **oído** = solo transcripción (el resto). Los nombres de funciones salen de los videos; no se abrió la app real, así que «cómo se ve» solo lo afirmo donde hay fotograma.
+
+**Ya en el OS** (por el encargo): modo Code en el Chat, un solo login, permisos como tarjetas, router por tarea (Auto), terminal y archivos en el puente, sesiones aisladas con worktree y diff por sesión.
+
+**Veredicto**: **Sí** = realista con puente + Agent SDK + OS · **Parcial** = se hace una versión liviana (se dice cuál) · **Fuera** = depende de Anthropic o crea caos.
+
+| # | Función | Qué es | Cómo se ve | Veredicto y razón | Prio |
+|---|---|---|---|---|---|
+| G1 | **Cowork = modo «Tarea»** | Una tarea sobre una carpeta: se pide el **resultado** (no los pasos) y deja el archivo hecho (Excel, PDF, PPT, carpetas ordenadas). Sesiones independientes; sin memoria entre ellas salvo dentro de un proyecto | Inicio «Let's knock something off your list»: caja de texto, selector de carpeta, «+», modelo, botón «Let's go»; lista «Active tasks»; panel derecho de progreso y contexto (visto) | **Sí.** Es Code con otra presentación: misma sesión, sin terminal ni diff como protagonistas. El motor ya está en el OS. Entrega por descarga de lo que quede en la carpeta | P0 |
+| G2 | Tarjeta de pregunta numerada antes de actuar | Opciones 1/2/3 (una «recomendada») con «Saltar» | Tarjeta flotante sobre la caja de texto (visto) | **Ya** (preguntas aclaratorias del SDK) | hecho |
+| G3 | Carpeta concedida + instrucciones globales y por carpeta | Solo toca la carpeta concedida; reglas globales («antes de borrar, muéstrame y espera confirmación»); `CLAUDE.md` **jerárquico** (carpeta empresa, subcarpeta finanzas) | Bloque «Instructions» en el panel derecho del proyecto (visto) | **Sí.** `cwd` + `settingSources` + tarjetas de permiso ya existen. Falta el **editor de instrucciones** (global y por carpeta) | P0 |
+| G4 | **Memoria en archivos** (`memory.md` + `CLAUDE.md`) | «Recuerda esto» escribe en archivos visibles de la carpeta; se editan a mano; sin tope de la nube | Bloque «Memory» en el proyecto (visto) | **Sí y más simple que una tabla**: Markdown en la carpeta del proyecto, visor editable, interruptor por proyecto | P1 |
+| G5 | **Proyectos v2** | Nombre, ícono y color, **objetivo (una frase)** y contexto (archivos, carpeta o repo). Una sola caja: un **coordinador** reparte en **hilos** paralelos y devuelve un plan. Panel con **Hilos, Biblioteca, Rutinas**; ajustes con modelo y esfuerzo del coordinador (bajo) y de los hilos (medio), instrucciones + memoria cargadas en **cada hilo** (oído) | Panel derecho con tres bloques ocultables con «+» (oído) | **Parcial.** Sí: proyecto = carpeta + objetivo + instrucciones + `memory.md` + biblioteca de archivos + sesiones como hilos. **P2**: coordinador que lanza hilos. **Fuera**: hilos en la nube de Anthropic, tope de 50.000 archivos, RAG con vectores al inicio | P1 (base) / P2 (coordinador) |
+| G6 | **Skills** (carpeta con `SKILL.md`) | Carga progresiva: solo nombre y descripción (30 a 50 tokens) hasta que se necesitan. `/nombre argumentos`. Marca **disable-model-invocation** (candado: solo manual). «Convierte lo que hicimos en una skill» con `skill-creator` | Tarjeta con `SKILL.md` y botón «Copy to your skills»; lista «Manage»; candado en `/skills` (visto / oído) | **Sí.** El SDK ya lee `.claude/skills/`. UI: lista con interruptor y candado, visor Markdown, botón «convertir en skill». Las skills no viajan entre equipos: el OS las guarda en el servidor por usuario o proyecto | P1 |
+| G7 | **Conectores MCP** | Directorio y conectores propios (nombre + URL de servidor MCP remoto + avanzado) con aviso de confianza. **Permisos por herramienta** (leer, escribir/borrar). «Cargar herramientas cuando hagan falta». Alcances local, usuario y proyecto (`.mcp.json`); `/mcp`. Cada servidor **gasta contexto** aunque no se use | Diálogo «Add custom connector»; lista de herramientas con permiso (visto) | **Parcial.** Sí: lista, alta por URL o comando, permiso por herramienta, apagar. **Fuera**: el directorio de Anthropic y los accesos de Gmail, Calendar y Drive con su cuenta; se reemplazan por MCP oficiales de cada servicio con OAuth propio, solo los necesarios | P1 |
+| G8 | **Tareas programadas** | Nombre, descripción, **prompt, frecuencia (10 min, día, semana, mes), modelo y carpeta**; manda el prompt a una **sesión nueva**; `/schedule`; lo útil son las **skills programadas**; lista de ejecuciones; en Claude corre solo con la app abierta | Entrada «Scheduled» en la barra lateral; formulario y lista de ejecuciones (visto) | **Sí, y mejor que en Claude**: el VPS está siempre encendido. Cron + sesión nueva + registro. **Seguridad**: las programadas no envían nada, dejan **borradores** (el flujo de pagos fallidos del video deja el correo en borrador); modo de permisos fijo y solo la carpeta del proyecto; tope de gasto por tarea | P1 |
+| G9 | **Artefactos nuevos** | Documentos, Presentaciones (exporta PowerPoint), Diseño (la plataforma aparte se apaga), **Tableros vivos** (leen conectores y se refrescan), Movimiento (animación por código); tableros y movimiento en beta (oído) | Panel a la derecha de la conversación con tarjetas y una gráfica; el demo falló dos veces («Tool call failed») (visto) | **Parcial.** Sí: panel de artefactos HTML, Markdown y código en `iframe sandbox`; **tablero vivo** = HTML que llama a un endpoint del puente con token acotado y se refresca por intervalo; exportar a docx, pptx y pdf en el servidor. **Fuera**: la plataforma «Diseño» y lo que usa la cuota del usuario en Anthropic. Movimiento solo como HTML animado | P1 (panel, tablero) / P2 (exportar, movimiento) |
+| G10 | **Claude en Chrome** | Extensión que maneja el navegador del usuario en una pestaña propia, con capturas por paso. Jeff Su: **lenta, poco fiable, gasta cuota** | Panel lateral con «CURRENT TASK / ACTION / CAPTURE» (visto) | **Parcial.** Sí: navegador sin pantalla (Playwright) **en el VPS** con capturas en el chat. **Fuera**: controlar el Chrome del usuario con sus sesiones abiertas (cuentas, compras) | P1 (en el VPS) |
+| G11 | **Uso del ordenador** | Controla apps de escritorio | — | **Fuera**: es el escritorio local; el OS corre en un servidor | fuera |
+| G12 | **Subagentes propios** | Archivos `.md` con nombre, descripción, **herramientas permitidas y modelo**; hilo propio que **solo devuelve el resultado**; `/context` los lista | — (oído) | **Sí.** Ya viaja por el SDK. UI: lista, editor de la ficha y plantillas («revisor», «depurador») | P1 |
+| G13 | **Hooks** | Scripts en eventos (inicio, enviar prompt, antes y después de herramienta); código 2 **bloquea**. Demos: formatear tras editar, bloquear comandos peligrosos | — (oído) | **Parcial.** Sí como **plantillas** activables con interruptor, solo administrador (un hook ejecuta código en el servidor). **Fuera**: editor libre para todos | P1 (plantillas) |
+| G14 | **Radio de impacto** (mod «blast radius») | Antes de un comando destructivo muestra qué se perdería y un botón de cancelar | Tarjeta sobre el comando (oído) | **Sí y de alto valor**: es la tarjeta de permisos actual con vista previa (archivos a borrar, `git status`). Refuerza «nada destructivo sin autorización» | P1 |
+| G15 | **Checkpoints y `/rewind`** | Lista de puntos; «restaurar código y conversación» o solo uno. No deshace comandos de shell | Menú de puntos (oído) | **Sí.** El SDK tiene `rewindFiles()`; falta exponerlo en el puente y un botón por mensaje | P1 |
+| G16 | **Retomar, nombrar y bifurcar sesiones** | `--continue`, `--resume nombre`, nombre al crear, `/branch` (copia sin tocar la original) | — (oído) | **Parcial.** Retomar y nombrar: ya. Bifurcar: P2 | P1 / P2 |
+| G17 | **Rail de sesión y anillo de contexto** | Dónde corre, carpeta, **contexto con desglose** (mensajes, conectores, skills, agentes, memoria) y anillo junto al selector de modelo | Panel arriba a la derecha (oído) | **Sí.** Datos de uso del SDK; ayuda a apagar conectores que gastan contexto (G7) | P1 |
+| G18 | **Secciones** en la barra lateral | Carpetas para agrupar sesiones; se arrastran | (oído) | **Sí.** El OS ya agrupa por proyecto; falta arrastrar a una sección | P1 |
+| G19 | **Chat lateral** y **bifurcar** | Chat lateral: pregunta con todo el contexto y **no se guarda**. Bifurcar: copia desde un punto | Cajón lateral (oído) | **Parcial.** Con fork del SDK; útil, no esencial | P2 |
+| G20 | **Sesiones anidadas, sesión maestra y «task chips»** | Anidadas: sub-sesiones visibles bajo la principal. Maestra: una sesión fija que ve (20 últimas) y manda mensajes a las demás («¿qué espera por mí?»). Chips: tarjeta que propone abrir trabajo relacionado | Sesiones hijas indentadas; chip con «Iniciar» (oído) | **Parcial.** `parent_session_id` y una herramienta MCP interna `sesiones` (listar, enviar, crear). Riesgo de caos y gasto: tope de 3 hijas y con permiso | P2 |
+| G21 | **/goal** | Una meta que Claude puede comprobar; sigue hasta cumplirla | Comando (oído) | **Parcial.** Prompt + hook de parada que verifica, **con tope de turnos y de costo** | P2 |
+| G22 | **Control remoto, mantener despierto, Dispatch, sesiones en la nube** | Manejar la sesión desde el teléfono; evitar que la compu duerma; mandar tareas al escritorio; correr en la nube | Interruptores en el rail (oído) | **Fuera.** Dependen de Anthropic. El OS ya es web y el VPS no duerme | fuera |
+| G23 | **Mods** (cambiar la propia app con una orden) | Claude agrega paneles, barras y avisos a la app | (oído) | **Fuera** como función. Rescatable: «modo grabación» que oculta claves y correos (P2, barato). El mod del caché caliente no aplica | P2 / fuera |
+| G24 | **Vista dividida** | Dos sesiones lado a lado | (oído) | **Parcial**: P2, ya estaba | P2 |
+| G25 | **Modo sin pantalla** (`claude -p`, JSON con costo, turnos y duración, `--allowedTools`) | Es cómo corre el motor por debajo | (oído) | **Ya** (es el puente); base de G8 | hecho |
+| G26 | **Plugins e «Ideas»** | Plugins del directorio; «Ideas» con sugerencias de tareas | Entradas de la barra lateral (visto, no abiertas) | **No evaluado**: ningún video las abre. P2 | P2 |
+| G27 | **Plantillas de tarea por resultado** | Meta-prompt para pedir «por resultado, restricciones y calidad» | (visto en la narración) | **Sí.** 4 a 6 tarjetas de inicio en el modo Tarea («Organiza esta carpeta», «Haz un informe con estos archivos») | P1 |
+| G28 | **Búsqueda web forzada o apagada** | En Chat se puede forzar o quitar la búsqueda a mitad de conversación; en Cowork no | (oído) | **Sí.** Interruptor que activa o quita la herramienta de búsqueda | P1 |
+
+**Cambio de estructura (Claude 2.0, 2026-11-03, oído)**: la app pasó de tres modos (Chat, Cowork, Code) a **dos: Home (Chat + Cowork) y Code**; en mayo el selector ya se había movido a la derecha. Lección: **no abrir un tercer modo**; Chat, Tarea y Code son modos de la misma caja de texto y la misma sesión, como ya está con Code en el Chat.
+
+**Correcciones a las tablas A y B**
+- Memoria y Proyectos: corregidas en sus filas (G4, G5). Cowork: pasa de «fuera» a **sí** (G1). Tareas programadas: de P2 a P1 (G8).
+- «Equipos de agentes: no existe en la app» sigue siendo cierto; lo nuevo son sesiones anidadas y maestra (G20), que no son lo mismo.
+- «Seguir sesión de otras sesiones» (A4) es la **sesión maestra**; «Tareas sugeridas» (A4) son los **task chips** (G20).
+
+---
+
+## H. Lo que se deja fuera (y por qué)
+
+| Función | Por qué fuera |
+|---|---|
+| Dispatch, control remoto, mantener despierto, sesiones y proyectos en la nube | Dependen de la cuenta y los servidores de Anthropic; el OS ya es web y el VPS está siempre activo |
+| Uso del ordenador | Es del escritorio local; el servidor no tiene la pantalla del usuario |
+| Controlar el Chrome real del usuario | Riesgo alto (sesiones abiertas, compras) y los propios videos lo describen lento y poco fiable; se cubre con el navegador del VPS |
+| Directorio de conectores de Anthropic y su OAuth de Gmail, Calendar y Drive | Atados a su cuenta; se reemplazan por MCP oficiales con OAuth propio, uno a uno |
+| Mods | Modifican la app instalada; se rescatan dos ideas (radio de impacto, modo grabación) |
+| Plataforma «Diseño», artefactos que gastan la cuota del usuario | Servicio propio de Anthropic |
+| Modo Auto (clasificador) | Depende del modelo de Anthropic; sin probar con otros |
+| Editor libre de hooks para todos | Ejecuta código en el servidor: solo plantillas y solo administrador |
+| Coordinador y sesiones hijas sin tope | Riesgo de gasto y de caos; si entran, con tope de hijas y de costo |
+| Voz bidireccional, Research, compartir chats, plantillas de artefacto con exportación completa | Siguen en P2 o sin verificar; no aportan al primer ciclo |
+
+---
+
+## I. Top 10 realista para el Chat del OS
+
+1. **Modo Tarea** (Cowork): tarea sobre carpeta, resultado por descarga, tarjetas de inicio (G1, G27).
+2. **Instrucciones y memoria en archivos**, editables, globales y por carpeta (G3, G4).
+3. **Skills**: lista, candado, «convertir en skill» (G6).
+4. **Tareas programadas** con borradores y topes (G8).
+5. **Conectores MCP** con permiso por herramienta y apagado (G7).
+6. **Radio de impacto** en las tarjetas de permisos (G14).
+7. **Proyectos v2 liviano**: objetivo, contexto, biblioteca, memoria y sesiones como hilos (G5).
+8. **Panel de artefactos** con **tablero vivo** y exportar a docx, pptx y pdf (G9).
+9. **Checkpoints, retomar y rail de contexto** (G15, G16, G17).
+10. **Navegador en el VPS** con capturas, más **subagentes y hooks en plantilla** (G10, G12, G13).
+
+## J. Orden de construcción propuesto (un PR por bloque)
+
+1. **Bloque 1 · Tarea y carpeta**: modo Tarea en el composer, selector de carpeta, tarjetas de inicio, panel de progreso (G1, G27) y editor de instrucciones y `memory.md` (G3, G4).
+2. **Bloque 2 · Seguridad visible**: tarjeta de radio de impacto y reglas de permisos editables (G14).
+3. **Bloque 3 · Skills y subagentes**: lista, candado, «convertir en skill», editor de agentes (G6, G12).
+4. **Bloque 4 · Conectores**: `GET/POST /mcp`, permisos por herramienta, apagado, medida de contexto (G7, G17).
+5. **Bloque 5 · Programadas**: cron, historial, `/schedule`, tope de gasto (G8).
+6. **Bloque 6 · Proyectos v2 liviano**: objetivo, biblioteca, memoria, sesiones como hilos y secciones (G5, G18).
+7. **Bloque 7 · Artefactos**: panel en `iframe sandbox`, tablero vivo, exportar (G9).
+8. **Bloque 8 · Volver atrás**: checkpoints, retomar, bifurcar (G15, G16, G19).
+9. **Bloque 9 · Navegador y hooks en plantilla** (G10, G13).
+10. **Bloque 10 · Orquestación**: sesiones hijas, maestra y `/goal`, con topes (G20, G21).
+
+Los bloques 1 a 3 no piden servicios nuevos. Los 4 a 7 piden endpoints del puente (ver `code-os/ui/docs/pendiente.md`: `GET /mcp`, `GET /skills`, archivos, diff). El 10 solo después de medir el gasto real.
+
+## K. Qué sigue sin verificar tras la v2
+
+- **La app real no se abrió**: lo visual sale de 3 videos con fotogramas y de descripciones habladas en los demás. **Claude 2.0 y los Proyectos nuevos se conocen solo por voz.**
+- **No se pudo ver** el video oficial de Claude en Chrome (sin subtítulos y descarga bloqueada).
+- **«Ideas» y plugins de Cowork** no se abrieron en ningún video.
+- Con modelos distintos de Anthropic siguen sin probarse: pensamiento, imágenes y PDF, herramientas en paralelo, esfuerzo, `/goal` y los hooks de parada.
+- Nombres exactos del SDK para rewind en el puente, árbol de sesiones hijas y herramienta de memoria: por confirmar al implementar.
