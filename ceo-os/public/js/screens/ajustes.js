@@ -19,7 +19,7 @@ export async function render(el, { me, alive }) {
   const pasos = () => {
     const hay = est.proveedores.some((p) => p.conectado), usado = Boolean(est.usos?.agents?.proveedor);
     const n = !hay ? 0 : !usado ? 1 : 2;
-    return html`<div class="aj-pasos">${[['Elige una IA', 'La que ya pagas o la que quieras probar'], ['Pega su llave', 'La probamos al instante'], ['Listo', 'Agents y Chat ya la usan']].map(([t, s], i) => html`<div class="aj-paso ${i < n || (i === 2 && n === 2) ? 'hecho' : i === n ? 'ahora' : ''}"><span class="aj-paso-n">${i < n || (i === 2 && n === 2) ? ico('check', 13) : i + 1}</span><span><b>${t}</b><span class="mut sm">${s}</span></span></div>${i < 2 ? html`<span class="aj-paso-l ${i < n ? 'hecho' : ''}"></span>` : ''}`)}</div>`;
+    return html`<div class="aj-pasos">${[['Elige una IA', 'La que ya pagas o la que quieras probar'], ['Pega su llave', 'La probamos al instante'], ['Listo', 'Agentes y Chat ya la usan']].map(([t, s], i) => html`<div class="aj-paso ${i < n || (i === 2 && n === 2) ? 'hecho' : i === n ? 'ahora' : ''}"><span class="aj-paso-n">${i < n || (i === 2 && n === 2) ? ico('check', 13) : i + 1}</span><span><b>${t}</b><span class="mut sm">${s}</span></span></div>${i < 2 ? html`<span class="aj-paso-l ${i < n ? 'hecho' : ''}"></span>` : ''}`)}</div>`;
   };
 
   const usoCard = (u) => {

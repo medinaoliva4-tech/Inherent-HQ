@@ -32,7 +32,7 @@ export const logoDe = (id) => `/brand/ia/${proveedorDe(id)?.logo || 'custom'}.sv
 
 // Para qué se usa cada IA. Cada uso elige un proveedor y un modelo de los conectados.
 export const USOS = [
-  { id: 'agents', nombre: 'IA para Agents', sub: 'La que trabaja las etapas de los agentes', icono: 'agents' },
+  { id: 'agents', nombre: 'IA para Agentes', sub: 'La que trabaja las etapas de los agentes', icono: 'agents' },
   { id: 'investigacion', nombre: 'IA para investigar', sub: 'Busca en la web y trae fuentes citadas (Perplexity u OpenRouter)', icono: 'globe' },
   { id: 'chat', nombre: 'IA para el Chat', sub: 'Las que aparecen en el selector del Chat', icono: 'chat' },
 ];

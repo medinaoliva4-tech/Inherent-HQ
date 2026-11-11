@@ -126,7 +126,7 @@ export async function render(el, { me, alive }) {
 
   // ---------- Hero ----------
   const fechaLarga = new Date(T + 'T12:00').toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, (c) => c.toUpperCase());
-  const hero = (linea) => html`<div class="home-hero sp-hero"><h1>Turn business opportunities into real results</h1><p>${greet()}, <em>${first}</em> · ${fechaLarga}${linea || ''}</p></div>
+  const hero = (linea) => html`<div class="home-hero sp-hero"><h1>De las oportunidades al trabajo que cuenta</h1><p>${greet()}, <em>${first}</em> · ${fechaLarga}${linea || ''}</p></div>
     ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
     ${connectNotice(me)}`;
 
