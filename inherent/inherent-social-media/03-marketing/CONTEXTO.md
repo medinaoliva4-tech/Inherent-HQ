@@ -4,9 +4,9 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ③ Marketing |
+| **Escribe aquí** | ③ Marketing y Creative |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |
 |---|---|
-| `<AAAA-MM>/` | Encargo, campañas, mensaje, pilares, canales y calendario de slots del ciclo |
+| `<AAAA-MM>/` | El radar, las fichas de referente y el tablero pilares × ángulos del ciclo |

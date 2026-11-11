@@ -15,9 +15,9 @@
 | 3 | **Especialistas por área** *(eventos, networking y PR, talent production, talent marketing)* | No tienen rubro en el costo fijo ni persona asignada |
 | 4 | **¿Cuál de las tres auditorías cubre corporate structure?** | Hoy dice solo «la auditoría» |
 | 5 | **Reposición gratis en las garantías** | El costo se calculó con la economía anterior: recalcular con los costos de los 3 niveles o descartar |
-| 6 | **El margen de rodaje de cada ficha** | Las horas contratadas son tiempo de cámara; ⑤ usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
-| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑧. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
-| 8 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*: qué, cuánto, para quién y cuándo se entrega. Sin esto `gr-referidos` queda `BLOQUEADO` *(Construir #13)* |
+| 6 | **El margen de rodaje de cada ficha** | Las horas contratadas son tiempo de cámara; ④ Producción usa márgenes de referencia (60-90 / 30-45 / 45 min) mientras no se decida |
+| 7 | **`CLAUDE.md` dice «sin servidores ni hosting»** | El VPS ya corre `00-account` y va a correr la corrida programada de ⑥ Community. **`ceo-os/` va a Vercel (autorizado por el CEO):** la regla de CLAUDE.md ya lo contempla |
+| 8 | **La recompensa de referidos** | Para quien refiere *(cliente o tercero)*: qué, cuánto, para quién y cuándo se entrega. Sin esto los referidos de `st-adquisicion` no se activan *(Construir #13)* |
 
 ---
 
@@ -25,7 +25,7 @@
 
 | # | Qué | Por qué |
 |---|---|---|
-| 1 | **Herramienta o MCP para ⑥A Diseño y ⑦ Video Editing** | Hoy son 100% manuales: las horas del operador y del editor son el techo |
+| 1 | **Editor de video para ④ Producción (Post)** | Probar FilmCraft 2 días *(respaldo: Twick, licencia por confirmar)*; multiplicar con ffmpeg y un endpoint `video.derive` con cola. Figma sigue por Figwright desde la Mac; Chromium en el VPS solo si no hace falta entregar contraseñas |
 | 2 | **Operación automatizada** | Programar, publicar y reportar sin humano; el operador supervisa más cuentas |
 | 3 | **Pipeline de herramientas** | Plantillas y despliegue automatizado para que la tecnología de Growth Partnership quepa en el rubro Operador |
 | 4 | **Sistema de contenido crudo del cliente** | Más video sin pasarse del monto de Grabación |
@@ -37,7 +37,7 @@
 | 10 | **Cerantola: pasar lo básico a Figma** | Colores, fuentes y logos de `clients/cerantola/02-marca/sistema-visual.md` a la página «Cerantola». Lo complejo de la marca se diseña ahí |
 | 11 | **Cerantola: mejorar con IA las fotos del PDF** | Vienen en baja resolución. Se retocan con Higgsfield según las reglas de § Imagen |
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
-| 13 | **Sistema de referidos: la plataforma** | La skill `gr-referidos` ya existe. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
+| 13 | **Sistema de referidos: la plataforma** | Los referidos están en `st-adquisicion` §4. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
 | 14 | **Revisar las skills a conciencia** | Se aplican como están en los agentes del servidor: tienen método, pero solo algunas dicen qué decide la persona. Hay que revisarlas en una parte del proceso y sumar «Lo que decide la persona» |
 
 ---
@@ -50,18 +50,18 @@
 | # | Qué | Respalda |
 |---|---|---|
 | 1 | **Zernio:** publicar y responder con una cuenta real, y su precio con 15-20 cuentas. ✅ Conectado; leer cuentas, comentarios y DMs ya está probado, también desde el VPS | «Presencia todos los días» y community management |
-| 2 | **⑧ en vivo con NAO y Akai:** una semana en modo borrador, después envío activo. Corre con Claude Code y el plan de la empresa en el VPS; si el plan no alcanza, una API de IA | Community en cada nivel |
-| 3 | **⑨ Posting con Zernio en una cuenta real:** programar, publicar y reintentar las fallidas | La publicación de todos los niveles |
-| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | Inteligencia de ①②③④ y las garantías |
-| 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑩ Ads y «Que te encuentren en Google» |
+| 2 | **⑥ Community en vivo con NAO y Akai:** una semana en modo borrador, después envío activo. Corre con Claude Code y el plan de la empresa en el VPS; si el plan no alcanza, una API de IA | Community en cada nivel |
+| 3 | **⑦ Posting con Zernio en una cuenta real:** programar, publicar y reintentar las fallidas | La publicación de todos los niveles |
+| 4 | **Scraping:** probar los actores que faltan. ✅ Cuenta, MCP y `apify/facebook-ads-scraper` ya están probados | El radar de ③ Marketing y Creative, ① Strategy y las garantías |
+| 5 | **Pauta:** Meta, TikTok, Google Search y Performance Max | ⑧ Ads y «Que te encuentren en Google» |
 | 6 | **AdWhispr:** guardar la marca | Que `find_competitors` sirva sin preguntar cada vez |
 | 7 | **Plugin `claude-ads`** | Auditoría y monitoreo de cuentas |
 | 8 | **Automatización de mensajes y WhatsApp** | «Nadie se queda sin respuesta» |
 | 9 | **Herramienta a medida e IA propia** | Growth Partnership |
 | 10 | **Vetting de creadores con el scraper de Instagram** | Alianzas con creadores |
-| 11 | **`ffmpeg` local:** reencuadre y análisis de video | ⑦ y `cr-lectura-de-video` |
+| 11 | **`ffmpeg` local:** reencuadre y análisis de video | `pr-post` y `leer-video.py` de `mc-radar` |
 | 12 | **Un mes completo al volumen de una ficha real** | Que el volumen sea capacidad probada |
-| 13 | **Captura de leads:** comenta-y-te-mando con Zernio `comment_automations_*` y prospección con Apify *(Maps y LinkedIn)* contra una cuenta real | ② `gr-captura` y el auto-DM de ⑧ |
+| 13 | **Captura de leads:** comenta-y-te-mando con Zernio `comment_automations_*` y prospección con Apify *(Maps y LinkedIn)* contra una cuenta real | `st-adquisicion` §3 y el auto-DM de ⑥ Community |
 
 ### Las garantías — no se publican hasta cerrar los cuatro
 
@@ -126,7 +126,6 @@
 | 3 | **Borrar las ramas viejas de GitHub:** solo quedan `main` y `rodrigo-medina` |
 | 4 | `/inherent` no aparece en la Mac del COO: probar `git ls-remote origin main` y trabajar sobre `main` |
 | 5 | **Onboarding de Akai, NAO y Cerantola:** los folders existen, vacíos, en `clients/` |
-| 6 | **El VPS es KVM 1, no KVM 2** | Lo dice mal `agents/04-creative/brain/skills/BARRIDO-NOCTURNO.md` |
 | 7 | **En el VPS, `~/inherent-hq` es un clon viejo sin acceso** | El que se usa es `~/inherent-hq-src`. Renombrar el viejo para que nadie lo use por error |
 
 ---
@@ -166,16 +165,25 @@
 
 | # | Skill | Qué definir |
 |---|---|---|
-| 1 | `cr-estructura-reel` | La duración objetivo por esqueleto, si se quiere una distinta de la del canal · si se agrega un «re-gancho» a mitad del body como regla |
-| 2 | `cr-estructura-story` | **¿Una «story» de la ficha es un frame o una secuencia?** *(`mk-calendario` cuenta «stories ≤ el techo» sin decirlo)* · cuántos frames como máximo por secuencia |
-| 3 | `cr-fuentes` | La ventana de recencia del orgánico, en días: hasta cuántos días atrás cuenta un contenido como «reciente» |
-| 4 | `gr-referidos` | La recompensa *(Decisiones #8)* · qué plataforma externa ocupa el slot *(Construir #13)* |
-| 5 | `gr-funnel` | Cuántos toques por defecto tiene la secuencia de nutrición y cada cuánto, si se quiere un estándar de arranque |
-| 6 | `gr-producto` | Cada cuánto se revisa el tablero de productos *(¿cada ciclo o cada trimestre?)* · qué cuenta como «señal repetida» para lanzar |
-| 7 | `mk-busqueda` | Si se ofrece SEO técnico u optimización de la web *(cambia primero `inherent/07-COMUNICACION.md` § 7 y el área 4 de `03-OFERTA.md`)* · si el blog de la web entra como formato y con qué volumen |
-| 8 | `mk-podcast` | La cadencia de episodios y cuántos clips mínimos por episodio · si el podcast de Inherent se activa y en qué plataforma |
-| 9 | `mk-calendario` · `mk-pilares` | Si se quiere un porcentaje de arranque por nivel de consciencia en la mezcla del ciclo *(a definir por el CEO; hoy la regla es cubrir los niveles que la estrategia necesita, sin cifra)* |
+| 1 | `mc-campanas-piezas` | La duración objetivo de reel por canal · **¿una «story» de la ficha es un frame o una secuencia?** y cuántos frames como máximo · si se quiere un porcentaje de arranque por nivel de conciencia en la mezcla |
+| 2 | `mc-radar` | La ventana de recencia del orgánico, en días · la alternativa gratuita u open source a Apify *(costo cero o casi, respetando términos de uso)* |
+| 3 | `st-adquisicion` | La recompensa de referidos *(Decisiones #8)* · cuántos toques tiene por defecto la secuencia de seguimiento |
+| 4 | `st-producto-icp` | La regla guía por producto de Inherent *(p. ej. «el cliente factura ~10× el precio»)* · cada cuánto se revisa el producto |
+| 5 | `mc-pilares-angulos` | Si los tres ángulos por defecto *(jóvenes, millennials, mayores)* se quedan o cambian por cliente |
 
+## 🧱 Reestructura de agentes *(simple: 1 orquestador + 4 skills por área)*
+
+| # | Qué | Por qué |
+|---|---|---|
+| 1 | **Migrar las referencias de `ceo-os/` a los agentes nuevos** | Rutas a `agents/02-growth`, `04-creative`, `07-video-editing`, `10-ads-management`, a skills borradas (`cr-hook-copy`, `mk-campana`, `mk-loop`, `ad-optimizacion`, `cr-fuentes`) y a `hormozi-brain/references` *(las citas de Estrategia y sus pruebas)*. Lista completa en el PR de la reestructura |
+| 2 | **Migrar las referencias de `clients/`** | Los `CLAUDE.md` y `CONTEXTO.md` de cada cliente y de `_plantilla` nombran las áreas y números viejos, `plan-de-contenido.csv` y los `aprendizaje-*.md` |
+| 3 | **Actualizar `README.md` e `INSTALAR.md` de la raíz** | Nombran los agentes viejos y la ruta vieja del motor de video y de `leer-video.py` |
+| 4 | **El hilo en Inherent OS** | Nodos con id, estado, fuente y `viene_de`, avisos cuando cambia un nodo, índice de grafo (graphify) y la tarjeta de decisión en chat, herramienta y portal |
+| 5 | **Las herramientas como artefactos** | Perfil del cliente ideal · calculadora de adquisición *(outbound e inbound, calibrada con Zernio)* · dolores, deseos e historia · radar · tablero pilares × ángulos · campañas · hoja de jornada imprimible · editor de video simple |
+| 6 | **Probar la corrida programada de ⑥ Community con los nombres nuevos** | `cm-ficha`, `cm-escalado` y `cm-envio` se juntaron en `community`, `cm-triage` y `cm-respuesta`; el cron del VPS llama `/community` |
+| 7 | **Correr un cliente de punta a punta con las áreas nuevas** | Del producto al reel de prueba y su validación en `resultados` |
+| 8 | **Radar de tecnología** | Que el sistema se mantenga al día de MCPs, open source y tendencias |
+| 9 | **Cuenta de OpenAI por API a nombre de Inherent para `gd-assets`** | La llave va en la variable `OPENAI_API_KEY` de cada máquina que diseña *(y del VPS si corre ahí)*, nunca en el repo ni en el chat. Falta probar un lote real con PNG transparente y anotarlo en «Capacidades reales» de `inherent/06-ECONOMIA.md`, y fijar un techo de gasto por cliente al mes |
 
 ---
 

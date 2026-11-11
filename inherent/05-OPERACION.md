@@ -26,8 +26,8 @@
 |---|---|---|
 | **CEO** | Decide la estrategia, la ruta, los servicios y las promesas. Tiene la reunión del día 1 con cada cliente y aprueba ideas y calendario | De la utilidad. **Sus horas son capacidad, no costo** |
 | **COO** | Recibe del CEO y organiza al equipo operativo. Coordina producción, fotografía, edición y al operador. **Coordina las entregas, no hace todos los trabajos:** recibe lo terminado, lo arma y lo pasa | De la utilidad, después de los costos fijos |
-| **Operador de agentes** | **Solo opera agentes:** Creatividad, Branding, Diseño gráfico, Posting y Community management. Construye la herramienta a medida | Rubro **Operador de agentes** |
-| **Editor de video** | Edita los videos y sus derivadas con el workflow de Video Editing | Rubro **Edición de video** |
+| **Operador de agentes** | **Solo opera agentes:** Marketing y Creative, Branding, Diseño gráfico, Posting y Community. Construye la herramienta a medida | Rubro **Operador de agentes** |
+| **Editor de video** | Corrige el primer corte que hace el agente y aprueba las derivadas *(④ Producción, Post)* | Rubro **Edición de video** |
 | **Fotografía** | La sesión de fotos del ciclo | Rubro **Fotografía** |
 | **Producción** | Graba | Rubro **Grabación** |
 | **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente todos los días y escala lo que no puede resolver | Rubro **Herramientas / IA** |
@@ -97,40 +97,39 @@ coordina el COO; todo lo que se puede ejecutar lo ejecutan los agentes.
 ```
 ┌─ ONBOARDING ──────────── una vez, al activar la cuenta ──────────────┐
 │                                                                       │
-│   01 STRATEGY → 01.2 BRANDING → 02 GROWTH → 03 MARKETING              │
+│   01 STRATEGY → 02 BRANDING                                           │
+│   producto → ICP → dolores, deseos e historia → adquisición → brief   │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
                                    ▼
 ┌─ CICLO MENSUAL ───────── cada mes, del día 1 al 20 ──────────────────┐
 │                                                                       │
-│   04 CREATIVE → 05 PRODUCTION → 06 GRAPHIC DESIGN → 07 VIDEO EDITING  │
-│   → 08 COMMUNITY → 09 POSTING → 10 ADS                                │
+│   03 MARKETING Y CREATIVE → 04 PRODUCCIÓN (Pre · Post)                │
+│   → 05 DISEÑO GRÁFICO → 07 POSTING → 08 ADS                           │
+│   06 COMMUNITY corre todos los días                                   │
 │                                                                       │
-│   Cada departamento se auto-revisa antes de su gate.                  │
-│   ②B Branding valida con br-guardian antes de que nada se publique.   │
+│   Entre áreas viajan nodos del hilo del cliente, no hojas de cálculo. │
+│   ② Branding valida con br-guardian antes de que nada se publique.    │
 │                                                                       │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
                                    ▼
-                   ↻ REVISIÓN DEL 20 → entra al ciclo siguiente
+            ↻ RESULTADOS DEL 20 → vuelve a ① Strategy y al ICP
 ```
 
-| # | Etapa | Recibe | Entrega | Corre en |
+| # | Área | Recibe | Entrega | Corre en |
 |---|---|---|---|---|
 | **00** | **Account** | El cliente | La relación diaria. **El único que le habla** | Todos |
-| **01** | **Strategy** | La información cruda del negocio | Comprensión del negocio + estrategia + un brief por área | Todos · la profundidad la fija el nivel y la ficha |
-| **01.2** | **Branding** | La estrategia | Guía de marca: territorio, voz, sistema visual, activos | Todos |
-| **02** | **Growth** | La estrategia | Oferta, canales grandes, upsells, conversión y números | Growth Partnership · ligero en Brand Growth *(elige qué ofertas empujar)* |
-| **03** | **Marketing** | Estrategia y marca | Plan del ciclo: campañas, pilares, canales y calendario de slots | Brand Growth · Growth Partnership |
-| **04** | **Creative** | El plan del ciclo, o la estrategia y la marca en Brand Foundation | Ideas listas para producir: hook, copy, escenas y layout; en Brand Foundation, dirección creativa y ejemplos de aplicación | Todos |
-| **05** | **Production** | Las ideas aprobadas | Material grabado y fotografiado | Brand Growth · Growth Partnership, según la ficha |
-| **06** | **Graphic Design** | Ideas, marca y material | Estáticos, carruseles y stories | Brand Growth · Growth Partnership, según la ficha |
-| **07** | **Video Editing** | El material grabado | Reels y todas sus derivadas | Brand Growth · Growth Partnership, según la ficha |
-| **08** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Growth Partnership · Brand Growth si la ficha incluye gestión de comunidad |
-| **09** | **Posting** | Lo aprobado | Contenido programado o publicado | Brand Growth · Growth Partnership, según los canales de la ficha |
-| **10** | **Ads** | Lo apto para pauta | Campañas activas y su reporte | Según los canales con publicidad de la ficha |
-| **↻** | **Strategy** | La analítica del mes | El ajuste de estrategia que entra al ciclo siguiente | Brand Growth · Growth Partnership |
+| **01** | **Strategy** | La información cruda del negocio | Producto, cliente ideal (ICP), dolores y deseos, historia, adquisición y el brief del ciclo | Todos · la profundidad la fija el nivel y la ficha; la adquisición completa, en Growth Partnership |
+| **02** | **Branding** | El ICP y el mensaje | Territorio, voz, sistema visual, activos y plantillas en Figma | Todos |
+| **03** | **Marketing y Creative** | El brief y el resultado esperado | Radar, pilares × ángulos, campañas, ideas y piezas con copy íntegro; en Brand Foundation, dirección creativa y ejemplos de aplicación | Todos |
+| **04** | **Producción** | Las piezas aprobadas | **Pre:** jornada, guiones, shot list, permisos y compras · **Post:** primer corte por agente, derivadas y export | Brand Growth · Growth Partnership, según la ficha |
+| **05** | **Diseño gráfico** | Piezas, marca y material | Borradores en Figma de estáticos, carruseles y stories, aprobados por una persona | Brand Growth · Growth Partnership, según la ficha |
+| **06** | **Community** | Lo publicado y lo que entra | Comentarios y mensajes atendidos | Growth Partnership · Brand Growth si la ficha incluye gestión de comunidad |
+| **07** | **Posting** | Lo aprobado | Contenido programado, publicado y verificado | Brand Growth · Growth Partnership, según los canales de la ficha |
+| **08** | **Ads** | Lo apto para pauta | Campañas activas, medidas y su reporte | Según los canales con publicidad de la ficha |
+| **↻** | **Resultados** | Las métricas del mes | Las hipótesis del ICP validadas o tiradas y el ajuste que entra al ciclo siguiente | Brand Growth · Growth Partnership |
 
 **El pipeline se arma por cliente.** El diagrama de arriba es el **mapa completo**; ningún
 cliente corre todo. **Cada cliente tiene su propio pipeline**, compuesto con los módulos que su
@@ -143,9 +142,9 @@ pase el techo del nivel.
 
 | Nivel | Departamentos |
 |---|---|
-| **Brand Foundation** | ① Strategy y ②B Branding como núcleo; ④ Creatividad para la dirección creativa y los ejemplos de aplicación. Es un proyecto con inicio y cierre: corre el onboarding y entrega al cierre; **no tiene ciclo mensual**. La ejecución continua se cotiza como Brand Growth o como módulos |
-| **Brand Growth** | ③ Marketing, ④ Creatividad, ⑤ Producción, ⑥A Diseño gráfico, ⑦ Video Editing, ⑨ Posting y ⑩ Ads, según los canales contratados en la ficha |
-| **Growth Partnership** | Todo Brand Growth, además ② Growth, ⑧ Community y el especialista |
+| **Brand Foundation** | ① Strategy y ② Branding como núcleo; ③ Marketing y Creative para la dirección creativa y los ejemplos de aplicación. Es un proyecto con inicio y cierre: corre el onboarding y entrega al cierre; **no tiene ciclo mensual**. La ejecución continua se cotiza como Brand Growth o como módulos |
+| **Brand Growth** | ③ Marketing y Creative, ④ Producción, ⑤ Diseño gráfico, ⑦ Posting y ⑧ Ads, según los canales contratados en la ficha |
+| **Growth Partnership** | Todo Brand Growth, además la adquisición completa de ① Strategy, ⑥ Community y el especialista |
 
 **El detalle de cada agente —sus acciones y qué entrega según la ficha de alcance— está en
 `agents/README.md` y en el `brain/WORKFLOW.md` de cada uno.**
@@ -172,15 +171,15 @@ pase el techo del nivel.
 | Días | Qué pasa | Rol | Agente · skills |
 |---|---|---|---|
 | **1** | **Reunión con el cliente** | **CEO** | — |
-| **1 – 3** | El plan del ciclo: estrategia, marketing, creatividad y producción | Operador + agentes · **CEO aprueba la estrategia** | ① Strategy · ③ Marketing · ④ Creatividad · ⑤ Producción `pr-brief` |
-| **2 – 3** | **Calendario y shot list** | Operador + agentes | ③ Marketing `mk-calendario` · ④ Creatividad `cr-arte-video` |
-| **3 – 6** | **Brand guidelines** | Operador + agentes | ②B Branding |
-| **4 – 5** | **Coordinar producción, fotografía y modelos** | **COO** | ⑤ Producción `pr-jornadas` · `pr-recursos` |
-| **6 – 10** | **Producir** | Producción · Fotografía | ⑤ Producción `pr-rodaje` |
-| **11** | **ÚLTIMO DÍA PARA PRODUCIR** | Producción | ⑤ Producción `pr-entrega` |
-| **12 – 15** | **Montar el contenido** | Editor de video · Operador | ⑦ Video Editing · ⑥A Diseño gráfico |
-| **16 – 19** | **Cambios, QA y programación** | Operador + agentes · **COO hace el QA final** | ②B Branding `br-guardian` · ⑨ Posting |
-| **20** | **PRESENTACIÓN AL CLIENTE** | **COO** en Brand Growth · **CEO** en Growth Partnership | — |
+| **1 – 3** | El plan del ciclo: estrategia, marketing, creatividad y producción | Operador + agentes · **CEO aprueba la estrategia** | ① Strategy · ③ Marketing y Creative |
+| **2 – 3** | **Calendario y shot list** | Operador + agentes | ③ Marketing y Creative `mc-campanas-piezas` |
+| **3 – 6** | **Brand guidelines** | Operador + agentes | ② Branding |
+| **4 – 5** | **Coordinar producción, fotografía y modelos** | **COO** | ④ Producción `pr-pre` |
+| **6 – 10** | **Producir** | Producción · Fotografía | La hoja de la jornada de `pr-pre` |
+| **11** | **ÚLTIMO DÍA PARA PRODUCIR** | Producción | ④ Producción `pr-pre` *(cierre del rodaje)* |
+| **12 – 15** | **Montar el contenido** | Editor de video · Operador | ④ Producción `pr-post` *(el agente hace el primer corte)* · ⑤ Diseño gráfico |
+| **16 – 19** | **Cambios, QA y programación** | Operador + agentes · **COO hace el QA final** | ② Branding `br-guardian` · ⑦ Posting |
+| **20** | **PRESENTACIÓN AL CLIENTE** | **COO** en Brand Growth · **CEO** en Growth Partnership | `resultados` |
 
 ```
 DÍA   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18   19   20
@@ -227,7 +226,7 @@ costo fijo de la ficha.
 ## 5 · Quién hace qué
 
 > **BG** = Brand Growth · **GP** = Growth Partnership · **Todos** = los niveles que corren ciclo, según la ficha.
-> Brand Foundation es un proyecto: corre ① Strategy, ②B Branding y ④ Creatividad.
+> Brand Foundation es un proyecto: corre ① Strategy, ② Branding y ③ Marketing y Creative.
 
 ### Cliente
 
@@ -251,9 +250,9 @@ costo fijo de la ficha.
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Rediseño de oferta, paquetes y precio | ② Growth + **CEO** | GP |
-| Abrir canales grandes | ② Growth + **CEO** | GP |
-| Upsells y escalera de ticket | ② Growth · Operador | GP |
+| Rediseño de oferta, paquetes y precio | ① Strategy (adquisición) + **CEO** | GP |
+| Abrir canales grandes | ① Strategy (adquisición) + **CEO** | GP |
+| Upsells y escalera de ticket | ① Strategy (adquisición) · Operador | GP |
 | Embudos, auto-DM, atribución y pruebas A/B | Agentes · Operador | GP |
 | Entrenamiento de closing | **CEO** | GP |
 
@@ -264,19 +263,19 @@ costo fijo de la ficha.
 | **Coordinar producción, fotografía y edición** | **COO** | Todos |
 | Grabar | **Producción** | Todos |
 | Fotografiar | **Fotografía** | Todos |
-| Editar los videos y sus derivadas | **Editor de video** | Todos |
-| Estáticos, carruseles y stories | **Operador** con ⑥A Diseño gráfico | Todos |
-| Correr Creatividad, Branding, Diseño, Posting y Community | **Operador** | Todos |
+| Corregir el primer corte y aprobar las derivadas | **Editor de video** | Todos |
+| Estáticos, carruseles y stories | **Operador** con ⑤ Diseño gráfico | Todos |
+| Correr Marketing y Creative, Branding, Diseño gráfico, Posting y Community | **Operador** | Todos |
 | **QA final** | Agentes *(`br-guardian`)* → **COO** | Todos |
 
 ### Publicación, comunidad y pauta
 
 | Tarea | Rol | Dónde |
 |---|---|---|
-| Programar y publicar | **Operador** con ⑨ Posting | Todos |
+| Programar y publicar | **Operador** con ⑦ Posting | Todos |
 | **Comentarios y mensajes** | **Operador:** una vez al mes configura el agente con la información del cliente, y el agente queda atendiendo. Escalera en `03-OFERTA.md` → «Community management» | GP · BG si la ficha lo incluye |
 | **Agente de WhatsApp a medida** | **CEO** define el alcance → **Operador** lo construye | GP |
-| Pauta | **Operador** con ⑩ Ads · **CEO** aprueba plan y presupuesto | BG · GP |
+| Pauta | **Operador** con ⑧ Ads · **CEO** aprueba plan y presupuesto | BG · GP |
 
 ### Tecnología
 
@@ -433,12 +432,12 @@ agente que toca y trabaja sobre el folder del cliente.
 ```
 Una sesión por cliente
    │
-   ├── "corré el onboarding de <cliente>"      → 01 · 01.2 · 02 · 03
-   ├── "armá el mes de <cliente>"              → 04 · 05 · 06 · 07
-   ├── "atendé la comunidad de <cliente>"      → 08  🔒 gate
-   ├── "publicá lo aprobado de <cliente>"      → 09  🔒 gate
-   ├── "lanzá las campañas de <cliente>"       → 10  🔒 gate
-   └── "corré la revisión del 20 de <cliente>" → ↻
+   ├── "corré el onboarding de <cliente>"      → 01 · 02
+   ├── "armá el mes de <cliente>"              → 03 · 04 · 05
+   ├── "atendé la comunidad de <cliente>"      → 06  🔒 gate
+   ├── "publicá lo aprobado de <cliente>"      → 07  🔒 gate
+   ├── "lanzá las campañas de <cliente>"       → 08  🔒 gate
+   └── "corré la revisión del 20 de <cliente>" → ↻ resultados
 ```
 
 ### Lo que exige de los agentes

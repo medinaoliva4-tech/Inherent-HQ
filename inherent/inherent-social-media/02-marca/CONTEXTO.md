@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ②B Branding |
+| **Escribe aquí** | ② Branding |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

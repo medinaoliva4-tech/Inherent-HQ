@@ -25,4 +25,4 @@
 | `07-oferta-y-ventas/` | Las ofertas que se empujan cada ciclo | ✅ Solo `ofertas-a-empujar.md` |
 | `99-referencias/` | Investigación y lo que manda el cliente | ✅ |
 
-**Nivel Brand Growth:** de ② Growth solo lleva `07-oferta-y-ventas/ofertas-a-empujar.md`.
+**Nivel Brand Growth:** de ① Strategy (adquisición) solo lleva `07-oferta-y-ventas/ofertas-a-empujar.md`.

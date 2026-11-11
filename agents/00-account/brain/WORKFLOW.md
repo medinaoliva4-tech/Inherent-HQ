@@ -217,17 +217,14 @@ Si el número no está en ningún `clients/<cliente>/`, **es alguien nuevo** →
 
 | Si el cliente pide… | Abre |
 |---|---|
-| Replantear estrategia, ver resultados, cambiar rumbo | `01-strategy` |
-| Algo de identidad o marca | `01.2-branding` |
-| Oferta, precios al mercado, canales grandes | `02-growth` |
-| Plan de canales, calendario | `03-marketing` |
-| Ideas, ángulos, conceptos | `04-creative` |
-| Agendar o replanear grabación | `05-production` |
-| Piezas gráficas | `06-graphic-design` |
-| Reels y cortes | `07-video-editing` |
-| Comunidad, respuestas, recompra | `08-community-management` |
-| Publicar o reprogramar | `09-posting` |
-| Pauta | `10-ads-management` |
+| Replantear estrategia, ver resultados, cambiar rumbo · oferta, precios al mercado, canales grandes | `01-strategy` |
+| Algo de identidad o marca | `02-branding` |
+| Plan de canales, calendario, ideas, ángulos, conceptos | `03-marketing-creative` |
+| Agendar o replanear grabación · reels y cortes | `04-production` |
+| Piezas gráficas | `05-graphic-design` |
+| Comunidad, respuestas, recompra | `06-community` |
+| Publicar o reprogramar | `07-posting` |
+| Pauta | `08-ads` |
 
 **Con un alcance a medida, solo abre los departamentos de Su pipeline** (§0).
 
@@ -315,7 +312,7 @@ organigrama.
 ## 10 · Lo que este agente NO hace
 
 - **No produce nada.** Ni copy, ni piezas, ni estrategia. Para eso abre la sesión que toca
-- **No publica ni pauta.** Publicar es de ⑨ Posting; pautar es de ⑩ Ads, con el OK del CEO
+- **No publica ni pauta.** Publicar es de ⑦ Posting; pautar es de ⑧ Ads, con el OK del CEO
   antes de lanzar
 - **No negocia** precio, alcance ni plazos
 - **No da costos ni márgenes.** Nunca

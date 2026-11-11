@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ① Strategy · `context` |
+| **Escribe aquí** | ① Strategy |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |

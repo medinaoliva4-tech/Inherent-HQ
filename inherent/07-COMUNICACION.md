@@ -396,7 +396,7 @@ o proyectos por hito. **Precio según alcance.**
 | *«procesos de marketing, ventas y atención»* | **Operación y organización comercial.** SOPs de las áreas contratadas, no de toda la empresa |
 | *«que te encuentren en Google»* | **Es pauta de búsqueda y contenido guiado por keywords.** Nunca posicionamiento orgánico, auditoría técnica ni link building |
 | *«presencia todos los días»* | **El volumen de la ficha.** El techo real es la grabación |
-| *«comentarios y mensajes» · «comunidad»* | **⑧ Community Management.** El operador de agentes hace cada mes el setup del agente con la info del cliente, y queda corriendo. La atención diaria requiere volumen, horarios y cobertura definidos |
+| *«comentarios y mensajes» · «comunidad»* | **⑥ Community.** El operador de agentes hace cada mes el setup del agente con la info del cliente, y queda corriendo. La atención diaria requiere volumen, horarios y cobertura definidos |
 | *«tu oferta y tu precio rediseñados»* | **Brand Foundation lo estructura como proyecto; Growth Partnership lo trabaja como sistema comercial.** Brand Growth trabaja el mensaje y la demanda, no cambia la oferta |
 | *«campañas»* | **Publicidad pagada.** La inversión en pauta es del cliente, aparte, y nunca se promete un resultado |
 

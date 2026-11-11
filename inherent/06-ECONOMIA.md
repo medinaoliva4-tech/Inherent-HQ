@@ -341,9 +341,9 @@ recomienda; el resultado no se garantiza.
 
 | Capacidad | Con qué | |
 |---|---|---|
-| Componer estáticos y carruseles sobre plantilla | ⑥A Diseño gráfico — operador de agentes | 👤 |
-| Editar y derivar video del material grabado | ⑦ Video Editing — editor de video | 👤 |
-| Fotos de producto | ⑤ Producción — la sesión de foto del mes | 👤 |
+| Componer estáticos y carruseles sobre plantilla | ⑤ Diseño gráfico — operador de agentes | 👤 |
+| Editar y derivar video del material grabado | ④ Producción (Post) — editor de video | 👤 |
+| Fotos de producto | ④ Producción — la sesión de foto del mes | 👤 |
 | Reencuadrar para cada formato | `ffmpeg` local | ⬜ |
 | Análisis de video *(cortes, frames, texto en pantalla)* | `ffmpeg` local | ⬜ |
 | Programar y publicar | La herramienta de publicación *(ver los slots en `05-OPERACION.md`)* | ⬜ |
@@ -379,7 +379,7 @@ recomienda; el resultado no se garantiza.
 | **Integrar con 9,000+ apps** *(CRM, WhatsApp, facturación)* | Zapier | ⬜ |
 | Documentación y entregables | Google Drive | ✅ |
 
-🔑 **El volumen de la ficha sale de grabación (⑤ Producción), edición (⑦ Video Editing) y plantillas de diseño (⑥A Diseño gráfico) sobre
+🔑 **El volumen de la ficha sale de grabación y edición (④ Producción) y plantillas de diseño (⑤ Diseño gráfico) sobre
 material propio.**
 
 ### 🕷️ El scraping — reglas de uso
@@ -438,9 +438,9 @@ $1.22 o **~8** a $0.61; **se planifica con 4-5.** Pasado eso, hace falta plan pa
 | **Solo datos públicos** | No se usan cuentas del cliente ni se guardan datos personales que no hagan falta |
 | **Si un actor falla** | Se busca otro en el store el mismo día. No se bloquea la entrega |
 | **Topes en los tres actores** | **Siempre** `resultsLimit` y `maxTotalChargeUsd`. Cobran por contenido: un run sin freno se come el tope del cliente |
-| **Volumen por ciclo** | **Por plataforma del cliente**, según su ficha de oferta. Las plataformas salen de `plan-por-canal.md` de ③ Marketing |
+| **Volumen por ciclo** | **Por plataforma del cliente**, según su ficha de oferta. Las plataformas salen de `plan-por-canal.md` de ③ Marketing y Creative |
 | **Lectura profunda** | Se scrapean todos; **solo 10-15 pasan** a disección. Scrapear es barato, leer a fondo no |
-| **Las dos capas** | **Competencia solo Guatemala** (`country=GT`); **referencias ganadoras** de países parecidos, con la lista fija de `cr-fuentes`. **No se mezclan en el mismo archivo** |
+| **Las dos capas** | **Competencia solo Guatemala** (`country=GT`); **referencias ganadoras** de países parecidos, con los países que fija `mc-radar` para cada cliente. **No se mezclan en el mismo archivo** |
 
 ---
 
