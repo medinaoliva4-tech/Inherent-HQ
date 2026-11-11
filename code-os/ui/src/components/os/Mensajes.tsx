@@ -369,7 +369,7 @@ function ParteTextoVista({ texto, id, enCurso, onArtefacto }: { texto: string; i
     <>
       {visible.texto && (
         <MessageContent className={enCurso && !visible.escribiendo ? 'cursor-stream' : undefined}>
-          <MessageResponse>{visible.texto}</MessageResponse>
+          <MessageResponse className="chat-respuesta">{visible.texto}</MessageResponse>
         </MessageContent>
       )}
       {visible.escribiendo && (
