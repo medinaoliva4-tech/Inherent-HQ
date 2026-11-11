@@ -1,3 +1,29 @@
+# Departamentos (v3): lo que es mock y lo que falta
+
+Pantalla única: chat al centro y panel derecho con **Cliente** (resumen, avisos, hilo), **Agentes** (portal y
+pestaña en vivo), **Herramientas** (artefactos) y, en Code, **Código**. Capturas: `docs/capturas/v3/`.
+
+## Endpoints que faltan (la interfaz ya los llama; con 404/501 dice «Falta en el backend: …»)
+Se piden a `VITE_HERRAMIENTAS_URL` o, si no está, al puente. Forma acordada; la final va en `code-os/docs/herramientas-api.md`.
+- `GET /clientes` · `GET/POST /clientes/:id/nodos` · `GET/PUT /clientes/:id/nodos/:nid` · `GET /clientes/:id/nodos/:nid/dependientes` · `GET /clientes/:id/avisos`.
+- `POST /clientes/:id/nodos/:nid/aprobar` con cuerpo `{ version }` = la versión que la persona abrió. El servidor debe responder **409** si no es la actual (la interfaz ya bloquea el botón hasta abrir; falta que el servidor también lo haga cumplir y guarde quién lo leyó).
+- `POST /calc/outbound` y `POST /calc/inbound`: si no existen, se calcula en el navegador con la misma fórmula (el caso 913 / 229 / 46 tiene prueba).
+- `POST /clientes/:id/calibrar`: tasas reales de Zernio para inbound. Hoy, mock.
+- **`contenido` de cada nodo**: la interfaz guarda un objeto con campos por herramienta (`facturacion`, `ticket`… del ICP; `outbound`/`resultado`; `winners`; `jornada`/`shots`/`permisos`/`compras`/`hooks`; `copy`/`resultado`/`ideas`) y `decide` (qué decide, en una línea). Si el backend elige otra forma, se ajusta en un solo lugar por herramienta.
+
+## Mock (se ve, no es real)
+- **Clientes y nodos**: «Lumbre Catering (ejemplo)» y «Estudio Norte (ejemplo)» son inventados (`src/data/departamentos.ts`); se guardan en el navegador.
+- **Descartar un aviso** («Ya lo revisé») es local; falta `POST …/avisos/:id/visto` o equivalente.
+- **Portal del agente**: workflow, habilidades y los trabajos con borde punteado son de ejemplo (`src/lib/agentes.ts`) hasta que el puente exponga los workflows y `agentes/runs`.
+- **Sugerencia de conversión** («¿oferta comprobada?»): valores fijos marcados [hipótesis · ejemplo]; falta que el agente la proponga con fuente.
+- **Radar**: los winners son de ejemplo; falta el radar automático (alternativa gratuita a Apify).
+- **Editor de video**: contenedor vacío; el motor (FilmCraft en prueba) entra en otro PR.
+
+## Real con el puente de hoy
+- `@agente` al inicio del mensaje: la sesión se crea con `agents` (subagentes del SDK) y el turno pide usar ese subagente con lo ya hablado. En Chat ese turno va en modo `plan` (la sesión de chat no tiene herramientas). La pestaña del agente muestra en vivo el texto del subagente (eventos con `parentToolUseId`) y su etapa se deduce de la descripción.
+- Las preguntas del agente usan `AskUserQuestion`: salen en el chat, nunca en el panel.
+- Falta en el puente: etapas reales, aporte obligatorio, «leído» del servidor y trabajos del equipo (§20 de `ceo-os/PLAN-GATEWAY.md`). Las sesiones creadas antes de este cambio no tienen `agents`: hay que abrir un chat nuevo.
+
 # Lo que no entró en la v2 de la interfaz
 
 Funciones del inventario (`code-os/docs/inventario-claude.md`) que quedaron fuera, con la razón en una línea.

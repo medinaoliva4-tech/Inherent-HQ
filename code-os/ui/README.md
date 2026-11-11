@@ -37,6 +37,16 @@ Una interfaz `Cliente`, dos implementaciones:
   `turn_end`…) al contrato de la interfaz (`src/lib/eventos.ts`). Lo que el puente aún no tiene lanza `NoDisponible`
   y la pantalla lo dice («Falta en el puente: …»).
 
+## Departamentos (v3)
+Una sola pantalla: el chat al centro y el panel derecho con **Cliente** (resumen, avisos y el hilo: qué depende de qué),
+**Agentes** (`@estrategia`, `@creativo`, `@produccion`, `@diseno`: workflow, habilidades, Start, trabajos y el documento en
+vivo), **Herramientas** como artefactos (perfil del cliente ideal, calculadora de adquisición outbound/inbound, dolores y
+deseos, pilares × ángulos, radar, campañas, Production Pre imprimible, editor de video) y, en Code, **Código**.
+- Cada dato es un **nodo** (`src/lib/hilo.ts`) y se ve como **tarjeta de decisión**: la misma en el chat, la herramienta y el
+  portal. Aprobar se activa solo después de abrir esa versión. Guardar vuelve a hipótesis y avisa a lo que depende.
+- El workspace se arma por **rol** («Ver como» abajo a la izquierda; `src/lib/roles.ts`). El cliente se elige arriba del chat.
+- `VITE_HERRAMIENTAS_URL` (opcional): backend de herramientas; sin ella se piden al puente. Lo que falta: `docs/pendiente.md`.
+
 ## Qué hay
 - **Barra lateral**: Chat / Code, proyectos (carpetas con instrucciones), búsqueda en títulos y mensajes, fijar,
   renombrar, archivar, borrar, chat incógnito, medidor de cuotas y estado de la sesión de Claude.

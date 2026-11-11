@@ -253,6 +253,11 @@ html[data-theme="light"] {
   animation: cursor-blink 1s steps(2) infinite;
 }
 
+/* Panel de herramientas: una rejilla de una columna nunca crece por un texto largo (truncate) y empuja el panel. */
+:where(.herramienta) .grid:not([class*="grid-cols"]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* Hoja imprimible (Production Pre): al imprimir solo sale la hoja, sin bordes de los campos. */
 @media print {
   html,

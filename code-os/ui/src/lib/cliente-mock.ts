@@ -191,8 +191,9 @@ export function crearClienteMock({ velocidad = 1, hilo: hiloDado }: Opciones = {
       yield { tipo: 'herramienta_fin', id: sub, salida: `Etapa «${t.etapa}» lista para revisar.` }
       if (parar()) return yield* cerrar('detenido')
       const bloques = ['```nodo\n' + JSON.stringify(t.propuesta) + '\n```']
-      if (t.revisar) bloques.push('Y esto cambió hace poco; revísalo antes de seguir:\n\n```nodo\n' + JSON.stringify({ id: t.revisar }) + '\n```')
-      yield* decir(`Listo el borrador de **${t.etapa}** (lo ves en la pestaña del agente). Propongo esto para el hilo; ábrelo para aprobar:\n\n${bloques.join('\n\n')}`, 'texto', undefined, 4)
+      if (t.revisar) bloques.push('```nodo\n' + JSON.stringify({ id: t.revisar }) + '\n```')
+      const intro = t.revisar ? 'Propongo un dato nuevo para el hilo y te pido revisar uno que cambió hace poco. Ábrelos para aprobar:' : 'Propongo esto para el hilo; ábrelo para aprobar:'
+      yield* decir(`Listo el borrador de **${t.etapa}** (lo ves en la pestaña del agente). ${intro}\n\n${bloques.join('\n\n')}`, 'texto', undefined, 4)
       return yield* cerrar(parar() ? 'detenido' : 'completo')
     }
 

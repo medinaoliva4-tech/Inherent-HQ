@@ -125,7 +125,7 @@ export function PaginaCliente() {
   if (h.falta) return <p className="p-4 text-sm text-muted-foreground">Falta en el backend: {h.falta}</p>
   if (h.error) return <p className="p-4 text-sm text-bad">{h.error}</p>
   return (
-    <div className="grid gap-4 p-4">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-4">
       <header className="grid gap-1">
         <p className="text-xs text-muted-foreground">
           {h.marca?.industria ?? 'Cliente'}

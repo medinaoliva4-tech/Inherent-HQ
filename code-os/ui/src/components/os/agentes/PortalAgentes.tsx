@@ -71,7 +71,7 @@ export function PortalAgentes({ mensajes, orden, activo, onActivo, onEmpezar, mo
   const contexto = contextoDe(a, h.nodos)
 
   return (
-    <div className="grid gap-4 p-4">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-4 p-4">
       <div role="tablist" aria-label="Agentes" className="flex flex-wrap gap-1.5">
         {lista.map((x) => {
           const vivo = vivos.some((v) => v.agente === x.id)
@@ -83,7 +83,7 @@ export function PortalAgentes({ mensajes, orden, activo, onActivo, onEmpezar, mo
               role="tab"
               aria-selected={x.id === a.id}
               onClick={() => onActivo(x.id)}
-              className={cn('relative flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors', x.id === a.id ? 'text-foreground' : 'text-muted-foreground hover:text-foreground', !orden.includes(x.id) && 'opacity-70')}
+              className={cn('relative isolate flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors', x.id === a.id ? 'text-foreground' : 'text-muted-foreground hover:text-foreground', !orden.includes(x.id) && 'opacity-70')}
             >
               {x.id === a.id && <motion.span layoutId="agente-activo" className="absolute inset-0 -z-10 rounded-full bg-accent" transition={resortePop} />}
               <span className="size-2 rounded-full" style={{ background: AREAS[x.area].color }} aria-hidden />
@@ -115,14 +115,14 @@ export function PortalAgentes({ mensajes, orden, activo, onActivo, onEmpezar, mo
             <span className="text-muted-foreground">
               · etapa {etapa + 1}/{a.etapas.length}: {a.etapas[etapa]?.nombre}
             </span>
-            <span className="ml-auto text-mut2 tabular-nums">{enVivo.herramientas} pasos</span>
+            <span className="ml-auto text-mut2 tabular-nums">{enVivo.herramientas} {enVivo.herramientas === 1 ? 'paso' : 'pasos'}</span>
           </div>
           {pendiente && (
             <p className="flex items-center gap-2 rounded-lg bg-warn/10 px-2.5 py-1.5 text-xs text-warn">
               <MessageCircleQuestionIcon className="size-3.5" /> Te hizo una pregunta: respóndela en el chat.
             </p>
           )}
-          <div className="max-h-80 overflow-y-auto rounded-lg bg-background/50 p-3 text-sm">
+          <div className="max-h-80 overflow-y-auto rounded-lg bg-background/50 p-3 text-sm [&_h1]:text-base [&_h2]:text-base [&_h3]:text-sm">
             {enVivo.documento ? <MessageResponse>{enVivo.documento}</MessageResponse> : <p className="text-muted-foreground">El documento aparece aquí mientras se escribe…</p>}
           </div>
         </section>

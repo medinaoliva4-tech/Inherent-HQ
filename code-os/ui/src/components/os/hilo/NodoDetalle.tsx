@@ -101,7 +101,7 @@ export function NodoDetalle() {
     <Dialog open onOpenChange={(v) => !v && h.cerrarDetalle()}>
       <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pr-7">
             <ChipArea area={areaDe(n)}>
               {AREAS[areaDe(n)].nombre} · {etiquetaNodo(n, h.nodos)}
             </ChipArea>

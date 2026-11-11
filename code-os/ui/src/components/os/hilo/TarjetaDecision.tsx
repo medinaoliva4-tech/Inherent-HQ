@@ -50,7 +50,7 @@ export function TarjetaDecision({ nodo, propuesta, compacta, className }: Props)
     const origen = origenDe({ viene_de: propuesta.viene_de ?? [] }, h.nodos)
     const decide = typeof propuesta.contenido?.decide === 'string' ? propuesta.contenido.decide : ''
     return (
-      <article aria-label={`Propuesta: ${propuesta.titulo}`} className={cn('grid gap-2 rounded-xl border border-dashed bg-card/70 p-3', className)}>
+      <article aria-label={`Propuesta: ${propuesta.titulo}`} className={cn('grid grid-cols-[minmax(0,1fr)] gap-2 rounded-xl border border-dashed bg-card/70 p-3', className)}>
         <div className="flex items-center gap-2">
           <ChipArea area={area}>
             {AREAS[area].corto} · {TIPOS[propuesta.tipo]?.nombre ?? propuesta.tipo} nuevo
@@ -94,7 +94,7 @@ export function TarjetaDecision({ nodo, propuesta, compacta, className }: Props)
   /** Este mismo dato cambió y avisó a lo que depende de él. */
   const cambio = h.avisos.find((a) => a.nodo === n.id)
   return (
-    <article aria-label={`Decisión: ${n.titulo}`} className={cn('grid gap-1.5 rounded-xl border bg-card p-3 shadow-[var(--ui-sh-1)]', className)}>
+    <article aria-label={`Decisión: ${n.titulo}`} className={cn('grid grid-cols-[minmax(0,1fr)] gap-1.5 rounded-xl border bg-card p-3 shadow-[var(--ui-sh-1)]', className)}>
       <div className="flex items-center gap-2">
         <ChipArea area={area}>
           {AREAS[area].corto} · {etiquetaNodo(n, h.nodos)}

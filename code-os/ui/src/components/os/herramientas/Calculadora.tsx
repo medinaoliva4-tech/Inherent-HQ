@@ -1,4 +1,4 @@
-import { GaugeIcon, RefreshCwIcon, SparklesIcon } from 'lucide-react'
+import { RefreshCwIcon, SparklesIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
@@ -67,18 +67,20 @@ function Outbound() {
         </Fila>
         <Fila etiqueta="Conversión prospecto → cliente" valor={pct(e.conversion)}>
           <Slider value={[Math.round(e.conversion * 1000)]} min={1} max={100} step={1} onValueChange={(v) => poner({ conversion: primero(v) / 1000 })} aria-label="Conversión prospecto a cliente" />
-          <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted/50 p-2">
-            <span className="text-xs text-muted-foreground">¿Oferta comprobada?</span>
-            <Segmentado etiqueta="¿Oferta comprobada?" valor={probada} onCambio={setProbada} opciones={[{ v: 'si', t: 'Sí' }, { v: 'no', t: 'No' }]} />
-            <span className="flex min-w-0 flex-1 items-center gap-1 text-xs text-muted-foreground">
-              <SparklesIcon className="size-3 shrink-0" />
-              <span className="truncate" title={sug.fuente}>
-                El agente sugiere {pct(sug.valor)} · {sug.fuente}
+          <div className="grid gap-2 rounded-lg bg-muted/50 p-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs text-muted-foreground">¿Oferta comprobada?</span>
+              <Segmentado etiqueta="¿Oferta comprobada?" valor={probada} onCambio={setProbada} opciones={[{ v: 'si', t: 'Sí' }, { v: 'no', t: 'No' }]} />
+              <Button size="xs" variant="outline" className="ml-auto" onClick={() => poner({ conversion: sug.valor })} disabled={e.conversion === sug.valor}>
+                Usar {pct(sug.valor)}
+              </Button>
+            </div>
+            <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
+              <SparklesIcon className="mt-0.5 size-3 shrink-0" />
+              <span>
+                El agente sugiere empezar con <strong className="text-foreground">{pct(sug.valor)}</strong>. Fuente: {sug.fuente}. Tú lo ajustas.
               </span>
-            </span>
-            <Button size="xs" variant="outline" onClick={() => poner({ conversion: sug.valor })} disabled={e.conversion === sug.valor}>
-              Usar
-            </Button>
+            </p>
           </div>
         </Fila>
         <Fila etiqueta="Probabilidad objetivo" valor={pct(e.probabilidad, 0)}>
@@ -244,9 +246,7 @@ export function Calculadora() {
   const nodo = h.nodos.find((n) => n.tipo === 'adquisicion')
   return (
     <div className="grid gap-4">
-      <Cabecera id="adquisicion">
-        <GaugeIcon className="size-5 text-muted-foreground" aria-hidden />
-      </Cabecera>
+      <Cabecera id="adquisicion" />
       <EstadoCarga>
         {nodo && <TarjetaDecision nodo={nodo} compacta />}
         <Tabs defaultValue="outbound" className="gap-4">

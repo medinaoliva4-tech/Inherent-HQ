@@ -115,7 +115,7 @@ export function PanelLateral(p: Props) {
   return (
     <aside aria-label="Panel lateral" className="@container flex h-full min-w-0 flex-col bg-card">
       <div className="flex items-center gap-1 border-b px-2 py-1.5">
-        <div role="tablist" aria-label="Secciones del panel" className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto">
+        <div role="tablist" aria-label="Secciones del panel" className="flex min-w-0 flex-1 gap-0.5 overflow-x-auto [scrollbar-width:none]">
           {secciones.map((s) => (
             <button
               key={s.id}
@@ -129,7 +129,7 @@ export function PanelLateral(p: Props) {
             >
               {seccion === s.id && <motion.span layoutId="seccion-panel" className="absolute inset-0 -z-10 rounded-md bg-accent" transition={resortePop} />}
               <s.icono className="size-4" />
-              <span className="hidden @[26rem]:inline">{s.nombre}</span>
+              <span className="hidden @[27rem]:inline">{s.nombre}</span>
               <Insignia n={s.n ?? 0} aviso={s.aviso} />
             </button>
           ))}
@@ -141,20 +141,20 @@ export function PanelLateral(p: Props) {
 
       <div className="min-h-0 flex-1 overflow-hidden text-sm">
         {seccion === 'cliente' && (
-          <div className="h-full overflow-y-auto">
+          <div className="herramienta h-full overflow-y-auto">
             <PaginaCliente />
           </div>
         )}
 
         {seccion === 'agentes' && (
-          <div className="h-full overflow-y-auto">
+          <div className="herramienta h-full overflow-y-auto">
             <PortalAgentes mensajes={p.mensajes} orden={p.agentesRol} activo={p.agente} onActivo={p.onAgente} onEmpezar={p.onEmpezarAgente} mock={p.cliente.tipo === 'mock'} />
           </div>
         )}
 
         {seccion === 'herramientas' && (
           <div className="flex h-full flex-col">
-            <nav aria-label="Herramientas" className="flex shrink-0 gap-1 overflow-x-auto border-b px-2 py-1.5">
+            <nav aria-label="Herramientas" className="flex shrink-0 gap-1 overflow-x-auto border-b px-2 py-1.5 [scrollbar-width:none]">
               {vistas.map((v) => {
                 const t = v === 'artefactos' ? null : HERRAMIENTAS[v]
                 const activa = v === herramienta
@@ -176,7 +176,7 @@ export function PanelLateral(p: Props) {
               {herramienta === 'artefactos' ? (
                 <Artefactos artefactos={p.artefactos} activo={p.artefactoActivo} onActivo={p.onArtefacto} />
               ) : (
-                <div className="p-4">{HERRAMIENTA[herramienta]()}</div>
+                <div className="herramienta p-4 [&>div]:grid-cols-[minmax(0,1fr)]">{HERRAMIENTA[herramienta]()}</div>
               )}
             </div>
           </div>
@@ -184,7 +184,7 @@ export function PanelLateral(p: Props) {
 
         {seccion === 'codigo' && (
           <Tabs value={p.pestana} onValueChange={(v) => p.onPestana(v as PestanaPanel)} className="flex h-full min-h-0 flex-col gap-0">
-            <TabsList variant="line" className="w-full shrink-0 justify-start overflow-x-auto border-b px-2">
+            <TabsList variant="line" className="w-full shrink-0 justify-start overflow-x-auto border-b px-2 [scrollbar-width:none]">
               {pestanasCodigo.map((x) => (
                 <TabsTrigger key={x.id} value={x.id} className="shrink-0 gap-1 px-1.5 text-xs" title={x.nombre} aria-label={x.nombre}>
                   <x.icono className="size-3.5" />
