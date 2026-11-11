@@ -3,7 +3,7 @@
 set -euo pipefail
 HOST="${1:-inherent-gw}"; ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 ssh "$HOST" 'mkdir -p ~/code-os'
-for d in puente ui asistente despliegue cuotas litellm; do
+for d in herramientas puente ui asistente despliegue cuotas litellm; do
   rsync -az --delete --exclude=/node_modules --exclude=/dist --exclude=/data --exclude=/.env "$ROOT/code-os/$d/" "$HOST:code-os/$d/"
 done
 ssh "$HOST" 'cd ~/code-os/puente && npm ci --no-audit --no-fund && npm run build && echo "✓ puente compilado"'
