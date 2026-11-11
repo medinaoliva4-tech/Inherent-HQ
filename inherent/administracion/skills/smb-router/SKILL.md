@@ -60,7 +60,7 @@ Pick the **single best match**, not a list of options. If two are close, pick th
 **Sales & growth:**
 | Owner says something like... | Route to |
 |---|---|
-| "Conseguime clientes" / "más leads" / "llená el embudo" | `/inherent` → ③ Marketing (Inherent como cliente, `inherent/inherent-social-media/`) |
+| "Conseguime clientes" / "más leads" / "llená el embudo" | `/inherent` → ① Strategy (adquisición) (Inherent como cliente, `inherent/inherent-social-media/`) |
 | "Seguimiento a los que no contestan" / "follow-up" | `crm-autopilot` (deals quietos) |
 | "Se nos enfrían los leads" / "responder rápido las consultas" | `inbox-manager` para redactar la respuesta, después `lead-triage` |
 | "Rank my leads" / "score my pipeline" / "who should I call first?" — no calendar blocks | `lead-triage` |
@@ -68,18 +68,18 @@ Pick the **single best match**, not a list of options. If two are close, pick th
 | "Write this up" / "quote this job" / "bid" / "proposal" / "RFP" | `proposal-builder` |
 | "Recuperar clientes que se fueron" / "reactivar" | `crm-autopilot` para la lista; el contacto con clientes actuales o pasados lo hace la Secretaria (agente `00-account`) con el COO |
 | "Update the CRM" / "log this call" / "HubSpot is a mess" | `crm-autopilot` (hygiene mode) |
-| "¿Funciona nuestro marketing?" / "resumen semanal de marketing" / "embudo" | `/inherent` → ③ Marketing |
-| "¿Qué promovemos?" / "el mensaje del mes" | `/inherent` → ③ Marketing |
-| "Hacé el contenido" / "posts" / "piezas" / "calendario" / "ejecutá este brief" | `/inherent` → ④ Creatividad (diseño en Figma con ⑥A, nunca Canva) |
-| "Nuestra pauta" / "inversión en anuncios" / "¿rinde la pauta?" | `/inherent` → ⑩ Ads |
-| "Que nos encuentren en Google" / "SEO" / "visibilidad web" | `/inherent` → ③ Marketing; la web vive en su propio repo |
+| "¿Funciona nuestro marketing?" / "resumen semanal de marketing" / "embudo" | `/inherent` → ③ Marketing y Creative |
+| "¿Qué promovemos?" / "el mensaje del mes" | `/inherent` → ③ Marketing y Creative |
+| "Hacé el contenido" / "posts" / "piezas" / "calendario" / "ejecutá este brief" | `/inherent` → ③ Marketing y Creative (diseño en Figma con ⑤ Diseño gráfico, nunca Canva) |
+| "Nuestra pauta" / "inversión en anuncios" / "¿rinde la pauta?" | `/inherent` → ⑧ Ads |
+| "Que nos encuentren en Google" / "SEO" / "visibilidad web" | `/inherent` → ③ Marketing y Creative; la web vive en su propio repo |
 | "¿Qué hace la competencia?" / "chequeo de mercado" | `/inherent` → ① Strategy |
 | "Licitación" / "concurso" / "RFP" | `proposal-builder` |
 
 **Customers & reputation:**
 | Owner says something like... | Route to |
 |---|---|
-| "¿Qué dicen de nosotros?" / "reseñas" / "comentarios en redes" | `/inherent` → ⑧ Community |
+| "¿Qué dicen de nosotros?" / "reseñas" / "comentarios en redes" | `/inherent` → ⑥ Community |
 | "Un cliente está molesto" / "correo enojado de un cliente" | la Secretaria (agente `00-account`), que escala al COO |
 | "¿Algún cliente a punto de irse?" / "pulso de los clientes" | la Secretaria (agente `00-account`) con el COO |
 
@@ -104,7 +104,7 @@ Pick the **single best match**, not a list of options. If two are close, pick th
 | Owner says something like... | Route to |
 |---|---|
 | "Esto lo hago cada semana" / "automatizalo" | Se propone al CEO (gate humano); si lo aprueba, se construye como skill o agente en `agents/` |
-| "Cambiamos la marca" / "actualizá nuestra marca" | `/inherent` → ②B Branding (la marca vive en `inherent/inherent-social-media/02-marca/`) |
+| "Cambiamos la marca" / "actualizá nuestra marca" | `/inherent` → ② Branding (la marca vive en `inherent/inherent-social-media/02-marca/`) |
 | "Cambiame cómo me das los reportes" | `smb-onboard` (actualiza `Output preference` en el contexto) |
 | "Conectá mi herramienta" / "mi herramienta no está" | Se conecta como MCP; un MCP declarado no es un MCP conectado (`CLAUDE.md`) |
 
@@ -125,7 +125,7 @@ Los comandos que quedan son siete (`/close-month`, `/monday-brief`, `/call-list`
 
 **Desambiguación — hacer la tarea vs. automatizarla.** Las palabras de tarea ("hacé esta conciliación," "cobrá estas facturas") van a la skill que hace el trabajo. Las de automatización ("hacelo automático," "esto cada mes") se resuelven con el agendado de la skill si ya lo tiene (`/report-pack`, el preset de `business-pulse`); si no, se le propone al CEO construirlo — no se construye solo.
 
-**Desambiguación — contenido.** Todo lo que tenga forma de contenido, con brief o sin brief, va por `/inherent` → ④ Creatividad. Aquí no se produce contenido.
+**Desambiguación — contenido.** Todo lo que tenga forma de contenido, con brief o sin brief, va por `/inherent` → ③ Marketing y Creative. Aquí no se produce contenido.
 
 **Disambiguation — hiring.** "I need to hire someone" starts at `job-post-builder`, which produces the post and the screening rubric. Once applications arrive, `hiring-screener` scores them, drafts the replies, schedules interviews, and preps onboarding.
 

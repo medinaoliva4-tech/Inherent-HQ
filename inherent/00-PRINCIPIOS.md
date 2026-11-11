@@ -17,24 +17,24 @@
 - ❌ **Nunca un resultado garantizado**, ni alcance, ni seguidores, ni facturación. [`01-IDENTIDAD.md` · `03-OFERTA.md`]
 - 🎯 **Los leads son una meta interna: no se le prometen al cliente. Pero es un compromiso
   operativo:** el cliente compra sabiendo que eso es lo que vamos a hacer, así que tenemos que
-  traerlos; si no, quedamos como estafa. [`03-OFERTA.md` «Los leads» · `gr-captura` §2]
+  traerlos; si no, quedamos como estafa. [`03-OFERTA.md` «Los leads» · `st-adquisicion` §3]
 - ❌ **Nunca una capa suelta disfrazada de crecimiento:** la ficha dice qué se compró. [`CLAUDE.md`]
 - 🔑 **Vendemos resultado, no servicios.** El volumen es evidencia, nunca la oferta. [`CLAUDE.md`]
 
 ## Reglas duras
 1. **El alcance contratado es el techo.** Sin ficha de oferta (`00-onboarding/plan-contratado.md`),
    el agente **bloquea** a ese cliente. Entregar de más rompe el margen; de menos, la promesa. [`CLAUDE.md`]
-2. **El CEO solo bloquea en dos lugares:** ① Strategy *(aprueba la estrategia)* y ⑩ Ads *(aprueba
+2. **El CEO solo bloquea en dos lugares:** ① Strategy *(aprueba la estrategia)* y ⑧ Ads *(aprueba
    plan, presupuesto y cada cambio de presupuesto)*. Lo demás se auto-revisa y sigue. [`CLAUDE.md` «Reglas»]
 3. **Escalar no es bloquear:** precio, alcance y fechas → CEO · lo demás → COO. [`CLAUDE.md`]
 4. **Nada destructivo sin autorización:** no se pauta sin OK del CEO, no se borra, no se envía ni se
    paga nada sin un sí explícito. [`CLAUDE.md` · `administracion/README.md`]
 5. **Roles, no nombres.** Los nombres solo viven en la tabla de slots de `05-OPERACION.md`. [`CLAUDE.md`]
 6. **Evidencia o etiqueta.** Sin fuente: `[dice el cliente, sin verificar]` o `⚠️ SIN DATOS`.
-   **Nunca inventar** un dato, una fecha, un precio ni una tarifa. [`CLAUDE.md` · `cr-fuentes` · `proposal-builder`]
+   **Nunca inventar** un dato, una fecha, un precio ni una tarifa. [`CLAUDE.md` · `mc-radar` · `proposal-builder`]
 7. **Los clientes y la facturación se leen, nunca se suponen:** de `clients/` y de la contabilidad. [`CLAUDE.md`]
-8. **Todo claim con número, resultado o comparación** pasa por ②B Branding (`br-guardian`) antes de
-   salir. «El mejor» o «el único» se rechazan por defecto. [`br-guardian` §3]
+8. **Todo claim con número, resultado o comparación** pasa por ② Branding (`br-guardian`) antes de
+   salir. «El mejor» o «el único» se rechazan por defecto. [`br-guardian` §2]
 9. **Un MCP declarado no es un MCP conectado.** No se promete lo que no está en «Capacidades reales». [`CLAUDE.md`]
 10. 🔒 **Costos, márgenes y lo de otro cliente no salen.** `06-ECONOMIA.md` no sale del repo. [`CLAUDE.md`]
 11. **Costos de terceros siempre aparte:** pauta, producción especial, talento, locaciones, viajes,
@@ -48,7 +48,7 @@
 4. **Nada pasa a «Listo» sin cumplir su ficha de criterios de aceptación.** Antes de entregar, se
    revisa el entregable contra ella. [`08-CRITERIOS-DE-ACEPTACION.md`]
 5. **Levanta excepciones, no preguntas.** Si el agente pregunta todo, no ahorra nada. [`CLAUDE.md`]
-6. **Cada departamento se auto-revisa;** ②B Branding valida con `br-guardian`; el COO hace el QA final. [`CLAUDE.md`]
+6. **Cada departamento se auto-revisa;** ② Branding valida con `br-guardian`; el COO hace el QA final. [`CLAUDE.md`]
 7. **El ciclo corre del día 1 al 20.** El 11 es el último día para producir; el 20 se presenta. [`CLAUDE.md`]
 8. **El repo es el manual, no el chat.** Nada entra al manual sin el OK del CEO en ese turno. [`CLAUDE.md`]
 
@@ -56,4 +56,4 @@
 - **Español, de «tú».** Los términos del método quedan en inglés (`WIN`, `MUST BE TRUE`…). [`CLAUDE.md`]
 - **Al CEO:** primero lo que tiene que hacer, en pasos cortos; una pregunta a la vez; sin jerga. [`CLAUDE.md`]
 - **Al cliente le habla solo `00-account`** (la secretaria, por WhatsApp). [`CLAUDE.md`]
-- **Al comprador, de lo que DESEA**, con sus palabras literales. [`CLAUDE.md` · `cr-hook-copy` regla 8]
+- **Al comprador, de lo que DESEA**, con sus palabras literales. [`CLAUDE.md` · `mc-campanas-piezas` §3]

@@ -25,12 +25,13 @@ inherent/                  ← LA EMPRESA — qué es, qué vende, qué cobra
 ├── inherent-social-media/ Inherent como cliente — nuestras propias redes, nivel Brand Growth
 └── administracion/        skills para administrar Inherent: caja, cobros, SAT, ventas, contratos
 
-agents/                    ← LOS AGENTES — uno por etapa del pipeline
-├── README.md              ← el roster y el estado de cada uno
-└── <NN>-<área>/           00-account · 01-strategy · 01.2-branding · 02-growth
-    ├── README.md          03-marketing · 04-creative · 05-production
-    └── brain/             06-graphic-design · 07-video-editing
-        ├── WORKFLOW.md    08-community-management · 09-posting · 10-ads-management
+agents/                    ← LOS AGENTES — uno por área, 1 orquestador + 4 skills como máximo
+├── README.md              ← el roster, el hilo y qué entrega cada uno
+├── _router/ · _comun/     ← /inherent · recepcion y resultados (comunes a todas las áreas)
+└── <NN>-<área>/           00-account · 01-strategy · 02-branding · 03-marketing-creative
+    ├── README.md          04-production · 05-graphic-design · 06-community
+    └── brain/             07-posting · 08-ads
+        ├── WORKFLOW.md
         └── skills/<skill>/
 
 ceo-os/                    ← LA HERRAMIENTA DEL CEO — web privada con login; el repo es su base de datos
@@ -55,7 +56,7 @@ Todo agente de Inherent tiene tres capas. **Esta es la definición base — vale
 
 ```
 PROPÓSITO   el panorama y la meta del agente. Su área.
-    │       Strategy: la estrategia. Creative: las ideas. Etc.
+    │       Strategy: el cliente ideal y la estrategia. Marketing y Creative: las ideas. Etc.
     ▼
 ACCIONES    lo que el agente PUEDE HACER. Las determinan los MCPs.
     │       La CALIDAD del MCP es la CALIDAD de la acción.
@@ -80,7 +81,7 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 |---|---|
 | **CEO** | Decide estrategia, ruta, servicios y promesas. Reunión del día 1 con cada cliente. Hace el control de calidad en persona. **Es el gate de la estrategia y de la pauta** |
 | **COO** | Organiza y coordina al equipo operativo y las entregas. QA final. Presenta el día 20 en Brand Growth |
-| **Operador de agentes** | Solo opera agentes: Creatividad, Branding, Diseño, Posting y Community |
+| **Operador de agentes** | Solo opera agentes: Marketing y Creative, Branding, Diseño gráfico, Posting y Community |
 | **Editor de video · Fotografía · Producción** | Editan, fotografían y graban |
 | **Secretaria** *(WhatsApp)* | El agente `00-account`. Atiende al cliente. Escala precio, alcance y fechas al CEO, y lo demás al COO |
 | **Especialista** | La auditoría de Growth Partnership |
@@ -93,7 +94,15 @@ Antes de agregar un MCP, preguntar: **¿esta acción cae dentro del propósito d
 **`agents/README.md` tiene el roster completo:** las etapas en orden, qué MCP le da cada acción
 a cada agente, y **qué entrega cada uno según el alcance contratado.**
 
-🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus capas, sus gates y sus entregables.**
+🔑 **Cada agente tiene su `brain/WORKFLOW.md` con sus pasos, sus gates y sus entregables.**
+**Sencillo: cada área = 1 orquestador + 4 skills como máximo.** ① Strategy es la madre de todo:
+producto → cliente ideal (ICP) → dolores, deseos e historia → adquisición → brief. Lo que no traza
+hasta el ICP no se produce.
+
+🤝 **Agente, herramienta, persona:** el agente propone *(profundidad o volumen)* → la persona corrige
+en la herramienta de Inherent OS → lo aprobado queda como dato fijo. **Entre áreas viajan nodos del
+hilo del cliente** *(con estado `hipotesis` o `aprobado` y de dónde vienen)*, no hojas de cálculo.
+Ver `agents/README.md` → «El hilo».
 **El alcance contratado (la ficha de oferta) es el techo de todos, no una sugerencia:** entregar de más rompe el margen,
 entregar de menos rompe la promesa.
 **Sin ficha de oferta, el agente BLOQUEA a ese cliente.**
@@ -106,7 +115,7 @@ Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 s
 Ver `inherent/05-OPERACION.md` → «El calendario del ciclo».
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa y sigue,
-**②B Branding valida con `br-guardian`** y el COO hace el QA final.
+**② Branding valida con `br-guardian`** y el COO hace el QA final.
 ✅ **Nada pasa a «Listo» sin sus criterios:** cada entregable cumple su ficha de
 `inherent/08-CRITERIOS-DE-ACEPTACION.md` antes de entregarse.
 
@@ -296,7 +305,7 @@ Lo prohibido es cobrar contenido o pauta prometiendo facturación. **La ficha di
 🔑 **Todo nivel incluye estrategia.** Cambia la profundidad, no la existencia.
 **La OFERTA** *(qué vende, en qué paquetes y a qué precio)* **se trabaja en Brand Foundation y en
 Growth Partnership.** En **Brand Growth** se trabaja el **mensaje** —cómo se cuenta lo que ya
-vende—; ② Growth corre ligero: elige cuáles de las ofertas que ya existen se empujan, para que la
+vende—; la adquisición de ① Strategy corre ligera: elige cuáles de las ofertas que ya existen se empujan, para que la
 pauta sepa qué pautar. No cambia la oferta.
 **Confundirlos es regalar el trabajo caro dentro del nivel barato.**
 
@@ -342,7 +351,7 @@ reales» de `inherent/06-ECONOMIA.md`.** Sin MCP no hay acción, y sin acción n
 🧭 **Todo pedido de trabajo para un cliente entra por el router `/inherent`.** Imprime el
 `ENRUTAMIENTO` y le pasa el pedido al orquestador del departamento. **El prompt es el pedido, no
 el método** — el método es el `WORKFLOW.md`. Un hook (`.claude/hooks/enrutar.sh`) lo recuerda en
-cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, etc. directo.
+cada mensaje. **Atajo seguro:** escribir `/strategy …`, `/marketing-creative …`, etc. directo.
 
 0. **Lee `inherent/00-PRINCIPIOS.md`.** Es obligatorio al empezar toda sesión, antes que el workflow.
 1. **Identificá el agente** que corresponde al pedido.
@@ -374,11 +383,11 @@ cada mensaje. **Atajo seguro:** escribir `/creatividad …`, `/marketing …`, e
   o `⚠️ SIN DATOS`. Nunca inventar.
 - **Solo la info que entrega el usuario**, salvo que él habilite fuentes externas.
 - **El CEO solo bloquea en dos lugares:** **① Strategy** *(aprueba la estrategia antes de que pase a
-  los departamentos)* y **⑩ Ads** *(aprueba el plan y el presupuesto antes de lanzar, y cada cambio
+  los departamentos)* y **⑧ Ads** *(aprueba el plan y el presupuesto antes de lanzar, y cada cambio
   de presupuesto)*. **Lo demás fluye:** cada departamento se auto-revisa y sigue. El control de
   calidad lo hace el CEO en persona y no se registra. **Lo que está en el repo ya pasó por el CEO.**
 - **Escalar no es bloquear:** precio, alcance y fechas → el CEO · lo demás → el COO.
-- **Los departamentos se escriben con número y nombre:** «⑤ Producción», nunca «⑤» solo.
+- **Los departamentos se escriben con número y nombre:** «④ Producción», nunca «④» solo.
 - **Nada destructivo sin autorización:** no pautar sin el OK del CEO y no borrar sin autorización.
 - Formato de respuesta: headings, bullets, negritas. Lo accionable arriba. Sin párrafos largos.
 - **Cómo le hablamos al CEO (TDAH):** mensajes mínimos y en lenguaje humano.

@@ -1,0 +1,150 @@
+---
+name: po-caption
+description: >
+  Paso 1 de ⑦ Posting — convierte el copy literal de ③ Marketing y Creative en el caption que sale, adaptado
+  al largo y la forma de cada plataforma sin cambiar el mensaje. Pone el hook antes del corte (~125
+  caracteres en feed de Instagram, ~55 en Reels), acomoda el cuerpo, deja el CTA de ③ Marketing y Creative,
+  elige los hashtags que corresponden y escribe el alt text. Si el mensaje no entra sin romperse,
+  devuelve a ③ Marketing y Creative con dos alternativas. Escribe el caption final en el nodo de
+  cada pieza. Úsala cuando pidan "escribí los captions", "el texto del post", "qué hashtags
+  le ponemos", "el alt text", "adaptá este copy a TikTok". 🛑 No cambia la idea ni el hook.
+---
+
+# Paso 1 · Caption — qué texto sale
+
+| | |
+|---|---|
+| **Consume** | Los nodos `pieza` aprobados con archivo · el **copy y el caption literales** de cada pieza de ③ Marketing y Creative · tono de voz, do's & don'ts y cómo se nombra la marca, de ② Branding, si existen |
+| **Produce** | El **caption final** en el nodo de cada pieza, con su conteo, su corte, sus hashtags y su alt text |
+
+Contexto del área: `agents/07-posting/brain/WORKFLOW.md`.
+
+## 1 · 🛑 Qué se puede tocar y qué no
+
+| Se puede | No se puede |
+|---|---|
+| **Recortar** para que entre en el límite | Cambiar la idea o el ángulo |
+| **Reordenar** para que el hook quede antes del corte | Cambiar **el hook** |
+| **Partir** una frase larga en dos líneas | Cambiar el CTA por otro |
+| **Elegir** los hashtags | Agregar una promesa, un precio o un claim que ③ Marketing y Creative no escribió |
+| **Escribir** el alt text | Corregirle el tono a ③ Marketing y Creative — eso se devuelve |
+
+> 🛑 **Si para que entre hay que sacarle el hook o el CTA, no es una adaptación: es una devolución.**
+> Vuelve a ③ Marketing y Creative con motivo 5 y **dos alternativas concretas** de versión corta.
+
+## 2 · La estructura del caption
+
+```
+Línea 1    EL HOOK          antes del corte. Es lo único que se lee sin tocar "… más"
+(línea en blanco)
+Cuerpo     EL VALOR         lo que ③ Marketing y Creative escribió, acomodado a la plataforma
+(línea en blanco)
+Cierre     EL CTA           el de ③ Marketing y Creative, según la etapa
+(línea en blanco)
+Al final   LOS HASHTAGS     los que corresponden, no los que caben
+```
+
+🛑 **El hook va completo en la línea 1.** Si se parte a la mitad en el corte, la mitad que se lee no
+engancha y el resto nadie lo abre.
+
+**La prueba, siempre:** se copian los primeros caracteres visibles de la plataforma y se leen solos.
+Si así sueltos no dan ganas de tocar *"… más"*, el caption está mal ordenado.
+
+## 3 · Los límites — con su fecha
+
+⏱️ **Verificados en 2026-09.** Las plataformas los cambian: **un límite sin fecha caduca**, y antes
+de un ciclo nuevo se revisan contra la fuente de la plataforma.
+
+| Plataforma | Caption máx. | Visible antes del corte | Hashtags |
+|---|---|---|---|
+| **Instagram — feed** | 2.200 | **~125 caracteres** | **Máx. 5** · recomendado 3-5 |
+| **Instagram — Reels** | 2.200 | **~55 caracteres** | **Máx. 5** · recomendado 3-5 |
+| **TikTok** | 4.000 *(incluye hashtags y menciones)* | Pocas líneas, varía | Dentro del límite total |
+
+| Plataforma | Estado |
+|---|---|
+| Facebook · LinkedIn · X · YouTube | El límite lo da **`validate_post_length`** de Zernio: devuelve el conteo y el límite de cada plataforma |
+
+🛑 **No se inventa un límite.** Un caption cortado por un límite que nadie verificó sale mal
+publicado y no se puede editar en todas las plataformas.
+
+**El límite duro lo vuelve a comprobar Zernio** antes de programar (`validate_post_length` ·
+`validate_post`, en `po-carga`). **Lo que Zernio no mide es cuánto se ve antes del corte:** eso es de
+esta capa.
+
+> **El límite de Reels (~55) es el más cruel del repo.** Un hook de ③ Marketing y Creative de 80 caracteres
+> entra en el caption pero **no se ve**. Ahí es donde el hook se reordena, nunca se reescribe.
+
+## 3B · El email: asunto y preheader
+
+En la ruta email no hay caption: hay **asunto y preheader**, y funcionan igual que un hook. Es lo
+único que se ve en la bandeja de entrada.
+
+```
+Asunto:    "[corto — en móvil se corta cerca de los 40 caracteres]"
+Preheader: "[la segunda línea: completa el asunto, no lo repite]"
+```
+
+| Regla | Por qué |
+|---|---|
+| **El asunto es el hook de ③ Marketing y Creative**, acortado — no uno nuevo | Cambiarlo es cambiar el mensaje |
+| **El preheader no repite el asunto** | Repetirlo desperdicia el único renglón extra que hay |
+| 🛑 **El asunto no promete algo que el cuerpo no cumple** | Es la forma más rápida de que marquen spam |
+| 🛑 **Nada de mayúsculas gritadas ni de `RE:` falsos** | Además de engañoso, dispara los filtros |
+| **Sin hashtags y sin emojis decorativos** | No es una red social |
+
+El **cuerpo** es el copy de ③ Marketing y Creative acomodado al formato: mismos cortes, mismo CTA. Si no
+entra sin romperse, es una devolución a ③ Marketing y Creative, igual que en social.
+
+## 4 · Hashtags — los que corresponden, no los que caben
+
+| Regla | Por qué |
+|---|---|
+| **3-5 en Instagram** · el máximo son 5 | Instagram no permite más |
+| **Relacionados con la pieza**, no con la marca en general | Un hashtag genérico no trae a nadie |
+| **Nunca inventados sobre volumen** | Si no sabemos cuánto se usa un hashtag, se dice: no se afirma que *"tiene alcance"* |
+| **Los de marca van siempre**, si ② Branding los definió | Consistencia |
+| 🛑 **Ninguno que prometa algo** que la pieza no cumple | Es un claim con otro formato |
+
+## 5 · Alt text — obligatorio en toda pieza con imagen
+
+**Describe lo que se ve, para alguien que no lo ve.** No es un caption corto ni un lugar para
+hashtags.
+
+| ❌ | ✅ |
+|---|---|
+| Adjetivos: *"nuestro delicioso producto"* | Lo que se ve: el objeto, dónde está, qué pasa en el cuadro |
+| Hashtags o promo: *"promo imperdible #…"* | El texto de la placa, literal |
+
+🛑 **No se autogenera con adjetivos.** Si la pieza tiene texto en pantalla, el alt text lo incluye:
+es la única forma de que alguien con lector de pantalla sepa qué dice.
+
+## 6 · Qué se anota de cada caption
+
+```
+| Caracteres         | 412 / 2.200                                          |
+| Antes del corte    | "<lo que se lee antes del «más»>"                     |
+| ¿Sobrevive el hook?| ✅                                                    |
+| Hashtags           | 4 — #<tema> #<categoría> #<ciudad> #<zona>           |
+| Alt text           | "<qué se ve y qué dice el texto en pantalla>"         |
+```
+
+**Y qué se cambió respecto de ③ Marketing y Creative, y por qué.** Si la respuesta es *"nada, entró tal
+cual"*, se escribe: es la mejor noticia posible y deja constancia de que no se tocó.
+
+---
+
+## Antes de cerrar
+
+- [ ] 🛑 **El mensaje no cambió** — ni la idea, ni el hook, ni el CTA
+- [ ] El **hook entra completo antes del corte** de su plataforma, y se verificó leyéndolo solo
+- [ ] En la ruta email: **asunto y preheader escritos**, el preheader no repite el asunto, y el
+      asunto no promete nada que el cuerpo no cumpla
+- [ ] El conteo de caracteres está anotado contra el límite **con su fecha de verificación**
+- [ ] 🛑 **Ningún límite fue inventado** — los que no están en la tabla salen de `validate_post_length`
+- [ ] Los hashtags son **3-5 en Instagram** y están relacionados con la pieza
+- [ ] 🛑 **Ningún hashtag afirma alcance** sin dato que lo respalde
+- [ ] **Alt text escrito** en toda pieza con imagen, describiendo lo que se ve y el texto en pantalla
+- [ ] Está anotado **qué se cambió respecto de ③ Marketing y Creative y por qué** — o que no se cambió nada
+- [ ] Lo que no entraba sin romperse se **devolvió a ③ Marketing y Creative** con motivo 5 y **dos alternativas**
+- [ ] Si ② Branding tiene guía, el caption respeta su **tono de voz, sus do's & don'ts y cómo se nombra la marca**

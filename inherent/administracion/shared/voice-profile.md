@@ -15,7 +15,7 @@ Skills that read this file:
 | `lead-triage` | Follow-up drafts |
 | `crm-autopilot` | Seguimientos de deals quietos |
 
-**Lo que esta carpeta no escribe:** las respuestas a clientes las escribe la Secretaria (agente `00-account`), y el copy de las redes de Inherent lo escribe ④ Creatividad con la voz que fija ②B Branding. Ninguno de los dos lee este archivo.
+**Lo que esta carpeta no escribe:** las respuestas a clientes las escribe la Secretaria (agente `00-account`), y el copy de las redes de Inherent lo escribe ③ Marketing y Creative con la voz que fija ② Branding. Ninguno de los dos lee este archivo.
 
 **A correction made here fixes all of them.** That is the point of it being shared — an owner who strikes "just following up" once should never see it again from any skill.
 

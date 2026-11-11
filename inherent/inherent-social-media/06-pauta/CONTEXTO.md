@@ -4,9 +4,9 @@
 
 | | |
 |---|---|
-| **Escribe aquí** | ⑩ Ads Management |
+| **Escribe aquí** | ⑧ Ads |
 | **Se activa en** | Todos |
 
 | Archivo o folder | Qué tiene |
 |---|---|
-| `<AAAA-MM>/` | Encargo, estructura, creativos, optimización, atribución y aprendizaje del ciclo |
+| `<AAAA-MM>/` | `plan-de-pauta.md`, `reporte-de-pauta.md` y el registro de cambios del ciclo |

@@ -1,9 +1,0 @@
-{
- "cliente": "Cliente",
- "ciclo": "Reels de octubre 2026",
- "footer": "📍 Sucursal 1 · 📞 0000-0000\n📍 Sucursal 2 · 📞 0000-0000\n🛵 Pedidos a domicilio por <app> (solo Sucursal 2)\n\n#Hashtag1 #Hashtag2",
- "datos": [["Sucursal 1", "Dirección · 0000-0000"], ["Sucursal 2", "Dirección · 0000-0000"], ["Formato", "Reels / TikTok 1080×1920, sin audio para montar la música en la app."]],
- "videos": [
-  {"id": "CR-001", "v": "v1", "title": "Título de la pieza", "dur": "20 s", "caption": "Caption de ⑨ Posting (con el copy de ④).\n\nRemate."}
- ]
-}

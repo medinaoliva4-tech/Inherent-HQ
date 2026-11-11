@@ -1,60 +1,28 @@
-# Strategy · ✅ construido
+# ① Strategy
 
-**Etapas 01 · 02 · y la revisión del 20.** Es la columna del pipeline.
+**La madre de todo.** Producto → cliente ideal (ICP) → dolores, deseos, entrevistas, forma de
+comunicar e historia villano-héroe → adquisición → brief. Anota la ficha de oferta del cliente y es
+la primera parada del CEO.
 
-## Propósito
-**Ingeniería inversa desde la meta financiera hasta la pieza.** Incluye mejorar la oferta y el
-posicionamiento. Decide qué se activa de las seis capacidades y con qué profundidad, según el
-alcance contratado (la ficha de oferta).
+## Herramientas *(en Inherent OS)*
 
-## Acciones — lo que puede hacer
+Perfil del cliente ideal · Calculadora de adquisición (outbound e inbound) · Dolores, deseos e
+historia villano-héroe.
 
-| Acción | MCP | |
-|---|---|---|
-| Leer cualquier web, oferta o precio | Firecrawl `firecrawl_scrape` | ✅ |
-| Ver qué competidores pautan hoy, verificados | AdWhispr `find_competitors` | ✅ |
-| Sacar los anuncios activos y más longevos de una marca | AdWhispr `get_brand_ads` | ✅ |
-| Encontrar outliers de contenido de la categoría | Apify `apify/instagram-scraper` · `clockworks/tiktok-scraper` | 🟡 |
-| Analizar un referente a fondo | Apify `easy_scraper/instagram-profile-engagement-analytics` | 🟡 |
-| Títulos y carruseles que ganan | Apify `parseforge/instagram-posts-scraper` *(44 campos)* | 🟡 |
-| **Scrapear IG, TikTok, YouTube y LinkedIn** | Apify `instagram-scraper` · `tiktok-scraper` · `youtube-scraper` · `linkedin-post-search` | 🟡 |
-| **Biblioteca de anuncios de Facebook** | Apify `facebook-ads-library-scraper` | 🟡 |
-| **Competencia local y reseñas** | Apify `crawler-google-places` | 🟡 |
-| **Qué busca la gente en Google** | Apify `google-search-scraper` | 🟡 |
-| Documentar y entregar | Notion · Google Drive | ✅ |
+## Skills
 
-## Lógica — sus skills
+| Skill | Qué hace |
+|---|---|
+| `strategy` | El orquestador: pre-flight, orden, brief y gate del CEO |
+| `st-producto-icp` | Producto, oferta y el perfil del cliente ideal |
+| `st-dolores-historia` | Dolores, deseos, entrevistas, forma de comunicar e historia |
+| `st-panel-icp` | Entrevistas simuladas del ICP, siempre `[hipótesis]` |
+| `st-adquisicion` | Calculadora outbound e inbound, captura, embudo y referidos *(`calculadora.py`)* |
 
-`context` → `analysis` → `reverse-engineering` → `methodology` → `brief-de-comunicacion`
-
-**El proceso completo está en `brain/WORKFLOW.md`. Es la única fuente de cómo trabaja** —
-incluida la entrega, que no es una skill: está en su §7.
-
-## Entrega
-La estrategia, la plataforma de marca y **un brief por área**: Branding, Marketing, Creative,
-Growth, Tecnología y Sistemas. **Y cada ciclo, el brief de comunicación** *(una página: qué se
-vende, a quién, qué queremos que haga y sienta, cómo se comunica y qué inspiración buscar)* —
-③ Marketing no planea sin él.
+**El proceso está en `brain/WORKFLOW.md`.** El cierre del mes es `resultados` *(`agents/_comun/`)*.
 
 ## Qué entrega según el nivel
 
-> **El alcance contratado (la ficha de oferta del cliente) es el techo.** Nunca se promete arriba
-> de la ficha — ver `inherent/06-ECONOMIA.md`.
-
-| | **BRAND FOUNDATION** | **BRAND GROWTH** | **GROWTH PARTNERSHIP** |
-|---|---|---|---|
-| **Qué es** | Proyecto con inicio y cierre: **la estrategia ES el proyecto** | Colaboración mensual | Colaboración integrada |
-| **Qué hace Strategy** | Diagnóstico · audiencia prioritaria · posicionamiento · estructura de oferta · plan a 90 días | Posicionamiento y mensaje; revisión mensual de resultados y prioridades | Todo lo de Growth + diagnóstico del recorrido y priorización conjunta de problemas de crecimiento |
-| **② Growth** | ⬜ No corre como departamento *(la oferta se trabaja dentro del proyecto)* | **Ligero:** elige cuáles de las ofertas que ya existen se empujan | **Profundidad completa:** oferta, canales grandes, upsells, conversión |
-| **Briefs que entrega** | Branding · Creative *(dirección creativa y aplicaciones)* · lista priorizada de próximos trabajos | Branding · Marketing · Creative · Growth *(ligero)* · Producción según la ficha | Growth completo · Tecnología · Sistemas según la ficha |
-| **Revisión del 20** | n/a *(el proyecto cierra con su entrega)* | ✅ | ✅ |
-
-🔑 **En Brand Growth, Strategy entrega posicionamiento y mensaje — no rediseña la oferta.**
-Qué vende, en qué paquetes y a qué precio se trabaja **dentro de Brand Foundation** *(el proyecto
-donde se construye)* **y en la profundidad completa de Growth Partnership.**
-🔑 **No todos los clientes compran todas las áreas:** la ficha de oferta dice cuáles corren.
-
----
-
-## Lo que falta
-Nunca se ha corrido de punta a punta con un cliente real.
+| **Brand Foundation** | **Brand Growth** | **Growth Partnership** |
+|---|---|---|
+| La estrategia ES el proyecto: diagnóstico, ICP, posicionamiento, oferta, plan a 90 días | ICP, mensaje y brief de cada ciclo; elige qué ofertas se empujan, sin cambiarlas | Todo, más oferta rediseñada y adquisición completa |

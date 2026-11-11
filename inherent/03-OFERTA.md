@@ -381,36 +381,36 @@ incluida por defecto.
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| Diagnóstico de marca, oferta, audiencia y canales | ① Strategy · `context` + `analysis` |
-| Posicionamiento | ① Strategy `methodology` + ②B Branding `br-territorio` |
-| Oferta estructurada | ① Strategy `methodology` · el CEO aprueba la estrategia |
-| Identidad verbal y visual | ②B Branding · `br-voz` · `br-sistema` · `br-activos` |
-| Dirección creativa y ejemplos de aplicación | ②B Branding `br-aplicacion` + ④ Creatividad |
+| Diagnóstico de marca, oferta, audiencia y canales | ① Strategy · `st-producto-icp` + `st-dolores-historia` |
+| Posicionamiento | ① Strategy `strategy` + ② Branding `br-territorio-voz` |
+| Oferta estructurada | ① Strategy `st-producto-icp` · el CEO aprueba la estrategia |
+| Identidad verbal y visual | ② Branding · `br-territorio-voz` · `br-sistema` |
+| Dirección creativa y ejemplos de aplicación | ② Branding `br-sistema` + ③ Marketing y Creative |
 | Plan de 90 días y próximos trabajos | ① Strategy |
 
 ## 📈 Brand Growth
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| Reunión mensual y plan de campañas y contenido | ③ Marketing · `mk-calendario` · `mk-campana` |
-| Contenido producido | ④ Creatividad · ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing, según la ficha |
-| Canales gestionados y publicación | ⑨ Posting · herramienta de publicación |
-| Campañas configuradas y gestionadas | ⑩ Ads Management · herramienta de pauta · gate del CEO |
-| Pruebas de mensajes y creatividades | ③ Marketing + ④ Creatividad `cr-loop` + ⑩ Ads `ad-loop` |
-| Métricas y revisión mensual | ③ Marketing `mk-loop` + ⑩ Ads `ad-loop` |
-| Atención de comentarios y mensajes *(si la ficha lo incluye)* | ⑧ Community Management · la bandeja de mensajes y la ficha de respuestas del cliente |
+| Reunión mensual y plan de campañas y contenido | ③ Marketing y Creative · `mc-pilares-angulos` · `mc-campanas-piezas` |
+| Contenido producido | ③ Marketing y Creative · ④ Producción *(Pre y Post)* · ⑤ Diseño gráfico, según la ficha |
+| Canales gestionados y publicación | ⑦ Posting · herramienta de publicación |
+| Campañas configuradas y gestionadas | ⑧ Ads · herramienta de pauta · gate del CEO |
+| Pruebas de mensajes y creatividades | ③ Marketing y Creative + ⑧ Ads, leídas en `resultados` |
+| Métricas y revisión mensual | `resultados` *(el cierre único del mes)* + ⑧ Ads `ad-corrida` |
+| Atención de comentarios y mensajes *(si la ficha lo incluye)* | ⑥ Community · la bandeja de mensajes y la ficha de respuestas del cliente |
 | Alianzas con creadores *(módulo)* | Herramienta de scraping · vetting por engagement real |
 
 ## 🤝 Growth Partnership — *todo lo de Brand Growth, más:*
 
 | Línea publicada | Con qué se entrega |
 |---|---|
-| Diagnóstico del recorrido | ② Growth · `gr-encargo` · `gr-conversion` |
-| Oferta, canales grandes y subir el ticket | ② Growth · `gr-oferta` · `gr-canales-grandes` · `gr-upsells` |
+| Diagnóstico del recorrido | ① Strategy · `st-adquisicion` *(embudo)* |
+| Oferta, canales grandes y subir el ticket | ① Strategy · `st-producto-icp` *(oferta)* · `st-adquisicion` *(canales grandes y upsells)* |
 | Procesos de marketing, ventas y atención | **Operations OS** de las áreas contratadas — el especialista audita, el CEO y el COO coordinan, el COO implementa con agentes |
-| CRM y automatizaciones comerciales | ② Growth `gr-herramienta` — el CEO define el alcance, el operador de agentes la construye |
+| CRM y automatizaciones comerciales | ① Strategy `st-adquisicion` — el CEO define el alcance, el operador de agentes la construye |
 | Capacitación del equipo | **Conversion OS** · guiones y entrenamiento — el CEO |
-| Indicadores comerciales | ② Growth `gr-numeros` · **Money OS** — el CEO con Strategy |
+| Indicadores comerciales | ① Strategy · **Money OS** — el CEO con Strategy |
 | Experto de industria | Red de mentores — rubro Especialista · quién, horas y entrega especificados |
 
 > 🔑 **«Finanzas vinculadas al crecimiento» no es un CFO contratado.** Lo entrega **Money OS**
@@ -454,7 +454,7 @@ pasa a ser aritmética. **Sin las tasas medidas del cliente, no se compromete.**
 | **1 · Línea base** | Se mide la mediana de la cuenta **antes de empezar** | Herramienta de scraping · engagement del perfil |
 | **2 · El 70% probado** | El 70% del ciclo sale de patrones **que ya pagan** en la categoría | Herramienta de scraping · biblioteca de anuncios de Meta → **ads de 30+ días** |
 | **3 · La revisión del 20** | Se lee pieza por pieza contra el umbral | Herramienta de scraping · posts de la cuenta |
-| **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | ④ Creatividad `cr-loop` → ③ Marketing `mk-calendario` |
+| **4 · La redirección** | Lo que queda del ciclo **se reemplaza por variantes del patrón que ganó** | `resultados` → ③ Marketing y Creative `mc-campanas-piezas` |
 
 🔑 **No se reponen piezas: se redirige el volumen que todavía no se produjo.** Al día 20 queda
 ~1/3 del ciclo sin producir; esas piezas ya están dentro del alcance contratado.
@@ -465,7 +465,7 @@ pasa a ser aritmética. **Sin las tasas medidas del cliente, no se compromete.**
 > **X personas nuevas alcanzadas dentro del público definido, al mes — a un CPM declarado.**
 
 **El alcance no se espera: se compra.** `presupuesto ÷ CPM × 1,000`. El CPM real de la categoría
-sale de la biblioteca de anuncios; la compra la ejecuta ⑩ Ads Management.
+sale de la biblioteca de anuncios; la compra la ejecuta ⑧ Ads.
 > *«X personas a un CPM de hasta Q__. Si la plataforma sube más de 25%, se ajusta el número o el
 > presupuesto — y se avisa antes, no después.»*
 
@@ -482,9 +482,9 @@ no hay fee. **Solo existe en Growth Partnership y solo con atribución limpia.**
 
 | Palanca | Quién |
 |---|---|
-| **La oferta** — qué se vende y a qué precio | ② Growth `gr-oferta` |
-| **La conversión** — que lo que llega se cobre | ② Growth `gr-conversion` |
-| **La atribución** — saber cuál venta fue nuestra | ⑩ Ads `ad-atribucion` |
+| **La oferta** — qué se vende y a qué precio | ① Strategy `st-producto-icp` |
+| **La conversión** — que lo que llega se cobre | ① Strategy `st-adquisicion` |
+| **La atribución** — saber cuál venta fue nuestra | ⑧ Ads `ad-corrida` |
 
 🛑 **Brand Foundation y Brand Growth no controlan las tres palancas:** no comprometen ventas y no
 tienen performance fee. 🛑 **Atribución instalada DESPUÉS del primer gasto** = no se cobra ni se promete.
@@ -497,7 +497,7 @@ tienen performance fee. 🛑 **Atribución instalada DESPUÉS del primer gasto**
 
 - 🛑 **No va en la propuesta, ni en la web, ni se llama garantía.** Lo que se compromete por escrito
   son los tres compromisos de arriba, con sus condiciones.
-- **La meta la fija ② Growth** *(`gr-captura` §2, Growth Partnership)* y se persigue cada ciclo: si
+- **La meta la fija ① Strategy** *(`st-adquisicion`, Growth Partnership)* y se persigue cada ciclo: si
   la receta no llega, se cambia.
 
 ---
@@ -543,9 +543,9 @@ todavía no funcionó**; Money porque **sin transacciones el margen por línea e
 
 | Nivel | Núcleo | Según la ficha |
 |---|---|---|
-| 🧱 **Foundation** | ① Strategy · ②B Branding | ④ Creatividad para dirección creativa y aplicaciones |
-| 📈 **Growth** | ③ Marketing · ④ Creatividad | ⑤ Producción · ⑥A Diseño gráfico · ⑦ Video Editing · ⑨ Posting · ⑩ Ads — según los canales contratados |
-| 🤝 **Partnership** | Todo Growth + ② Growth | ⑧ Community Management · especialista · experto de industria |
+| 🧱 **Foundation** | ① Strategy · ② Branding | ③ Marketing y Creative para dirección creativa y aplicaciones |
+| 📈 **Growth** | ③ Marketing y Creative | ④ Producción · ⑤ Diseño gráfico · ⑦ Posting · ⑧ Ads — según los canales contratados |
+| 🤝 **Partnership** | Todo Growth + la adquisición completa de ① Strategy | ⑥ Community · especialista · experto de industria |
 
 ## Mensaje y oferta
 
