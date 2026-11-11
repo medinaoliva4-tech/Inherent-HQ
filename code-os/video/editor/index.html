@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Retoque</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f3ead8'/%3E%3Cpath d='M12 9l12 7-12 7z' fill='%23141210'/%3E%3C/svg%3E">
 <style>
   :root {
     --fondo: #0b0b0c; --panel: rgba(255,255,255,.045); --borde: rgba(255,255,255,.09); --luz: rgba(255,255,255,.16);
@@ -41,7 +42,7 @@
   .vista { position: relative; overflow: hidden; background: #000; container-type: size; touch-action: none; }
   .vista video.clip, .vista canvas.persona { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
   .vista .capa { position: absolute; transform: translate(-50%, -50%); }
-  .vista .capa.texto { white-space: pre; font-weight: 700; line-height: 1.12; text-align: center; padding: 1px 4px; border-radius: 4px;
+  .vista .capa.texto { white-space: pre-wrap; width: max-content; max-width: 86cqw; font-weight: 700; line-height: 1.12; text-align: center; padding: 1px 4px; border-radius: 4px;
     font-family: "DejaVu Sans", "Inter", Arial, sans-serif; -webkit-text-stroke: .045em #111; paint-order: stroke fill; }
   .vista .capa.imagen img, .vista .capa.imagen video { display: block; width: 100%; height: auto; }
   .vista.interactiva .capa { cursor: grab; outline: 1px dashed transparent; }
@@ -113,6 +114,40 @@
   .aviso { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); padding: 10px 16px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 9; }
   .aviso.ver { opacity: 1; }
   .vacio { color: var(--apagado); font-size: 13px; padding: 60px; text-align: center; }
+  /* ── catálogo de estilos ── */
+  #catalogo { padding: 4px 22px 40px; }
+  .pasos { display: flex; gap: 22px; align-items: center; padding: 12px 16px; margin-bottom: 14px; font-size: 13px; color: var(--tenue); flex-wrap: wrap; }
+  .pasos b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--crema); color: #141210; font-size: 12px; margin-right: 8px; }
+  .categorias { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+  .categorias button { border: 1px solid var(--borde); background: transparent; border-radius: 99px; padding: 7px 14px; font-size: 13px; cursor: pointer; color: var(--tenue); }
+  .categorias button.on { background: var(--crema); color: #141210; border-color: transparent; font-weight: 600; }
+  .categorias button span { opacity: .55; margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .estilos { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 18px; }
+  .estilo { padding: 10px; display: flex; flex-direction: column; gap: 9px; }
+  .estilo.aplicado { border-color: var(--crema); }
+  .estilo .marco { position: relative; display: grid; place-items: center; background: #050505; border-radius: 12px; height: 340px; overflow: hidden; box-shadow: 0 0 0 1px var(--borde); }
+  .estilo .marco .vista { max-height: 100%; max-width: 100%; height: 100%; }
+  .estilo .marco .vista.ancha { height: auto; width: 100%; }
+  .corazon { position: absolute; top: 8px; right: 8px; z-index: 2; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--borde); cursor: pointer;
+    background: rgba(0,0,0,.45); backdrop-filter: blur(8px); color: var(--hueso); font-size: 15px; display: grid; place-items: center; transition: transform .15s; }
+  .corazon:hover { transform: scale(1.08); }
+  .corazon.on { color: #e8735a; }
+  .estilo h3 { margin: 2px 2px 0; font-size: 14px; font-weight: 600; letter-spacing: -.01em; }
+  .estilo p { margin: 0 2px; font-size: 12.5px; color: var(--tenue); line-height: 1.45; min-height: 36px; }
+  .etiquetas { display: flex; gap: 5px; flex-wrap: wrap; margin: 0 2px; }
+  .etiquetas span { font-size: 10.5px; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--borde); color: var(--apagado); }
+  .acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .recursos { display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 10px; background: rgba(255,255,255,.04); font-size: 12px; color: var(--tenue); }
+  .recursos select { width: 100%; background: rgba(0,0,0,.3); border: 1px solid var(--borde); border-radius: 8px; padding: 5px 7px; font-size: 12px; }
+  /* escena sintética del catálogo */
+  .sint .fondo { position: absolute; inset: -2%; background: radial-gradient(circle at 28% 18%, rgba(243,234,216,.45), transparent 45%), linear-gradient(160deg, #2b2420, #7b5240 55%, #d9b48a);
+    background-size: 160% 160%; animation: deriva 7s ease-in-out infinite alternate; will-change: transform; }
+  .sint .persona { position: absolute; left: 50%; bottom: 0; height: 64%; transform-origin: 50% 0; will-change: transform; }
+  .sint .persona svg { height: 100%; width: auto; display: block; transform: translateX(-50%); }
+  .sint .ficha { width: 100%; border-radius: 9%/6%; background: linear-gradient(150deg, #f3ead8, #c99a74); box-shadow: 0 6px 20px rgba(0,0,0,.45); display: grid; place-items: end start;
+    color: #2a2320; font: 700 9cqh/1 ui-sans-serif, system-ui; padding: 8%; }
+  .sint .ficha small { font-size: .32em; letter-spacing: .04em; opacity: .7; }
+  @keyframes deriva { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
   [hidden] { display: none !important; }
   @media (max-width: 900px) { #escena { grid-template-columns: 1fr; height: auto; } #escena .grande { height: 64vh; } header { flex-wrap: wrap; } }
 </style>
@@ -123,11 +158,17 @@
   <span class="chip" id="formato">9:16</span>
   <span class="meta" id="meta"></span>
   <span class="esp"></span>
-  <div class="vistas vidrio"><button id="verTablero" class="on">Tablero</button><button id="verEscena">Escena</button></div>
+  <div class="vistas vidrio"><button id="verEstilos">Estilos</button><button id="verTablero" class="on">Tablero</button><button id="verEscena">Escena</button></div>
   <button class="btn" id="deshacer" title="Deshacer (⌘Z)">Deshacer</button>
   <button class="btn" id="guardar">Guardar</button>
   <button class="btn primario" id="render">Exportar video</button>
 </header>
+
+<div id="catalogo" hidden>
+  <div class="pasos vidrio"><span><b>1</b>Elige un estilo</span><span><b>2</b>Copia el prompt o pulsa «Aplicar»</span><span><b>3</b>El agente edita tu video con ese estilo y tú revisas en el tablero</span></div>
+  <div class="categorias" id="categorias"></div>
+  <div class="estilos" id="estilos"></div>
+</div>
 
 <div id="tablero">
   <div class="barra vidrio" id="barra"></div>
@@ -161,7 +202,8 @@ const RAZON = { '9:16': 9 / 16, '1:1': 1, '16:9': 16 / 9 };
 const COLORES = { calido: 'Cálido', frio: 'Frío', bn: 'Blanco y negro', contraste: 'Contraste' };
 const FILTRO_CSS = { calido: 'sepia(.14) saturate(1.1) hue-rotate(-6deg)', frio: 'saturate(.92) hue-rotate(10deg) brightness(1.02)', bn: 'grayscale(1) contrast(1.1)', contraste: 'contrast(1.15) saturate(1.12)' };
 const PALETA = ['#f3ead8', '#ffffff', '#111111', '#f2c14e', '#e8735a', '#7cc5b5'];
-const ESTILOS = [['zoom', 'Zoom'], ['color', 'Color'], ['transicion', 'Transición'], ['animacion-texto', 'Animación de texto'], ['detras-de-persona', 'Algo detrás de la persona']];
+const ESTILOS = [['zoom', 'Zoom'], ['color', 'Color'], ['transicion', 'Transición'], ['animacion-texto', 'Animación de texto'], ['animacion-capa', 'Animación de imagen'], ['detras-de-persona', 'Algo detrás de la persona']];
+const ANIM_CAPA = { aparecer: 'aparece', subir: 'sube', flotar: 'flota', abanico: 'sube en abanico' };
 const $ = (id) => document.getElementById(id);
 const h = (tag, props = {}, ...hijos) => { const e = Object.assign(document.createElement(tag), props); e.append(...hijos.flat().filter((x) => x != null && x !== false)); return e; };
 const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
@@ -224,7 +266,7 @@ function crearVista(caja, { interactiva = false, enBucle = true, conSonido = fal
     for (const c of e.capas) {
       const n = v.nodos.get(c.id); if (!n) continue;
       n.style.left = `${c.x * 100}%`; n.style.top = `${c.y * 100}%`;
-      if (c.tipo === 'texto') { n.style.fontSize = `${c.tam * 100}cqh`; n.style.color = c.color; n.style.fontFamily = c.fuente ? `"${c.fuente}", "DejaVu Sans", Arial, sans-serif` : ''; }
+      if (c.tipo === 'texto') pintarTexto(n, c);
       else n.style.width = `${c.escala * 100}%`;
     }
   };
@@ -241,16 +283,39 @@ function crearVista(caja, { interactiva = false, enBucle = true, conSonido = fal
     for (const el of [video, v.canvas].filter(Boolean)) { el.style.transform = tr; el.style.transformOrigin = origen; el.style.filter = filtro; }
     const f = est(e, 'transicion');
     v.caja.style.opacity = f?.entrada === 'fundido' ? Math.min(1, 0.15 + t / f.duracion) : 1;
-    for (const a of e.estilos.filter((s) => s.tipo === 'animacion-texto')) {
-      const n = v.nodos.get(a.capa); if (!n) continue;
-      const k = Math.min(1, t / 0.5);
-      n.style.opacity = k;
-      n.style.transform = `translate(-50%, calc(-50% + ${a.animacion === 'subir' ? (1 - k) * 4 : 0}cqh))`;
-    }
+    animarNodos(e, v.nodos, t);
     if (v.canvas && v.mascara?.readyState >= 2) dibujarPersona(v);
   };
   vistas.add(v);
   return v;
+}
+
+// texto: tamaño relativo al alto, tipografía, color y caja (subtítulo en caja = BorderStyle 3 en el render)
+function pintarTexto(n, c) {
+  n.style.fontSize = `${c.tam * 100}cqh`; n.style.color = c.color;
+  n.style.fontFamily = c.fuente ? `"${c.fuente}", "DejaVu Sans", Arial, sans-serif` : '';
+  n.style.background = c.caja ?? ''; n.style.padding = c.caja ? '.18em .3em' : ''; n.style.borderRadius = c.caja ? '.14em' : '';
+  n.style.webkitTextStroke = c.caja ? '0' : '';
+}
+// las mismas fórmulas que ffmpeg.mjs (movimientoCapa y \fad/\move del texto)
+function animarNodos(e, nodos, t) {
+  for (const a of e.estilos) {
+    const n = nodos.get(a.capa); if (!n) continue;
+    if (a.tipo === 'animacion-texto') {
+      const k = Math.min(1, t / 0.5);
+      n.style.opacity = k;
+      n.style.transform = `translate(-50%, calc(-50% + ${a.animacion === 'subir' ? (1 - k) * 4 : 0}cqh))`;
+    } else if (a.tipo === 'animacion-capa') {
+      const k = Math.min(1, Math.max(0, (t - (a.retraso ?? 0)) / 0.6)), ev = 1 - (1 - k) ** 3;
+      let dy = 0, rot = 0, op = 1;
+      if (a.animacion === 'aparecer') op = k;
+      if (a.animacion === 'subir') { op = k; dy = (1 - ev) * 8; }
+      if (a.animacion === 'abanico') { op = k; dy = (1 - ev) * 10; rot = (a.angulo ?? 0) * ev; }
+      if (a.animacion === 'flotar') dy = Math.sin(2 * Math.PI * t / 3 + (a.angulo ?? 0) / 10) * 1.2;
+      n.style.opacity = op;
+      n.style.transform = `translate(-50%, calc(-50% + ${dy}cqh)) rotate(${rot}deg)`;
+    }
+  }
 }
 
 // persona = clip con la máscara como alfa (luminancia → alfa), a resolución reducida para que sea liviano
@@ -316,6 +381,7 @@ function ingredientes(e) {
     if (s.tipo === 'color') r.push({ s, ico: '◐', txt: `Color ${COLORES[s.preset].toLowerCase()}` });
     if (s.tipo === 'transicion') r.push({ s, ico: '⇢', txt: s.entrada === 'fundido' ? `Entra con fundido ${s.duracion}s` : 'Entra con corte' });
     if (s.tipo === 'animacion-texto') { const c = e.capas.find((x) => x.id === s.capa); r.push({ s, ico: '↑', txt: `«${(c?.texto ?? s.capa).slice(0, 18)}» ${s.animacion === 'subir' ? 'sube' : 'aparece'}` }); }
+    if (s.tipo === 'animacion-capa') { const c = e.capas.find((x) => x.id === s.capa); r.push({ s, ico: '✦', txt: `${c ? nombre(c.ruta) : s.capa} ${ANIM_CAPA[s.animacion]}${s.retraso ? ` · ${s.retraso}s` : ''}` }); }
     if (s.tipo === 'detras-de-persona') { const c = e.capas.find((x) => x.id === s.capa); r.push({ s, ico: '◎', txt: `${c?.tipo === 'imagen' ? nombre(c.ruta) : 'Capa'} detrás de la persona${s.mascara ? '' : ' · falta recorte'}`, falta: !s.mascara }); }
   }
   for (const c of e.capas) r.push(c.tipo === 'texto'
@@ -341,6 +407,9 @@ function ajusteDe(e, s, refrescar) {
     h('div', { className: 'nota', style: 'font-size:11px;color:var(--apagado)', textContent: 'En la vista Escena: Alt + clic elige hacia dónde se acerca.' })];
   if (s.tipo === 'color') return [opciones(Object.entries(COLORES), s.preset, (x) => (s.preset = x))];
   if (s.tipo === 'transicion') return [opciones([['corte', 'Corte'], ['fundido', 'Fundido']], s.entrada, (x) => (s.entrada = x)), s.entrada === 'fundido' ? deslizador('Duración', s.duracion, 0.1, 1.5, 0.05, (x) => (s.duracion = x), (x) => `${x}s`) : null];
+  if (s.tipo === 'animacion-capa') return [opciones(Object.entries(ANIM_CAPA).map(([k, t]) => [k, t[0].toUpperCase() + t.slice(1)]), s.animacion, (x) => (s.animacion = x)),
+    s.animacion === 'abanico' ? deslizador('Giro', s.angulo, -30, 30, 1, (x) => (s.angulo = x), (x) => `${x}°`) : null,
+    deslizador('Retraso', s.retraso, 0, 2, 0.05, (x) => (s.retraso = x), (x) => `${x}s`)];
   if (s.tipo === 'animacion-texto') return [opciones([['aparecer', 'Aparece'], ['subir', 'Sube']], s.animacion, (x) => (s.animacion = x)),
     opciones(e.capas.filter((c) => c.tipo === 'texto').map((c) => [c.id, c.texto.slice(0, 14)]), s.capa, (x) => (s.capa = x))];
   if (s.tipo === 'detras-de-persona') return [
@@ -361,8 +430,10 @@ async function generarMascara(e, s, boton) {
 function nuevoEstilo(e, tipo) {
   const capaTexto = e.capas.find((c) => c.tipo === 'texto');
   const s = { zoom: { tipo, desde: 1, hasta: 1.1, x: 0.5, y: 0.45 }, color: { tipo, preset: 'calido' }, transicion: { tipo, entrada: 'fundido', duracion: 0.4 },
-    'animacion-texto': capaTexto && { tipo, capa: capaTexto.id, animacion: 'subir' }, 'detras-de-persona': e.capas[0] && { tipo, capa: e.capas.find((c) => c.tipo === 'imagen')?.id ?? e.capas[0].id, mascara: null } }[tipo];
-  if (!s) return aviso(tipo === 'animacion-texto' ? 'Primero agrega un texto' : 'Primero agrega una capa (imagen o animación)');
+    'animacion-texto': capaTexto && { tipo, capa: capaTexto.id, animacion: 'subir' },
+    'animacion-capa': e.capas.find((c) => c.tipo === 'imagen' && !e.estilos.some((x) => x.tipo === tipo && x.capa === c.id)) && { tipo, capa: e.capas.find((c) => c.tipo === 'imagen' && !e.estilos.some((x) => x.tipo === tipo && x.capa === c.id)).id, animacion: 'subir', angulo: 0, retraso: 0 },
+    'detras-de-persona': e.capas[0] && { tipo, capa: e.capas.find((c) => c.tipo === 'imagen')?.id ?? e.capas[0].id, mascara: null } }[tipo];
+  if (!s) return aviso(tipo === 'animacion-texto' ? 'Primero agrega un texto' : tipo === 'animacion-capa' ? 'Primero agrega una imagen (o todas ya tienen animación)' : 'Primero agrega una capa (imagen o animación)');
   marcar(); e.estilos.push(s); abierto = s; pintarTodo();
 }
 
@@ -398,7 +469,7 @@ function pintarTablero() {
       receta.append(fila);
       if (it.s && abierto === it.s) receta.append(h('div', { className: 'ajuste' }, ajusteDe(e, it.s, () => reg.vista.colocar())));
     }
-    const agregar = h('select', {}, h('option', { value: '', textContent: '+ Agregar estilo' }), ESTILOS.filter(([t]) => t === 'animacion-texto' || !est(e, t)).map(([t, n]) => h('option', { value: t, textContent: n })));
+    const agregar = h('select', {}, h('option', { value: '', textContent: '+ Agregar estilo' }), ESTILOS.filter(([t]) => t.startsWith('animacion-') || !est(e, t)).map(([t, n]) => h('option', { value: t, textContent: n })));
     agregar.onchange = () => nuevoEstilo(e, agregar.value);
     const t = h('div', { className: 'tarjeta vidrio', draggable: true },
       h('div', { className: 'cab' }, h('b', { textContent: `${i + 1}` }), h('span', { textContent: `${dur(e).toFixed(1)} s` }), h('span', { className: 'esp' }),
@@ -483,6 +554,9 @@ function pintarPanel() {
     p.append(h('section', { className: 'vidrio' }, h('h2', { textContent: 'Texto' }), area, fuente,
       deslizador('Tamaño', c.tam, 0.015, 0.16, 0.001, (v) => { c.tam = v; grande.colocar(); }, (v) => Math.round(v * 1000) / 10),
       h('div', { className: 'colores' }, PALETA.map((col) => h('button', { className: c.color === col ? 'on' : '', style: `background:${col}`, title: col, onclick: () => { marcar(); c.color = col; grande.colocar(); pintarPanel(); } }))),
+      h('div', { style: 'font-size:11px;color:var(--apagado)', textContent: 'Caja detrás del texto' }),
+      h('div', { className: 'colores' }, h('button', { className: c.caja ? '' : 'on', style: 'background:transparent;border-color:var(--borde);font-size:10px;color:var(--tenue)', textContent: '∅', title: 'Sin caja', onclick: () => { marcar(); c.caja = null; grande.colocar(); pintarPanel(); } }),
+        ['#f3ead8', '#111111', '#f2c14e', '#e8735a'].map((col) => h('button', { className: c.caja === col ? 'on' : '', style: `background:${col};border-radius:5px`, title: `Caja ${col}`, onclick: () => { marcar(); c.caja = col; grande.colocar(); pintarPanel(); } }))),
       h('div', { style: 'font-size:11px;color:var(--apagado)', textContent: 'Arrastra el texto en el video. El punto de la esquina lo agranda o achica. Doble clic para escribir.' })));
   } else if (c?.tipo === 'imagen') {
     p.append(h('section', { className: 'vidrio' }, h('h2', { textContent: nombre(c.ruta) }),
@@ -492,19 +566,133 @@ function pintarPanel() {
 
 // ── general ──
 function cambiarModo(m) {
-  modo = m; $('tablero').hidden = m !== 'tablero'; $('escena').hidden = m !== 'escena';
-  $('verTablero').classList.toggle('on', m === 'tablero'); $('verEscena').classList.toggle('on', m === 'escena');
-  if (m === 'tablero') parar();
+  if (!corte && m !== 'estilos') return aviso('Abre un corte para ver su tablero');
+  modo = m;
+  for (const [id, boton] of [['catalogo', 'verEstilos'], ['tablero', 'verTablero'], ['escena', 'verEscena']]) {
+    const on = (id === 'catalogo' ? 'estilos' : id) === m;
+    $(id).hidden = !on; $(boton).classList.toggle('on', on);
+  }
+  if (m !== 'escena') parar();
   for (const { vista } of vistasTarjeta.values()) m === 'tablero' ? vista.video.play().catch(() => {}) : vista.video.pause(); // los loops no gastan si no se ven
   pintarTodo();
 }
+$('verEstilos').onclick = () => cambiarModo('estilos');
 $('verTablero').onclick = () => cambiarModo('tablero');
 $('verEscena').onclick = () => cambiarModo('escena');
 function pintarTodo() {
+  if (modo === 'estilos') pintarCatalogo();
+  if (!corte) return;
   sel = Math.min(sel, corte.escenas.length - 1);
   $('titulo').textContent = corte.titulo; $('formato').textContent = corte.formato;
-  $('meta').textContent = `${corte.escenas.length} escenas · ${fmt(total())} · versión ${corte.version}`;
-  if (modo === 'tablero') pintarTablero(); else pintarEscena();
+  $('meta').textContent = `${corte.escenas.length} escenas · ${fmt(total())} · versión ${corte.version}${corte.estilo ? ` · estilo ${catalogo.find((x) => x.id === corte.estilo)?.nombre ?? corte.estilo}` : ''}`;
+  if (modo === 'tablero') pintarTablero(); else if (modo === 'escena') pintarEscena();
+}
+
+// ── catálogo de estilos: elegir cómo se edita el video ──
+let catalogo = [], categorias = {}, categoria = 'todos', preparando = null;
+const favoritos = new Set((() => { try { return JSON.parse(localStorage.getItem('retoque.favoritos') ?? '[]'); } catch { return []; } })());
+const guardarFavoritos = () => { try { localStorage.setItem('retoque.favoritos', JSON.stringify([...favoritos])); } catch {} };
+const textoPrompt = (s) => [s.prompt, ...(s.requiere ?? []).map((r) => `Recursos: ${r.cantidad ?? 1} × ${r.recurso} (${r.descripcion}).`), corte ? `Corte: ${corte.id}.` : null].filter(Boolean).join(' ');
+async function copiar(texto) {
+  try { await navigator.clipboard.writeText(texto); }
+  catch { const t = h('textarea', { value: texto, style: 'position:fixed;opacity:0' }); document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+  aviso('Prompt copiado: pégaselo al agente');
+}
+
+// vista previa sin video real: fondo, silueta y las capas de la receta, con las mismas animaciones
+const SILUETA = '<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a302b"/><stop offset="1" stop-color="#17130f"/></linearGradient></defs>'
+  + '<path d="M6 110 C8 80 26 66 50 66 C74 66 92 80 94 110 Z" fill="url(#g)" stroke="rgba(243,234,216,.35)" stroke-width=".8"/><rect x="42" y="50" width="16" height="20" rx="6" fill="#241d19"/>'
+  + '<ellipse cx="50" cy="34" rx="17" ry="21" fill="url(#g)" stroke="rgba(243,234,216,.35)" stroke-width=".8"/></svg>';
+function crearVistaSintetica(caja, s) {
+  caja.classList.add('vista', 'sint');
+  const fondo = h('div', { className: 'fondo' }), persona = h('div', { className: 'persona', innerHTML: SILUETA }), capasDiv = h('div');
+  caja.append(fondo, capasDiv);
+  const v = { caja, nodos: new Map(), i: -1, t0: performance.now(), DUR: 2.6 };
+  const textos = s.ejemplo?.textos ?? ['Tu frase'];
+  const orden = s.escenas_plantilla.length > 1 ? s.escenas_plantilla : [s.escenas_plantilla[0]];
+  const montar = (i) => {
+    v.i = i; const p = orden[i]; v.p = p; capasDiv.replaceChildren(); v.nodos.clear();
+    const detras = p.estilos?.find((x) => x.tipo === 'detras-de-persona')?.capa;
+    if (!detras) capasDiv.append(persona);
+    for (const c of p.capas ?? []) {
+      let n;
+      if (c.tipo === 'texto') { n = h('div', { className: 'capa texto', textContent: c.texto === '{texto}' ? textos[i % textos.length] : c.texto }); pintarTexto(n, { tam: 0.06, color: '#f3ead8', caja: null, ...c }); }
+      else {
+        const [, rec, k] = String(c.ruta).match(/^\{(\w+)\.(\d+)\}$/) ?? [, 'imagen', 0];
+        const etiqueta = { reels: 'Reel', tarjetas: 'Dato' }[rec] ?? 'Imagen';
+        n = h('div', { className: 'capa imagen' }, h('div', { className: 'ficha', style: `aspect-ratio:${rec === 'reels' ? '9/16' : '4/3'}` }, h('span', {}, h('small', { textContent: `${etiqueta.toUpperCase()} ${Number(k) + 1}` }))));
+        n.style.width = `${(c.escala ?? 0.5) * 100}%`;
+      }
+      n.style.left = `${(c.x ?? 0.5) * 100}%`; n.style.top = `${(c.y ?? 0.5) * 100}%`;
+      capasDiv.append(n); v.nodos.set(c.id, n);
+      if (c.id === detras) capasDiv.append(persona);
+    }
+  };
+  v.cuadro = () => {
+    const total = (performance.now() - v.t0) / 1000, i = Math.floor(total / v.DUR) % orden.length, t = total % v.DUR;
+    if (i !== v.i) montar(i);
+    const e = { estilos: v.p.estilos ?? [] };
+    const z = e.estilos.find((x) => x.tipo === 'zoom'), c = e.estilos.find((x) => x.tipo === 'color'), f = e.estilos.find((x) => x.tipo === 'transicion');
+    const esc = z ? z.desde + (z.hasta - z.desde) * Math.min(1, t / v.DUR) : 1;
+    for (const el of [fondo, persona]) { el.style.transformOrigin = z ? `${z.x * 100}% ${z.y * 100}%` : '50% 50%'; }
+    fondo.style.transform = `scale(${esc})`; persona.style.transform = `scale(${esc})`;
+    caja.style.filter = c ? FILTRO_CSS[c.preset] : 'none';
+    caja.style.opacity = f?.entrada === 'fundido' ? Math.min(1, 0.15 + t / f.duracion) : 1;
+    animarNodos(e, v.nodos, t);
+  };
+  vistas.add(v);
+  return v;
+}
+
+function pintarCatalogo() {
+  const cuenta = (c) => catalogo.filter((s) => c === 'todos' || (c === 'favoritos' ? favoritos.has(s.id) : s.categoria === c)).length;
+  $('categorias').replaceChildren(...[['todos', 'Todos'], ['favoritos', '♥ Favoritos'], ...Object.entries(categorias)].map(([id, nombre]) =>
+    h('button', { className: categoria === id ? 'on' : '', onclick: () => { categoria = id; pintarCatalogo(); } }, nombre, h('span', { textContent: cuenta(id) }))));
+  const lista = catalogo.filter((s) => categoria === 'todos' || (categoria === 'favoritos' ? favoritos.has(s.id) : s.categoria === categoria));
+  const rej = $('estilos'); rej.replaceChildren();
+  if (!lista.length) rej.append(h('div', { className: 'vacio', textContent: categoria === 'favoritos' ? 'Toca el ♥ de un estilo para guardarlo aquí.' : 'No hay estilos en esta categoría.' }));
+  for (const s of lista) {
+    const caja = h('div', { style: `aspect-ratio:${RAZON[s.formato ?? '9:16']}` });
+    if (RAZON[s.formato ?? '9:16'] > 0.6) caja.classList.add('ancha'); // 1:1 y 16:9: por ancho
+    crearVistaSintetica(caja, s);
+    const corazon = h('button', { className: `corazon${favoritos.has(s.id) ? ' on' : ''}`, textContent: favoritos.has(s.id) ? '♥' : '♡', title: 'Favorito',
+      onclick: () => { favoritos.has(s.id) ? favoritos.delete(s.id) : favoritos.add(s.id); guardarFavoritos(); pintarCatalogo(); } });
+    const aplicado = corte?.estilo === s.id;
+    const tarjeta = h('div', { className: `estilo vidrio${aplicado ? ' aplicado' : ''}` },
+      h('div', { className: 'marco' }, caja, corazon),
+      h('h3', { textContent: s.nombre }), h('p', { textContent: s.descripcion }),
+      h('div', { className: 'etiquetas' }, h('span', { textContent: categorias[s.categoria] }), h('span', { textContent: s.formato ?? 'cualquier formato' }),
+        (s.requiere ?? []).map((r) => h('span', { textContent: `pide ${r.cantidad} ${r.recurso}` })), aplicado ? h('span', { textContent: '✓ aplicado', style: 'color:var(--crema)' }) : null),
+      h('div', { className: 'acciones' },
+        h('button', { className: 'btn chico', textContent: 'Copiar prompt', onclick: () => copiar(textoPrompt(s)) }),
+        h('button', { className: 'btn chico primario', textContent: 'Aplicar', disabled: !corte, title: corte ? 'Aplicar a este corte' : 'Abre un corte para aplicarlo',
+          onclick: () => { preparando = preparando === s.id ? null : s.id; pintarCatalogo(); } })),
+      preparando === s.id ? panelAplicar(s) : null);
+    rej.append(tarjeta);
+  }
+}
+// confirmación (y recursos, si el estilo los pide) antes de reescribir la receta de todas las escenas
+function panelAplicar(s) {
+  const elegidos = {};
+  const filas = (s.requiere ?? []).flatMap((r) => Array.from({ length: r.cantidad ?? 1 }, (_, i) => {
+    const sel = h('select', {}, h('option', { value: '', textContent: `${r.recurso} ${i + 1}: elige una imagen` }), medios.imagenes.map((x) => h('option', { value: x, textContent: nombre(x) })));
+    sel.onchange = () => { (elegidos[r.recurso] ??= [])[i] = sel.value; };
+    return sel;
+  }));
+  return h('div', { className: 'recursos' },
+    h('span', { textContent: `Reemplaza la receta de las ${corte.escenas.length} escenas. Clip, tramo y texto se quedan. Puedes deshacer.` }),
+    filas,
+    h('button', { className: 'btn chico primario', textContent: 'Sí, aplicar', onclick: () => aplicarEstilo(s, elegidos) }));
+}
+async function aplicarEstilo(s, recursos) {
+  if (sucio && !(await guardar())) return;
+  try {
+    const anterior = JSON.stringify(corte);
+    const r = await pedir('POST', `/cortes/${corte.id}/estilo`, { estilo: s.id, recursos, version: corte.version });
+    historia.push(anterior); corte = r.corte; preparando = null; abierto = null; vistasTarjeta.clear();
+    cambiarModo('tablero');
+    aviso(r.pendientes.length ? `Estilo aplicado. Falta recortar a la persona en ${r.pendientes.length} escena${r.pendientes.length > 1 ? 's' : ''}.` : `Estilo «${s.nombre}» aplicado. Revisa cada escena en el tablero.`, 4000);
+  } catch (e) { aviso(`No se pudo aplicar: ${e.message}`, 5000); }
 }
 $('deshacer').onclick = () => { const p = historia.pop(); if (!p) return aviso('Nada que deshacer'); corte = JSON.parse(p); abierto = null; vistasTarjeta.clear(); pintarTodo(); };
 document.addEventListener('keydown', (k) => {
@@ -544,14 +732,18 @@ window.addEventListener('beforeunload', (e) => { if (sucio) e.preventDefault(); 
 
 async function iniciar() {
   const id = q.get('corte');
-  if (!id) { $('rejilla').append(h('div', { className: 'vacio', textContent: 'Abre un corte: /editor/?corte=<id>' })); return; }
+  const lista = (r) => pedir('GET', r).catch(() => ({}));
+  const est = await lista('/estilos?completo=1');
+  catalogo = est.estilos ?? []; categorias = est.categorias ?? {};
+  if (!id) { $('titulo').textContent = 'Estilos'; cambiarModo('estilos'); return; } // sin corte: solo el catálogo (Copiar prompt)
   try {
-    const lista = (r) => pedir('GET', r).catch(() => ({}));
     const [c, m, i, f] = await Promise.all([pedir('GET', `/cortes/${id}`), lista('/medios/musica'), lista('/medios/imagenes'), lista('/medios/fuentes')]);
     corte = c.corte; medios = { musica: m.archivos ?? [], imagenes: i.archivos ?? [], fuentes: f.fuentes ?? [] };
     // las tipografías propias se cargan con su nombre real: el mismo que usa el render (libass)
     for (const t of medios.fuentes) new FontFace(t.nombre, `url(${medio(t.ruta)})`).load().then((ff) => document.fonts.add(ff)).catch(() => {});
-    if (q.get('vista') === 'escena') { sel = Number(q.get('escena') ?? 0); cambiarModo('escena'); } else pintarTodo();
+    const vista = q.get('vista');
+    if (vista === 'escena') { sel = Number(q.get('escena') ?? 0); cambiarModo('escena'); }
+    else cambiarModo(vista === 'estilos' || (!vista && !corte.estilo) ? 'estilos' : 'tablero'); // sin estilo todavía: se entra por el catálogo
   } catch (e) { $('rejilla').append(h('div', { className: 'vacio', textContent: `No se pudo abrir el corte: ${e.message}` })); }
 }
 iniciar();

@@ -1,0 +1,117 @@
+{
+  "id": "calido-y-lento",
+  "nombre": "Cálido y lento",
+  "categoria": "cortos",
+  "formato": "9:16",
+  "descripcion": "Tono cálido, acercamientos lentos y fundidos suaves: para producto, comida o lugares.",
+  "prompt": "Usa el estilo «Cálido y lento» (calido-y-lento) para editar este video: color cálido, zoom lento y fundidos suaves.",
+  "ejemplo": {
+    "textos": [
+      "Hecho a mano",
+      "Cada mañana",
+      "Te esperamos"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.05
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "color",
+          "preset": "calido"
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.1,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.045
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "color",
+          "preset": "calido"
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1.1,
+          "hasta": 1,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.6
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.5,
+          "tam": 0.06
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "color",
+          "preset": "calido"
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.08,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.6
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

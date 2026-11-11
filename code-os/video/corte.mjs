@@ -10,7 +10,7 @@
 //     id, clip, inicio, fin, nota,                            // clip = ruta del video; inicio/fin en segundos del clip
 //     texto, fuente,                                          // atajo: texto principal y su tipografía (= capa 'principal')
 //     capas: [                                                // encima del video, de abajo hacia arriba
-//       { id, tipo: 'texto',  texto, fuente, x, y, tam, color, visible },   // x/y = centro (0..1), tam = alto relativo
+//       { id, tipo: 'texto',  texto, fuente, x, y, tam, color, caja, visible },  // x/y = centro (0..1), tam = alto relativo, caja = #hex|null
 //       { id, tipo: 'imagen', ruta, x, y, escala, visible },                // escala = ancho relativo al cuadro
 //     ],
 //     estilos: [                                              // la receta de la escena: lo que se le aplica
@@ -18,6 +18,7 @@
 //       { tipo: 'color', preset: 'calido'|'frio'|'bn'|'contraste' },
 //       { tipo: 'transicion', entrada: 'corte'|'fundido', duracion: 0.4 },
 //       { tipo: 'animacion-texto', capa: 'principal', animacion: 'aparecer'|'subir' },
+//       { tipo: 'animacion-capa', capa: '<id imagen>', animacion: 'aparecer'|'subir'|'flotar'|'abanico', angulo: 0, retraso: 0 },
 //       { tipo: 'detras-de-persona', capa: '<id de una capa>', mascara: 'ruta de la máscara' | null },
 //     ],
 //   }]
@@ -29,7 +30,10 @@ export const FORMATOS = {
   '16:9': { ancho: 1920, alto: 1080 },
 };
 export const COLORES = { calido: 'Cálido', frio: 'Frío', bn: 'Blanco y negro', contraste: 'Contraste' };
-export const TIPOS_ESTILO = ['zoom', 'color', 'transicion', 'animacion-texto', 'detras-de-persona'];
+export const TIPOS_ESTILO = ['zoom', 'color', 'transicion', 'animacion-texto', 'animacion-capa', 'detras-de-persona'];
+export const ANIM_CAPA = { aparecer: 'aparece', subir: 'sube', flotar: 'flota', abanico: 'sube en abanico' };
+const REPETIBLES = new Set(['animacion-texto', 'animacion-capa']);
+const esColor = (v) => /^#[0-9a-f]{6}$/i.test(v ?? '');
 
 const num = (v, d) => (typeof v === 'number' && Number.isFinite(v) ? v : d);
 const entre = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -42,7 +46,8 @@ function normalizarCapa(c, i, esc) {
   if (!c || !['texto', 'imagen'].includes(c.tipo)) throw new ErrorCorte(`escena ${esc}: capa ${i + 1} con tipo inválido (${c?.tipo}); usa texto o imagen`);
   const comun = { id: c.id ?? nuevoId(c.tipo[0]), tipo: c.tipo, x: entre(num(c.x, 0.5), 0, 1), y: entre(num(c.y, c.tipo === 'texto' ? 0.8 : 0.3), 0, 1), visible: c.visible !== false };
   if (c.tipo === 'texto') {
-    return { ...comun, texto: String(c.texto ?? ''), fuente: c.fuente ?? null, tam: entre(num(c.tam, 0.06), 0.015, 0.25), color: /^#[0-9a-f]{6}$/i.test(c.color ?? '') ? c.color : '#f3ead8' };
+    return { ...comun, texto: String(c.texto ?? ''), fuente: c.fuente ?? null, tam: entre(num(c.tam, 0.06), 0.015, 0.25), color: esColor(c.color) ? c.color : '#f3ead8',
+      caja: esColor(c.caja) ? c.caja : null }; // caja = fondo sólido detrás del texto (subtítulo en caja)
   }
   if (typeof c.ruta !== 'string' || !c.ruta) throw new ErrorCorte(`escena ${esc}: la capa de imagen ${c.id ?? i + 1} necesita ruta`);
   return { ...comun, ruta: c.ruta, escala: entre(num(c.escala, 0.5), 0.05, 3) };
@@ -62,6 +67,12 @@ function normalizarEstilo(s, esc, capas) {
       return { tipo: 'transicion', entrada: s.entrada === 'fundido' ? 'fundido' : 'corte', duracion: entre(num(s.duracion, 0.4), 0.1, 2) };
     case 'animacion-texto':
       return { tipo: 'animacion-texto', capa: s.capa ?? 'principal', animacion: s.animacion === 'subir' ? 'subir' : 'aparecer' };
+    case 'animacion-capa': {
+      const c = capas.find((x) => x.id === s.capa);
+      if (!c || c.tipo !== 'imagen') throw new ErrorCorte(`escena ${esc}: animacion-capa apunta a ${s.capa}, que no es una capa de imagen`);
+      if (!ANIM_CAPA[s.animacion]) throw new ErrorCorte(`escena ${esc}: animación «${s.animacion}» no existe (${Object.keys(ANIM_CAPA).join(', ')})`);
+      return { tipo: 'animacion-capa', capa: s.capa, animacion: s.animacion, angulo: entre(num(s.angulo, 0), -45, 45), retraso: entre(num(s.retraso, 0), 0, 3) };
+    }
     case 'detras-de-persona':
       if (!capas.some((c) => c.id === s.capa)) throw new ErrorCorte(`escena ${esc}: «detrás de la persona» apunta a la capa ${s.capa}, que no existe`);
       return { tipo: 'detras-de-persona', capa: s.capa, mascara: typeof s.mascara === 'string' && s.mascara ? s.mascara : null };
@@ -86,7 +97,7 @@ function normalizarEscena(e, i) {
     if (e.fuente !== undefined) principal.fuente = e.fuente;
   }
   const estilos = (e.estilos ?? []).map((s) => normalizarEstilo(s, esc, capas));
-  for (const t of TIPOS_ESTILO) if (estilos.filter((s) => s.tipo === t).length > 1 && t !== 'animacion-texto') throw new ErrorCorte(`escena ${esc}: el estilo ${t} está repetido`);
+  for (const t of TIPOS_ESTILO) if (estilos.filter((s) => s.tipo === t).length > 1 && !REPETIBLES.has(t)) throw new ErrorCorte(`escena ${esc}: el estilo ${t} está repetido`);
   return {
     id: e.id ?? nuevoId('e'), clip: e.clip, inicio, fin, nota: e.nota ?? '',
     texto: principal?.texto ?? null, fuente: principal?.fuente ?? null,
@@ -111,6 +122,7 @@ export function normalizarCorte(c) {
     version: num(c.version, 1),
     musica: m && m.ruta ? { ruta: m.ruta, volumen: entre(num(m.volumen, 0.25), 0, 1), inicio: Math.max(0, num(m.inicio, 0)) } : null,
     subtitulos: typeof c.subtitulos === 'string' && c.subtitulos ? c.subtitulos : null,
+    estilo: typeof c.estilo === 'string' && c.estilo ? c.estilo : null, // el estilo del catálogo que se aplicó
     origen: c.origen ?? null,
     escenas,
   };
@@ -127,10 +139,11 @@ export function receta(e, corte) {
     if (s.tipo === 'color') r.push(`Color: ${COLORES[s.preset]}`);
     if (s.tipo === 'transicion') r.push(s.entrada === 'fundido' ? `Entra con fundido ${s.duracion}s` : 'Entra con corte');
     if (s.tipo === 'animacion-texto') r.push(`Texto ${s.animacion === 'subir' ? 'sube' : 'aparece'}`);
+    if (s.tipo === 'animacion-capa') r.push(`${s.capa} ${ANIM_CAPA[s.animacion]}${s.retraso ? ` (a los ${s.retraso}s)` : ''}`);
     if (s.tipo === 'detras-de-persona') r.push(`Animación detrás de la persona${s.mascara ? '' : ' (falta máscara)'}`);
   }
   for (const c of e.capas) {
-    if (c.tipo === 'texto') r.push(`Texto «${c.texto.length > 28 ? c.texto.slice(0, 27) + '…' : c.texto}»${c.fuente ? ` · ${c.fuente}` : ''}${c.visible ? '' : ' (oculto)'}`);
+    if (c.tipo === 'texto') r.push(`Texto «${c.texto.length > 28 ? c.texto.slice(0, 27) + '…' : c.texto}»${c.caja ? ' en caja' : ''}${c.fuente ? ` · ${c.fuente}` : ''}${c.visible ? '' : ' (oculto)'}`);
     else r.push(`Imagen ${c.ruta.split('/').pop()}${c.visible ? '' : ' (oculta)'}`);
   }
   if (corte?.musica) r.push(`Música: ${corte.musica.ruta.split('/').pop()} (todo el video)`);

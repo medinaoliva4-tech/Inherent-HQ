@@ -1,0 +1,145 @@
+{
+  "id": "reels-sobre-la-cabeza",
+  "nombre": "Reels sobre la cabeza",
+  "categoria": "cortos",
+  "formato": "9:16",
+  "descripcion": "Señalas hacia arriba y tres de tus mejores reels suben sobre tu cabeza y se abren en abanico.",
+  "prompt": "Usa el estilo «Reels sobre la cabeza» (reels-sobre-la-cabeza) para editar este video. Pásale las portadas de mis 3 mejores reels como recursos.reels.",
+  "requiere": [
+    {
+      "recurso": "reels",
+      "cantidad": 3,
+      "descripcion": "portadas verticales de tus 3 mejores reels"
+    }
+  ],
+  "ejemplo": {
+    "textos": [
+      "Estos tres cambiaron todo",
+      "Te cuento por qué",
+      "Síguenos para más"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "reel1",
+          "tipo": "imagen",
+          "ruta": "{reels.0}",
+          "x": 0.3,
+          "y": 0.2,
+          "escala": 0.22
+        },
+        {
+          "id": "reel3",
+          "tipo": "imagen",
+          "ruta": "{reels.2}",
+          "x": 0.7,
+          "y": 0.2,
+          "escala": 0.22
+        },
+        {
+          "id": "reel2",
+          "tipo": "imagen",
+          "ruta": "{reels.1}",
+          "x": 0.5,
+          "y": 0.16,
+          "escala": 0.24
+        },
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.05
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "animacion-capa",
+          "capa": "reel1",
+          "animacion": "abanico",
+          "angulo": -14,
+          "retraso": 0.35
+        },
+        {
+          "tipo": "animacion-capa",
+          "capa": "reel3",
+          "animacion": "abanico",
+          "angulo": 14,
+          "retraso": 0.5
+        },
+        {
+          "tipo": "animacion-capa",
+          "capa": "reel2",
+          "animacion": "abanico",
+          "angulo": 0,
+          "retraso": 0.2
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.05,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.048
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.08,
+          "x": 0.5,
+          "y": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.78,
+          "tam": 0.055
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

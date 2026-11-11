@@ -42,7 +42,7 @@ test('escena: color, zoom, capas en orden, animación, fundido y audio silencios
   assert.ok(a.includes('anullsrc=r=48000:cl=stereo'));
   assert.ok(a.join(' ').includes('-loop 1 -t 2 -i /m/imagenes/logo.png'));
   assert.ok(f.indexOf('colorbalance') > f.indexOf('crop=1080:1920') && f.indexOf('zoompan') < f.indexOf('colorbalance'), 'cubrir → zoom → color');
-  assert.ok(f.indexOf('overlay=x=main_w*0.5') < f.indexOf('subtitles='), 'la imagen (capa 1) va debajo del texto (capa 2)');
+  assert.ok(f.indexOf("overlay=x='main_w*0.5") < f.indexOf('subtitles='), 'la imagen (capa 1) va debajo del texto (capa 2)');
   assert.match(f, /subtitles='\/t\/t0.ass':fontsdir='\/m\/fuentes'/);
   assert.match(f, /fade=t=in:st=0:d=0.4/);
   assert.match(f, /\[1:a:0\]aresample=48000,afade=t=in:st=0:d=0.4\[a\]/);

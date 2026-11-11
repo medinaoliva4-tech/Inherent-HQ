@@ -96,12 +96,31 @@ test('servicio de video de punta a punta', { skip: !hayFfmpeg && 'sin ffmpeg' },
     assert.equal(r.cuerpo.trabajo.version, 2);
   });
 
+  await t.test('catálogo: listar, aplicar un estilo con recursos y renderizar', async () => {
+    const lista = await api('GET', '/estilos');
+    assert.ok(lista.cuerpo.estilos.some((e) => e.id === 'tarjetas-que-flotan'));
+    const escenas = [0, 1, 2].map((i) => ({ id: `s${i}`, clip: 'crudo/E01.mp4', inicio: i, fin: i + 1.2, texto: hayLibass ? `Frase ${i + 1}` : null }));
+    const c = (await api('POST', '/cortes', { titulo: 'Con estilo', escenas })).cuerpo.corte;
+    assert.equal((await api('POST', `/cortes/${c.id}/estilo`, { estilo: 'no-existe' })).estado, 404);
+    assert.match((await api('POST', `/cortes/${c.id}/estilo`, { estilo: 'tarjetas-que-flotan' })).cuerpo.error, /2 × tarjetas/);
+    assert.equal((await api('POST', `/cortes/${c.id}/estilo`, { estilo: 'tarjetas-que-flotan', recursos: { tarjetas: ['../x.png', 'imagenes/sol.png'] } })).estado, 400);
+    const ap = await api('POST', `/cortes/${c.id}/estilo`, { estilo: 'tarjetas-que-flotan', recursos: { tarjetas: ['imagenes/sol.png', 'imagenes/sol.png'] }, version: 1 });
+    assert.equal(ap.estado, 200, JSON.stringify(ap.cuerpo));
+    assert.equal(ap.cuerpo.corte.version, 2);
+    assert.equal(ap.cuerpo.corte.estilo, 'tarjetas-que-flotan');
+    const r = await api('POST', `/cortes/${c.id}/render`);
+    await cola.vaciar();
+    const tr = cola.trabajo(r.cuerpo.trabajo.id);
+    assert.equal(tr.estado, 'listo', tr.error);
+    assert.ok(Math.abs((await sondear(tr.salida)).duracion - 3.6) < 0.2);
+  });
+
   await t.test('las listas de medios y el MCP', async () => {
     assert.deepEqual((await api('GET', '/medios/musica')).cuerpo.archivos, ['musica/pista.m4a']);
     assert.deepEqual((await api('GET', '/medios/imagenes')).cuerpo.archivos, ['imagenes/sol.png']);
     const cliente = crearCliente({ base, token: 'secreto' });
     const lista = await responder({ jsonrpc: '2.0', id: 1, method: 'tools/list' }, cliente);
-    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'video_derive', 'video_mascara', 'video_trabajo']);
+    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'estilos_aplicar', 'estilos_listar', 'video_derive', 'video_mascara', 'video_trabajo']);
     const d = await responder({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'video_derive', arguments: { videoId: 'crudo/E02-sin-audio', formato: '1:1' } } }, cliente);
     const id = JSON.parse(d.result.content[0].text).trabajo.id;
     await cola.vaciar();

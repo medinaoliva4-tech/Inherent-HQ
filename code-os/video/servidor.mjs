@@ -11,6 +11,8 @@
 //   GET  /medios/musica|imagenes lo que hay en esas carpetas de la raíz
 //   GET  /medios/fuentes         tipografías de <raíz>/fuentes con su nombre (el que va en capa.fuente)
 //   POST /mascaras               {clip} → 202 {trabajo}; al terminar, resultado.mascara (para «detrás de la persona»)
+//   GET  /estilos[?completo=1] · /estilos/:id   catálogo de estilos (recetas en estilos/*.json)
+//   POST /cortes/:id/estilo      {estilo, recursos?, version?} → aplica el estilo al corte → {corte, pendientes}
 //   GET  /editor/                Retoque (el editor del rol de editor)
 // Variables: VIDEO_RAIZ (medios, obligatoria), VIDEO_DATOS (./datos), VIDEO_PUERTO (4310), VIDEO_TOKEN,
 //            VIDEO_FFMPEG / VIDEO_FFPROBE (binarios), VIDEO_FUENTE_TEXTO (ttf para drawtext).
@@ -21,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 import { crearCola, ErrorEntrada } from './cola.mjs';
 import { ErrorCorte } from './corte.mjs';
 import { primerCorte } from './primer-corte.mjs';
+import { cargarEstilos, resumen, CATEGORIAS, ErrorEstilo } from './estilos.mjs';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const TIPOS = { '.mp4': 'video/mp4', '.mov': 'video/quicktime', '.webm': 'video/webm', '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.wav': 'audio/wav', '.srt': 'text/plain; charset=utf-8', '.html': 'text/html; charset=utf-8',
@@ -47,7 +50,9 @@ async function leerJson(req, limite = 2e6) {
   try { return s ? JSON.parse(s) : {}; } catch { throw new ErrorEntrada('JSON inválido'); }
 }
 
-export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, datos }) }) {
+export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, datos }), dirEstilos }) {
+  // el catálogo se relee en cada pedido: agregar un .json en estilos/ no pide reiniciar
+  const estilos = () => cargarEstilos(dirEstilos);
   const publico = (t) => t && { id: t.id, tipo: t.tipo, estado: t.estado, progreso: t.progreso, creado: t.creado, iniciado: t.iniciado, terminado: t.terminado, segundos: t.segundos, error: t.error, resultado: t.resultado ?? null, corte: t.pedido?.idCorte, version: t.pedido?.version, archivo: t.estado === 'listo' && t.tipo !== 'mascara' ? `/trabajos/${t.id}/archivo` : null };
   const servidor = createServer(async (req, res) => {
     const json = (c, o) => { res.writeHead(c, { 'content-type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(o)); };
@@ -87,6 +92,16 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
         }
       }
 
+      if (req.method === 'GET' && ruta === '/estilos') return json(200, { categorias: CATEGORIAS, estilos: (url.searchParams.get('completo') ? estilos() : estilos().map(resumen)) });
+      m = ruta.match(/^\/estilos\/([\w-]+)$/);
+      if (req.method === 'GET' && m) { const e = estilos().find((x) => x.id === m[1]); return e ? json(200, { estilo: e }) : json(404, { error: `no existe el estilo ${m[1]}` }); }
+      m = ruta.match(/^\/cortes\/([\w-]+)\/estilo$/);
+      if (req.method === 'POST' && m) {
+        const { estilo: id, recursos, version } = await leerJson(req);
+        const e = estilos().find((x) => x.id === id);
+        if (!e) return json(404, { error: `no existe el estilo ${id}; usa GET /estilos` });
+        return json(200, cola.aplicarEstilo(m[1], e, recursos, version));
+      }
       if (req.method === 'POST' && ruta === '/mascaras') return json(202, { trabajo: publico(cola.mascara((await leerJson(req)).clip)) });
       if (req.method === 'GET' && ruta === '/medios/fuentes') return json(200, { fuentes: cola.fuentes() });
       m = ruta.match(/^\/medios\/(musica|imagenes)$/);
@@ -99,7 +114,7 @@ export function crearServidor({ raiz, datos, token, cola = crearCola({ raiz, dat
       if (req.method === 'GET' && ruta === '/medios') return servirArchivo(req, res, cola.fuente(url.searchParams.get('ruta')));
       return json(404, { error: 'no existe' });
     } catch (e) {
-      const usuario = e instanceof ErrorEntrada || e instanceof ErrorCorte || /shot list|toma|clip/.test(e.message);
+      const usuario = e instanceof ErrorEntrada || e instanceof ErrorCorte || e instanceof ErrorEstilo || /shot list|toma|clip/.test(e.message);
       if (!usuario) console.error(e);
       return json(usuario ? (/conflicto/.test(e.message) ? 409 : 400) : 500, { error: e.message });
     }

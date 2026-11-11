@@ -6,6 +6,7 @@ import { spawn as spawnProceso } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { argsDerivada, argsEscena, argsUnir, argsFinal, assTexto, nombreTipografia, correr as correrFfmpeg, sondear as sondearFfprobe } from './ffmpeg.mjs';
 import { normalizarCorte, duracionCorte, FORMATOS, ErrorCorte } from './corte.mjs';
+import { aplicarEstilo as aplicarEstiloACorte } from './estilos.mjs';
 
 export class ErrorEntrada extends Error {}
 const AQUI = dirname(fileURLToPath(import.meta.url));
@@ -211,6 +212,12 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
       return encolar('derivada', p);
     },
     fuentes: () => listarFuentes(raiz),
+    /** Aplica un estilo del catálogo al corte guardado; los recursos (rutas) tienen que existir en la raíz. */
+    aplicarEstilo(idCorte, estilo, recursos = {}, esperaVersion) {
+      for (const lista of Object.values(recursos ?? {})) for (const r of [].concat(lista)) fuente(r);
+      const { corte, pendientes } = aplicarEstiloACorte(cortes.leer(idCorte), estilo, recursos);
+      return { corte: cortes.guardar(corte, { esperaVersion }), pendientes };
+    },
     mascara: (clip) => { fuente(clip); return encolar('mascara', { clip }); },
     renderizar: (idCorte) => { const c = cortes.leer(idCorte); return encolar('corte', { corte: c, idCorte, version: c.version }); },
     trabajo: (id) => trabajos.get(id) ?? null,

@@ -1,0 +1,101 @@
+{
+  "id": "detras-de-la-cabeza",
+  "nombre": "Título detrás de la cabeza",
+  "categoria": "cortos",
+  "formato": "9:16",
+  "descripcion": "Un título enorme queda detrás de tu cabeza, como portada de revista, y tú quedas al frente.",
+  "prompt": "Usa el estilo «Título detrás de la cabeza» (detras-de-la-cabeza) para editar este video. Recorta a la persona con video_mascara.",
+  "ejemplo": {
+    "textos": [
+      "HOY",
+      "Lo que aprendimos",
+      "NOS VEMOS"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.37,
+          "tam": 0.16
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "detras-de-persona",
+          "capa": "principal"
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1.03,
+          "hasta": 1.1,
+          "x": 0.5,
+          "y": 0.45
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.82,
+          "tam": 0.045
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.06,
+          "x": 0.5,
+          "y": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.37,
+          "tam": 0.14
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "detras-de-persona",
+          "capa": "principal"
+        },
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

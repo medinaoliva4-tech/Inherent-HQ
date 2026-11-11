@@ -1,0 +1,107 @@
+{
+  "id": "anuncio-corto",
+  "nombre": "Anuncio corto",
+  "categoria": "posts",
+  "formato": "1:1",
+  "descripcion": "Cuadrado para feed y pauta: gancho con contraste, la oferta en caja y el cierre con la acción.",
+  "prompt": "Usa el estilo «Anuncio corto» (anuncio-corto) para editar este video en 1:1: gancho con contraste, oferta en caja y cierre con la acción.",
+  "ejemplo": {
+    "textos": [
+      "¿Antojo de algo distinto?",
+      "2×1 toda la semana",
+      "Pide en el link"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.5,
+          "tam": 0.075,
+          "color": "#f3ead8",
+          "caja": "#111111"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "color",
+          "preset": "contraste"
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.1,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.82,
+          "tam": 0.06,
+          "color": "#111111",
+          "caja": "#f2c14e"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "color",
+          "preset": "contraste"
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.5,
+          "tam": 0.075,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.3
+        },
+        {
+          "tipo": "zoom",
+          "desde": 1.08,
+          "hasta": 1,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

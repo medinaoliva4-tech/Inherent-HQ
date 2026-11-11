@@ -43,12 +43,16 @@ export function assTexto(formato, t, dur, familia, anim) {
   const bgr = t.color.slice(1).match(/../g).reverse().join('').toUpperCase();
   const tiempo = (s) => `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, '0')}:${(s % 60).toFixed(2).padStart(5, '0')}`;
   const mov = anim === 'subir' ? `\\move(${x},${y + Math.round(H * 0.04)},${x},${y},0,500)` : `\\pos(${x},${y})`;
+  // ancho útil = 86 % del cuadro (márgenes de 7 %), igual que max-width: 86cqw en el editor; WrapStyle 0 = corte de línea parejo
   // libass mide \fs como alto de línea (ascendente + descendente ≈ 1.2 em); el editor usa font-size = em
-  const tags = `{\\an5${mov}${anim ? '\\fad(500,0)' : ''}\\fs${Math.round(t.tam * H * 1.2)}\\c&H${bgr}&\\bord3\\3c&H111111&\\shad0}`;
+  const fs = Math.round(t.tam * H * 1.2);
+  // caja: BorderStyle 3 = rectángulo sólido del color del contorno; el «borde» hace de margen interno
+  const borde = t.caja ? `\\bord${Math.round(fs * 0.22)}\\3c&H${t.caja.slice(1).match(/../g).reverse().join('').toUpperCase()}&` : '\\bord3\\3c&H111111&';
+  const tags = `{\\an5${mov}${anim ? '\\fad(500,0)' : ''}\\fs${fs}\\c&H${bgr}&${borde}\\shad0}`;
   const limpio = t.texto.replace(/\\/g, '\\⁠').replace(/[{}]/g, (c) => (c === '{' ? '(' : ')')).replace(/\r?\n/g, '\\N');
-  return ['[Script Info]', 'ScriptType: v4.00+', `PlayResX: ${W}`, `PlayResY: ${H}`, 'WrapStyle: 2', 'ScaledBorderAndShadow: yes', '',
+  return ['[Script Info]', 'ScriptType: v4.00+', `PlayResX: ${W}`, `PlayResY: ${H}`, 'WrapStyle: 0', 'ScaledBorderAndShadow: yes', '',
     '[V4+ Styles]', 'Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding',
-    `Style: T,${familia || 'DejaVu Sans'},60,&H00FFFFFF,&H00111111,&H00000000,${familia ? 0 : -1},0,1,3,0,5,0,0,0,1`, '',
+    `Style: T,${familia || 'DejaVu Sans'},60,&H00FFFFFF,&H00111111,&H00000000,${familia ? 0 : -1},0,${t.caja ? 3 : 1},3,0,5,${Math.round(W * 0.07)},${Math.round(W * 0.07)},0,1`, '',
     '[Events]', 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text',
     `Dialogue: 0,${tiempo(0)},${tiempo(dur + 1)},T,,0,0,0,,${tags}${limpio}`, ''].join('\n');
 }
@@ -64,6 +68,28 @@ export const FILTRO_COLOR = {
 };
 
 const cadena = (...f) => f.filter(Boolean).join(',');
+
+/**
+ * Animación de una capa de imagen (la misma fórmula que usa Retoque en la vista previa):
+ *   k = avance lineal en 0.6 s desde `retraso`; e = 1-(1-k)^3 (frena al llegar)
+ *   aparecer: alfa k · subir: alfa k, baja 8 % del alto → 0 · abanico: como subir (10 %) + gira hasta `angulo`
+ *   flotar: oscila ±1.2 % del alto cada 3 s
+ * Devuelve el filtro para la imagen y el desplazamiento vertical (expresión de overlay).
+ */
+export function movimientoCapa(a) {
+  if (!a) return { filtro: '', dy: '' };
+  const r = a.retraso ?? 0;
+  const k = `min(1\\,max(0\\,(t-${r})/0.6))`;
+  const e = `(1-pow(1-${k}\\,3))`;
+  const fade = `fade=t=in:st=${r}:d=0.6:alpha=1`;
+  if (a.animacion === 'aparecer') return { filtro: fade, dy: '' };
+  if (a.animacion === 'subir') return { filtro: fade, dy: `+(1-${e})*main_h*0.08` };
+  if (a.animacion === 'flotar') return { filtro: '', dy: `+sin(2*PI*t/3+${(a.angulo ?? 0) / 10})*main_h*0.012` };
+  // abanico: girar con lienzo fijo (la diagonal) para que el centro no salte
+  const rot = a.angulo ? `rotate=a='${a.angulo}*PI/180*${e}':c=none:ow='hypot(iw\\,ih)':oh='hypot(iw\\,ih)'` : '';
+  return { filtro: cadena(rot, fade), dy: `+(1-${e})*main_h*0.10` };
+}
+
 const EXT_VIDEO = /\.(mp4|mov|webm|mkv|gif)$/i;
 
 /** Derivada directa: recorte de formato + tramo + subtítulos y música opcionales. */
@@ -129,8 +155,10 @@ export function argsEscena({ escena, formato, salida, tieneAudio, rutas }) {
   capasVisibles.forEach((c, i) => {
     const sig = `c${k++}`;
     if (c.tipo === 'imagen') {
-      g.push(`[${imgIdx[c.id]}:v]scale=${Math.round(W * c.escala / 2) * 2}:-2,format=rgba[img${i}]`);
-      g.push(`[${cur}][img${i}]overlay=x=main_w*${c.x}-overlay_w/2:y=main_h*${c.y}-overlay_h/2:shortest=1[${sig}]`);
+      const a = escena.estilos.find((s) => s.tipo === 'animacion-capa' && s.capa === c.id);
+      const m = movimientoCapa(a);
+      g.push(`[${imgIdx[c.id]}:v]${cadena(`scale=${Math.round(W * c.escala / 2) * 2}:-2`, 'format=rgba', m.filtro)}[img${i}]`);
+      g.push(`[${cur}][img${i}]overlay=x='main_w*${c.x}-overlay_w/2':y='main_h*${c.y}-overlay_h/2${m.dy}':shortest=1[${sig}]`);
     } else {
       g.push(`[${cur}]${quemarAss(rutas.textos[c.id], rutas.fontsdir)}[${sig}]`);
     }

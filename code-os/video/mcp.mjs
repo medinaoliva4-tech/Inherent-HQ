@@ -21,6 +21,12 @@ export const HERRAMIENTAS = [
   { name: 'corte_guardar', title: 'Guardar corte', annotations: { readOnlyHint: false, destructiveHint: false },
     description: 'Guarda un corte completo. Pasa `version` (la que leíste) para no pisar la corrección del humano.',
     inputSchema: { type: 'object', properties: { corte: { type: 'object' }, version: { type: 'number' } }, required: ['corte'] } },
+  { name: 'estilos_listar', title: 'Catálogo de estilos', annotations: { readOnlyHint: true },
+    description: 'Lista los estilos de edición del catálogo (id, nombre, categoría, descripción, formato, recursos que pide). Úsalo para elegir cómo editar un video.',
+    inputSchema: { type: 'object', properties: { categoria: { type: 'string', enum: ['cortos', 'largos', 'tarjetas', 'ctas', 'posts'] } } } },
+  { name: 'estilos_aplicar', title: 'Aplicar estilo', annotations: { readOnlyHint: false, destructiveHint: false },
+    description: 'Aplica un estilo del catálogo a un corte guardado: cada escena conserva clip, tramo y texto, y recibe capas y estilos de la receta (gancho, cuerpo, cierre). Devuelve el corte y lo pendiente (p. ej. máscaras para «detrás de la persona»). Si el estilo pide recursos (reels, tarjetas), pásalos como rutas.',
+    inputSchema: { type: 'object', properties: { corte: { type: 'string', description: 'id del corte' }, estilo: { type: 'string' }, recursos: { type: 'object', description: 'p. ej. {"reels": ["imagenes/r1.png", …]}' }, version: { type: 'number' } }, required: ['corte', 'estilo'] } },
   { name: 'video_mascara', title: 'Recortar a la persona', annotations: { readOnlyHint: false, destructiveHint: false },
     description: 'Genera la máscara de la persona de un clip (MediaPipe, CPU, ~12 cuadros/s en el VPS). Al terminar, el trabajo trae resultado.mascara: ponla en el estilo «detras-de-persona» de la escena.',
     inputSchema: { type: 'object', properties: { clip: { type: 'string' } }, required: ['clip'] } },
@@ -43,6 +49,8 @@ export function crearCliente({ base = process.env.VIDEO_URL ?? 'http://127.0.0.1
     corte_leer: (a) => pedir('GET', `/cortes/${encodeURIComponent(a.id)}`),
     corte_guardar: (a) => (a.corte?.id ? pedir('PUT', `/cortes/${encodeURIComponent(a.corte.id)}`, a) : pedir('POST', '/cortes', a.corte)),
     video_mascara: (a) => pedir('POST', '/mascaras', a),
+    estilos_listar: async (a) => { const r = await pedir('GET', '/estilos'); return a.categoria ? { ...r, estilos: r.estilos.filter((e) => e.categoria === a.categoria) } : r; },
+    estilos_aplicar: (a) => pedir('POST', `/cortes/${encodeURIComponent(a.corte)}/estilo`, { estilo: a.estilo, recursos: a.recursos, version: a.version }),
     corte_render: (a) => pedir('POST', `/cortes/${encodeURIComponent(a.id)}/render`),
   };
 }
