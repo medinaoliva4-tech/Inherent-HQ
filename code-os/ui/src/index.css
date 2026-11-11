@@ -2,6 +2,28 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@font-face {
+  font-family: "Anthropic Serif Display";
+  src: url("/fonts/AnthropicSerif-Display-Light-Static.otf") format("opentype");
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Anthropic Serif Text";
+  src: url("/fonts/AnthropicSerif-Text-Regular-Static.otf") format("opentype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Anthropic Serif Text";
+  src: url("/fonts/AnthropicSerif-Text-Semibold-Static.otf") format("opentype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
 /* Streamdown (Markdown de las respuestas) trae sus clases dentro del paquete: Tailwind tiene que leerlas. */
 @source "../node_modules/streamdown/dist/*.js";
 
@@ -209,6 +231,18 @@
     touch-action: manipulation;
   }
 }
+
+.chat-entrada-titulo {
+  font: 300 clamp(2.4rem, 5vw, 3.5rem)/1.1 "Anthropic Serif Display", Georgia, serif;
+  letter-spacing: -.035em;
+}
+.chat-respuesta {
+  font: 400 1.18rem/1.55 "Anthropic Serif Text", Georgia, serif;
+  letter-spacing: -.006em;
+}
+.chat-respuesta strong { font-weight: 600; }
+.chat-respuesta :is(pre, code) { font-family: var(--font-mono); }
+.chat-respuesta table { font-family: var(--font-sans); font-size: .9rem; }
 
 /* Vidrio: solo para navegar y controlar; el contenido va sólido (regla del OS). */
 .vidrio {

@@ -436,7 +436,7 @@ function AppCompleta({ cliente: clienteProp }: { cliente?: Cliente }) {
           {mensajes.length === 0 ? (
             <ConversationEmptyState>
               <div className="grid justify-items-center gap-3">
-                <p className="text-base font-medium">{pestana === 'code' ? '¿Qué hacemos en el proyecto?' : conv?.incognito ? 'Chat incógnito' : '¿En qué te ayudo?'}</p>
+                <p className="chat-entrada-titulo">{pestana === 'code' ? '¿Qué hacemos en el proyecto?' : conv?.incognito ? 'Chat incógnito' : '¿En qué te ayudo?'}</p>
                 <p className="max-w-sm text-sm text-muted-foreground">
                   {conv?.incognito
                     ? 'No entra al historial ni a la memoria.'
