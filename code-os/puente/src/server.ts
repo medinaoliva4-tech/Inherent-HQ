@@ -13,6 +13,7 @@ import { makeModelCatalog } from './models.js';
 import { realQuery } from './sdk.js';
 import type { Services } from './services.js';
 import { SessionStore } from './store.js';
+import { AlmacenJson, Memoria } from 'code-os-herramientas';
 
 const cfg = loadConfig();
 mkdirSync(cfg.workspacesDir, { recursive: true });
@@ -29,6 +30,8 @@ const svc: Services = {
   claude: makeClaudeProbe(cfg),
   cuotas: makeCuotasClient(cfg),
   spawner: canBwrap ? (u, cwd) => makeBwrapSpawner({ workspace: cwd, home: userHome(cfg, u), readOnly: [join(here, 'node_modules')], rw: gitDirDe(cwd) }) : undefined,
+  // Memoria viva del cliente: un JSON por cliente en <data>/herramientas (fuera de los workspaces que ven los agentes).
+  herramientas: new Memoria(new AlmacenJson(join(cfg.dataDir, 'herramientas'))),
 };
 const models = makeModelCatalog(cfg);
 const mgr = new SessionManager(cfg, new SessionStore(cfg.dataDir), models, realQuery, svc);

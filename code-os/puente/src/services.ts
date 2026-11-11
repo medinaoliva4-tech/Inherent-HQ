@@ -1,4 +1,5 @@
 import type { SpawnOptions, SpawnedProcess } from '@anthropic-ai/claude-agent-sdk';
+import type { Memoria } from 'code-os-herramientas';
 import type { UserRecord } from './config.js';
 
 export interface ClaudeStatus { installed: boolean; active: boolean; hint?: string }
@@ -12,4 +13,6 @@ export interface Services {
   cuotas: { get(): Promise<unknown | null>; reportClaudeLogin(u: UserRecord, ok: boolean, durationMs: number): Promise<void> };
   /** Crea el lanzador confinado para una sesión (undefined = sin confinar). */
   spawner?: (u: UserRecord, cwd: string) => Spawner | undefined;
+  /** Memoria viva del cliente y calculadoras (`code-os/herramientas`). Sin ella, /clientes y /calc dan 503. */
+  herramientas?: Memoria;
 }

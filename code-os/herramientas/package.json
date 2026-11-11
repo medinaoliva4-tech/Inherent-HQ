@@ -1,0 +1,27 @@
+{
+  "name": "code-os-herramientas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Herramientas de Code OS: memoria viva del cliente (nodos, dependientes, avisos), ICP y calculadoras de adquisición",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts",
+    "grafo": "node --import tsx scripts/grafo.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
