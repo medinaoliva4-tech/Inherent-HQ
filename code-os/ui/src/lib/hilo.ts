@@ -148,6 +148,31 @@ export const llaveLeido = (n: Pick<Nodo, 'id' | 'version'>) => `${n.id}@${n.vers
 /** Avisos que tocan a este nodo (porque cambió algo de lo que viene). */
 export const avisosDe = (id: string, avisos: Aviso[]) => avisos.filter((a) => a.afectados.includes(id))
 
+/** Lo que un agente deja en el chat: ```nodo {"id"} ``` (un dato que ya existe) o ```nodo {"tipo","titulo",…} ``` (una propuesta). */
+export type RefNodo = { id: string } | NodoNuevo
+export function extraerNodos(texto: string): RefNodo[] {
+  const out: RefNodo[] = []
+  const re = /```nodo[^\n]*\n([\s\S]*?)```/g
+  let m: RegExpExecArray | null
+  while ((m = re.exec(texto))) {
+    try {
+      const j = JSON.parse(m[1]) as Record<string, unknown>
+      if (typeof j.id === 'string') out.push({ id: j.id })
+      else if (typeof j.tipo === 'string' && j.tipo in TIPOS && typeof j.titulo === 'string')
+        out.push({
+          tipo: j.tipo as TipoNodo,
+          titulo: j.titulo,
+          contenido: j.contenido && typeof j.contenido === 'object' ? (j.contenido as Record<string, unknown>) : undefined,
+          fuente: typeof j.fuente === 'string' ? j.fuente : undefined,
+          viene_de: Array.isArray(j.viene_de) ? j.viene_de.filter((x): x is string => typeof x === 'string') : undefined,
+        })
+    } catch {
+      /* bloque a medias o mal formado: no se pinta */
+    }
+  }
+  return out
+}
+
 /** Qué decide el nodo, en una línea (si la herramienta no lo dejó, se usa un resumen corto del contenido). */
 export function decideDe(n: Nodo): string {
   const d = n.contenido?.decide

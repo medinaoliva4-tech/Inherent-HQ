@@ -44,6 +44,7 @@ export type ValorHilo = {
   guardar: (id: string, cambios: CambiosNodo) => Promise<Nodo | null>
   crear: (nuevo: NodoNuevo) => Promise<Nodo | null>
   descartarAviso: (id: string) => void
+  elegirCliente: (id: string) => void
   recargar: () => void
 }
 
@@ -211,9 +212,10 @@ export function HiloProvider({ cliente, clienteId, onClienteId, children }: { cl
       guardar,
       crear,
       descartarAviso,
+      elegirCliente: onClienteId,
       recargar,
     }),
-    [cliente, clienteId, marcas, nodos, avisos, cargando, falta, error, nodo, leido, abrir, detalle, aprobar, guardar, crear, descartarAviso, recargar],
+    [cliente, clienteId, marcas, nodos, avisos, cargando, falta, error, nodo, leido, abrir, detalle, aprobar, guardar, crear, descartarAviso, onClienteId, recargar],
   )
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>
 }

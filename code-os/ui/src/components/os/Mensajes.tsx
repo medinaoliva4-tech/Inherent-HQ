@@ -16,7 +16,10 @@ import { Reasoning, ReasoningContent, ReasoningTrigger } from '@/components/ai-e
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from '@/components/ai-elements/tool'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useHiloOpcional } from '@/hooks/use-hilo'
 import { esImagen } from '@/lib/adjuntos'
+import { extraerNodos } from '@/lib/hilo'
+import { TarjetaDecision } from './hilo/TarjetaDecision'
 import { extraerArtefactos, ocultarBloquesVisibles, type Artefacto } from '@/lib/artefactos'
 import type { RespuestaPermiso } from '@/lib/eventos'
 import type { Mensaje, ParteHerramienta, PartePermiso, PartePlan, PartePregunta, Tarea } from '@/lib/mensajes'
@@ -378,7 +381,20 @@ function ParteTextoVista({ texto, id, enCurso, onArtefacto }: { texto: string; i
         </div>
       )}
       {!enCurso && <TarjetasArtefacto texto={texto} base={id} onAbrir={onArtefacto} />}
+      {!enCurso && <TarjetasNodo texto={texto} />}
     </>
+  )
+}
+
+/** Las tarjetas de decisión que deja un agente (```nodo```): la misma tarjeta que en la herramienta y el portal. */
+function TarjetasNodo({ texto }: { texto: string }) {
+  const hilo = useHiloOpcional()
+  const refs = useMemo(() => extraerNodos(texto), [texto])
+  if (!refs.length || !hilo) return null
+  return (
+    <div className="mt-2 grid gap-2">
+      {refs.map((r, i) => ('id' in r ? <TarjetaDecision key={r.id} nodo={hilo.nodo(r.id)} /> : <TarjetaDecision key={`p${i}`} propuesta={r} />))}
+    </div>
   )
 }
 

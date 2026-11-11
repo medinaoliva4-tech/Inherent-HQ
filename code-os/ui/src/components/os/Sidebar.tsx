@@ -28,7 +28,9 @@ import type { Tema } from '@/hooks/use-theme'
 import type { EstadoCuotas, EstadoServidor } from '@/lib/cliente'
 import { resorte, resortePop } from '@/lib/movimiento'
 import { cn } from '@/lib/utils'
+import type { Persona } from '@/lib/roles'
 import { MedidorCuotas } from './MedidorCuotas'
+import { SelectorPersona } from './Selectores'
 
 /** «ahora», «2 h», «ayer», «3 d», «2 sem». */
 export function haceCuanto(iso: string, ahora = Date.now()) {
@@ -67,6 +69,8 @@ type Props = {
   errorCuotas: string | null
   servidor: EstadoServidor | null
   mock: boolean
+  persona: Persona
+  onPersona: (p: Persona) => void
 }
 
 function FilaConversacion({
@@ -303,6 +307,9 @@ export function Sidebar(p: Props) {
 
       <div className="grid gap-1 border-t px-2 py-2">
         <MedidorCuotas estado={p.cuotas} error={p.errorCuotas} mock={p.mock} />
+        <div className="flex px-0">
+          <SelectorPersona persona={p.persona} onPersona={p.onPersona} />
+        </div>
         <div className="flex items-center gap-2 px-2">
           <span
             className={cn('size-2 shrink-0 rounded-full', p.servidor?.claude === 'activa' ? 'bg-ok' : p.servidor?.claude === 'inactiva' ? 'bg-warn' : 'bg-mut2')}

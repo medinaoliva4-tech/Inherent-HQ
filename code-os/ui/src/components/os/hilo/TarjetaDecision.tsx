@@ -91,6 +91,8 @@ export function TarjetaDecision({ nodo, propuesta, compacta, className }: Props)
   const decide = decideDe(n)
   const leido = h.leido(n)
   const avisos = avisosDe(n.id, h.avisos)
+  /** Este mismo dato cambió y avisó a lo que depende de él. */
+  const cambio = h.avisos.find((a) => a.nodo === n.id)
   return (
     <article aria-label={`Decisión: ${n.titulo}`} className={cn('grid gap-1.5 rounded-xl border bg-card p-3 shadow-[var(--ui-sh-1)]', className)}>
       <div className="flex items-center gap-2">
@@ -98,6 +100,11 @@ export function TarjetaDecision({ nodo, propuesta, compacta, className }: Props)
           {AREAS[area].corto} · {etiquetaNodo(n, h.nodos)}
         </ChipArea>
         <span className="ml-auto flex items-center gap-1.5">
+          {cambio && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px] font-medium" title={cambio.mensaje}>
+              Cambió · {cambio.afectados.length} dependen
+            </span>
+          )}
           {avisos.length > 0 && (
             <span className="inline-flex items-center gap-1 rounded-full bg-warn/12 px-2 py-0.5 text-[11px] font-medium text-warn" title={avisos[0].mensaje}>
               <BellDotIcon className="size-3" /> Revisar
