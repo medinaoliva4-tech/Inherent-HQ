@@ -1,0 +1,112 @@
+{
+  "id": "caja-subtitulos",
+  "nombre": "Talking head con caja",
+  "categoria": "cortos",
+  "formato": "9:16",
+  "descripcion": "Acercamiento alterno en cada corte y cada frase en una caja clara bajo tu cara.",
+  "prompt": "Usa el estilo «Talking head con caja» (caja-subtitulos) para editar este video: acercamiento alterno en cada corte y la frase de cada escena en caja clara.",
+  "ejemplo": {
+    "textos": [
+      "Tres cosas que nadie te dice",
+      "La primera: empieza chico",
+      "La segunda: mide cada semana",
+      "Guárdalo para después"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.72,
+          "tam": 0.042,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.06,
+          "x": 0.5,
+          "y": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.72,
+          "tam": 0.04,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1.18,
+          "hasta": 1.18,
+          "x": 0.5,
+          "y": 0.38
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.72,
+          "tam": 0.04,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": []
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.72,
+          "tam": 0.042,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1.1,
+          "hasta": 1,
+          "x": 0.5,
+          "y": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

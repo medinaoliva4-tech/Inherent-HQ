@@ -1,0 +1,137 @@
+{
+  "id": "tarjetas-que-flotan",
+  "nombre": "Tarjetas que flotan",
+  "categoria": "tarjetas",
+  "formato": "9:16",
+  "descripcion": "Dos tarjetas con datos o fotos aparecen a tus lados y flotan mientras hablas.",
+  "prompt": "Usa el estilo «Tarjetas que flotan» (tarjetas-que-flotan) para editar este video. Pásale 2 imágenes (datos o fotos) como recursos.tarjetas.",
+  "requiere": [
+    {
+      "recurso": "tarjetas",
+      "cantidad": 2,
+      "descripcion": "2 imágenes: un dato, una foto o una captura"
+    }
+  ],
+  "ejemplo": {
+    "textos": [
+      "Los números del mes",
+      "Lo que más pidieron",
+      "¿Te sumas?"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "tarjeta1",
+          "tipo": "imagen",
+          "ruta": "{tarjetas.0}",
+          "x": 0.26,
+          "y": 0.3,
+          "escala": 0.34
+        },
+        {
+          "id": "tarjeta2",
+          "tipo": "imagen",
+          "ruta": "{tarjetas.1}",
+          "x": 0.74,
+          "y": 0.52,
+          "escala": 0.34
+        },
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.84,
+          "tam": 0.05
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "animacion-capa",
+          "capa": "tarjeta1",
+          "animacion": "subir",
+          "retraso": 0.2
+        },
+        {
+          "tipo": "animacion-capa",
+          "capa": "tarjeta2",
+          "animacion": "subir",
+          "retraso": 0.45
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "tarjeta1",
+          "tipo": "imagen",
+          "ruta": "{tarjetas.0}",
+          "x": 0.26,
+          "y": 0.3,
+          "escala": 0.34
+        },
+        {
+          "id": "tarjeta2",
+          "tipo": "imagen",
+          "ruta": "{tarjetas.1}",
+          "x": 0.74,
+          "y": 0.52,
+          "escala": 0.34
+        },
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.84,
+          "tam": 0.045
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "animacion-capa",
+          "capa": "tarjeta1",
+          "animacion": "flotar",
+          "angulo": 0
+        },
+        {
+          "tipo": "animacion-capa",
+          "capa": "tarjeta2",
+          "animacion": "flotar",
+          "angulo": 20
+        }
+      ]
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.055
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        }
+      ]
+    }
+  ]
+}

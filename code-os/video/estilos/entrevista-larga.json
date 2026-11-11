@@ -1,0 +1,103 @@
+{
+  "id": "entrevista-larga",
+  "nombre": "Entrevista con rótulo",
+  "categoria": "largos",
+  "formato": "16:9",
+  "descripcion": "Para YouTube: rótulo abajo a la izquierda, acercamiento en las frases fuertes y cierre con fundido.",
+  "prompt": "Usa el estilo «Entrevista con rótulo» (entrevista-larga) para editar este video horizontal: rótulo abajo a la izquierda y acercamiento alterno.",
+  "ejemplo": {
+    "textos": [
+      "Ana López · Fundadora",
+      "Empezamos en una cochera",
+      "Gracias por ver"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "x": 0.24,
+          "y": 0.84,
+          "tam": 0.045,
+          "color": "#f3ead8",
+          "caja": "#111111"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "x": 0.24,
+          "y": 0.84,
+          "tam": 0.04,
+          "color": "#f3ead8",
+          "caja": "#111111"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1.15,
+          "hasta": 1.15,
+          "x": 0.5,
+          "y": 0.35
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "x": 0.24,
+          "y": 0.84,
+          "tam": 0.04,
+          "color": "#f3ead8",
+          "caja": "#111111"
+        }
+      ],
+      "estilos": []
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.5,
+          "tam": 0.07
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.8
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    }
+  ]
+}

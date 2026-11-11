@@ -1,0 +1,106 @@
+{
+  "id": "cta-final",
+  "nombre": "CTA final",
+  "categoria": "ctas",
+  "formato": "9:16",
+  "descripcion": "El video corre limpio y cierra con la invitación grande, una caja con el link y un fundido.",
+  "prompt": "Usa el estilo «CTA final» (cta-final) para editar este video: escenas limpias y el cierre con la invitación y el link.",
+  "ejemplo": {
+    "textos": [
+      "Así se prepara",
+      "En diez minutos",
+      "Pídelo hoy"
+    ]
+  },
+  "escenas_plantilla": [
+    {
+      "rol": "gancho",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.05
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1,
+          "hasta": 1.05,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "aparecer"
+        }
+      ]
+    },
+    {
+      "rol": "cuerpo",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.8,
+          "tam": 0.045
+        }
+      ],
+      "estilos": []
+    },
+    {
+      "rol": "cierre",
+      "capas": [
+        {
+          "id": "principal",
+          "tipo": "texto",
+          "texto": "{texto}",
+          "y": 0.56,
+          "tam": 0.075
+        },
+        {
+          "id": "accion",
+          "tipo": "texto",
+          "texto": "Link en la bio",
+          "x": 0.5,
+          "y": 0.66,
+          "tam": 0.032,
+          "color": "#111111",
+          "caja": "#f3ead8"
+        }
+      ],
+      "estilos": [
+        {
+          "tipo": "zoom",
+          "desde": 1.12,
+          "hasta": 1,
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "tipo": "color",
+          "preset": "calido"
+        },
+        {
+          "tipo": "transicion",
+          "entrada": "fundido",
+          "duracion": 0.4
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "principal",
+          "animacion": "subir"
+        },
+        {
+          "tipo": "animacion-texto",
+          "capa": "accion",
+          "animacion": "aparecer"
+        }
+      ]
+    }
+  ]
+}
