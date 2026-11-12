@@ -6,7 +6,7 @@ Un elemento se ve y se comporta igual en todo el OS. Los tokens viven en `public
 
 | Qué | Tokens |
 |---|---|
-| Color, tema, sombras | `--ui-*` (noche, día/light). Alias de transición: `--ink`, `--mut`, `--surface`, `--fill`, `--line`, `--hair`… (no usarlos en código nuevo). `--l-*` es del Chat y sigue ahí hasta migrarlo |
+| Color, tema, sombras | `--ui-*` (noche, día/light). Alias de transición: `--ink`, `--mut`, `--surface`, `--fill`, `--line`, `--hair`… (no usarlos en código nuevo). El Chat ya lee `--ui-*` directo; solo lo que difiere del OS (fondo de vidrio, superficies carbón de noche, gris de texto) vive en `--ui-ch-*` (primitives.css). La familia `--l-*` ya no existe |
 | Tinta, vidrio y borde de luz | `--ui-tint` (rgb), `--ui-blur`, `--ui-edge` |
 | Diagramas | `--ui-dg-*`, `--ui-dgf-*` |
 | Letra | `--fs-1` 10 · `--fs-2` 11 · `--fs-3` 12 · `--fs-4` 13 · `--fs-5` 14 · `--fs-6` 15 · `--fs-7` 16 · `--fs-8` 18 · `--fs-9` 22 · `--fs-10` 28 · `--fs-11` 36 · `--fs-12` 44 · `--fs-13` 56 |
@@ -24,3 +24,5 @@ Un elemento se ve y se comporta igual en todo el OS. Los tokens viven en `public
 ## Lint
 
 `npm run lint:css` falla si aparece un hex, radio, `font-size`, `!important` o alias viejo nuevo fuera de los tokens (compara contra `scripts/lint-css.baseline.json`). Al migrar y bajar las cifras: `npm run lint:css -- --update`.
+
+El CSS de OpenUI (`.gu-*`, `.sg`, `.vch-*`, `.hm-*`) y el del Chat (`.llm`, `.lc-`, `.ls-`, `.lm-`, `.lp-`, `.lt-`, `.lsg-`, `.bru-`) ya usan `--fs-*` y `--r-*`. Los valores intermedios se redondean al paso más cercano (13.5→14, 12.5→13, 11.5→12, 15.5→16, 19→18, 20→22; radios 6→7, 8→7, 9→10, 16→14, 18→20; empate hacia arriba).
