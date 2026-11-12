@@ -90,4 +90,12 @@ await t('la pantalla: pestaña Herramientas para el equipo, pase de /api/code/pa
   assert.match(LLM, /enviar\(texto, \{ nivelForzado: modelo \}\)/);
 });
 
+await t('lo que ve la persona no dice «Code OS» ni nombres de variables (eso queda en la consola y en el PR)', () => {
+  const H = fs.readFileSync(path.join(AQUI, '..', 'public/js/llm/herramientas-code.js'), 'utf8');
+  const visibles = (src) => [...src.matchAll(/(?:alError\?\.\(|toast\(|title: |msg\.err = )[^;]*/g)].map((m) => m[0]);
+  for (const v of [...visibles(H), ...visibles(LLM)]) { assert.ok(!/Code OS/.test(v), v.slice(0, 120)); assert.ok(!/CODEOS_[A-Z_]+\)?['`]/.test(v.replace(/console\.warn\([^)]*\)/g, '')), v.slice(0, 120)); }
+  assert.match(H, /title: 'Herramientas'/); assert.match(H, /No se pudo abrir las herramientas\. Revisa la dirección configurada\./);
+  assert.match(LLM, /Code no está configurado todavía\. Avísale al CEO\./); assert.ok(!LLM.includes('Abriendo Code OS'));
+});
+
 console.log(`\n${ok} pruebas de Herramientas (Code OS embebido) OK`);

@@ -88,11 +88,11 @@ export function acciones(d, { rapidas = RAPIDAS } = {}) {
  */
 export async function montarHerramientas(caja, opts) {
   let p;
-  try { p = await opts.pase(false); } catch (e) { opts.alError?.(e.message || 'No pude pedir el pase de Code'); return null; }
+  try { p = await opts.pase(false); } catch (e) { console.warn('Herramientas: no se pudo pedir el pase', e); opts.alError?.(e.status === 503 ? 'Code no está configurado todavía. Avísale al CEO.' : 'No se pudieron abrir las herramientas. Intenta de nuevo.'); return null; }
   const origen = origenDe(p.ui || p.url), src = urlEmbebida(p.ui || p.url, p.pase);
-  if (!origen || !src) { opts.alError?.('La dirección de Code OS no es válida'); return null; }
+  if (!origen || !src) { console.warn('Herramientas: CODEOS_UI_URL/CODEOS_URL no es https', p.ui || p.url); opts.alError?.('No se pudo abrir las herramientas. Revisa la dirección configurada.'); return null; }
   const iframe = document.createElement('iframe');
-  Object.assign(iframe, { src, title: 'Code OS · Herramientas' });
+  Object.assign(iframe, { src, title: 'Herramientas' });
   iframe.setAttribute('allow', 'clipboard-write');
   iframe.setAttribute('referrerpolicy', 'no-referrer');
   iframe.className = 'llm-herr-if';

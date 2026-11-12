@@ -866,7 +866,7 @@ export async function render(el, { me, sub = [], alive }) {
       // Lo hablado queda en la conversación del OS (el puente guarda lo suyo): así se retoma desde cualquier compu.
       api(`chat/sesiones/${enc(S.sesion)}/departamento`, { method: 'POST', body: { dep: dep.id, nivel: n.nivel, pedido: texto, respuesta: crudo } }).catch(() => {});
     } catch (e) {
-      msg.err = e.name === 'AbortError' ? (msg.t ? 'Detenido.' : 'Detenido antes de responder.') : e.status === 503 ? `${e.message}. Pídele al CEO que configure Code (CODEOS_PASE_SECRET).` : e.message || `No pude hablar con ${dep.depto}.`;
+      msg.err = e.name === 'AbortError' ? (msg.t ? 'Detenido.' : 'Detenido antes de responder.') : e.status === 503 ? (console.warn('Departamentos: /api/code/pase respondió 503 (falta CODEOS_PASE_SECRET en Vercel)', e), 'Code no está configurado todavía. Avísale al CEO.') : e.message || `No pude hablar con ${dep.depto}.`;
     } finally { S.enVuelo = null; msg.stream = false; msg.at = ahoraIso(); }
     if (!alive()) return;
     pintarCentro(); pintarPanel(); S.herr?.contexto?.();
@@ -920,7 +920,7 @@ export async function render(el, { me, sub = [], alive }) {
   async function pintarHerramientas(box, cab) {
     if (S.herr?.iframe?.isConnected && box.contains(S.herr.iframe)) { S.herr.contexto(); return; }
     S.herr?.destruir?.(); S.herr = null;
-    mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-herr"><p class="lp-mut" style="padding:16px">Abriendo Code OS…</p></div>`);
+    mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-herr"><p class="lp-mut" style="padding:16px">Abriendo las herramientas…</p></div>`);
     const caja = $('.llm-herr', box);
     const ctl = await montarHerramientas(caja, { pase: (forzar) => paseCode(forzar), contexto: contextoHerr, alChat: alChatDesdeCode, juicio: juicioParaCode, alError: (m) => { if (caja.isConnected) mount(caja, html`<p class="lp-mut" style="padding:16px">${m}</p>`); } });
     if (!ctl) return;
