@@ -12,6 +12,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const os = require('node:os');
 const path = require('node:path');
+const { leerArmado, esMasNueva } = require('./armado.js');
 
 const OS_URL = process.env.INHERENT_OS_URL || 'https://inherent-work.vercel.app';
 const OS_HOST = new URL(OS_URL).host;
@@ -72,6 +73,9 @@ ipcMain.on('inherent:token', (e) => { e.returnValue = delOS(e.senderFrame?.url |
 ipcMain.on('inherent:hermes', (e) => { e.returnValue = null; }); // apps viejas lo siguen pidiendo
 // La versión instalada (no es secreta): el OS la compara con la última publicada y avisa si hay una nueva (aviso pla-app-mac).
 ipcMain.on('inherent:version', (e) => { e.returnValue = app.getVersion(); });
+// El número de armado (build.json, lo escribe el workflow): con el mismo semver, el OS compara por aquí. 0 = sin dato.
+const ARMADO = leerArmado(__dirname);
+ipcMain.on('inherent:build', (e) => { e.returnValue = ARMADO; });
 // «Actualizar la app» desde el OS: el mismo diálogo del menú Inherent OS › Buscar actualizaciones… (solo desde el OS).
 ipcMain.on('inherent:actualizar', (e) => { if (delOS(e.senderFrame?.url || '')) buscarActualizacion(true); });
 // El dictado de la Mac, con un toque: funciona en la caja que tenga el cursor.
@@ -178,7 +182,6 @@ function moverZoom(d) {
 // Al abrir (y cada 6 horas) le pregunta al OS por la última versión publicada desde main (el repo es privado: el OS la lee
 // con su token y la app pregunta con tu sesión). Si hay una más nueva, avisa. «Actualizar» baja el .zip, cambia la app y la
 // vuelve a abrir. Si macOS no deja cambiarla, muestra la nueva en el Finder para arrastrarla a Aplicaciones.
-const mayor = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); for (let i = 0; i < 3; i++) if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); return false; };
 let actualizando = false, revisando = false, revisado = false, saltada = null;
 
 // Una ruta del OS con la sesión de la ventana. null si la ventana no está en el OS o no respondió.
@@ -198,15 +201,15 @@ async function buscarActualizacion(aMano = false) {
       if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: 'No pude revisar si hay una versión nueva', detail: 'Abre el OS con tu sesión iniciada y vuelve a intentarlo.', buttons: ['Entendido'] });
       return false;
     }
-    if (!v.version || !mayor(v.version, app.getVersion())) {
-      if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: `Ya tienes la última versión (${app.getVersion()})`, buttons: ['Entendido'] });
+    if (!v.version || !esMasNueva(v.version, v.n, app.getVersion(), ARMADO)) {
+      if (aMano) await dialog.showMessageBox(ventana, { type: 'info', message: `Ya tienes la última versión (${app.getVersion()}${ARMADO ? ` · ${ARMADO}` : ''})`, buttons: ['Entendido'] });
       return true;
     }
-    if (!aMano) return true; // sin ventanas emergentes: el aviso vive junto al perfil
+    if (!aMano) return true; // sin ventanas emergentes: el aviso es el panel dentro del OS
     const r = await dialog.showMessageBox(ventana, {
       type: 'info',
-      message: `Hay una versión nueva de Inherent OS (${v.version})`,
-      detail: `Tienes la ${app.getVersion()}. Se baja, se cambia y la app se vuelve a abrir sola. Tarda un par de minutos.`,
+      message: `Hay una versión nueva de Inherent OS (${v.version}${v.n ? ` · ${v.n}` : ''})`,
+      detail: `Tienes la ${app.getVersion()}${ARMADO ? ` (${ARMADO})` : ''}. Se baja, se cambia y la app se vuelve a abrir sola. Tarda un par de minutos.`,
       buttons: ['Actualizar', 'Después'],
       defaultId: 0,
       cancelId: 1,

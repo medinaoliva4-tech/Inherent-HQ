@@ -23,7 +23,7 @@ t('Video: la ficha descarta links que no son https y ordena los cortes', () => {
   const f = limpiarFicha({ titulo: 'A', cortes: [{ desde: '0:00', hasta: '0:03', toma: 'x' }, { desde: '0:03', hasta: '0:08', toma: 'y' }], assets: [{ nombre: 'a', url: 'http://inseguro.com' }, { nombre: 'b', url: 'https://drive.google.com/x' }] });
   assert.equal(f.assets[0].url, ''); assert.equal(f.assets[1].url, 'https://drive.google.com/x'); assert.equal(duracionCortes(f.cortes), 8);
   const p = pedidoVideo(f, limpiarKit({ colores: ['#262523'] }), 'Cerantola', 'clients/cerantola');
-  assert.match(p, /^\/video-editing/); assert.match(p, /1\. 0:00–0:03 · x/); assert.match(p, /#262523/); assert.ok(!/\n\n\n/.test(p));
+  assert.match(p, /^\/produccion/); assert.match(p, /pr-post/); assert.match(p, /1\. 0:00–0:03 · x/); assert.match(p, /#262523/); assert.ok(!/\n\n\n/.test(p));
 });
 t('Ads: lee las variaciones de Claude y las liga a su avatar', () => {
   const r = 'Hola\n```variaciones\n[{"avatar":"Dueña","plataforma":"meta","formato":"4:5","gancho":"G","texto":"T","titulo":"Ti","cta":"Reservar"},{"plataforma":"google","gancho":"H","titulos":["a","b","c"],"descripciones":["d","e"]},{"plataforma":"meta"}]\n```';

@@ -163,7 +163,7 @@ export function prompt(ctx) {
   const cuerpo = [
     'MÉTODO',
     `${lim ? `Límite del nivel en el roadmap: ${lim.titulo}. ${lim.texto}` : `Nivel: ${SIN_DATOS}, sin ficha de oferta.`} Brand Growth nunca promete un % de crecimiento: sus hitos son de alcance y volumen del ciclo.`,
-    `Lee en hormozi-brain: ${RUTAS_HORMOZI.overview}${eh ? ` y ${eh.ruta}` : ''}.`,
+    `Lee en la biblioteca de Hormozi: ${RUTAS_HORMOZI.overview}${eh ? ` y ${eh.ruta}` : ''}.`,
     `1) T1 (meses 1-3) es el plan de 90 días${e ? ` y debe llevar a graduar la etapa ${e.n}: «${e.graduar}»` : ''}. T2 a T4 construyen sobre T1.`,
     '2) items (máximo 24): cada fila = area (strategy, marketing, creative, production, ads o consulting) + trimestre (T1 a T4) + titulo (un resultado, no una actividad suelta) + tareas (máximo 4: title y due AAAA-MM-DD o vacío) + oportunidad_id (el id del Opportunity Map si viene de ahí; si no, vacío).',
     '3) Solo áreas que la ficha incluye: lo demás es FUERA DEL ALCANCE, no entra a la grilla y se escala al CEO.',

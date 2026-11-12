@@ -4,7 +4,7 @@
 //   { slug, bloque, estado: 'aprobado' | '', borrador: { texto, por, en, fuentes }, aprobado: { por, en }, etapa (solo Diagnóstico) }
 // El CEO es el candado de la estrategia: solo él aprueba, reabre y confirma la etapa. Nada de esta colección se escribe por
 // /api/db/strategy (la ruta genérica responde 404): todo pasa por las rutas de aquí, que aplican esas reglas.
-// Las fuentes (hormozi-brain/references) se sirven solo a quien ve Estrategia (el cliente nunca), con la ruta validada
+// Las fuentes (ceo-os/data/hormozi) se sirven solo a quien ve Estrategia (el cliente nunca), con la ruta validada
 // contra una lista cerrada de carpetas y sin «..».
 // Fase 3a: la diana (PUT estrategia/:slug/bullseye) y los espejos de las herramientas de Strategy en «deliverables»:
 // Customer Bullseye → sources cfg-<slug>.bullseye · Business X-Ray → la estrategia en vivo · Offer Architect → se aprueba con
@@ -240,8 +240,8 @@ export async function contextoEtapa(slug) {
   return { nombre: f.nombre, nivel: f.nivel?.nombre || '', comprension: await leer('00-onboarding/comprension.md'), nucleo: await leer('01-estrategia/nucleo.md') };
 }
 
-// ---------- Las fuentes: hormozi-brain/references ----------
-const BASE = `${HORMOZI}/references`;
+// ---------- Las fuentes: ceo-os/data/hormozi ----------
+const BASE = HORMOZI;
 const CARPETAS = ['books', 'roadmap', 'sops', 'briefs'];
 const RUTA_OK = /^(books|roadmap|sops|briefs)(\/[A-Za-z0-9][A-Za-z0-9._-]*)+\.md$/;
 let SNAP;

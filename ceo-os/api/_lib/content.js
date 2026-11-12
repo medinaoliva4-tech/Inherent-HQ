@@ -48,7 +48,7 @@ export function handleOf(x) {
   return NOT_HANDLE.has(h) ? '' : h;
 }
 // Una cuenta guardada (cfg.accounts o cfg.own) → { red, handle, url?, kind? } o null. Fase 4: 4 redes y los 5 niveles
-// de cr-fuentes (competencia, referente-similar, -aspiracional, -crecimiento; «referente» es el nombre viejo y se respeta).
+// de mc-radar (competencia, referente-similar, -aspiracional, -crecimiento; «referente» es el nombre viejo y se respeta).
 export const KINDS = ['competencia', 'referente-similar', 'referente-aspiracional', 'referente-crecimiento', 'referente'];
 export function cleanAcc(a, kinds) {
   if (!a || typeof a !== 'object') return null;
@@ -145,7 +145,7 @@ export async function profile(p) {
 const ACTOR_DEF = { instagram: 'apify~instagram-scraper', tiktok: 'clockworks~tiktok-scraper', youtube: 'streamers~youtube-scraper', linkedin: 'harvestapi~linkedin-profile-posts' };
 const actorOf = (red) => String(process.env['APIFY_ACTOR_' + red.toUpperCase()] || ACTOR_DEF[red]).trim().replace('/', '~');
 const PER_SOURCE = 10, MAX_SOURCES = 25, PER_ACCOUNT = 6, MAX_SOLO = 10;
-// cr-fuentes: el tope de la cuenta de Apify se reparte en partes iguales entre las marcas, para que ninguna se lo gaste todo.
+// mc-radar: el tope de la cuenta de Apify se reparte en partes iguales entre las marcas, para que ninguna se lo gaste todo.
 // El total sale del tope mensual que tiene la cuenta en Apify (o de APIFY_TOPE_TOTAL); si no se puede leer, US$5 por marca.
 // Cada run lleva maxTotalChargeUsd (el freno duro) y maxItems.
 export const TOPE_MES_USD = 5;

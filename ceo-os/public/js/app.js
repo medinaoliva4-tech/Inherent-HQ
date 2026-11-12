@@ -422,7 +422,7 @@ function latHtml(mac) {
     <nav class="lat-nav" id="lat-nav" aria-label="Secciones"></nav>
     <div class="lat-ctx" id="lat-ctx" hidden></div>
     <div class="lat-pie">
-      ${cliente ? '' : html`<div class="lat-sp" id="lat-sp" hidden></div><div class="lat-act" id="lat-act" hidden></div><div class="lat-ayuda" id="lat-ayuda"></div>`}
+      ${cliente ? '' : html`<div class="lat-sp" id="lat-sp" hidden></div><div class="lat-ayuda" id="lat-ayuda"></div>`}
       <div class="lat-yo"><button type="button" class="lat-yo-b" data-lat="yo" aria-haspopup="menu" aria-expanded="false" title="Tu cuenta">${me.picture ? html`<img src="${me.picture}" alt="" referrerpolicy="no-referrer">` : html`<i>${initials(me.name)}</i>`}<span><b>${me.name}</b><small>${me.title || roleName(me.role)}</small></span></button>
         <a class="lat-ib" href="#/ajustes/ia" aria-label="Ajustes" title="Ajustes">${ico('settings', 16)}</a></div>
     </div></aside>`;

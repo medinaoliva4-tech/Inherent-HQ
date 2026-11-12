@@ -26,7 +26,10 @@ import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
-import { turnoCode } from '../chat-code.js';
+import { turnoCode, pase as paseCode, sesionCode } from '../chat-code.js';
+import { leerDepartamento, menuDepartamentos, departamentoDe, nivelDe, sistemaDepartamento, contextoPara, mensajeConContexto, leerPase, puedePasar, textoPase, DEPARTAMENTOS } from '../llm/departamentos.js';
+import { menuDepartamentosHtml, depChipHtml, paseHtml } from '../llm/departamentos-ui.js';
+import { montarHerramientas, rolCodeOS } from '../llm/herramientas-code.js';
 import { rutear } from '../llm/router-code.js';
 import { rutaModulo } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
@@ -319,9 +322,12 @@ export async function render(el, { me, sub = [], alive }) {
     box.style.bottom = sobre ? 'calc(100% + 8px)' : 'auto';
     box.style.top = sobre ? 'auto' : 'calc(100% + 8px)';
     // F4.5 · «@»: los agentes activos (la lista se trae la primera vez).
+    // Primero los 9 departamentos (llm/departamentos.js); después los trabajos por etapas cuyo nombre no choca con uno de ellos.
     if (/^@\S*$/.test(v.trim())) {
-      if (!S.listaAgentes) { listaAgentes().then(() => { if (S.listaAgentes) comandos($('#llm-in', el)?.value || ''); }); return; }
-      const xs = menuArroba(S.listaAgentes, v); box.hidden = !xs.length; return mount(box, menuArrobaHtml(xs));
+      const ds = me.role === 'client' ? [] : menuDepartamentos(v);
+      if (!S.listaAgentes) { box.hidden = !ds.length; mount(box, menuDepartamentosHtml(ds)); listaAgentes().then(() => { if (S.listaAgentes) comandos($('#llm-in', el)?.value || ''); }); return; }
+      const xs = menuArroba(S.listaAgentes.filter((a) => !departamentoDe(String(a.nombre || '').replace(/\s+/g, '-'))), v);
+      box.hidden = !(ds.length + xs.length); return mount(box, html`${menuDepartamentosHtml(ds)}${xs.length && ds.length ? html`<p class="lc-cmds-h">Trabajos por etapas</p>` : ''}${menuArrobaHtml(xs)}`);
     }
     const q = /^\/\S*$/.test(v.trim()) ? v.trim().toLowerCase() : null;
     const lst = q === null ? [] : COMANDOS.filter(([c]) => c.startsWith(q.normalize('NFD').replace(/[̀-ͯ]/g, '')));
@@ -364,7 +370,7 @@ export async function render(el, { me, sub = [], alive }) {
         ${datos.length ? html`<dl class="lm-prop-d">${datos.map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v) : String(v)}</dd>`)}</dl>` : ''}${estado}</div>`;
     });
     const cuerpo = x.t ? cuerpoDe(x, ult) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
-    return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${pasosHtml}<div class="lm-md">${cuerpo}</div>${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
+    return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${x.dep ? depChipHtml(x) : ''}${pasosHtml}<div class="lm-md">${cuerpo}</div>${!busy && x.pase ? paseHtml(x, i, me.role) : ''}${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
       ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${sinUi(x.t)}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
@@ -499,7 +505,10 @@ export async function render(el, { me, sub = [], alive }) {
     const gen = ++panelGen;
     // F4.5 · la ventana de agentes: una pestaña por trabajo ligado a la conversación (cerrar una pestaña no cierra el trabajo).
     const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = S.tab !== 'modo' && tabs.find((r) => r.id === S.tab);
-    const cab = tabs.length ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : 'modo') : '';
+    const herr = conHerramientas() && S.tab === 'herramientas';
+    const cab = tabs.length || conHerramientas() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : 'modo', { herramientas: conHerramientas() }) : '';
+    if (herr) return pintarHerramientas(box, cab);
+    if (S.herr) { S.herr.destruir(); S.herr = null; } // otra pestaña: el iframe se cierra (se vuelve a abrir con un pase nuevo)
     if (run) {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-av"></div>`);
       return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: alCambiar, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
@@ -644,7 +653,7 @@ export async function render(el, { me, sub = [], alive }) {
         else if (r.role === 'assistant') {
           for (const tc of r.tool_calls || []) pend.push({ fase: 'fin', nombre: String(tc.function?.name || tc.name || 'herramienta'), detalle: '' });
           const raw0 = textoDe(r.content); if (!raw0.trim()) continue;
-          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: r.pasos?.length ? r.pasos : pend, propuestas: r.propuestas || [] }); pend = [];
+          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: r.pasos?.length ? r.pasos : pend, propuestas: r.propuestas || [], ...(r.dep && departamentoDe(r.dep) ? { dep: r.dep, nivel: r.nivel || '', pase: leerPase(raw0) } : {}) }); pend = [];
         }
       }
       if (turno !== abrirGen) return; // ya se pidió otra conversación
@@ -713,7 +722,8 @@ export async function render(el, { me, sub = [], alive }) {
     }
     pintarCaja();
   }
-  async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false } = {}) {
+  // nivelForzado: el nivel que pide Code OS embebido con «codeos:al-chat» (p. ej. «Revisar» con otro nivel distinto al que construyó).
+  async function enviar(texto, { reintento = false, sinGiro = false, alDelta = null, hablado = false, nivelForzado = '' } = {}) {
     texto = String(texto || '').trim(); if (!texto && S.adjuntos.length) texto = 'Revisa el archivo adjunto.'; if (!texto || S.enVuelo) return;
     if (S.adjuntos.some((x) => x.data) && (quiereOrquestar(texto) || texto.startsWith('@'))) return toast('Primero envía la imagen con tu pregunta en el Chat; después encarga el trabajo al agente.', true);
     // F6 · «/orquesta …»: el enrutador (modelo barato del servidor) propone qué agente y qué cliente, y se enseña la
@@ -735,6 +745,14 @@ export async function render(el, { me, sub = [], alive }) {
         clearTimeout(reloj); avance.stream = false; S.enVuelo = null; if (alive()) pintarCentro();
       }
       return;
+    }
+    // «@estrategia …», «@marketing-creative …»: un departamento contesta aquí mismo, en el motor Code con sus lineamientos y su
+    // nivel. Si el nombre completo es el de un trabajo por etapas más largo («@Ads Management»), gana el trabajo.
+    const dp = me.role !== 'client' && leerDepartamento(texto);
+    if (dp) {
+      const palabra = texto.trim().slice(1).split(/\s+/)[0], ag = leerMenciones(texto, await listaAgentes());
+      const largo = ag && String(ag.agentes[0].nombre || '').replace(/\s+/g, '').length > palabra.length;
+      if (!largo) return turnoDepartamento(dp.dep, dp.resto, texto, { reintento, nivelForzado });
     }
     // F4.5 · «@agente …»: no va al servidor como turno; primero se platica el plan (la tarjeta «Así lo voy a trabajar»).
     if (!reintento && texto.startsWith('@')) {
@@ -767,8 +785,8 @@ export async function render(el, { me, sub = [], alive }) {
       const esCode = S.modo === 'code'; // Code: el motor es el puente del VPS; Claude Code trae su propio sistema
       const sistema = esCode ? '' : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
       // El router por tarea (Auto): el modelo caro solo donde un error sale caro; lo repetitivo, en el barato. Fijar un nivel lo apaga.
-      const ruta = esCode && (!S.nivelCode || S.nivelCode === 'auto') ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
-      const nivelCode = ruta ? ruta.nivel : S.nivelCode || 'nivel-medio';
+      const ruta = esCode && !nivelForzado && (!S.nivelCode || S.nivelCode === 'auto') ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
+      const nivelCode = nivelForzado || (ruta ? ruta.nivel : S.nivelCode || 'nivel-medio');
       if (esCode) S.ultimoNivelCode = nivelCode;
       if (ruta) { msg.notas.push(`${ruta.nombre} · ${ruta.nivel}: ${ruta.motivo}`); pintarUltimo(); }
       const turnoMotor = esCode ? (id, o) => turnoCode(id, { ...o, email: me.email, proyecto: slugAhora(), modelo: nivelCode, modo: 'code', titulo: tituloDe(texto) }) : (id, o) => B.turno(id, o);
@@ -808,6 +826,108 @@ export async function render(el, { me, sub = [], alive }) {
     B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
     return msg.err ? null : msg.t;
   }
+  // ---------- Los departamentos en el Chat (llm/departamentos.js) ----------
+  // Un turno de un departamento: su propia sesión del puente dentro de esta conversación («<conversación>::<dep>») con sus
+  // lineamientos como systemPrompt, el nivel del router por tarea (o el que fijaste) y lo hablado desde su última respuesta.
+  // Sus preguntas salen en el Chat (```pregunta); pasar a otro departamento es la tarjeta «Pasar a…» (leer antes de pasar).
+  async function turnoDepartamento(dep, pedido, texto, { reintento = false, nivelForzado = '' } = {}) {
+    if (S.enVuelo) return;
+    if (S.privado) return toast('Los departamentos trabajan en el servidor de Code: desactiva el modo privado.', true);
+    const slug = slugAhora();
+    if (!slug) {
+      if (dep.modo && modos.some((m) => m.id === dep.modo) && !modoDe(S.modo).pide) { cambiarModo(dep.modo); }
+      const ta = $('#llm-in', el); if (ta && !ta.value) { ta.value = texto; crecer(ta); }
+      toast(`Elige ${modoDe(S.modo).pide === 'marca' ? 'una marca' : 'un cliente'} para ${dep.depto} y vuelve a enviar`, true);
+      const b = el.querySelector('[data-a="menu-slug"]'); if (b) menuSlug(b); return;
+    }
+    if (!String(pedido || '').trim()) return toast(`¿Qué le pides a ${dep.depto}? Escríbelo después de @${dep.arroba}`, true);
+    const ctrl = new AbortController(); S.enVuelo = ctrl;
+    if (reintento) { if (S.msgs[S.msgs.length - 1]?.r === 'a') S.msgs.pop(); } else S.msgs.push({ r: 'u', t: texto, at: ahoraIso() });
+    const previo = S.msgs.slice(0, -1); // lo hablado antes de este pedido
+    const n = nivelDe(dep, pedido, { fijo: nivelForzado || S.nivelCode, ultimo: S.ultimoNivelDep?.[dep.id] || '' });
+    (S.ultimoNivelDep ||= {})[dep.id] = n.nivel; S.ultimoDep = dep.id;
+    const msg = { r: 'a', modo: S.modo, dep: dep.id, nivel: n.nivel, t: '', stream: true, tools: [], notas: [`${dep.depto} · ${n.nivel}: ${n.motivo}`] };
+    S.msgs.push(msg); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro();
+    let crudo = '';
+    try {
+      if (!S.sesion) { const id = idSesion(S.modo, slug); await B.crear({ id, titulo: tituloDe(texto) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+      const r = await turnoCode(`${S.sesion}::${dep.id}`, {
+        email: me.email, proyecto: slug, modelo: n.nivel, modo: 'code', titulo: `${dep.depto} · ${tituloDe(texto)}`,
+        sistema: sistemaDepartamento(dep, { cliente: slug }), mensaje: mensajeConContexto(pedido, contextoPara(previo, dep.id)), signal: ctrl.signal,
+        on: {
+          delta: (t) => { msg.t = textoVisible(t); pintarUltimo(); },
+          tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.id === p.id); if (prev) Object.assign(prev, { fase: p.fase }); else msg.tools.push(p); pintarUltimo(); },
+          nota: (x) => { msg.notas.push(x); pintarUltimo(); },
+          permiso: (p, responder) => { (msg.permisos ||= []).push({ ...p, estado: '', responder }); pintarUltimo(); },
+        },
+      });
+      crudo = r.texto || '';
+      msg.t = textoVisible(crudo); msg.tarjetas = leerTarjetas(crudo); msg.pase = leerPase(crudo);
+      // Lo hablado queda en la conversación del OS (el puente guarda lo suyo): así se retoma desde cualquier compu.
+      api(`chat/sesiones/${enc(S.sesion)}/departamento`, { method: 'POST', body: { dep: dep.id, nivel: n.nivel, pedido: texto, respuesta: crudo } }).catch(() => {});
+    } catch (e) {
+      msg.err = e.name === 'AbortError' ? (msg.t ? 'Detenido.' : 'Detenido antes de responder.') : e.status === 503 ? (console.warn('Departamentos: /api/code/pase respondió 503 (falta CODEOS_PASE_SECRET en Vercel)', e), 'Code no está configurado todavía. Avísale al CEO.') : e.message || `No pude hablar con ${dep.depto}.`;
+    } finally { S.enVuelo = null; msg.stream = false; msg.at = ahoraIso(); }
+    if (!alive()) return;
+    pintarCentro(); pintarPanel(); S.herr?.contexto?.();
+    B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+  }
+  // «Abrir y leer»: el resultado completo en una hoja. Recién entonces se puede pasar (puedePasar).
+  function leerResultado(i) {
+    const x = S.msgs[i]; if (!x?.pase) return;
+    const d = departamentoDe(x.dep), a = departamentoDe(x.pase.a);
+    el.querySelector('.llm-sheet')?.remove();
+    const hoja = document.createElement('div'); hoja.className = 'llm-sheet'; hoja.setAttribute('role', 'dialog'); hoja.setAttribute('aria-label', 'Resultado para leer');
+    mount(hoja, html`<div class="lsh"><header><b>${d ? d.depto : 'Resultado'} → ${a ? a.depto : ''}</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
+      <section class="lm-md">${md(x.t)}</section>${x.pase.resumen ? html`<section><span class="lp-k">Lo que se pasa</span><div class="lm-md">${md(x.pase.resumen)}</div></section>` : ''}</div>`);
+    R.append(hoja);
+    x.leido = true; pintarHilo();
+  }
+  function pasarResultado(i) {
+    const x = S.msgs[i]; if (!x?.pase) return;
+    const no = puedePasar({ de: x.dep, a: x.pase.a, leido: Boolean(x.leido), rol: me.role }); if (no) return toast(no, true);
+    const ta = $('#llm-in', el); if (!ta) return;
+    ta.value = textoPase(x.pase, x.dep); crecer(ta); ta.focus(); x.pasado = true; pintarHilo();
+  }
+
+  // ---------- La pestaña «Herramientas»: Code OS embebido (llm/herramientas-code.js, contrato code-os/ui/docs/embebido.md) ----------
+  const conHerramientas = () => me.role !== 'client';
+  const contextoHerr = () => ({
+    cliente: slugAhora() || undefined,
+    sesion: (S.sesion && (sesionCode(me.email, S.sesion) || (S.ultimoDep && sesionCode(me.email, `${S.sesion}::${S.ultimoDep}`)))) || undefined,
+    rol: rolCodeOS({ role: me.role, roles: me.roles || [], title: me.title || '', modo: S.modo }),
+    tema: document.documentElement.dataset.theme === 'light' ? 'light' : 'dark',
+    nivel: (S.ultimoDep && S.ultimoNivelDep?.[S.ultimoDep]) || S.ultimoNivelCode || undefined,
+    aislada: false,
+  });
+  // «codeos:al-chat»: el texto va a la caja; con enviar, se manda ya. Con un nivel, solo se respeta en Code o con un departamento.
+  function alChatDesdeCode({ texto, enviar: mandar, modelo }) {
+    const ta = $('#llm-in', el); if (!ta || !alive()) return;
+    ta.value = texto; crecer(ta); ta.focus();
+    if (!mandar) return;
+    if (modelo && S.modo !== 'code' && !leerDepartamento(texto)) return toast(`Code pide ${modelo}: cambia a Code (o llama a un departamento con @) y envíalo`, true);
+    ta.value = ''; crecer(ta); enviar(texto, { nivelForzado: modelo });
+  }
+  // «codeos:juicio»: una herramienta de Code OS pide un juicio rápido de Laya. El OS habla con el puente local de esta persona;
+  // sin puente avisa una vez y la herramienta sigue (no bloquea).
+  let avisoLaya = false;
+  async function juicioParaCode(puerta, entrada) {
+    const { juicioRapido } = await import('../laya-ui.js');
+    const r = await juicioRapido(puerta, entrada);
+    if (r.sinPuente && !avisoLaya) { avisoLaya = true; toast(r.aviso); }
+    return r;
+  }
+  async function pintarHerramientas(box, cab) {
+    if (S.herr?.iframe?.isConnected && box.contains(S.herr.iframe)) { S.herr.contexto(); return; }
+    S.herr?.destruir?.(); S.herr = null;
+    mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-herr"><p class="lp-mut" style="padding:16px">Abriendo las herramientas…</p></div>`);
+    const caja = $('.llm-herr', box);
+    const ctl = await montarHerramientas(caja, { pase: (forzar) => paseCode(forzar), contexto: contextoHerr, alChat: alChatDesdeCode, juicio: juicioParaCode, alError: (m) => { if (caja.isConnected) mount(caja, html`<p class="lp-mut" style="padding:16px">${m}</p>`); } });
+    if (!ctl) return;
+    if (!caja.isConnected || S.tab !== 'herramientas') return ctl.destruir();
+    S.herr = ctl;
+  }
+
   // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
   async function conversar() {
     if (document.querySelector('.vz')) return;
@@ -843,7 +963,7 @@ export async function render(el, { me, sub = [], alive }) {
   const runDe = (id) => S.agentes.find((r) => r.id === id);
   function ponerRun(run) { const k = S.agentes.findIndex((r) => r.id === run.id); if (k >= 0) S.agentes[k] = run; else S.agentes.push(run); }
   async function cargarAgentesDe(sesion) {
-    S.agentes = []; S.tab = 'modo'; S.cerradas = new Set();
+    S.agentes = []; S.tab = S.tab === 'herramientas' ? 'herramientas' : 'modo'; S.cerradas = new Set();
     if (!sesion) return;
     try {
       const j = await api(`chat/sesiones/${enc(sesion)}?desde=999999`);
@@ -985,7 +1105,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'arroba') return elegirArroba(t.dataset.n);
     if (a === 'plan-empezar') return empezarPlan(+t.dataset.i);
     if (a === 'plan-cancelar') { const p = S.msgs[+t.dataset.i]?.p; if (p) { p.estado = 'cancelado'; pintarHilo(); } return; }
-    if (a === 'ag-tab') { S.tab = t.dataset.run === 'modo' ? 'modo' : t.dataset.run; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
+    if (a === 'dep-leer') return leerResultado(+t.dataset.i);
+    if (a === 'dep-pasar') return pasarResultado(+t.dataset.i);
+    if (a === 'ag-tab') { S.tab = t.dataset.run; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
     if (a === 'ag-cerrar') { S.cerradas = S.cerradas || new Set(); S.cerradas.add(t.dataset.run); if (S.tab === t.dataset.run) S.tab = 'modo'; return pintarPanel(); }
     if (a === 'ag-doc' || a === 'ag-ajuste') { const r = runDe(t.dataset.run); if (r) abrirDocumento(r, +t.dataset.n, ctxDoc()); return; }
     if (a === 'ag-resp' || a === 'ag-aporte') {

@@ -1,5 +1,5 @@
 // App 01 · Marca › Crear › Formatos y Creación: lo que comparten el servidor (api/_lib/creacion.js) y la interfaz.
-// Las plantillas base salen del método de ④ Creatividad (cr-estructura-reel y cr-estructura-story):
+// Las plantillas base salen del método de ④ Creatividad (mc-campanas-piezas):
 //   Reel: HOOK (0-3 s, legible en mute, sin saludo) · BODY · PAYOFF (cierra lo que abrió el hook) · CTA (una acción de su etapa).
 //         Seis esqueletos: A cámara · Lista · Antes y después · Proceso · Historia · Reel estático.
 //   Story: cuatro funciones (Gancho · Contexto · Interacción · Acción) y cinco secuencias tipo.
@@ -34,7 +34,7 @@ export const BASE = [
   { id: 'base-ficha', base: true, tipo: 'ficha', nombre: 'Ficha de referente', esqueleto: 'Ficha', mejor_para: 'Desglosar un post que funciona para replicarlo',
     partes: [T('Hook', '', 'Las palabras y la imagen de los primeros 3 segundos.'), T('Estructura', '', 'Los tramos, en orden, con sus tiempos.'), T('Por qué funciona', '', 'Qué retiene y por qué a este público.'), T('Cómo lo adaptamos', '', 'La misma estructura con nuestra marca y nuestro avatar.')] },
 ];
-// El esqueleto que mejor sirve por nivel de consciencia (cr-estructura-reel §2B).
+// El esqueleto que mejor sirve por nivel de consciencia (mc-campanas-piezas §2B).
 export const ESQ_POR_NIVEL = [['Historia', 'Lista'], ['A cámara', 'Proceso'], ['Proceso', 'Antes y después'], ['Antes y después', 'A cámara'], ['A cámara', 'Reel estático']];
 export const CTA_POR_ETAPA = { TOF: 'engagement', MOF: 'tráfico o DM', BOF: 'directo (DM, WhatsApp, enlace)' };
 
@@ -132,7 +132,7 @@ export function promptGuion({ marca, carpeta, formato, guion, avatar, inspo, mes
   const n = guion.consciencia, etapa = etapaDeNivel(n);
   return [
     `Eres ④ Creatividad de Inherent. Trabajas en SOLO LECTURA: no crees ni cambies archivos. Escribe el guion de una pieza de ${marca}.`,
-    `Lee antes, si existen: inherent/00-PRINCIPIOS.md, ${carpeta}/00-onboarding/plan-contratado.md (el alcance es el techo), la voz de la marca en ${carpeta}/02-marca/, el brief del mes en ${carpeta}/04-contenido/${mes}/brief-del-ciclo.md y agents/04-creative/brain/skills/${formato.tipo === 'story' ? 'cr-estructura-story' : 'cr-estructura-reel'}/SKILL.md.`,
+    `Lee antes, si existen: inherent/00-PRINCIPIOS.md, ${carpeta}/00-onboarding/plan-contratado.md (el alcance es el techo), la voz de la marca en ${carpeta}/02-marca/, el brief del mes en ${carpeta}/04-contenido/${mes}/brief-del-ciclo.md y agents/03-marketing-creative/brain/skills/${formato.tipo === 'story' ? 'mc-campanas-piezas' : 'mc-campanas-piezas'}/SKILL.md.`,
     '',
     `Formato: ${formato.nombre}${formato.mejor_para ? ` (mejor para: ${formato.mejor_para})` : ''}. ${formato.tipo === 'reel' ? `Duración del canal: ${DURACION}. Si no cabe, se corta el BODY, nunca el HOOK, el PAYOFF ni el CTA.` : 'Cada frame se entiende solo.'}`,
     'Tramos:', ...(formato.partes || []).map((p) => `- ${p.nombre}${p.seg ? ` (${p.seg})` : ''}: ${p.que}`),

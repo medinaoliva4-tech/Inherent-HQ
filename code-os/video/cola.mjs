@@ -6,7 +6,8 @@ import { spawn as spawnProceso } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { argsDerivada, argsEscena, argsUnir, argsFinal, assTexto, nombreTipografia, correr as correrFfmpeg, sondear as sondearFfprobe } from './ffmpeg.mjs';
 import { normalizarCorte, duracionCorte, FORMATOS, ErrorCorte } from './corte.mjs';
-import { aplicarEstilo as aplicarEstiloACorte } from './estilos.mjs';
+import { aplicarEstilo as aplicarEstiloACorte, plantillaPara } from './estilos.mjs';
+import { aplicarMarca } from './marcas.mjs';
 import { desglosar, desgloseAReceta } from './desglose.mjs';
 import { cargarReferencias, guardarReferencia } from './referencias.mjs';
 
@@ -215,7 +216,8 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
       writeFileSync(r, JSON.stringify(n, null, 2));
       return n;
     },
-    leer(id) { const r = rutaCorte(id); if (!existsSync(r)) throw new ErrorEntrada(`no existe el corte ${id}`); return JSON.parse(readFileSync(r, 'utf8')); },
+    leer(id) { const r = rutaCorte(id); if (!existsSync(r)) throw new ErrorEntrada(`no existe el video ${id}`); return JSON.parse(readFileSync(r, 'utf8')); },
+    lista: () => readdirSync(join(datos, 'cortes')).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(join(datos, 'cortes', f), 'utf8'))).sort((a, b) => String(b.actualizado ?? '').localeCompare(String(a.actualizado ?? ''))),
   };
 
   queueMicrotask(siguiente);
@@ -227,24 +229,65 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
     },
     fuentes: () => listarFuentes(raiz),
     /** Aplica un estilo del catálogo al corte guardado; los recursos (rutas) tienen que existir en la raíz. */
-    aplicarEstilo(idCorte, estilo, recursos = {}, esperaVersion) {
+    aplicarEstilo(idCorte, estilo, recursos = {}, esperaVersion, { marca } = {}) {
       for (const lista of Object.values(recursos ?? {})) for (const r of [].concat(lista)) fuente(r);
       const { corte, pendientes } = aplicarEstiloACorte(cortes.leer(idCorte), estilo, recursos);
-      return { corte: cortes.guardar(corte, { esperaVersion }), pendientes };
+      // con marca: sus tipografías, colores y música mandan sobre lo que traiga la receta
+      return { corte: cortes.guardar(marca ? aplicarMarca(corte, marca) : corte, { esperaVersion }), pendientes };
+    },
+    /**
+     * Cambiar una escena desde el desglose: otra receta (estilo), otra transición o quitar/poner un efecto del catálogo.
+     * cambio: { estilo?: receta, transicion?: itemCatalogo, efecto?: itemCatalogo, quitar?: bool }
+     */
+    cambiarEscena(idCorte, i, cambio, esperaVersion, { marca } = {}) {
+      const c = cortes.leer(idCorte);
+      if (!c.escenas[i]) throw new ErrorEntrada(`el video no tiene escena ${i + 1}`);
+      let e = c.escenas[i];
+      if (cambio.estilo) {
+        const { corte: uno } = aplicarEstiloACorte({ ...c, escenas: [e] }, { ...cambio.estilo, formato: c.formato, escenas_plantilla: [plantillaPara(cambio.estilo, i, c.escenas.length)] }, cambio.recursos ?? {});
+        e = { ...uno.escenas[0], fin: e.fin }; // la escena conserva su largo
+      }
+      for (const item of [cambio.transicion, cambio.efecto].filter(Boolean)) {
+        if (!item.render) throw new ErrorEntrada(`«${item.nombre}» todavía no tiene render: pídelo como nota al editor`);
+        if (item.id === 'caja') { // texto en caja: propiedad de la capa de texto, no un estilo
+          const t = e.capas.find((x) => x.tipo === 'texto');
+          if (!t) throw new ErrorEntrada('«Texto en caja» necesita un texto en la escena');
+          e = { ...e, capas: e.capas.map((x) => (x === t ? { ...x, caja: cambio.quitar ? null : (x.caja ?? '#f3ead8'), color: cambio.quitar ? x.color : '#141210' } : x)) };
+          continue;
+        }
+        if (!item.receta) throw new ErrorEntrada(`«${item.nombre}» se pone para todo el video, no por escena`);
+        const r = item.receta;
+        const igual = (s) => s.tipo === r.tipo && (r.tipo !== 'animacion-capa' || s.animacion === r.animacion);
+        const sinEste = e.estilos.filter((s) => !igual(s));
+        if (cambio.quitar) { e = { ...e, estilos: sinEste }; continue; }
+        const conCapa = ['animacion-capa', 'detras-de-persona', 'animacion-texto'].includes(r.tipo);
+        const capa = r.tipo === 'animacion-texto' ? e.capas.find((x) => x.tipo === 'texto') : e.capas.find((x) => x.tipo === 'imagen');
+        if (conCapa && !capa) throw new ErrorEntrada(`«${item.nombre}» necesita ${r.tipo === 'animacion-texto' ? 'un texto' : 'una imagen'} en la escena`);
+        e = { ...e, estilos: [...sinEste, { ...r, ...(conCapa ? { capa: capa.id } : {}) }] };
+      }
+      c.escenas[i] = e;
+      return cortes.guardar(marca ? aplicarMarca(c, marca) : c, { esperaVersion });
+    },
+    /** Cambiar la música del video (ruta, volumen, ducking); null la quita. */
+    cambiarMusica(idCorte, musica, esperaVersion) {
+      if (musica?.ruta) fuente(musica.ruta);
+      return cortes.guardar({ ...cortes.leer(idCorte), musica: musica?.ruta ? musica : null }, { esperaVersion });
     },
     mascara: (clip) => { fuente(clip); return encolar('mascara', { clip }); },
     desglose: (ruta, referencia = null) => { fuente(ruta); return encolar('desglose', { ruta, referencia }); },
     referencias: () => cargarReferencias({ datos: dirReferencias }),
     agregarReferencia: (r) => guardarReferencia(dirReferencias, { origen: 'propio', ...r }),
     /** «Imitar este»: desglose de la referencia → receta → se aplica al corte. Sin desglose, usa su estilo sugerido. */
-    imitar(idReferencia, idCorte, { estilos, recursos = {}, version } = {}) {
+    imitar(idReferencia, idCorte, { estilos, recursos = {}, version, marca } = {}) {
       const r = cargarReferencias({ datos: dirReferencias }).find((x) => x.id === idReferencia);
       if (!r) throw new ErrorEntrada(`no existe la referencia ${idReferencia}`);
       const receta = r.breakdown
         ? desgloseAReceta(r.breakdown, { id: `imitar-${r.id}`, nombre: `Imitar: ${r.titulo}`.slice(0, 80), prompt: `Imita «${r.titulo}» (${r.fuente_url ?? r.id}) en este video.` })
         : estilos.find((e) => e.id === r.estilo_sugerido);
       if (!receta) throw new ErrorEntrada(`la referencia ${r.id} no tiene desglose ni un estilo sugerido que exista`);
-      return { ...this.aplicarEstilo(idCorte, receta, recursos, version), receta, metodo: r.breakdown ? 'desglose' : 'estilo-sugerido' };
+      const x = this.aplicarEstilo(idCorte, receta, recursos, version, { marca });
+      const corte = cortes.guardar({ ...x.corte, imita: r.id }, { esperaVersion: x.corte.version });
+      return { ...x, corte, receta, metodo: r.breakdown ? 'desglose' : 'estilo-sugerido' };
     },
     renderizar: (idCorte) => { const c = cortes.leer(idCorte); return encolar('corte', { corte: c, idCorte, version: c.version }); },
     trabajo: (id) => trabajos.get(id) ?? null,

@@ -1,4 +1,4 @@
-// Pruebas de Inherent AI (#/ai, antes «AI Harness»): la lista fija de los 12 agentes del repo (public/js/harness/agentes.js, ya sin
+// Pruebas de Inherent AI (#/ai, antes «AI Harness»): la lista fija de los 9 agentes del repo (public/js/harness/agentes.js, ya sin
 // pantalla), el menú de app.js trae Chat, Agent Area y MCPs, el router de harness.js solo conoce la portada y «mcps»; solo LEE
 // (el servidor, los trabajos y las conexiones), sin escrituras ni costos. Ambas páginas cargan con el servidor en línea y fuera de
 // línea (con un navegador de mentira). Hermes se retiró: no aparece en ninguna de las dos.
@@ -16,18 +16,18 @@ const leer = (r) => fs.readFileSync(path.join(RAIZ, r), 'utf8');
 const SRC = leer('public/js/screens/harness.js');
 
 // ---------- Los agentes ----------
-await t('agentes.js trae los 12 agentes del repo, con id y número únicos y todos sus campos', () => {
-  assert.equal(AGENTES.length, 12);
-  assert.equal(new Set(AGENTES.map((a) => a.id)).size, 12, 'ids únicos');
-  assert.equal(new Set(AGENTES.map((a) => a.n)).size, 12, 'números únicos');
+await t('agentes.js trae los 9 agentes del repo (PR #297), con id y número únicos y todos sus campos', () => {
+  assert.equal(AGENTES.length, 9);
+  assert.equal(new Set(AGENTES.map((a) => a.id)).size, 9, 'ids únicos');
+  assert.equal(new Set(AGENTES.map((a) => a.n)).size, 9, 'números únicos');
   for (const a of AGENTES) for (const k of ['n', 'id', 'nombre', 'depto', 'hace', 'ventana', 'carpeta']) assert.ok(String(a[k] || '').trim(), `${a.id}: falta ${k}`);
-  assert.deepEqual(AGENTES.map((a) => a.n), ['00', '01', '01.2', '02', '03', '04', '05', '06', '07', '08', '09', '10']);
+  assert.deepEqual(AGENTES.map((a) => a.n), ['00', '01', '02', '03', '04', '05', '06', '07', '08']);
   assert.equal(agenteDe('strategy').depto, '① Strategy');
   assert.equal(agenteDe('nada'), null);
 });
 await t('cada agente con modo apunta a un modo real del Chat y cada carpeta existe en el repo (si el repo está)', () => {
   for (const a of AGENTES) assert.ok(!a.modo || MODOS.some((m) => m.id === a.modo), `${a.id}: modo ${a.modo}`);
-  assert.deepEqual(agentesDeModo('produccion').map((a) => a.id), ['production', 'video-editing']);
+  assert.deepEqual(agentesDeModo('produccion').map((a) => a.id), ['production']);
   const repo = path.join(RAIZ, '..', 'agents');
   if (fs.existsSync(repo)) { const hay = fs.readdirSync(repo).filter((d) => /^\d/.test(d)); for (const a of AGENTES) assert.ok(hay.includes(a.carpeta.split('/')[1]), `${a.carpeta} no está en agents/`); assert.equal(hay.length, AGENTES.length, 'agents/ y la lista fija difieren'); }
 });

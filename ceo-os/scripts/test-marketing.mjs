@@ -327,13 +327,13 @@ t('tareasDe: una tarea por siguiente acción, con su fecha y su departamento, si
 });
 
 // ---------- el pedido a la IA ----------
-t('prompt: pide su BLOQUE y criterios, mk-loop, «cada afirmación cita un KPI», nada inventado, y mide < 5 000 caracteres', () => {
+t('prompt: pide su BLOQUE y criterios, resultados, «cada afirmación cita un KPI», nada inventado, y mide < 5 000 caracteres', () => {
   const kpis = kpisCompletos();
   for (const [n, ctx] of [['normal', { ...CTX, mes: MES, kpis }], ['sin kpis', CTX], ['grande', GRANDE], ['vacío', {}], ['nulo', null], ['basura', 'x']]) {
     const p = R.prompt(ctx);
     assert.ok(p.length < 5000, `${n}: ${p.length}`);
     assert.ok(p.includes(`${F}${R.BLOQUE}`) && p.includes(`${F}criterios`), `${n}: sus dos bloques`);
-    assert.match(p, /mk-loop/, n); assert.match(p, /Cada afirmación cita un KPI/, n); assert.match(p, /Nada se inventa ni se estima/, n); assert.match(p, /Nunca 0 por un dato que falta/, n);
+    assert.match(p, /resultados/, n); assert.match(p, /Cada afirmación cita un KPI/, n); assert.match(p, /Nada se inventa ni se estima/, n); assert.match(p, /Nunca 0 por un dato que falta/, n);
     assert.match(p, /por función, por pilar y por canal/, n); assert.match(p, /3 a 5 siguientes acciones/, n); assert.match(p, /⑩ Ads o el OK del CEO/, n);
     assert.match(p, /inherent\/06-ECONOMIA\.md/, n); assert.match(p, /Nunca leas ni cites/, n);
     assert.ok(p.includes('alcance, views, er, leads, publicadas, planeadas, gasto, presupuesto, cpa, roas'), `${n}: la lista de KPIs`);

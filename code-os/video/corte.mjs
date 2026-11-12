@@ -1,6 +1,7 @@
 // El «corte»: el proyecto de video como JSON de escenas. Lo escribe el agente (primer corte),
 // lo corrige el humano en Retoque y lo renderiza ffmpeg. Un solo formato para los tres.
 //
+// El «corte» es el VIDEO: { id, titulo, formato, version, marca, imita, musica, subtitulos, notas, escenas[] }
 // {
 //   id, titulo, formato: '9:16'|'1:1'|'16:9', version,
 //   musica: { ruta, volumen: 0.25, inicio: 0 } | null,      // de todo el video
@@ -101,7 +102,8 @@ function normalizarEscena(e, i) {
   for (const t of TIPOS_ESTILO) if (estilos.filter((s) => s.tipo === t).length > 1 && !REPETIBLES.has(t)) throw new ErrorCorte(`escena ${esc}: el estilo ${t} está repetido`);
   return {
     id: e.id ?? nuevoId('e'), clip: e.clip, inicio, fin, nota: e.nota ?? '',
-    referencia: typeof e.referencia === 'string' && e.referencia ? e.referencia : null, // la escena de la referencia que imita (desglose en vivo)
+    referencia: typeof e.referencia === 'string' && e.referencia ? e.referencia : null, // la escena de la referencia que imita
+    estilo: typeof e.estilo === 'string' && e.estilo ? e.estilo : null, // la receta del catálogo que se le aplicó
     texto: principal?.texto ?? null, fuente: principal?.fuente ?? null,
     capas: capas.filter((c) => c.tipo !== 'texto' || c.texto.trim()),
     estilos,
@@ -122,9 +124,12 @@ export function normalizarCorte(c) {
     titulo: c.titulo ?? 'Corte sin título',
     formato,
     version: num(c.version, 1),
-    musica: m && m.ruta ? { ruta: m.ruta, volumen: entre(num(m.volumen, 0.25), 0, 1), inicio: Math.max(0, num(m.inicio, 0)) } : null,
+    musica: m && m.ruta ? { ruta: m.ruta, volumen: entre(num(m.volumen, 0.25), 0, 1), inicio: Math.max(0, num(m.inicio, 0)), ducking: !!m.ducking } : null,
     subtitulos: typeof c.subtitulos === 'string' && c.subtitulos ? c.subtitulos : null,
     estilo: typeof c.estilo === 'string' && c.estilo ? c.estilo : null, // el estilo del catálogo que se aplicó
+    marca: typeof c.marca === 'string' && c.marca ? c.marca : null, // su style menu manda en tipografías, colores, música y lo permitido
+    imita: typeof c.imita === 'string' && c.imita ? c.imita : null, // id de la referencia que imita
+    notas: (Array.isArray(c.notas) ? c.notas : []).filter((x) => x && String(x.texto ?? '').trim()).map((x) => ({ t: Math.max(0, num(x.t, 0)), texto: String(x.texto).slice(0, 500) })), // notas con marca de tiempo para el agente
     origen: c.origen ?? null,
     escenas,
   };

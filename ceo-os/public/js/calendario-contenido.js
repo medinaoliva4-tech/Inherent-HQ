@@ -7,7 +7,7 @@ import { estadoDe } from './element.js';
 import { campanasDelMes } from './campanas.js';
 const core = typeof document === 'undefined' ? null : await import('./core.js');
 
-// Los 5 niveles de consciencia (Schwartz), escritos literal como en ③ Marketing (mk-calendario § 1A).
+// Los 5 niveles de consciencia (Schwartz), escritos literal como en ③ Marketing (mc-campanas-piezas § 1A).
 export const CONSCIENCIA = ['Inconsciente', 'Consciente del problema', 'Consciente de la solución', 'Consciente del producto', 'Listo para comprar'];
 export const CONSCIENCIA_CORTA = ['Inconsciente', 'Problema', 'Solución', 'Producto', 'Listo'];
 export const FORMATOS = ['Reel', 'TikTok', 'Carrusel', 'Story', 'Estático', 'YouTube'];

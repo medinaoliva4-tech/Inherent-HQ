@@ -163,7 +163,7 @@ async function reglasPieza(b, cur) {
   if (!b.profile || !/^\d{4}-\d{2}$/.test(mes) || String(cur?.date || '').slice(0, 7) === mes) return null;
   const root = b.profile === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.profile}`;
   if (!/^[\w-]+$/.test(b.profile) || !(await readFile(`${root}/00-onboarding/plan-contratado.md`))) return null;
-  // El brief del ciclo vale en las dos rutas: la de siempre y la del manual (04-contenido/<mes>/ideas/, agents/04-creative).
+  // El brief del ciclo vale en las dos rutas: la de siempre y la del manual (04-contenido/<mes>/ideas/, agents/03-marketing-creative).
   if ((await readFile(`${root}/04-contenido/${mes}/brief-del-ciclo.md`)) || (await readFile(`${root}/04-contenido/${mes}/ideas/brief-del-ciclo.md`))) return null;
   const bo = await db.get('settings', 'brief_open').catch(() => null);
   if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
@@ -910,7 +910,7 @@ on('PUT', 'ads/accounts/:slug', async (req, res) => {
   await db.upsert('accounts', 'acc-' + slug, { ads }, u.email);
   res.json({ ok: true, ads });
 });
-// Lo que ⑩ Ads dejó escrito en el repo para un cliente: el aprendizaje vigente (lo escribe ad-loop al cerrar el ciclo)
+// Lo que ⑩ Ads dejó escrito en el repo para un cliente: el aprendizaje vigente (lo escribe resultados al cerrar el ciclo)
 // y si ya existen el plan y el reporte de pauta. Sin costos ni márgenes: son archivos del área 06-pauta del cliente.
 on('GET', 'repo/client/:slug/pauta', async (req, res) => {
   const u = await guardAny(req, res, ['clients', 'work']); if (!u) return;

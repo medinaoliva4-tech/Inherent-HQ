@@ -331,9 +331,9 @@ t('escenarios · el prompt manda el cambio de precio a Strategy, recomienda el m
   assert.match(p, /modo privado/);
   assert.match(p, /100m-money-models/);
   assert.match(p, /LTV, LTGP:CAC ni caja/, 'le dice a la IA que no calcule');
-  const base = join(RAIZ, 'agents/01-strategy/brain/skills/hormozi-brain/references/books');
+  const base = join(RAIZ, 'ceo-os/data/hormozi/books');
   if (!existsSync(base)) return console.log('  (omitida la revisión de rutas: no hay agents/ en esta copia)');
-  const completas = [...p.matchAll(/agents\/[\w./-]+\.md/g)].map((x) => x[0]);
+  const completas = [...p.matchAll(/ceo-os\/data\/hormozi\/[\w./-]+\.md/g)].map((x) => x[0]);
   assert.ok(completas.length >= 2);
   for (const r of completas) assert.ok(existsSync(join(RAIZ, r)), r);
   const carpetas = [...new Set(completas.map((r) => dirname(join(RAIZ, r))))];

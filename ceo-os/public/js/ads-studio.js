@@ -60,7 +60,7 @@ export const siguientes = (estado) => Object.keys(PASOS).filter((k) => k.startsW
 export function promptVariaciones({ marca, carpeta, madre, avatares = [], plataformas = ['meta', 'google'], n = 3 }) {
   const av = avatares.length ? avatares.map((a) => `- ${a.nombre}${a.resumen ? `: ${a.resumen}` : ''}`).join('\n') : '- (sin avatares aprobados: escribe para el cliente ideal del brief)';
   return [
-    `Eres ⑩ Ads con la skill ad-creativos. Escribe variaciones de anuncio para ${marca} a partir de esta pieza madre.`,
+    `Eres ⑩ Ads con la skill ad-plan. Escribe variaciones de anuncio para ${marca} a partir de esta pieza madre.`,
     `Lee primero la voz de la marca en ${carpeta}/02-marca/ (voz, territorio y lo prohibido) y el brief más reciente en ${carpeta}/04-contenido/. Solo lee: no escribas archivos.`,
     '',
     `## La pieza madre (${madre.tipo === 'guion' ? 'un guion' : madre.tipo === 'pieza' ? 'una pieza que funcionó' : 'lo que pidió el equipo'})`,
@@ -99,7 +99,7 @@ export function leerVariaciones(texto, avatares = []) {
   }).filter((v) => v.title);
 }
 
-// La tarea para ⑩ Ads cuando el CEO lanza: lo aprobado, el presupuesto y el gate ya dado. ⑩ lanza con ad-lanzamiento.
+// La tarea para ⑩ Ads cuando el CEO lanza: lo aprobado, el presupuesto y el gate ya dado. ⑩ lanza con ad-corrida.
 export function tareaLanzar({ marca, variantes, presupuesto, fechas, por, en }) {
   const lineas = variantes.map((v, i) => `${i + 1}. [${v.plataforma === 'meta' ? 'Meta' : 'Google'} · ${v.formato}${v.avatar?.nombre ? ` · ${v.avatar.nombre}` : ''}] ${v.title}`);
   return {
@@ -110,7 +110,7 @@ export function tareaLanzar({ marca, variantes, presupuesto, fechas, por, en }) 
       '',
       ...lineas,
       '',
-      'Lánzalas con /ads (capa ad-lanzamiento): revisa tracking, presupuesto diario y destino antes de lanzar. Cualquier cambio de presupuesto vuelve al CEO.',
+      'Lánzalas con /ads (capa ad-corrida): revisa tracking, presupuesto diario y destino antes de lanzar. Cualquier cambio de presupuesto vuelve al CEO.',
       'Al lanzar, marca cada variación como «Lanzada» en Inherent OS (Marca › Ads) con el link de la campaña.',
       `Aprobado por ${por}.`,
     ].join('\n'),

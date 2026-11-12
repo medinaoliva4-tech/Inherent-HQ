@@ -111,7 +111,7 @@ export function prompt(ctx) {
   const extra = dx || ar ? [dx ? resumenSalud(dx.contenido) : '', ar ? resumenArbol(ar.contenido) : ''].filter(Boolean).map((x) => `Entrada aprobada · ${x}`) : [`Entradas: ${SIN_DATOS}: salen del Diagnóstico y del Árbol de la brecha, que aún no están aprobados`];
   const cuerpo = [
     'MÉTODO',
-    `Lee en hormozi-brain: ${RUTAS_HORMOZI.cinco_estrellas} y ${e ? e.ruta : RUTAS_HORMOZI.overview}. Semillas: «${SEMILLAS[0][0]}» (${SEMILLAS[0][1]}) y «${SEMILLAS[1][0]}» (${SEMILLAS[1][1]})`,
+    `Lee en la biblioteca de Hormozi: ${RUTAS_HORMOZI.cinco_estrellas} y ${e ? e.ruta : RUTAS_HORMOZI.overview}. Semillas: «${SEMILLAS[0][0]}» (${SEMILLAS[0][1]}) y «${SEMILLAS[1][0]}» (${SEMILLAS[1][1]})`,
     `RECORRIDO: ${ETAPAS_CAMINO.map((x) => x.id).join(' → ')}. Dos listas: hoy (cómo se hace de verdad) y optimizado (el mismo camino mejorado); un paso que ya existe hoy conserva su id.`,
     `CADA PASO: id, nombre, etapa (${ETAPAS_CAMINO.map((x) => x.id).join('|')}), rol (el puesto, nunca una persona), minutos de trabajo humano, modo (manual|auto), perdida (% de leads o ventas que se pierden ahí, 0-100), dolor (qué se cae) y fundador (true si depende del fundador). Sin dato, minutos y perdida van null = ⚠️ SIN DATOS.`,
     'Busca primero dónde se pierde la venta: la respuesta, el seguimiento y el cobro. Lo que el material recomiende y la ficha no incluya va FUERA DEL ALCANCE.',

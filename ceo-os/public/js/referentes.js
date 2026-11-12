@@ -1,5 +1,5 @@
 // Fase 4 · Investigación: lo puro (sin DOM ni red) que comparten la app y el servidor.
-//   categorías → los 5 niveles de cr-fuentes (agents/04-creative/brain/skills/cr-fuentes)
+//   categorías → los 5 niveles de mc-radar (agents/03-marketing-creative/brain/skills/mc-radar)
 //   cuenta     → un @ o un link de perfil de IG, TikTok, YouTube o LinkedIn → { red, handle, url }
 //   clavePost  → la misma publicación vista con dos links distintos es la misma (sin duplicados)
 //   resonancia → el rendimiento de un post contra el PROMEDIO DE SU PROPIA CUENTA (el «multiplicador»)
@@ -16,9 +16,9 @@ export const CAT_KEYS = CATS.map(([k]) => k);
 export const catNombre = (k) => CATS.find(([x]) => x === k)?.[1] || '';
 // El nombre viejo «referente» (antes de los 5 niveles) se lee como aspiracional.
 export const catDe = (kind) => (kind === 'referente' ? 'referente-aspiracional' : CAT_KEYS.includes(kind) ? kind : 'competencia');
-// cr-fuentes: 5 cuentas por nivel, 25 por cliente.
+// mc-radar: 5 cuentas por nivel, 25 por cliente.
 export const POR_CAT = 5;
-// cr-fuentes: un orgánico es ganador si rinde 2x o más el promedio de su cuenta.
+// mc-radar: un orgánico es ganador si rinde 2x o más el promedio de su cuenta.
 export const GANADOR = 2;
 
 export const REDES = [['instagram', 'Instagram', 'IG'], ['tiktok', 'TikTok', 'TikTok'], ['youtube', 'YouTube', 'YouTube'], ['linkedin', 'LinkedIn', 'LinkedIn']];
@@ -76,7 +76,7 @@ export function clavePost(url) {
 // La URL con la que se calcula el id del post (la misma regla que guardar_research): sin query, sin «/» final, en minúsculas.
 export const urlLimpia = (u) => String(u || '').replace(/[?#].*$/, '').replace(/\/$/, '').toLowerCase();
 
-// ---------- la resonancia (cr-fuentes: «2x o más las vistas o interacciones del promedio de esa cuenta») ----------
+// ---------- la resonancia (mc-radar: «2x o más las vistas o interacciones del promedio de esa cuenta») ----------
 const num = (v) => (Number.isFinite(+v) && +v > 0 ? +v : 0);
 // Con vistas se compara contra las vistas; sin vistas (un carrusel, un post de LinkedIn), contra las interacciones.
 export const metricaDe = (x) => (num(x?.views) ? ['v', num(x.views)] : ['i', num(x?.likes) + num(x?.comments) + num(x?.shares)]);

@@ -30,6 +30,8 @@ jobs:
       - name: Armar la app (chip de Apple e Intel)
         working-directory: ceo-os/escritorio
         run: |
+          # El número de armado va adentro de la app (build.json): con el mismo semver, así sabe si hay uno más nuevo.
+          echo '{"n": ${{ github.run_number }}}' > build.json
           npm ci --no-audit --no-fund 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
           npx electron-builder --mac dmg zip --arm64 --x64 --publish never 2>&1 | tee -a "$GITHUB_WORKSPACE/armado.log"
           ls -la dist | tee -a "$GITHUB_WORKSPACE/armado.log"

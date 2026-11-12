@@ -3,7 +3,7 @@
 // El motor se intercambia: primero el puente local (instantáneo); si no responde, el juicio queda «pendiente»
 // y Claude Code lo resuelve con juicios_pendientes / guardar_juicio. «claude» queda para la Fase 6.
 import { html, raw, mount, api, toast, fdate, ico } from './core.js';
-import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, OLLAMA, MODELO_LOCAL, INSTALAR_MODELO_MAC, INSTALAR_MODELO_WIN, sistemaDe, MODELO, INSTALAR_MCP, ENGINE_LABEL, TIPOS, TIPO_LABEL, PUERTAS, GATES, cumple, umbralTexto, corto } from './laya.js';
+import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, OLLAMA, MODELO_LOCAL, INSTALAR_MODELO_MAC, INSTALAR_MODELO_WIN, sistemaDe, MODELO, INSTALAR_MCP, ENGINE_LABEL, TIPOS, TIPO_LABEL, PUERTAS, GATES, cumple, umbralTexto, corto, juzgarRapido } from './laya.js';
 
 // ---------- el puente local ----------
 let est = { at: 0, v: null };
@@ -37,6 +37,13 @@ export async function juzgarLocal(t) { // Fase 4: Investigación lo usa para juz
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error || `El puente respondió ${r.status}`);
   return j;
+}
+// Juicio rápido para las herramientas de los departamentos (Code OS embebido lo pide por postMessage: llm/herramientas-code.js).
+// Las puertas editadas por el CEO se leen una vez por minuto. Sin puente: avisa y sigue (laya.js · juzgarRapido).
+let gatesCache = { at: 0, v: null };
+export async function juicioRapido(gate, entrada) {
+  if (!gatesCache.v || Date.now() - gatesCache.at > 60000) { try { gatesCache = { at: Date.now(), v: { gates: (await api('laya/puertas')).guardadas || {} } }; } catch { gatesCache = { at: Date.now(), v: null }; } }
+  return juzgarRapido(gate, entrada, { settings: gatesCache.v, estado: () => puenteEstado(), juzgar: (p) => juzgarLocal(p) });
 }
 async function copiar(text, msg = 'Copiado') { try { await navigator.clipboard.writeText(text); toast(msg); } catch { toast('Selecciona y copia el texto', true); } }
 

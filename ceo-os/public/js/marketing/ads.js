@@ -4,7 +4,7 @@
 // Reglas de la casa: un dato que falta es null y dice de dónde saldría (⚠️ SIN DATOS), nunca 0; ninguna cuenta convierte un insumo null
 // en un número; una recomendación sin números no existe; la IA solo usa los números de la tabla que se le pasa; y NADA de aquí escribe en
 // una plataforma de anuncios: una recomendación es una tarea para ⑩ Ads o el OK del CEO (accounts.ads.ok).
-// Las reglas salen de agents/10-ads-management/brain/skills/ad-optimizacion/SKILL.md (cada recomendación cita su sección).
+// Las reglas salen de agents/08-ads/brain/skills/ad-corrida/SKILL.md (cada recomendación cita su sección).
 import { SIN_DATOS, plano, corta, numeroONull, sinAcentos, verdadero, contextoPrompt } from '../consulting/marcos.js';
 
 export { SIN_DATOS };
@@ -16,7 +16,7 @@ export const NIVELES = ['cuenta', 'campana', 'conjunto', 'anuncio'];
 export const ESTADOS_REC = ['abierta', 'aplicada', 'descartada'];
 
 // ---------- Qué recomendaciones existen y la regla de cada una ----------
-// [id, nombre, requiere_ceo]: requiere_ceo es true cuando el cambio toca presupuesto o pausa (ad-optimizacion §5, GATE 2).
+// [id, nombre, requiere_ceo]: requiere_ceo es true cuando el cambio toca presupuesto o pausa (ad-corrida §5, GATE 2).
 export const TIPOS = [
   ['sin_ok', 'Gasto sin el OK del CEO', true],
   ['pacing_exceso', 'Gasto por encima del presupuesto', true],
@@ -29,7 +29,7 @@ export const TIPOS = [
 export const TIPOS_IDS = TIPOS.map((t) => t[0]);
 export const nombreTipo = (id) => TIPOS.find((t) => t[0] === id)?.[1] || '';
 const REQUIERE_CEO = new Set(TIPOS.filter((t) => t[2]).map((t) => t[0]));
-const SKILL = 'ad-optimizacion';
+const SKILL = 'ad-corrida';
 export const REGLAS = {
   sin_ok: `${SKILL} §5 · GATE 2: todo movimiento de presupuesto necesita el OK del CEO; sin el OK del mes no se lanza ni se sigue gastando`,
   pacing_exceso: `${SKILL} §5 · GATE 2: mover o seguir gastando por encima del presupuesto aprobado necesita el OK del CEO`,
