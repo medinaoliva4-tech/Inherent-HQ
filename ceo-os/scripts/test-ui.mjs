@@ -27,7 +27,8 @@ let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 const RAIZ = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'public');
 const archivos = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? archivos(path.join(d, e.name)) : e.name.endsWith('.js') ? [path.join(d, e.name)] : []));
 const JS = archivos(path.join(RAIZ, 'js')).map((f) => [path.relative(RAIZ, f), fs.readFileSync(f, 'utf8')]);
-const CSS = fs.readFileSync(path.join(RAIZ, 'app.css'), 'utf8');
+const PRIM = fs.readFileSync(path.join(RAIZ, 'primitives.css'), 'utf8'); // los tokens viven en primitives.css
+const CSS = PRIM + '\n' + fs.readFileSync(path.join(RAIZ, 'app.css'), 'utf8');
 
 t('cada ícono que el OS nombra existe en el set', () => {
   const faltan = [];
@@ -52,8 +53,9 @@ t('los íconos salen sin estilos sueltos y con su tamaño', () => {
 });
 
 // Los tokens --ui-* del bloque «SISTEMA v2»: el primer :root{…} es el día y el primer :root[data-theme="dark"]{…} la noche.
-const v2 = CSS.slice(CSS.indexOf('SISTEMA v2'));
-const bloque = (sel) => { const i = v2.indexOf(sel + '{'); const j = v2.indexOf('\n}', i); return v2.slice(i, j); };
+const v2 = CSS.slice(CSS.indexOf('Las zonas de papel: la cotización'));
+// El bloque de tokens --ui-* de un selector (el primero que trae --ui-bg).
+const bloque = (sel) => { let i = -1; do { i = PRIM.indexOf(sel + '{', i + 1); } while (i >= 0 && !PRIM.slice(i, PRIM.indexOf('\n}', i)).includes('--ui-bg:')); const j = PRIM.indexOf('\n}', i); return PRIM.slice(i, j); };
 const tokens = (b) => Object.fromEntries([...b.matchAll(/--(ui-[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
 const DIA = tokens(bloque(':root')), NOCHE = tokens(bloque(':root[data-theme="dark"]'));
 
@@ -89,7 +91,7 @@ t('el tema arranca antes de pintar y sin destellos', () => {
   assert.equal(NOCHE['ui-bg'], '#0d0d0e');
 });
 
-const v3 = CSS.slice(CSS.indexOf('SISTEMA v3 (PLAN-GATEWAY'));
+const v3 = CSS.slice(CSS.indexOf('SISTEMA v3 (PLAN-GATEWAY')) + '\n' + PRIM; // los tokens viven en primitives.css
 t('sistema v3: la paleta es la aprobada y solo los estados llevan color', () => {
   assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#efebe4', '#a39f9a', '#f5f5f7', '#a7f3d0']);
   for (const k of ['ui-m-estrategia', 'ui-m-organizacion', 'ui-m-diseno']) {
@@ -105,7 +107,7 @@ t('sistema v3: respeta reducir movimiento, reducir transparencia y más contrast
   for (const m of ['prefers-reduced-motion', 'prefers-reduced-transparency', 'prefers-contrast']) assert.ok(v3.includes(m), m);
 });
 t('light mode: el texto se lee sobre blanco y silver', () => {
-  const b = CSS.slice(CSS.indexOf('/* Light mode: blanco y silver')), v = (k) => b.match(new RegExp(`--${k}:(#[0-9a-f]{6})`))[1];
+  const b = PRIM.slice(PRIM.indexOf(':root[data-theme="light"]{')), v = (k) => b.match(new RegExp(`--${k}:(#[0-9a-f]{6})`))[1];
   const malos = []; for (const tx of ['ui-ink', 'ui-ink2', 'ui-mut']) for (const f of ['ui-bg', 'ui-surf', 'ui-side']) { const c = contraste(v(tx), v(f)); if (c < 4.5) malos.push(`${tx}/${f}=${c}`); }
   assert.deepEqual(malos, []);
   assert.ok(!CSS.split('/* Chat: esconder el panel')[1].slice(0, 3000).includes('rgb(255 255 255 / .08)'));
@@ -164,7 +166,7 @@ t('luz: vive en todo el OS y respeta a quien pide menos movimiento', () => {
 });
 t('vidrio: el fondo se ve a través del contenido, y lo que flota sigue sólido', () => {
   const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
-  assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(var\(--tinta\) \/ \.0/);
+  assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(var\(--ui-tint\) \/ \.0/);
   assert.match(bloque, /#luz\{/); assert.match(bloque, /#luz-aro/);
   for (const s of ['.avi-menu', '.ctx-pop', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
   assert.match(bloque, /prefers-reduced-transparency/);
@@ -246,7 +248,7 @@ t('app de Mac: el aviso solo existe si hay actualización', () => {
   assert.match(mac, /caja\.hidden = !app\(\) \|\| !hay/); assert.ok(!mac.includes('No pude revisar'));
 });
 t('acentos: azul en lo activo y rojo en lo que borra', () => {
-  const b = CSS.slice(CSS.indexOf('/* ===== Acentos'));
+  const b = CSS.slice(CSS.indexOf('/* ===== Acentos')) + PRIM;
   assert.match(b, /--ui-azul:#4a86e8/); assert.match(b, /--ui-rojo:#ff6b5e/);
   assert.match(b, /input\.switch:checked/); assert.match(b, /\.sp-meter i/); assert.match(b, /data-act="del"/);
 });
