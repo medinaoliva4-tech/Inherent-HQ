@@ -193,3 +193,9 @@
   --ui-azul:#2f6fdb;--ui-rojo:#d6392a;--ui-glass:rgb(255 255 255 / .82);--ui-ink-rgb:24 24 27;--ui-surf-rgb:255 255 255;
   --ui-edge:inset 0 1px 0 rgb(255 255 255 / .9),inset 0 0 0 1px rgb(24 24 27 / .07);
   --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 2px rgb(24 24 27 / .04);--ui-sh-2:0 0 0 1px var(--ui-line),0 12px 32px -14px rgb(24 24 27 / .18);--ui-sh-3:0 18px 50px -22px rgb(24 24 27 / .2),0 1px 2px rgb(24 24 27 / .04)}
+/* Escala corta de tipografía y radios (docs/escala-ui.md). Todo font-size y border-radius nuevo usa estos tokens.
+   Letra: 10 11 12 13 14 15 16 18 22 28 36 44 56. Radios: 4 · 7 · 10 · 12 · 14 · 20 · 28 · pill · círculo (50%). */
+:root{
+  --fs-1:10px; --fs-2:11px; --fs-3:12px; --fs-4:13px; --fs-5:14px; --fs-6:15px; --fs-7:16px; --fs-8:18px; --fs-9:22px; --fs-10:28px; --fs-11:36px; --fs-12:44px; --fs-13:56px;
+  --r-0:4px; --r-5:20px; --r-6:28px; --r-pill:999px;
+}
