@@ -108,7 +108,9 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
     if (!pillars.length) return mount(b, html`<div class="empty"><b>Primero los pilares</b>Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.</div>`);
     const res = rf.result || {};
-    mount(b, html`<div class="mut sm" style="margin-bottom:12px">Por pilar, pega hasta <b>5 videos</b> que te sirvan de referencia (Reels o TikToks). El OS busca lo que más rindió de <b>esos mismos creadores</b> y de <b>sus hashtags</b>, comparado con lo normal de cada cuenta. Después lo desglosas con Claude: hook, retención, estructura y cómo adaptarlo.</div>
+    // Sin ninguna referencia: el vacío conversacional (vacio-chat.js) abre el Chat de Producción con las preguntas guía.
+    const sinRefs = !Object.values(rf.videos || {}).flat().length && rf.status !== 'running';
+    mount(b, html`${sinRefs ? html`<div id="refs-vacio"></div>` : ''}<div class="mut sm" style="margin-bottom:12px">Por pilar, pega hasta <b>5 videos</b> que te sirvan de referencia (Reels o TikToks). El OS busca lo que más rindió de <b>esos mismos creadores</b> y de <b>sus hashtags</b>, comparado con lo normal de cada cuenta. Después lo desglosas con Claude: hook, retención, estructura y cómo adaptarlo.</div>
       ${rf.status === 'running' ? html`<div class="warnbox sm" style="margin-bottom:12px">${rf.phase === 1 ? 'Leyendo tus referencias' : 'Buscando similares'}… Esto se actualiza solo.</div>` : ''}${rf.warn ? html`<div class="warnbox sm">${rf.warn}</div>` : ''}${!rf.apify ? html`<div class="warnbox sm">Falta APIFY_TOKEN en Vercel.</div>` : ''}
       ${pillars.map((p) => { const urls = rf.videos?.[p] || [], r = res[p], bd = rf.breakdown?.[p];
         return html`<div class="card refpil"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${p}</b><span class="mut sm">${urls.length}/5 referencias</span><div class="sp"></div>
@@ -120,6 +122,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
               <div><b>Hook</b> ${x.hook}</div><div><b>Retención</b> ${x.retencion}</div>${x.estructura.length ? html`<div><b>Estructura</b> ${x.estructura.join(' → ')}</div>` : ''}<div><b>Por qué funcionó</b> ${x.por_que}</div><div><b>Cómo adaptarlo</b> ${x.adaptacion}</div></div>`)}` : ''}
         </div>`; })}
       <div class="row" style="margin-top:12px"><button class="btn ghost" data-act="refSave">Guardar referencias</button></div>`);
+    if (sinRefs) import('../vacio-chat.js').then((m) => { const h = $('#refs-vacio', b); if (h) m.vacioChat(h, { ...m.VACIOS['referencias-video'], slug }); }).catch(() => {});
   }
   const refVideos = () => { const v = {}; el.querySelectorAll('[data-ref]').forEach((i) => { const u = i.value.trim(); if (u) (v[i.dataset.ref] ||= []).push(u); }); return v; };
   function breakPrompt(p) {

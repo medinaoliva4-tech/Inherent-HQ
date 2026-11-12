@@ -35,6 +35,8 @@ export function aviso(regla, o) {
     accion: o.accion || null, accion2: o.accion2 || null, huella: String(o.huella ?? ''), desde: o.desde instanceof Date ? o.desde.toISOString() : String(o.desde || ''), fijo: Boolean(o.fijo ?? regla.fijo),
     ...(o.tapa?.length ? { tapa: o.tapa } : {}),
     ...(o.vivo ? { vivo: o.vivo } : {}),
+    // Una sugerencia para la caja del Chat (sugerencia-chat.js): { titulo, linea, icono, acciones: [{ label, accion, args }] }.
+    ...(o.sugerencia && typeof o.sugerencia === 'object' ? { sugerencia: o.sugerencia } : {}),
   };
 }
 // Más urgente primero; dentro de la misma urgencia, el más viejo primero (lo que más espera).
