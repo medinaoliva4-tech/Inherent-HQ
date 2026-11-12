@@ -63,7 +63,7 @@ export async function intelView(box, { slug, alive = () => true }) {
     drawer(html`<article class="intel-doc">
         <span class="lbl">${it.dept}</span><h1>${it.titulo}</h1><p class="intel-doc-s">${it.sirve}</p>
         <div class="intel-doc-m">${team && !it.cliente ? html`<span class="chip sm2 dark">${ico('lock', 12)} Interno</span>` : ''}${it.fecha ? html`<span class="mut sm">Actualizado ${fdate(it.fecha)}</span>` : ''}
-          ${vers.length > 1 ? html`<span class="tabs intel-meses">${vers.map((v) => html`<button class="${v === it ? 'on' : ''}" data-act="mes" data-k="${k}" data-m="${v.mes || ''}">${v.mes ? mesLabel(v.mes) : 'General'}</button>`)}</span>` : it.mes ? html`<span class="chip sm2">${mesLabel(it.mes)}</span>` : ''}</div>
+          ${vers.length > 1 ? html`<span class="seg intel-meses" aria-label="Versión">${vers.map((v) => html`<button class="${v === it ? 'on' : ''}" data-act="mes" data-k="${k}" data-m="${v.mes || ''}">${v.mes ? mesLabel(v.mes) : 'General'}</button>`)}</span>` : it.mes ? html`<span class="chip sm2">${mesLabel(it.mes)}</span>` : ''}</div>
         <div class="intel-body">${body}</div></article>`,
       { mes: (t) => open(t.dataset.k, t.dataset.m || null) }, { section: 'Entregables', title: it.titulo });
   }

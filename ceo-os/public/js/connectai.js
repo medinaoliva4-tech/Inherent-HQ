@@ -38,7 +38,7 @@ export function openConnect(me, after) {
     <h2>Conecta tu IA</h2>
     <p class="mut">Como cualquier conector: pegas esta URL y la app te pide entrar con tu Google. Actúa como <b>tú</b> y solo ve y hace lo que tu perfil permite.</p>
     <div class="aiurl"><code>${url}</code><button class="btn sm" data-act="copy">Copiar</button></div>
-    <div class="aitabs">${Object.entries(APPS).map(([k, a]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="ailogo sm">${LOGO[k]}</span>${a.name}</button>`)}</div>
+    <div class="tabs mini" aria-label="Dónde lo usas">${Object.entries(APPS).map(([k, a]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="ailogo sm">${LOGO[k]}</span>${a.name}</button>`)}</div>
     ${APPS[tab].steps}<button class="btn" data-act="go" style="margin-top:12px">${APPS[tab].btn}${APPS[tab].open ? ' ↗' : ''}</button>
     ${apps().length || me.mcp ? html`<div style="margin-top:26px"><div class="sm mut" style="margin-bottom:8px">Conectadas</div>
       ${apps().map((x) => html`<div class="row aiconn"><span class="grow">${x.name}<span class="mut sm"> · ${String(x.at || '').slice(0, 10)}</span></span><button class="btn ghost sm" data-act="cut" data-g="${x.g}">Desconectar</button></div>`)}

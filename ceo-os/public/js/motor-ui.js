@@ -3,7 +3,7 @@
 // local (leen el repo y no cambian nada; ChatGPT y los locales van por Codex; los locales, con Ollama). Hermes se retiró.
 // La elección es de cada persona (localStorage) y vale para todos los chats.
 import { html, raw, mount, ico } from './core.js';
-import { junto } from './divisor.js';
+import { menu } from './ui.js';
 
 export const MOTORES = [['servidor', 'Servidor'], ['claude', 'Claude'], ['chatgpt', 'ChatGPT'], ['local', 'Modelo local']];
 // servidor: el Gateway del VPS (chat-gateway.js). modelo = el modelo del servidor ('' = el de por defecto).
@@ -39,8 +39,6 @@ export const faltaHtml = (f, cmd) => html`<div class="es-setup"><b>${f.t}</b><p>
 
 // servidor = { en_linea, modelos } (saludServidor) cuando la pantalla lo averiguó.
 export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = null, servidor = null } = {}) {
-  document.querySelector('.es-menu')?.remove();
-  const box = anchor.closest('.es-box') || anchor.closest('.es-setup') || anchor.parentElement;
   const m = chat?.motores || {}, v = motorDe(me);
   const op = (motor, modelo, label, sub, off, provider = '') => ({ motor, modelo, provider, label, sub, off, on: v.motor === motor && (motor === 'chatgpt' || v.modelo === modelo) });
   // El servidor: siempre encendido, con web y las conexiones de la persona. Sus modelos (los primeros 4) o el de por defecto.
@@ -54,15 +52,12 @@ export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = nul
     op('chatgpt', '', 'ChatGPT', !m.chatgpt?.instalado ? 'Falta Codex' : m.chatgpt.sesion ? 'Codex, con tu cuenta de ChatGPT' : 'Falta iniciar la sesión', false),
     ...(diseno ? [] : (m.local?.modelos?.length ? m.local.modelos.map((x) => op('local', x, `Local · ${x}`, 'Ollama, en tu compu', false)) : [op('local', '', 'Modelo local', m.local?.instalado ? 'Falta Ollama o un modelo' : 'Falta Codex y Ollama', false)])),
   ];
-  const el = document.createElement('div'); el.className = 'es-menu'; el.setAttribute('role', 'listbox');
-  const todos = items;
-  mount(el, html`<span class="lbl" style="display:block;padding:6px 10px 2px">Qué modelo responde</span>${items.map((x, i) => html`<a href="#" role="option" class="${x.on ? 'on' : ''}" data-i="${i}"><b></b><span>${x.label}</span><small>${x.sub}</small></a>`)}${diseno ? html`<p class="mut sm" style="margin:4px 10px 6px">Los modelos locales no diseñan en Figma.</p>` : ''}
-    ${conModelos || sinClaude ? '' : html`<p class="mut sm" style="margin:4px 10px 6px">Para elegir Opus, Sonnet o Haiku, actualiza el puente (o usa la app de Mac).</p>`}
-    ${laya ? html`<p class="mm-laya ${laya.listo ? 'ok' : ''}"><i></i>${laya.listo ? 'Laya lista' : laya.cargando ? 'Laya cargando…' : 'Laya no está instalada en esta compu'}<small>${laya.listo ? 'Juzga y enruta en tu compu' : laya.cargando ? 'La primera vez baja su modelo' : (window.inherentEscritorio ? 'Menú Puente › Instalar Laya' : 'La app de Mac la instala sola')}</small></p>${laya.ojo ? html`<p class="mm-laya ${laya.ojo.listo ? 'ok' : ''}"><i></i>${laya.ojo.listo ? 'Ojo visual listo' : laya.ojo.cargando ? 'Ojo visual cargando…' : laya.ojo.disponible ? 'Ojo visual apagado' : 'Ojo visual no instalado'}<small>${laya.ojo.listo ? 'Dice si una imagen se ve de la marca' : laya.ojo.disponible ? 'La primera vez baja su modelo (~600 MB)' : 'Vuelve a correr el instalador de Laya'}</small></p>` : ''}` : ''}`);
-  box.append(el); junto(el, anchor, box);
-  el.addEventListener('click', (e) => { const a = e.target.closest('a[data-i]'); if (!a) return; e.preventDefault(); const x = todos[+a.dataset.i]; el.remove(); setMotor(me, { motor: x.motor, modelo: x.modelo, provider: x.provider }); onPick(); });
-  const cerrar = (e) => { if (!el.contains(e.target) && e.target !== anchor) { el.remove(); document.removeEventListener('pointerdown', cerrar); } };
-  setTimeout(() => document.addEventListener('pointerdown', cerrar));
+  // El ui.menu del OS: el modelo de ahora con ✓, notas y el estado de Laya abajo.
+  const pie = html`${diseno ? html`<p class="ui-menu-nota">Los modelos locales no diseñan en Figma.</p>` : ''}
+    ${conModelos || sinClaude ? '' : html`<p class="ui-menu-nota">Para elegir Opus, Sonnet o Haiku, actualiza el puente (o usa la app de Mac).</p>`}
+    ${laya ? html`<p class="mm-laya ${laya.listo ? 'ok' : ''}"><i></i>${laya.listo ? 'Laya lista' : laya.cargando ? 'Laya cargando…' : 'Laya no está instalada en esta compu'}<small>${laya.listo ? 'Juzga y enruta en tu compu' : laya.cargando ? 'La primera vez baja su modelo' : (window.inherentEscritorio ? 'Menú Puente › Instalar Laya' : 'La app de Mac la instala sola')}</small></p>${laya.ojo ? html`<p class="mm-laya ${laya.ojo.listo ? 'ok' : ''}"><i></i>${laya.ojo.listo ? 'Ojo visual listo' : laya.ojo.cargando ? 'Ojo visual cargando…' : laya.ojo.disponible ? 'Ojo visual apagado' : 'Ojo visual no instalado'}<small>${laya.ojo.listo ? 'Dice si una imagen se ve de la marca' : laya.ojo.disponible ? 'La primera vez baja su modelo (~600 MB)' : 'Vuelve a correr el instalador de Laya'}</small></p>` : ''}` : ''}`;
+  menu(anchor, items.map((x) => ({ label: x.label, sub: x.sub, disabled: x.off, checked: Boolean(x.on), onSelect: () => { setMotor(me, { motor: x.motor, modelo: x.modelo, provider: x.provider }); onPick(); } })),
+    { titulo: 'Qué modelo responde', pie, ancho: 320 });
 }
 
 // El botón del modelo en la caja, como en ChatGPT: el nombre y un punto que dice si tu compu está conectada.

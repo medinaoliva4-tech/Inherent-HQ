@@ -27,7 +27,7 @@ const SEL_DATOS = { lista: '.ar-pr, .ar-card', tablero: '.ar-resumen, .ar-col', 
 
 // Las pestañas de un área: lo que sabe (Notas) y quién trabaja en ella (Agents).
 const tab = (a, ruta, on, k, icono, nombre) => html`<a href="#/areas/${a.id}${ruta}" ${on === k ? raw('aria-current="page"') : ''}>${ico(icono, 14)} ${nombre}</a>`;
-const tabsArea = (a, on) => html`<nav class="iai-tabs ar-tabs" aria-label="${a.nombre}">${tab(a, '', on, 'herramientas', 'layout-grid', 'Herramientas')}${tab(a, '/movimientos', on, 'movimientos', 'list-checks', 'Movimientos')}${tab(a, '/notas', on, 'notas', 'file-text', 'Notas')}<a href="#/areas/${a.id}/agents" ${on === 'agents' ? raw('aria-current="page"') : ''}>${ico('agents', 14)} Agentes</a></nav>`;
+const tabsArea = (a, on) => html`<nav class="tabs" data-iai aria-label="${a.nombre}">${tab(a, '', on, 'herramientas', 'layout-grid', 'Herramientas')}${tab(a, '/movimientos', on, 'movimientos', 'list-checks', 'Movimientos')}${tab(a, '/notas', on, 'notas', 'file-text', 'Notas')}<a href="#/areas/${a.id}/agents" ${on === 'agents' ? raw('aria-current="page"') : ''}>${ico('agents', 14)} Agentes</a></nav>`;
 
 export async function render(el, { me, sub, alive }) {
   // Agents del área (#/areas/<área>/agents): los mismos agentes del Agent Area, filtrados por esta área.

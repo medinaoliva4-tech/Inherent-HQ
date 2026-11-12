@@ -11,7 +11,8 @@ import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from './
 import { FORMATOS, SUGERENCIAS, promptDiseno, leerDiseno, sinBloque, piezaLista, bytesDe, MESES_CTX, mesNombre, etiquetaCtx, textoCalendario, textoIdea, textoRefs, carpetaDe, variacionesDe, letraLibre, elegirVariacion, colaDelMes, esStory } from './diseno.js';
 import { leerSistema } from './sistema-visual.js';
 import { estadoDe } from './element.js';
-import { ubicarPop, junto } from './divisor.js';
+import { ubicarPop } from './divisor.js';
+import { menu as uiMenu } from './ui.js';
 import { tarjetaDoc, barraChat, botonesEnviar, bandeja } from './artifact.js';
 import { botonVoz, dictar } from './voz.js';
 import { verImagen, ojoChip } from './ojo.js';
@@ -24,16 +25,10 @@ const OJO = new Map(); // `${marca}|${nodo}` → { parecido, refs } del ojo visu
 let enVuelo = null;
 const enCompu = () => !/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '');
 
-// Un menú chico anclado a la caja (mismo estilo que los de Estrategia). items: [{ label, sub, mono, on, pick }]
+// Un menú chico anclado a la caja (el ui.menu del OS, como los de Estrategia). items: [{ label, sub, mono, on, pick }]
 function menuDz(anchor, items, { buscar = '' } = {}) {
-  document.querySelector('.es-menu')?.remove();
-  const box = anchor.closest('.es-box') || anchor.parentElement;
-  const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
-  const pinta = (q = '') => { mount(m, html`${buscar ? html`<input class="in" placeholder="${buscar}" aria-label="${buscar}" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x, i) => html`<a href="#" class="${x.on ? 'on' : ''}" role="option" data-i="${items.indexOf(x)}">${x.mono != null ? html`<i class="mono">${x.mono}</i>` : html`<b></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}${items.length ? '' : html`<p class="mut sm" style="padding:8px 12px;margin:0">No hay opciones.</p>`}`); const inp = m.querySelector('input'); if (inp) { inp.oninput = () => { const v = inp.value; pinta(v); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(v.length, v.length); }; } };
-  pinta(); box.append(m); junto(m, anchor, box); m.querySelector('input')?.focus();
-  const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
-  setTimeout(() => document.addEventListener('pointerdown', cerrar));
-  m.addEventListener('click', (e) => { const a = e.target.closest('a[data-i]'); if (!a) return; e.preventDefault(); m.remove(); items[+a.dataset.i]?.pick(); });
+  return uiMenu(anchor, items.map((x) => ({ label: x.label, sub: x.sub, checked: Boolean(x.on), onSelect: x.pick,
+    icon: x.mono != null ? `<i class="ui-mi-mono">${String(x.mono).replace(/[&<>"']/g, '')}</i>` : `<i class="ui-mi-punto"></i>` })), { buscar: buscar || false, vacio: 'No hay opciones.', etiqueta: buscar || 'Elegir', ancho: 320 });
 }
 
 export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
@@ -343,7 +338,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       const malas = (cur?.revision || []).filter((x) => !x.ok);
       return html`<div class="ad dz-lz"><header class="dz-lh"><div class="dz-lt"><b>${p?.title || dr?.titulo || 'Sin pieza elegida'}</b><small>${p ? [p.format, fmtDia(p.date), estadoDe(p)].filter(Boolean).join(' · ') : 'Pieza suelta'}</small></div><span class="sp"></span>
           <div class="dz-fmt" role="group" aria-label="Formato">${FMT3.map((f) => html`<button type="button" class="${chat.formato === f ? 'on' : ''}" data-act="fmt" data-f="${f}" aria-pressed="${chat.formato === f ? 'true' : 'false'}">${f}</button>`)}</div></header>
-        <div class="dz-tabs" role="tablist" aria-label="Variaciones">${variaciones.map((v) => html`<button type="button" role="tab" class="dz-tab ${id === v.id ? 'on' : ''}" aria-selected="${id === v.id ? 'true' : 'false'}" data-act="var" data-l="${v.id}">${v.id}${elegida === v.id ? html` <i title="La elegida">${ico('check', 11)}</i>` : ''}</button>`)}${dr ? html`<button type="button" role="tab" class="dz-tab bor ${id === 'draft' ? 'on' : ''}" aria-selected="${id === 'draft' ? 'true' : 'false'}" data-act="var" data-l="draft">${letraNueva} · borrador</button>` : ''}${letraLibre(variaciones) || dr ? html`<button type="button" class="dz-tab mas" data-act="nueva-var" title="Pídele a Claude otra dirección visual">${ico('plus', 11)} Variación</button>` : ''}</div>
+        <div class="dz-vars"><div class="seg mini" role="tablist" aria-label="Variaciones">${variaciones.map((v) => html`<button type="button" role="tab" class="${id === v.id ? 'on' : ''}" aria-selected="${id === v.id ? 'true' : 'false'}" data-act="var" data-l="${v.id}">${v.id}${elegida === v.id ? html` <i title="La elegida">${ico('check', 11)}</i>` : ''}</button>`)}${dr ? html`<button type="button" role="tab" class="bor ${id === 'draft' ? 'on' : ''}" aria-selected="${id === 'draft' ? 'true' : 'false'}" data-act="var" data-l="draft">${letraNueva} · borrador</button>` : ''}</div>${letraLibre(variaciones) || dr ? html`<button type="button" class="btn ghost sm" data-act="nueva-var" title="Pídele a Claude otra dirección visual">${ico('plus', 11)} Variación</button>` : ''}</div>
         <div class="ad-b"><div class="ad-in">${cur ? html`${cur.revision?.length ? html`<div class="dz-rev">${cur.revision.map((x) => html`<span class="${x.ok ? 'ok' : 'am'}">${x.texto}</span>`)}</div>` : ''}
           <div class="dz-grid ${esStory(chat.formato) ? 'st' : ''}">${laminas.map((l) => html`<button type="button" class="dz-fr ${S.lamina?.id === l.id ? 'sel' : ''}" data-act="lamina" data-id="${l.id}" title="Seleccionar para pedir un cambio">
             <span class="dz-im">${img(l.id) ? html`<img alt="${l.nombre}" src="${img(l.id)}">` : html`<span class="mut sm">Sin vista previa</span>`}</span><span class="dz-cap"><b>${l.nombre}</b><span class="dz-ojo" data-ojo="${l.id}">${ojoChip(OJO.get(`${b.slug}|${l.id}`), { compact: true })}</span></span></button>`)}</div>

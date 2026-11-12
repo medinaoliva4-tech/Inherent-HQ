@@ -1,12 +1,12 @@
 import { workspacesDe, rutaDeVuelta, esApp } from './workspaces.js';
 import { chatVivo } from './chat-vivo.js';
-import { instalarMenu } from './menu-contextual.js';
+import { menu as uiMenu, instalarUi, cerrarMenu, cerrarPopover } from './ui.js';
 import { pintarActualizacion } from './app-mac.js';
 import { pintarSpotify } from './spotify.js';
 import { pocket, soloCompu } from './pocket.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
-import { $, $$, html, raw, mount, api, events, toast, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
+import { $, $$, html, raw, mount, api, events, toast, col, ask, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
 import { openSearch, searchOpen } from './search.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
@@ -16,6 +16,9 @@ import { WORKSPACES, wsDe, wsDeRuta, puedeWs, herramientaDe } from './herramient
 import { migasDe } from './migas.js';
 import { contextoDe } from './contexto.js';
 import { SECCIONES } from './guia-secciones.js';
+
+// Tooltips de [data-tip] y teclado/ARIA de toda lista .tabs / .seg (ui.js), una vez para todo el OS.
+instalarUi();
 
 // La entrada del OS: el router, la única barra y el dueño de lo que comparten las pantallas.
 // Seis cosas, nada más: HOME (#/home: tu día, Ask y lo importante) · CALENDARIO (#/calendario/trabajo: el de trabajo; y
@@ -385,31 +388,28 @@ function pintarMigas(cur) {
 // Tu primer día y «Cómo se usa» son los mismos botones de siempre: en la compu viven abajo en la barra; en el cel, arriba.
 function ubicarAyuda() { const dest = desk.matches ? $('#lat-ayuda') : $('#top-ayuda'); if (dest) for (const id of ['pdchip', 'guiabtn']) { const b = $('#' + id); if (b && b.parentElement !== dest) dest.append(b); } }
 // Todo popover propio (el menú de «tú», las hojas del cel) lleva data-popover: aquí se quitan y se apagan sus botones.
-function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (const b of $$('[data-hoja], [data-lat="yo"], [data-lat="ws"]')) b.setAttribute('aria-expanded', 'false'); }
-// El selector de arriba: qué workspaces abre tu rol. Se abre desde su botón y se cierra como los demás popovers.
+function cerrarTodo() { for (const p of $$('[data-popover]')) p.remove(); for (const b of $$('[data-hoja]')) b.setAttribute('aria-expanded', 'false'); }
+// El selector de arriba: qué workspaces abre tu rol. Es un ui.menu (teclado, Esc, clic afuera y el foco de vuelta).
 function menuWs(btn) {
-  const viejo = $('.lat-ws-menu'); cerrarTodo(); if (viejo) return;
+  for (const p of $$('[data-popover]')) p.remove();
   const actual = esApp(resolve(hashNow()).key), xs = workspacesDe(me, { verChat: sees('chat'), rutaOS: rutaOS() });
-  const m = document.createElement('div'); m.className = 'lat-ws-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
-  mount(m, html`<span class="lat-ws-k">Workspaces</span>${xs.map((w) => html`<a role="menuitem" href="#/${w.ruta}"><span><b>${w.nombre}</b><small>${w.sub}</small></span>${w.id === actual ? ico('check', 14) : ''}</a>`)}`);
-  btn.closest('.lat-top').append(m); btn.setAttribute('aria-expanded', 'true');
-  m.addEventListener('click', (e) => { if (e.target.closest('a')) cerrarTodo(); });
+  uiMenu(btn, xs.map((w) => ({ label: w.nombre, sub: w.sub, href: `#/${w.ruta}`, checked: w.id === actual })), { titulo: 'Workspaces', etiqueta: 'Workspaces', ancho: 280 });
 }
+// El menú de «tú», al pie de la barra: abre hacia arriba.
 function menuYo(btn) {
-  const viejo = $('.lat-menu'); cerrarTodo(); if (viejo) return;
-  const m = document.createElement('div'); m.className = 'lat-menu'; m.setAttribute('role', 'menu'); m.setAttribute('data-popover', '');
-  mount(m, html`<a role="menuitem" href="#/me">${ico('user', 15)} Mi perfil</a><a role="menuitem" href="#/ai/mcps">${ico('link', 15)} Conexiones</a><button type="button" role="menuitem" data-modo>${ico('sparkles', 15)} ${document.documentElement.dataset.theme === 'light' ? 'Modo oscuro' : 'Modo claro'}</button>`);
-  btn.closest('.lat-yo').append(m); btn.setAttribute('aria-expanded', 'true');
-  m.addEventListener('click', (e) => {
-    if (e.target.closest('[data-modo]')) {
+  for (const p of $$('[data-popover]')) p.remove();
+  const claroAhora = document.documentElement.dataset.theme === 'light';
+  uiMenu(btn, [
+    { label: 'Mi perfil', icon: 'user', href: '#/me' },
+    { label: 'Conexiones', icon: 'link', href: '#/ai/mcps' },
+    '-',
+    { label: claroAhora ? 'Modo oscuro' : 'Modo claro', icon: 'sparkles', onSelect: () => {
       const h = document.documentElement, claro = h.dataset.theme !== 'light';
       h.dataset.theme = claro ? 'light' : 'dark'; h.dataset.llmTema = claro ? 'dia' : 'noche'; document.querySelector('.llm')?.setAttribute('data-tema', claro ? 'dia' : 'noche');
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', claro ? '#f3f3f4' : '#0d0d0e');
       try { localStorage.setItem('os.modo', claro ? 'claro' : 'oscuro'); } catch { /* dura esta sesión */ }
-      return cerrarTodo();
-    }
-    if (e.target.closest('a')) cerrarTodo();
-  });
+    } },
+  ], { etiqueta: 'Tu cuenta', placement: 'top-start', ancho: 240 });
 }
 const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.documentElement.toggleAttribute('data-lat-mini', on); if (me) paintLat(); const b = $('.lat [data-lat="mini"]'); if (b) { b.setAttribute('aria-label', on ? 'Mostrar la barra (⌘B)' : 'Esconder la barra (⌘B)'); b.title = on ? 'Mostrar la barra · ⌘B' : 'Esconder la barra · ⌘B'; } };
 function latHtml(mac) {
@@ -505,10 +505,10 @@ document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-hoja]'); if (b) return abrirHoja(b.dataset.hoja, b);
   const l = e.target.closest('.hoja [data-lat]'); if (l) { cerrarTodo(); accionLat(l.dataset.lat, l); }
 });
-document.addEventListener('pointerdown', (e) => { if ($('[data-popover]') && !e.target?.closest?.('[data-popover], [data-hoja], [data-lat="yo"], [data-lat="ws"]')) cerrarTodo(); });
+document.addEventListener('pointerdown', (e) => { if ($('[data-popover]') && !e.target?.closest?.('[data-popover], [data-hoja]')) cerrarTodo(); });
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape' || !$('[data-popover]')) return;
-  const volver = $('[data-hoja][aria-expanded="true"]') || $('.lat [data-lat="yo"]'); cerrarTodo(); volver?.focus();
+  const volver = $('[data-hoja][aria-expanded="true"]'); cerrarTodo(); volver?.focus();
 });
 
 // ---------- El buscador: «Ir a» con lo que ve este perfil ----------
@@ -539,7 +539,7 @@ function shell() {
   document.documentElement.dataset.barra = 'lateral';
   mount(root, html`${latHtml(mac)}<div class="app">
     <header class="top">
-      <button type="button" class="top-menu" data-hoja="mas" aria-haspopup="dialog" aria-expanded="false" aria-label="Abrir menú">${raw('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 15h11"/></svg>')}</button><b class="top-t" id="top-t"></b>
+      <button type="button" class="top-hoja" data-hoja="mas" aria-haspopup="dialog" aria-expanded="false" aria-label="Abrir menú">${raw('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 15h11"/></svg>')}</button><b class="top-t" id="top-t"></b>
       <div class="brand"><div class="emb">${emblemaTema()}</div><div class="word"><img src="/brand/wordmark-dark.svg" alt="Inherent" style="height:24px;display:inline-block;vertical-align:middle"><sup>OS</sup></div></div>
       <div class="sp"></div>
       ${cliente ? '' : html`<button class="searchbtn" id="searchbtn" type="button" aria-label="Buscar (${mac ? '⌘' : 'Ctrl+'}K)" title="Buscar · ${mac ? '⌘' : 'Ctrl+'}K">${ico('search', 17)}<kbd>${mac ? '⌘K' : 'Ctrl K'}</kbd></button>`}
@@ -572,7 +572,7 @@ function entradaAuto(main, alive) {
 }
 
 async function render() {
-  cerrarTodo(); grpCerrado = new Set();
+  cerrarTodo(); cerrarMenu(); cerrarPopover(); grpCerrado = new Set();
   const cur = resolve(hashNow());
   // La dirección siempre dice dónde se abrió de verdad (alias y rutas que este perfil no ve se reescriben).
   if (cur.url !== hashNow()) history.replaceState(null, '', '#/' + cur.url);
@@ -694,3 +694,85 @@ const bootLento = setTimeout(() => bootEtapa('Sigue conectando…'), 6000);
 api('me').finally(() => clearTimeout(bootLento)).then(start).catch(loginView);
 // La «i» de información se pone sola en cada título que se pinta.
 { let q = false; new MutationObserver(() => { if (q) return; q = true; requestAnimationFrame(() => { q = false; infoTips(root); }); }).observe(root, { childList: true, subtree: true }); }
+
+// ---------- Clic derecho en todo el OS (ui.menu), solo donde ahorra pasos ----------
+// Tareas, proyectos, clientes, leads y las respuestas del chat de Estrategia. En lo demás queda el menú del navegador.
+// Mover un lead de etapa no va aquí: tiene sus candados (siguiente paso y fecha), así que se abre el lead.
+const copiar = async (t, que = 'Copiado') => { try { await navigator.clipboard.writeText(t); toast(que); } catch { toast('No pude copiar', true); } };
+const link = (h) => location.origin + location.pathname + h;
+// Volver a pintar la pantalla con lo nuevo.
+const refrescar = () => dispatchEvent(new HashChangeEvent('hashchange'));
+const hoy = () => new Date().toISOString().slice(0, 10);
+
+async function guardar(coll, id, cambio, ok) {
+  try { const d = await col(coll).get(id); await col(coll).save({ ...d, ...cambio(d) }); toast(ok); refrescar(); } catch (e) { toast(e.message, true); }
+}
+
+function tarea(el, me) {
+  const id = el.dataset.id;
+  return [
+    { l: 'Abrir', run: () => el.click() },
+    { l: 'Marcar como hecha', run: () => guardar('tasks', id, () => ({ status: 'Hecha' }), 'Tarea hecha') },
+    { l: 'Asignármela', run: () => guardar('tasks', id, () => ({ assignee: me.email }), 'Ahora es tuya') },
+    { l: 'Cambiar fecha…', run: async () => { const d = await col('tasks').get(id).catch(() => null); const v = await ask('Nueva fecha de entrega', [{ k: 'due', l: 'Fecha', t: 'date', v: d?.due || hoy(), req: true }]); if (v) guardar('tasks', id, () => ({ due: v.due }), 'Fecha cambiada'); } },
+  ];
+}
+
+function proyecto(id) {
+  const h = `#/operations/p/${encodeURIComponent(id)}`;
+  return [
+    { l: 'Abrir', run: () => { location.hash = h; } },
+    { l: 'Cambiar fase…', run: async () => {
+      const p = await col('projects').get(id).catch(() => null); const fs = p?.phases || [];
+      if (!fs.length) return toast('Este proyecto no tiene fases', true);
+      const v = await ask('¿En qué fase va?', [{ k: 'f', l: 'Fase actual', t: 'select', opts: fs.map((f, i) => [String(i), f.name]), v: String(Math.max(0, fs.findIndex((f) => f.status === 'now'))) }]);
+      if (!v) return; const n = +v.f;
+      guardar('projects', id, () => ({ phases: fs.map((f, i) => ({ ...f, status: i < n ? 'done' : i === n ? 'now' : f.status === 'done' || f.status === 'now' ? '' : f.status })) }), `Fase: ${fs[n].name}`);
+    } },
+    '-', { l: 'Copiar link', run: () => copiar(link(h), 'Link copiado') },
+  ];
+}
+
+function cliente(slug) {
+  const h = `#/clients/${slug}`;
+  return [
+    { l: 'Abrir perfil', run: () => { location.hash = h; } },
+    { l: 'Abrir su Estrategia', run: () => { location.hash = `#/ws/strategy/${slug}/overview`; } },
+    { l: 'Abrir su Marca', run: () => { location.hash = `#/ws/marketing/${slug}/overview`; } },
+    '-', { l: 'Copiar link', run: () => copiar(link(h), 'Link copiado') },
+  ];
+}
+
+async function lead(el, me) {
+  const id = el.dataset.id, l = await col('leads').get(id).catch(() => null);
+  return [
+    { l: 'Abrir (mover de etapa)', run: () => el.click() },
+    { l: 'Anotar actividad…', run: async () => { const v = await ask(`Anotar en ${l?.name || 'el lead'}`, [{ k: 'text', l: 'Qué pasó', t: 'textarea', req: true }]); if (v) guardar('leads', id, (d) => ({ activity: [...(d.activity || []), { at: new Date().toISOString(), who: me.name, text: v.text }] }), 'Anotado'); } },
+    '-', { l: 'Copiar teléfono', off: !l?.phone, run: () => copiar(l.phone, 'Teléfono copiado') },
+    { l: 'Copiar correo', off: !l?.email, run: () => copiar(l.email, 'Correo copiado') },
+  ];
+}
+
+function respuesta(el) {
+  const texto = (el.querySelector('.es-b')?.innerText || '').trim(), guardarBtn = el.querySelector('[data-act="guardar"]');
+  return [
+    { l: 'Copiar', run: () => copiar(texto) },
+    { l: 'Guardar como borrador del bloque', off: !guardarBtn, run: () => guardarBtn.click() },
+    { l: 'Preguntar más sobre esto', run: () => { const ta = document.querySelector('#es-in'); if (!ta) return; ta.value = `Sobre esto: «${texto.slice(0, 160)}${texto.length > 160 ? '…' : ''}» — `; ta.focus(); ta.dispatchEvent(new Event('input')); } },
+  ];
+}
+
+function instalarMenu(me) {
+  document.addEventListener('contextmenu', async (e) => {
+    if (e.target.closest('input, textarea, [contenteditable], .ui-menu, [data-ctx]')) return; // texto y la Library tienen el suyo
+    const t = e.target.closest('[data-act="task"][data-id], [data-act="lead"][data-id], a[href^="#/operations/p/"], a[href^="#/clients/"], .es-m.a');
+    if (!t) return;
+    let items = null;
+    if (t.matches('[data-act="task"]')) items = tarea(t, me);
+    else if (t.matches('[data-act="lead"]')) { e.preventDefault(); items = await lead(t, me); }
+    else if (t.matches('.es-m.a')) { if (!t.querySelector('.es-b')?.innerText.trim()) return; items = respuesta(t); }
+    else { const h = t.getAttribute('href'); const p = /^#\/operations\/p\/([^/]+)/.exec(h), c = /^#\/clients\/([\w-]+)$/.exec(h); if (p) items = proyecto(decodeURIComponent(p[1])); else if (c) items = cliente(c[1]); }
+    if (!items) return;
+    e.preventDefault(); uiMenu(e, items);
+  });
+}

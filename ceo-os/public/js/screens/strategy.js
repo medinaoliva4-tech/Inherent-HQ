@@ -12,7 +12,8 @@ import { loadEstrategia, forgetEstrategia } from '../stratlist.js';
 import { panelViva } from '../estrategia-viva-ui.js';
 import { instrucciones, sinBloques, leerBloques, PASOS } from '../estrategia-viva.js';
 import { chromeBloquea, PASOS_COPIA_VIEJA, sesionVencida, PASOS_LOGIN } from '../puente-chat.js';
-import { divisor, ubicarPop, junto } from '../divisor.js';
+import { divisor, ubicarPop } from '../divisor.js';
+import { menu as uiMenu } from '../ui.js';
 import { nombrePaso } from '../ia-pasos.js';
 import { saludServidor, correrServidor } from '../chat-gateway.js';
 import { idSesion } from '../llm/modos.js';
@@ -591,16 +592,10 @@ export async function render(el, { me, sub = [], alive }) {
 }
 
 // ---------- Los menús de la caja: el cliente y el bloque de Hormozi ----------
+// items: [{ href, on, mono, priv, dot, label, sub }] → el ui.menu del OS (teclado, tipo-para-buscar o caja de búsqueda).
 export function menu(anchor, items, { buscar = false, placeholder = 'Buscar cliente…' } = {}) {
-  document.querySelector('.es-menu')?.remove();
-  const box = anchor.closest('.es-box') || anchor.parentElement;
-  const m = document.createElement('div'); m.className = 'es-menu'; m.setAttribute('role', 'listbox');
-  const pinta = (q = '') => html`${buscar ? html`<input class="in" placeholder="${placeholder}" aria-label="${placeholder}" value="${q}">` : ''}${items.filter((x) => !q || x.label.toLowerCase().includes(q.toLowerCase())).map((x) => html`<a href="${x.href}" class="${x.on ? 'on' : ''}" role="option">${x.mono != null ? html`<i class="mono ${x.priv ? 'priv' : ''}">${x.mono}</i>` : html`<b class="${x.dot || ''}"></b>`}<span>${x.label}</span>${x.sub ? html`<small>${x.sub}</small>` : ''}</a>`)}`;
-  mount(m, pinta()); box.append(m); junto(m, anchor, box);
-  const inp = m.querySelector('input'); if (inp) { inp.focus(); inp.oninput = () => { const q = inp.value; mount(m, pinta(q)); const n = m.querySelector('input'); n.focus(); n.setSelectionRange(q.length, q.length); n.oninput = inp.oninput; }; }
-  const cerrar = (e) => { if (!m.contains(e.target) && e.target !== anchor) { m.remove(); document.removeEventListener('pointerdown', cerrar); } };
-  setTimeout(() => document.addEventListener('pointerdown', cerrar));
-  m.addEventListener('click', (e) => { if (e.target.closest('a')) m.remove(); });
+  return uiMenu(anchor, items.map((x) => ({ label: x.label, sub: x.sub, href: x.href, checked: Boolean(x.on),
+    icon: x.mono != null ? `<i class="ui-mi-mono${x.priv ? ' priv' : ''}">${esc(x.mono)}</i>` : `<i class="ui-mi-punto${x.dot ? ' ' + x.dot : ''}"></i>` })), { buscar: buscar ? placeholder : false, etiqueta: buscar ? placeholder : 'Elegir', ancho: 320 });
 }
 async function menuClientes(anchor, actual = '') {
   const d = await loadEstrategia().catch(() => ({ clientes: [] }));

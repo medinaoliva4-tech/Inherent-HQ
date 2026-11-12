@@ -197,7 +197,7 @@ export const vista = {
 
     const PANELES = { bmc: panelBmc, cartera: panelCartera, dinero: panelDinero, escenarios: panelEscenarios };
     const pintarTodo = () => mount(el, html`<div class="esc" data-tab="${tabActual}">
-      <div class="esc-tabs" role="tablist" aria-label="Money Model Lab">${TABS.map(([k, n]) => html`<button type="button" role="tab" id="esc-tab-${k}" class="esc-tab" aria-selected="${String(k === tabActual)}" aria-controls="esc-panel" tabindex="${k === tabActual ? 0 : -1}" data-acc="tab" data-tab="${k}">${n}</button>`)}</div>
+      <div class="tabs" role="tablist" aria-label="Money Model Lab">${TABS.map(([k, n]) => html`<button type="button" role="tab" id="esc-tab-${k}" class="${k === tabActual ? 'on' : ''}" aria-selected="${String(k === tabActual)}" aria-controls="esc-panel" tabindex="${k === tabActual ? 0 : -1}" data-acc="tab" data-tab="${k}">${n}</button>`)}</div>
       <div id="esc-panel" class="esc-panel" role="tabpanel" aria-labelledby="esc-tab-${tabActual}">${PANELES[tabActual]()}</div></div>`);
 
     // ---------- Lo derivado se recalcula sin tocar los campos que se están escribiendo ----------

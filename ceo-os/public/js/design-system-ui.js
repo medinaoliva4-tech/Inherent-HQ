@@ -272,7 +272,7 @@ async function editorUI(host, { me, b, alive }) {
 
   function paint() {
     mount(host, html`<div class="dse">
-      <div class="dse-top"><nav class="dse-tabs" aria-label="Secciones del editor">${SECS.map(([k, l, ic]) => html`<button type="button" class="${S.sec === k ? 'on' : ''}" data-act="sec" data-k="${k}">${ico(ic, 13)} ${l}</button>`)}</nav>
+      <div class="dse-top"><nav class="tabs" aria-label="Secciones del editor">${SECS.map(([k, l, ic]) => html`<button type="button" class="${S.sec === k ? 'on' : ''}" data-act="sec" data-k="${k}">${ico(ic, 13)} ${l}</button>`)}</nav>
         ${puede ? html`<button type="button" class="btn sm" data-act="guardar">${ico('check', 12)} Guardar borrador</button>` : ''}</div>
       ${aviso()}<div id="dse-barra">${barra()}</div>
       <section class="dse-cuerpo">${CUERPO[S.sec]()}</section></div>`);

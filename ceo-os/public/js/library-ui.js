@@ -1,5 +1,6 @@
 // Library tipo Finder / Drive: menú contextual, arrastrar y soltar, y el diálogo «Mover a…».
 import { flatTree, canMove } from './library-tree.js';
+import { menu, dialog } from './ui.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const FOLDER = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h4.2l2 2.2H19a1.5 1.5 0 0 1 1.5 1.5v8.8A1.5 1.5 0 0 1 19 19H5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>';
@@ -7,26 +8,8 @@ const HOME = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke
 export const folderIcon = FOLDER, homeIcon = HOME;
 
 // ---------- menú contextual (clic derecho o el botón ⋯) ----------
-let open = null;
-export function closeMenu() { if (!open) return; open.el.remove(); document.removeEventListener('pointerdown', open.out, true); document.removeEventListener('keydown', open.key, true); removeEventListener('scroll', open.close, true); open = null; }
-// items: [{ l, run, danger, off }] o '-' para una línea
-export function ctxMenu(x, y, items) {
-  closeMenu();
-  const el = document.createElement('div'); el.className = 'lib-menu'; el.setAttribute('role', 'menu');
-  el.innerHTML = items.map((it, i) => (it === '-' ? '<hr>' : `<button type="button" role="menuitem" data-i="${i}" class="${it.danger ? 'danger' : ''}" ${it.off ? 'disabled' : ''}>${esc(it.l)}</button>`)).join('');
-  document.body.append(el);
-  const w = el.offsetWidth, h = el.offsetHeight;
-  el.style.left = Math.max(8, Math.min(innerWidth - w - 8, x)) + 'px'; el.style.top = Math.max(8, Math.min(innerHeight - h - 8, y)) + 'px';
-  el.addEventListener('click', (e) => { const b = e.target.closest('button[data-i]'); if (!b) return; const it = items[b.dataset.i]; closeMenu(); it.run?.(); });
-  const out = (e) => { if (!el.contains(e.target)) closeMenu(); };
-  const key = (e) => {
-    if (e.key === 'Escape') { e.stopPropagation(); closeMenu(); }
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const bs = [...el.querySelectorAll('button:not([disabled])')]; const i = bs.indexOf(document.activeElement); bs[(i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length]?.focus(); }
-  };
-  open = { el, out, key, close: closeMenu };
-  setTimeout(() => { document.addEventListener('pointerdown', out, true); document.addEventListener('keydown', key, true); addEventListener('scroll', closeMenu, true); }, 0);
-  el.querySelector('button:not([disabled])')?.focus({ preventScroll: true });
-}
+// El menú es el de ui.js; aquí queda el atajo con la firma de siempre: ctxMenu(x, y, [{ l, run, danger, off } | '-']).
+export const ctxMenu = (x, y, items) => menu({ x, y }, items);
 
 // ---------- arrastrar y soltar ----------
 // Lo que se arrastra lleva data-drag="doc|folder" data-id; donde se suelta lleva data-drop="<id de carpeta>" ('' = la raíz).
@@ -65,17 +48,14 @@ export function wireDnd(root, { folders, onDrop }) {
 
 // ---------- «Mover a…»: el árbol completo, sin las carpetas a las que no puede ir ----------
 export function moveDialog(folders, { title = 'Mover a…', kind = 'doc', id = null, current = null } = {}) {
-  return new Promise((resolve) => {
-    const dlg = document.createElement('dialog'); dlg.className = 'dlg lib-move';
-    const rows = flatTree(folders);
-    const ok = (fid) => (kind === 'folder' ? canMove(folders, id, fid) && fid !== id : true);
-    const row = (fid, name, depth, icon) => `<button type="button" class="lib-mv${(current || null) === fid ? ' cur' : ''}" data-f="${esc(fid || '')}" style="--d:${depth}" ${ok(fid) && (current || null) !== fid ? '' : 'disabled'}>${icon}<span>${esc(name)}</span>${(current || null) === fid ? '<em>aquí está</em>' : ''}</button>`;
-    dlg.innerHTML = `<div class="in-dlg"><h3>${esc(title)}</h3><div class="lib-mvlist">${row(null, 'Library (raíz)', 0, HOME)}${rows.map((r) => row(r.f.id, r.f.name, r.depth + 1, FOLDER)).join('')}</div>
-      <div class="row" style="margin-top:14px"><button type="button" class="btn ghost" data-x>Cancelar</button></div></div>`;
-    document.body.append(dlg);
-    let out;
-    dlg.addEventListener('click', (e) => { if (e.target.closest('[data-x]')) return dlg.close(); const b = e.target.closest('.lib-mv'); if (!b || b.disabled) return; out = b.dataset.f || null; dlg.close(); });
-    dlg.addEventListener('close', () => { dlg.remove(); resolve(out === undefined ? undefined : out); });
-    dlg.showModal(); dlg.querySelector('.lib-mv:not([disabled])')?.focus();
-  });
+  const rows = flatTree(folders);
+  const ok = (fid) => (kind === 'folder' ? canMove(folders, id, fid) && fid !== id : true);
+  const row = (fid, name, depth, icon) => `<button type="button" class="lib-mv${(current || null) === fid ? ' cur' : ''}" data-f="${esc(fid || '')}" style="--d:${depth}" ${ok(fid) && (current || null) !== fid ? '' : 'disabled'}>${icon}<span>${esc(name)}</span>${(current || null) === fid ? '<em>aquí está</em>' : ''}</button>`;
+  let out;
+  // El diálogo único del OS (ui.js): Esc y clic afuera = cancelar (undefined).
+  const d = dialog({ titulo: title, x: false, cuerpo: `<div class="lib-mvlist">${row(null, 'Library (raíz)', 0, HOME)}${rows.map((r) => row(r.f.id, r.f.name, r.depth + 1, FOLDER)).join('')}</div>`,
+    acciones: [{ label: 'Cancelar', value: '', tipo: 'ghost' }], foco: null });
+  d.cuerpo.addEventListener('click', (e) => { const b = e.target.closest('.lib-mv'); if (!b || b.disabled) return; out = b.dataset.f || null; d.cerrar('mover'); });
+  d.cuerpo.querySelector('.lib-mv:not([disabled])')?.focus();
+  return d.cerrado.then((v) => (v === 'mover' ? out : undefined));
 }

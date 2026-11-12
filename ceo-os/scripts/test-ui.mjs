@@ -160,7 +160,7 @@ t('el fondo no instala luz que siga el cursor', () => {
 t('vidrio: el fondo se ve a través del contenido, y lo que flota sigue sólido', () => {
   const bloque = CSS.slice(CSS.indexOf('/* ===== Vidrio de fondo'));
   assert.match(bloque, /#main\{[^}]*--ui-surf:rgb\(var\(--ui-tint\) \/ \.0/);
-  for (const s of ['.avi-menu', '.ctx-pop', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
+  for (const s of ['.ui-menu', '.ui-dlg', '.ag-foot', '.cma-tabla th']) assert.ok(bloque.includes(s), `${s} debe seguir sólido`);
   assert.match(bloque, /prefers-reduced-transparency/);
 });
 t('vidrio real: en la app de la Mac se ve lo que hay detrás de la ventana', () => {
@@ -251,7 +251,7 @@ t('app de Mac: dictado y conversación usan el dictado del sistema', () => {
   assert.match(voz, /inherentEscritorio\?\.dictar/); assert.match(ui, /class DictadoMac/);
 });
 t('Pocket: arriba el menú y el título; todo vive en el menú lateral', () => {
-  assert.match(APP, /class="top-menu" data-hoja="mas"/); assert.match(APP, /id="top-t"/); assert.match(APP, /hoja-nueva/);
+  assert.match(APP, /class="top-hoja" data-hoja="mas"/); assert.match(APP, /id="top-t"/); assert.match(APP, /hoja-nueva/);
   const b = CSS.slice(CSS.indexOf('/* ===== Pocket'));
   assert.match(b, /\.nav-cel\{display:none!important\}/); assert.match(b, /\.hoja\{top:0;right:auto/);
 });

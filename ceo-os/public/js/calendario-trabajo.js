@@ -119,7 +119,7 @@ export function calendarioHtml(ctx) {
   const item = itemHtml;
   const chips = html`<div class="wc-chips" role="group" aria-label="Qué se ve">${lista.filter(([k]) => tipos.includes(k)).map(([k, l]) => html`<button class="wc-chip t-${k} ${off.has(k) ? 'off' : ''}" data-act="ctipo" data-t="${k}" aria-pressed="${off.has(k) ? 'false' : 'true'}"><i></i>${l}<span>${cnt[k] || 0}</span></button>`)}</div>`;
   const head = html`<div class="wc-head"><h3>${label}</h3>
-    <div class="tabs wc-vista" role="tablist" aria-label="Vista">${[['mes', 'Mes'], ['semana', 'Semana']].map(([k, l]) => html`<button role="tab" class="${vista === k ? 'on' : ''}" aria-selected="${vista === k ? 'true' : 'false'}" data-act="cvista" data-v="${k}">${l}</button>`)}</div>
+    <div class="seg wc-vista" role="tablist" aria-label="Vista">${[['mes', 'Mes'], ['semana', 'Semana']].map(([k, l]) => html`<button role="tab" class="${vista === k ? 'on' : ''}" aria-selected="${vista === k ? 'true' : 'false'}" data-act="cvista" data-v="${k}">${l}</button>`)}</div>
     <div class="sp"></div><div class="wc-nav"><button class="btn-icon end" data-act="mprev" aria-label="Anterior">‹</button><button class="btn ghost sm" data-act="mtoday">Hoy</button><button class="btn-icon end" data-act="mnext" aria-label="Siguiente">›</button><button class="btn-icon end" data-act="mrefresh" title="Actualizar" aria-label="Actualizar">↻</button>${ctx.botones ?? html`<button class="btn sm" data-act="newEvent">+ Evento</button>`}</div></div>`;
   let grid;
   if (vista === 'semana') {

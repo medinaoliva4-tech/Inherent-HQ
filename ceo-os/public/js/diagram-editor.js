@@ -3,6 +3,7 @@
 // diagramView(host, data, opts)   → el mismo motor en solo lectura (la vista del documento en la Library).
 // El modelo, la geometría y Mermaid viven en diagram-model.js (puro, se prueba en Node).
 import * as M from './diagram-model.js';
+import { menu as uiMenu, popover as uiPopover, cerrarMenu, cerrarPopover } from './ui.js';
 // Sin confirmación propia, la del OS (core.js se carga al usarla: este módulo sigue puro para las pruebas).
 const confirmar = (m) => import('./core.js').then((c) => c.confirmAsk(m));
 export { toMermaid, fromMermaid, fromDoc, template, templateMermaid, TEMPLATES, normalize, empty } from './diagram-model.js';
@@ -73,11 +74,10 @@ export function diagramEditor(host, data, opts = {}) {
       </div>
       ${ro ? '' : '<aside class="dg-props" aria-label="Propiedades"></aside>'}
     </div>
-    <div class="dg-pop" hidden></div>
   </div>`;
   const root = host.querySelector('.dg'), stage = root.querySelector('.dg-stage'), svg = root.querySelector('.dg-svg');
   const world = svg.querySelector('.dg-world'), gE = svg.querySelector('.dg-edges'), gN = svg.querySelector('.dg-nodes'), gO = svg.querySelector('.dg-over');
-  const mini = root.querySelector('.dg-mini'), miniSvg = mini.querySelector('svg'), props = root.querySelector('.dg-props'), pop = root.querySelector('.dg-pop'), emptyEl = root.querySelector('.dg-emptyst');
+  const mini = root.querySelector('.dg-mini'), miniSvg = mini.querySelector('svg'), props = root.querySelector('.dg-props'), emptyEl = root.querySelector('.dg-emptyst');
   const byId = () => new Map(d.nodes.map((n) => [n.id, n]));
   const node = (id) => d.nodes.find((n) => n.id === id);
 
@@ -173,7 +173,7 @@ export function diagramEditor(host, data, opts = {}) {
 
   // ---------- propiedades ----------
   const sw = (cur, act = 'fill') => `<div class="dg-sws">${M.PALETTE.map((p) => `<button type="button" class="dg-sw${cur === p.k ? ' on' : ''}" data-a="${act}:${p.k}" data-f="${p.k}" style="--c:${p.hex}" title="${esc(p.l)}" aria-label="${esc(p.l)}"></button>`).join('')}</div>`;
-  const seg = (items, cur) => `<div class="dg-seg">${items.map(([a, v, icon, l]) => `<button type="button" class="dg-b${cur === v ? ' on' : ''}" data-a="${a}:${v}" title="${esc(l)}">${ic(icon)}<span>${esc(l)}</span></button>`).join('')}</div>`;
+  const seg = (items, cur) => `<div class="seg ancho mini">${items.map(([a, v, icon, l]) => `<button type="button" class="dg-b${cur === v ? ' on' : ''}" data-a="${a}:${v}" title="${esc(l)}">${ic(icon)}<span>${esc(l)}</span></button>`).join('')}</div>`;
   function renderProps() {
     if (!props) return;
     const ns = [...sel].map(node).filter(Boolean), e = selEdge ? d.edges.find((x) => x.id === selEdge) : null;
@@ -182,15 +182,15 @@ export function diagramEditor(host, data, opts = {}) {
       const n = ns[0];
       h = `<div class="dg-ph"><b>${esc(M.SHAPES[n.type].l)}</b><span class="dg-fill"></span>${btn('dup', 'dup', `Duplicar (${MOD} D)`)}${btn('del', 'trash', 'Borrar (Supr)')}</div>
         <label class="dg-l">Texto</label><textarea class="in dg-in" data-p="text" rows="3" placeholder="Escribe…">${esc(n.text)}</textarea>
-        <label class="dg-l">Forma</label><div class="dg-seg dg-types">${M.TYPES.map((t) => `<button type="button" class="dg-b${n.type === t ? ' on' : ''}" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
+        <label class="dg-l">Forma</label><div class="seg ancho dg-icons" aria-label="Forma">${M.TYPES.map((t) => `<button type="button" class="dg-b${n.type === t ? ' on' : ''}" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
         <label class="dg-l">Relleno</label>${sw(n.fill)}
         <label class="dg-l">Tamaño</label><div class="dg-two"><label class="dg-num"><span>An</span><input class="in dg-in" type="number" data-p="w" min="40" step="${M.GRID}" value="${Math.round(n.w)}"></label><label class="dg-num"><span>Al</span><input class="in dg-in" type="number" data-p="h" min="28" step="${M.GRID}" value="${Math.round(n.h)}"></label></div>
         <p class="dg-tip">Arrastra un punto del borde para conectar con otro nodo.</p>`;
     } else if (ns.length > 1) {
       h = `<div class="dg-ph"><b>${ns.length} seleccionados</b><span class="dg-fill"></span>${btn('dup', 'dup', `Duplicar (${MOD} D)`)}${btn('del', 'trash', 'Borrar (Supr)')}</div>
-        <label class="dg-l">Alinear</label><div class="dg-seg dg-icons">${[['l', 'al'], ['c', 'ac'], ['r', 'ar'], ['t', 'at'], ['m', 'am'], ['b', 'ab']].map(([v, i]) => btn('align:' + v, i, 'Alinear')).join('')}</div>
-        <label class="dg-l">Distribuir</label><div class="dg-seg dg-icons">${btn('dist:h', 'dh', 'En horizontal', ns.length < 3 ? 'disabled' : '')}${btn('dist:v', 'dv', 'En vertical', ns.length < 3 ? 'disabled' : '')}</div>
-        <label class="dg-l">Forma</label><div class="dg-seg dg-types">${M.TYPES.map((t) => `<button type="button" class="dg-b" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
+        <label class="dg-l">Alinear</label><div class="dg-acciones">${[['l', 'al'], ['c', 'ac'], ['r', 'ar'], ['t', 'at'], ['m', 'am'], ['b', 'ab']].map(([v, i]) => btn('align:' + v, i, 'Alinear')).join('')}</div>
+        <label class="dg-l">Distribuir</label><div class="dg-acciones">${btn('dist:h', 'dh', 'En horizontal', ns.length < 3 ? 'disabled' : '')}${btn('dist:v', 'dv', 'En vertical', ns.length < 3 ? 'disabled' : '')}</div>
+        <label class="dg-l">Forma</label><div class="seg ancho dg-icons" aria-label="Forma">${M.TYPES.map((t) => `<button type="button" class="dg-b" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
         <label class="dg-l">Relleno</label>${sw(ns.every((n) => n.fill === ns[0].fill) ? ns[0].fill : '')}`;
     } else if (e) {
       const a = node(e.from), b = node(e.to);
@@ -272,23 +272,25 @@ export function diagramEditor(host, data, opts = {}) {
   async function copyMermaid() { try { await navigator.clipboard.writeText(M.toMermaid(d)); opts.toast?.('Código Mermaid copiado'); } catch { opts.toast?.('No pude copiar', true); } }
 
   // ---------- menús (plantillas, exportar, atajos, importar) ----------
+  // Plantillas y Exportar son ui.menu; Importar y Atajos, ui.popover (Zag + Floating UI: teclado, Esc, clic afuera, foco de vuelta).
+  let pop = null;
   function openMenu(kind, anchor) {
-    if (menu === kind) return closeMenu();
-    menu = kind; let h = '';
-    if (kind === 'tpl') h = `<div class="dg-mt">Plantillas</div>${Object.entries(M.TEMPLATES).map(([k, l]) => `<button type="button" class="dg-mi" data-a="tpl:${k}">${esc(l)}</button>`).join('')}`;
-    if (kind === 'export') h = `<div class="dg-mt">${ro ? 'Descargar' : 'Exportar'}</div><button type="button" class="dg-mi" data-a="png">Imagen PNG</button><button type="button" class="dg-mi" data-a="svg">Vector SVG</button><button type="button" class="dg-mi" data-a="mmd">Copiar código Mermaid</button>${ro ? '' : '<button type="button" class="dg-mi" data-a="menu:import">Importar Mermaid…</button>'}`;
+    anchor = anchor || root.querySelector(`[data-a="menu:${kind}"]`) || root;
+    menu = kind;
+    const fin = () => { if (menu === kind) menu = null; };
+    if (kind === 'tpl') return uiMenu(anchor, Object.entries(M.TEMPLATES).map(([k, l]) => ({ label: l, onSelect: () => loadTemplate(k) })), { titulo: 'Plantillas', placement: 'bottom-end', onClose: fin });
+    if (kind === 'export') return uiMenu(anchor, [{ label: 'Imagen PNG', icon: 'image', onSelect: exportPNG }, { label: 'Vector SVG', icon: 'download', onSelect: exportSVG }, { label: 'Copiar código Mermaid', icon: 'copy', onSelect: copyMermaid },
+      ...(ro ? [] : ['-', { label: 'Importar Mermaid…', icon: 'upload', onSelect: () => openMenu('import', anchor) }])], { titulo: ro ? 'Descargar' : 'Exportar', placement: 'bottom-end', onClose: fin });
+    let h = '';
     if (kind === 'import') h = `<div class="dg-mt">Importar Mermaid</div><p class="dg-tip" style="margin:0 0 8px">Pega un <code>flowchart TD</code> o <code>LR</code>. Reemplaza lo que hay.</p><textarea class="in dg-in" id="${uid}-imp" rows="7" placeholder="flowchart TD&#10;  A[Inicio] --> B{¿Listo?}&#10;  B -->|Sí| C[Fin]"></textarea><div class="dg-row"><button type="button" class="dg-wide dark" data-a="doimport">Importar</button></div>`;
     if (kind === 'help') h = `<div class="dg-mt">Atajos</div><dl class="dg-keys">${SHORTCUTS.map(([k, v]) => `<dt>${esc(v)}</dt><dd>${esc(k)}</dd>`).join('')}</dl>${ro ? '' : '<p class="dg-tip">En el celular: toca una forma para agregarla, arrastra con un dedo para mover, pellizca para el zoom.</p>'}`;
-    pop.innerHTML = h; pop.hidden = false; pop.dataset.kind = kind;
-    const a = (anchor || root).getBoundingClientRect(), r = root.getBoundingClientRect();
-    pop.style.top = Math.round(a.bottom - r.top + 6) + 'px';
-    pop.style.left = Math.round(Math.max(8, Math.min(r.width - pop.offsetWidth - 8, a.right - r.left - pop.offsetWidth))) + 'px';
-    if (kind === 'import') pop.querySelector('textarea').focus();
-    setTimeout(() => document.addEventListener('pointerdown', outside, true), 0);
+    return uiPopover(anchor, h, { etiqueta: kind === 'import' ? 'Importar Mermaid' : 'Atajos', placement: 'bottom-end', ancho: 340, clase: 'dg-panel', onClose: () => { fin(); pop = null; } }).then((r) => {
+      if (!r) return; pop = r.el;
+      r.el.addEventListener('click', (e) => { const t = e.target.closest('[data-a]'); if (t) act(t.dataset.a, t); });
+      if (kind === 'import') r.el.querySelector('textarea').focus();
+    });
   }
-  const outside = (e) => { if (!pop.contains(e.target) && !e.target.closest?.('[data-a^="menu:"]')) closeMenu(); };
-  function closeMenu() { menu = null; pop.hidden = true; document.removeEventListener('pointerdown', outside, true); }
-  pop.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeMenu(); root.focus({ preventScroll: true }); } e.stopPropagation(); });
+  function closeMenu() { menu = null; cerrarMenu(); cerrarPopover(); }
 
   const ACT = {
     undo: doUndo, redo: doRedo, del, dup, zin: () => zoomCenter(1.2), zout: () => zoomCenter(1 / 1.2), zfit: () => fit(),
@@ -296,7 +298,7 @@ export function diagramEditor(host, data, opts = {}) {
     mini: () => { miniOn = !miniOn; store.set('dg.mini', miniOn ? '1' : '0'); drawMini(); },
     png: () => { closeMenu(); exportPNG(); }, svg: () => { closeMenu(); exportSVG(); }, mmd: () => { closeMenu(); copyMermaid(); },
     doimport: async () => {
-      const src = pop.querySelector('textarea')?.value || ''; const r = M.fromMermaid(src, { measure });
+      const src = pop?.querySelector('textarea')?.value || ''; const r = M.fromMermaid(src, { measure });
       if (!r) return opts.toast?.('No entendí ese Mermaid: tiene que empezar con «flowchart TD» o «graph LR»', true);
       if (d.nodes.length && !(await (opts.confirm || confirmar)('¿Reemplazar el diagrama por lo importado?'))) return;
       commit(() => { d.nodes = r.nodes; d.edges = r.edges; d.dir = r.dir; sel.clear(); selEdge = null; }); closeMenu(); fit();

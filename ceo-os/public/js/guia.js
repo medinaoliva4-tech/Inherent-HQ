@@ -3,6 +3,8 @@
 // con `guia = <sección>`). Al abrirlo queda anotado que esa persona lo vio (team.<email>.vistos).
 import { html, raw, mount, api, toast, $, ico, embedUrl, md } from './core.js';
 import { nombreSeccion } from './guia-secciones.js';
+import { menu } from './ui.js';
+import { svgIco } from './iconos.js';
 
 let cache = null; // { items, vistos }
 export async function cargarGuias(fresh = false) {
@@ -25,17 +27,9 @@ export function instalarBoton(me) {
   b.onclick = () => {
     const xs = guiasDe(b.dataset.seccion); if (!xs.length) return;
     if (xs.length === 1) return abrirGuia(xs[0], me);
-    // Varios videos de la misma sección: un menú chico debajo del botón.
-    document.querySelector('.guia-menu')?.remove();
-    const m = document.createElement('div'); m.className = 'guia-menu'; m.setAttribute('role', 'menu');
-    mount(m, html`${xs.map((d) => html`<button type="button" role="menuitem" data-id="${d.id}">${ico('video', 14)} ${d.title}${cache.vistos?.[d.id] ? html` <i>${ico('check', 12)}</i>` : ''}</button>`)}`);
-    m.onclick = (e) => { const x = e.target.closest('[data-id]'); if (x) { abrirGuia(xs.find((d) => d.id === x.dataset.id), me); m.remove(); } };
-    // Desde arriba abre hacia abajo; desde el pie de la barra lateral, hacia arriba y alineado a la izquierda del botón.
-    const r = b.getBoundingClientRect(), w = document.documentElement.clientWidth;
-    if (r.top > innerHeight / 2) m.style.bottom = innerHeight - r.top + 6 + 'px'; else m.style.top = r.bottom + 6 + 'px';
-    if (b.closest('.lat')) m.style.left = r.left + 'px'; else m.style.right = w - r.right + 'px';
-    document.body.append(m);
-    setTimeout(() => document.addEventListener('click', function cierra(ev) { if (!m.contains(ev.target)) { m.remove(); document.removeEventListener('click', cierra); } }), 0);
+    // Varios videos de la misma sección: un ui.menu junto al botón (desde el pie de la barra lateral abre hacia arriba).
+    menu(b, xs.map((d) => ({ label: d.title, icon: 'video', fin: cache.vistos?.[d.id] ? `<span class="ui-mi-ok" aria-label="Visto">${svgIco('check', 13)}</span>` : '', onSelect: () => abrirGuia(d, me) })),
+      { etiqueta: 'Cómo se usa', placement: b.closest('.lat') ? 'top-start' : 'bottom-end' });
   };
 }
 

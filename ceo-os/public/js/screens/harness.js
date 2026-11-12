@@ -25,7 +25,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   const cabecera = () => html`<div class="iai-hero sp-hero"><span class="lbl">${pagina ? 'Inherent AI' : 'Tu IA de trabajo'}</span><h1>${pagina ? 'Conexiones' : 'Inherent AI'}</h1>
     <p>${pagina ? 'Conecta tus herramientas: el Chat y los agentes las usan desde el servidor, con tu permiso.' : 'Corre en el servidor de Inherent: siempre encendido, con tus conexiones y tus permisos.'}</p></div>
-    <nav class="iai-tabs" aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agentes</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} Conexiones</a></nav>`;
+    <nav class="tabs" data-iai aria-label="Inherent AI"><a href="#/chat">${ico('chat', 14)} Chat</a><a href="#/ai/agentes">${ico('sparkles', 14)} Agentes</a><a href="#/ai/mcps" ${pagina ? ACTUAL : ''}>${ico('puzzle', 14)} Conexiones</a></nav>`;
 
   // ---------- Portada ----------
   function portada() {

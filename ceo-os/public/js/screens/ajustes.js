@@ -48,7 +48,7 @@ export async function render(el, { me, alive }) {
 
   const pinta = () => mount(el, html`<div class="aj">
     <div class="aj-hero"><span class="lbl">Ajustes</span><h1>IA del OS</h1><p class="mut">Conecta las IAs que usa el equipo. ${ed ? 'Pega una llave y listo: no hay que instalar nada.' : 'Las conectan el CEO o el COO; aquí ves cuáles están listas.'}</p></div>
-    <nav class="iai-tabs"><a href="#/ajustes/ia" aria-current="page">${ico('sparkles', 14)} IA</a><a href="#/ai/mcps">${ico('puzzle', 14)} Conexiones (MCP)</a></nav>
+    <nav class="tabs" data-iai><a href="#/ajustes/ia" aria-current="page">${ico('sparkles', 14)} IA</a><a href="#/ai/mcps">${ico('puzzle', 14)} Conexiones (MCP)</a></nav>
     ${pasos()}
     <div class="hy-bh iai-sec"><h2>Para qué se usa</h2><span>Cada parte del OS usa la IA que elijas</span></div>
     <div class="aj-usos">${USOS.map(usoCard)}</div>

@@ -72,7 +72,7 @@ export const vista = {
 
     function pinta() {
       mount(el, html`<div class="hk">
-        <nav class="hk-tabs" role="tablist" aria-label="Grilla o matriz"><button type="button" role="tab" class="${S.tab === 'grilla' ? 'on' : ''}" aria-selected="${S.tab === 'grilla'}" data-t="grilla">${ico('zap', 15)} Grilla de hooks</button>
+        <nav class="seg" role="tablist" aria-label="Grilla o matriz"><button type="button" role="tab" class="${S.tab === 'grilla' ? 'on' : ''}" aria-selected="${S.tab === 'grilla'}" data-t="grilla">${ico('zap', 15)} Grilla de hooks</button>
           <button type="button" role="tab" class="${S.tab === 'matriz' ? 'on' : ''}" aria-selected="${S.tab === 'matriz'}" data-t="matriz">${ico('layout-grid', 15)} Matriz de pruebas</button>
           <span class="sp"></span><span class="mut sm">${S.laya === null ? '' : S.laya ? 'Laya lista en tu compu' : 'Sin puente: Laya queda «pendiente»'}</span></nav>
         ${S.tab === 'grilla' ? pestanaGrilla() : pestanaMatriz()}</div>`);

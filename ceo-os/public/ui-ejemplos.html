@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Componentes del OS · ejemplos</title>
+<link rel="stylesheet" href="/primitives.css">
+<link rel="stylesheet" href="/app.css">
+<style>
+  /* Solo esta página de ejemplos (no es una pantalla del OS). */
+  body{margin:0;background:var(--ui-bg);color:var(--ui-ink);font-family:var(--sans,system-ui)}
+  .ej{max-width:980px;margin:0 auto;padding:28px 16px 80px;display:grid;gap:22px}
+  .ej-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .ej-top h1{margin:0;font-size:var(--fs-9);letter-spacing:-.01em}.ej-top p{margin:4px 0 0;color:var(--ui-mut);font-size:var(--fs-4)}
+  .ej-sec{display:grid;gap:10px;padding:16px;border-radius:var(--r-4);background:var(--ui-side);box-shadow:var(--ui-sh-1)}
+  .ej-sec>h2{margin:0;font-size:var(--fs-3);letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut);font-weight:500}
+  .ej-fila{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .ej-zona{padding:28px;border:1px dashed var(--ui-line2);border-radius:var(--r-3);color:var(--ui-mut);font-size:var(--fs-4);text-align:center}
+  .ej-log{min-height:20px;color:var(--ui-ink2);font-size:var(--fs-4)}
+</style>
+</head>
+<body>
+<main class="ej">
+  <header class="ej-top">
+    <div><h1>Componentes del OS</h1><p>ui.js: menú, popover, tooltip, diálogo, tabs y segmented (Zag.js + Floating UI). Datos de muestra.</p></div>
+    <button type="button" class="btn ghost" id="tema">Cambiar a claro</button>
+  </header>
+  <section class="ej-sec"><h2>Menú</h2>
+    <div class="ej-fila"><button type="button" class="btn ghost" id="m-acciones">Acciones ▾</button><button type="button" class="btn ghost" id="m-buscar">Elegir cliente ▾</button><button type="button" class="btn ghost" id="m-modelo">Modelo ▾</button></div>
+    <div class="ej-zona" id="m-zona">Clic derecho aquí</div>
+    <div class="ej-log" id="log" aria-live="polite"></div>
+  </section>
+  <section class="ej-sec"><h2>Popover y tooltip</h2>
+    <div class="ej-fila"><button type="button" class="btn ghost" id="p-abrir">Contexto ▾</button><button type="button" class="btn ghost" data-tip="Un tooltip corto: se abre al pasar o al enfocar.">Pasa el mouse</button><h3 style="margin:0">Revenue<button type="button" class="itip" data-tip="Lo que entró este mes, por cliente." aria-label="Lo que entró este mes, por cliente.">i</button></h3></div>
+  </section>
+  <section class="ej-sec"><h2>Diálogo</h2>
+    <div class="ej-fila"><button type="button" class="btn ghost" id="d-confirmar">Confirmar</button><button type="button" class="btn ghost" id="d-ask">Formulario (ask)</button><button type="button" class="btn ghost" id="d-lado">Panel lateral</button><button type="button" class="btn ghost" id="d-hoja">Hoja</button></div>
+  </section>
+  <section class="ej-sec"><h2>Tabs (vistas) y segmented (filtros)</h2>
+    <div id="t-tabs"></div>
+    <div id="t-seg"></div>
+    <div class="tabs mini" id="t-marcado"><button type="button" class="on">Hechas a mano</button><button type="button">con .on</button><button type="button">y nada más</button></div>
+  </section>
+</main>
+<script type="module" src="/js/ui-ejemplos.js"></script>
+</body>
+</html>

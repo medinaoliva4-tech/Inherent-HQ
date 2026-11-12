@@ -9,6 +9,7 @@ import { html, raw, mount, ico, toast, api, confirmAsk } from './core.js';
 import { TIPOS, CONEXIONES, tipoDe, normalizarEtapa } from './agentes-flujos.js';
 import { CONECTORES, logoConector } from './conectores.js';
 import { proveedorDe } from './ia-proveedores.js';
+import { menu as uiMenu } from './ui.js';
 
 const lineas = (xs) => (xs || []).join('\n');
 const deLineas = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
@@ -29,7 +30,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   const conectado = (id) => Boolean(estCon?.conectores?.find((c) => c.id === id)?.conectado);
   const ro = !editor;
   let etapas = (wf.etapas || []).map((e) => ({ ...e }));
-  let sel = etapas.length ? 0 : null, panel = 'construir', sucio = false, guardando = false, menuEn = null;
+  let sel = etapas.length ? 0 : null, panel = 'construir', sucio = false, guardando = false;
   let accAbierto = true; try { accAbierto = localStorage.getItem(K_ACC) !== '0'; } catch {}
   const view = { x: 0, y: 0, z: 1, listo: false };
   let full = false, lugar = null; // pantalla completa: el Flujo cubre toda la ventana (Esc o el mismo botón salen)
@@ -65,8 +66,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   // El «+» entre etapas (y al final) abre un menú corto con los tipos.
   const masEntre = () => (ro ? '' : etapas.map((_, i) => {
     const y = i === etapas.length - 1 ? yDe(i) + H + GAP - 18 : yDe(i) + H + GAP / 2;
-    return html`<button type="button" class="kf-plus ${i === etapas.length - 1 ? 'fin' : ''}" style="top:${y}px" data-act="menu" data-i="${i}" aria-label="${i === etapas.length - 1 ? 'Agregar etapa al final' : `Insertar etapa después del paso ${i + 1}`}">${ico('plus', 13)}${i === etapas.length - 1 ? html`<span>Agregar etapa</span>` : ''}</button>
-      ${menuEn === i ? html`<div class="kf-menu" style="top:${y + 18}px" role="menu">${TIPOS.map((t) => html`<button type="button" role="menuitem" data-act="insertar" data-i="${i}" data-t="${t.id}" data-tt="${t.id}">${ico(t.icono, 14)}<span><b>${t.nombre}</b><span>${t.sub}</span></span></button>`)}</div>` : ''}`;
+    return html`<button type="button" class="kf-plus ${i === etapas.length - 1 ? 'fin' : ''}" style="top:${y}px" data-act="menu" data-i="${i}" aria-label="${i === etapas.length - 1 ? 'Agregar etapa al final' : `Insertar etapa después del paso ${i + 1}`}">${ico('plus', 13)}${i === etapas.length - 1 ? html`<span>Agregar etapa</span>` : ''}</button>`;
   }));
 
   const acciones = () => (ro ? '' : html`<aside class="kf-panel kf-acts ${accAbierto ? 'open' : ''}" aria-label="Acciones">
@@ -93,7 +93,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
         <span class="kf-insp-k">${ico(t.icono, 15)} Paso ${sel + 1} · ${t.nombre}</span>
         <button type="button" class="btn-icon" data-act="cerrar" aria-label="Cerrar">${ico('x', 15)}</button>
       </div>
-      <div class="kf-seg" role="tablist">${[['construir', 'Construir'], ['reglas', 'Reglas'], ['conexiones', 'Conexiones']].map(([k, l]) => html`<button type="button" role="tab" aria-selected="${panel === k}" class="${panel === k ? 'on' : ''}" data-act="panel" data-p="${k}">${l}</button>`)}</div>
+      <div class="tabs mini" role="tablist">${[['construir', 'Construir'], ['reglas', 'Reglas'], ['conexiones', 'Conexiones']].map(([k, l]) => html`<button type="button" role="tab" aria-selected="${panel === k}" class="${panel === k ? 'on' : ''}" data-act="panel" data-p="${k}">${l}</button>`)}</div>
       <div class="kf-insp-b">
       ${panel === 'construir' ? html`
         ${campo('nombre', 'Nombre', e.nombre)}
@@ -196,7 +196,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   let arrastre = null;
   el.onpointerdown = (ev) => {
     const c = lienzo(); if (!c || !c.contains(ev.target)) return;
-    if (ev.target.closest('.kf-node,.kf-panel,.kf-zoom,.kf-plus,.kf-menu,button,input,select,textarea,a')) return;
+    if (ev.target.closest('.kf-node,.kf-panel,.kf-zoom,.kf-plus,button,input,select,textarea,a')) return;
     arrastre = { x: ev.clientX, y: ev.clientY, vx: view.x, vy: view.y, movio: false };
     c.setPointerCapture(ev.pointerId); c.classList.add('panning');
   };
@@ -209,10 +209,10 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   el.onpointerup = () => {
     if (!arrastre) return;
     const movio = arrastre.movio; arrastre = null; lienzo()?.classList.remove('panning');
-    if (!movio && (sel != null || menuEn != null)) { const habia = sel != null; sel = null; menuEn = null; pinta(); if (habia) enfocar(null); } // un clic en el vacío cierra
+    if (!movio && sel != null) { const habia = sel != null; sel = null; pinta(); if (habia) enfocar(null); } // un clic en el vacío cierra
   };
   el.addEventListener('wheel', (ev) => {
-    const c = lienzo(); if (!c || !c.contains(ev.target) || ev.target.closest('.kf-panel,.kf-menu')) return;
+    const c = lienzo(); if (!c || !c.contains(ev.target) || ev.target.closest('.kf-panel')) return;
     ev.preventDefault();
     const r = c.getBoundingClientRect();
     if (ev.ctrlKey || ev.metaKey) zoomEn(Math.exp(-ev.deltaY * 0.01), ev.clientX - r.left, ev.clientY - r.top);
@@ -222,15 +222,15 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   // ---------- Cambios ----------
   const marcar = () => { sucio = true; pinta(); };
   const nueva = (tipo) => { const t = tipoDe(tipo); return normalizarEtapa({ tipo, nombre: t.nombre, herramientas: t.herramientas, fuentes_min: t.fuentes_min }); };
-  const insertar = (i, tipo) => { etapas.splice(i + 1, 0, nueva(tipo)); sel = i + 1; panel = 'construir'; menuEn = null; marcar(); enfocar(sel); };
+  const insertar = (i, tipo) => { etapas.splice(i + 1, 0, nueva(tipo)); sel = i + 1; panel = 'construir'; marcar(); enfocar(sel); };
 
   const mapa = {
-    sel: (b) => { sel = Number(b.dataset.i); menuEn = null; pinta(); enfocar(sel); },
+    sel: (b) => { sel = Number(b.dataset.i); pinta(); enfocar(sel); },
     cerrar: () => { sel = null; pinta(); enfocar(null); },
     panel: (b) => { panel = b.dataset.p; pinta(); },
     acciones: () => { accAbierto = !accAbierto; try { localStorage.setItem(K_ACC, accAbierto ? '1' : '0'); } catch {} pinta(); enfocar(sel); },
-    menu: (b) => { const i = Number(b.dataset.i); menuEn = menuEn === i ? null : i; pinta(); },
-    insertar: (b) => insertar(Number(b.dataset.i), b.dataset.t),
+    // Qué tipo de etapa va: un ui.menu junto al «+» (teclado, Esc y el foco de vuelta).
+    menu: (b) => { const i = Number(b.dataset.i); uiMenu(b, TIPOS.map((t) => ({ label: t.nombre, sub: t.sub, icon: t.icono, onSelect: () => insertar(i, t.id) })), { etiqueta: 'Tipo de etapa', placement: 'right-start', ancho: 300 }); },
     agregar: (b) => insertar(sel == null ? etapas.length - 1 : sel, b.dataset.t),
     siguiente: () => { if (sel < etapas.length - 1) { sel += 1; pinta(); enfocar(sel); } },
     subir: () => { const i = sel; if (!i) return; [etapas[i - 1], etapas[i]] = [etapas[i], etapas[i - 1]]; sel = i - 1; marcar(); },
@@ -267,7 +267,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   window.addEventListener('hashchange', () => { if (lugar) { el.remove(); lugar = null; full = false; } document.documentElement.classList.remove('kf-fullscreen'); }, { once: true });
   el.onkeydown = (ev) => {
     const escribiendo = ev.target.closest?.('input,textarea,select,[contenteditable]');
-    if (ev.key === 'Escape' && (menuEn != null || sel != null)) { menuEn = null; sel = null; pinta(); return; }
+    if (ev.key === 'Escape' && sel != null && !document.querySelector('.ui-menu')) { sel = null; pinta(); return; }
     if (ev.key === 'Escape' && full) return mapa.full();
     if (!escribiendo && (ev.key === 'f' || ev.key === 'F')) return mapa.full();
     if (!escribiendo && ev.key === '0') return ajustar();

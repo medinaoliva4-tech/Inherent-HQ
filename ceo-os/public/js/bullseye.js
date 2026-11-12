@@ -66,7 +66,7 @@ export function bullseye(host, { name, bx, save, prompt }) {
     }
     mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn ghost sm bx-btn" data-act="bxAI">${ico('spark')} Rehacer con Claude</button><button class="btn ghost sm bx-btn" data-act="bxEdit">Editar</button></div>
       <div class="bx-center">${bx.center || bx.rings[0].label}</div>${bx.buyer ? html`<div class="bx-mut sm">Quien paga: ${bx.buyer}</div>` : ''}
-      <div class="bx-seg">${[['diana', 'La diana'], ['mix', 'Mezcla 3/1/1'], ['fuentes', 'De dónde inspirarse']].map(([k, l]) => html`<button class="${MODE === k ? 'on' : ''}" data-act="bxMode" data-m="${k}">${l}</button>`)}</div>
+      <div class="seg" aria-label="Vista">${[['diana', 'La diana'], ['mix', 'Mezcla 3/1/1'], ['fuentes', 'De dónde inspirarse']].map(([k, l]) => html`<button class="${MODE === k ? 'on' : ''}" data-act="bxMode" data-m="${k}">${l}</button>`)}</div>
       <div class="bx-grid"><div>${board(bx, MODE)}</div><div style="min-width:0">${panel(bx, MODE)}</div></div></div>`);
   };
   const commit = async (next) => { try { bx = await save(next); paint(); return true; } catch (e) { toast(e.message, true); return false; } };

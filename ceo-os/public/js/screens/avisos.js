@@ -6,6 +6,7 @@ import { GRUPOS, ordenar, masDias, hoyGT } from '../avisos-reglas/base.js';
 import { leerAvisos, cuentaDe, pintarCampana, avisar } from '../avisos-ui.js';
 import { olvidarCompu } from '../avisos-compu.js';
 import { abrirEnChat } from '../areas.js';
+import { menu } from '../ui.js';
 import { updateWaits } from '../ventas-flujo.js';
 import { rutaModulo } from '../herramientas.js';
 
@@ -87,19 +88,13 @@ export async function render(el, { me, alive }) {
     if (k === 'a' || k === 'b') return hacer(k === 'a' ? v.accion : v.accion2);
     if (k === 'volver') { await api('avisos', { method: 'POST', body: { clave: v.clave, volver: true } }).catch((er) => toast(er.message, true)); return recargar(); }
     if (k === 'pos') {
-      document.querySelector('.avi-menu')?.remove();
-      const hoy = hoyGT(), m = document.createElement('div'); m.className = 'avi-menu'; m.setAttribute('role', 'menu');
-      const ops = v.urgencia === 'alta' ? [['Mañana', masDias(hoy, 1)]] : [['Mañana', masDias(hoy, 1)], ['En una semana', masDias(hoy, 7)]];
-      mount(m, html`${ops.map(([l, d]) => html`<button type="button" role="menuitem" data-d="${d}">${l}</button>`)}`);
-      const r = b.getBoundingClientRect(); m.style.top = r.bottom + 4 + 'px'; m.style.right = document.documentElement.clientWidth - r.right + 'px';
-      document.body.append(m);
-      m.onclick = async (ev) => {
-        const d = ev.target.closest('[data-d]')?.dataset.d; if (!d) return; m.remove();
+      const hoy = hoyGT(), ops = v.urgencia === 'alta' ? [['Mañana', masDias(hoy, 1)]] : [['Mañana', masDias(hoy, 1)], ['En una semana', masDias(hoy, 7)]];
+      const posponer = async (d) => {
         const deCompu = x.compu.some((y) => y.clave === v.clave);
         try { await api('avisos', { method: 'POST', body: { clave: v.clave, hasta: d, huella: v.huella, ...(deCompu ? { compu: { urgencia: v.urgencia, huella: v.huella } } : {}) } }); toast('Lo vuelves a ver ' + (d === masDias(hoy, 1) ? 'mañana' : 'en una semana')); } catch (er) { toast(er.message, true); }
         recargar();
       };
-      setTimeout(() => document.addEventListener('click', function fuera(ev) { if (!m.contains(ev.target)) { m.remove(); document.removeEventListener('click', fuera); } }), 0);
+      menu(b, ops.map(([l, d]) => ({ label: l, onSelect: () => posponer(d) })), { etiqueta: 'Posponer', placement: 'bottom-end' });
     }
   });
 }

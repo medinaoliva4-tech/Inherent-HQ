@@ -66,7 +66,7 @@ export async function render(el, { me, sub = [], alive, embed = '' }) {
         ${tab === 'servicios' && edit ? html`${ceo ? html`<button class="btn ghost" data-act="rates">Costos por hora</button>` : ''}<button class="btn" data-act="newService">+ Nuevo servicio</button>` : ''}
         ${tab === 'especialistas' && ceo ? html`<button class="btn" data-act="newMentor">+ Especialista</button>` : ''}
       </div>
-      ${tab === 'paquetes' && ceo ? html`<div class="row sd-seg" role="group" aria-label="Ver paquetes">${[['nivel', 'Catálogo'], ['industria', 'Biblioteca por industria']].map(([k, l]) => html`<button class="chip ${pkView === k ? 'dark' : ''}" aria-pressed="${pkView === k ? 'true' : 'false'}" data-act="pkview" data-v="${k}">${l}</button>`)}</div>` : ''}
+      ${tab === 'paquetes' && ceo ? html`<div class="seg" role="tablist" aria-label="Ver paquetes">${[['nivel', 'Catálogo'], ['industria', 'Biblioteca por industria']].map(([k, l]) => html`<button class="chip ${pkView === k ? 'dark' : ''}" aria-pressed="${pkView === k ? 'true' : 'false'}" data-act="pkview" data-v="${k}">${l}</button>`)}</div>` : ''}
       <div id="body"></div>`);
     const body = $('#body', el);
     if (tab === 'especialistas') return especialistas(body);
