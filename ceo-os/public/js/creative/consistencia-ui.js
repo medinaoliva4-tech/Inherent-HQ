@@ -13,6 +13,7 @@ import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { canEdit } from '../roleviews.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import * as K from './consistencia.js';
+import { vacio, fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
 const TOOL_ID = 'brand-consistency-checker';
@@ -33,7 +34,7 @@ const urlPublica = (p) => (/^https:\/\/\S+\.(png|jpe?g|webp)(\?\S*)?$/i.test(p.u
 
 // host: dónde se monta · me: quien mira · slug/b: la marca · alive(): ¿sigue en pantalla? · resto: [piezaId] si viene en la ruta.
 export async function consistenciaTool(host, { me, slug, b, alive, resto = [] } = {}) {
-  if (me?.role === 'client') return mount(host, html`<div class="empty"><b>Esta herramienta es del equipo</b>El reporte de consistencia no se ve en el portal.</div>`);
+  if (me?.role === 'client') return mount(host, html`${vacio({ icono: 'lock', titulo: 'Esta herramienta es del equipo', linea: 'El reporte de consistencia no se ve en el portal.' })}`);
   mount(host, skel('pagina'));
   const C = col('content');
   const S = { piezas: [], sel: resto[0] || '', sistema: null, sinSistema: '', ficha: null, laya: null, ojo: null, ojoOn: false, reporte: null, obs: { colores: '', fuentes: '', arriba: '', abajo: '', der: '', margen: '' }, ocupado: '', doc: null, error: null };
@@ -99,8 +100,8 @@ export async function consistenciaTool(host, { me, slug, b, alive, resto = [] } 
   function pintar() {
     if (!alive() || !host.isConnected) return;
     const p = pieza(), r = S.reporte ? K.limpiar(S.reporte) : null, v = r ? K.veredicto(r) : '', k = r ? K.conteo(r) : null;
-    if (S.error) return mount(host, html`<div class="empty cns-err" role="alert"><b>No pude abrir la consistencia</b>${S.error.message || 'Inténtalo de nuevo en un momento.'}${techDetail(S.error)}</div>`);
-    if (!S.piezas.length) return mount(host, html`<div class="empty"><b>${SIN_DATOS}</b>Todavía no hay piezas de esta marca. Salen del calendario de contenido y de Design Studio.</div>`);
+    if (S.error) return mount(host, html`${fallo({ titulo: 'No pude abrir la consistencia', linea: S.error.message || 'Inténtalo de nuevo en un momento.', detalle: techDetail(S.error) })}`);
+    if (!S.piezas.length) return mount(host, html`${vacio({ icono: 'inbox', titulo: `${SIN_DATOS}`, linea: 'Todavía no hay piezas de esta marca. Salen del calendario de contenido y de Design Studio.' })}`);
     const imgs = p ? imagenesDe(p) : [], ocupado = Boolean(S.ocupado);
     mount(host, html`<div class="cns" data-editable="${S.puede ? 1 : 0}">
       <header class="cns-bar"><label class="sr-only" for="cns-pieza">Pieza</label><select class="in" id="cns-pieza" aria-label="Pieza">${S.piezas.map((x) => html`<option value="${x.id}" ${x.id === S.sel ? 'selected' : ''}>${x.title || x.name || 'Sin título'} · ${estadoDe(x)}</option>`)}</select>

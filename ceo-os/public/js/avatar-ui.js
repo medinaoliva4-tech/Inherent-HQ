@@ -12,6 +12,7 @@ import { SECCIONES, CAMPOS, ANGULOS, ANGULO_AYUDA, MERCADO, REGLA_X, JOURNEY, FI
 import { CONSCIENCIA } from './calendario-contenido.js';
 import { correrIA, armarCtx } from './ia-herramienta.js';
 import { herramientaDe, rutaHerramienta } from './herramientas.js';
+import { fallo } from './visual.js';
 
 const TONOS = ['#49494a', '#818182', '#ababac', '#7d8b5a', '#8e8e8f', '#6f5a7a'];
 const q = (n) => (n == null || n === '' ? '' : 'Q ' + Number(n).toLocaleString('es-GT'));
@@ -33,7 +34,7 @@ export async function avatarUI(el, { me, b, alive }) {
   const carpeta = b.slug === 'inherent' ? 'inherent/inherent-social-media' : b.slug === 'personal' ? 'inherent/personal' : `clients/${b.slug}`;
   mount(el, html`<p class="loading">Cargando…</p>`);
   try { const r = await api(`avatares?profile=${enc(b.slug)}`); S.lista = r.avatares; S.puede = r.puede; }
-  catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir el cliente ideal</b>${e.message}</div>`); return; }
+  catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir el cliente ideal', linea: e.message })}`); return; }
   if (!alive()) return;
   S.sel = S.lista[0]?.id || null;
   const cur = () => S.lista.find((a) => a.id === S.sel) || null;

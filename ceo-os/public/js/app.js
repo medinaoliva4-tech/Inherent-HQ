@@ -640,6 +640,8 @@ async function render() {
 
 window.addEventListener('hashchange', () => me && render());
 document.addEventListener('click', (e) => { const b = e.target.closest('[data-mig]'); if (b) history[b.dataset.mig === 'atras' ? 'back' : 'forward'](); });
+// Estado vacío con «Armarlo en el Chat» (visual.js › vacio): abre el Chat en el modo que trae el botón.
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-vac-chat]'); if (b && me) abrirEnChat(me.email, { modo: b.dataset.vacChat, slug: b.dataset.vacSlug || '', borrador: b.dataset.vacBorrador || '' }); });
 // El CEO cambió la matriz de Vistas por rol: la barra se recalcula y, si la ruta ya no se ve, se vuelve a pintar.
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola: la barra se pone al día.

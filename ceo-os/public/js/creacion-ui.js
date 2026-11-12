@@ -14,6 +14,7 @@ import { rutaModulo, herramientaDe } from './herramientas.js';
 import { correrIA, armarCtx } from './ia-herramienta.js';
 import { cuadro } from './video-ui.js';
 import { limpiarKit, kitDesdeSistema } from './video.js';
+import { fallo } from './visual.js';
 
 export async function creacionUI(el, { me, b, alive, rest = [] }) {
   const S = { guiones: [], formatos: [...BASE], avatares: [], puede: {}, sel: null, conBrief: [], abiertos: [], claude: null, pedido: '', antes: null, inspo: null, kit: kitDesdeSistema(null), fr: null, subiendo: false, abort: null };
@@ -23,7 +24,7 @@ export async function creacionUI(el, { me, b, alive, rest = [] }) {
     const [g, f, a, rc, bo, vd] = await Promise.all([api(`guiones?profile=${encodeURIComponent(b.slug)}`), api(`formatos?profile=${encodeURIComponent(b.slug)}`), api(`avatares?profile=${encodeURIComponent(b.slug)}`).catch(() => ({ avatares: [] })), api('repo/content').catch(() => null), col('settings').get('brief_open').catch(() => null), api(`video?profile=${encodeURIComponent(b.slug)}`).catch(() => null)]);
     Object.assign(S, { guiones: g.guiones, puede: g.puede, formatos: [...f.marca, ...f.base], avatares: (a.avatares || []).filter((x) => !x.archivado),
       conBrief: mesesConBrief((rc?.profiles || []).find((p) => p.slug === b.slug)?.months || []), abiertos: bo?.marcas?.[b.slug] || [], kit: vd?.kit ? limpiarKit(vd.kit) : kitDesdeSistema(null) });
-  } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir Creación</b>${e.message}</div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir Creación', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), cur = () => S.guiones.find((x) => x.id === S.sel) || null;
   const fmt = (id) => S.formatos.find((f) => f.id === id) || BASE[0], av = (id) => S.avatares.find((x) => x.id === id) || null;

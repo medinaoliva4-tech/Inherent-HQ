@@ -14,6 +14,7 @@ import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { adsUI } from '../ads-ui.js';
 import { competenciaUI } from './competencia-ui.js';
 import * as A from './ads.js';
+import { vacio } from '../visual.js';
 
 const K_DIAS = 'os.ain.dias';
 const DIAS = [7, 30, 90];
@@ -136,11 +137,11 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
     if (r === undefined) return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${skel('fila', 3)}</section>`);
     if (r?.error) {
       const sin = r.status === 403;
-      return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${sin ? html`<div class="empty"><b>Tu perfil no lee la pauta</b>${r.error}. Las variaciones de anuncio sí están en su pestaña.</div>` : html`<div class="warnbox">${r.error}</div>`}</section>${kpis(null)}`);
+      return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${sin ? html`${vacio({ icono: 'lock', titulo: 'Tu perfil no lee la pauta', linea: `${r.error}. Las variaciones de anuncio sí están en su pestaña.` })}` : html`<div class="warnbox">${r.error}</div>`}</section>${kpis(null)}`);
     }
     const c = cliente();
-    const aviso = !r.on ? html`<div class="empty"><b>Conecta Windsor</b>Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app; mientras, esto queda vacío y cada número dice de dónde saldrá.</div>`
-      : !c ? html`<div class="empty"><b>Este cliente no tiene cuentas de pauta</b>Agrégalas en Mis tareas › Ads › Cuentas (Meta, Google Ads o LinkedIn) y aquí aparece su pauta.</div>` : '';
+    const aviso = !r.on ? html`${vacio({ icono: 'inbox', titulo: 'Conecta Windsor', linea: 'Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app; mientras, esto queda vacío y cada número dice de dónde saldrá.' })}`
+      : !c ? html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene cuentas de pauta', linea: 'Agrégalas en Mis tareas › Ads › Cuentas (Meta, Google Ads o LinkedIn) y aquí aparece su pauta.' })}` : '';
     const errs = erroresDe(r);
     mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div><p class="mut sm">Últimos ${S.dias} días · Meta, Google Ads y LinkedIn vía Windsor (solo lectura).</p>
       ${aviso}${errs.length ? html`<div class="warnbox sm" style="margin:8px 0">${errs}</div>` : ''}${kpis(c)}

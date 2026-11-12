@@ -12,6 +12,7 @@ import { SIN_DATOS } from '../consulting/marcos.js';
 import { AREAS_RM_INFO, areaInfo } from './roadmap.js';
 import { nuevoItem } from './oportunidades.js';
 import { BLOQUE, MAX_ACCIONES, MIN_ACCIONES, SUPUESTOS_INFO, ETAPAS_EMBUDO, limpiar, score, embudo, cuellos, todosLosCuellos, faltas, tareasDe, aOportunidades, prompt, leer, resumenTexto, aMd } from './comercial.js';
+import { fallo as falloOS } from '../visual.js';
 
 const enc = encodeURIComponent;
 const clon = (x) => JSON.parse(JSON.stringify(x));
@@ -288,7 +289,7 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
 
   // ---------- El primer pintado ----------
   try { tomar(await leerEst()); }
-  catch (e) { if (!alive()) return; return mount(host, html`<div class="empty"><b>No pude abrir el diagnóstico</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(host, html`${falloOS({ titulo: 'No pude abrir el diagnóstico', linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
   mount(host, html`<div class="cd" id="cd"><div id="cd-head"></div><div id="cd-banner"></div><div class="cd-acts" id="cd-acts" role="toolbar" aria-label="Acciones del diagnóstico"></div><div id="cd-gen" aria-live="polite"></div>
     <section class="cd-sec cd-top"><div id="cd-score"></div><div id="cd-embudo"></div></section><section class="cd-sec" id="cd-sup"></section><section class="cd-sec" id="cd-cuellos"></section><section class="cd-sec" id="cd-plan"></section><section class="cd-faltas" id="cd-faltas"></section></div>`);

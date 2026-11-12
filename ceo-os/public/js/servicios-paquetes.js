@@ -4,6 +4,7 @@
 import { html, raw, mount, api, ask, toast, Q, ico, today, canEdit, col, sheetForm, fromLink, $ } from './core.js';
 import { LEVELS, BASELINE, levelOf, applyLevels, levelDefaults, LEVELS_ID, USD_GTQ } from './levels.js';
 import { bundleResp, sinResp } from './responsabilidades.js';
+import { vacio } from './visual.js';
 
 const usd = (n) => '$' + Math.round(n).toLocaleString('en-US');
 
@@ -76,7 +77,7 @@ export function paquetesTab(el, ctx) {
       <main class="sc-main">
         ${lvSel ? html`<div class="sc-lv"><div><b>${lvSel.name}</b> <span class="mut sm">«${lvSel.tag}» · ${lvSel.how}</span>${ceo && bl ? html` <span class="mut sm">· ${ico('lock', 10)} baseline ${usd(bl.usd)} ${bl.per}</span>` : ''}</div>${ceo ? html`<button class="btn ghost xs" data-act="lvedit" data-id="${lvSel.id}">${ico('edit', 12)} Editar nivel</button>` : ''}</div>` : ''}
         <div class="row sc-bar"><input class="in" id="scq" placeholder="Buscar paquete o servicio…" value="${S.q}"><div class="tabs mini" style="margin:0">${[['tarjetas', 'Tarjetas'], ['lista', 'Lista']].map(([k, t]) => html`<button class="${S.vista === k ? 'on' : ''}" data-act="bvista" data-k="${k}">${t}</button>`)}</div>${bun ? html`<div class="tabs mini" style="margin:0">${[['margen', 'Margen'], ['precio', 'Precio'], ['nombre', 'Nombre']].map(([k, t]) => html`<button class="${S.orden === k ? 'on' : ''}" data-act="borden" data-k="${k}">${t}</button>`)}</div>` : ''}${ceo && bun ? html`<button class="btn xs" data-act="bnew" data-level="${S.col.startsWith('lv:') ? S.col.slice(3) : ''}">+ Paquete</button>` : ''}</div>
-        ${!l.length ? html`<div class="empty"><b>Sin paquetes aquí</b>${ceo ? 'Arma el primero con «+ Paquete»: nombre, servicios del catálogo, qué queda fuera y el precio.' : 'El CEO los arma aquí.'}</div>`
+        ${!l.length ? html`${vacio({ icono: 'inbox', titulo: 'Sin paquetes aquí', linea: `${ceo ? 'Arma el primero con «+ Paquete»: nombre, servicios del catálogo, qué queda fuera y el precio.' : 'El CEO los arma aquí.'}` })}`
           : S.vista === 'lista' ? html`<div class="card tscroll"><table><thead><tr><th>Paquete</th><th>Incluye</th><th class="n">Horas</th><th class="n">Precio</th><th class="n">Margen</th></tr></thead><tbody>${l.map(fila)}</tbody></table></div>`
           : html`<div class="sc-grid">${l.map(card)}</div>`}</main>
       <aside class="sc-right">${detalle(sel)}</aside></div>`);

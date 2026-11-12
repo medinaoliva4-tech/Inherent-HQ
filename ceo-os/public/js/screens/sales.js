@@ -6,6 +6,7 @@ import { createCatalog, CATS, lvName } from '../catalogo.js';
 import { FLOW, stageLabel, flowIndex, isWaiting, createdAt, waitMs, waitTone, durText, salesMetrics, AFTER_REPLY, updateWaits } from '../ventas-flujo.js';
 import { layaBox, juzgarLocal } from '../laya-ui.js';
 import { PROB, estancado, sinSiguiente, ganadoEn, tasasReales, cascada, llevamos, pronostico, habilesQuedan, KINDS } from '../ventas-meta.js';
+import { vacio } from '../visual.js';
 // Los símbolos de las listas inteligentes y del volumen, como íconos de línea del set del OS.
 const GLIFO = { '◎': 'target', '!': 'alert', '◷': 'clock', '⚑': 'cal', '▲': 'flame', '⚡': 'bolt', '✓': 'check', '×': 'x', '✉': 'mail', '☎': 'phone', '↻': 'repeat', '▤': 'doc' };
 
@@ -218,7 +219,7 @@ export async function render(el, { me, sub, alive }) {
       <div class="row vx-bar"><div class="tabs" style="margin:0" role="tablist" aria-label="Vista">${[['board', 'Tablero'], ['list', 'Lista'], ['meta', 'Meta']].map(([k, l]) => html`<button class="${crmView === k ? 'on' : ''}" data-act="crmView" data-v="${k}">${l}</button>`)}</div>
         ${crmView !== 'meta' ? html`<input class="in" id="q" placeholder="Buscar lead…" value="${q}" style="max-width:260px">${usedTags.length ? html`<button class="chip ${tagF ? '' : 'dark'}" data-act="tagF" data-t="" style="padding:6px 12px">Todas las etiquetas</button>${usedTags.map((t) => html`<button class="chip ${tagF === t ? 'dark' : ''}" data-act="tagF" data-t="${t}" style="padding:6px 12px">${t}</button>`)}` : ''}` : ''}</div>
       ${crmView === 'meta' ? metaView() : html`<div class="vx"><aside class="vx-views"><span class="vx-h">Listas inteligentes</span>${VISTAS.map(([k, lab, c, ic, f], n) => html`${n === 6 ? html`<span class="vx-h">Cerrados</span>` : ''}<button type="button" class="vx-v ${vistaF === k ? 'on' : ''}" data-act="vista" data-k="${k}"><i style="color:${c}">${ico(GLIFO[ic] || 'dot', 15)}</i>${lab}<small class="${['sinpaso', 'estancados', 'responder'].includes(k) && filtered.filter(f).length ? 'r' : ''}">${filtered.filter(f).length}</small></button>`)}</aside><div class="vx-main">
-      ${!pipe.length ? html`<div class="empty"><b>Todavía no hay leads</b>Crea el primero con «+ Nuevo lead», o conecta una fuente en «Fuentes».</div>`
+      ${!pipe.length ? html`${vacio({ icono: 'inbox', titulo: 'Aún no hay leads', linea: 'Crea el primero con «+ Nuevo lead», o conecta una fuente en «Fuentes».' })}`
       : crmView === 'list' ? html`<div class="card"><table><thead><tr><th>Lead</th><th>Interés</th><th>Etapa</th><th>Fuente</th><th>Responsable</th><th class="n">Valor / mes</th><th>Siguiente paso</th></tr></thead><tbody>
         ${shown.length ? '' : html`<tr><td colspan="7" class="mut">Nada en «${vf[1]}».</td></tr>`}${shown.map((l) => html`<tr class="click" data-act="lead" data-id="${l.id}"><td><b style="font-weight:500">${l.name}</b><div class="mut sm">${[l.contact, l.company].filter(Boolean).join(' · ')}</div>${(l.tags || []).length ? html`<div>${(l.tags || []).map(tagChip)}</div>` : ''}</td><td>${score(l.interest)}</td><td><span class="chip ${STAGEC[l.stage] ?? ''}">${stageLabel(l.stage)}</span>${l.stage === 'Perdido' && l.lost_reason ? html`<div class="mut sm">${l.lost_reason}</div>` : ''}</td><td class="sm">${l.source || '—'}</td><td class="sm">${roleLabel(l.owner_role)}</td><td class="n">${l.value_usd ? USD(l.value_usd) : '—'}</td><td class="sm" style="${isLate(l) ? 'color:var(--warn);font-weight:700' : ''}">${OPEN.includes(l.stage || 'Nuevo') ? html`${l.next_step || '—'}${l.next_date ? html`<div class="mut">${isLate(l) ? 'Venció el ' : ''}${fdate(l.next_date)}</div>` : ''}` : html`<span class="mut">—</span>`}</td></tr>`)}
         </tbody></table></div>`
@@ -291,7 +292,7 @@ export async function render(el, { me, sub, alive }) {
   }
   // La bandeja de prospectos (outbound): lo scrapeado o importado espera aquí y pasa al pipeline cuando responde.
   function prosView(list) {
-    if (!list.length) return html`<div class="empty"><b>No hay prospectos esperando</b>Entran desde una fuente de scraping o importando una lista (también por el conector de Claude: «importar_prospectos»).</div>`;
+    if (!list.length) return html`${vacio({ icono: 'inbox', titulo: 'No hay prospectos esperando', linea: 'Entran desde una fuente de scraping o importando una lista (también por el conector de Claude: «importar_prospectos»).' })}`;
     const bySrc = {}; list.forEach((l) => { (bySrc[l.source || 'Sin fuente'] ||= []).push(l); });
     return html`<div class="mut sm" style="margin-bottom:6px">Un prospecto no cuenta como lead hasta que responde. «→ Lead» o «Contactado» lo pasan al pipeline con su siguiente paso; la ✕ lo archiva.</div>
       ${Object.entries(bySrc).map(([src, ls]) => html`<div class="sec-title" style="margin:18px 0 10px"><h2 style="font-size:17px">${src}</h2><span class="mut sm">${ls.length}</span></div>
@@ -410,7 +411,7 @@ export async function render(el, { me, sub, alive }) {
   function srcTab(body) {
     if (!srcs) { mount(body, html`<p class="loading">Cargando…</p>`); SRC.list().then((l) => { srcs = l; if (alive() && tab === 'src') srcTab(body); }).catch((e) => mount(body, html`<div class="warnbox">${e.message}</div>`)); return; }
     mount(body, html`<div class="mut sm" style="margin-bottom:14px">Cada fuente tiene su link de entrada con clave. Lo que llega por ahí entra al CRM sin duplicados (WhatsApp, correo o cuenta de IG) y queda en su registro.${isCeo ? '' : ' Las fuentes las crea y pausa el CEO.'}</div>
-      ${!srcs.length ? html`<div class="empty"><b>Todavía no hay fuentes</b>${isCeo ? 'Crea la primera con «+ Fuente»: el quiz de la web, un formulario, los anuncios o el scraping.' : 'Pídele al CEO que cree la primera.'}</div>`
+      ${!srcs.length ? html`${vacio({ icono: 'inbox', titulo: 'Aún no hay fuentes', linea: `${isCeo ? 'Crea la primera con «+ Fuente»: el quiz de la web, un formulario, los anuncios o el scraping.' : 'Pídele al CEO que cree la primera.'}` })}`
       : html`<div class="grid g3">${srcs.map((s) => { const n = s.n || {}; return html`<div class="card">
           <div class="row" style="flex-wrap:wrap;gap:6px"><span class="chip ${s.active === false ? '' : 'dark'}">${s.active === false ? 'Pausada' : 'Activa'}</span><span class="chip">${SRC_TYPES.find(([k]) => k === s.type)?.[1] || s.type}</span>${s.main ? html`<span class="chip lime">Quiz principal</span>` : ''}<div class="sp"></div><span class="mut sm">${s.direction === 'out' ? 'Saliente' : 'Entrante'}</span></div>
           <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3>
@@ -450,7 +451,7 @@ export async function render(el, { me, sub, alive }) {
   function srcLog(s) {
     drawer(html`<div class="row"><span class="chip">${s.name}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
       <h2>Registro</h2><p class="mut sm" style="margin-top:6px">Lo último que llegó por esta fuente y lo que falló (últimos 50).</p>
-      ${!(s.log || []).length ? html`<div class="empty" style="margin-top:14px"><b>Todavía no llegó nada</b>Manda una prueba al link de entrada.</div>`
+      ${!(s.log || []).length ? html`${vacio({ icono: 'inbox', titulo: 'Todavía no llegó nada', linea: 'Manda una prueba al link de entrada.' })}`
       : (s.log || []).map((x) => html`<div class="comment"><span class="av" style="${x.ok ? '' : 'background:var(--ui-ink2)'}">${x.ok ? '✓' : '!'}</span><p><span class="mut sm">${fdate(String(x.at || '').slice(0, 10))} · ${String(x.at || '').slice(11, 16)}</span><br>${x.ok ? html`${x.name || 'Lead'}${x.duplicate ? html` <span class="chip">ya existía</span>` : ''}${x.lead_id ? html` <a href="#" data-act="openLead" data-id="${x.lead_id}" style="color:var(--ui-ink2)">ver lead</a>` : ''}` : html`<b style="font-weight:500">${x.error}</b>${x.raw ? html`<div class="mut sm" style="word-break:break-all">${x.raw}</div>` : ''}`}</p></div>`)}`,
     { openLead: (b, e) => { e.preventDefault(); const l = leads.find((x) => x.id === b.dataset.id); if (l) openLead(l); else toast('Ese lead ya no existe', true); } });
   }
@@ -469,7 +470,7 @@ export async function render(el, { me, sub, alive }) {
   const subtotal = (qq) => (qq.items || []).reduce((a, i) => a + (+i.qty || 0) * (+i.price || 0), 0);
   const total = (qq) => subtotal(qq) * (1 - (+qq.discount_pct || 0) / 100);
   function quotesTab(body) {
-    mount(body, !quotes.length ? html`<div class="empty"><b>Todavía no hay cotizaciones</b>Créala desde un lead del CRM o con «+ Nueva cotización».</div>`
+    mount(body, !quotes.length ? html`${vacio({ icono: 'inbox', titulo: 'Aún no hay cotizaciones', linea: 'Créala desde un lead del CRM o con «+ Nueva cotización».' })}`
       : html`<div class="card"><table><thead><tr><th>Número</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th class="n">Total</th></tr></thead><tbody>
         ${quotes.slice().reverse().map((qq) => html`<tr class="click" data-act="quote" data-id="${qq.id}"><td><b style="font-weight:500">${qq.number}</b></td><td>${qq.client || '—'}</td><td class="mut">${fdate(qq.date)}</td><td><span class="chip ${QSTATUS[qq.status] || ''}">${qq.status || 'Borrador'}</span></td><td class="n"><b>${money(qq, total(qq))}</b></td></tr>`)}
       </tbody></table></div>`);

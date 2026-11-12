@@ -4,6 +4,7 @@
 // y Claude Code lo resuelve con juicios_pendientes / guardar_juicio. «claude» queda para la Fase 6.
 import { html, raw, mount, api, toast, fdate, ico } from './core.js';
 import { PUENTE, INSTALAR_MAC, INSTALAR_WIN, OLLAMA, MODELO_LOCAL, INSTALAR_MODELO_MAC, INSTALAR_MODELO_WIN, sistemaDe, MODELO, INSTALAR_MCP, ENGINE_LABEL, TIPOS, TIPO_LABEL, PUERTAS, GATES, cumple, umbralTexto, corto } from './laya.js';
+import { vacio } from './visual.js';
 
 // ---------- el puente local ----------
 let est = { at: 0, v: null };
@@ -196,7 +197,7 @@ export async function layaView(el, { me } = {}) {
       ${J.items.length ? html`<div class="card"><table><thead><tr><th>Fecha</th><th>Elemento</th><th>Pregunta</th><th>Respuesta</th><th>Motor</th></tr></thead><tbody>
         ${J.items.map((j) => { const q = (puertas[j.gate]?.preguntas || []).find((x) => x.id === j.question_id); return html`<tr><td class="mut">${fdate(String(j.at || '').slice(0, 10))}</td><td><b style="font-weight:500">${j.target_label || j.target?.id}</b><div class="mut sm">${PUERTAS[j.gate]?.label || j.gate}</div></td>
           <td>${j.status === 'pendiente' ? html`<span class="chip ly-chip pendiente">pendiente</span>` : q?.chip || j.question_id}</td><td>${j.status === 'pendiente' ? '—' : html`${j.tipo === 'noul' ? `${j.answer} · ${Math.round((j.prob || 0) * 100)}% sí` : corto(j.answer)}${j.why ? html`<div class="mut sm">${j.why}</div>` : ''}`}</td><td class="sm">${ENGINE_LABEL[j.engine] || j.engine || '—'}</td></tr>`; })}
-      </tbody></table></div>` : html`<div class="empty"><b>Todavía no hay juicios</b>Pídele uno a Laya desde la ficha de un lead, una factura por pagar, un referente o una idea.</div>`}`);
+      </tbody></table></div>` : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay juicios', linea: 'Pídele uno a Laya desde la ficha de un lead, una factura por pagar, un referente o una idea.' })}`}`);
   }
   async function guardar(g, gates, msg) {
     try { const r = await api('laya/puertas', { method: 'PUT', body: { gates } }); puertas = r.puertas; guardadas = { ...(r.guardadas || {}) }; for (const k of GATES) draft[k] = puertas[k].preguntas.map((q) => ({ ...q })); toast(msg); paint(); }

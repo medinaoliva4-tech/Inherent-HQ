@@ -1,4 +1,5 @@
 import { html, raw, mount, col, acts, ask, confirmAsk, toast, ico, $, $$, uploadToDrive } from './core.js';
+import { fallo } from './visual.js';
 
 // Asociaciones de una marca (Mi marca → Asociaciones · Cliente → Marca): el moodboard (imágenes por link o subidas a Drive,
 // más el tablero de Pinterest), la música (una playlist de Spotify embebida), las personas y las marcas con las que se asocia.
@@ -17,7 +18,7 @@ export async function brandBoard({ el, me, id, name, edit, business = false, fol
   el.dataset.island = '1';
   mount(el, html`<p class="loading">Cargando…</p>`);
   let doc = null, isNew = false;
-  try { doc = await BB.get(id); } catch (e) { if (e.status === 404) { doc = empty(id); isNew = true; } else return mount(el, html`<div class="empty"><b>No pude leer las asociaciones</b>${e.message}</div>`); }
+  try { doc = await BB.get(id); } catch (e) { if (e.status === 404) { doc = empty(id); isNew = true; } else return mount(el, html`${fallo({ titulo: 'No pude leer las asociaciones', linea: e.message })}`); }
   doc = { ...empty(id), ...doc };
   const canDrive = Boolean(me?.google?.drive);
 

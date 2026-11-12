@@ -1,4 +1,5 @@
 import { html, mount, col, acts, ask, confirmAsk, toast, ico, Q, USD, fdate, fdateLong, today, drawer, closeDrawer, docView, docHead } from './core.js';
+import { fallo, vacio } from './visual.js';
 
 // Presupuestos de un cliente (Clientes → Presupuestos): photo shoots, pauta, eventos u otros. Cada uno trae sus renglones
 // (concepto · cantidad · costo unitario · quién paga), su total y su estado. Los costos los ven el CEO, el COO y quien edita
@@ -27,7 +28,7 @@ export async function budgetsTab({ el, me, slug, name, edit, entries = null }) {
   el.dataset.island = '1';
   mount(el, html`<p class="loading">Cargando…</p>`);
   let list = [];
-  try { list = (await B.list()).filter((b) => b.client_slug === slug); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer los presupuestos</b>${e.message}</div>`); }
+  try { list = (await B.list()).filter((b) => b.client_slug === slug); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer los presupuestos', linea: e.message })}`); }
   const sort = () => list.sort((a, z) => String(z.date || '').localeCompare(String(a.date || '')));
 
   const save = async (b) => { try { const r = b.v ? await B.save(b) : await B.create(b); list = [...list.filter((x) => x.id !== r.id), r]; return r; } catch (e) { toast(e.message, true); return null; } };
@@ -60,7 +61,7 @@ export async function budgetsTab({ el, me, slug, name, edit, entries = null }) {
     sort();
     mount(el, html`<div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><span class="mut sm">Photo shoots, pauta y eventos de ${name}: qué cuesta, quién lo paga y en qué estado va.</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="new">${ico('plus')} Crear presupuesto</button>` : ''}</div>
       ${chart()}
-      ${list.length ? html`<div class="grid g3">${list.map(card)}</div>` : html`<div class="empty"><b>Sin presupuestos todavía</b>${edit ? 'Crea el primero: un photo shoot, la pauta del mes o un evento.' : 'Cuando haya uno, aparece aquí.'}</div>`}`);
+      ${list.length ? html`<div class="grid g3">${list.map(card)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin presupuestos todavía', linea: `${edit ? 'Crea el primero: un photo shoot, la pauta del mes o un evento.' : 'Cuando haya uno, aparece aquí.'}` })}`}`);
   }
 
   function open(id) {

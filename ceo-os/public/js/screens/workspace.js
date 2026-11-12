@@ -42,6 +42,7 @@ import { planMesUI } from '../plan-mes-ui.js';
 import { campanasUI } from '../campanas-ui.js';
 import { videoUI } from '../video-ui.js';
 import { techUI } from '../tech-ui.js';
+import { fallo, vacio as vacioOS } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
 
@@ -92,7 +93,7 @@ export async function render(el, { me, sub = [], alive }) {
   const W = wsDe(ws0 || '');
   if (!W) return mount(el, html`<div class="empty ws-vacio"><b>Ese workspace no existe</b>Elige uno:<div class="ws-links">${WORKSPACES.map((w) => html`<a class="btn ghost sm" href="#/ws/${w.id}">${ico(w.icono, 14)} ${w.nombre}</a>`)}</div></div>`);
   const ws = W.id;
-  if (!puedeWs(me, ws)) return mount(el, html`<div class="empty"><b>Tu perfil no abre ${W.nombre}</b>Pídele al CEO acceso en Equipo → Vistas por rol.</div>`);
+  if (!puedeWs(me, ws)) return mount(el, html`${vacioOS({ icono: 'lock', titulo: `Tu perfil no abre ${W.nombre}`, linea: 'Pídele al CEO acceso en Equipo → Vistas por rol.' })}`);
   mount(el, esqueleto());
   await cargarContexto(me).catch(() => []);
   if (!alive()) return;
@@ -106,8 +107,8 @@ export async function render(el, { me, sub = [], alive }) {
     return mount(el, html`${cab}<div class="ws-vacio">${selectorHtml(me, { grande: true })}</div>`);
   }
   const b = lista.find((x) => x.slug === slug);
-  if (slug === 'personal' && (me.role !== 'ceo' || !b)) return mount(el, html`${cab}<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>`);
-  if (!b) return mount(el, html`${cab}<div class="empty"><b>No encontré ese cliente</b>Puede que no esté entre tus clientes o que ya no esté activa.</div><div class="ws-vacio">${selectorHtml(me, { grande: true })}</div>`);
+  if (slug === 'personal' && (me.role !== 'ceo' || !b)) return mount(el, html`${cab}${vacioOS({ icono: 'lock', titulo: 'La marca personal es solo del CEO', linea: 'Tu perfil no la ve.' })}`);
+  if (!b) return mount(el, html`${cab}${vacioOS({ icono: 'inbox', titulo: 'No encontré ese cliente', linea: 'Puede que no esté entre tus clientes o que ya no esté activa.' })}<div class="ws-vacio">${selectorHtml(me, { grande: true })}</div>`);
   if (contextoActual(me) !== slug) ponerContexto(me, slug);
 
   const T0 = tool0 ? herramientaDe(tool0) : null;
@@ -227,7 +228,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (ws === 'production') return delivery(r);
   }
   function resumenStrategy(r) {
-    if (!est) return mount(r, html`<div class="empty sm"><b>No pude leer la estrategia</b>Puede que tu perfil no vea Estrategia o que este cliente no tenga carpeta todavía.</div>`);
+    if (!est) return mount(r, html`${fallo({ titulo: 'No pude leer la estrategia', linea: 'Puede que tu perfil no vea Estrategia o que este cliente no tenga carpeta todavía.' })}`);
     const hay = avance(est.viva || {}).n > 0;
     return mount(r, html`${hay ? '' : html`<div class="ws-vacia"><b>Todavía no hay estrategia de ${b.name}</b><p>Empieza por la siguiente acción o continúa en el Chat. Aquí aparecerá la meta y el plan.</p></div>`}
       <details class="ws-mas" ${hay ? 'open' : ''}><summary>${hay ? 'La estrategia en vivo' : 'Ver el mapa completo'}</summary><div class="lp-viva">${panelViva({ v: est.viva || {}, data: { ...est, slug }, bid: 'diagnostico', editable: false, esCeo: me.role === 'ceo', aprobada: Boolean(est.vivaAprobada) })}</div></details>`);
@@ -248,7 +249,7 @@ export async function render(el, { me, sub = [], alive }) {
     const all = await col('content').list().catch(() => []);
     return separar(all.filter((c) => c.kind === 'post' && c.profile === slug)).vivos.filter(porAprobar).sort((a, z) => String(a.date || '9').localeCompare(String(z.date || '9')));
   }
-  function listaPiezas(xs, vacio) { return (xs.length ? html`<ul class="ws-lista">${xs.map((p) => html`<li><span>${nombreDe(p, b.name)}</span><span class="mut sm">${p.format || ''}${p.date ? ` · ${fdate(p.date)}` : ' · sin fecha'}</span></li>`)}</ul>` : html`<div class="empty sm"><b>Nada por aprobar</b>${vacio}</div>`); }
+  function listaPiezas(xs, vacio) { return (xs.length ? html`<ul class="ws-lista">${xs.map((p) => html`<li><span>${nombreDe(p, b.name)}</span><span class="mut sm">${p.format || ''}${p.date ? ` · ${fdate(p.date)}` : ' · sin fecha'}</span></li>`)}</ul>` : html`${vacioOS({ icono: 'inbox', titulo: 'Nada por aprobar', linea: `${vacio}`, compacto: true })}`); }
   async function revision(x) {
     mount(x, seccion('En revisión', 'Las piezas que el equipo mandó a aprobar', html`<p class="loading">Cargando…</p>`));
     const xs = await piezasRevision(); if (!alive() || !x.isConnected) return;
@@ -289,7 +290,7 @@ export async function render(el, { me, sub = [], alive }) {
     const base = `#/ws/${ws}/${slug}/${pestana.id}/${t.id}`;
     mount(box, html`${head(t)}<div id="ws-tool"></div>`);
     const host = $('#ws-tool', box);
-    if (!puede(t)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>Pídele al CEO acceso en Equipo → Vistas por rol.</div>`);
+    if (!puede(t)) return mount(host, html`${vacioOS({ icono: 'lock', titulo: 'Tu perfil no abre esta herramienta', linea: 'Pídele al CEO acceso en Equipo → Vistas por rol.' })}`);
     if (t.estado === 'pronto' || !t.monta) return mount(host, ficha(t));
     // El chat de Strategy de hoy (puente/Hermes), intacto: solo por …/<herramienta>/chat[/<bloque>] (y por las rutas de la Fase 1 de Modelo y Leads).
     const chat = bloqueChat(t);
@@ -299,7 +300,7 @@ export async function render(el, { me, sub = [], alive }) {
     // El Funnel Builder trae «Sitios y landings» (…/funnel-builder/sitios): esa sub-vista pide el módulo tech de Marcas; el embudo no.
     const sitios = t.id === 'funnel-builder' && resto[0] === 'sitios';
     const mod = subLab || (sitios ? 'tech' : MOD_LEGADO[t.monta]);
-    if (mod && !modulesFor(me, b).includes(mod)) return mount(host, html`<div class="empty"><b>Tu perfil no abre esta herramienta</b>${b.personal ? 'En la marca personal no aplica.' : 'Pídele al CEO acceso a Contenido o a Clientes en Equipo → Vistas por rol.'}</div>`);
+    if (mod && !modulesFor(me, b).includes(mod)) return mount(host, html`${vacioOS({ icono: 'lock', titulo: 'Tu perfil no abre esta herramienta', linea: `${b.personal ? 'En la marca personal no aplica.' : 'Pídele al CEO acceso a Contenido o a Clientes en Equipo → Vistas por rol.'}` })}`);
     const common = { me, alive, fixed: b.slug };
     const embed = (h, only, extra = {}) => { h.dataset.island = '1'; return content(h, { ...common, sub: [only], embed: { base, only: [only], brand: b.name, ...extra } }); };
     switch (t.monta) {
@@ -321,7 +322,7 @@ export async function render(el, { me, sub = [], alive }) {
           const ig = resto[0] === 'instagram';
           mount(host, html`<nav class="ws-sub-tabs" aria-label="Reporte o Instagram"><a class="${ig ? '' : 'on'}" href="${base}">Reporte del mes</a><a class="${ig ? 'on' : ''}" href="${base}/instagram">Instagram</a></nav><div id="ws-mpc"></div>`);
           sede = $('#ws-mpc', host);
-          if (ig) return modulesFor(me, b).includes('resultados') ? embed(sede, 'analytics') : mount(sede, html`<div class="empty"><b>Tu perfil no abre los analytics</b>Pídele al CEO acceso a Contenido en Equipo → Vistas por rol.</div>`);
+          if (ig) return modulesFor(me, b).includes('resultados') ? embed(sede, 'analytics') : mount(sede, html`${vacioOS({ icono: 'lock', titulo: 'Tu perfil no abre los analytics', linea: 'Pídele al CEO acceso a Contenido en Equipo → Vistas por rol.' })}`);
         }
         // Funnel Builder: el embudo es el centro; «Sitios y landings» son los sitios de siempre (techUI), sin shell.
         if (t.id === 'funnel-builder') {
@@ -333,7 +334,7 @@ export async function render(el, { me, sub = [], alive }) {
         let vista = null, toolShell = null;
         try { [{ vista }, { toolShell }] = await Promise.all([cargar(), import('../tool-shell.js')]); } catch (e) { console.error(e); }
         if (!alive() || !sede.isConnected) return;
-        if (!vista || !toolShell) return mount(sede, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (!vista || !toolShell) return mount(sede, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return toolShell(sede, { me, tool: t, slug, b, alive, vista, resto });
       }
       // Growth Roadmap: su hoja propia (no usa el shell; su casa es viva.roadmap).
@@ -342,7 +343,7 @@ export async function render(el, { me, sub = [], alive }) {
         let roadmapTool = null;
         try { ({ roadmapTool } = await import('../strategy/roadmap-ui.js')); } catch (e) { console.error(e); }
         if (!alive() || !host.isConnected) return;
-        if (!roadmapTool) return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (!roadmapTool) return mount(host, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return roadmapTool(host, { me, slug, b, alive, resto });
       }
       // Viral Intelligence Lab y Ads Intelligence: su hoja propia (no usan el shell; sus entregables los guardan ellas por /api/entregables).
@@ -352,7 +353,7 @@ export async function render(el, { me, sub = [], alive }) {
         let hoja = null;
         try { hoja = (await import(archivo))[nombre]; } catch (e) { console.error(e); }
         if (!alive() || !host.isConnected) return;
-        if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (typeof hoja !== 'function') return mount(host, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return hoja(host, { me, slug, b, alive, resto });
       }
       // Review & Approval Studio: su hoja propia (no usa el shell; vive en videos: revision, comentarios al segundo y aprobación).
@@ -361,7 +362,7 @@ export async function render(el, { me, sub = [], alive }) {
         let reviewTool = null;
         try { ({ reviewTool } = await import('../production/review-ui.js')); } catch (e) { console.error(e); }
         if (!alive() || !host.isConnected) return;
-        if (typeof reviewTool !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (typeof reviewTool !== 'function') return mount(host, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return reviewTool(host, { me, slug, b, alive, resto });
       }
       // Commercial Diagnosis, Brand Consistency Checker y Production Planner: su hoja propia (no usan el shell; cada una guarda por sus rutas).
@@ -371,7 +372,7 @@ export async function render(el, { me, sub = [], alive }) {
         let hoja = null;
         try { hoja = (await import(archivo))[nombre]; } catch (e) { console.error(e); }
         if (!alive() || !host.isConnected) return;
-        if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (typeof hoja !== 'function') return mount(host, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return hoja(host, { me, slug, b, alive, resto });
       }
       case 'avatar': return avatarUI(host, { me, b, alive });
@@ -386,7 +387,7 @@ export async function render(el, { me, sub = [], alive }) {
         let hoja = null;
         try { hoja = (await import(archivo))[nombre]; } catch (e) { console.error(e); }
         if (!alive() || !host.isConnected) return;
-        if (typeof hoja !== 'function') return mount(host, html`<div class="empty"><b>No pude abrir ${t.nombre}</b>Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.</div>`);
+        if (typeof hoja !== 'function') return mount(host, html`${fallo({ titulo: `No pude abrir ${t.nombre}`, linea: 'Recarga la página; si sigue igual, lo que ya tengas se trabaja en el Chat.' })}`);
         return hoja(host, { me, slug, b, alive, resto });
       }
       case 'brandBoard': {

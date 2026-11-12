@@ -13,6 +13,7 @@ import { pintarEditor } from './agentes-editor.js';
 import { pintarMemoria } from './agentes-memoria.js';
 import { iaDeUso, proveedorDe } from './ia-proveedores.js';
 import { CONECTORES, logoConector } from './conectores.js';
+import { fallo } from './visual.js';
 
 const TABS = [['overview', 'Resumen'], ['workflow', 'Flujo'], ['trabajos', 'Trabajos'], ['settings', 'Configuración']];
 const cuando = (iso) => (iso ? new Date(iso).toLocaleString('es-GT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '');
@@ -23,7 +24,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
   let wf, editor, trabajos, ia;
   try {
     [{ workflow: wf, editor }, { items: trabajos }, ia] = await Promise.all([api('agentes/workflows/' + encodeURIComponent(id)), api('agentes/runs?agente=' + encodeURIComponent(id)), api('ia/estado').catch(() => null)]);
-  } catch (e) { if (alive()) mount(el, html`<div class="empty card">${e.message}<a class="btn ghost sm" href="#/ai/agentes">Volver a Agentes</a></div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir este agente', linea: e.message, boton: { texto: 'Volver a Agentes', href: '#/ai/agentes' } })}`); return; }
   if (!alive()) return;
   if (!TABS.some(([k]) => k === tab)) tab = 'overview';
   let filtro = '';

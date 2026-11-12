@@ -5,6 +5,7 @@
 //   Auditoría de SEO: se pide a Claude Code (plugin claude-seo) y el resultado se guarda aquí, con su puntaje.
 import { html, raw, mount, api, toast, ico, ask, md, fdate, $, confirmAsk, drawer, closeDrawer, openClaude } from './core.js';
 import { TIPOS_T, ESTADOS_T, formularioLanding, promptAuditoria, puntajeDe, httpsOk } from './tech.js';
+import { fallo } from './visual.js';
 
 const TONO = { 'En vivo': 'av-st-ok', 'En construcción': 'av-st-borr', Pausada: '' };
 const copiar = async (t, msg = 'Copiado') => { try { await navigator.clipboard.writeText(t); toast(msg); } catch { toast('Selecciona el texto y cópialo', true); } };
@@ -13,7 +14,7 @@ export async function techUI(el, { b, alive }) {
   const S = { sitios: [], auditorias: [], viva: null, origen: '', puede: {} };
   mount(el, html`<p class="loading">Cargando…</p>`);
   const cargar = async () => Object.assign(S, await api(`tech?profile=${encodeURIComponent(b.slug)}`));
-  try { await cargar(); } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir Tech</b>${e.message}</div>`); return; }
+  try { await cargar(); } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir Tech', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), ceo = () => Boolean(S.puede.ceo);
   const feed = () => `${S.origen}/api/publico/${b.slug}/publicado`;

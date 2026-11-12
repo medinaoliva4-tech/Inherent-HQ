@@ -11,6 +11,7 @@ import { herramientaDe, rutaHerramienta } from '../herramientas.js';
 import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { render as content } from '../screens/content.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
+import { fallo, vacio } from '../visual.js';
 import {
   BLOQUE, MIN_ITEMS, NIVELES, FORMATOS, CUADRANTES, formatoNombre, nivelNombre, redNombre, fmtDe, redDe, hookDe, resonanciaDe, indiceDe, claveDe,
   limpiarPatron, recalcular, registrarSemana, senales, faltas, agrupar, trendRadar, semanasDe, semanaIso, oportunidades, ordenPatrones, prompt, leer, limpiar, aMd,
@@ -101,7 +102,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
     const box = $('#vil-lib', root); if (!box || S.libMontada) return;
     S.libMontada = true; box.dataset.island = '1';
     Promise.resolve(content(box, { me, alive, fixed: b.slug, sub: ['research'], embed: { base: `${base}/library`, only: ['research'], brand: b.name, inspo: Boolean(b.personal), plat: resto[1] } }))
-      .catch((e) => { console.error(e); if (alive() && box.isConnected) mount(box, html`<div class="empty"><b>No pude abrir la Library</b>Recarga la página; si sigue igual, la Investigación está en el Chat de Marketing.</div>`); });
+      .catch((e) => { console.error(e); if (alive() && box.isConnected) mount(box, html`${fallo({ titulo: 'No pude abrir la Library', linea: 'Recarga la página; si sigue igual, la Investigación está en el Chat de Marketing.' })}`); });
   }
   function verTab() {
     for (const [k] of TABS) { const p = $(`#vil-p-${k}`, root); if (p) p.hidden = S.tab !== k; }
@@ -166,10 +167,10 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarLista() {
     const el = $('#vil-lista', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando los patrones…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const xs = lista();
     mount(el, xs.length ? html`<div class="vil-pats">${xs.map(tarjeta)}</div>`
-      : html`<div class="empty vil-vacio"><b>Todavía no hay patrones</b>${escribe() ? 'Agrúpalos con IA, sugiérelos por formato y gancho, o crea uno con posts de la Biblioteca. Cada patrón liga al menos 2 posts reales.' : 'Cuando alguien los cree, salen aquí.'}</div>`);
+      : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay patrones', linea: escribe() ? 'Agrúpalos con IA, sugiérelos por formato y gancho, o crea uno con posts de la Biblioteca. Cada patrón liga al menos 2 posts reales.' : 'Cuando alguien los cree, salen aquí.' , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos los patrones de esta marca.' } }})}`);
   }
 
   // El editor: un patrón nuevo o uno que ya existe. Escribir no repinta los campos (se perdería el foco).
@@ -427,12 +428,12 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarRadarVista() {
     const el = $('#vil-radar-vista', root); if (!el) return;
     const W = semanasRadar(), i = S.semHoy ? W.length : Math.min(S.semIdx, W.length), r = trendRadar(S.docs.map((d) => d.contenido), i >= W.length ? '' : W[i]);
-    mount(el, html`${r.puntos.length ? svgRadar(r) : html`<div class="empty vil-vacio"><b>${S.docs.length ? 'Nada que dibujar en esta semana' : 'Todavía no hay patrones'}</b>${S.docs.length ? `${SIN_DATOS}: ningún patrón tiene momentum y saturación${i < W.length ? ' en esa semana' : ''}. Se califican al editarlos en Pattern Report.` : 'Se crean en Pattern Report: agrúpalos con IA o créalos con posts de la Biblioteca.'}</div>`}${listaRadar(r)}`);
+    mount(el, html`${r.puntos.length ? svgRadar(r) : html`${vacio({ icono: 'inbox', titulo: `${S.docs.length ? 'Nada que dibujar en esta semana' : 'Todavía no hay patrones'}`, linea: html`${S.docs.length ? `${SIN_DATOS}: ningún patrón tiene momentum y saturación${i < W.length ? ' en esa semana' : ''}. Se califican al editarlos en Pattern Report.` : 'Se crean en Pattern Report: agrúpalos con IA o créalos con posts de la Biblioteca.'}` })}`}${listaRadar(r)}`);
   }
   function pintarRadar() {
     const el = $('#vil-radar', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando el radar…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const W = semanasRadar(), i = S.semHoy ? W.length : Math.min(S.semIdx, W.length);
     mount(el, html`<div class="vil-radar-h"><p class="mut sm">Momentum contra saturación de cada patrón. Cada vez que guardas un patrón con su momentum y su saturación queda la lectura de esa semana.</p></div>
       ${W.length ? html`<div class="vil-sem"><label class="lbl" for="vil-sem-r">Semana</label><input id="vil-sem-r" class="vil-sem-r" type="range" min="0" max="${W.length}" step="1" value="${i}" aria-describedby="vil-sem-o"><output id="vil-sem-o" class="vil-sem-o" for="vil-sem-r">${semTxt(i >= W.length ? '' : W[i])}${i < W.length ? ' · la última lectura hasta esa semana' : ' · lo que dicen hoy'}</output></div>`
@@ -445,7 +446,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarOp() {
     const el = $('#vil-op', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando las oportunidades…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const ops = lista().filter(({ p }) => p.oportunidad), estudio = herramientaDe('content-strategy-studio'), abre = !estudio || typeof estudio.puede !== 'function' || Boolean(estudio.puede(me, b));
     mount(el, html`<p class="mut sm vil-op-s">Momentum alto y saturación baja: sube y casi nadie lo usa.</p>
       ${ops.length ? html`<div class="vil-pats">${ops.map(({ d, p }) => html`<article class="vil-pat op" data-pid="${p.id}" data-estado="${d.estado || 'Borrador'}">
@@ -456,7 +457,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         <footer class="vil-acts">${abre ? html`<a class="btn sm" href="${rutaHerramienta('marketing', slug, 'content-strategy-studio')}">Mandar a Content Strategy Studio ${ico('arrow-right', 14)}</a>` : html`<span class="mut sm">Tu perfil no abre Content Strategy Studio.</span>`}
           <span class="chip sm2 vil-pronto" title="El Hook Laboratory llega en la Fase 3e">Hook Lab: llega en la Fase 3e</span>
           <button type="button" class="btn ghost sm" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar el patrón</button></footer></article>`)}</div>`
-        : html`<div class="empty vil-vacio"><b>Todavía no hay oportunidades</b>${S.docs.length ? 'Un patrón es oportunidad con momentum alto y saturación baja. Califícalos en Pattern Report o mira el Trend Radar.' : 'Primero se crean los patrones en Pattern Report.'}</div>`}`);
+        : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay oportunidades', linea: S.docs.length ? 'Un patrón es oportunidad con momentum alto y saturación baja. Califícalos en Pattern Report o mira el Trend Radar.' : 'Primero se crean los patrones en Pattern Report.' , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos las oportunidades de esta marca.' } }})}`}`);
   }
 
   // ---------- Pintar ----------

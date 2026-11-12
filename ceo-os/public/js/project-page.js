@@ -12,6 +12,7 @@ import { RECIPE_ROLES } from './recipes.js';
 import { holders } from './cycle.js';
 import { levelName, LEVEL_NAMES } from './levels.js';
 import { intelView } from './intel-ui.js';
+import { vacio } from './visual.js';
 
 const PR = col('projects'), TK = col('tasks');
 export const PSTATES = ['En curso', 'En riesgo', 'Pausado', 'Hecho'];
@@ -119,7 +120,7 @@ export function myProjects(box, { me, projects, tasks, team, clients = [], open 
             <span class="pp-mpbarw" data-l="Avance"><span class="pp-meter"><i style="width:${pct}%"></i></span><b class="sm">${pct}%</b></span>
             <span data-l="Fin" class="${late ? 'pp-late' : ''}">${end ? fdate(end) : '—'}</span>
             <span class="pp-mpo" data-l="Dueño">${av(o.who, 22)}<span class="sm"><span class="mut">${o.label} →</span> ${o.who?.name?.split(' ')[0] || '—'}</span></span></a>`; })
-          : html`<div class="empty sm" style="padding:22px">Ningún proyecto con ese filtro.</div>`}</div>`);
+          : html`${vacio({ icono: 'inbox', titulo: 'Ningún proyecto con ese filtro', compacto: true })}`}</div>`);
   };
   box.onclick = (e) => { const t = e.target.closest('[data-mp]'); if (!t) return;
     if (t.dataset.mp === 'f') { f = t.dataset.v; lsSet('pp.f', f); paint(); }
@@ -136,7 +137,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   let { projects, tasks, team, docs, clients } = data;
   let p = projects.find((x) => x.id === id);
   if (!p) { try { p = await PR.get(id); projects.push(p); } catch {} }
-  if (!p) return mount(el, html`<div class="empty"><b>Ese proyecto no existe</b>O no está entre los tuyos.<div><button class="btn" data-x="back">← Proyectos</button></div></div>`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
+  if (!p) return mount(el, html`${vacio({ icono: 'inbox', titulo: 'Ese proyecto no existe', linea: 'O no está entre los tuyos.', boton: { texto: '← Proyectos', act: '', data: { x: 'back' } } })}`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
   // Abre en el Kanban de sus tareas (las vistas viejas Lista y Tablero caen ahí).
   // «Entregables» (Intel) solo existe en un proyecto de un cliente: lee la carpeta de ese cliente.
   const views = () => VIEWS.filter(([k]) => k !== 'entregables' || p.client_slug);

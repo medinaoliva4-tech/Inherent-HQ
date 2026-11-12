@@ -5,6 +5,7 @@ import { projectPage, myProjects } from '../project-page.js';
 import { taskKanban } from '../kanban.js';
 import { juntarEventos, filtrarPorRol, tiposVisibles, rango, porDia, calendarioHtml, diaHtml, hitoHtml } from '../calendario-trabajo.js';
 import { html, raw, mount, col, api, drawer, closeDrawer, ask, toast, acts, confirmAsk, fdate, today, $, $$, IC, initials , teamList , calQ, calAll, setCalAll, swap, ico, isSummary, canEdit, roChip } from '../core.js';
+import { vacio } from '../visual.js';
 
 const TSTATUS = { 'Por empezar': '', 'En curso': 'amber', 'En revisión': 'blue', 'Hecha': 'green' };
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -112,7 +113,7 @@ export async function render(el, { me, sub, alive }) {
   // ---------- Timeline (Gantt por semanas) ----------
   function time(b) {
     const rows = projects.flatMap((p) => (p.phases || []).filter((x) => x.start && x.end).map((x) => ({ p, x })));
-    if (!rows.length) return mount(b, html`<div class="empty"><b>Sin fechas todavía</b>Las fases con fecha de inicio y fin aparecen aquí.</div>`);
+    if (!rows.length) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Sin fechas todavía', linea: 'Las fases con fecha de inicio y fin aparecen aquí.' })}`);
     const min = rows.reduce((a, r) => (r.x.start < a ? r.x.start : a), rows[0].x.start);
     const startD = new Date(min + 'T12:00'); startD.setDate(startD.getDate() - ((startD.getDay() + 6) % 7));
     const weeks = Array.from({ length: 10 }, (_, i) => { const d = new Date(startD); d.setDate(d.getDate() + i * 7); return iso(d); });

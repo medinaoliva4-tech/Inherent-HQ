@@ -64,7 +64,7 @@ export async function render(el, { me, sub, alive }) {
   let arrastrando = '';
 
   try { notas = (await C.list()).map(leerNota); }
-  catch (e) { return mount(el, html`<div class="empty"><b>${e.status === 403 ? 'Tu perfil no ve esta sección' : `No pude leer ${area.nombre}`}</b>${e.message}</div>`); }
+  catch (e) { return mount(el, html`${vacio({ icono: 'lock', titulo: `${e.status === 403 ? 'Tu perfil no ve esta sección' : `No pude leer ${area.nombre}`}`, linea: e.message })}`); }
   if (!alive()) return;
   // La lista de clientes suele estar ya (la usa el Chat); si no, llega después y se repintan el filtro y los nombres.
   if (!contextoLista().length) cargarContexto(me).then(() => { if (alive()) { pintarClientes(); paintDatos(); } }).catch(() => {});

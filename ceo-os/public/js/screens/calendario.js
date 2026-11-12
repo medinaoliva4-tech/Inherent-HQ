@@ -10,7 +10,7 @@ import { juntarEventos, filtrarPorRol, tiposVisibles, rango, porDia, calendarioH
 import { loadBrands, brandAccess, modulesFor } from '../brandlist.js';
 import { areaInfo, leerNota } from '../areas-notas.js';
 import { puedeWs } from '../herramientas.js';
-import { proporcion, leyenda, resumenEventos, semanaDe } from '../visual.js';
+import { proporcion, leyenda, resumenEventos, semanaDe, vacio } from '../visual.js';
 
 // La forma de Calendario mientras carga: título, pestañas, el resumen y el calendario (cero salto de layout).
 export const esqueleto = () => html`<div class="skel skel-cal" aria-busy="true"><span class="sr-only">Cargando…</span><i class="sk-t"></i><i class="sk-s"></i><i class="sk-bar"></i><i class="sk-res"></i><i class="sk-gran"></i></div>`;
@@ -176,13 +176,13 @@ export async function render(el, { me, sub, alive }) {
 
   // ---------- Contenido: el calendario de una marca (el embed de content.js) ----------
   async function contenido(b) {
-    if (!brandAccess(me).contentFull) return mount(b, html`<div class="empty"><b>Tu perfil no ve el contenido de las marcas</b></div>`);
+    if (!brandAccess(me).contentFull) return mount(b, html`${vacio({ icono: 'lock', titulo: 'Tu perfil no ve el contenido de las marcas' })}`);
     if (brands === null) {
       mount(b, html`<p class="loading">Cargando las marcas…</p>`);
       brands = (await loadBrands(me).catch(() => [])).filter((x) => x.content && modulesFor(me, x).includes('calendario'));
       if (!alive() || tab !== 'contenido' || !b.isConnected) return;
     }
-    if (!brands.length) return mount(b, html`<div class="empty"><b>Todavía no hay marcas con contenido</b>Cuando una marca tenga su perfil de contenido, su calendario sale aquí.</div>`);
+    if (!brands.length) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Aún no hay marcas con contenido', linea: 'Cuando una marca tenga su perfil de contenido, su calendario sale aquí.' })}`);
     try { marca = decodeURIComponent(marca || ''); } catch { marca = ''; }
     const slug = [marca, lsGet(lsMarca, '')].find((s) => s && brands.some((x) => x.slug === s)) || brands[0].slug;
     mount(b, html`<div class="row cal-marcas"><label class="cal-marca-l" for="cal-marca">Marca</label>

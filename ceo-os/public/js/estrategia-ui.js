@@ -3,6 +3,7 @@ import { html, mount, api, col, ico, toast } from './core.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto } from './contexto.js';
 import { limpiarEstrategia, analizarMeta, resumenVoces, TIPOS_VOZ } from './estrategia-datos.js';
 import { limpiarEmbudo, analizarEmbudo, idEmbudo } from './embudo-datos.js';
+import { fallo, vacio } from './visual.js';
 
 const C = col('strategy_meta');
 const q = (n) => `Q${Math.round(Number(n) || 0).toLocaleString('es-GT')}`;
@@ -49,7 +50,7 @@ export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
       ${r.temas.length ? html`<div class="vz-temas">${r.temas.map((t) => html`<span>${t.tema} · ${t.n}</span>`)}</div>` : ''}
       <div class="mk-c vz-nueva"><div class="em-f-g mm-w"><label class="mk-w"><span>Lo que dijo, tal cual</span><textarea class="in" rows="2" data-n="frase">${nueva.frase}</textarea></label><label><span>Tipo</span><select class="in" data-n="tipo">${TIPOS_VOZ.map((t) => html`<option ${t === nueva.tipo ? 'selected' : ''}>${t}</option>`)}</select></label><label><span>Tema</span><input class="in" data-n="tema" value="${nueva.tema}" placeholder="Precio, confianza…"></label><label class="mk-w"><span>De dónde salió</span><input class="in" data-n="fuente" value="${nueva.fuente}" placeholder="Entrevista, DM, llamada"></label></div><div class="em-acc mm-w"><button class="btn" type="button" data-d="voz">Agregar</button></div></div>
       <div class="vz-lista">${d.voces.map((v, i) => html`<article><blockquote>«${v.frase}»</blockquote><footer><span class="mk-v">${v.tipo}</span>${v.tema ? html`<span>${v.tema}</span>` : ''}${v.fuente ? html`<span>${v.fuente}</span>` : ''}<button class="lat-ib" type="button" data-d="v-quitar" data-i="${i}" aria-label="Quitar frase">${ico('x', 15)}</button></footer></article>`)}</div>
-      ${d.voces.length ? '' : html`<div class="empty"><b>Agrega la primera frase</b>Escríbela como la dijo, sin arreglarla. Esas palabras son las que venden.</div>`}`);
+      ${d.voces.length ? '' : html`${vacio({ icono: 'inbox', titulo: 'Agrega la primera frase', linea: 'Escríbela como la dijo, sin arreglarla. Esas palabras son las que venden.' })}`}`);
   }
   const pintar = () => { if (alive()) (vista === 'voz' ? voz : meta)(); };
   const leer = () => {
@@ -73,5 +74,5 @@ export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
       d.voces.unshift({ ...nueva }); nueva = { frase: '', tipo: nueva.tipo, tema: '', fuente: nueva.fuente }; return guardar();
     }
   };
-  try { await cargar(); } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir esta mesa</b>${e.message}</div>`); }
+  try { await cargar(); } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir esta mesa', linea: e.message })}`); }
 }

@@ -22,6 +22,7 @@ import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, m
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
 import { rutaBloque, rutaChat } from '../herramientas.js';
 import { abrirEnChat } from '../areas.js';
+import { fallo as falloOS, vacio } from '../visual.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
@@ -69,10 +70,10 @@ export async function render(el, { me, sub = [], alive }) {
   async function cliente(slug, b0) {
     el.onclick = null;
     // El chat corre en la compu de cada quien (el puente de Laya): en el teléfono no hay dónde.
-    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('spark', 22)}</span><b>Disponible solo en tu compu</b>La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.</div>`);
+    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a>${vacio({ icono: 'spark', titulo: 'Disponible solo en tu compu', linea: 'La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.' })}`);
     let data;
     try { data = await api(`estrategia/${encodeURIComponent(slug)}`); }
-    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty" style="margin-top:16px"><b>No pude abrir este cliente</b>${e.message}</div>`); }
+    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a>${falloOS({ titulo: 'No pude abrir este cliente', linea: e.message })}`); }
     if (!alive()) return;
     const bid = BLOQUES.some((b) => b.id === b0) ? b0 : BLOQUES[0].id;
     if (bid !== b0) { history.replaceState(null, '', rutaChat(slug, bid)); sync(); }

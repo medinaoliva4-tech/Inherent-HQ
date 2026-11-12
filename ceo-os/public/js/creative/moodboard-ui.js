@@ -10,6 +10,7 @@ import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { ojoEstado, verImagen, ojoChip } from '../ojo.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { BLOQUE, ZONAS, MAX_IMAGENES, esHttps, zonaDe, limpiarImagenes, porZona, limpiar, faltas, prompt, leer } from './moodboard.js';
+import { fallo, vacio } from '../visual.js';
 
 const BB = col('brand_boards');
 const driveThumb = (id) => `https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w800`;
@@ -61,7 +62,7 @@ export async function moodboardTool(host, { me, slug, b, alive } = {}) {
         ${edit && hayOjo() && vivas ? html`<button class="btn ghost xs" data-act="ojotodas" ${S.ocupado ? 'disabled' : ''}>${S.ocupado === 'ojo' ? 'Mirando…' : 'Mirar todas'}</button>` : ''}</div>
       <section class="mb-dirs"><div class="mb-sec-h"><h3>Direcciones</h3><span class="sp"></span>${edit ? html`<button class="btn xs" data-act="gen" ${vivas && !S.ocupado ? '' : 'disabled'} title="${vivas ? '' : 'Primero suma imágenes al moodboard'}">${ico('sparkles', 13)} ${S.ocupado === 'gen' ? 'Generando…' : 'Generar direcciones'}</button>` : ''}</div>
         ${S.prop ? html`<div class="mb-prop"><b>${ico('sparkles', 13)} Propuesta de la IA (${S.prop.length})</b><div class="mb-dirs-g">${S.prop.map((d, k) => dir(d, k))}</div><div class="mb-acts2"><button class="btn xs" data-act="aceptar">${ico('check', 13)} Aceptar y guardar</button><button class="btn ghost xs" data-act="descartar">Descartar</button></div></div>` : ''}
-        ${S.dirs.length ? html`<div class="mb-dirs-g">${S.dirs.map(dir)}</div>` : html`<div class="empty sm"><b>Sin direcciones</b>${SIN_DATOS}: salen de este moodboard. Suma imágenes y genera 2 o 3 direcciones que citen las que ya tienes.</div>`}</section>
+        ${S.dirs.length ? html`<div class="mb-dirs-g">${S.dirs.map(dir)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin direcciones', linea: `${SIN_DATOS}: salen de este moodboard. Suma imágenes y genera 2 o 3 direcciones que citen las que ya tienes.`, compacto: true })}`}</section>
       ${edit ? html`<section class="mb-add"><select id="mb-zona">${ZONAS.map((x) => html`<option value="${x.id}" ${x.id === S.zona ? 'selected' : ''}>${x.nombre}</option>`)}</select><input id="mb-url" placeholder="https://… link de la imagen"><button class="btn xs" data-act="addurl">${ico('plus', 13)} Sumar link</button>
         <label class="btn ghost xs" ${canDrive ? '' : 'title="Conecta tu Drive para subir"'}>${ico('plus', 13)} Subir a Drive<input type="file" accept="image/*" multiple hidden data-up ${canDrive ? '' : 'disabled'}></label></section>` : ''}
       ${ZONAS.map((zn) => html`<section class="mb-zona"><div class="mb-sec-h"><h3>${zn.nombre}</h3><span class="mut sm">${z[zn.id].length}</span></div>
@@ -115,6 +116,6 @@ export async function moodboardTool(host, { me, slug, b, alive } = {}) {
     ir: (t, e) => { e.preventDefault(); document.getElementById('mb-' + t.dataset.i)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); },
   });
 
-  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`<div class="empty"><b>No pude leer el moodboard</b>${e.status === 403 ? 'Este tablero está fuera de tu alcance.' : e.message}</div>`); return; }
+  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`${fallo({ titulo: 'No pude leer el moodboard', linea: e.status === 403 ? 'Este tablero está fuera de tu alcance.' : e.message })}`); return; }
   pintar();
 }

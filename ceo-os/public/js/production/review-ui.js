@@ -5,6 +5,7 @@
 // Pinta con html`…` (todo se escapa; nada de raw con texto de usuario). Lo vacío dice «⚠️ SIN DATOS» y de dónde sale.
 import { html, mount, api, ico, toast, confirmAsk, ask, embedUrl, skel, fdate, $, $$ } from '../core.js';
 import { reloj, seg as aSeg } from '../video.js';
+import { fallo, vacio } from '../visual.js';
 
 const enc = encodeURIComponent;
 const ENREV = (f) => f.revision === 'Pendiente' || f.estado === 'En revisión';
@@ -51,7 +52,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
   const reproductor = (f) => {
     const vs = versionDe(f, S.ver), src = vs ? srcDe(vs.link, S.salto) : null;
     if (!vs) return html`<div class="empty sm"><b>⚠️ SIN DATOS</b>Esta ficha no tiene versiones: salen de Post-Production (versiones por ficha).</div>`;
-    if (!src) return html`<div class="empty sm"><b>No puedo mostrar este link aquí</b>${vs.link ? html`<a class="btn ghost sm" href="${vs.link}" target="_blank" rel="noopener noreferrer">${ico('external-link', 14)} Abrir el video</a>` : '⚠️ SIN DATOS: la versión no trae link. Se agrega en Post-Production.'}</div>`;
+    if (!src) return html`${fallo({ titulo: 'No puedo mostrar este link aquí', linea: html`${vs.link ? html`<a class="btn ghost sm" href="${vs.link}" target="_blank" rel="noopener noreferrer">${ico('external-link', 14)} Abrir el video</a>` : '⚠️ SIN DATOS: la versión no trae link. Se agrega en Post-Production.'}` })}`;
     return html`<iframe src="${src}" title="${f.titulo} v${S.ver}" allow="autoplay; fullscreen" allowfullscreen style="width:100%;aspect-ratio:${ratio(f.formato)};max-height:560px;border:0;border-radius:12px;background:#000"></iframe>`;
   };
   const comparacion = (f) => {
@@ -62,7 +63,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
   const comentarios = (f) => {
     const cs = (f.comentarios || []).filter((c) => veInterno || !c.interno).filter((c) => c.version === S.ver);
     const saltar = puedeSaltar(versionDe(f, S.ver)?.link);
-    if (!cs.length) return html`<div class="empty sm"><b>Sin comentarios en la v${S.ver}</b>Salen del cliente (portal) y del equipo; cada uno lleva su segundo.</div>`;
+    if (!cs.length) return html`${vacio({ icono: 'inbox', titulo: `Sin comentarios en la v${S.ver}`, linea: 'Salen del cliente (portal) y del equipo; cada uno lleva su segundo.', compacto: true })}`;
     return html`<div class="pd-list">${cs.slice().sort((a, z) => (a.seg ?? -1) - (z.seg ?? -1)).map((c) => html`<div class="pd-li">
       ${c.seg != null ? html`<button class="btn xs ghost" data-seg="${c.seg}" title="${saltar ? 'Saltar a este segundo' : 'Segundo del comentario'}">${ico('clock', 12)} ${reloj(c.seg)}</button>` : html`<span class="chip">General</span>`}
       <span>${c.texto}<small>${quien(c.por)}${c.interno ? ' · interno' : ''}${c.en ? ` · ${fdate(String(c.en).slice(0, 10))}` : ''}</small></span></div>`)}</div>${saltar ? '' : html`<p class="mut sm">Este reproductor no deja saltar al segundo: el pin te dice dónde mirar.</p>`}`;
@@ -138,7 +139,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
     }));
   }
 
-  try { await leer(); } catch (e) { if (alive()) mount(host, html`<div class="empty"><b>No pude leer los videos</b>${e.status === 403 ? 'Esta marca está fuera de tu alcance.' : e.message}</div>`); return; }
+  try { await leer(); } catch (e) { if (alive()) mount(host, html`${fallo({ titulo: 'No pude leer los videos', linea: e.status === 403 ? 'Esta marca está fuera de tu alcance.' : e.message })}`); return; }
   if (!alive()) return;
   pintarTodo();
 }

@@ -15,6 +15,7 @@ import { abrirEnChat } from '../areas.js';
 import { herramientaDe, rutaHerramienta } from '../herramientas.js';
 import { ETAPAS_HORMOZI, SIN_DATOS } from '../consulting/marcos.js';
 import { CAPACIDAD, limpiar as limpiarDiagnostico } from '../consulting/salud.js';
+import { vacio } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
 const ALCANCE = { si: ['Growth Partnership', 'ok'], 'sin-finanzas': ['Growth Partnership · sin Finanzas', 'ok'], ficha: ['A la medida', ''], fuera: ['Fuera del alcance', 'fuera'], 'sin-ficha': ['Sin ficha', 'fuera'] };
@@ -104,7 +105,7 @@ export async function consultingOverview(el, { me, slug, alive, cabecera = true,
   const [, tareas] = await Promise.all([loadEstrategia(), verTareas(me) ? col('tasks').list().catch(() => []) : []]);
   if (!alive() || !el.isConnected) return;
   const c = clientes().find((x) => x.slug === slug);
-  if (!c) return mount(el, html`<div class="cs"><div class="empty"><b>No encontré ese cliente en Estrategia</b>${slug === 'inherent' ? 'Inherent no es cliente de Consulting: su operación y sus finanzas viven en Organización.' : 'Puede que no esté en tu alcance o que todavía no tenga estrategia.'}</div></div>`);
+  if (!c) return mount(el, html`<div class="cs">${vacio({ icono: 'inbox', titulo: 'No encontré ese cliente en Estrategia', linea: `${slug === 'inherent' ? 'Inherent no es cliente de Consulting: su operación y sus finanzas viven en Organización.' : 'Puede que no esté en tu alcance o que todavía no tenga estrategia.'}` })}</div>`);
   // La estrategia y los entregables se leen a la vez; sin los entregables el hero dice SIN DATOS, no 0.
   const [data, ents] = await Promise.all([
     datosEstrategia(slug).catch(() => ({ nombre: c.nombre, nivel: c.nivel })),
@@ -149,6 +150,6 @@ function lista(el, me, tareas) {
     ${cs.length ? html`<div class="cs-clientes">${cs.map((c) => {
       const [l, cls] = ALCANCE[alcanceConsulting(c.nivel)], n = encargosDe(tareas, 'consulting', c.slug).filter((t) => t.status !== 'Hecha').length;
       return html`<a class="cs-cliente" href="#/ws/consulting/${esc(c.slug)}/overview"><span class="cs-mono">${initials(c.nombre)}</span><span class="cs-cliente-t"><b>${c.nombre}</b><small class="cs-alc ${cls}">${l}</small></span>${n ? html`<span class="cs-n" title="Encargos de Estrategia abiertos">${n}</span>` : ''}${ico('right', 15)}</a>`;
-    })}</div>` : html`<div class="empty">Todavía no hay clientes que veas en Estrategia.</div>`}
+    })}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay clientes que veas en Estrategia', linea: 'Cuando un cliente tenga su estrategia y tu perfil la vea, aparece aquí.' })}`}
     <p class="mut sm cs-pie">Operations OS y Money OS son de Growth Partnership. Las finanzas de Inherent están en Organización → Finanzas.</p></div>`);
 }

@@ -6,6 +6,7 @@ import { html, mount, api, ico, toast } from '../core.js';
 import { puenteEstado } from '../laya-ui.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { CAJAS, CONSCIENCIAS, FUENTES, METRICAS, SD_METRICA, vacio, limpiar, hookNuevo, desdeResearch, grilla, vivos, layaTexto, multTexto, celdaPrueba, celdaTexto, ganadorDe, cajaDe, reescrito, MAX_VARIANTES } from './hooks.js';
+import { vacio as vacioOS } from '../visual.js';
 
 const enc = encodeURIComponent;
 const fuenteNombre = (k) => FUENTES.find(([x]) => x === k)?.[1] || k;
@@ -53,11 +54,11 @@ export const vista = {
         ${ed ? html`<button class="btn" type="button" data-a="research">${ico('book-open', 15)} Traer del research</button><button class="btn" type="button" data-a="nuevo">${ico('plus', 15)} Hook nuevo</button><button class="btn" type="button" data-a="laya">${ico('sparkles', 15)} Calificar con Laya</button>` : ''}</div>
       ${S.research === null && ed ? html`<p class="mut sm">Leyendo la Investigación…</p>` : ''}
       ${vivos(S.c).length ? html`${tablaGrilla()}<ul class="hk-lista">${vivos(S.c).filter((h) => !S.pilar || h.pilar === S.pilar).map(fila)}</ul>`
-        : html`<div class="empty"><b>Aún no hay hooks</b>${SIN_DATOS}: salen de la Investigación de la marca (su gancho y su multiplicador). Usa «Traer del research».</div>`}`;
+        : html`${vacioOS({ icono: 'inbox', titulo: 'Aún no hay hooks', linea: `${SIN_DATOS}: salen de la Investigación de la marca (su gancho y su multiplicador). Usa «Traer del research».` , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos los hooks de esta marca.' } }})}`}`;
 
     const pestanaMatriz = () => {
       const c = S.c, L = vivos(c);
-      if (!L.length) return html`<div class="empty"><b>La matriz necesita hooks</b>Primero trae o escribe hooks en la grilla.</div>`;
+      if (!L.length) return html`${vacioOS({ icono: 'inbox', titulo: 'La matriz necesita hooks', linea: 'Primero trae o escribe hooks en la grilla.' })}`;
       return html`<div class="hk-barra"><span class="mut sm">Cada celda es una métrica real (de los analytics de la pieza o de Ads). Sin métrica, dice de dónde sale.</span><span class="sp"></span>
         ${ed ? html`<button class="btn" type="button" data-a="variante" ${c.variantes.length >= MAX_VARIANTES ? 'disabled' : ''}>${ico('plus', 15)} Variante de prueba</button>` : ''}</div>
         ${c.variantes.length ? html`<div class="hk-wrap"><table class="hk-matriz"><thead><tr><th scope="col">Hook</th>${c.variantes.map((v) => html`<th scope="col">${ed ? html`<input class="in" data-vn="${v.id}" value="${v.nombre}" maxlength="60" aria-label="Nombre de la variante" autocomplete="off">` : v.nombre}${ganadorDe(c, v.id) ? html`<small class="hk-gana">hay ganador</small>` : ''}</th>`)}</tr></thead>
@@ -66,7 +67,7 @@ export const vista = {
               <select class="in" data-p="metrica" aria-label="Métrica"><option value="">Métrica…</option>${METRICAS.map(([k, n]) => html`<option value="${k}" ${p?.metrica === k ? 'selected' : ''}>${n}</option>`)}</select>
               <input class="in" data-p="fuente" value="${p?.fuente || ''}" maxlength="160" placeholder="${SD_METRICA}" aria-label="Fuente de la métrica" autocomplete="off">` : ''}
             <span class="hk-celda" data-sd="${p && p.valor !== null ? 0 : 1}">${celdaTexto(p)}</span></td>`; })}</tr>`)}</tbody></table></div>`
-        : html`<div class="empty"><b>Sin variantes de prueba</b>${SIN_DATOS}: agrega la primera variante (por ejemplo «con texto en pantalla»).</div>`}`;
+        : html`${vacioOS({ icono: 'inbox', titulo: 'Sin variantes de prueba', linea: `${SIN_DATOS}: agrega la primera variante (por ejemplo «con texto en pantalla»).` })}`}`;
     };
 
     function pinta() {

@@ -2,6 +2,7 @@
 import { html, raw, mount, api, col, ico, toast, $ } from './core.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto } from './contexto.js';
 import { idEmbudo, limpiarEmbudo, analizarEmbudo, analizarLineas, etapasDeLeads } from './embudo-datos.js';
+import { fallo, vacio } from './visual.js';
 
 const C = col('embudos');
 const q = (n) => { const v = Math.round(Number(n) || 0); return `${v < 0 ? '-' : ''}Q${Math.abs(v).toLocaleString('es-GT')}`; };
@@ -59,7 +60,7 @@ export async function pintarDinero(el, { me, area, tabs, vista, alive }) {
       <div class="mv-t"><table><thead><tr><th>Oferta o canal</th><th>Tipo</th><th>Ingreso</th><th>Costo</th><th>Margen</th><th></th></tr></thead><tbody>
       ${d.lineas.map((l, i) => { const m = l.ingreso - l.costo; return html`<tr><td data-t="Nombre"><input class="in" data-l="${i}" data-c="nombre" value="${l.nombre}" aria-label="Nombre"></td><td data-t="Tipo"><select class="in" data-l="${i}" data-c="tipo" aria-label="Tipo"><option value="oferta" ${l.tipo === 'oferta' ? 'selected' : ''}>Oferta</option><option value="canal" ${l.tipo === 'canal' ? 'selected' : ''}>Canal</option></select></td><td data-t="Ingreso"><input class="in" inputmode="numeric" data-l="${i}" data-c="ingreso" value="${l.ingreso || ''}" aria-label="Ingreso"></td><td data-t="Costo"><input class="in" inputmode="numeric" data-l="${i}" data-c="costo" value="${l.costo || ''}" aria-label="Costo"></td><td data-t="Margen"><b class="${m < 0 ? 'ren-mal' : ''}">${q(m)}</b></td><td><button class="lat-ib" type="button" data-d="quitar" data-i="${i}" aria-label="Quitar ${l.nombre}">${ico('x', 15)}</button></td></tr>`; })}
       </tbody></table></div>
-      ${d.lineas.length ? '' : html`<div class="empty"><b>Agrega tu primera oferta o canal</b>Escribe cuánto ingresó y cuánto costó. Con dos líneas ya se ve qué empujar.</div>`}
+      ${d.lineas.length ? '' : html`${vacio({ icono: 'inbox', titulo: 'Agrega tu primera oferta o canal', linea: 'Escribe cuánto ingresó y cuánto costó. Con dos líneas ya se ve qué empujar.' })}`}
       <div class="em-acc" style="margin-top:12px"><button class="btn ghost" type="button" data-d="linea">${ico('plus', 14)} Agregar</button><button class="btn" type="button" data-d="guardar">Guardar</button></div>`);
   }
   const pintar = () => { if (alive()) (vista === 'rentabilidad' ? rentabilidad : embudo)(); };
@@ -81,5 +82,5 @@ export async function pintarDinero(el, { me, area, tabs, vista, alive }) {
     if (b.dataset.d === 'quitar') { d.lineas.splice(+b.dataset.i, 1); return pintar(); }
     if (b.dataset.d === 'crm') { try { const n = etapasDeLeads(await col('leads').list(), mes); n[0].n = d.etapas[0].n || n[0].n; d.etapas = n; pintar(); } catch (er) { toast(er.message, true); } }
   };
-  try { await cargar(); } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir esta mesa</b>${e.message}</div>`); }
+  try { await cargar(); } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir esta mesa', linea: e.message })}`); }
 }

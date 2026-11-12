@@ -5,6 +5,7 @@
 import { html, raw, mount, api, toast, ico, $, $$, confirmAsk, drawer, closeDrawer, openClaude } from './core.js';
 import { leerSistema } from './sistema-visual.js';
 import { ESTADOS_V, FORMATOS_V, TRANSICIONES, POSICIONES, kitDesdeSistema, limpiarKit, pedidoVideo, seg, reloj, duracionCortes, CAPAS, QA_ITEMS, limpiarQA, puedeEnviar, qaHechas, tablero, siguienteVersion, limpiarVersiones, comentariosVisibles } from './video.js';
+import { fallo } from './visual.js';
 
 const PROP = { '9:16': [9, 16], '4:5': [4, 5], '1:1': [1, 1], '16:9': [16, 9] };
 const REV = { Pendiente: 'Pendiente de revisión', Cambios: 'Con cambios pedidos', Aprobado: 'Aprobado' };
@@ -34,7 +35,7 @@ export async function videoUI(el, { b, alive }) {
   try {
     const [r, sis] = await Promise.all([api(`video?profile=${encodeURIComponent(b.slug)}`), b.personal ? { md: '' } : api(`repo/client/${encodeURIComponent(b.slug)}/sistema`).catch(() => ({ md: '' }))]);
     Object.assign(S, { kit: r.kit ? limpiarKit(r.kit) : null, fichas: r.fichas || [], puede: r.puede || {}, sis: sis?.md ? leerSistema(sis.md) : null });
-  } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir Video</b>${e.message}</div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir Video', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar);
   const kit = () => S.kit || kitDesdeSistema(S.sis);

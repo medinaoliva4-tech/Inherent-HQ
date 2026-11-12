@@ -2,13 +2,14 @@ import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan, createLinked }
 import { loadRecipes } from '../recetas.js';
 import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask, ico } from '../core.js';
 import { SOPS, filasEquipo, hechosArranque } from '../arranque.js';
+import { vacio } from '../visual.js';
 
 // Arranque: deja la app lista en 5 pasos, con lo que ya dice el repo.
 // 1 Equipo (de la tabla de slots del manual) · 2 Clientes y ciclo · 3 Tareas del ciclo · 4 Library base · 5 Carpeta de entregas.
 // Los pasos, los SOPs base y cuál ya está viven en arranque.js (puro): el aviso pla-arranque usa el mismo cálculo.
 
 export async function render(el, { me, alive }) {
-  if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Solo el CEO</b>El arranque lo hace el CEO.</div>`);
+  if (me.role !== 'ceo') return mount(el, html`${vacio({ icono: 'lock', titulo: 'Solo el CEO', linea: 'El arranque lo hace el CEO.' })}`);
   const T = col('team'), PR = col('projects'), TK = col('tasks'), F = col('folders'), D = col('docs');
   let [team, eco, repo, projects, tasks, folders, docs, driveCfg, R] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list(), col('settings').get('drive').catch(() => null), loadRecipes()]);
   // Personas del manual, juntando los roles de cada una (arranque.js, el mismo cálculo del aviso pla-arranque).

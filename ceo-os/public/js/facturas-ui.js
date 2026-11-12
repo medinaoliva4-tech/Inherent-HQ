@@ -6,6 +6,7 @@
 import { html, raw, mount, col, api, ask, drawer, closeDrawer, toast, Q, USD, fdate, today, csv, ico, openClaude } from './core.js';
 import { layaBox } from './laya-ui.js';
 import { estadoFactura, totales, cruzar, quienFactura, mesLabel, leerEstadoDeCuenta, movimientosBanco, filaEncabezado, filasBanco, CATS_OUT, feeMensual, recetaPropuesta, totalReceta, enGTQ } from './facturas.js';
+import { vacio } from './visual.js';
 
 const ESTADO = { pendiente: 'Pendiente', vencida: 'Vencida', pagada: 'Pagada', anulada: 'Anulada' };
 const money = (i) => (i.currency === 'USD' ? USD(i.amount) : Q(i.amount));
@@ -55,7 +56,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
     const open = mine.filter((i) => ['pendiente', 'vencida'].includes(estadoFactura(i, T))).sort((a, z) => String(a.due).localeCompare(String(z.due)));
     const closed = mine.filter((i) => !open.includes(i)).sort((a, z) => String(z.paid_at || z.due).localeCompare(String(a.paid_at || a.due)));
     return html`<section class="fx-list"><div class="fx-head"><h3>${kind === 'cobrar' ? 'Por cobrar' : 'Por pagar'}</h3><span class="mut sm">${open.length || ''}</span><span class="sp"></span>${ceo && kind === 'cobrar' ? html`<button class="btn ghost xs" data-fx="addcobrar">+ Por cobrar</button>` : ''}</div>
-      ${open.length ? open.map(fila) : html`<div class="empty sm"><b>${kind === 'cobrar' ? 'Nada por cobrar' : 'Nada por pagar'}</b>${ceo ? (kind === 'cobrar' ? 'Genera los cobros del mes.' : 'Agrega una con «+ Por pagar».') : 'Todo cobrado.'}</div>`}
+      ${open.length ? open.map(fila) : html`${vacio({ icono: 'inbox', titulo: `${kind === 'cobrar' ? 'Nada por cobrar' : 'Nada por pagar'}`, linea: `${ceo ? (kind === 'cobrar' ? 'Genera los cobros del mes.' : 'Agrega una con «+ Por pagar».') : 'Todo cobrado.'}`, compacto: true })}`}
       ${closed.length ? html`<details class="fx-closed"><summary class="sm mut">Pagadas y anuladas · ${closed.length}</summary>${closed.slice(0, 30).map(fila)}</details>` : ''}</section>`;
   }
   function fila(i) {

@@ -1,4 +1,5 @@
 import { html, raw, mount, col, api, ask, toast, acts, confirmAsk, fdate, today, IC, ico, drawer, closeDrawer } from '../core.js';
+import { vacio } from '../visual.js';
 
 // Roadmap: los pasos grandes (megaproyectos). Cada uno agrupa proyectos y cada proyecto tiene tareas con fecha y hora,
 // que se pueden mandar al calendario de quien lo usa. Todo vive en un solo documento por megaproyecto.
@@ -94,7 +95,7 @@ export async function render(el, { me, alive }) {
           <div><span class="lbl">Checkpoints vencidos</span><b class="${overdue ? 'rmt-late' : ''}">${overdue}</b><span class="mut sm">${overdue ? 'Tareas con fecha pasada sin hacer' : 'Nada vencido'}</span></div></div>
         <div class="sp-tiles wide rm-tiles">${list.map(megaTile)}</div>
         ${timeline(list)}`
-      : html`<div class="empty"><b>Todavía no hay metas</b>Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.<div><button class="btn" data-act="newMega">+ Meta</button></div></div>`}`);
+      : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay metas', linea: 'Cada meta es un paso grande de Inherent: dentro van sus proyectos y las tareas con fecha y hora.', boton: { texto: '+ Meta', act: 'newMega' } })}`}`);
     const d = document.getElementById('drawer');
     if (openId) { const m = megas.find((x) => x.id === openId); if (m && d?.classList.contains('on')) drawer(sheet(m), H); else if (!m) { openId = null; closeDrawer(); } }
   }

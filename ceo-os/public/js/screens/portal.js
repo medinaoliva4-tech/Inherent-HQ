@@ -4,6 +4,7 @@
 import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, ico, initials, ask, confirmAsk, embedUrl } from '../core.js';
 import { reloj } from '../video.js';
 import { estadoDe } from '../element.js';
+import { fallo } from '../visual.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
 const lvName = (lv) => (!lv ? '' : lv <= 4 ? 'Entrega básica' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
@@ -37,7 +38,7 @@ export async function render(el, { me, sub, alive }) {
   const slug = me.role === 'client' ? '' : sub[0] || '';
   const q0 = slug ? `?slug=${encodeURIComponent(slug)}` : '';
   let d;
-  try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir el portal</b>${e.message}</div>`); }
+  try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir el portal', linea: e.message })}`); }
   if (!alive()) return;
   // Videos que el equipo mandó a revisión (solo los de esta marca; sin nada interno). Si falla, el portal sigue sin ellos.
   let vids = [];

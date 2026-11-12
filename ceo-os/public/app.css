@@ -8227,6 +8227,7 @@ button.vz-ley-i:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1
 .vz-vacio-t{font-size:14px;font-weight:500;color:var(--ui-ink)}
 .vz-vacio-l{max-width:36ch;font-size:12px;line-height:1.45;color:var(--ui-mut)}
 .vz-vacio-b{margin-top:10px}
+.vz-vacio--err .vz-vacio-ic{color:var(--ui-bad-t)}.vz-vacio--err .vz-vacio-ring circle{stroke:var(--ui-bad-t);opacity:.5}.vz-vacio--err .vz-vacio-t{color:var(--ui-bad-t)}
 @media (prefers-reduced-motion:no-preference){.vz-vacio--entra{animation:mvEntra 220ms var(--e-ent) backwards}}
 
 /* ---------- Números ---------- */

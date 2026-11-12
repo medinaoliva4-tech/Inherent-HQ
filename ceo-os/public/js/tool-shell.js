@@ -14,6 +14,7 @@ import { abrirEnChat } from './areas.js';
 import { pasoPermitido, faltas as faltasEntregable } from './entregables.js';
 import { armarCtx, correrIA } from './ia-herramienta.js';
 import { etapaDe, bloqueDe } from './estrategia.js';
+import { vacio, fallo } from './visual.js';
 
 const K_PLEGADO = 'os.tsh.input';
 const TRABADO = { oferta: 'La oferta', modelo: 'El modelo', leads: 'Los leads', capacidad: 'La capacidad' };
@@ -31,7 +32,7 @@ const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el 
 // host: dónde se monta · tool: el registro de herramientas.js (con prompt, leer, faltas, aMd…) · vista: la de la herramienta
 // (consulting/<m>-ui.js) · resto[0]: el id de un entregable que se quiere abrir. Devuelve cuando el primer pintado terminó.
 export async function toolShell(host, { me, tool, slug, b, alive, vista, resto = [] }) {
-  if (!vista) return mount(host, html`<div class="empty"><b>${tool.nombre} todavía no tiene su vista</b>Mientras, lo que ya tengas se trabaja en el Chat.</div>`);
+  if (!vista) return mount(host, html`${vacio({ icono: 'inbox', titulo: `${tool.nombre} todavía no tiene su vista`, linea: 'Mientras, lo que ya tengas se trabaja en el Chat.' })}`);
   mount(host, skel('pagina'));
 
   const modo = WORKSPACES.find((w) => w.id === tool.ws)?.modo || '';
@@ -270,11 +271,11 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   function pintarVista() {
     const el = $('#tsh-vista', root); if (!el) return;
     if (!S.alcance.abierto && !S.doc) return mount(el, S.alcance.code === 'APROBADO'
-      ? html`<div class="empty tsh-vacio"><b>Sin entregable</b>La estrategia está aprobada y esta herramienta no tiene uno: el CEO la reabre para empezar un borrador.</div>`
-      : html`<div class="empty tsh-vacio"><b>Sin entregable</b>Esta herramienta queda fuera de lo que este cliente contrató.</div>`);
+      ? html`${vacio({ icono: 'inbox', titulo: 'Sin entregable', linea: 'La estrategia está aprobada y esta herramienta no tiene uno: el CEO la reabre para empezar un borrador.' })}`
+      : html`${vacio({ icono: 'lock', titulo: 'Sin entregable', linea: 'Esta herramienta queda fuera de lo que este cliente contrató.' })}`);
     S.pintando = true; // la vista puede avisar un cambio mientras se pinta: eso no cuenta como edición
     try { vista.pintar(el, { contenido: S.contenido, editable: editable(), onCambio, ctx: S.ctx, me, slug, docId: S.doc?.id || '' }); }
-    catch (e) { mount(el, html`<div class="empty"><b>No pude pintar ${tool.nombre}</b>Recarga la página. Si sigue, avísale al COO.${techDetail(e)}</div>`); }
+    catch (e) { mount(el, html`${fallo({ titulo: `No pude pintar ${tool.nombre}`, linea: 'Recarga la página. Si sigue, avísale al COO.', detalle: techDetail(e) })}`); }
     finally { S.pintando = false; }
   }
   function pintarCrit() {
@@ -519,7 +520,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
 
   // ---------- El primer pintado ----------
   try { await cargar({ abrir: String(resto[0] || '') }); }
-  catch (e) { if (!alive()) return; return mount(host, html`<div class="empty"><b>No pude abrir ${tool.nombre}</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(host, html`${fallo({ titulo: `No pude abrir ${tool.nombre}`, linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
   mount(host, html`<div class="tsh" data-tool="${tool.id}"><div id="tsh-head"></div><div id="tsh-banner"></div><div class="tsh-acts" id="tsh-acts" role="toolbar" aria-label="Acciones de ${tool.nombre}"></div>
     <div id="tsh-gen" aria-live="polite"></div><div id="tsh-cmp"></div>

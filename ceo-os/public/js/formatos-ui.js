@@ -5,6 +5,7 @@
 import { html, raw, mount, api, toast, ico, $, $$, confirmAsk, drawer, closeDrawer, col } from './core.js';
 import { TIPOS, BASE, DURACION } from './formatos.js';
 import { rutaModulo } from './herramientas.js';
+import { fallo } from './visual.js';
 
 export async function formatosUI(el, { me, b, alive }) {
   const S = { base: BASE, marca: [], puede: {}, tipo: '', refs: [] };
@@ -12,7 +13,7 @@ export async function formatosUI(el, { me, b, alive }) {
   try {
     const [r, all] = await Promise.all([api(`formatos?profile=${encodeURIComponent(b.slug)}`), col('content').list().catch(() => [])]);
     Object.assign(S, { base: r.base, marca: r.marca, puede: r.puede, refs: all.filter((x) => x.kind === 'research' && x.profile === b.slug && x.replicar === true) });
-  } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir los formatos</b>${e.message}</div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir los formatos', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), tipoNombre = (k) => TIPOS.find(([x]) => x === k)?.[1] || k;
   const nuevoGuion = (id) => rutaModulo(b.slug, 'creacion', ['nuevo', `f:${id}`]);

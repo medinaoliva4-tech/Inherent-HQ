@@ -15,6 +15,7 @@ import { herramientaDe, rutaHerramienta, rutaChat, veEstrategia } from './herram
 import { armarCtx, correrIA } from './ia-herramienta.js';
 import { armarPrompt, SIN_DATOS } from './consulting/marcos.js';
 import { leerTarjetas } from './llm/modos.js';
+import { fallo, vacio } from './visual.js';
 
 const enc = encodeURIComponent;
 const hoyISO = () => new Date().toISOString().slice(0, 10);
@@ -44,7 +45,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
   const slug = b.slug;
   let d, team = [];
   try { [d, team] = await Promise.all([api(`campanas/${enc(slug)}`), col('team').list().catch(() => [])]); }
-  catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir las campañas</b>${e.message}</div>`); }
+  catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir las campañas', linea: e.message })}`); }
   if (!alive()) return;
   const gente = team.filter((p) => p.active !== false && p.kind !== 'ia');
   const nombreDe = (email) => gente.find((p) => (p.email || p.id) === email)?.name || email || '';
@@ -129,7 +130,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
       ${aprobada ? '' : html`<div class="cm-aviso">${ico('lock', 13)} Primero el CEO aprueba la estrategia de ${b.name}: sin estrategia aprobada no hay campañas.</div>`}
       ${avisoMes ? html`<div class="cm-aviso">${ico('alert', 13)} ${avisoMes}</div>` : ''}
       <div id="cma-entradas">${entradasHtml()}</div>
-      ${activas.length ? html`<div class="cm-grid">${activas.map(tarjeta)}</div>` : html`<div class="empty">Todavía no hay campañas ni eventos por delante.</div>`}
+      ${activas.length ? html`<div class="cm-grid">${activas.map(tarjeta)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay campañas ni eventos por delante', linea: 'Una campaña es un empujón con fecha: arma la próxima desde el botón de arriba.' })}`}
       ${pasadas.length ? html`<h4 class="cm-h">Ya pasaron</h4><div class="cm-grid">${pasadas.map(tarjeta)}</div>` : ''}
       ${archivadas.length ? html`<details class="cm-arch"><summary>Archivadas · ${archivadas.length}</summary><div class="cm-grid">${archivadas.map(tarjeta)}</div></details>` : ''}</div>`);
   }

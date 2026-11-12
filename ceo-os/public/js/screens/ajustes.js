@@ -4,6 +4,7 @@
 // cifradas en el servidor y nunca vuelven aquí (solo sus últimos 4). Conectan el CEO y el COO; el resto ve el estado.
 import { html, raw, mount, ico, skel, toast, api, drawer, closeDrawer, confirmAsk } from '../core.js';
 import { PROVEEDORES, USOS, proveedorDe, logoDe } from '../ia-proveedores.js';
+import { fallo } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
 const logo = (id, cls = '') => html`<span class="aj-logo ${cls}"><img src="${logoDe(id)}" alt="" loading="lazy"></span>`;
@@ -11,7 +12,7 @@ const logo = (id, cls = '') => html`<span class="aj-logo ${cls}"><img src="${log
 export async function render(el, { me, alive }) {
   mount(el, skel('pagina'));
   let est;
-  try { est = await api('ia/estado'); } catch (e) { return mount(el, html`<div class="empty card">${e.message}</div>`); }
+  try { est = await api('ia/estado'); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir Ajustes', linea: e.message })}`); }
   if (!alive()) return;
   const ed = est.editor;
   const st = (id) => est.proveedores.find((p) => p.id === id) || {};

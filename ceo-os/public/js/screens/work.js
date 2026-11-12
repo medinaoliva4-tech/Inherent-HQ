@@ -19,6 +19,7 @@ const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow()
 import { PURPOSE } from '../roleviews.js';
 import { rutaModulo, rutaHerramienta } from '../herramientas.js';
 import { competenciaUI } from '../marketing/competencia-ui.js';
+import { vacio as vacioOS } from '../visual.js';
 // Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
 const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
 
@@ -537,7 +538,7 @@ export async function render(el, { me, sub, alive }) {
     body: (k, z) => {
       const { slugs, withAds, loading } = adsState();
       const chips = withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}<div class="sp"></div><button class="btn ghost xs" data-act="adsTask" data-s="${adsSel}">+ Tarea de ⑩</button></div>` : '';
-      const none = html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}</div>`;
+      const none = html`${vacioOS({ icono: 'inbox', titulo: `${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}`, linea: `${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}` })}`;
       if (k === 'camps') mount(z, html`${chips}${adsSel ? campsBox(adsSel) : ''}<div class="wsgrid2" style="margin-top:12px">${pautaBox(withAds)}${cuentasBox(slugs)}</div>`);
       else if (!adsSel) mount(z, none);
       else if (k === 'learn') mount(z, html`${chips}<div class="wsgrid2">${learnBox(adsSel)}<div id="adscomp"></div></div>`);
@@ -608,7 +609,7 @@ export async function render(el, { me, sub, alive }) {
       <div style="margin-bottom:10px">${tipoChips(tipoF, 'tipof', tasks.filter((t) => pipeOf(t) === pipeSel))}</div>
       ${list.length ? html`<div class="card wkbox"><table class="wktable"><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable → rinde cuentas</th><th>Estado</th><th>Vence</th></tr></thead><tbody>
         ${list.map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${t.dept ? html`<span class="mut sm"> · ${t.dept}</span>` : ''}${tipoBadge(t)}</td><td class="mut">${proj(t.project_id)?.name || '—'}</td><td><span class="chain">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}${av(k, 22)}`)}</span></td><td><span class="chip sm2">${status(t)}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td></tr>`)}</tbody></table></div>`
-        : html`<div class="empty"><b>Sin tareas en ${PIPES[pipeSel].name}</b>Las tareas de sus proyectos aparecen aquí.</div>`}`);
+        : html`${vacioOS({ icono: 'inbox', titulo: `Sin tareas en ${PIPES[pipeSel].name}`, linea: 'Las tareas de sus proyectos aparecen aquí.' })}`}`);
   }
   function equipo(b) {
     const sel = personSel && person(personSel);

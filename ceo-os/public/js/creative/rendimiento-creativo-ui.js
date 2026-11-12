@@ -8,6 +8,7 @@ import { nombreMes, mesOk } from '../plan-mes.js';
 import { estadoDe } from '../element.js';
 import { mesDe } from '../marketing/kpis.js';
 import { DIMENSIONES, NIVELES, VEREDICTOS, LAYA_VS, MAX_PATRONES, CONECTA_WINDSOR, SIN_METRICAS, vacio, limpiar, armar, normalizar, patrones, fatigaDe, resultadoDePieza, recordarRendimiento } from './rendimiento-creativo.js';
+import { fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
 const hoyDe = (ctx) => (/^\d{4}-\d{2}-\d{2}$/.test(String(ctx?.hoy ?? '')) ? ctx.hoy : today());
@@ -63,7 +64,7 @@ export const vista = {
     const emitir = () => { if (ed && typeof onCambio === 'function') onCambio(limpiar(structuredClone(c))); };
     const aviso = () => {
       if (S.windsor === false) return html`<div class="rcr-conecta" role="status">${ico('triangle-alert', 14)} ${CONECTA_WINDSOR}</div>`;
-      if (S.error) return html`<div class="empty rcr-err" role="alert"><b>No pude leer las piezas</b>${S.error.message || 'Inténtalo de nuevo en un momento.'}${techDetail(S.error)}</div>`;
+      if (S.error) return html`${fallo({ titulo: 'No pude leer las piezas', linea: S.error.message || 'Inténtalo de nuevo en un momento.', detalle: techDetail(S.error) })}`;
       return '';
     };
     const pintar = () => {

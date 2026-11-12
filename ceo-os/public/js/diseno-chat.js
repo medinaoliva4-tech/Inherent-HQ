@@ -17,6 +17,7 @@ import { botonVoz, dictar } from './voz.js';
 import { verImagen, ojoChip } from './ojo.js';
 import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn } from './motor-ui.js';
 import { rutaModulo } from './herramientas.js';
+import { vacio } from './visual.js';
 
 const IMGS = new Map(); // `${marca}|${nodo}` → data URL (solo en memoria: pesan)
 const OJO = new Map(); // `${marca}|${nodo}` → { parecido, refs } del ojo visual
@@ -42,9 +43,9 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
   const menuMarcas = (anchor, actual = '') => menuDz(anchor, marcas.map((b) => ({ label: b.name, sub: b.sub, mono: initials(b.name), on: b.slug === actual, pick: () => ir(b.slug) })), { buscar: 'Buscar marca…' });
   const slug = sub[0];
   if (!slug) return inicio();
-  if (!enCompu()) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('edit', 22)}</span><b>Disponible solo en tu compu</b>El chat de Diseño trabaja con el Claude y el Figma de tu computadora. Ábrelo desde ahí.</div>`);
+  if (!enCompu()) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a>${vacio({ icono: 'edit', titulo: 'Disponible solo en tu compu', linea: 'El chat de Diseño trabaja con el Claude y el Figma de tu computadora. Ábrelo desde ahí.' })}`);
   const b = marcas.find((x) => x.slug === slug);
-  if (!b) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a><div class="empty" style="margin-top:16px"><b>No encontré esa marca</b>Elige otra en la caja.</div>`);
+  if (!b) return mount(el, html`<a class="btn ghost" href="#/ws/creative">${ico('arrow-left', 14)} Diseño</a>${vacio({ icono: 'inbox', titulo: 'No encontré esa marca', linea: 'Elige otra en la caja.' })}`);
   return trabajo(b);
 
   // ---------- Inicio: «¿Qué diseñamos hoy?» ----------

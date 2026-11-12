@@ -18,13 +18,14 @@ import { packagesTab } from '../paquetes.js';
 import { mentorsTab, editMentor } from '../mentors.js';
 import { responsabilidadesTab, svcResp, sinResp } from '../responsabilidades.js';
 import { quotesBase } from '../quotes-short.js';
+import { vacio } from '../visual.js';
 
 const TABS = [['paquetes', 'Paquetes'], ['servicios', 'Servicios'], ['especialistas', 'Especialistas'], ['responsabilidades', 'Responsabilidades']];
 
 export async function render(el, { me, sub = [], alive, embed = '' }) {
   const ceo = me.role === 'ceo';
   const resumen = isSummary(me, 'sales'), edit = canEdit(me, 'sales');
-  if (resumen) return mount(el, html`<div class="hello"><h1>Servicios</h1><p>Tu perfil ve Comercial <em>en resumen</em>.</p></div><div class="empty"><b>El catálogo y los precios no entran en tu vista</b>Los prospectos y sus seguimientos están en <a href="#/sales">Ventas → CRM</a>.</div>`);
+  if (resumen) return mount(el, html`<div class="hello"><h1>Servicios</h1><p>Tu perfil ve Comercial <em>en resumen</em>.</p></div>${vacio({ icono: 'lock', titulo: 'El catálogo y los precios no entran en tu vista', linea: html`Los prospectos y sus seguimientos están en <a href="#/sales">Ventas → CRM</a>.` })}`);
   let [services, quotes, rates, pricingDoc, projects, accounts, finance, sheet, bundles, recDocs, docs, industries] = await Promise.all([
     col('services').list().catch(() => []), col('quotes').list().catch(() => []), ceo ? col('rates').get('default').catch(() => null) : null,
     ceo ? col('settings').get(PRICING_ID).catch(() => null) : null, ceo ? col('projects').list().catch(() => []) : [], ceo ? col('accounts').list().catch(() => []) : [], ceo ? col('finance').list().catch(() => []) : [], ceo ? api('finance/sheet').catch(() => null) : null,

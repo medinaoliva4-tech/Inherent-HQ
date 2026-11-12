@@ -13,6 +13,7 @@ import { armarCtx, correrIA } from './ia-herramienta.js';
 import { docHtml } from './artifact.js';
 import { abrirEnChat } from './areas.js';
 import { rutaModulo, rutaHerramienta, herramientaDe, veEstrategia } from './herramientas.js';
+import { vacio as vacioOS, fallo } from './visual.js';
 
 const PILAR_C = ['#2a1f17', '#8a6a50', '#c9b39b', '#5d7a46', '#3f6ea8', '#b4472f'];
 export const mesDe = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -74,12 +75,12 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
   el.dataset.island = '1';
   const slug = b.slug, enc = encodeURIComponent, meses = mesesPlan();
   const r0 = (resto ?? rest)[0], mes = mesOk(r0) ? r0 : meses[1];
-  if (b.personal) return mount(el, html`<div class="empty"><b>El plan del mes es de las marcas de clientes</b>La marca personal no lleva plan.</div>`);
+  if (b.personal) return mount(el, html`${vacioOS({ icono: 'inbox', titulo: 'El plan del mes es de las marcas de clientes', linea: 'La marca personal no lleva plan.' })}`);
   mount(el, skel('pagina'));
   const url = `plan/${enc(slug)}/${mes}`;
   let d, est = null;
   try { [d, est] = await Promise.all([api(url), api(`estrategia/${enc(slug)}`).catch(() => null)]); } // la ficha vive en Estrategia: sin ese permiso queda «SIN DATOS»
-  catch (e) { if (!alive()) return; return mount(el, html`<div class="empty"><b>No pude abrir el plan</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(el, html`${fallo({ titulo: 'No pude abrir el plan', linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
 
   // saved: lo que hay en el servidor (con su v) · borr: las secciones que la persona tocó (copias, sin guardar) · mn: las filas del mensaje por nivel

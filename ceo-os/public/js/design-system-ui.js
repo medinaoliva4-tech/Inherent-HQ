@@ -1,5 +1,6 @@
 import { html, raw, mount, api, col, toast, ico, inline, md as mdDoc, acts, canEdit, $, $$ } from './core.js';
 import { leerSistema, fuentesUrl, tokensCss, contraste, sinEmoji, figmaDe, tipoAsset, escribirSistema, huella, contrasteFino, pasaAA, matrizContraste, parContraste, faltasSistema, medidasDe, colorEn, plano, hexOk, sistemaVacio, AA } from './sistema-visual.js';
+import { fallo, vacio } from './visual.js';
 
 // Marca › Diseño › Design system (herramienta Visual Identity Builder): el sistema visual de la marca a la vista, como un portal de marca
 // (zeroheight, Frontify). Dos pestañas: «Publicado» (lo de siempre: 02-marca/sistema-visual.md del repo, cada valor se copia con un clic)
@@ -15,9 +16,9 @@ const copiar = async (t, msg = 'Copiado') => { try { await navigator.clipboard.w
 async function publicadoUI(el, { me, b, alive }) {
   el.dataset.island = '1';
   mount(el, html`<p class="loading">Cargando…</p>`);
-  if (b.personal) return mount(el, html`<div class="empty"><b>La marca personal no tiene design system todavía</b>Por ahora vive en Identidad.</div>`);
+  if (b.personal) return mount(el, html`${vacio({ icono: 'inbox', titulo: 'La marca personal no tiene design system todavía', linea: 'Por ahora vive en Identidad.' })}`);
   let d;
-  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el sistema visual</b>${e.message}</div>`); }
+  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer el sistema visual', linea: e.message })}`); }
   if (!alive()) return;
   if (!d.md) return mount(el, html`<section class="sp-panel dsy-vacio"><span class="soon-ic">${ico('layers', 22)}</span><h2>${b.name} todavía no tiene su sistema visual</h2>
     <p>Lo escribe ②B Branding con <b>br-sistema</b>, en <code>${d.path}</code>: los colores con su hex, las tipografías con sus tamaños, la grilla y las reglas. Cuando esté en el repo, aparece aquí solo.</p>
@@ -129,8 +130,8 @@ async function editorUI(host, { me, b, alive }) {
   mount(host, html`<p class="loading">Cargando el editor…</p>`);
   const BB = col('brand_boards'), puede = canEdit(me, 'clients'), extiende = NIVEL_EXTIENDE.test(b.nivel?.nombre || '');
   let d, doc = null, isNew = false;
-  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(host, html`<div class="empty"><b>No pude leer el sistema visual</b>${e.message}</div>`); }
-  try { doc = await BB.get(b.slug); } catch (e) { if (e.status === 404) isNew = true; else return mount(host, html`<div class="empty"><b>No pude leer el borrador</b>${e.message}</div>`); }
+  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(host, html`${fallo({ titulo: 'No pude leer el sistema visual', linea: e.message })}`); }
+  try { doc = await BB.get(b.slug); } catch (e) { if (e.status === 404) isNew = true; else return mount(host, html`${fallo({ titulo: 'No pude leer el borrador', linea: e.message })}`); }
   if (!alive()) return;
   const base = d.md ? leerSistema(d.md) : null, hAhora = huella(d.md || '');
   const S = { sec: 'paleta', sucio: false, conflicto: false, fondo: 0, formato: '' };

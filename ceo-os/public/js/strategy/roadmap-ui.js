@@ -14,6 +14,7 @@ import { goalsOf } from '../goals.js';
 import { alcanceConsulting, consultingAbierto, leerTarjetas } from '../llm/modos.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { BLOQUE, AREAS_RM_INFO, TRIMESTRES, TRIMESTRE_NOMBRE, MAX_ITEMS, MAX_HITOS, areaInfo, limpiar, limpiarItems, limpiarHitos, tareasMarcadas, aMetas, claveHito, faltas, aMd, prompt, resumenTexto } from './roadmap.js';
+import { fallo } from '../visual.js';
 
 const K_VISTA = 'os.grm.vista';
 const MAX_TAREAS_LOTE = 60; // tareas por tanda: se crean una por una
@@ -406,7 +407,7 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
 
   // ---------- El primer pintado ----------
   try { tomar(await leer()); }
-  catch (e) { if (!alive()) return; return mount(host, html`<div class="empty"><b>No pude abrir el roadmap</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(host, html`${fallo({ titulo: 'No pude abrir el roadmap', linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
   mount(host, html`<div class="grm" id="grm" data-aprobada="${aprobada() ? 1 : 0}"><div id="grm-head"></div><div id="grm-banner"></div>
     <div class="grm-acts" id="grm-acts" role="toolbar" aria-label="Acciones del roadmap"></div><div id="grm-gen" aria-live="polite"></div>

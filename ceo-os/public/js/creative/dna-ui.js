@@ -9,6 +9,7 @@ import { herramientaDe } from '../herramientas.js';
 import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { BLOQUE, SECCIONES, EJES, MIN_ACTIVOS, MAX_ACTIVOS, TONO_N, vacio, limpiar, mezclar, seccionLlena, radar, faltas, prompt, leer, aMd } from './dna.js';
+import { fallo, vacio as vacioOS } from '../visual.js';
 
 const BB = col('brand_boards');
 const enc = encodeURIComponent;
@@ -84,7 +85,7 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
         <span class="chip ${conFicha() ? '' : 'warn'}">${ico('file-text', 12)} ${conFicha() ? 'Con ficha' : 'Sin ficha'}</span><span class="chip ${aprobada() ? 'lime' : ''}">${ico(aprobada() ? 'check' : 'edit', 12)} ${aprobada() ? 'Estrategia aprobada' : 'Estrategia sin aprobar'}</span>
         ${S.doc?.dna_validado ? html`<span class="chip lime">${ico('check', 12)} Validado</span>` : ''}</div>
       ${razonOff() && edit ? html`<p class="mut sm">${ico('lock', 13)} «Generar» está apagado: ${razonOff()}.</p>` : ''}
-      ${!conFicha() ? html`<div class="empty sm"><b>Bloqueado: sin ficha de oferta</b>${SIN_DATOS}: sale de clients/${slug}/00-onboarding/plan-contratado.md. Completa la ficha en Clientes y vuelve.</div>` : ''}
+      ${!conFicha() ? html`${vacioOS({ icono: 'inbox', titulo: 'Bloqueado: sin ficha de oferta', linea: `${SIN_DATOS}: sale de clients/${slug}/00-onboarding/plan-contratado.md. Completa la ficha en Clientes y vuelve.`, compacto: true })}` : ''}
       <div class="dna-bar">${edit ? html`<button class="btn" data-act="gen" data-s="" ${puedeGenerar() ? '' : 'disabled'} title="${razonOff()}">${ico('sparkles', 14)} ${S.ocupado === 'todo' ? 'Generando…' : 'Generar todo'}</button><button class="btn ghost" data-act="guardar" ${sucio() ? '' : 'disabled'}>Guardar${sucio() ? ' · hay cambios' : ''}</button><button class="btn ghost" data-act="validar" ${f.length || sucio() ? 'disabled' : ''} title="${f.length ? 'Falta: ' + f[0] : sucio() ? 'Guarda primero' : ''}">${ico('check', 14)} Validar</button>` : ''}
         <span class="sp"></span><button class="btn ghost" data-act="md">${ico('download', 14)} .md</button><button class="btn ghost" data-act="pdf">${ico('download', 14)} PDF</button></div>
       <section class="dna-sec">${cab(SECCIONES[0])}${prop('territorio')}
@@ -152,6 +153,6 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
     pdf: async () => { try { await exportarPdf(aMd(S.dna, { cliente: nombre }), `guia-de-marca-${slugArchivo(slug)}.pdf`); } catch (e) { toast(e.message, true); } },
   });
 
-  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`<div class="empty"><b>No pude leer el ADN de la marca</b>${e.message}</div>`); return; }
+  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`${fallo({ titulo: 'No pude leer el ADN de la marca', linea: e.message })}`); return; }
   pintar();
 }

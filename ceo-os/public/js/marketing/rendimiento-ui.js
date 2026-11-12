@@ -9,6 +9,7 @@ import { SIN_DATOS } from '../consulting/marcos.js';
 import { mesOk, nombreMes } from '../plan-mes.js';
 import { KPIS, kpiDe, nombreKpi, textoValor, FUENTE_COSTOS, mesDe, mesesRecientes } from './kpis.js';
 import { AREAS, MIN_SIGUIENTES, MAX_SIGUIENTES, vacio, limpiar, fotoDe, aMdPortal, recordarKpis } from './reporte.js';
+import { fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
 const MAX_HALLAZGOS = 8, MAX_ACCIONES = MAX_SIGUIENTES;
@@ -48,7 +49,7 @@ function tabla(titulo, filas, vacioTxt) {
     : html`<p class="rnd-sd">${SIN_DATOS}: ${vacioTxt}</p>`}</div>`;
 }
 function mesHtml(S) {
-  if (S.error) return html`<div class="empty rnd-err" role="alert"><b>No pude leer los KPIs</b>${S.error.message || 'Inténtalo de nuevo en un momento.'}${techDetail(S.error)}</div>`;
+  if (S.error) return html`${fallo({ titulo: 'No pude leer los KPIs', linea: S.error.message || 'Inténtalo de nuevo en un momento.', detalle: techDetail(S.error) })}`;
   const d = S.data;
   if (!d) return html`<p class="loading">Leyendo los KPIs del mes…</p>`;
   const sd = 'sin piezas con fecha en este mes (sale del Plan del mes y del calendario de contenido)';

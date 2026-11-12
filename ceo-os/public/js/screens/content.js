@@ -8,6 +8,7 @@ import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-
 import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre, bandasDelMes, bandasPorDia, slotDe, tituloSlot, metricasDe, resumenMetricas, motivoNoMover, moverEnLista, ponerPieza, falloAlMover } from '../calendario-contenido.js';
 import { rutaModulo } from '../herramientas.js';
 import { archivar } from '../production/planner.js';
+import { fallo, vacio } from '../visual.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -47,9 +48,9 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let coff = new Set((() => { try { return JSON.parse(localStorage.getItem('os.cal.marca.off') || '[]'); } catch { return []; } })());
 
   async function load() {
-    try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
+    try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer el repo', linea: e.message })}`); }
     slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; gstack = null; gfiles = null; gcur = null;
-    if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`); }
+    if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`${vacio({ icono: 'lock', titulo: 'La marca personal es solo del CEO', linea: 'Tu perfil no la ve.' })}` : html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene perfil de contenido', linea: 'Se crea con su folder en clients/.' })}`); }
     else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
   }
@@ -90,10 +91,10 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (week.warn) return mount(b, html`${head}<div class="warnbox">${week.warn}</div>`);
     const r = week.result;
     if (!data.apify && !r) return mount(b, html`${head}<div class="warnbox">La lectura semanal de redes todavía no está activada. <span class="sm" style="opacity:.8">Quien administra la app la activa con la variable APIFY_TOKEN en Vercel.</span></div>`);
-    if (!r) return mount(b, html`${head}<div class="empty"><b>${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}</b>${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a> y dale «Scrapear ahora».`}</div>`);
+    if (!r) return mount(b, html`${head}${vacio({ icono: 'inbox', titulo: `${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}`, linea: html`${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a> y dale «Scrapear ahora».`}` })}`);
     mount(b, html`${head}
       <div class="sec-title" style="margin-top:0"><h2>Top 10 del nicho</h2><span class="mut sm">Cuántas veces supera el promedio de <b>su propia cuenta</b></span></div>
-      ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`<div class="empty"><b>Sin videos esta semana</b>Agrega hashtags o cuentas en Fuentes.</div>`}
+      ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin videos esta semana', linea: 'Agrega hashtags o cuentas en Fuentes.' })}`}
       ${(r.refs || []).length ? html`<div class="sec-title"><h2>Lo último de tus referentes</h2><span class="mut sm">Para ver estilos y de qué están hablando</span></div><div class="grid g5">${r.refs.slice(0, 10).map(videoCard)}</div>` : ''}
       ${(r.comp || []).length ? html`<div class="sec-title"><h2>Lo último de la competencia</h2></div><div class="grid g5">${r.comp.slice(0, 10).map(videoCard)}</div>` : ''}
       ${r.added.length ? html`<div class="sec-title"><h2>Los que agregaste</h2></div><div class="grid g5">${r.added.map(videoCard)}</div>` : ''}`);
@@ -106,7 +107,7 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (rf.error) return mount(b, html`<div class="warnbox">${rf.error}</div>`);
     clearTimeout(rfPoll); if (rf.status === 'running') rfPoll = setTimeout(() => { if (alive() && tab === 'refs') { rf = null; refsTab($('#cbody', el)); } }, 15000);
     const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
-    if (!pillars.length) return mount(b, html`<div class="empty"><b>Primero los pilares</b>Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.</div>`);
+    if (!pillars.length) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Primero los pilares', linea: 'Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.' })}`);
     const res = rf.result || {};
     mount(b, html`<div class="mut sm" style="margin-bottom:12px">Por pilar, pega hasta <b>5 videos</b> que te sirvan de referencia (Reels o TikToks). El OS busca lo que más rindió de <b>esos mismos creadores</b> y de <b>sus hashtags</b>, comparado con lo normal de cada cuenta. Después lo desglosas con Claude: hook, retención, estructura y cómo adaptarlo.</div>
       ${rf.status === 'running' ? html`<div class="warnbox sm" style="margin-bottom:12px">${rf.phase === 1 ? 'Leyendo tus referencias' : 'Buscando similares'}… Esto se actualiza solo.</div>` : ''}${rf.warn ? html`<div class="warnbox sm">${rf.warn}</div>` : ''}${!rf.apify ? html`<div class="warnbox sm">Falta APIFY_TOKEN en Vercel.</div>` : ''}
@@ -138,8 +139,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (inbox === null) { mount(b, html`<p class="loading">Leyendo la bandeja…</p>`); api(`community/inbox?profile=${encodeURIComponent(slug)}`).then((r) => { inbox = r; }).catch((e) => { inbox = { error: e.message }; }).then(() => alive() && tab === 'bandeja' && b.isConnected && bandeja(b)); return; }
     if (inbox.error) return mount(b, html`<div class="warnbox">${inbox.error}</div>`);
     if (!inbox.connected) return mount(b, html`<div class="warnbox">Para ver la bandeja falta conectar Zernio: agrega <b>ZERNIO_API_KEY</b> (con el grupo «messages» activo) en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
-    if (inbox.noAccounts) return mount(b, html`<div class="empty"><b>Este perfil no tiene cuentas propias</b>Agrégalas en <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a>.</div>`);
-    if (!inbox.accounts) return mount(b, html`<div class="empty"><b>Zernio no tiene conectadas las cuentas de ${data.profile.name}</b>${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.</div>`);
+    if (inbox.noAccounts) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Este perfil no tiene cuentas propias', linea: html`Agrégalas en <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a>.` })}`);
+    if (!inbox.accounts) return mount(b, html`${vacio({ icono: 'inbox', titulo: `Zernio no tiene conectadas las cuentas de ${data.profile.name}`, linea: `${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.` })}`);
     const ago = (d) => (d ? fdate(String(d).slice(0, 10)) : '');
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:10px;flex-wrap:wrap"><span class="mut sm">Se contesta en Zernio (o con ⑧ Community). Lo nuevo puede tardar hasta 10 minutos en aparecer.</span><div class="sp"></div><a class="btn" href="https://zernio.com/dashboard" target="_blank" rel="noopener noreferrer">Contestar en Zernio ↗</a></div>
       <div class="grid g21" style="align-items:start">
@@ -174,10 +175,10 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (gfiles.error) return mount(b, html`${bar}<div class="warnbox">${gfiles.error}</div>`);
     const docs = gfiles.filter((f) => !isDir(f)), dirs = gfiles.filter(isDir);
     const cur = docs.find((f) => f.id === gcur) || docs[0];
-    mount(b, html`${bar}${!gfiles.length ? html`<div class="empty"><b>La carpeta está vacía</b>Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.</div>` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
+    mount(b, html`${bar}${!gfiles.length ? html`${vacio({ icono: 'inbox', titulo: 'La carpeta está vacía', linea: 'Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.' })}` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
       <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">${ico('folder')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
         ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">${ico('edit')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
-      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:var(--surface)" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
+      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:var(--surface)" loading="lazy"></iframe></div>` : html`${vacio({ icono: 'inbox', titulo: 'Elige una carpeta', linea: 'Los guiones están adentro.' })}`}</div>`}`);
   }
 
   // ---------- Planner: calendario semana / mes, con pilares y si cada pieza ya está en Drive ----------
@@ -593,9 +594,9 @@ Contesta SOLO con este JSON, sin texto antes ni después:
 export async function bullseyeTool(host, { slug, me, alive }) {
   mount(host, html`<p class="loading">Leyendo el repo…</p>`);
   let data;
-  try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(host, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
+  try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(host, html`${fallo({ titulo: 'No pude leer el repo', linea: e.message })}`); }
   if (!alive() || !host.isConnected) return;
-  if (data.profile?.slug !== slug) return mount(host, slug === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`);
+  if (data.profile?.slug !== slug) return mount(host, slug === 'personal' ? html`${vacio({ icono: 'lock', titulo: 'La marca personal es solo del CEO', linea: 'Tu perfil no la ve.' })}` : html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene perfil de contenido', linea: 'Se crea con su folder en clients/.' })}`);
   const p = data.profile;
   // Los últimos posts propios (de la semana leída) solo enriquecen el prompt: sin semana, se omiten.
   let own = [];

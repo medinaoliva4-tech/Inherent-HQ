@@ -6,6 +6,7 @@
 import { html, mount, api, ico, toast, today } from '../core.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { CONSCIENCIAS, ANILLOS, CANALES, CANAL_IDS, MAX_ACTIVOS, MAX_VARIANTES, vacio, limpiar, variante, activosVivos, contador, contadorTexto, pasadas, elegidaDe, celdaMarco, pruebaTexto, sinPrueba, paraAds, faltasEmpujar, faltasParaAprobar, textoCopiable, resumen } from './copy.js';
+import { vacio as vacioOS } from '../visual.js';
 
 const enc = encodeURIComponent;
 const layaTxt = (v) => (v.laya?.puntaje ? `${v.laya.puntaje} / 4${v.laya.chip ? ` · ${v.laya.chip}` : ''}` : 'pendiente');
@@ -36,7 +37,7 @@ export const vista = {
       : html`<p><b>${CONSCIENCIAS[m.consciencia - 1]}</b> · ${m.avatar || (m.anillo === null ? SIN_DATOS : ANILLOS[m.anillo])}</p><p>${m.mensaje || SIN_DATOS}</p><p class="${sinPrueba(m) ? 'cp-sd' : ''}">${pruebaTexto(m)}${m.fuente ? html` <span class="mut sm">(${m.fuente})</span>` : ''}</p><p class="mut">Objeción: ${m.objecion || SIN_DATOS}</p>`}</li>`;
     const pestanaMarco = () => html`${grillaMarco()}
       <div class="hk-barra"><span class="mut sm">Una fila por consciencia × anillo. La prueba va solo si es real.</span><span class="sp"></span>${ed ? html`<button class="btn" type="button" data-a="nuevo-marco">${ico('plus', 15)} Mensaje</button>` : ''}</div>
-      ${S.c.marco.length ? html`<ul class="cp-lista">${S.c.marco.map(filaMarco)}</ul>` : html`<div class="empty"><b>Aún no hay mensajes</b>${SIN_DATOS}: sale del mensaje del plan del mes y de la diana (anillos). Agrega el primero o pídelo a la IA.</div>`}`;
+      ${S.c.marco.length ? html`<ul class="cp-lista">${S.c.marco.map(filaMarco)}</ul>` : html`${vacioOS({ icono: 'inbox', titulo: 'Aún no hay mensajes', linea: `${SIN_DATOS}: sale del mensaje del plan del mes y de la diana (anillos). Agrega el primero o pídelo a la IA.` , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos los mensajes de esta marca.' } }})}`}`;
 
     // ---------- Tablero ----------
     const contadores = (a, v) => CANALES[a.canal].campos.map(([k, nombre]) => { const r = contador(a.canal, k, v[k]); return html`<span class="cp-cnt" data-over="${r.pasa ? 1 : 0}" data-cnt="${a.id}.${v.id}.${k}">${nombre}: ${contadorTexto(r)}${r.pasa ? ` · pasa ${-r.falta}` : ''}</span>`; });
@@ -59,7 +60,7 @@ export const vista = {
       ${a.variantes.length ? html`<ul class="cp-vars">${a.variantes.map((v) => varFila(a, v))}</ul>` : html`<p class="mut sm">${SIN_DATOS}: sin variantes. Pídelas a la IA o agrega la primera.</p>`}</article>`; };
     const pestanaTablero = () => { const A = activosVivos(S.c);
       return html`<div class="hk-barra"><span class="mut sm">Los anuncios entran a Ads como Borrador: el CEO da el OK. Nada se aprueba aquí.</span><span class="sp"></span>${ed ? html`<button class="btn" type="button" data-a="nuevo-activo" ${S.c.activos.length >= MAX_ACTIVOS ? 'disabled' : ''}>${ico('plus', 15)} Activo</button>` : ''}</div>
-      ${A.length ? A.map(tarjeta) : html`<div class="empty"><b>Aún no hay activos</b>${SIN_DATOS}: un activo es un anuncio, un caption o una landing con sus variantes.</div>`}`; };
+      ${A.length ? A.map(tarjeta) : html`${vacioOS({ icono: 'inbox', titulo: 'Aún no hay activos', linea: `${SIN_DATOS}: un activo es un anuncio, un caption o una landing con sus variantes.` , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos los activos de esta marca.' } }})}`}`; };
 
     const plural = (n, u) => `${n} ${u}${n === 1 ? '' : 's'}`;
     function pinta() {

@@ -8,6 +8,7 @@ import { layaBox, juzgarLocal, puenteEstado } from './laya-ui.js';
 import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
 import { resumenAvatar } from './avatares.js';
 import { ESTADOS_A, ESTADO_AYUDA, PLATAFORMAS, FORMATOS_A, CTAS, LIMITES, faltas, siguientes, promptVariaciones, leerVariaciones } from './ads-studio.js';
+import { fallo } from './visual.js';
 
 const TONO = { Borrador: '', Aprobada: 'av-st-ok', Lanzada: 'av-st-borr', Ganadora: 'av-st-ok', Quemada: 'av-st-no' };
 const plat = (k) => PLATAFORMAS.find(([x]) => x === k)?.[1] || k;
@@ -22,7 +23,7 @@ export async function adsUI(el, { me, b, alive }) {
     Object.assign(S, { items: r.items || [], puede: r.puede || {}, avatares: (av.avatares || []).filter((a) => a.estado === 'aprobado'),
       piezas: todo.filter((p) => p.kind === 'post' && p.profile === b.slug && ['Listo', 'Publicado'].includes(p.status) && !p.archivado).sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).slice(0, 40),
       guiones: (g.guiones || []).slice(0, 40) });
-  } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir Ads</b>${e.message}</div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir Ads', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), ceo = () => Boolean(S.puede.aprobar);
   const carpeta = b.slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.slug}`;

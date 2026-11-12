@@ -10,6 +10,7 @@ import { mesDe, mesesRecientes, piezasDelMes } from './kpis.js';
 import { AREAS } from './reporte.js';
 import { rutaHerramienta } from '../herramientas.js';
 import { ETAPAS, MAX_MEJORAS, MIN_MEJORAS, vacio, limpiar, caidas, mayorCaida, desdeDatos, motivoOculto, nombreEtapa, recordarFunnel } from './funnel.js';
+import { fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
 const hoyDe = (ctx) => (/^\d{4}-\d{2}-\d{2}$/.test(String(ctx?.hoy ?? '')) ? ctx.hoy : today());
@@ -71,7 +72,7 @@ export const vista = {
     const valores = () => S.vivo || ETAPAS.map(() => null);
     const pintarCanvas = () => {
       const mn = region('mes-n'); if (mn) mn.textContent = nombreMes(S.mes);
-      if (S.error) return mount(region('canvas'), html`<div class="empty fnl-err" role="alert"><b>No pude leer el embudo</b>${S.error.message || 'Inténtalo de nuevo en un momento.'}${techDetail(S.error)}</div>`);
+      if (S.error) return mount(region('canvas'), html`${fallo({ titulo: 'No pude leer el embudo', linea: S.error.message || 'Inténtalo de nuevo en un momento.', detalle: techDetail(S.error) })}`);
       if (!S.vivo && !c.etapas.some((e) => e.valor !== null)) return mount(region('canvas'), html`<p class="loading">Leyendo el embudo del mes…</p>`);
       mount(region('canvas'), html`<ol class="fnl-canvas" aria-label="Las 5 etapas, de arriba a abajo">${ETAPAS.map((e, i) => etapaHtml(e, S.vivo?.[i], c, i))}</ol>`);
       pintarCaidas();

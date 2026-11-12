@@ -13,6 +13,7 @@ import { BLOQUES, etapaLabel, etapaDe } from '../estrategia.js';
 import { CYCLE } from '../cycle.js';
 import { estadoFactura } from '../facturas.js';
 import { rutaModulo, rutaBloque } from '../herramientas.js';
+import { vacio } from '../visual.js';
 
 // Clientes: la lista (quién, su nivel, cómo va el mes) y la página de cada uno en pestañas: Info · Links · Servicio ·
 // Presupuestos (photo shoots, pauta, eventos). Su Marca (asociaciones e inspo) vive en el espacio Marcas: aquí queda un link.
@@ -52,12 +53,12 @@ export async function render(el, { me, sub, alive }) {
           <span class="gl-av" aria-label="Avance del mes"><span class="sp-meter"><i style="width:${mo.pct || 0}%"></i></span><small>${mo.pct == null ? 'Sin avance' : `${mo.pct}%`}</small></span>
           <span class="gl-e"><i class="dot light-${mo.light[0]}"></i>${mo.light[1]}</span>
           <span class="gl-n">${mo.total ? `${mo.done}/${mo.total} entregas` : next ? 'Meta: ' + next.goal : `${mo.ps.length} proyecto${mo.ps.length === 1 ? '' : 's'}`}</span>${ico('chevron-right', 15)}</a>`; })}</div>`
-      : html`<div class="empty"><b>No encontré clientes</b>Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md, o entra por una cotización pagada.</div>`}`);
+      : html`${vacio({ icono: 'inbox', titulo: 'No encontré clientes', linea: 'Cada cliente es un folder en clients/ con su 00-onboarding/plan-contratado.md, o entra por una cotización pagada.' })}`}`);
   }
 
   async function page(slug, tab0) {
     const c = clients.find((x) => x.slug === slug);
-    let info = null; try { info = await api(`repo/client/${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<a class="btn ghost" href="#/clients">← Clientes</a><div class="empty" style="margin-top:16px"><b>No encontré ese cliente</b>${e.message}</div>`); }
+    let info = null; try { info = await api(`repo/client/${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<a class="btn ghost" href="#/clients">← Clientes</a>${vacio({ icono: 'inbox', titulo: 'No encontré ese cliente', linea: `${e.message}` })}`); }
     if (!alive()) return;
     info = { links: [], fields: [], pipeline: [], ...(info || {}) };
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
@@ -209,7 +210,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><span class="mut sm">Los links del cliente por categoría: fotos, videos, Drive, redes, web.</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="lkadd">+ Link</button>` : ''}</div>
         ${cats.length ? html`<div class="grid g3">${cats.map(([k, l]) => html`<div class="card wkbox"><div class="wkhead"><h3>${ico(k === 'fotos' ? 'image' : k === 'videos' ? 'video' : k === 'drive' ? 'folder' : k === 'web' ? 'link' : 'link', 15)} ${l}</h3></div>
           ${mine.map((x, i) => [x, i]).filter(([x]) => (x.cat || 'otro') === k).map(([x, i]) => html`<div class="wkrow"><a class="grow" href="${/^https?:\/\//.test(x.url) ? x.url : '#'}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none"><b style="font-weight:500">${x.label || x.url}</b><div class="mut sm" style="overflow:hidden;text-overflow:ellipsis">${x.url}</div></a>${edit ? html`<button class="sm mut" data-act="lkedit" data-i="${i}">${ico('edit')}</button><button class="sm mut" data-act="lkdel" data-i="${i}">${ico('x', 16)}</button>` : ''}</div>`)}</div>`)}</div>`
-        : html`<div class="empty"><b>Sin links todavía</b>Agrega el primero: «Fotos» y su link, «Drive» y su link…</div>`}
+        : html`${vacio({ icono: 'inbox', titulo: 'Sin links todavía', linea: 'Agrega el primero: «Fotos» y su link, «Drive» y su link…' })}`}
         ${info.links.length ? html`<div class="sec-title"><h2>Del repo</h2><span class="mut sm">Solo lectura · se cambia en el repo</span>${fromLink({ repo: linksPath, docs })}</div>
           <div class="card">${info.links.map((l) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><span class="mut" style="min-width:110px">${l.k}</span>${l.url && /^https:\/\//.test(l.url) ? html`<a href="${l.url}" target="_blank" rel="noopener noreferrer" style="color:inherit;flex:1">${l.v}</a>` : html`<span style="flex:1">${l.v}</span>`}</div>`)}</div>` : ''}`);
     }

@@ -6,6 +6,7 @@ import { purposeCard } from '../purpose.js';
 import { roleTable, changeRole } from '../rolemap.js';
 import { cargarGuias, vistosDe } from '../guia.js';
 import { videosDe } from '../guia-secciones.js';
+import { vacio } from '../visual.js';
 
 const COLORS = ['var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -32,7 +33,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     if (!rp) { Promise.all([col('projects').list().catch(() => []), col('tasks').list().catch(() => [])]).then(([projects, tasks]) => { rp = { projects, tasks }; if (view === 'roles') paint(); }); return html`<p class="loading">Cargando…</p>`; }
     const live = rp.projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done') || !(p.phases || []).length);
     const edit = isCeo || me.role === 'coo';
-    if (!live.length) return html`<div class="empty"><b>Sin proyectos activos</b>Cuando haya un proyecto con roles aparece aquí quién cubre cada uno.</div>`;
+    if (!live.length) return html`${vacio({ icono: 'inbox', titulo: 'Sin proyectos activos', linea: 'Cuando haya un proyecto con roles aparece aquí quién cubre cada uno.' })}`;
     return html`<div class="mut sm" style="margin-bottom:12px">${edit ? 'Cambia a alguien y sus tareas abiertas de ese rol pasan a la persona nueva (queda en el historial de cada tarea).' : 'Las personas que cubren cada rol de cada proyecto.'}</div>
       <div class="grid g11">${live.map((p) => { const t = roleTable(p, { tasks: rp.tasks, team: people, edit }); return html`<div class="card wkbox"><div class="wkhead"><div><h3>${p.client ? p.client + ' · ' : ''}${p.name}</h3><span class="mut sm">${p.kind || ''}</span></div></div>${t || html`<div class="mut sm">Sin roles en este proyecto.</div>`}</div>`; })}</div>`;
   }
@@ -77,7 +78,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span>${p.birthday ? html`<span class="mut sm">${ico('cake')} ${bdayText(p.birthday)}</span>` : ''}</div>`;
   }
   function org() {
-    if (!people.length) return html`<div class="empty"><b>Todavía no hay nadie</b>Cada persona aparece aquí cuando entra con Google por primera vez.</div>`;
+    if (!people.length) return html`${vacio({ icono: 'inbox', titulo: 'Aún no hay nadie', linea: 'Cada persona aparece aquí cuando entra con Google por primera vez.' })}`;
     const roots = people.filter((p) => !p.reports_to || !byId(p.reports_to));
     const levels = [roots]; const seen = new Set(roots.map((r) => r.id));
     while (levels.length < 6) {
@@ -134,7 +135,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function paint() {
     // Dentro del Centro de control: solo la matriz.
-    if (embed === 'vistas') { mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Vistas por rol</h1><p>Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.</p></div>${isCeo ? vistas() : html`<div class="empty"><b>Solo el CEO</b>La matriz de vistas la decide el CEO.</div>`}`); const st0 = $('[data-act=rvstart]', el); if (st0) st0.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st0.value } }); return; }
+    if (embed === 'vistas') { mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Vistas por rol</h1><p>Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.</p></div>${isCeo ? vistas() : html`${vacio({ icono: 'lock', titulo: 'Solo el CEO', linea: 'La matriz de vistas la decide el CEO.' })}`}`); const st0 = $('[data-act=rvstart]', el); if (st0) st0.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st0.value } }); return; }
     const SUB = { org: html`Quién hace qué en <em>Inherent</em>.`, people: html`Cada persona, <em>sus perfiles de trabajo</em>.`, roles: html`Quién cubre <em>cada rol</em> en cada proyecto.`, vistas: html`Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.`, recetas: html`Cómo se arma el trabajo: <em>tareas, dueños y fechas</em>.` };
     const TABS = [['org', 'Organigrama'], ['people', 'Perfiles'], ['roles', 'Roles'], ...(isCeo ? [['vistas', 'Vistas por rol']] : [])];
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px">

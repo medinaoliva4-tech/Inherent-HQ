@@ -4,6 +4,7 @@
 import { html, raw, mount, col, drawer, closeDrawer, toast, confirmAsk, Q, $, $$, ico } from './core.js';
 import { hoursAt, svcHours, svcCost, svcPrice, svcAuto, pricesOf, marginOf, GROWTH, growthText, includesAt, daysAt } from './cycle.js';
 import { LEVELS } from './levels.js';
+import { vacio } from './visual.js';
 
 export const CATS = ['IA y automatización', 'CRM y ventas', 'Landing y conversión', 'Marketing y publicidad', 'Producción de video', 'Fotografía', 'Email marketing', 'SEO local', 'Analítica y medición', 'UGC y contenido mensual', 'Operación y estructura'];
 export const CATC = { 'IA y automatización': 'lime', 'CRM y ventas': 'blue', 'Landing y conversión': 'green', 'Marketing y publicidad': 'amber', 'Producción de video': 'red', Fotografía: 'dark', 'Email marketing': 'blue', 'SEO local': 'green', 'Analítica y medición': 'lime', 'UGC y contenido mensual': 'amber', 'Operación y estructura': 'dark' };
@@ -47,7 +48,7 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
       <input class="in" type="search" id="svq" placeholder="Buscar servicio: nombre, categoría o lo que incluye" value="${svQ}" style="margin-bottom:12px">
       <div class="row" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">${cats.map((c) => html`<button class="chip ${catF === c ? 'dark' : ''}" data-act="catF" data-c="${c}" style="padding:8px 14px;font-size:13px">${c}</button>`)}</div>
       ${isCeo && rates && (rates.roles || []).some((r) => r.rate == null) ? html`<div class="warnbox" style="margin-bottom:14px">${ico('alert')} Faltan costos por hora de: ${(rates.roles || []).filter((r) => r.rate == null).map((r) => r.role).join(', ')}. Sin eso no hay costo ni precio sugerido.</div>` : ''}
-      ${!services.length ? html`<div class="empty"><b>Todavía no hay servicios</b>Crea uno con «+ Nuevo servicio», o carga ejemplos para editarlos.<div style="margin-top:14px"><button class="btn ghost" data-act="seed">Cargar 9 ejemplos para editar</button></div></div>`
+      ${!services.length ? html`${vacio({ icono: 'inbox', titulo: 'Aún no hay servicios', linea: 'Crea uno con «+ Nuevo servicio», o carga ejemplos para editarlos.', boton: { texto: 'Cargar 9 ejemplos para editar', act: 'seed' } })}`
       : html`<div class="grid g3">${list.map((s) => { const lv = cardLv[s.id] || s.level || 5, g = growthText({ type: s.growth_type, pct: s.growth_pct }); return html`<div class="card svcard" style="cursor:pointer" data-act="service" data-id="${s.id}" data-q="${norm([s.name, s.category, s.description, s.includes5, s.includes10].join(' '))}">
         <div class="row"><span class="chip ${CATC[s.category] ?? ''}">${s.category || 'Sin categoría'}</span><div class="sp"></div><span class="mut sm">${s.unit || 'proyecto'}${s.price_fixed ? ' · precio fijo' : ''}</span></div>
         <h3 style="font-size:19px;font-weight:500;letter-spacing:-.4px;margin:12px 0 4px">${s.name}</h3><div class="mut sm">${s.description || ''}</div>
@@ -56,7 +57,7 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
         <div class="svlv" data-stop><input type="range" min="3" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>3 · básico</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
         ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 14)}</a>` : ''}
-</div>`; })}</div><div class="empty" id="svnone" style="display:none"><b>No encontré servicios</b>Prueba con otra palabra.</div>`}`);
+</div>`; })}</div><div id="svnone" style="display:none">${vacio({ icono: 'inbox', titulo: 'No encontré servicios', linea: 'Prueba con otra palabra.' })}</div>`}`);
     const sq = $('#svq', body); if (sq) { sq.addEventListener('input', () => { svQ = sq.value; filterSv(body); }); filterSv(body); }
   }
 
