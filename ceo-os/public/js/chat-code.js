@@ -74,6 +74,28 @@ export const sesionCode = (email, idOs) => leer(email)[idOs] || '';
 /** Archivos y cambios del proyecto de una conversación (el panel de Code). */
 export async function archivos(email, idOs) { const sid = leer(email)[idOs]; if (!sid) return []; return (await (await pedir(`/sessions/${sid}/files`)).json()).archivos; }
 export async function cambios(email, idOs) { const sid = leer(email)[idOs]; if (!sid) return []; return (await (await pedir(`/sessions/${sid}/diff`)).json()).archivos; }
+export async function leerArchivo(email, idOs, ruta) {
+  const sid = leer(email)[idOs]; if (!sid) throw new Error('Abre primero una sesión de Code');
+  const r = await pedir(`/sessions/${sid}/files?path=${encodeURIComponent(ruta)}`);
+  return (await r.json()).contenido;
+}
+export async function guardarArchivo(email, idOs, ruta, contenido) {
+  const sid = leer(email)[idOs]; if (!sid) throw new Error('Abre primero una sesión de Code');
+  return (await pedir(`/sessions/${sid}/files?path=${encodeURIComponent(ruta)}`, { method: 'PUT', body: JSON.stringify({ contenido }) })).json();
+}
+export async function fusionarCode(email, idOs) {
+  const sid = leer(email)[idOs]; if (!sid) throw new Error('Abre primero una sesión de Code');
+  return (await pedir(`/sessions/${sid}/merge`, { method: 'POST', body: '{}' })).json();
+}
+export async function terminalCode(email, idOs) {
+  const sid = leer(email)[idOs]; if (!sid) throw new Error('Abre primero una sesión de Code');
+  const p = await pase();
+  const u = new URL(p.url);
+  u.protocol = u.protocol === 'https:' ? 'wss:' : 'ws:';
+  u.pathname = `${u.pathname.replace(/\/$/, '')}/sessions/${sid}/terminal`;
+  u.search = new URLSearchParams({ pase: p.pase }).toString();
+  return u.toString();
+}
 /** Cuotas y estado de la sesión de Claude (el medidor del Chat). */
 export async function estado() { const [me, cuotas] = await Promise.all([pedir('/me').then((r) => r.json()), pedir('/cuotas').then((r) => r.json()).catch(() => null)]); return { me, cuotas }; }
 export async function niveles() { const r = await (await pedir('/models')).json(); return r.models.map((m) => m.id); }

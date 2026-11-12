@@ -39,6 +39,8 @@ export const ESQUEMA_UI = {
     Guardar: comp({ destino: str, slug: str, datos: str, resumen: str }, ['destino', 'datos']),
     Question: comp({ texto: str, opciones: arr }, ['texto', 'opciones']),
     Pedir: comp({ label: str, pedido: str }, ['label', 'pedido']),
+    CodeFile: comp({ ruta: str, nota: str }, ['ruta']),
+    CodeReview: comp({ resumen: str, hallazgos: arr, siguiente: str }, ['resumen', 'hallazgos']),
   },
 };
 ESQUEMA_UI.properties = Object.fromEntries(Object.keys(ESQUEMA_UI.$defs).map((k) => [k, {}]));
@@ -57,6 +59,7 @@ Resumen primero, detalle plegado: abre con Summary y deja lo largo en Collapse. 
 - acciones: Actions([Boton(label, accion, {args})]) con accion: abrirHerramienta {id, slug} · abrirEnChat {modo, slug, borrador} · imprimir {} · crearTarea {titulo} · copiar {texto} · pedir {texto}
 - herramientas: Tool(id, slug, titulo) abre una herramienta del OS · Artifact(ref, titulo) la abre en el panel · Guardar(destino, slug, {datos}, resumen) propone guardar lo platicado (la persona aprueba)
 - la conversación: Question(texto, opciones) · Pedir(label, pedido) deja el pedido en la caja
+- Code: CodeFile(ruta, nota) abre el archivo de la sesión en el panel Código · CodeReview(resumen, [[ruta, "alto"|"medio"|"bajo", hallazgo]], siguiente) muestra una revisión, solo si viste el archivo real
 Reglas: solo datos reales (de tus herramientas, del OS o de lo hablado); si no tienes el dato no lo llenes. Máximo 3 bloques por respuesta, uno casi siempre basta. Ningún botón hace algo solo: la persona hace clic. Sin colores ni enlaces.
 Ejemplo:
 \`\`\`ui
@@ -238,6 +241,11 @@ function dibujar(n, o) {
     }
     case 'Question': return `<div class="gu-q"><b>${txt(p.texto)}</b><div class="lm-ops">${lista(p.opciones, 6).map((x) => `<button type="button" data-a="opcion" data-t="${esc(limpiaPedido(txt0(x)))}"${off}>${txt(x)}</button>`).join('')}</div></div>`;
     case 'Pedir': return `<div class="lm-ops"><button type="button" class="si" data-a="ui-pedir" data-t="${esc(limpiaPedido(txt0(p.pedido)))}"${off}>${txt(p.label)}</button></div>`;
+    case 'CodeFile': {
+      const ruta = String(txt0(p.ruta) || '').slice(0, 240); if (!ruta || ruta.includes('..') || ruta.startsWith('/')) return '';
+      return `<button type="button" class="gu-code-file" data-a="code-archivo" data-ruta="${esc(ruta)}"${off}><span>${txt(ruta)}</span>${p.nota ? `<small>${txt(p.nota)}</small>` : ''}<i aria-hidden="true">↗</i></button>`;
+    }
+    case 'CodeReview': return `<section class="gu-review"><header><span>Revisión de código</span><b>${txt(p.resumen)}</b></header><ol>${lista(p.hallazgos, 12).filter(Array.isArray).map(([ruta, grado, hallazgo]) => `<li data-grado="${esc(['alto', 'medio', 'bajo'].includes(grado) ? grado : '')}"><code>${txt(ruta)}</code><b>${txt(grado)}</b><p>${txt(hallazgo)}</p></li>`).join('')}</ol>${p.siguiente ? `<footer>${txt(p.siguiente)}</footer>` : ''}</section>`;
     default: return '';
   }
 }

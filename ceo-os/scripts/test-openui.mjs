@@ -25,6 +25,16 @@ t('el catálogo tiene los componentes pedidos y ninguno usa un nombre reservado 
   for (const c of ['Summary', 'Decision', 'Checklist', 'Callout', 'Actions', 'Collapse', 'KeyValue', 'Compare', 'Timeline', 'Table', 'Heatmap', 'Chart', 'Gauge', 'Tool', 'Artifact', 'Guardar', 'Tag', 'Row']) assert.ok(COMPONENTES.includes(c), c);
   for (const r of ['Query', 'Mutation', 'Action']) assert.ok(!COMPONENTES.includes(r), r);
 });
+t('CodeFile y CodeReview se dibujan con el parser OpenUI y tratan rutas y hallazgos como datos', () => {
+  const src = 'root = Stack([f, r])\nf = CodeFile("src/app.ts", "Abre el archivo")\nr = CodeReview("Revisado", [["src/app.ts", "alto", "Corregir el error"]], "Volver a probar")\n';
+  const parsed = createStreamingParser(ESQUEMA_UI, 'Stack').set(src, true);
+  assert.deepEqual(parsed.meta.errors, []);
+  const h = ui(src);
+  assert.match(h, /data-a="code-archivo" data-ruta="src\/app\.ts"/);
+  assert.match(h, /gu-review[\s\S]*Corregir el error[\s\S]*Volver a probar/);
+  assert.equal(ui('root = Stack([f])\nf = CodeFile("../secret")\n').includes('gu-code-file'), false);
+  sinPeligro(h);
+});
 t('cada ejemplo visible se lee sin errores y se dibuja', () => {
   assert.ok(EJEMPLOS.length >= 14);
   for (const e of EJEMPLOS) {

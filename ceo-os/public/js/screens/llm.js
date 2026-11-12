@@ -78,16 +78,17 @@ export async function render(el, { me, sub = [], alive }) {
   const modoGuardado = areaDe(areaGuardada(me.email))?.modo;
   const S = {
     modo: modos.some((m) => m.id === modoGuardado) ? modoGuardado : modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
+    ultimoChatModo: pref.ultimoChatModo || 'marketing',
     slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: false, porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
-    agentes: [], tab: 'modo', herramientaPanel: '', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
+    agentes: [], tab: 'modo', herramientaPanel: '', listaAgentes: null, cerradas: new Set(), code: { vista: 'cambios', comentarios: [] }, // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     adjuntos: [], salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
     panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
-  const persistir = () => guardar(me, { panelW: S.panelW, abiertas: S.abiertas, modo: S.modo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
+  const persistir = () => guardar(me, { panelW: S.panelW, abiertas: S.abiertas, modo: S.modo, ultimoChatModo: S.ultimoChatModo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (LM Studio, Ollama…). El elegido si es local; si no, el primero que haya.
@@ -125,7 +126,9 @@ export async function render(el, { me, sub = [], alive }) {
   mount(el, html`<div class="llm" data-tema="${document.documentElement.dataset.theme === 'light' ? 'dia' : 'noche'}" data-panel="${S.panel ? 'on' : 'off'}">
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
-      <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button><div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
+      <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button>
+        <nav class="llm-work-switch" aria-label="Área del Chat"><button type="button" data-a="workspace-mode" data-v="chat">Chat</button>${modos.some((m) => m.id === 'code') ? html`<button type="button" data-a="workspace-mode" data-v="code">${ico('code', 14)} Code</button>` : ''}</nav>
+        <div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
         <button type="button" class="llm-bru-chip" data-a="ver-brujula" id="llm-bru" hidden title="La brújula de esta conversación"></button>
         <button type="button" class="llm-ib" data-a="ramificar" id="llm-rama" hidden aria-label="Ramificar: seguir en una conversación nueva con todo lo hablado" title="Ramificar">${ICO_RAMA}</button>
         <button type="button" class="llm-ib" data-a="ajustes" aria-label="Ajustes del Chat" title="Ajustes del Chat">${ico('settings', 16)}</button>
@@ -195,6 +198,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
   const vacio = () => !S.msgs.length && !S.agentes.length && !S.cargando;
   function pintarTitulo() {
+    for (const b of R.querySelectorAll('.llm-work-switch button')) { const on = b.dataset.v === (S.modo === 'code' ? 'code' : 'chat'); b.setAttribute('aria-current', on ? 'page' : 'false'); }
     const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
     if (S.proyecto) return mount(C('llm-titulo'), html`<span class="lt-t">${nombreCliente(S.proyecto.id)}</span>`);
@@ -221,6 +225,7 @@ export async function render(el, { me, sub = [], alive }) {
   function heroHtml() {
     if (!listo()) return setupHtml();
     const cli = S.cliente ? nombreCliente(S.cliente) : '', primero = String(me.name || '').trim().split(/\s+/)[0], nombre = /^(ceo|admin|usuario|user)$/i.test(primero) ? '' : primero;
+    if (S.modo === 'code') return html`<div class="ch-nuevo ch-code-home"><span class="ch-code-k">INHERENT / CODE</span><h1>Construye y revisa en un solo lugar.</h1><p>El código, los cambios y los archivos comparten esta conversación. Elige un proyecto y pide el primer paso.</p><div class="ch-code-acciones"><button type="button" data-a="code-panel" data-v="codigo">${ico('code', 16)} Ver código y archivos</button><button type="button" data-a="code-panel" data-v="agentes">${ico('spark', 16)} Abrir agentes</button><button type="button" data-a="code-panel" data-v="herramientas">${ico('tool', 16)} Herramientas del OS</button></div></div>`;
     return html`<div class="ch-nuevo"><h1>${cli ? `¿En qué trabajamos para ${cli}?` : nombre ? `De vuelta, ${nombre}` : '¿En qué trabajamos?'}</h1><div class="ch-sug">${(SUGERENCIAS[S.modo] || []).slice(0, 4).map(([t]) => html`<button type="button" data-a="sugerencia" data-t="${t}">${ico('arrow-right', 15)}<span>${t}</span></button>`)}</div></div>`;
   }
   // El servidor fuera de línea (raro): se dice y se puede reintentar; mientras, los chats por el puente siguen.
@@ -505,10 +510,22 @@ export async function render(el, { me, sub = [], alive }) {
     if (S.tab === 'herramientas' && abierto?.dataset.tool === S.herramientaPanel && abierto.dataset.slug === slugAhora()) return;
     const gen = ++panelGen;
     // F4.5 · la ventana de agentes: una pestaña por trabajo ligado a la conversación (cerrar una pestaña no cierra el trabajo).
-    const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = !['modo', 'herramientas'].includes(S.tab) && tabs.find((r) => r.id === S.tab);
+    const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = !['modo', 'agentes', 'herramientas', 'codigo'].includes(S.tab) && tabs.find((r) => r.id === S.tab);
     const herr = conHerramientas() && S.tab === 'herramientas';
     const cab = tabs.length || conHerramientas() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : 'modo', { herramientas: conHerramientas() }) : '';
     if (herr) return pintarHerramientas(box, cab);
+    if (S.tab === 'codigo' && S.modo === 'code') {
+      mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="lp-code-host"></div>`);
+      const host = $('.lp-code-host', box), sigue = () => gen === panelGen && alive() && host.isConnected && S.tab === 'codigo';
+      const { pintarCodePanel } = await import('../llm/code-panel.js'); if (!sigue()) return;
+      return pintarCodePanel(host, { email: me.email, idOs: S.sesion, estado: S.code, alive: sigue, aislada: false,
+        alChat: (texto) => { const ta = $('#llm-in', el); if (ta) { ta.value = texto; crecer(ta); ta.focus(); } } });
+    }
+    if (S.tab === 'agentes') {
+      mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}
+        <div class="lp-agent-catalog"><header><span class="lp-k">Equipo de trabajo</span><h3>Agentes</h3><p>Inicia un trabajo en el Chat; aquí sigues su progreso y revisas lo que propone.</p></header>
+        ${DEPARTAMENTOS.map((d) => html`<article class="lp-agent-row"><div><span class="lp-agent-tag">@${d.arroba}</span><b>${d.nombre}</b><small>${d.depto} · ${(d.skills || []).length} habilidades</small></div><button type="button" data-a="ag-start" data-dep="${d.arroba}">Start</button></article>`)}</div>`); return;
+    }
     if (run) {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-av"></div>`);
       return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: alCambiar, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
@@ -627,13 +644,14 @@ export async function render(el, { me, sub = [], alive }) {
     // cambiar abre una conversación nueva y cortaría la respuesta.
     if (!modos.some((m) => m.id === id) || id === S.modo) return;
     if (S.enVuelo) return toast('Espera a que termine la respuesta, o detenla, para cambiar de modo', true);
+    if (id === 'code' && S.modo !== 'code') { S.ultimoChatModo = S.modo; if (!angosto()) ponerAncho(Math.max(S.panelW || 372, 600)); }
     S.modo = id; persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
     if (!vacio() || S.sesion) return nuevo();
     pintarSide(); pintarCentro(); pintarPanel();
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    abrirGen++; S.cargando = false; S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = 'modo'; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
+    abrirGen++; S.cargando = false; S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = S.modo === 'code' && !angosto() ? 'codigo' : 'modo'; S.code = { vista: 'cambios', comentarios: [] }; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
@@ -783,7 +801,7 @@ export async function render(el, { me, sub = [], alive }) {
       }
       const libre = S.modo === MODO_LIBRE.id;
       const esCode = S.modo === 'code'; // Code: el motor es el puente del VPS; Claude Code trae su propio sistema
-      const sistema = esCode ? '' : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
+      const sistema = esCode ? `${PROMPT_GENUI}\n\nEn Code, usa la interfaz para resumir un plan, una comparación o una revisión con datos reales. Las ediciones de archivos y comandos siguen pasando por los permisos del motor; nunca los representes como ya hechos si no ocurrieron.` : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
       // El router por tarea (Auto): el modelo caro solo donde un error sale caro; lo repetitivo, en el barato. Fijar un nivel lo apaga.
       const ruta = esCode && !nivelForzado && (!S.nivelCode || S.nivelCode === 'auto') ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
       const nivelCode = nivelForzado || (ruta ? ruta.nivel : S.nivelCode || 'nivel-medio');
@@ -948,7 +966,7 @@ export async function render(el, { me, sub = [], alive }) {
   const runDe = (id) => S.agentes.find((r) => r.id === id);
   function ponerRun(run) { const k = S.agentes.findIndex((r) => r.id === run.id); if (k >= 0) S.agentes[k] = run; else S.agentes.push(run); }
   async function cargarAgentesDe(sesion) {
-    S.agentes = []; S.tab = S.tab === 'herramientas' ? 'herramientas' : 'modo'; S.cerradas = new Set();
+    S.agentes = []; S.tab = S.tab === 'herramientas' ? 'herramientas' : S.modo === 'code' && !angosto() ? 'codigo' : 'modo'; S.cerradas = new Set();
     if (!sesion) return;
     try {
       const j = await api(`chat/sesiones/${enc(sesion)}?desde=999999`);
@@ -1072,6 +1090,10 @@ export async function render(el, { me, sub = [], alive }) {
     const pasoEst = e.target.closest('.llm-panel .ev-sec>header'); if (pasoEst) return pasoEst.parentElement.classList.toggle('abierto');
     const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
+    if (a === 'workspace-mode') return cambiarModo(t.dataset.v === 'code' ? 'code' : (modos.some((m) => m.id === S.ultimoChatModo) ? S.ultimoChatModo : modos.find((m) => m.id !== 'code')?.id));
+    if (a === 'code-panel') { S.tab = t.dataset.v; S.panel = true; R.dataset.panel = 'on'; if (!angosto() && S.tab === 'codigo') ponerAncho(Math.max(S.panelW || 372, 600)); return pintarPanel(); }
+    if (a === 'code-archivo') { if (S.modo !== 'code') return toast('Abre una conversación de Code para ver sus archivos', true); S.code.vista = 'archivos'; S.code.ruta = t.dataset.ruta; S.tab = 'codigo'; S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
+    if (a === 'ag-start') { const ta = $('#llm-in', el); if (ta) { ta.value = `@${t.dataset.dep} `; crecer(ta); ta.focus(); } return; }
     if (a === 'code-permiso') { // la persona decidió un permiso de Code: se lo decimos al motor y la tarjeta queda marcada
       const p = S.msgs[+t.dataset.i]?.permisos?.[+t.dataset.k]; if (!p || p.estado) return;
       p.estado = t.dataset.d === 'deny' ? 'no' : 'si'; p.responder?.(t.dataset.d); return pintarUltimo();

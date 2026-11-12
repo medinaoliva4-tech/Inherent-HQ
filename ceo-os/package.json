@@ -33,7 +33,7 @@
     "test:avisos": "node scripts/test-avisos.mjs && node scripts/test-avisos-trabajo.mjs && node scripts/test-avisos-estrategia.mjs && node scripts/test-avisos-marcas.mjs && node scripts/test-avisos-plataforma.mjs",
     "test:agentes": "node scripts/test-agentes.mjs",
     "test:db": "node scripts/test-db-cliente.mjs",
-    "test:code": "node scripts/test-code.mjs && node scripts/test-herramientas-code.mjs",
+    "test:code": "node scripts/test-code.mjs && node scripts/test-herramientas-code.mjs && node scripts/test-code-panel.mjs",
     "test:departamentos": "node scripts/test-departamentos.mjs",
     "test:aviso": "node scripts/test-aviso-actualizacion.mjs",
     "test:laya": "node scripts/test-laya-rapido.mjs",
