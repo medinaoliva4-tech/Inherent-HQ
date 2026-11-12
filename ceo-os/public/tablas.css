@@ -1,0 +1,171 @@
+/* =====================================================================================
+   PATRONES DE PRESENTACIÓN · tabla densa (tdn-), lista de una línea (lsd-), fila de cifras (cfr-) y sección sin marco (vpp-)
+   Componentes: js/tabla.js · js/lista.js · js/cifras.js. Guía: docs/patrones-de-presentacion.md.
+   Regla: tarjeta = objeto que se elige, se arrastra, se abre o se cita. Lo demás es tabla, lista, formulario, timeline o documento.
+   Solo tokens (--ui-*, --fs-*, --r-*): lo revisa scripts/lint-css.mjs.
+   ===================================================================================== */
+
+/* ---------- Sección sin marco: título corto + contenido, separada por una línea ---------- */
+.vpp-sec{margin:0 0 28px}
+.vpp-sec>.vpp-h{display:flex;align-items:baseline;gap:10px;margin:0 0 8px;padding-bottom:8px;border-bottom:1px solid var(--ui-line)}
+.vpp-h h2,.vpp-h h3{margin:0;font-size:var(--fs-6);font-weight:600;letter-spacing:-.01em;color:var(--ui-ink)}
+.vpp-h .vpp-n{font-size:var(--fs-3);color:var(--ui-mut);font-variant-numeric:tabular-nums}
+.vpp-h .vpp-sp{flex:1}
+.vpp-ayuda{font-size:var(--fs-4);color:var(--ui-mut);margin:0 0 10px}
+.vpp-ayuda>summary{cursor:pointer;width:max-content;list-style:none;color:var(--ui-mut)}
+.vpp-ayuda>summary::-webkit-details-marker{display:none}
+.vpp-ayuda>summary::before{content:"ⓘ ";}
+.vpp-ayuda[open]>summary{margin-bottom:6px}
+.vpp-cols{display:grid;grid-template-columns:repeat(var(--vpp-c,3),minmax(0,1fr));gap:0 32px}
+@media (max-width:1100px){.vpp-cols{grid-template-columns:1fr}}
+.vpp-aside{position:sticky;top:12px;align-self:start;padding:16px 0 0;border-top:2px solid var(--ui-ink)}
+.vpp-forma{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:32px;align-items:start}
+@media (max-width:1100px){.vpp-forma{grid-template-columns:1fr}.vpp-aside{position:static}}
+
+/* ---------- Fila de cifras: una sola franja, cifra grande + delta + sparkline, sin marco por métrica ---------- */
+.cfr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:0 0 24px;padding:14px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
+.cfr-i{min-width:0;padding:2px 18px;border-left:1px solid var(--ui-line)}
+.cfr-i:first-child{border-left:0;padding-left:0}
+.cfr dt{font-size:var(--fs-3);color:var(--ui-mut);margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cfr-b{all:unset;cursor:pointer;color:inherit;border-bottom:1px dotted currentColor}
+.cfr-b:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px;border-radius:var(--r-0)}
+.cfr dd{margin:0}
+.cfr-v{font-size:var(--fs-10);font-weight:500;letter-spacing:-.02em;line-height:1.1;color:var(--ui-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cfr-v.cfr-ok{color:var(--ui-ok-t)}.cfr-v.cfr-bad{color:var(--ui-bad-t)}.cfr-v.cfr-warn{color:var(--ui-amb-t)}
+.cfr-m{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:var(--fs-3);color:var(--ui-mut);min-height:22px;flex-wrap:wrap}
+.cfr-d.ok{color:var(--ui-ok-t)}.cfr-d.bad{color:var(--ui-bad-t)}
+.cfr .vz-spark{color:var(--ui-ink2);margin-left:auto}
+.cfr.cfr-s{margin:0 0 12px;padding:10px 0;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+.cfr.cfr-s .cfr-v{font-size:var(--fs-8)}
+.vpp-aside .cfr{margin-bottom:12px}
+.vpp-aside .cfr:first-child .cfr-v{font-size:var(--fs-11)}
+@media (max-width:700px){
+  .cfr{grid-template-columns:1fr 1fr;row-gap:14px}
+  .cfr-i{padding:2px 12px}.cfr-i:nth-child(odd){border-left:0;padding-left:0}
+  .cfr-v{font-size:var(--fs-9)}
+}
+
+/* ---------- Tabla densa ---------- */
+.tdn{position:relative;min-width:0}
+.tdn-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tdn table{width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+.tdn thead th{position:sticky;top:0;z-index:2;height:34px;padding:0 10px;background:var(--ui-bg);font-size:var(--fs-3);font-weight:500;color:var(--ui-mut);text-align:left;white-space:nowrap;border-bottom:1px solid var(--ui-line2)}
+.tdn th.n,.tdn td.n{text-align:right}
+.tdn .tdn-o{all:unset;display:inline-flex;align-items:center;gap:4px;cursor:pointer;color:inherit;font:inherit;padding:4px 0;border-radius:var(--r-0)}
+.tdn th.n .tdn-o{flex-direction:row-reverse}
+.tdn .tdn-o:hover{color:var(--ui-ink)}
+.tdn .tdn-o:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+.tdn .tdn-fl{display:inline-flex;opacity:.35}
+.tdn th[aria-sort="ascending"] .tdn-fl,.tdn th[aria-sort="descending"] .tdn-fl{opacity:1;color:var(--ui-ink)}
+.tdn tbody th,.tdn tbody td,.tdn tfoot td{height:34px;padding:5px 10px;border-bottom:1px solid var(--ui-line);font-size:var(--fs-5);font-weight:400;text-align:left;vertical-align:middle;color:var(--ui-ink)}
+.tdn tbody th{position:static;z-index:auto;background:transparent;letter-spacing:0;text-transform:none}
+.tdn tbody th small,.tdn tbody td small{display:block;font-size:var(--fs-3);color:var(--ui-mut);line-height:1.3}
+.tdn tbody th b{font-weight:500}
+.tdn tfoot td{font-weight:600;border-top:1px solid var(--ui-line2);border-bottom:0}
+.tdn tr.tdn-f{outline:none}
+.tdn tr.tdn-f:hover>*{background:var(--ui-fill)}
+.tdn tr.tdn-f:focus-visible>*{background:var(--ui-fill);box-shadow:inset 0 2px 0 -1px var(--ui-focus),inset 0 -2px 0 -1px var(--ui-focus)}
+.tdn tr.tdn-f:focus-visible>:first-child{box-shadow:inset 2px 2px 0 -1px var(--ui-focus),inset 0 -2px 0 -1px var(--ui-focus)}
+.tdn.tdn-clic tr.tdn-f{cursor:pointer}
+.tdn tr.tdn-sel>*{background:var(--ui-info-bg)}
+.tdn .tdn-c{width:34px;padding-right:0}
+.tdn .tdn-x{width:15px;height:15px;margin:0;accent-color:var(--ui-ink)}
+.tdn .tdn-a{width:1%;white-space:nowrap;text-align:right;padding-left:0}
+.tdn .tdn-ab-in{display:inline-flex;gap:2px;opacity:0;transition:opacity var(--d-2,120ms) var(--e-out,ease)}
+.tdn tr.tdn-f:hover .tdn-ab-in,.tdn tr.tdn-f:focus-within .tdn-ab-in,.tdn tr.tdn-f:focus .tdn-ab-in{opacity:1}
+@media (hover:none){.tdn .tdn-ab-in{opacity:1}}
+.tdn .tdn-btn{width:28px;height:28px}
+.tdn .tdn-pel:hover{color:var(--ui-bad-t)}
+.tdn tr.tdn-g th{height:30px;padding:14px 10px 4px;background:transparent;font-size:var(--fs-3);font-weight:600;color:var(--ui-ink2);text-align:left;border-bottom:1px solid var(--ui-line2)}
+.tdn tr.tdn-g th span{font-weight:400;color:var(--ui-mut);margin-left:4px}
+.tdn .tdn-sk{display:block;height:10px;border-radius:var(--r-pill);background:var(--ui-fill2);width:70%}
+@media (prefers-reduced-motion:no-preference){.tdn .tdn-sk{animation:tbSk 1.2s ease-in-out infinite alternate}}
+@keyframes tbSk{from{opacity:.45}to{opacity:1}}
+.tdn .tdn-barra{position:sticky;bottom:8px;display:inline-flex;margin-top:8px;padding:6px 12px;border-radius:var(--r-pill);background:var(--ui-ink);color:var(--ui-bg);font-size:var(--fs-3)}
+.tdn .tdn-osel{display:none}
+.tdn td .in{height:30px;padding:4px 8px;font-size:var(--fs-4)}
+.tdn td.n .in{text-align:right}
+.tdn .chip{margin:0}
+.tdn-vacio{padding:8px 0}
+.tdn.tdn-ancha{overflow-x:auto}
+
+/* En el cel: cada fila se apila. El título arriba, el resto como «etiqueta · valor»; las acciones siempre visibles. Sin scroll horizontal. */
+@media (max-width:700px){
+  .tdn.tdn-ancha{overflow-x:visible}
+  .tdn .tdn-osel{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:var(--fs-3);color:var(--ui-mut)}
+  .tdn .tdn-osel select{width:auto;flex:1;height:32px;padding:4px 8px;font-size:var(--fs-4)}
+  .tdn table,.tdn tbody,.tdn tfoot,.tdn tr,.tdn tbody th,.tdn tbody td,.tdn tfoot td{display:block;width:auto}
+  .tdn thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .tdn tr.tdn-f,.tdn tfoot tr{display:grid;grid-template-columns:auto 1fr auto;gap:2px 0;padding:10px 0;border-bottom:1px solid var(--ui-line)}
+  .tdn tbody th,.tdn tbody td,.tdn tfoot td{height:auto;padding:0;border:0;grid-column:2;display:flex;justify-content:space-between;gap:12px;text-align:right}
+  .tdn tbody td[data-l]::before,.tdn tfoot td[data-l]::before{content:attr(data-l);color:var(--ui-mut);font-size:var(--fs-3);text-align:left;flex:none}
+  .tdn tbody .tdn-t,.tdn tfoot .tdn-t{display:block;text-align:left;font-size:var(--fs-6)}
+  .tdn .tdn-c{grid-column:1;grid-row:1 / span 9;width:auto;margin-right:10px}
+  .tdn .tdn-a{grid-column:3;grid-row:1;width:auto;margin-left:10px}
+  .tdn .tdn-mo{display:none}
+  .tdn tr.tdn-g{display:block}.tdn tr.tdn-g th{display:block;padding:16px 0 4px}
+  .tdn tr.tdn-fan{display:block;padding:10px 0}.tdn tr.tdn-fan td{border:0}
+  .tdn td .in{max-width:60%}
+}
+
+/* ---------- Lista densa de una línea ---------- */
+.lsd{min-width:0}
+.lsd-h{display:flex;align-items:baseline;gap:6px;margin:14px 0 2px;font-size:var(--fs-3);font-weight:600;color:var(--ui-ink2);letter-spacing:0}
+.lsd-h span{font-weight:400;color:var(--ui-mut)}
+.lsd-h:first-child{margin-top:0}
+.lsd-u{list-style:none;margin:0;padding:0}
+.lsd-r{display:flex;align-items:center;gap:8px;min-height:34px;border-bottom:1px solid var(--ui-line)}
+.lsd-b{all:unset;box-sizing:border-box;flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:34px;padding:4px 2px;font-size:var(--fs-5);color:var(--ui-ink)}
+.lsd-ab .lsd-b{cursor:pointer}
+.lsd-ab:hover{background:var(--ui-fill)}
+.lsd-b:focus-visible{outline:2px solid var(--ui-focus);outline-offset:-2px;border-radius:var(--r-0)}
+.lsd-e{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:var(--fs-3);color:var(--ui-mut)}
+.lsd-et{min-width:0}
+.lsd-ti{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;overflow:hidden}
+.lsd-ti b{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none;max-width:60%}
+.lsd-ti small{font-size:var(--fs-4);color:var(--ui-mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lsd-d{flex:none;font-size:var(--fs-4);color:var(--ui-mut)}
+.lsd-f{flex:none;font-size:var(--fs-4);color:var(--ui-ink2);font-variant-numeric:tabular-nums;text-align:right}
+.lsd-f.late{color:var(--ui-bad-t);font-weight:500}
+.lsd-x{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-4);font-variant-numeric:tabular-nums}
+.lsd-mas{padding:6px 2px;font-size:var(--fs-3);color:var(--ui-mut)}
+.lsd-vacio{padding:4px 0}
+@media (max-width:700px){
+  .lsd-r{flex-wrap:wrap;padding:6px 0}
+  .lsd-b{flex-wrap:wrap;gap:4px 10px}
+  .lsd-ti{flex-basis:100%;order:-1;flex-wrap:wrap}
+  .lsd-ti b{max-width:100%;white-space:normal}
+}
+
+/* ---------- Timeline (procesos: fases de un paquete) ---------- */
+.vpp-tl{list-style:none;margin:0;padding:0;position:relative}
+.vpp-tl>li{position:relative;padding:0 0 4px 28px}
+.vpp-tl>li::before{content:"";position:absolute;left:9px;top:22px;bottom:-4px;width:1px;background:var(--ui-line2)}
+.vpp-tl>li:last-child::before{display:none}
+.vpp-tl .vpp-no{position:absolute;left:0;top:7px;display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:var(--ui-fill2);color:var(--ui-ink2);font-size:var(--fs-2);font-weight:600}
+.vpp-tl details>summary{display:flex;align-items:center;gap:10px;min-height:34px;cursor:pointer;list-style:none;flex-wrap:wrap}
+.vpp-tl details>summary::-webkit-details-marker{display:none}
+.vpp-tl details>summary b{font-weight:500}
+.vpp-tl .vpp-tlb{padding:6px 0 12px;display:grid;gap:10px}
+
+/* ---------- Detalles comunes de las pantallas migradas ---------- */
+.tdn .tdn-late,.tdn-late{color:var(--ui-bad-t);font-weight:500}
+.tdn td.tdn-a .tdn-ab-in{flex-wrap:nowrap;align-items:center}
+.tdn td.tdn-a .btn.sm{height:28px;padding:0 10px}
+@media (max-width:700px){
+  .tdn td.tdn-a[data-l]{grid-column:2 / span 2;grid-row:auto;justify-content:flex-start;padding-top:6px}
+  .tdn td.tdn-a[data-l]::before{display:none}
+  .tdn td.tdn-a .tdn-ab-in{flex-wrap:wrap}
+}
+/* Ventas › Meta: el volumen sin una caja por número (una sola franja con líneas). */
+.vx-vol.vpp-sec .vx-acts{gap:0 24px}
+.vx-vol.vpp-sec .vx-a{background:transparent;border:0;border-top:1px solid var(--ui-line);border-radius:0;padding:10px 0}
+.vx-calc.vpp-sec,.vx-vol.vpp-sec,.vx-buscar.vpp-sec{margin:0 0 20px}
+/* Ventas › Cotización: los servicios como renglones de un documento, no tarjetas. */
+.vx-qitems{list-style:none;margin:0;padding:0}
+.vx-qitem{padding:12px 0;border-bottom:1px solid var(--ui-line)}
+.vx-qitem:first-child{border-top:1px solid var(--ui-line)}
+
+/* ---------- Paquetes: la lista para elegir paquete va sin caja; la tarjeta queda solo en el paquete abierto ---------- */
+.pklist.vpp-lado{padding:0 14px 0 0;border-right:1px solid var(--ui-line)}
+@media (max-width:1100px){.pklist.vpp-lado{border-right:0;padding:0}}
