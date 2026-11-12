@@ -2,12 +2,13 @@
 // Cada paso se comprueba solo (la app, Claude, Laya, Google, la prueba final); se puede pausar y el OS recuerda dónde iba
 // (team.<email>.primer_dia). Un chip en la barra lo vuelve a abrir. El cliente no lo ve.
 import { html, raw, mount, api, toast, $, ico, roleName } from './core.js';
+import { dialog } from './ui.js';
 import { healthPuente } from './puente-chat.js';
 import { PASOS_PRIMER_DIA } from './primer-dia-pasos.js';
 
 const PASOS = PASOS_PRIMER_DIA;
 const OPCIONALES = new Set(['app', 'claude', 'laya']);
-let dlg = null, salud = null;
+let dlg = null, dlgUi = null, salud = null;
 
 const saludPuente = () => healthPuente(4000); // el /health completo (puente-chat.js): lo mismo que lee el aviso pla-puente
 const enApp = () => Boolean(window.inherentEscritorio);
@@ -53,9 +54,13 @@ export async function primerDia(me) {
 }
 
 export async function abrirPrimerDia(me) {
-  if (dlg) dlg.remove();
-  dlg = document.createElement('dialog'); dlg.className = 'pd-dlg'; dlg.setAttribute('aria-label', 'Tu primer día en Inherent OS');
-  document.body.append(dlg);
+  dlgUi?.cerrar();
+  // El diálogo único del OS (ui.js). Esc o cerrar sin terminar = «seguir después» (queda pausado en el paso de ahora).
+  let porBoton = false;
+  const ui = dialog({ etiqueta: 'Tu primer día en Inherent OS', clase: 'pd-ui', formulario: false, cerrarFuera: false,
+    onClose: () => { if (!porBoton) guardar(me, { pausado: true, paso }); if (dlgUi === ui) { dlgUi = null; dlg = null; } } });
+  dlgUi = ui; dlg = ui.cuerpo;
+  const cerrarYa = () => { porBoton = true; ui.cerrar(); };
   let ok = Object.fromEntries(PASOS.map(([k]) => [k, Boolean(me.primer_dia?.hechos?.[k])])), paso = PASOS.findIndex(([k]) => !ok[k]), revisando = false;
   if (paso < 0) paso = PASOS.length - 1;
   const [primero] = me.name.split(' ');
@@ -105,14 +110,12 @@ export async function abrirPrimerDia(me) {
       if (ok[k]) { await guardar(me, { hechos: { [k]: true }, paso }); toast('Listo ✓'); avanzar(); } else { pintar(); toast(k === 'app' ? 'Todavía no encuentro la app abierta en esta compu' : k === 'prueba' ? 'Todavía no hay nada creado con tu cuenta' : 'Todavía no está listo', true); }
       return;
     }
-    if (a === 'ir') { await guardar(me, { pausado: true, paso }); dlg.close(); return; }
-    if (a === 'pausa') { await guardar(me, { pausado: true, paso }); dlg.close(); return; }
-    if (a === 'fin') { await guardar(me, { hecho_at: true, pausado: false, paso }); dlg.close(); toast('¡Bienvenido! 🎉'); return; }
+    if (a === 'ir') { await guardar(me, { pausado: true, paso }); cerrarYa(); return; }
+    if (a === 'pausa') { await guardar(me, { pausado: true, paso }); cerrarYa(); return; }
+    if (a === 'fin') { await guardar(me, { hecho_at: true, pausado: false, paso }); cerrarYa(); toast('¡Bienvenido! 🎉'); return; }
   };
   const avanzar = () => { const sig = PASOS.findIndex(([x]) => !ok[x]); paso = sig < 0 ? PASOS.length - 1 : sig; pintar(); };
-  dlg.addEventListener('cancel', (e) => { e.preventDefault(); guardar(me, { pausado: true, paso }); dlg.close(); });
-  dlg.addEventListener('close', () => { dlg.remove(); dlg = null; });
-  pintar(); dlg.showModal();
+  pintar();
   // Al abrir, se comprueba lo que ya está (sin bloquear la pantalla).
   comprobar(me).then((r) => { const antes = { ...ok }; Object.assign(ok, Object.fromEntries(Object.entries(r).filter(([, v]) => v))); const nuevos = Object.keys(ok).filter((x) => ok[x] && !antes[x]); if (nuevos.length) { guardar(me, { hechos: Object.fromEntries(nuevos.map((x) => [x, true])), paso }); if (ok[PASOS[paso][0]]) avanzar(); else pintar(); } else pintar(); });
 }

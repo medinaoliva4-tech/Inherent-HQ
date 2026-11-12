@@ -119,9 +119,9 @@ else {
       assert.ok(m.x >= 0 && m.x + m.width <= vw, 'dentro de la ventana'); await p.keyboard.press('Escape');
     });
     await t('popover: role=dialog con etiqueta, foco adentro, Esc cierra y devuelve el foco', async () => {
-      await p.click('#p-abrir'); await p.waitForSelector('.ui-pop[data-state=open]');
+      await p.click('#p-abrir'); await p.waitForSelector('.ui-pop[data-state=open]'); await cuadro();
       assert.equal(await p.getAttribute('.ui-pop', 'role'), 'dialog'); assert.equal(await p.getAttribute('.ui-pop', 'aria-label'), 'Contexto del chat');
-      assert.ok(await p.evaluate(() => document.querySelector('.ui-pop').contains(document.activeElement)));
+      assert.ok(await p.evaluate(() => document.querySelector('.ui-pop').contains(document.activeElement)), await p.evaluate(() => document.activeElement.outerHTML.slice(0, 120) + ' ' + document.querySelectorAll('.ui-pop').length));
       await p.keyboard.press('Escape'); await p.waitForSelector('.ui-pop', { state: 'detached' }); assert.equal(await foco(), 'p-abrir');
     });
     await t('tooltip: al enfocar un [data-tip] aparece role=tooltip con el texto y se va con Esc', async () => {

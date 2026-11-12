@@ -6,6 +6,7 @@
 // El scraping corre solo (cron de los lunes, webhook de Apify). Laya juzga en segundo plano lo que falte si el puente
 // de la compu responde; si no, queda pendiente para Claude Code. content.js solo la monta: research(b) → investigacion(b, …).
 import { html, raw, mount, api, toast, fdate, K, md, ask, today, openClaude, ICON, ico, col, confirmAsk, $ } from './core.js';
+import { dialog } from './ui.js';
 import { CATS, POR_CAT, REDES, redNombre, catNombre, cuenta } from './referentes.js';
 import { layaBox, puenteEstado, juzgarLocal } from './laya-ui.js';
 import { ojoEstado, verImagen, ojoChip } from './ojo.js';
@@ -351,9 +352,8 @@ function ropen(id, b, ctx) {
   const ad = String(w.adaptacion || '').trim(), cut = ad.search(/\n\s*\n|\n(?=\s*(#|[-*•]|\d+[.)]|\*\*))/), mine = cut > 0 ? ad.slice(0, cut).trim() : ad, analysis = cut > 0 ? ad.slice(cut).trim() : '';
   const styleOpts = distinct(items, (x) => x.style), pillarOpts = [...new Set([...(data.cfg?.pillars || []).map((x) => x.name), ...distinct(items, (x) => x.pillar)])].filter(Boolean);
   const receta = it.receta || [], clips = it.clips || [], edit = st.d.puede?.editar;
-  document.querySelector('.rsheet')?.remove();
-  const v = document.createElement('div'); v.className = 'rsheet';
-  mount(v, html`<aside class="sp-sheet rv-sheet" role="dialog" aria-modal="true" aria-label="${rtitle(it)}">
+  // La ficha del referente: el diálogo único del OS como panel lateral (Esc, clic afuera, foco atrapado y de vuelta).
+  const cuerpoRv = html`
     <div class="row rv-head"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div style="min-width:0"><b>@${it.handle || '—'}</b><div class="sm mut">${[redNombre(redOf(it)), FMTL[f], catCorto(it.tipo)].filter(Boolean).join(' · ')}</div></div></div><div class="sp"></div><button class="btn-icon end" data-v="close" title="Cerrar" aria-label="Cerrar">${ico('x', 16)}</button></div>
     <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
         : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
@@ -391,8 +391,8 @@ function ropen(id, b, ctx) {
           <label class="sm">Tipo<input class="in" data-tag="style" list="rv-styles" value="${it.style || ''}" placeholder="—"><datalist id="rv-styles">${styleOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
           <label class="sm">Pilar<input class="in" data-tag="pillar" list="rv-pillars" value="${it.pillar || ''}" placeholder="—"><datalist id="rv-pillars">${pillarOpts.map((x) => html`<option value="${x}">`)}</datalist></label>
         </div></details>` : ''}
-    </div></aside>`);
-  document.body.appendChild(v); requestAnimationFrame(() => v.classList.add('on'));
+    </div>`;
+  const dRv = dialog({ forma: 'lado', clase: 'rv-lado', etiqueta: rtitle(it), formulario: false, cuerpo: cuerpoRv }), v = dRv.el;
   layaBox(v.querySelector('#laya-ref'), { coll: 'content', id: it.id }); // Fase 3 · Laya: ¿sirve para esta marca?
   // El video se ve aquí mismo: el servidor saca el link directo del reel (caduca, por eso se pide al abrir). Si Instagram no lo deja, queda la miniatura.
   if (f === 'reel' && em) {
@@ -406,13 +406,12 @@ function ropen(id, b, ctx) {
       p.replaceWith(vd);
     }).catch(fallback);
   }
-  const close = () => { v.remove(); removeEventListener('keydown', esc); }, esc = (e) => { if (e.key === 'Escape') close(); };
-  addEventListener('keydown', esc); addEventListener('hashchange', close, { once: true });
+  const close = () => dRv.cerrar();
+  addEventListener('hashchange', close, { once: true });
   const save = async (patch) => { const { laya, ...base } = it; const r = await C.save({ ...base, ...patch }); Object.assign(it, r, { laya }); return it; };
   const tag = async (patch, msg) => { try { await save(patch); toast(msg); renderLib(b, ctx); } catch (er) { toast(er.message, true); } };
   v.querySelectorAll('[data-tag]').forEach((sl) => { sl.onchange = () => tag({ [sl.dataset.tag]: sl.value.trim().slice(0, 80) }, 'Etiqueta guardada'); });
   v.onclick = async (e) => {
-    if (e.target === v) return close();
     const tg = e.target.closest('[data-v="week"],[data-v="tested"]');
     if (tg) { const on = tg.dataset.v === 'week' ? it.week !== isoWeek() : !it.tested; await tag(tg.dataset.v === 'week' ? { week: on ? isoWeek() : '' } : { tested: on }, tg.dataset.v === 'week' ? (on ? 'Agregado a tu semana' : 'Quitado de tu semana') : on ? 'Marcado como probado' : 'Quitado de probados');
       tg.classList.toggle('dark', on); tg.classList.toggle('on', on); tg.textContent = tg.dataset.v === 'week' ? (on ? '✓ En mi semana' : '+ A mi semana') : on ? '✓ Probado' : 'Marcar probado'; return; }

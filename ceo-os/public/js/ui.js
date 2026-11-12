@@ -213,7 +213,9 @@ export async function popover(ancla, contenido, op = {}) {
   maquina.subscribe(render); maquina.start();
   (op.contenedor || document.body).append(pos); render();
   ancla.setAttribute('aria-haspopup', 'dialog'); ancla.setAttribute('aria-expanded', 'true'); ancla.setAttribute('aria-controls', el.id);
-  api.setOpen(true);
+  api.setOpen(true); render();
+  // El foco entra ya (Zag lo hace en el siguiente cuadro): lo indicado, o lo primero que se puede usar.
+  if (op.foco !== false) (op.foco instanceof Element ? op.foco : el.querySelector('input:not([type=hidden]),select,textarea,button,a[href],[tabindex]:not([tabindex="-1"])') || el)?.focus({ preventScroll: true });
   function fin() {
     if (cerrado) return; cerrado = true; if (popAbierto === yo) popAbierto = null;
     ancla.setAttribute('aria-expanded', 'false');
@@ -266,15 +268,18 @@ export function dialog(op = {}) {
   dlg.className = `ui-dlg ui-dlg--${op.forma || 'centro'}${op.clase ? ' ' + op.clase : ''}`;
   const tId = nuevoId('dlg-t');
   if (op.titulo) dlg.setAttribute('aria-labelledby', tId); else if (op.etiqueta) dlg.setAttribute('aria-label', op.etiqueta);
-  const acciones = (op.acciones || []).map((a, i) => `<button type="${a.tipo === 'primario' || (i === 0 && !a.tipo) ? 'submit' : 'button'}" class="btn${a.tipo === 'ghost' ? ' ghost' : ''}${a.tipo === 'peligro' ? ' danger' : ''}" data-ui-v="${esc(a.value ?? a.label)}">${esc(a.label)}</button>`).join('');
-  dlg.innerHTML = `<form method="dialog" class="ui-dlg-in">${op.titulo ? `<header class="ui-dlg-h"><h3 id="${tId}">${esc(op.titulo)}</h3>${op.x !== false ? `<button type="button" class="ui-dlg-x" data-ui-v="" aria-label="Cerrar">${svgIco('x', 16)}</button>` : ''}</header>` : ''}<div class="ui-dlg-b"></div>${acciones ? `<footer class="ui-dlg-f">${acciones}</footer>` : ''}</form>`;
-  const cuerpo = dlg.querySelector('.ui-dlg-b'), form = dlg.querySelector('form');
+  // formulario:false cuando el cuerpo trae sus propios <form> (un form no puede ir dentro de otro).
+  const conForm = op.formulario !== false, caja = conForm ? 'form' : 'div';
+  const acciones = (op.acciones || []).map((a, i) => `<button type="${conForm && (a.tipo === 'primario' || (i === 0 && !a.tipo)) ? 'submit' : 'button'}" class="btn${a.tipo === 'ghost' ? ' ghost' : ''}${a.tipo === 'peligro' ? ' danger' : ''}" data-ui-v="${esc(a.value ?? a.label)}">${esc(a.label)}</button>`).join('');
+  dlg.innerHTML = `<${caja}${conForm ? ' method="dialog"' : ''} class="ui-dlg-in">${op.titulo ? `<header class="ui-dlg-h"><h3 id="${tId}">${esc(op.titulo)}</h3>${op.x !== false ? `<button type="button" class="ui-dlg-x" data-ui-v="" aria-label="Cerrar">${svgIco('x', 16)}</button>` : ''}</header>` : ''}<div class="ui-dlg-b"></div>${acciones ? `<footer class="ui-dlg-f">${acciones}</footer>` : ''}</${caja}>`;
+  const cuerpo = dlg.querySelector('.ui-dlg-b'), form = conForm ? dlg.querySelector('form') : null;
   if (op.cuerpo instanceof Node) cuerpo.append(op.cuerpo); else cuerpo.innerHTML = crudo(op.cuerpo);
   const antes = document.activeElement;
   let valor = null, listo;
   const cerrado = new Promise((r) => { listo = r; });
   const cerrar = (v = null) => { valor = v; if (dlg.open) dlg.close(); };
-  form.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', (e) => {
+    if (e.target !== form) return; // un form propio del cuerpo maneja su submit
     e.preventDefault();
     const b = e.submitter; const v = b?.dataset.uiV ?? 'ok';
     if (op.antesDeCerrar && op.antesDeCerrar(v, form) === false) return;

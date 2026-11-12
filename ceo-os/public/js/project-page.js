@@ -13,6 +13,7 @@ import { holders } from './cycle.js';
 import { levelName, LEVEL_NAMES } from './levels.js';
 import { intelView } from './intel-ui.js';
 import { vacio } from './visual.js';
+import { popover, cerrarPopover } from './ui.js';
 
 const PR = col('projects'), TK = col('tasks');
 export const PSTATES = ['En curso', 'En riesgo', 'Pausado', 'Hecho'];
@@ -73,20 +74,16 @@ function dragger(root, sel, h) {
 }
 
 // ---------- Popover para editar una propiedad (como Notion: clic en el valor) ----------
-let popEl = null;
-function closePop() { popEl?.remove(); popEl = null; document.removeEventListener('pointerdown', outside, true); document.removeEventListener('keydown', escPop, true); }
-const outside = (e) => { if (popEl && !popEl.contains(e.target)) closePop(); };
-const escPop = (e) => { if (e.key === 'Escape') { e.stopPropagation(); closePop(); } };
+// Es el ui.popover del OS (Zag + Floating UI): role=dialog, Esc y clic afuera cierran, el foco vuelve al valor.
+const closePop = () => cerrarPopover();
 function pop(anchor, content, map = {}) {
-  closePop();
-  const d = document.createElement('div'); d.className = 'pp-pop'; d.setAttribute('role', 'dialog'); mount(d, content); document.body.append(d); popEl = d;
-  const r = anchor.getBoundingClientRect(), w = d.offsetWidth, hh = d.offsetHeight;
-  d.style.left = Math.max(8, Math.min(r.left, innerWidth - w - 8)) + 'px';
-  d.style.top = (r.bottom + 6 + hh > innerHeight - 8 && r.top - hh - 6 > 8 ? r.top - hh - 6 : Math.min(r.bottom + 6, innerHeight - hh - 8)) + 'px';
-  d.onclick = (e) => { const t = e.target.closest('[data-pop]'); if (t) map[t.dataset.pop]?.(t, e); };
-  d.onchange = (e) => { const t = e.target.closest('[data-popchg]'); if (t) map[t.dataset.popchg]?.(t, e); };
-  setTimeout(() => { document.addEventListener('pointerdown', outside, true); document.addEventListener('keydown', escPop, true); d.querySelector('input:not([type=checkbox]),select')?.focus(); }, 0);
-  return d;
+  return popover(anchor, content, { etiqueta: anchor.getAttribute('aria-label') || anchor.textContent.trim().slice(0, 40) || 'Editar', clase: 'pp-editar', ancho: 340 }).then((r) => {
+    if (!r) return null;
+    r.el.onclick = (e) => { const t = e.target.closest('[data-pop]'); if (t) map[t.dataset.pop]?.(t, e); };
+    r.el.onchange = (e) => { const t = e.target.closest('[data-popchg]'); if (t) map[t.dataset.popchg]?.(t, e); };
+    r.el.querySelector('input:not([type=checkbox]),select')?.focus();
+    return r.el;
+  });
 }
 
 // ================================================================================================

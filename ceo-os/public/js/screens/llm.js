@@ -1,5 +1,5 @@
 import { esImagen, prepararImagen, urlImagen } from '../chat-imagenes.js';
-import { espacioMenu } from '../chat-menu-posicion.js';
+import { menu as uiMenu, dialog, cerrarMenu } from '../ui.js';
 // El Inherent LLM (#/chat): el Chat de Inherent OS, una pantalla más dentro del shell (vive en #main, a la derecha de la
 // barra lateral; el elemento donde se monta lleva la clase llm-host): barra de conversaciones · conversación · panel. Responde
 // el SERVIDOR de Inherent (chat-gateway.js · PLAN-GATEWAY F3): las conversaciones se guardan en el OS, con web, los MCPs de la
@@ -572,33 +572,20 @@ export async function render(el, { me, sub = [], alive }) {
   function ponerBrujula(b) { S.brujula = b; guardarBrujula(me, S.sesion, b); pintarBrujula(); }
 
   // ---------- Menús (modo, cliente/marca, modelo) ----------
-  let cerrarMenuActual = () => {};
+  // El ui.menu del OS (Zag + Floating UI): se queda dentro de la ventana visible (también con el teclado del cel),
+  // teclado completo, búsqueda cuando la lista es larga y el foco de vuelta al chip. items: [{ v, label, sub, on, off, ico, fin } | { grupo }]
   function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
-    cerrarMenuActual();
-    el.querySelector('.llm-menu')?.remove();
-    const m = document.createElement('div'); m.className = 'llm-menu'; m.setAttribute('role', 'listbox');
-    const pintar = (q = '') => { const xs = items.filter((x) => x.grupo ? !q : !q || x.label.toLowerCase().includes(q.toLowerCase())); return html`<span class="lmn-k">${titulo}</span>${buscar ? html`<input class="lmn-q" placeholder="Buscar" aria-label="Buscar">` : ''}<div class="lmn-l">${xs.length ? xs.map((x) => x.grupo ? html`<span class="lmn-k lmn-g">${x.grupo}</span>` : html`<button type="button" role="option" class="${x.on ? 'on' : ''} ${x.off ? 'off' : ''}" data-v="${x.v}" ${x.off ? raw('disabled') : ''}>${x.ico || ''}<span><b>${x.label}</b>${x.sub ? html`<small>${x.sub}</small>` : ''}</span>${x.fin || ''}${x.on ? ico('check', 13) : ''}</button>`) : html`<p class="lmn-mut">Nada por aquí.</p>`}</div>${pie}`; };
-    mount(m, pintar());
-    R.append(m);
-    const colocar = () => {
-      if (!m.isConnected) return;
-      const v = window.visualViewport, top = v?.offsetTop || 0, left = v?.offsetLeft || 0;
-      const pos = espacioMenu(anchor.getBoundingClientRect(), R.getBoundingClientRect(), { top, left, bottom: top + (v?.height || innerHeight), right: left + (v?.width || innerWidth) });
-      // La altura real puede ser menor que el máximo: alinear al borde de la caja.
-      for (const k of ['left', 'width', 'maxHeight']) m.style[k] = pos[k] + 'px';
-      m.style.top = (pos.top + (pos.sobre ? pos.maxHeight - Math.min(pos.maxHeight, m.offsetHeight) : 0)) + 'px';
-      m.style.bottom = 'auto';
-    };
-    colocar();
-    const ajuste = new AbortController();
-    window.addEventListener('resize', colocar, { signal: ajuste.signal });
-    window.visualViewport?.addEventListener('resize', colocar, { signal: ajuste.signal });
-    const quitar = () => { ajuste.abort(); m.remove(); };
-    cerrarMenuActual = quitar;
-    window.addEventListener('hashchange', quitar, { signal: ajuste.signal, once: true });
-    const q = m.querySelector('.lmn-q'); if (q) { q.focus(); q.oninput = () => { const v = q.value; mount(m, pintar(v)); const n = m.querySelector('.lmn-q'); n.value = v; n.focus(); n.oninput = q.oninput; colocar(); }; }
-    m.addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b || b.disabled) return; quitar(); onPick(b.dataset.v); });
-    setTimeout(() => document.addEventListener('pointerdown', function cerrar(e) { if (!m.contains(e.target)) { quitar(); document.removeEventListener('pointerdown', cerrar); } }));
+    return uiMenu(anchor, items.map((x) => (x.grupo ? { grupo: x.grupo } : { value: x.v, label: x.label, sub: x.sub, icon: x.ico, fin: x.fin, disabled: x.off, checked: Boolean(x.on), onSelect: () => onPick(x.v) })),
+      { titulo, buscar: buscar ? 'Buscar' : false, pie, clase: 'llm-pop', ancho: 300, vacio: 'Nada por aquí.' });
+  }
+  // Las hojas del Chat (Ajustes, «Abrir y leer»): el diálogo único del OS dentro de la ventana del Chat, así sus
+  // formularios siguen pasando por los mismos manejadores. Una a la vez.
+  let hoja = null;
+  function abrirHoja(titulo, cuerpo) {
+    hoja?.cerrar();
+    const h = dialog({ titulo, cuerpo, forma: 'hoja', formulario: false, contenedor: R, clase: 'llm-hoja' });
+    hoja = h; h.cerrado.then(() => { if (hoja === h) hoja = null; });
+    return h;
   }
   const menuModo = (a) => menu(a, 'Modo', modos.map((m) => ({ v: m.id, label: m.nombre, sub: m.sub, on: m.id === S.modo, ico: html`<i class="lmn-m" data-m="${m.id}">${m.letra}</i>` })), (v) => cambiarModo(v));
   const menuSlug = (a) => menu(a, modoDe(S.modo).pide === 'marca' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
@@ -625,16 +612,13 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Ajustes: el servidor, el límite semanal y el tema ----------
   function ajustes() {
-    el.querySelector('.llm-sheet')?.remove();
-    const d = document.createElement('div'); d.className = 'llm-sheet'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Ajustes del Chat');
     const h = S.salud || {};
-    mount(d, html`<div class="lsh"><header><b>Ajustes del Chat</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
+    abrirHoja('Ajustes del Chat', html`<div class="lsh">
       <section><span class="lp-k">El servidor</span><p><i class="ls-dot ${h.on ? 'on' : 'off'}"></i>${h.on ? `En línea${h.version ? ` · versión ${h.version}` : ''}` : 'Fuera de línea ahora'}</p>
         <p class="lp-mut">Responde el servidor de Inherent aunque tu compu esté apagada. Tus conversaciones quedan guardadas en el OS (las abres desde cualquier compu); busca en la web, usa tus conexiones (Inherent AI → MCPs), lee el OS como tú y, para cambiar algo, te deja una propuesta que apruebas.</p></section>
       <section><span class="lp-k">Tu límite semanal del Chat</span><p class="lp-mut">Cuántos usos quieres gastar por semana (los que tu suscripción aguanta). Con él, la Brújula te dice a qué ritmo vas. Es tu número: el servidor no da el límite de la suscripción.</p>
         <form class="lsu-pair" data-f="limite"><input name="n" type="number" min="0" step="10" inputmode="numeric" value="${S.limite || ''}" placeholder="Por ejemplo, 300" aria-label="Usos por semana"><button type="submit" class="lsu-btn">Guardar</button></form></section>
     </div>`);
-    R.append(d);
   }
   const skills = async () => (S.skills ||= await B.skills().catch(() => []));
 
@@ -894,11 +878,8 @@ export async function render(el, { me, sub = [], alive }) {
   function leerResultado(i) {
     const x = S.msgs[i]; if (!x?.pase) return;
     const d = departamentoDe(x.dep), a = departamentoDe(x.pase.a);
-    el.querySelector('.llm-sheet')?.remove();
-    const hoja = document.createElement('div'); hoja.className = 'llm-sheet'; hoja.setAttribute('role', 'dialog'); hoja.setAttribute('aria-label', 'Resultado para leer');
-    mount(hoja, html`<div class="lsh"><header><b>${d ? d.depto : 'Resultado'} → ${a ? a.depto : ''}</b><button type="button" class="llm-ib" data-a="cerrar-sheet" aria-label="Cerrar">${ico('x', 15)}</button></header>
+    abrirHoja(`${d ? d.depto : 'Resultado'} → ${a ? a.depto : ''}`, html`<div class="lsh">
       <section class="lm-md">${md(x.t)}</section>${x.pase.resumen ? html`<section><span class="lp-k">Lo que se pasa</span><div class="lm-md">${md(x.pase.resumen)}</div></section>` : ''}</div>`);
-    R.append(hoja);
     x.leido = true; pintarHilo();
   }
   function pasarResultado(i) {
@@ -1140,9 +1121,8 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'ag-aprobar') { const r = runDe(t.dataset.run); if (!r) return; try { const { run } = await api(`agentes/runs/${enc(r.id)}/etapa/${+t.dataset.n}/aprobar`, { method: 'POST', body: {} }); toast('Etapa aprobada'); ctxDoc().onCambio(run); } catch (er) { toast(er.message, true); } return; }
     if (a === 'modo') return cambiarModo(t.dataset.m);
     if (a === 'ver-adjunto') {
-      const d = document.createElement('dialog'); d.className = 'llm-imagen-dialog';
-      mount(d, html`<button type="button" aria-label="Cerrar imagen">Cerrar</button><img src="${t.dataset.img}" alt="${t.dataset.nombre || 'Imagen'}">`);
-      document.body.append(d); d.querySelector('button').onclick = () => d.close(); d.onclose = () => d.remove(); d.showModal(); return;
+      // La imagen en grande: el diálogo único (Esc, clic afuera o «Cerrar»).
+      dialog({ forma: 'imagen', etiqueta: t.dataset.nombre || 'Imagen', cuerpo: html`<img class="ui-dlg-img" src="${t.dataset.img}" alt="${t.dataset.nombre || 'Imagen'}">`, acciones: [{ label: 'Cerrar', value: '', tipo: 'ghost' }] }); return;
     }
     if (a === 'adjuntar') { const i = document.createElement('input'); i.type = 'file'; i.multiple = true; i.onchange = () => sumarArchivos(i.files); return i.click(); }
     if (a === 'quitar-adj') { S.adjuntos.splice(+t.dataset.i, 1); return pintarCaja(); }
@@ -1154,7 +1134,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'menu-modo') return menuModo(t);
     if (a === 'menu-slug') return menuSlug(t);
     if (a === 'menu-modelo') return menuModelo(t);
-    if (a === 'refrescar-modelos') { el.querySelector('.llm-menu')?.remove(); try { S.modelos = await B.modelos({ fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
+    if (a === 'refrescar-modelos') { cerrarMenu(); try { S.modelos = await B.modelos({ fresco: true }); ajustarModelo(); persistir(); toast('Lista de modelos al día'); } catch (er) { toast(er.message, true); } return pintarCaja(); }
     if (a === 'sugerencia') return enviar(t.dataset.t);
     if (a === 'a-caja') { const ta = $('#llm-in', el); if (ta) { ta.value = t.dataset.t; crecer(ta); ta.focus(); } return; }
     if (a === 'opcion') return enviar(t.dataset.t);
@@ -1197,7 +1177,6 @@ export async function render(el, { me, sub = [], alive }) {
       return;
     }
     if (a === 'ajustes') return ajustes();
-    if (a === 'cerrar-sheet') return el.querySelector('.llm-sheet')?.remove();
     if (a === 'revisar') return revisar();
   });
   escucha('change', async (e) => {
@@ -1207,7 +1186,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (e.target.matches?.('.ls-modo')) { cambiarModo(e.target.value); if (S.modo !== e.target.value) pintarSide(); }
   });
   escucha('keydown', (e) => {
-    if (e.target.id !== 'llm-in') { if (e.key === 'Escape') el.querySelector('.llm-sheet, .llm-menu')?.remove(); return; }
+    if (e.target.id !== 'llm-in') return; // Esc de menús y hojas: ui.js
     const cmds = $('#lc-cmds', el);
     if (cmds && !cmds.hidden && (e.key === 'Enter' || e.key === 'Tab') && !e.shiftKey) { e.preventDefault(); const b = cmds.querySelector('button.on'); if (b) { if (b.dataset.a === 'arroba') elegirArroba(b.dataset.n); else comando({ cmd: b.dataset.c, arg: '' }); } return; }
     if (cmds && !cmds.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); const bs = [...cmds.querySelectorAll('button')], i = bs.findIndex((b) => b.classList.contains('on')), j = (i + (e.key === 'ArrowDown' ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k) => b.classList.toggle('on', k === j)); return; }
@@ -1216,7 +1195,7 @@ export async function render(el, { me, sub = [], alive }) {
   escucha('submit', async (e) => {
     e.preventDefault();
     if (e.target.id === 'llm-form') { const ta = $('#llm-in', el), v = ta.value; if (!v.trim() && !S.adjuntos.length) return; ta.value = ''; crecer(ta); comandos(''); return enviar(v); }
-    if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); el.querySelector('.llm-sheet')?.remove(); return pintarPanel(); }
+    if (e.target.dataset.f === 'limite') { S.limite = Math.max(0, Math.round(+new FormData(e.target).get('n') || 0)); persistir(); toast(S.limite ? `Tu límite: ${S.limite} usos por semana` : 'Sin límite semanal'); hoja?.cerrar(); return pintarPanel(); }
   });
 
   // ---------- Arranque: el servidor, las listas y la conversación de la ruta ----------

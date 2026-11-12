@@ -38,11 +38,3 @@ export function ubicarPop(m, box) {
   m.classList.toggle('abajo', haciaAbajo);
   m.style.maxHeight = `${Math.max(220, Math.min(560, haciaAbajo ? abajo : arriba))}px`;
 }
-
-// Un menú que sale de un botón: queda alineado con él (a la derecha si el botón está a la derecha). Arriba o abajo lo dice el CSS.
-export function junto(m, anchor, box) {
-  if (!box?.getBoundingClientRect) return;
-  const a = anchor.getBoundingClientRect(), b = box.getBoundingClientRect(), der = a.left - b.left > b.width / 2;
-  m.style.left = der ? 'auto' : `${Math.max(0, a.left - b.left)}px`;
-  m.style.right = der ? `${Math.max(0, b.right - a.right)}px` : 'auto';
-}
