@@ -34,6 +34,7 @@
     "test:db": "node scripts/test-db-cliente.mjs",
     "test:code": "node scripts/test-code.mjs && node scripts/test-herramientas-code.mjs",
     "test:departamentos": "node scripts/test-departamentos.mjs",
+    "test:aviso": "node scripts/test-aviso-actualizacion.mjs",
     "test:laya": "node scripts/test-laya-rapido.mjs"
   },
   "dependencies": {
