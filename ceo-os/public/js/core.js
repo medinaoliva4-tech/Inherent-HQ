@@ -112,10 +112,37 @@ export const col = (name) => ({
 });
 
 // ---------- UI: toast, drawer, diálogo ----------
-let tt;
-export function toast(msg, err) {
-  const t = $('#toast'); t.textContent = msg; t.className = 'on' + (err ? ' err' : '');
-  clearTimeout(tt); tt = setTimeout(() => (t.className = ''), 2800);
+// toast(msg) = aviso neutro · toast(msg, true) = error · toast(msg, 'ok' | 'error' | 'info') · toast(msg, { tipo, accion: { texto, fn | href }, duracion }).
+// Se apilan (hasta 3 a la vez; el resto espera su turno). Duran según el tipo: ok 2.8 s, info 4 s, error 6 s, con acción 7 s;
+// pasar el mouse por encima las detiene. El texto siempre va como texto (nunca html).
+const TOAST_MAX = 3, TOAST_MS = { neutro: 2800, ok: 2800, info: 4000, error: 6000, accion: 7000 };
+const toastCola = []; let toastVivos = 0;
+const tipoToast = (o) => (o === true ? 'error' : typeof o === 'string' ? o : o?.tipo || 'neutro');
+export function toast(msg, opts) {
+  const o = opts && typeof opts === 'object' ? opts : {}, tipo = ['ok', 'error', 'info'].includes(tipoToast(opts)) ? tipoToast(opts) : 'neutro';
+  toastCola.push({ msg: String(msg ?? ''), tipo, accion: o.accion && o.accion.texto ? o.accion : null, duracion: o.duracion });
+  toastSigue();
+}
+function toastSigue() {
+  const caja = $('#toast'); if (!caja) return;
+  while (toastVivos < TOAST_MAX && toastCola.length) {
+    const x = toastCola.shift(), el = document.createElement('div'); toastVivos++;
+    el.className = `toast-i toast-${x.tipo}`; el.setAttribute('role', x.tipo === 'error' ? 'alert' : 'status');
+    const tx = document.createElement('span'); tx.className = 'toast-t'; tx.textContent = x.msg;
+    if (x.tipo !== 'neutro') { const ic = document.createElement('span'); ic.className = 'toast-ic'; ic.innerHTML = svgIco(x.tipo === 'ok' ? 'check' : x.tipo === 'error' ? 'triangle-alert' : 'info', 15); el.append(ic); }
+    el.append(tx);
+    let timer, cerrado = false;
+    const cerrar = () => { if (cerrado) return; cerrado = true; clearTimeout(timer); el.classList.remove('on'); setTimeout(() => { el.remove(); toastVivos--; toastSigue(); }, 220); };
+    if (x.accion) {
+      const b = document.createElement(x.accion.href ? 'a' : 'button'); b.className = 'toast-a'; b.textContent = x.accion.texto;
+      if (x.accion.href) b.href = x.accion.href; else b.type = 'button';
+      b.addEventListener('click', () => { try { x.accion.fn?.(); } catch {} cerrar(); }); el.append(b);
+    }
+    const ms = x.duracion ?? (x.accion ? TOAST_MS.accion : TOAST_MS[x.tipo]);
+    const arma = () => { clearTimeout(timer); timer = setTimeout(cerrar, ms); };
+    el.addEventListener('mouseenter', () => clearTimeout(timer)); el.addEventListener('mouseleave', arma);
+    caja.append(el); requestAnimationFrame(() => el.classList.add('on')); arma();
+  }
 }
 // ---------- La vista grande: lo que antes se abría en un panel de costado ahora se abre a pantalla completa ----------
 // drawer(content, map, opts) es la misma API de siempre. Arriba lleva «← <Sección> / <título>»: la flecha (o Esc)

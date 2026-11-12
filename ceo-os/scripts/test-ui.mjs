@@ -456,4 +456,12 @@ t('páginas: cada una se llama como en la barra y sus datos van en español', ()
   for (const n of ['Active projects', 'Tasks due', 'Monthly revenue', 'Active clients', 'Ask InherentOS anything" data-act']) assert.ok(!de('home.js').includes(n), n);
 });
 
+t('toast: una sola capa de CSS, con tipos, acción y cola; el error no es gris', () => {
+  const core = fs.readFileSync(path.join(RAIZ, 'js', 'core.js'), 'utf8');
+  assert.equal((CSS.match(/^#toast\{/gm) || []).length, 1, 'un solo bloque #toast');
+  assert.ok(!/#toast\.(on|err)/.test(CSS), 'ya no hay capas viejas de #toast.on / #toast.err');
+  for (const k of ['toast-ok', 'toast-error', 'toast-info', 'toast-a']) assert.ok(CSS.includes('.' + k), k);
+  assert.match(core, /export function toast\(msg, opts\)/); assert.match(core, /TOAST_MAX = 3/); assert.match(core, /accion/); assert.match(CSS, /\.toast-error\{background:color-mix\(in srgb,var\(--ui-bad\)/, 'el error va en tono de error, no gris');
+});
+
 console.log(`\n${ok} pruebas del sistema de diseño pasaron`);

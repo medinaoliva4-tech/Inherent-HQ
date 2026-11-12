@@ -265,8 +265,6 @@ textarea.in{min-height:96px;resize:vertical}
 .dlg::backdrop{background:rgba(44,31,22,.35);backdrop-filter:blur(3px)}
 .dlg .in-dlg{padding:26px}
 .dlg h3{font-size:22px;font-weight:500;letter-spacing:-.5px;margin-bottom:16px}
-#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:var(--cream);padding:12px 20px;border-radius:99px;font-size:14px;opacity:0;transition:.25s;z-index:60;pointer-events:none}
-#toast.on{opacity:1;transform:translate(-50%,0)}#toast.err{background:#515152}
 .scorein{display:inline-flex;gap:4px}.scorein button{width:14px;height:24px;border-radius:4px;background:var(--fill)}.scorein button.on{background:linear-gradient(#a6a6a7,#5e5e5f)}
 .tagbox{display:flex;flex-wrap:wrap;gap:6px}.tagbox .chip{cursor:pointer}.tagbox .chip.off{background:transparent;border:1px dashed rgb(var(--ink-rgb) / .25);color:var(--mut)}
 .kanban{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:14px;overflow-x:auto;padding-bottom:6px}
@@ -337,7 +335,6 @@ html{scroll-behavior:smooth}
   .dlg[open]{animation:pop .3s cubic-bezier(.2,.8,.2,1)}
   .dlg[open]::backdrop{animation:fade .3s ease}
   .qview{animation:fade .25s ease}.qview .qdoc{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
-  #toast{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s ease}
   .loading{animation:pulse 1.4s ease-in-out infinite}
   .swap{animation:fade .28s ease}
 }
@@ -397,7 +394,6 @@ html{scroll-behavior:smooth}
   /* documento PDF y vista de documento */
   .qview{padding:10px 0 40px}.qdoc{padding:24px 18px;font-size:12.5px}.qdoc .qh{flex-direction:column;gap:14px}.qdoc .qmeta{text-align:left}.qdoc .qto{grid-template-columns:1fr}.qdoc .qsum{width:100%}
   .qview .qbar{flex-wrap:wrap}
-  #toast{bottom:calc(70px + env(safe-area-inset-bottom));max-width:calc(100vw - 32px);text-align:center}
   .kv{grid-template-columns:100px 1fr}
 }
 
@@ -1186,13 +1182,6 @@ td.n,th.n,.wktable td.n,.wktable th.n{text-align:right}
 @keyframes skel{to{background-position:-50% 0,0 6px,0 40px,0 64px}}
 :root[data-theme="dark"] .loading{background-image:linear-gradient(100deg,transparent 20%,rgb(255 255 255 / .05) 50%,transparent 80%),linear-gradient(var(--fill),var(--fill)),linear-gradient(var(--fill),var(--fill)),linear-gradient(var(--fill),var(--fill))}
 
-/* ---------- toast: píldora flotante arriba al centro ---------- */
-#toast{top:calc(16px + env(safe-area-inset-top));bottom:auto!important;transform:translate(-50%,-14px) scale(.98);padding:10px 18px;border-radius:99px;font-size:13.5px;font-weight:500;
-  background:rgb(var(--ink-rgb) / .86);color:var(--cream);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
-  box-shadow:0 12px 32px -10px rgb(0 0 0 / .35);max-width:calc(100vw - 32px);text-align:center;transition:transform 240ms var(--ease),opacity 200ms ease}
-#toast.on{transform:translate(-50%,0) scale(1)}
-#toast.err{background:rgb(120 120 128 / .92);color:#fdfaf3}
-
 /* ---------- velo, sheet lateral y diálogos ---------- */
 .veil{background:rgb(20 14 10 / .28);-webkit-backdrop-filter:blur(8px) saturate(1.2);backdrop-filter:blur(8px) saturate(1.2);transition:opacity 240ms var(--ease)}
 .drawer,.sp-sheet{top:12px;right:12px;bottom:12px;width:min(480px,calc(100vw - 24px));padding:0 24px 24px;border-radius:var(--r-l);background:var(--surface);border:1px solid var(--hair);
@@ -1390,7 +1379,6 @@ a.sp-tile:hover .sp-tile-go{transform:translate(2px,-2px);background:var(--ink);
   .sec-title h2{font-size:19px}
   /* barra de abajo tipo iOS: vidrio, íconos con etiqueta de 10.5px y safe-area */
   .app::after{height:calc(64px + env(safe-area-inset-bottom));background:var(--bar);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);border-top:.5px solid var(--hair-strong)}
-  #toast{top:calc(10px + env(safe-area-inset-top))}
   .card,.sp-panel,.sp-tile{border-radius:18px}
   .sp-cover{padding:22px 20px;border-radius:22px}.sp-cover h1{font-size:30px}
   .sp-kpis,.wkkpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
@@ -8047,13 +8035,7 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vt3In 210ms var(--e-en
   :is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva):hover{
     transform:translateY(-1px);box-shadow:var(--sh-2)}
 }
-
-/* ---------- Toast, vista grande y diálogos: entran con un resorte corto, salen más rápido ---------- */
-#toast{transform:translate(-50%,-14px) scale(.96)}
-#toast.on{transform:translate(-50%,0) scale(1)}
 @media (prefers-reduced-motion:no-preference){
-  #toast{transition:transform 200ms var(--e-ent),opacity 150ms linear}
-  #toast.on{transition:transform 480ms var(--e-pop),opacity 170ms linear}
   #drawer.drawer{transition:opacity 150ms linear,transform 220ms var(--e-ent),visibility 0s linear 220ms}
   #drawer.drawer.on{transition:opacity 200ms var(--e-ent),transform 360ms var(--e-spring),visibility 0s}
   .dlg[open]{animation:mvPop 340ms var(--e-pop)}
@@ -8069,7 +8051,6 @@ html[data-vt=nav]::view-transition-new(vt-main){animation:vt3In 210ms var(--e-en
   #main.enter,.entra,.entra-lista>*{animation:mvFade 160ms linear backwards!important}
   .skel{animation:skAparece 160ms linear 160ms backwards!important}
   .lat-ind,.lat-ind.fijo{transition:opacity 120ms linear!important}
-  #toast,#toast.on{transform:translate(-50%,0)!important;transition:opacity 160ms linear!important}
   #drawer.drawer{transform:none!important;transition:opacity 160ms linear,visibility 0s linear 160ms!important}
   #drawer.drawer.on{transform:none!important;transition:opacity 160ms linear,visibility 0s!important}
   .dlg[open]{animation:mvFade 160ms linear!important}
@@ -9140,8 +9121,6 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 .lat-ayuda .pdchip{width:100%;background:none;color:var(--ui-ink2);justify-content:flex-start;padding:0 10px}
 .lat-ayuda .pdchip:hover{background:var(--ui-fill2);color:var(--ui-ink);opacity:1}
 
-#toast{background:rgb(44 44 46 / .72);-webkit-backdrop-filter:var(--ui-blur);backdrop-filter:var(--ui-blur);color:var(--ui-ink);border:0;border-radius:16px;box-shadow:var(--ui-edge),0 18px 40px rgb(0 0 0 / .55)}
-
 /* ===== El Chat, como el prototipo aprobado (PLAN-GATEWAY §22) ===== */
 .llm{--l-bg:transparent;--l-side:#111112;--l-surf:#141415;--l-surf2:#1b1b1d;--l-ink:#efebe4;--l-ink2:#bdb9b2;--l-mut:#8f8b86;--l-acc:#e3d8c5;--l-acc-ink:#16140f;--l-user:#252527;--l-ok:#a7f3d0;--l-warn:#e8c98f;--l-glass:rgb(30 30 32 / .52);--ink:#efebe4;--ink2:#bdb9b2;--mut:#a39f9a;--tone:#e3d8c5;background:transparent;font-size:15px}
 .lat-top{display:flex;align-items:center;gap:6px}
@@ -9294,8 +9273,6 @@ a.ch-f{text-decoration:none}
   .ch-d>svg:first-child,.ch-tg svg{transition-duration:.32s}
   .lat-ctx:not([hidden]){animation:mvFade 280ms ease-out backwards}
   .llm-panel,.llm-main{transition-duration:.46s;transition-timing-function:var(--suave)}
-  #toast{transition:transform 260ms var(--suave),opacity 200ms ease-out}
-  #toast.on{transition:transform 460ms var(--suave),opacity 220ms ease-out}
   #drawer.drawer{transition:opacity 220ms ease-out,transform 300ms var(--suave),visibility 0s linear 300ms}
   #drawer.drawer.on{transition:opacity 260ms ease-out,transform 460ms var(--suave),visibility 0s}
   .dlg[open]{animation-duration:380ms}
@@ -10038,3 +10015,21 @@ button,a,.lc{touch-action:manipulation}
 .btn-icon:disabled{opacity:.4;cursor:default}
 .btn-icon:focus-visible{outline:2px solid var(--ui-focus);outline-offset:1px}
 .btn-icon.end{margin-left:auto}
+
+/* ===== PRIMITIVE · Toast: una sola capa =====
+   #toast es la pila (arriba al centro, hasta 3); cada aviso es .toast-i con su tipo: neutro (sin ícono), ok, info, error.
+   El error va en tono de error (nunca un gris). core.js › toast() pone y quita los avisos. */
+#toast{position:fixed;z-index:60;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;width:max-content;max-width:calc(100vw - 32px);pointer-events:none}
+.toast-i{display:flex;align-items:center;gap:10px;max-width:100%;padding:10px 16px;border-radius:var(--r-3);background:rgb(44 44 46 / .72);-webkit-backdrop-filter:var(--ui-blur);backdrop-filter:var(--ui-blur);color:var(--ui-ink);font-size:13.5px;font-weight:500;line-height:1.35;box-shadow:var(--ui-edge),0 18px 40px rgb(0 0 0 / .55);pointer-events:auto;opacity:0;transform:translateY(-10px) scale(.97);transition:transform var(--d-4) var(--e-out),opacity var(--d-3) linear}
+.toast-i.on{opacity:1;transform:none}
+.toast-ic{display:grid;place-items:center;flex:none}
+.toast-ok .toast-ic{color:var(--ui-ok)}
+.toast-info .toast-ic{color:var(--ui-info)}
+.toast-error{background:color-mix(in srgb,var(--ui-bad) 22%,rgb(30 30 32 / .86));color:var(--ui-ink)}
+.toast-error .toast-ic{color:var(--ui-bad-t)}
+.toast-t{min-width:0;overflow-wrap:anywhere}
+.toast-a{flex:none;margin-left:6px;padding:4px 10px;border-radius:99px;background:rgb(var(--ui-tint) / .14);color:var(--ui-ink);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer}
+.toast-a:hover{background:rgb(var(--ui-tint) / .22)}
+:root[data-theme="light"] .toast-i{background:rgb(255 255 255 / .92);box-shadow:var(--ui-sh-2)}
+:root[data-theme="light"] .toast-error{background:color-mix(in srgb,var(--ui-bad) 12%,#fff)}
+@media (prefers-reduced-motion:reduce){.toast-i{transform:none;transition:opacity var(--d-3) linear}}
