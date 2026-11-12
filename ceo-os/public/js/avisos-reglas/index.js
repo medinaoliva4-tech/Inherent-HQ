@@ -8,5 +8,6 @@ import { TRABAJO } from './trabajo.js';
 import { CLIENTES_ESTRATEGIA } from './clientes-estrategia.js';
 import { CLIENTES_MARCAS } from './clientes-marcas.js';
 import { PLATAFORMA } from './plataforma.js';
+import { SUGERENCIAS } from './sugerencias.js'; // también salen como sugerencia sobre la caja del Chat
 
-export const REGLAS = [...TRABAJO, ...CLIENTES_ESTRATEGIA, ...CLIENTES_MARCAS, ...PLATAFORMA];
+export const REGLAS = [...TRABAJO, ...CLIENTES_ESTRATEGIA, ...CLIENTES_MARCAS, ...PLATAFORMA, ...SUGERENCIAS];

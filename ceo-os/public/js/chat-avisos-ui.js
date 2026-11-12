@@ -4,6 +4,10 @@ import { estadoAvisos, activarAvisos } from './avisos.js';
 
 export function instalarAvisosChat(me) {
   if (!me || me.role === 'client') return () => {};
+  // La interfaz del Chat (OpenUI), las sugerencias sobre la caja y los vacíos conversacionales necesitan saber quién es la persona.
+  let quitarSug = () => {};
+  import('./llm/acciones-os.js').then((m) => { m.contextoAcciones({ me }); m.instalarAccionesUi(); }).catch(() => {});
+  Promise.all([import('./sugerencia-chat.js'), import('./iconos.js')]).then(([m, i]) => m.montarSugerencias(me, { api, icono: (n) => i.svgIco(n, 18) })).then((q) => { quitarSug = q; }).catch(() => {});
   const key = `chat.avisos.vistos:${me.email}`;
   let vistos; try { vistos = new Set(JSON.parse(sessionStorage.getItem(key) || '[]')); } catch { vistos = new Set(); }
   const ctrl = new AbortController(); let ocupado = false, push = false;
@@ -42,7 +46,7 @@ export function instalarAvisosChat(me) {
     try { const r = await api('avisos/chat', { signal: AbortSignal.any([ctrl.signal, AbortSignal.timeout(10000)]) }); for (const a of (r.items || []).slice().reverse()) await mostrar(a); } catch {} finally { ocupado = false; }
   }
   const timer = setInterval(revisar, 20000);
-  const quitar = () => { ctrl.abort(); clearInterval(timer); caja.remove(); };
+  const quitar = () => { ctrl.abort(); clearInterval(timer); caja.remove(); quitarSug(); };
   events.addEventListener('logout', quitar, { signal: ctrl.signal, once: true });
   document.addEventListener('visibilitychange', revisar, { signal: ctrl.signal });
   window.addEventListener('online', revisar, { signal: ctrl.signal });

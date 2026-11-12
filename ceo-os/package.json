@@ -36,7 +36,8 @@
     "test:code": "node scripts/test-code.mjs && node scripts/test-herramientas-code.mjs",
     "test:departamentos": "node scripts/test-departamentos.mjs",
     "test:aviso": "node scripts/test-aviso-actualizacion.mjs",
-    "test:laya": "node scripts/test-laya-rapido.mjs"
+    "test:laya": "node scripts/test-laya-rapido.mjs",
+    "test:openui": "node scripts/test-openui.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",

@@ -444,7 +444,7 @@ t('E3: el mensaje se parte en texto e interfaz, también con el bloque a medias'
 });
 t('E3: dibuja los componentes del OS', () => {
   const h = ui('root = Stack([c, t, s, q])\nc = Card("Ventas", [m])\nm = Metric("Enero", "Q10,000", "sube 5%")\nt = Table(["Mes", "Total"], [["Ene", "10"]])\ns = Steps(["Uno", "Dos"])\nq = Question("¿Seguimos?", ["Sí", "No"])\n');
-  assert.match(h, /class="gu-card"/); assert.match(h, /<b>Ventas<\/b>/); assert.match(h, /gu-metric/); assert.match(h, /Q10,000/); assert.match(h, /<th>Mes<\/th>/); assert.match(h, /<td>Ene<\/td>/);
+  assert.match(h, /class="gu-card"/); assert.match(h, /<b>Ventas<\/b>/); assert.match(h, /gu-metric/); assert.match(h, /Q10,000/); assert.match(h, /<th scope="col">Mes<\/th>/); assert.match(h, /<td>Ene<\/td>/);
   assert.match(h, /<ol class="gu-steps">/); assert.match(h, /data-a="opcion" data-t="Sí"/);
 });
 t('E3: lo que escribe el modelo es dato: se escapa y una acción solo manda un pedido', () => {
@@ -460,7 +460,7 @@ t('E3: mientras llega se dibuja lo que hay; las opciones viejas quedan apagadas'
 t('E3: el ejemplo que aprende el modelo se dibuja de verdad y el texto cabe en el contexto', () => {
   const ej = /```ui\n([\s\S]*?)```/.exec(PROMPT_GENUI)[1];
   const r = createStreamingParser(ESQUEMA_UI, 'Stack').set(ej, true); assert.deepEqual(r.meta.errors, []); assert.deepEqual(r.meta.unresolved, []);
-  assert.ok(ui(ej).length > 100); assert.ok(PROMPT_GENUI.length < 2200, `${PROMPT_GENUI.length}`);
+  assert.ok(ui(ej).length > 100); assert.ok(PROMPT_GENUI.length < 4200, `${PROMPT_GENUI.length}`); // el catálogo ampliado (test-openui.mjs)
 });
 t('E3 revisión: un bloque que se expande sin fin no se dibuja ni congela el Chat', () => {
   const lineas = ['root = Stack([a0, a0])'];
