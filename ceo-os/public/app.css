@@ -3981,7 +3981,7 @@ body.arrastrando{cursor:col-resize;user-select:none}
    como acento. Sus colores viven en .llm (--l-*) y por dentro redefinen los del OS, así el panel de Estrategia se ve igual. */
 
 .llm{
-  --l-bg:#0d0d0e; --l-side:#111112; --l-surf:#141415; --l-surf2:#1b1b1d; --l-line:rgb(235 235 240 / .09); --l-line2:rgb(235 235 240 / .16);
+  --l-bg:var(--ui-carbon-bg); --l-side:var(--ui-carbon-side); --l-surf:var(--ui-carbon-surf); --l-surf2:var(--ui-carbon-surf2); --l-line:rgb(235 235 240 / .1); --l-line2:rgb(235 235 240 / .18);
   --l-ink:#ecebe6; --l-ink2:#c4c1b8; --l-mut:#8e8a80; --l-acc:#a6a6a7; --l-acc-ink:#181819; --l-user:#302e2a; --l-ok:#8fbf8a; --l-warn:#b0b0b1;
   --l-glass:rgb(42 41 38 / .78); --l-shadow:0 18px 50px -18px rgb(0 0 0 / .7),0 1px 0 rgb(255 255 255 / .04) inset;
   --l-m-estrategia:#acacad; --l-m-organizacion:#8fb39a; --l-m-diseno:#a99ad6;
@@ -9122,7 +9122,7 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 .lat-ayuda .pdchip:hover{background:var(--ui-fill2);color:var(--ui-ink);opacity:1}
 
 /* ===== El Chat, como el prototipo aprobado (PLAN-GATEWAY §22) ===== */
-.llm{--l-bg:transparent;--l-side:#111112;--l-surf:#141415;--l-surf2:#1b1b1d;--l-ink:#efebe4;--l-ink2:#bdb9b2;--l-mut:#8f8b86;--l-acc:#e3d8c5;--l-acc-ink:#16140f;--l-user:#252527;--l-ok:#a7f3d0;--l-warn:#e8c98f;--l-glass:rgb(30 30 32 / .52);--ink:#efebe4;--ink2:#bdb9b2;--mut:#a39f9a;--tone:#e3d8c5;background:transparent;font-size:15px}
+.llm{--l-bg:transparent;--l-side:var(--ui-carbon-side);--l-surf:var(--ui-carbon-surf);--l-surf2:var(--ui-carbon-surf2);--l-ink:#efebe4;--l-ink2:#bdb9b2;--l-mut:#8f8b86;--l-acc:#e3d8c5;--l-acc-ink:#16140f;--l-user:#252527;--l-ok:#a7f3d0;--l-warn:#e8c98f;--l-glass:rgb(30 30 32 / .52);--ink:#efebe4;--ink2:#bdb9b2;--mut:#a39f9a;--tone:#e3d8c5;background:transparent;font-size:15px}
 .lat-top{display:flex;align-items:center;gap:6px}
 .lat-top .lat-nueva{flex:1;min-width:0}
 .lat-marca{display:none}
@@ -9191,7 +9191,7 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 .llm-main.vacio .llm-conv{display:block}
 .llm-main.vacio .llm-compw{position:absolute;margin:0;padding-bottom:16px}
 .llm-compw{background:none;padding:0 16px 16px}
-.llm-compw::before{content:"";position:absolute;inset:-60px 0 0;background:linear-gradient(transparent,rgb(11 11 12 / .72));pointer-events:none}
+.llm-compw::before{content:"";position:absolute;inset:-60px 0 0;background:linear-gradient(transparent,rgb(28 28 30 / .72));pointer-events:none}
 @media (min-width:761px){.llm-conv{padding-top:64px}}
 .llm-col{max-width:720px;padding:12px 28px 190px}
 .lc-w{max-width:760px;position:relative}
@@ -9502,11 +9502,11 @@ html::before{left:-16vw;top:30vh;width:60vw;height:84vh;background:linear-gradie
 html::after{right:-14vw;top:-26vh;width:58vw;height:80vh;background:linear-gradient(232deg,rgb(var(--ui-tint) / .24),rgb(var(--ui-tint) / .05) 36%,transparent 64%)}
 html[data-vidrio="real"]{background:rgb(14 14 15 / .56)}
 html[data-vidrio="real"]::before,html[data-vidrio="real"]::after{display:none}
-#luz{position:fixed;z-index:-1;left:-280px;top:-280px;width:560px;height:560px;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgb(var(--ui-tint) / .032),rgb(var(--ui-tint) / .01) 52%,transparent);transition:transform .6s var(--suave),opacity .5s ease-out;will-change:transform}
+#luz{position:fixed;z-index:-1;left:-380px;top:-380px;width:760px;height:760px;filter:blur(28px);border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgb(var(--ui-tint) / .016),rgb(var(--ui-tint) / .006) 48%,transparent);transition:transform .6s var(--suave),opacity .5s ease-out;will-change:transform}
 #luz.on{opacity:1}
-#luz-aro{position:fixed;z-index:25;left:0;top:0;pointer-events:none;opacity:0;background:radial-gradient(180px circle at var(--mx,50%) var(--my,0),rgb(var(--ui-tint) / .012),transparent 70%);transition:opacity .35s ease-out}
+#luz-aro{position:fixed;z-index:25;left:0;top:0;pointer-events:none;opacity:0;background:radial-gradient(260px circle at var(--mx,50%) var(--my,0),rgb(var(--ui-tint) / .006),transparent 78%);transition:opacity .35s ease-out}
 #luz-aro.on{opacity:1}
-#luz-aro::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(140px circle at var(--mx,50%) var(--my,0),rgb(var(--ui-tint) / .1),transparent 72%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+#luz-aro::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(230px circle at var(--mx,50%) var(--my,0),rgb(var(--ui-tint) / .045),transparent 80%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .kb-board{grid-template-columns:repeat(4,minmax(172px,1fr));overflow-x:auto}
 #main .sp-cover .lbl{color:rgb(var(--ui-tint) / .62)}
 #main .agx-espera{border:0;background:var(--surface);box-shadow:var(--ui-edge)}

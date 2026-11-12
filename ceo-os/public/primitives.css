@@ -183,6 +183,8 @@
 :root{--suave:cubic-bezier(.22,.8,.2,1);--e-ent:var(--suave);--e-spring:var(--suave);--e-pop:var(--suave);--e-std:ease-out;--e-sheet:var(--suave);--mv-paso:22ms}
 /* app.css:9717 */
 :root{--ui-azul:#4a86e8;--ui-rojo:#ff6b5e}
+/* El gris carbón del chat en noche (la barra de escritura sobre el fondo): una sola fuente para InherentChat */
+:root{--ui-carbon-bg:#1c1c1e;--ui-carbon-side:#18181a;--ui-carbon-surf:#242426;--ui-carbon-surf2:#2c2c2e}
 /* app.css:10033 */
 :root{--ui-tint:255 255 255}
 /* app.css:10034 */
