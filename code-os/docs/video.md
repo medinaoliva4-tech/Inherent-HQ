@@ -1,224 +1,118 @@
-# Video en Code OS: primer corte por agente, Retoque y derivadas
+# Video en Code OS: producir por prompting, organizar en tres vistas
 
-El agente arma el primer corte y las derivadas. El editor humano solo corrige en **Retoque**, un
-editor chico y visual que solo ve el rol de editor. Todo sale del mismo JSON de escenas, que el
-agente puede escribir y leer.
+**No hay editor.** Un agente produce los videos con las herramientas del servicio de video (ffmpeg detrás). Las personas solo ven y ajustan la información que el agente usa, organizada en tres vistas separadas:
 
-```
-shot list (⑤ Producción, Pre) + clips grabados
-        │  corte_primer (MCP)
-        ▼
-corte.json (escenas[]) ──► CATÁLOGO DE ESTILOS: elegir estilo → «Copiar prompt» o «Aplicar» (estilos_aplicar)
-        │                         │
-        │                         ▼
-        │                 cada escena recibe la receta del estilo (gancho · cuerpo · cierre)
-        ▼                         ▼
-Retoque · TABLERO de escenas (revisión por escena) → ESCENA (correcciones chicas) → guarda con versión
-        ▼
-corte_render / video_derive (MCP) ──► cola ──► ffmpeg (CPU) ──► MP4 9:16 · 1:1 · 16:9
-```
-
-**Flujo para el editor:** 1) elige un estilo en el catálogo, 2) copia el prompt para el agente o pulsa «Aplicar», 3) el agente edita el video con ese estilo y el editor revisa escena por escena en el tablero.
-
-Código: `code-os/video/` (Node 22, sin dependencias de npm). Capturas: `code-os/video/docs/`.
-
-## Por qué un editor propio y no FilmCraft, Twick u otro
-
-| Opción | Qué es | Por qué no |
+| Vista | Para qué | Captura |
 |---|---|---|
-| FilmCraft | NLE completo tipo Premiere (Rust/WASM, 718 comandos, MCP) | Es lo contrario a «sencillo». WASM de 49 MB (15 MB con gzip). En el navegador no exporta H.264 (v0.19.0). Descartado por el CEO |
-| Twick (`@twick/studio`) | Kit de editor en React | Licencia Sustainable Use: prohíbe ofrecerlo como servicio alojado sin contrato comercial. Unos 54 MB en paquetes. Sin cambios desde junio de 2026 |
-| omniclip | Editor web completo (MIT) | Es una app entera (Lit, pixi, ffmpeg.wasm, service worker), no un componente. Interfaz de NLE |
-| Remotion Player | Reproductor de composiciones Remotion | Para empresas de más de 3 personas pide licencia de empresa. Obliga a escribir la escena en React y no resuelve la interfaz |
-| **Retoque (propio)** | Un archivo HTML: catálogo de estilos + tablero de escenas + vista de escena | **Elegido.** Pesa 59 KB (18 KB con gzip) y no tiene dependencias. La licencia es nuestra. La vista previa imita al render de ffmpeg |
+| **Style menu de la marca** | Qué transiciones, efectos, animaciones de texto y estilos eligió la marca del catálogo base. También sus tipografías, colores, música, sonidos, assets y notas de edición. | `code-os/video/docs/vista-style-menu.jpg` y `vista-style-menu-completa.jpg` |
+| **Referencias** | Videos de otros, o propios, que se pueden replicar. Cada uno trae por qué funciona y su desglose. Desde ahí se puede «Imitar este». | `vista-referencias.jpg` |
+| **Desglose por video** | Las escenas de un video y lo que se le aplica a cada una: estilo, transición, efectos, texto y lo que imita. Aquí se cambian la música y los estilos. | `vista-desglose.jpg` y `vista-desglose-imitando.jpg` |
 
-## El proyecto: `corte.json`
+Dentro de Code OS están en **Herramientas → Video** (`code-os-herramientas-video.jpg`). Ahí antes estaba el contenedor vacío «Editor de video».
+
+```
+guion + clips ──► agente (MCP video) ──► video (escenas) ──► render ffmpeg ──► MP4
+                     ▲      ▲                   │
+   style menu de la marca   referencias          └─► vista Desglose: cambiar música y estilos por escena
+```
+
+Retoque, el editor anterior, y su modo manual se quitaron. Git guarda su historial (PR #299).
+
+## Modelo de datos (`code-os/video/`)
+
+**Catálogo base** (`catalogo.json`, editable a mano):
+- Contiene `transiciones`, `efectos` y `animaciones_texto`.
+- Cada elemento es `{id, nombre, descripcion, receta, render}`.
+- `receta` es lo que se escribe en la escena. `render: false` quiere decir que se puede elegir, pero ffmpeg todavía no lo hace. El agente lo deja como nota para el editor humano.
+- **Es una lista inicial.** El CEO compartirá la lista real de transiciones. Agregar o quitar elementos no rompe nada: si una marca había elegido algo que ya no existe, simplemente desaparece de su guía.
+- Los **estilos** (recetas completas: gancho, cuerpo y cierre) siguen en `estilos/*.json`. Hay 8.
+
+**Marca** (`<datos>/marcas/<id>.json`, en `marcas.mjs`):
 
 ```jsonc
-{
-  "id": "c…", "titulo": "Reel · Sal de la rutina", "formato": "9:16", "version": 3,
-  "musica": { "ruta": "musica/calma.m4a", "volumen": 0.25, "inicio": 0 },
-  "subtitulos": null,
-  "origen": { "agente": "production", "shotlist": "…", "faltantes": [{ "toma": "E06", "motivo": "…" }] },
-  "escenas": [{
-    "id": "e-E03", "clip": "crudo/E03.mp4", "inicio": 1, "fin": 4,
-    "nota": "E03 · Persona a cámara; el sol va detrás de la cabeza",
-    "texto": "Hecho por gente real", "fuente": "DIN Condensed Bold",     // atajo de la capa «principal»
-    "capas": [                                                           // encima del video, de abajo hacia arriba
-      { "id": "sol", "tipo": "imagen", "ruta": "imagenes/sol.png", "x": 0.5, "y": 0.36, "escala": 0.62, "visible": true },
-      { "id": "principal", "tipo": "texto", "texto": "Hecho por gente real", "fuente": "DIN Condensed Bold",
-        "x": 0.5, "y": 0.8, "tam": 0.055, "color": "#f3ead8", "visible": true }
-    ],
-    "estilos": [                                                         // la receta de la escena
-      { "tipo": "detras-de-persona", "capa": "sol", "mascara": "mascaras/E03.mp4" },
-      { "tipo": "zoom", "desde": 1.05, "hasta": 1.15, "x": 0.5, "y": 0.35 },
-      { "tipo": "color", "preset": "calido" },                           // calido · frio · bn · contraste
-      { "tipo": "transicion", "entrada": "fundido", "duracion": 0.4 },   // corte · fundido
-      { "tipo": "animacion-texto", "capa": "principal", "animacion": "aparecer" }  // aparecer · subir
-    ]
-  }]
-}
+{ "id": "cafe-lumbre", "nombre": "Café Lumbre",
+  "elegidos": { "transiciones": ["corte", "fundido-lento"], "efectos": ["zoom-lento", "punch-in"], "animaciones_texto": ["aparecer", "caja"], "estilos": ["caja-subtitulos"] },
+  "tipografias": [{ "nombre": "DIN Condensed Bold", "ruta": "marcas/cafe-lumbre/fuentes/DIN.ttf", "uso": "titulos" }],
+  "colores": [{ "nombre": "Crema", "hex": "#f3ead8", "uso": "texto" }, { "nombre": "Tostado", "hex": "#8a5a44", "uso": "caja" }],
+  "musica": [{ "nombre": "Lumbre calma", "ruta": "marcas/cafe-lumbre/musica/calma.m4a", "nota": "producto" }],
+  "sonidos": [], "assets": [{ "nombre": "Logo", "ruta": "marcas/cafe-lumbre/imagenes/logo.png", "tipo": "logo" }],
+  "guia": "Ritmo tranquilo; siempre cerrar con «Pídelo hoy»." }
 ```
 
-- **Posiciones y tamaños relativos al cuadro** (0 a 1): sirven igual en 9:16, 1:1 y 16:9. `x, y` es el centro.
-- **`texto` y `fuente` son un atajo** de la capa `principal`. Si vienen, mandan: el agente cambia el texto sin tocar las capas.
-- **La música es de todo el video.** La tarjeta de cada escena la muestra.
-- **`version`** sube en cada guardado. Quien guarda con una versión vieja recibe `409` y no pisa la corrección del otro.
-- Las rutas son relativas a la carpeta de medios (`VIDEO_RAIZ`). Nada fuera de ella entra, ni con `..` ni con enlaces simbólicos.
-- Validación y mensajes de error en `code-os/video/corte.mjs` (`normalizarCorte`).
+- **Carpeta de assets de cada marca:** `<raíz de medios>/marcas/<id>/{fuentes,musica,sonidos,imagenes}/`. Se crea al guardar la marca. Lo que se sube ahí aparece en la vista como «sin registrar» y se registra con un clic.
+- **Guía de edición** (`guiaDeEdicion`): es lo que el agente lee antes de editar. Trae solo lo elegido, con su receta y si tiene render, más tipografías, colores, música, assets, valores predeterminados y reglas.
+- **Al aplicar la marca a un video** (`aplicarMarca`), los textos sin tipografía toman la de títulos. Toman también el color de texto, y las cajas el color de caja. Si el video no tiene música, entra la primera de la marca con *ducking*: la música baja sola cuando hay voz.
 
-## Catálogo de estilos (`code-os/video/estilos/*.json`)
+**Video** (el «corte», `corte.mjs`):
+- `{id, titulo, formato, version, marca, imita, musica: {ruta, volumen, ducking}, subtitulos, notas, escenas[]}`.
+- Cada escena es `{id, clip, inicio, fin, texto, fuente, estilo, referencia, capas[], estilos[]}`.
+- `estilo` es la receta aplicada a esa escena y `referencia` es la escena de la referencia que imita.
+- Se guarda con `version`: quien guarda con una versión vieja recibe 409 y no pisa el cambio del otro.
 
-La entrada del editor (`docs/estilos-catalogo.jpg`, `docs/estilos-loops.gif`, `docs/estilos-cortos.jpg`). Cada estilo se muestra como una tarjeta vertical con:
-- una vista previa en loop: silueta sintética + las capas y animaciones de la receta, repasando gancho → cuerpo → cierre;
-- nombre, una línea de descripción, categoría, formato y los recursos que pide;
-- ♥ para favoritos (se guardan en el navegador de cada persona);
-- **Copiar prompt**: copia el pedido listo para el agente, con los recursos y el id del corte;
-- **Aplicar**: pide los recursos, si hacen falta, y confirma antes de reemplazar la receta (`docs/estilos-aplicar.jpg`). Se puede deshacer.
+**Referencia** (`referencias/*.json` más `<datos>/referencias/`):
+- `{id, titulo, autor, fuente_url, plataforma, duracion, miniatura_url, por_que_funciona, estilo_sugerido, origen, breakdown?}`.
+- Solo guarda metadatos y el enlace: no se guardan videos de terceros.
+- Hay 5 referencias públicas verificadas.
+- El radar las alimenta: `node code-os/video/referencias.mjs importar-radar <salida-del-radar.json> <datos>/referencias`.
 
-**Pestañas:** Todos · Favoritos · Videos cortos (talking head, Reels, TikTok, Shorts) · Videos largos · Tarjetas y movimientos · CTAs · Posts y anuncios.
+**Desglose** (`desglose.mjs`):
+- Detecta los cortes con ffmpeg, también los fundidos desde negro.
+- Calcula el ritmo y marca cada escena como gancho, cuerpo o cierre.
+- Saca plano, texto en pantalla y efecto con un modelo de visión barato por LiteLLM. Sin modelo, deja solo lo que mide ffmpeg.
+- **«Imitar este»** convierte el desglose en receta (mismo orden y ritmo) y la aplica con el style menu de la marca del video.
 
-Si el corte todavía no tiene estilo, Retoque abre en el catálogo. Si ya lo tiene, abre en el tablero.
+## API (`servidor.mjs`, puerto 4310)
 
-**Conjunto inicial (8 estilos):**
+| Método y ruta | Qué hace |
+|---|---|
+| `GET /catalogo` | Catálogo base y estilos |
+| `GET /marcas` · `POST /marcas` · `GET`/`PUT /marcas/:id` | Marcas. El `GET` trae también los archivos de su carpeta y su guía |
+| `POST /marcas/:id/elegir {seccion, id, elegido}` | Marcar o desmarcar algo del catálogo |
+| `GET /marcas/:id/guia` | Guía de edición para el agente |
+| `GET /referencias` · `POST /referencias` · `POST /desglose {ruta, referencia?}` · `POST /referencias/:id/imitar {video}` | Referencias y desglose |
+| `GET /videos[?marca=]` · `POST /videos` · `POST /videos/primer` · `GET`/`PUT /videos/:id` | Videos (`/cortes/…` funciona igual) |
+| `POST /videos/:id/estilo {estilo}` | Receta a todas las escenas |
+| `POST /videos/:id/escenas/:n {estilo\|transicion\|efecto, quitar?}` | Cambiar una escena. Lo que no tiene render se rechaza con un mensaje claro |
+| `PUT /videos/:id/musica {musica}` | Cambiar, ajustar o quitar la música |
+| `POST /videos/:id/render` · `POST /derive` · `POST /mascaras` · `GET /trabajos/:id` | Producción con ffmpeg (cola de uno en uno) |
+| `GET /vistas/{estilo-marca,referencias,desglose}.html` | Las tres vistas |
 
-| id | Nombre | Categoría | Formato | Pide |
-|---|---|---|---|---|
-| `caja-subtitulos` | Talking head con caja | Videos cortos | 9:16 | — |
-| `reels-sobre-la-cabeza` | Reels sobre la cabeza | Videos cortos | 9:16 | 3 portadas de reels |
-| `detras-de-la-cabeza` | Título detrás de la cabeza | Videos cortos | 9:16 | máscara (la genera `video_mascara`) |
-| `calido-y-lento` | Cálido y lento | Videos cortos | 9:16 | — |
-| `entrevista-larga` | Entrevista con rótulo | Videos largos | 16:9 | — |
-| `tarjetas-que-flotan` | Tarjetas que flotan | Tarjetas y movimientos | 9:16 | 2 imágenes |
-| `cta-final` | CTA final | CTAs | 9:16 | — |
-| `anuncio-corto` | Anuncio corto | Posts y anuncios | 1:1 | — |
-
-**Formato de una receta:**
-
-```jsonc
-{
-  "id": "reels-sobre-la-cabeza",                // minúsculas y guiones; es el nombre del archivo
-  "nombre": "Reels sobre la cabeza",
-  "categoria": "cortos",                        // cortos · largos · tarjetas · ctas · posts
-  "descripcion": "Señalas hacia arriba y tres de tus mejores reels suben sobre tu cabeza y se abren en abanico.",
-  "prompt": "Usa el estilo «Reels sobre la cabeza» (reels-sobre-la-cabeza) para editar este video. …",
-  "formato": "9:16",                            // opcional: al aplicarse fija el formato del corte
-  "requiere": [{ "recurso": "reels", "cantidad": 3, "descripcion": "portadas verticales de tus 3 mejores reels" }],
-  "ejemplo": { "textos": ["Estos tres cambiaron todo", "…"] },   // textos de la vista previa del catálogo
-  "escenas_plantilla": [
-    { "rol": "gancho", "capas": [
-        { "id": "reel1", "tipo": "imagen", "ruta": "{reels.0}", "x": 0.3, "y": 0.2, "escala": 0.22 },
-        { "id": "principal", "tipo": "texto", "texto": "{texto}", "y": 0.8, "tam": 0.05 } ],
-      "estilos": [ { "tipo": "animacion-capa", "capa": "reel1", "animacion": "abanico", "angulo": -14, "retraso": 0.35 },
-                   { "tipo": "animacion-texto", "capa": "principal", "animacion": "subir" } ] },
-    { "rol": "cuerpo", "capas": [ … ], "estilos": [ … ] },        // puede haber varios: se alternan
-    { "rol": "cierre", "capas": [ … ], "estilos": [ … ] }
-  ]
-}
-```
-
-- **Qué plantilla le toca a cada escena:** la primera recibe `gancho`, la última `cierre` y las demás los `cuerpo`, alternándose (así sale el acercamiento alterno).
-- **Comodines:** `"{texto}"` es el texto de la escena (el del guion). `"{reels.0}"` es `recursos.reels[0]`. Si una escena no tiene texto, su capa de texto y su animación se quitan.
-- **Al aplicar:** cada escena conserva su clip, su tramo, su nota, su texto y la tipografía del guion. Las capas y los estilos se reemplazan por los de la plantilla. Los pendientes se devuelven, por ejemplo las máscaras de «detrás de la persona».
-- **Agregar un estilo:** se pone otro `.json` en `estilos/`. El servicio lo valida y lo carga en el siguiente pedido, sin reiniciar. Una receta inválida da error con su nombre.
-- **Agente:** `estilos_listar` (opcional `categoria`) y `estilos_aplicar {corte, estilo, recursos?, version?}`. API: `GET /estilos`, `GET /estilos/:id`, `POST /cortes/:id/estilo`.
-
-**Nuevos ingredientes que usan los estilos** (también disponibles en el tablero):
-- Texto con **caja** (`capa.caja: "#hex"`): subtítulo sobre fondo sólido. En el render es BorderStyle 3 de libass.
-- **`animacion-capa`** para imágenes: `aparecer`, `subir`, `flotar` o `abanico` (gira hasta `angulo`), con `retraso`. ffmpeg y la vista previa usan la misma fórmula (`movimientoCapa` en `ffmpeg.mjs` y `animarNodos` en el editor).
-- Los textos largos se cortan en líneas a lo ancho del 86 % del cuadro, igual en el editor y en el render.
-
-## Retoque (el editor del rol de editor)
-
-**Tablero** (la vista de entrada, `docs/tablero.jpg`, `docs/tablero-loops.gif`):
-- Una tarjeta por escena con su **loop** (el tramo inicio–fin repitiéndose, con zoom, color, fundido, animación de texto y la persona recortada).
-- Debajo de cada loop va **la receta en palabras**: «Zoom acercando 105→115 %», «sol.png detrás de la persona», «Texto «…» · DIN Condensed Bold», «Música: calma.m4a».
-- Clic en un estilo para ajustarlo ahí mismo (`docs/tablero-ajustes.jpg`). ✕ lo quita. «+ Agregar estilo» suma otro.
-- **Arrastrar tarjetas** cambia el orden (`docs/tablero-reordenado.jpg`). Arriba se elige la música y su volumen, y se avisa qué tomas faltan.
-
-**Escena** (edición fina, `docs/escena.jpg`):
-- Arrastrar un texto o una imagen en el video lo mueve, con imán al centro. El punto de la esquina lo agranda o lo achica. Doble clic en un texto para escribir.
-- **Capas:** subir, bajar, ocultar, agregar texto o imagen. Si cambias el orden, el texto puede quedar detrás de la persona (`docs/escena-corregida.jpg`).
-- Texto: contenido, **tipografía** (las de `<raíz>/fuentes`, cargadas con el mismo nombre que usa el render), tamaño y color.
-- Recorte: dónde empieza y dónde termina. Alt + clic elige hacia dónde se acerca el zoom.
-- Deshacer (⌘Z), guardar con versión y exportar, con el progreso de la cola.
-
-Se abre en `/editor/?corte=<id>`. Opcionales: `&t=<token>`, `&vista=escena&escena=<n>`.
-
-## Servicio (`servidor.mjs`) y cola (`cola.mjs`)
-
-| Método | Ruta | Qué hace |
-|---|---|---|
-| POST | `/derive` | `{videoId\|ruta, formato, inicio, fin, subtitulos?, musica?}` → 202 `{trabajo}` |
-| GET | `/trabajos`, `/trabajos/:id`, `/trabajos/:id/archivo` | Estado (`pendiente · procesando · listo · error`), progreso de 0 a 1 y el MP4 (admite Range) |
-| POST | `/cortes/primer` | `{shotlist, clips}` → primer corte + `faltantes` |
-| POST · GET · PUT | `/cortes`, `/cortes/:id` | Guardar o leer un corte. `PUT {corte, version}` |
-| POST | `/cortes/:id/render` | Encola el render del corte |
-| POST | `/mascaras` | `{clip}` → recorte de la persona (`resultado.mascara`) |
-| GET | `/medios?ruta=`, `/medios/musica`, `/medios/imagenes`, `/medios/fuentes` | Lo que usa el editor |
-| GET | `/editor/` | Retoque |
-
-- **Cola de uno en uno.** En el VPS, un ffmpeg ya usa los 4 núcleos. El estado se guarda en `datos/trabajos.json`; lo que quedó a medias vuelve a la cola al reiniciar.
-- **Variables:** `VIDEO_RAIZ` (carpeta de medios: `crudo/ musica/ imagenes/ fuentes/ mascaras/`), `VIDEO_DATOS`, `VIDEO_PUERTO` (4310, solo `127.0.0.1`), `VIDEO_TOKEN`, `VIDEO_FFMPEG`, `VIDEO_FFPROBE`, `VIDEO_PYTHON`, `VIDEO_MODELO_MASCARA`.
-- **Render de una escena:** cubrir el cuadro → zoom (`zoompan`) → color → capas en orden (imágenes con `overlay`, textos como subtítulo ASS con libass) → fundido. Después se unen las escenas sin recodificar y se mezcla la música.
-- Los textos usan **libass** y no `drawtext`: los ffmpeg estáticos y el de Homebrew suelen venir sin `drawtext`. El de Homebrew tampoco trae libass, así que en la Mac la prueba de punta a punta se salta el texto. En el VPS corre completa.
-
-## Cómo lo usa un agente (MCP)
+## Cómo produce el agente (MCP `video`)
 
 ```sh
 claude mcp add video -e VIDEO_URL=http://127.0.0.1:4310 -e VIDEO_TOKEN=… -- node code-os/video/mcp.mjs
 ```
 
-Herramientas: `corte_primer`, `corte_leer`, `corte_guardar`, `corte_render`, `estilos_listar`, `estilos_aplicar`, `video_derive`, `video_trabajo`, `video_mascara`.
+1. `marca_guia {marca}`: lee el style menu y usa solo lo que trae.
+2. `corte_primer {shotlist, clips, marca}`: arma el video desde el guion y los clips.
+3. `estilos_aplicar` con un estilo de la marca, o `referencias_listar` → `referencia_imitar`. Si la referencia no tiene desglose, primero `video_desglose`.
+4. Ajustes finos: `video_escena` (estilo, transición o efecto de una escena) y `video_musica`. Para «algo detrás de la persona», `video_mascara`.
+5. `corte_render` → `video_trabajo` hasta que quede listo. Para otros formatos o tramos, `video_derive`.
 
-**Production Post con estilos:** armar el primer corte (`corte_primer`) → `estilos_listar` → `estilos_aplicar` con el estilo que eligió el editor (o el que pide su prompt) → resolver los pendientes (`video_mascara`) → `corte_render`. El editor revisa en el tablero.
+Herramientas: `marcas_listar`, `marca_guia`, `estilos_listar`, `estilos_aplicar`, `referencias_listar`, `video_desglose`, `referencia_imitar`, `corte_primer`, `corte_leer`, `corte_guardar`, `video_escena`, `video_musica`, `corte_render`, `video_derive`, `video_trabajo`, `video_mascara`.
 
-**Primer corte por agente:**
-1. ⑤ Producción (Pre) deja el shot list con cada toma: `{id, duracion, texto, fuente?, capas?, estilos?, nota}`. Los `estilos` son la receta que pide el guion.
-2. Con los clips grabados (`{ruta, toma?, duracion, inicio?}`), el agente llama a `corte_primer`. Empata cada toma con su clip (por `toma` o por el id en el nombre del archivo), recorta a la duración, pone el texto del guion y la receta. Si la toma no trae receta, pone un zoom lento. Lo que falta va en `faltantes`.
-3. Si una escena lleva «detrás de la persona», el agente llama a `video_mascara` con el clip y pone `resultado.mascara` en el estilo.
-4. `corte_render` genera el MP4 del primer corte. El editor abre el tablero, corrige y exporta.
-5. Las derivadas (otro formato, otro tramo, con subtítulos o música) salen con `video_derive`, sin pasar por el editor.
+## Contrato con Code OS (Herramientas → Video)
 
-## «Algo detrás de la persona»: qué se puede hacer y dónde
+- `code-os/ui/src/components/os/herramientas/Video.tsx` muestra las tres vistas en un iframe, con un selector de tres segmentos. La URL es `${VITE_VIDEO_URL}/vistas/<vista>.html?api=…&marca=<marca del hilo>&t=<VITE_VIDEO_TOKEN>`.
+- Sin `VITE_VIDEO_URL` dice que falta conectarlo y no inventa datos.
+- **Parámetros de las vistas:** `marca` (fija la marca), `video` (Referencias imita directo sobre ese video y Desglose lo abre), `api` (URL del servicio) y `t` (token).
+- **Mensajes al contenedor** (`postMessage`):
+  - `{fuente: 'code-os-video', tipo: 'prompt', texto}` cuando alguien pulsa «Copiar prompt». Hoy Code OS muestra un aviso; el siguiente paso es mandarlo al chat con `@produccion`.
+  - `{fuente: 'code-os-video', tipo: 'cambio', marca? | video?}` cuando se guardó algo.
+- Las marcas del hilo y las del servicio de video se cruzan por **id**: si el hilo usa la marca `lumbre`, su style menu es `marcas/lumbre.json`.
 
-| Modelo | Licencia | En el VPS (CPU, 4 núcleos, 1080×1920) | Nota |
-|---|---|---|---|
-| **MediaPipe Selfie Segmenter** (`mascara.py`) | Apache-2.0 | **12 cuadros/s**: 30 s de clip en 75 s (medido, con suavizado y codificación) | Elegido. Bordes suaves, pelo regular. Usa `mediapipe==0.10.14`: la 1.x pide `libEGL`, que el VPS no tiene |
-| Robust Video Matting (MobileNetV3, ONNX) | **GPL-3.0** | **4.2 cuadros/s**: 30 s en unos 3.5 min (medido) | Mejor borde y pelo. GPL sirve para uso interno en el servidor; no se puede distribuir dentro de un producto |
-| rembg (U²-Net, BiRefNet) | MIT | No medido. Es de imagen fija: cuadro por cuadro parpadea y es lento | No sirve para video |
+## Pruebas y medidas
 
-- **Dónde:** la máscara se genera **una vez en el VPS** (trabajo `mascara` en la cola). El navegador **no corre modelos**: Retoque compone la persona con el video de la máscara en un canvas a resolución reducida. Así la vista previa es liviana y coincide con el render.
-- **Calidad sin verificar con gente real:** la velocidad se midió con video sintético porque no había clips de personas sin datos de clientes. Las capturas usan una silueta sintética. Antes de prometerlo hay que probar con 2 o 3 tomas reales.
-- **Si la calidad no alcanza:** se ofrecen solo poses de cámara fija y medio cuerpo, o la alternativa más simple, que es poner la animación arriba de la cabeza (sin recorte), como una capa más.
-
-## Medidas
-
-| Qué | Dónde | Tiempo |
-|---|---|---|
-| Derivada 9:16 de 30 s desde 16:9, con música | VPS, CPU | **23 s** |
-| Corte 9:16 de 30 s, 6 escenas (zoom, color, texto animado, fundido, imagen detrás de la persona, música) | VPS, CPU | **66 s** |
-| Corte de demo de 13 s con 5 escenas y 3 tipografías | VPS, CPU | **26 s** |
-| Máscara MediaPipe de 30 s, 1080×1920 | VPS, CPU | **75 s** |
-| Pruebas (`node --test test/*.test.mjs`) | Mac | 28 de 28. El render de textos se salta (ffmpeg sin libass). La versión anterior pasó 19 de 19 en el VPS; esta, con catálogo, no se corrió ahí |
-| 4 estilos aplicados al corte de demo y renderizados, sin textos (`docs/render-estilos-imagenes.jpg`) | Mac | 2 a 3 s cada uno |
-| Peso de Retoque con catálogo | Navegador | 59 KB (18 KB con gzip), sin dependencias |
+- `node --test code-os/video/test/*.test.mjs`: **42 de 42** en la Mac. Cubren catálogo, marcas, guía, aplicar marca, cambiar escenas y música, imitar, desglose, render y las vistas.
+- `code-os/ui`: 88 de 88 en vitest y `tsc -b` limpio.
+- **Probado en el navegador:** elegir y desmarcar del style menu, «Imitar este» desde Referencias, y en Desglose cambiar transición, agregar un efecto y cambiar la música. Cada cambio queda en el video con versión nueva.
+- **En el VPS se midió en la primera versión, que no cambió:** derivada 9:16 de 30 s en 23 s, video de 30 s y 6 escenas en 66 s, máscara de persona de 30 s en 75 s.
+- El render de la Mac salta los textos: su ffmpeg no trae libass.
 
 ## Para dejarlo en producción
 
-1. **ffmpeg en el VPS:** hoy no hay ffmpeg instalado. Hace falta uno con libass (el `ffmpeg` de Ubuntu 24.04 lo trae, o el estático).
-2. **Máscaras:** Python 3.12 en un venv con `mediapipe==0.10.14` y `opencv-contrib-python-headless`, más el modelo `selfie_segmenter.tflite`.
-3. Servicio systemd para `servidor.mjs` y una ruta del proxy (`/video/…` → `127.0.0.1:4310`) con `VIDEO_TOKEN`.
-4. **`code-os/ui`:** una pestaña «Editor de video» en el panel, cargada solo si la persona tiene el rol de editor. Es un iframe a `/video/editor/?corte=…` y sigue el patrón de carga diferida de `PanelLateral`.
-5. Registrar el MCP `video` en la sesión de los agentes de Producción.
-6. Tipografías de marca de cada cliente en `<raíz>/fuentes`. El editor y el render las toman por su nombre.
-
-**Esfuerzo estimado:** 2.5 a 3 días (UI y rol 1–1.5 · VPS y proxy 0.5–1 · prueba con clips reales de personas 0.5).
-
-## Límites conocidos
-
-- **Sin verificar en un render real con libass:** la caja de texto y el corte de líneas de los textos largos. Hay pruebas unitarias del .ass que se genera, pero la Mac no tiene libass y no se volvió a montar ffmpeg en el VPS. Las animaciones de imagen (abanico, flotar, subir) sí se renderizaron.
-- La vista previa del catálogo usa una silueta sintética. Con video real, la posición de la cabeza cambia y el editor ajusta las capas en la vista Escena.
-- La vista previa imita el render, pero no es idéntica: el tamaño de texto puede variar entre un 10 y un 15 % según la tipografía, y el zoom de `zoompan` tiene un leve escalonado.
-- Las escenas no se superponen. El fundido es de entrada (desde negro), no un cruce entre dos escenas.
-- La máscara se genera para el clip entero, aunque la escena use un tramo.
+1. **ffmpeg con libass en el VPS.** Hoy no hay ffmpeg: `sudo apt-get install -y ffmpeg fontconfig fonts-dejavu-core`.
+2. Para recortar a la persona: un venv con `mediapipe==0.10.14` y `opencv-contrib-python-headless`, más el modelo `selfie_segmenter.tflite`.
+3. Servicio systemd para `servidor.mjs`, la ruta `/video/` en el proxy y `VITE_VIDEO_URL=/video` en la interfaz.
+4. Registrar el MCP `video` para el agente de ④ Producción.
+5. Llenar el catálogo con la lista real de transiciones del CEO (`catalogo.json`) y crear el style menu de cada marca.

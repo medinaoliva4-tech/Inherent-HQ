@@ -188,6 +188,16 @@ test('servicio de video de punta a punta', { skip: !hayFfmpeg && 'sin ffmpeg' },
     assert.ok((await sondear(trab.salida)).tieneAudio);
   });
 
+  await t.test('las tres vistas se sirven como HTML estático (y nada más de la carpeta)', async () => {
+    for (const [v, texto] of [['estilo-marca.html', 'Style menu'], ['referencias.html', 'Referencias'], ['desglose.html', 'Desglose'], ['comun.mjs', 'copiarPrompt']]) {
+      const r = await fetch(`${base}/vistas/${v}`);
+      assert.equal(r.status, 200, v);
+      assert.ok((await r.text()).includes(texto), v);
+    }
+    assert.equal((await fetch(`${base}/vistas/..%2Fservidor.mjs`)).status, 401, 'fuera de la lista: pasa al resto (con token) y no sirve archivos');
+    assert.equal((await fetch(`${base}/editor/`)).status, 401, 'Retoque ya no existe');
+  });
+
   await t.test('las listas de medios y el MCP', async () => {
     const cliente = crearCliente({ base, token: 'secreto' });
     const lista = await responder({ jsonrpc: '2.0', id: 1, method: 'tools/list' }, cliente);

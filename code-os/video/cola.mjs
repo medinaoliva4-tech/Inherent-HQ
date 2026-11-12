@@ -248,7 +248,14 @@ export function crearCola({ datos, raiz, concurrencia = 1, ffmpeg = correrFfmpeg
         e = { ...uno.escenas[0], fin: e.fin }; // la escena conserva su largo
       }
       for (const item of [cambio.transicion, cambio.efecto].filter(Boolean)) {
-        if (!item.render || !item.receta) throw new ErrorEntrada(`«${item.nombre}» todavía no tiene render: pídelo como nota al editor`);
+        if (!item.render) throw new ErrorEntrada(`«${item.nombre}» todavía no tiene render: pídelo como nota al editor`);
+        if (item.id === 'caja') { // texto en caja: propiedad de la capa de texto, no un estilo
+          const t = e.capas.find((x) => x.tipo === 'texto');
+          if (!t) throw new ErrorEntrada('«Texto en caja» necesita un texto en la escena');
+          e = { ...e, capas: e.capas.map((x) => (x === t ? { ...x, caja: cambio.quitar ? null : (x.caja ?? '#f3ead8'), color: cambio.quitar ? x.color : '#141210' } : x)) };
+          continue;
+        }
+        if (!item.receta) throw new ErrorEntrada(`«${item.nombre}» se pone para todo el video, no por escena`);
         const r = item.receta;
         const igual = (s) => s.tipo === r.tipo && (r.tipo !== 'animacion-capa' || s.animacion === r.animacion);
         const sinEste = e.estilos.filter((s) => !igual(s));
