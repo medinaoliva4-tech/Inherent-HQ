@@ -1,4 +1,5 @@
 import { svgIco, trazos } from './iconos.js';
+import { dialog } from './ui.js';
 // ---------- HTML seguro: todo lo interpolado se escapa, salvo lo que ya es html`` ----------
 const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
@@ -65,14 +66,13 @@ export function cropImage(file, size = 256) {
     img.onerror = () => { URL.revokeObjectURL(url); ko(new Error('No pude leer esa imagen')); };
     img.onload = () => {
       const V = 260, base = V / Math.min(img.width, img.height); let z = 1, x = 0, y = 0;
-      const dlg = document.createElement('dialog'); dlg.className = 'dlg';
-      mount(dlg, html`<div class="in-dlg"><h3>Acomoda tu foto</h3><div class="crop"><canvas width="${V * 2}" height="${V * 2}"></canvas></div>
-        <div class="row" style="gap:10px;margin:14px 0 4px;flex-wrap:nowrap"><span class="mut">−</span><input type="range" min="1" max="4" step="0.01" value="1" style="flex:1"><span class="mut">+</span></div>
-        <div class="mut sm" style="text-align:center">Arrastra para mover · desliza o pellizca para acercar</div>
-        <div class="row" style="margin-top:14px"><button class="btn" data-ok>Guardar</button><button class="btn ghost" data-x>Cancelar</button></div></div>`);
-      document.body.append(dlg);
+      // El diálogo único del OS (ui.js): Esc, clic afuera y «Cancelar» devuelven null.
+      const d = dialog({ titulo: 'Acomoda tu foto', x: false, cerrarFuera: false, cuerpo: html`<div class="crop"><canvas width="${V * 2}" height="${V * 2}"></canvas></div>
+        <div class="row" style="gap:10px;margin:14px 0 4px;flex-wrap:nowrap"><span class="mut">−</span><input type="range" min="1" max="4" step="0.01" value="1" style="flex:1" aria-label="Acercar"><span class="mut">+</span></div>
+        <div class="mut sm" style="text-align:center">Arrastra para mover · desliza o pellizca para acercar</div>`, acciones: [{ label: 'Guardar', value: 'ok', tipo: 'primario' }, { label: 'Cancelar', value: '', tipo: 'ghost' }] });
+      const dlg = d.el;
       const cv = dlg.querySelector('canvas'), rg = dlg.querySelector('input[type=range]');
-      let fin = false; const done = (v) => { if (fin) return; fin = true; URL.revokeObjectURL(url); dlg.close(); dlg.remove(); ok(v); };
+      let fin = false; const done = (v) => { if (fin) return; fin = true; URL.revokeObjectURL(url); d.cerrar(); ok(v); };
       const clamp = () => { const s = base * z, mx = Math.max(0, (img.width * s - V) / 2), my = Math.max(0, (img.height * s - V) / 2); x = Math.min(mx, Math.max(-mx, x)); y = Math.min(my, Math.max(-my, y)); };
       const draw = (ctx, W) => { const k = W / V, s = base * z * k; ctx.fillStyle = '#fdfaf3'; ctx.fillRect(0, 0, W, W); ctx.drawImage(img, W / 2 - (img.width * s) / 2 + x * k, W / 2 - (img.height * s) / 2 + y * k, img.width * s, img.height * s); };
       const paint = () => { clamp(); draw(cv.getContext('2d'), V * 2); };
@@ -87,10 +87,8 @@ export function cropImage(file, size = 256) {
       };
       cv.onpointerup = cv.onpointercancel = (e) => { pts.delete(e.pointerId); pinch = null; const r = [...pts.values()][0]; if (r) last = r; };
       cv.onwheel = (e) => { e.preventDefault(); zoom(z - e.deltaY * 0.002); };
-      dlg.querySelector('[data-ok]').onclick = () => { const o = document.createElement('canvas'); o.width = o.height = size; draw(o.getContext('2d'), size); done(o.toDataURL('image/jpeg', 0.85)); };
-      dlg.querySelector('[data-x]').onclick = () => done(null);
-      dlg.addEventListener('close', () => done(null));
-      dlg.showModal(); paint();
+      d.cerrado.then((v) => { if (v !== 'ok') return done(null); const o = document.createElement('canvas'); o.width = o.height = size; draw(o.getContext('2d'), size); done(o.toDataURL('image/jpeg', 0.85)); });
+      paint();
     };
     img.src = url;
   });
@@ -242,16 +240,10 @@ function askRead(form, fields) {
 }
 export function ask(title, fields, okLabel = 'Guardar') {
   if (fields.length > 4) return askBig(title, fields, okLabel);
-  return new Promise((resolve) => {
-    const dlg = document.createElement('dialog'); dlg.className = 'dlg';
-    mount(dlg, html`<form class="in-dlg form" method="dialog"><h3>${title}</h3>${askRows(fields)}<div class="row" style="margin-top:6px"><button class="btn" value="ok">${okLabel}</button><button class="btn ghost" value="no" type="button" data-x>Cancelar</button></div></form>`);
-    document.body.append(dlg);
-    const form = $('form', dlg);
-    $('[data-x]', dlg).onclick = () => dlg.close();
-    form.onsubmit = (e) => { e.preventDefault(); const out = askRead(form, fields); if (out) { resolve(out); dlg.close(); } };
-    dlg.addEventListener('close', () => { resolve(null); dlg.remove(); });
-    dlg.showModal(); form.querySelector('.in')?.focus();
-  });
+  // El diálogo único del OS (ui.js › dialog): foco atrapado, Esc y clic afuera cancelan, el foco vuelve a donde estaba.
+  let out = null;
+  return dialog({ titulo: title, x: false, cuerpo: html`<div class="form">${askRows(fields)}</div>`, acciones: [{ label: okLabel, value: 'ok', tipo: 'primario' }, { label: 'Cancelar', value: '', tipo: 'ghost' }],
+    antesDeCerrar: (v, form) => { if (v !== 'ok') return true; out = askRead(form, fields); return Boolean(out); } }).cerrado.then((v) => (v === 'ok' ? out : null));
 }
 // El mismo formulario en la vista grande. Si ya había algo abierto en grande (ej. una ficha), al terminar vuelve a eso.
 function askBig(title, fields, okLabel) {
