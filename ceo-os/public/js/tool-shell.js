@@ -31,7 +31,7 @@ const TEXTO_APROBADA = 'La estrategia está aprobada: solo lectura hasta que el 
 
 // host: dónde se monta · tool: el registro de herramientas.js (con prompt, leer, faltas, aMd…) · vista: la de la herramienta
 // (consulting/<m>-ui.js) · resto[0]: el id de un entregable que se quiere abrir. Devuelve cuando el primer pintado terminó.
-export async function toolShell(host, { me, tool, slug, b, alive, vista, resto = [] }) {
+export async function toolShell(host, { me, tool, slug, b, alive, vista, resto = [], embebido = false }) {
   if (!vista) return mount(host, html`${vacio({ icono: 'inbox', titulo: `${tool.nombre} todavía no tiene su vista`, linea: 'Mientras, lo que ya tengas se trabaja en el Chat.' })}`);
   mount(host, skel('pagina'));
 
@@ -108,7 +108,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   }
   // La dirección lleva el id del entregable abierto (sin recargar la página ni agregar un paso al historial).
   // Con ciclo, la dirección lleva el mes elegido (AAAA-MM) en lugar del id: hay un entregable por mes.
-  const marcarRuta = () => { try { history.replaceState(null, '', rutaHerramienta(tool.ws, slug, tool.id, conCiclo ? (S.ciclo ? [S.ciclo] : []) : S.doc ? [S.doc.id] : [])); } catch {} };
+  const marcarRuta = () => { if (embebido) return; try { history.replaceState(null, '', rutaHerramienta(tool.ws, slug, tool.id, conCiclo ? (S.ciclo ? [S.ciclo] : []) : S.doc ? [S.doc.id] : [])); } catch {} };
   // Lo que devuelve el servidor se vuelve el doc de la pantalla. conservar: no tocar lo que la persona está editando.
   function aplicarDoc(d, { conservar = false } = {}) {
     S.doc = d; S.local = null;
@@ -215,8 +215,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (d && esc && ['Aprobado', 'Entregado'].includes(est)) (tool.va_a || []).forEach((id) => { const h = herramientaDe(id); if (h && (typeof h.puede !== 'function' || h.puede(me, b))) salida.push(btn('siguiente', 'arrow-right', `Enviar a ${h.nombre}`, { tool: id })); });
     if (typeof tool.aMd === 'function' && (d || S.alcance.abierto)) salida.push(btn('exportar', 'download', 'Exportar'), btn('copiar', 'copy', 'Copiar'));
     // El chat de Strategy de hoy (puente/Hermes) de esta herramienta: sigue intacto, ahora en su propia ruta.
-    if (tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
-    salida.push(btn('chat', 'chat-ia', 'Continuar en el Chat'));
+    if (!embebido && tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
+    if (!embebido) salida.push(btn('chat', 'chat-ia', 'Continuar en el Chat'));
     if (d && esc) salida.push(btn('archivar', 'trash-2', 'Archivar'));
     mount(el, html`<div class="tsh-grp">${g1}</div>${flujo.length ? html`<div class="tsh-grp">${flujo}</div>` : ''}<div class="tsh-grp">${salida}</div>`);
   }

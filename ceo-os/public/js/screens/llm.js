@@ -12,7 +12,7 @@ import { nombreProveedor, nombrePaso, esLocal, PASARELAS, IAS, iaDe, modelosDeIa
 import { MODOS, MODO_LIBRE, modosDe, modoDe, sistemaDe, conLente, SUGERENCIAS, COMANDOS, leerComando, textoVisible, leerTarjetas, idSesion, leerIdSesion, tituloDe, grupoFecha, ESFUERZOS, nombreEsfuerzo, AREAS_ENCARGO, tareaDeEncargo, alcanceConsulting, consultingAbierto } from '../llm/modos.js';
 import { limpiarPlan, nombreMes, NOMBRE_P } from '../plan-mes.js';
 import { tipoDe, anticipacion } from '../campanas.js';
-import { panelDe, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
+import { panelDe, panelHerramientas, datosEstrategia, olvidarPanel, verTareas } from '../llm/paneles.js';
 import { crearBrujula, progreso, tareaActual, terminada, marcar, aplicarAvance, contarGiro, desviado, contextoBrujula, ritmoSemana, inicioSemana, usosDe, QUIEN } from '../llm/brujula.js';
 import { leerBloques, instrucciones, avance, PASOS } from '../estrategia-viva.js';
 import { etapaDe, etapaLabel } from '../estrategia.js';
@@ -26,12 +26,11 @@ import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
-import { turnoCode, pase as paseCode, sesionCode } from '../chat-code.js';
+import { turnoCode } from '../chat-code.js';
 import { leerDepartamento, menuDepartamentos, departamentoDe, nivelDe, sistemaDepartamento, contextoPara, mensajeConContexto, leerPase, puedePasar, textoPase, DEPARTAMENTOS } from '../llm/departamentos.js';
 import { menuDepartamentosHtml, depChipHtml, paseHtml } from '../llm/departamentos-ui.js';
-import { montarHerramientas, rolCodeOS } from '../llm/herramientas-code.js';
 import { rutear } from '../llm/router-code.js';
-import { rutaModulo } from '../herramientas.js';
+import { herramientaDe, rutaHerramienta, rutaModulo, WORKSPACES } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { conArchivos, motivoRechazo } from '../chat-archivos.js';
 import { leerMenciones, siguienteDeCadena, planDe, contextoChat, hiloChat, clienteDelPlan } from '../chat-agentes.js';
@@ -81,7 +80,7 @@ export async function render(el, { me, sub = [], alive }) {
     modo: modos.some((m) => m.id === modoGuardado) ? modoGuardado : modos.some((m) => m.id === pref.modo) ? pref.modo : modos[0].id,
     slugs: pref.slugs || {}, modelo: pref.modelo || null, privado: false, porIa: pref.porIa || {}, esfuerzo: pref.esfuerzo || '', brujula: null, limite: +pref.limite || 0, panel: angosto() ? false : pref.panel !== false,
     sesion: null, msgs: [], titulo: '', enVuelo: null, runId: '',
-    agentes: [], tab: 'modo', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
+    agentes: [], tab: 'modo', herramientaPanel: '', listaAgentes: null, cerradas: new Set(), // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     adjuntos: [], salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
     panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
   };
@@ -501,14 +500,15 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- El panel del modo ----------
   let panelGen = 0;
   async function pintarPanel() {
-    const box = C('llm-panel'); if (!S.panel) return mount(box, '');
+    const box = C('llm-panel'); if (!S.panel) { ++panelGen; return mount(box, ''); }
+    const abierto = box.querySelector('.lp-inline-host');
+    if (S.tab === 'herramientas' && abierto?.dataset.tool === S.herramientaPanel && abierto.dataset.slug === slugAhora()) return;
     const gen = ++panelGen;
     // F4.5 · la ventana de agentes: una pestaña por trabajo ligado a la conversación (cerrar una pestaña no cierra el trabajo).
-    const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = S.tab !== 'modo' && tabs.find((r) => r.id === S.tab);
+    const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = !['modo', 'herramientas'].includes(S.tab) && tabs.find((r) => r.id === S.tab);
     const herr = conHerramientas() && S.tab === 'herramientas';
     const cab = tabs.length || conHerramientas() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : 'modo', { herramientas: conHerramientas() }) : '';
     if (herr) return pintarHerramientas(box, cab);
-    if (S.herr) { S.herr.destruir(); S.herr = null; } // otra pestaña: el iframe se cierra (se vuelve a abrir con un pase nuevo)
     if (run) {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-av"></div>`);
       return pintarVentana($('.llm-av', box), { me, run, rol, modelos: modelosGw(), onCambio: alCambiar, onPlan: (r) => proponerPlan({ id: r.flujo.id }, '', { run: r }) });
@@ -869,7 +869,7 @@ export async function render(el, { me, sub = [], alive }) {
       msg.err = e.name === 'AbortError' ? (msg.t ? 'Detenido.' : 'Detenido antes de responder.') : e.status === 503 ? (console.warn('Departamentos: /api/code/pase respondió 503 (falta CODEOS_PASE_SECRET en Vercel)', e), 'Code no está configurado todavía. Avísale al CEO.') : e.message || `No pude hablar con ${dep.depto}.`;
     } finally { S.enVuelo = null; msg.stream = false; msg.at = ahoraIso(); }
     if (!alive()) return;
-    pintarCentro(); pintarPanel(); S.herr?.contexto?.();
+    pintarCentro(); pintarPanel();
     B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
   }
   // «Abrir y leer»: el resultado completo en una hoja. Recién entonces se puede pasar (puedePasar).
@@ -890,42 +890,27 @@ export async function render(el, { me, sub = [], alive }) {
     ta.value = textoPase(x.pase, x.dep); crecer(ta); ta.focus(); x.pasado = true; pintarHilo();
   }
 
-  // ---------- La pestaña «Herramientas»: Code OS embebido (llm/herramientas-code.js, contrato code-os/ui/docs/embebido.md) ----------
+  // ---------- La pestaña «Herramientas»: las mismas herramientas y entregables del OS ----------
   const conHerramientas = () => me.role !== 'client';
-  const contextoHerr = () => ({
-    cliente: slugAhora() || undefined,
-    sesion: (S.sesion && (sesionCode(me.email, S.sesion) || (S.ultimoDep && sesionCode(me.email, `${S.sesion}::${S.ultimoDep}`)))) || undefined,
-    rol: rolCodeOS({ role: me.role, roles: me.roles || [], title: me.title || '', modo: S.modo }),
-    tema: document.documentElement.dataset.theme === 'light' ? 'light' : 'dark',
-    nivel: (S.ultimoDep && S.ultimoNivelDep?.[S.ultimoDep]) || S.ultimoNivelCode || undefined,
-    aislada: false,
-  });
-  // «codeos:al-chat»: el texto va a la caja; con enviar, se manda ya. Con un nivel, solo se respeta en Code o con un departamento.
-  function alChatDesdeCode({ texto, enviar: mandar, modelo }) {
-    const ta = $('#llm-in', el); if (!ta || !alive()) return;
-    ta.value = texto; crecer(ta); ta.focus();
-    if (!mandar) return;
-    if (modelo && S.modo !== 'code' && !leerDepartamento(texto)) return toast(`Code pide ${modelo}: cambia a Code (o llama a un departamento con @) y envíalo`, true);
-    ta.value = ''; crecer(ta); enviar(texto, { nivelForzado: modelo });
-  }
-  // «codeos:juicio»: una herramienta de Code OS pide un juicio rápido de Laya. El OS habla con el puente local de esta persona;
-  // sin puente avisa una vez y la herramienta sigue (no bloquea).
-  let avisoLaya = false;
-  async function juicioParaCode(puerta, entrada) {
-    const { juicioRapido } = await import('../laya-ui.js');
-    const r = await juicioRapido(puerta, entrada);
-    if (r.sinPuente && !avisoLaya) { avisoLaya = true; toast(r.aviso); }
-    return r;
-  }
   async function pintarHerramientas(box, cab) {
-    if (S.herr?.iframe?.isConnected && box.contains(S.herr.iframe)) { S.herr.contexto(); return; }
-    S.herr?.destruir?.(); S.herr = null;
-    mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-herr"><p class="lp-mut" style="padding:16px">Abriendo las herramientas…</p></div>`);
-    const caja = $('.llm-herr', box);
-    const ctl = await montarHerramientas(caja, { pase: (forzar) => paseCode(forzar), contexto: contextoHerr, alChat: alChatDesdeCode, juicio: juicioParaCode, alError: (m) => { if (caja.isConnected) mount(caja, html`<p class="lp-mut" style="padding:16px">${m}</p>`); } });
-    if (!ctl) return;
-    if (!caja.isConnected || S.tab !== 'herramientas') return ctl.destruir();
-    S.herr = ctl;
+    const gen = panelGen;
+    const t = herramientaDe(S.herramientaPanel);
+    if (t && t.monta === 'shell' && WORKSPACES.some((w) => w.id === t.ws && w.modo === S.modo)) {
+      mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="lp-inline-head"><button type="button" data-a="tool-volver">${ico('chevron-left', 14)} Herramientas</button><a href="${rutaHerramienta(t.ws, slugAhora(), t.id)}">Abrir en ${t.ws} ↗</a></div><div class="lp-inline-host" id="lp-inline-host" data-tool="${t.id}" data-slug="${slugAhora()}">Cargando ${t.nombre}…</div>`);
+      const host = $('#lp-inline-host', box), sigue = () => gen === panelGen && alive() && host.isConnected && S.herramientaPanel === t.id;
+      try {
+        const [{ toolShell }, { cargarVistaHerramienta }, clientes] = await Promise.all([import('../tool-shell.js'), import('./workspace.js'), cargarContexto(me)]);
+        const vista = (await cargarVistaHerramienta(t.vista))?.vista;
+        if (!sigue()) return;
+        const b = clientes.find((x) => x.slug === slugAhora());
+        if (!b || !vista) return mount(host, html`<p class="lp-err">No pude abrir esta herramienta para el cliente actual.</p>`);
+        return toolShell(host, { me, tool: t, slug: b.slug, b, alive: sigue, vista, embebido: true });
+      } catch (e) { if (sigue()) mount(host, html`<p class="lp-err">No pude abrir ${t.nombre}: ${e.message}</p>`); return; }
+    }
+    S.herramientaPanel = '';
+    mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<p class="lp-mut">Cargando herramientas…</p>`);
+    const h = await panelHerramientas({ me, modo: S.modo, slug: slugAhora(), nombre: nombreSlug() });
+    if (gen === panelGen && alive()) mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}${h}`);
   }
 
   // Modo conversación: habla y escucha aquí mismo; lo dicho queda guardado en esta conversación.
@@ -1107,7 +1092,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (a === 'plan-cancelar') { const p = S.msgs[+t.dataset.i]?.p; if (p) { p.estado = 'cancelado'; pintarHilo(); } return; }
     if (a === 'dep-leer') return leerResultado(+t.dataset.i);
     if (a === 'dep-pasar') return pasarResultado(+t.dataset.i);
-    if (a === 'ag-tab') { S.tab = t.dataset.run; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
+    if (a === 'tool-inline') { S.tab = 'herramientas'; S.herramientaPanel = t.dataset.tool; S.panel = true; R.dataset.panel = 'on'; if (!angosto()) ponerAncho(Math.max(S.panelW || 372, 600)); return pintarPanel(); }
+    if (a === 'tool-volver') { S.herramientaPanel = ''; return pintarPanel(); }
+    if (a === 'ag-tab') { S.tab = t.dataset.run; S.herramientaPanel = ''; S.cerradas?.delete(S.tab); S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
     if (a === 'ag-cerrar') { S.cerradas = S.cerradas || new Set(); S.cerradas.add(t.dataset.run); if (S.tab === t.dataset.run) S.tab = 'modo'; return pintarPanel(); }
     if (a === 'ag-doc' || a === 'ag-ajuste') { const r = runDe(t.dataset.run); if (r) abrirDocumento(r, +t.dataset.n, ctxDoc()); return; }
     if (a === 'ag-resp' || a === 'ag-aporte') {
