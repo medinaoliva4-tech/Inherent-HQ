@@ -629,7 +629,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (!modos.some((m) => m.id === id) || id === S.modo) return;
     if (S.enVuelo) return toast('Espera a que termine la respuesta, o detenla, para cambiar de modo', true);
     if (id === 'code' && S.modo !== 'code') { S.ultimoChatModo = S.modo; if (!angosto()) ponerAncho(Math.max(S.panelW || 372, 600)); }
-    S.modo = id; persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
+    S.modo = id;
+    if (!angosto()) { S.tab = id === 'code' ? 'codigo' : 'modo'; S.panel = true; R.dataset.panel = 'on'; }
+    persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
     if (!vacio() || S.sesion) return nuevo();
     pintarSide(); pintarCentro(); pintarPanel();
   }
