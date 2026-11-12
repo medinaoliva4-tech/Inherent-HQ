@@ -16,6 +16,25 @@ Inherent OS (sesión, permisos, artefactos)
 
 El contrato del puente debe conservar los eventos `text_delta`, `tool_call`, `permission_request`, `usage` y `turn_end`, además de `files` y `diff`. Un arnés nuevo traduce sus propios eventos a ese contrato. La interfaz nunca usa el formato interno de un proveedor. El Gateway ya permite cambiar modelos sin cambiar la UI; los MCP cubren herramientas externas. Esto **no hace que cualquier API sea compatible automáticamente**: cada API necesita un adaptador, autenticación y un contrato de datos/acciones. Las acciones que escriben siguen pidiendo aprobación.
 
+## Referencia Cloudroom: alcance para Inherent
+
+[Cloudroom](https://github.com/davidondrej/cloudroom) separa su núcleo (procesos, cola, registro y recuperación) de los arneses (bucle del agente, herramientas, inferencia e historial nativo). Su [contrato de adaptadores](https://github.com/davidondrej/cloudroom/blob/main/core/docs/harnesses.md) permite escoger arnés por sesión y presentar eventos y capacidades comunes. Adoptamos esa **división de responsabilidades**, sin trasladar su interfaz, todos sus arneses ni su infraestructura de sandboxes a Inherent.
+
+Los agentes de departamento del OS son **roles y workflows**. Claude Code, OpenCode y Codex son **arneses de ejecución de código**; los modelos y proveedores son otra elección. Un agente de Estrategia puede usar un modelo distinto sin convertirse en otro agente. Los portales de agente, herramientas de cliente y Chat siguen compartiendo datos y aprobaciones del OS.
+
+| Arnés | Decisión | Motivo |
+|---|---|---|
+| Claude Code | Mantener opcional | Ya funciona en el puente; no forzar su uso ni eliminarlo. |
+| OpenCode | Primer adaptador nuevo | Ya está configurado para edición externa y admite proveedores/modelos alternativos. Su protocolo ACP permite conservar el puente del OS como dueño de la sesión visible. |
+| Codex | Adaptador siguiente | Útil como segunda opción de código tras validar el contrato con OpenCode. |
+| Otros de Cloudroom | Fuera del alcance inicial | Añadir solo ante una necesidad concreta que los tres anteriores no cubran. |
+
+El OS debe guardar `harness`, `provider`, `model`, capacidades anunciadas, ID de sesión nativa, estado, eventos visibles y artefactos. Cada adaptador implementa `start`, `send`, `interrupt`, `resume` y `close`, traduce eventos al contrato del puente y declara sus límites (por ejemplo, soporte de permisos, razonamiento o imágenes). Si el arnés no ofrece una capacidad, la UI no la muestra. El catálogo debe venir de cada arnés cuando sea posible; no prometer modelos o niveles de razonamiento que no soporte.
+
+**Cambiar de arnés no equivale a reanudar su historial nativo en otro.** El Chat del OS conserva la conversación visible y pasa un resumen/contexto explícito al nuevo arnés. El trabajo de código usa un workspace o rama aislada por tarea; diffs, aprobaciones y resultados vuelven al mismo panel de artefactos. La aprobación del usuario del OS se mantiene incluso si un arnés permite ejecución automática en otra aplicación.
+
+Orden de integración: (1) cerrar el trabajo pendiente de capacidades/eventos del puente; (2) extraer el adaptador Claude sin cambiar su comportamiento; (3) integrar OpenCode por ACP con el mismo ciclo de permisos, interrupción y reanudación; (4) probar cinco tareas reales y consumo; (5) añadir Codex con el contrato ya probado. La primera prueba de aceptación debe iniciar una tarea desde Chat, mostrar herramientas y diff en Code, pedir aprobación antes de escribir, interrumpir/reanudar y conservar el historial del OS después de recargar. Hasta cumplirla, OpenCode sigue siendo una opción de edición externa, no una integración ya disponible dentro de InherentChat.
+
 Los dos trabajos descritos en `CONTINUAR-CHATGPT.md` (capacidades/modelos del Chat y Figwright/planifica-ejecuta del puente) deben terminar antes de conectar otro arnés al OS. Al integrarlos, aceptar `arnes` como campo de sesión, guardar su ID externo y probar reanudación, permisos, interrupción, uso y errores con ambos motores. El hilo del cliente debe vivir en la base del OS; el arnés no se convierte en otra fuente de verdad.
 
 ## Editar este repositorio fuera de la app
