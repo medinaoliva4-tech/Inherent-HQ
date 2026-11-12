@@ -344,7 +344,7 @@ t('exports: cada módulo trae lo que el shell y el servidor piden', () => {
   assert.equal(typeof xray.aViva, 'function');
 });
 
-t('prompt de los 4: Evidencia o etiqueta, su bloque y criterios, hormozi-brain y < 5 000 caracteres', () => {
+t('prompt de los 4: Evidencia o etiqueta, su bloque y criterios, la biblioteca de Hormozi y < 5 000 caracteres', () => {
   for (const [n, m, bloque] of MODULOS) {
     for (const [nombre, ctx] of CTXS) {
       const p = m.prompt(ctx);
@@ -352,7 +352,7 @@ t('prompt de los 4: Evidencia o etiqueta, su bloque y criterios, hormozi-brain y
       assert.ok(p.length < 5000, `${n}/${nombre}: ${p.length} caracteres`);
       assert.ok(p.includes('Evidencia o etiqueta'), `${n}/${nombre}`);
       assert.ok(p.includes(`${F}${bloque}\n`) && p.includes(`${F}criterios\n`), `${n}/${nombre}: pide su bloque y criterios`);
-      assert.ok(p.includes('agents/01-strategy/brain/skills/hormozi-brain') && p.includes('«No está en el material»'), `${n}/${nombre}`);
+      assert.ok(p.includes('ceo-os/data/hormozi') && p.includes('«No está en el material»'), `${n}/${nombre}`);
       assert.ok(p.includes('FUERA DEL ALCANCE') && p.includes('⚠️ SIN DATOS'), `${n}/${nombre}`);
       for (const m06 of p.matchAll(/06-ECONOMIA/g)) assert.match(p.slice(Math.max(0, m06.index - 40), m06.index), /Nunca leas ni cites inherent\/$/, `${n}/${nombre}: 06-ECONOMIA solo como algo que NO se lee`);
       assert.ok(!/costos? de inherent[^.]*lee/i.test(p) && !/tarifas? de inherent/i.test(p.replace(/costos, márgenes o tarifas de Inherent/, '')), `${n}/${nombre}`);
@@ -377,7 +377,7 @@ t('prompt de xray: nombra la ficha, comprension.md, nucleo.md, la Library y la I
   assert.ok(p.includes('clients/akai/00-onboarding/comprension.md') && p.includes('clients/akai/01-estrategia/nucleo.md'));
   for (const e of xray.EJES) assert.ok(p.includes(`${e.id} (${e.nombre})`), e.id);
   assert.match(p, /exactamente 6 ejes/); assert.match(p, /Sin evidencia el estado es falta/); assert.match(p, /Strategy ya ubicó la etapa 3 \(confirmada por el CEO\)/); assert.match(p, /solo del CEO/);
-  assert.ok(p.includes('references/roadmap/stage-3-stabilize.md')); assert.match(xray.prompt({ ...CTX, estrategia: {} }), /Strategy aún no la ubica: null/);
+  assert.ok(p.includes('ceo-os/data/hormozi/roadmap/stage-3-stabilize.md')); assert.match(xray.prompt({ ...CTX, estrategia: {} }), /Strategy aún no la ubica: null/);
   const con = xray.prompt({ ...CTX, intel: { comprension: 'Vende pasteles', nucleo: 'WIN: caja' }, library: [{ titulo: 'Entrevista' }], investigacion: ['competencia.md'] });
   assert.ok(con.includes('Vende pasteles') && con.includes('WIN: caja') && con.includes('Entrevista') && con.includes('competencia.md'), 'lo que el ctx trae entra al pedido');
   assert.equal(xray.prompt({ ...CTX, cliente: { slug: 'inherent', nombre: 'Inherent' } }).includes('inherent/inherent-social-media/00-onboarding/comprension.md'), true);
@@ -385,11 +385,11 @@ t('prompt de xray: nombra la ficha, comprension.md, nucleo.md, la Library y la I
 
 t('prompt de oferta: cita resolvible o «No está en el material», rutas reales, y por nivel', () => {
   const rutas = (p) => [...p.matchAll(/\b(\d\d-[a-z0-9-]+\.md)/g)].map((m) => m[1]);
-  const libros = `${RAIZ}agents/01-strategy/brain/skills/hormozi-brain/references/books/`;
+  const libros = `${RAIZ}ceo-os/data/hormozi/books/`;
   const existe = (n) => fs.existsSync(`${libros}100m-offers/${n}`) || fs.existsSync(`${libros}100m-money-models/${n}`);
   const socio = oferta.prompt(CTX), crecer = oferta.prompt(conNivel('growth', 'Brand Growth')), base = oferta.prompt(conNivel('foundation', 'Brand Foundation'));
   for (const [n, p] of [['partnership', socio], ['growth', crecer], ['foundation', base]]) {
-    assert.ok(rutas(p).length >= 2, n); for (const r of rutas(p)) assert.ok(existe(r), `${n}: ${r} no existe en references/books`);
+    assert.ok(rutas(p).length >= 2, n); for (const r of rutas(p)) assert.ok(existe(r), `${n}: ${r} no existe en ceo-os/data/hormozi/books`);
     assert.ok(p.includes('[$100M OFFERS | 6. Value Offer: The Value Equation | pág. PDF 81]') && p.includes('«No está en el material»'), n);
   }
   assert.ok(rutas(socio).length >= 10 && socio.includes('100m-money-models/03-the-four-types-of-offers.md') && socio.includes('23-section-5-continuity-offers.md'));
@@ -406,7 +406,7 @@ t('prompt de roadmap: pide el bloque estrategia con {"roadmap":…}, la etapa a 
   const p = roadmap.prompt(CTX);
   assert.ok(p.includes(`${F}estrategia\n{"roadmap":{"items":[`) && p.includes('"hitos":['), 'el bloque que ya lee instrucciones() de estrategia-viva.js');
   assert.match(p, /Brand Growth nunca promete un % de crecimiento/); assert.match(p, /T1 \(meses 1-3\) es el plan de 90 días y debe llevar a graduar la etapa 3: «Get help»/);
-  assert.ok(p.includes('references/roadmap/stage-3-stabilize.md') && p.includes('references/roadmap/overview-las-10-etapas.md'));
+  assert.ok(p.includes('ceo-os/data/hormozi/roadmap/stage-3-stabilize.md') && p.includes('ceo-os/data/hormozi/roadmap/overview-las-10-etapas.md'));
   for (const a of roadmap.AREAS_RM) assert.ok(p.includes(a), a); assert.match(p, /oportunidad_id/);
   const g = roadmap.prompt(conNivel('growth', 'Brand Growth')); assert.match(g, /Cierra en el alcance y el volumen del ciclo que fija la ficha\. No promete un % de crecimiento/);
   assert.match(roadmap.prompt({ ...CTX, cliente: { slug: 'x', nombre: 'X' }, ficha: null }), /SIN DATOS/);

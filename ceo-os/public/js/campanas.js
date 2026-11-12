@@ -1,4 +1,4 @@
-// Marca › Planear › Campañas y eventos: las campañas de ③ Marketing (agents/03-marketing/brain/skills/mk-campana) con
+// Marca › Planear › Campañas y eventos: las campañas de ③ Marketing (agents/03-marketing-creative/brain/skills/mc-campanas-piezas) con
 // nombre propio. Una campaña es un empujón con principio y final: tiene fecha o evento (si no, es un pilar). Un evento es una
 // campaña de tipo «evento». Cada una lleva su frase, la MUST BE TRUE que mueve, en qué se va a notar, qué NO es y su
 // anticipación (primer aviso, recordatorio y último empujón). Colección «mk_campaigns» (área content), solo por /api/campanas.
@@ -8,7 +8,7 @@
 // (modos.js importa este archivo: un ciclo rompería la carga).
 export const COLL_C = 'mk_campaigns';
 
-// La anticipación por defecto de mk-campana (§ La anticipación): días antes de la fecha ancla. Se ajusta, pero se declara.
+// La anticipación por defecto de mc-campanas-piezas (§ La anticipación): días antes de la fecha ancla. Se ajusta, pero se declara.
 // [clave, nombre, primer aviso, recordatorios, último empujón, sobre qué fecha va el empujón]
 export const TIPOS_C = [
   ['evento', 'Evento con cupo', 21, [7], [2, 0], 'ancla'],
@@ -118,7 +118,7 @@ export function anticipacion(c = {}) {
   return out.sort((a, b) => a.fecha.localeCompare(b.fecha));
 }
 
-// Lo que le falta o lo que está mal, según mk-campana (§ 5 Qué escribe, § 6 Bloqueos y las tres reglas). → [texto]
+// Lo que le falta o lo que está mal, según mc-campanas-piezas (§ 5 Qué escribe, § 6 Bloqueos y las tres reglas). → [texto]
 export function revisarCampana(c = {}, hoy = new Date().toISOString().slice(0, 10)) {
   const out = [];
   if (!c.frase) out.push('Falta la frase: la que el equipo repite de memoria');
@@ -149,10 +149,10 @@ export function campanasDelMes(xs = [], mes) {
     return ini <= mes && mes <= fin;
   });
 }
-// Una por ciclo, dos como máximo (mk-campana § 2). → aviso del mes o ''
+// Una por ciclo, dos como máximo (mc-campanas-piezas § 2). → aviso del mes o ''
 export function revisarMes(xs = [], mes) {
   const n = campanasDelMes(xs, mes).filter((c) => c.estado !== 'Cerrada').length;
-  return n > 2 ? `${n} campañas en el mismo ciclo: si parecen tres, ninguna está definida (mk-campana § 2)` : '';
+  return n > 2 ? `${n} campañas en el mismo ciclo: si parecen tres, ninguna está definida (mc-campanas-piezas § 2)` : '';
 }
 // La próxima fecha de la anticipación desde hoy (para el panel y los avisos). → { fecha, que } | null
 export const proximaFecha = (c, hoy = new Date().toISOString().slice(0, 10)) => anticipacion(c).find((x) => x.fecha >= hoy) || null;
@@ -296,9 +296,9 @@ export function pedidoCampana(c = {}, { leads = '', entradas = [] } = {}) {
     `CAMPAÑA (datos): «${k.nombre}», ${tipoDe(k.tipo)[1].toLowerCase()}, fecha ${dato(k.ancla)}${k.hasta ? ` hasta ${k.hasta}` : ''}. Frase: ${dato(k.frase)}. MUST BE TRUE: ${dato(k.mbt)}. Se nota en: ${dato(k.se_nota)}. NO es: ${dato(k.no_es)}.`,
     pasos.length ? `Anticipación fijada: ${pasos.map((x) => `${x.que} ${x.fecha}`).join(' · ')}.` : '',
     '',
-    'MÉTODO (agents/03-marketing/brain/skills/mk-campana y mk-canales)',
+    'MÉTODO (agents/03-marketing-creative/brain/skills/mc-campanas-piezas)',
     `1) Blueprint: la frase en lenguaje de persona (la que el equipo repite de memoria), la MUST BE TRUE con su letra, en qué se nota al cierre y qué NO es. Conserva el nombre «${k.nombre}», el tipo y las fechas.`,
-    '2) Plan de canales: activa solo los canales que pasan las tres preguntas de mk-canales (existe la cuenta, hay quien la opere y la ficha lo cubre); el resto va activo:false y lo dices en criterios.falta. Nunca un solo aviso; el último empujón siempre existe. Cada celda activa lleva fecha (dentro de la anticipación) y pieza. SIN montos: los pone quien ve presupuestos.',
+    '2) Plan de canales: activa solo los canales que pasan las tres preguntas de mc-campanas-piezas (existe la cuenta, hay quien la opere y la ficha lo cubre); el resto va activo:false y lo dices en criterios.falta. Nunca un solo aviso; el último empujón siempre existe. Cada celda activa lleva fecha (dentro de la anticipación) y pieza. SIN montos: los pone quien ve presupuestos.',
     '3) Pauta: solo se planea. No se escribe en Meta, Google ni TikTok: un cambio de pauta es una tarea para ⑩ Ads y el gasto lo aprueba el CEO.',
     '4) Briefs: uno por celda activa con objetivo (qué cambia en quien lo ve), mensaje (una frase), formato (reel, carrusel, story, correo…) y cta; el cta respeta lo que pide Strategy de leads.',
   ].filter((x, i, a) => x !== '' || a[i - 1] !== '');

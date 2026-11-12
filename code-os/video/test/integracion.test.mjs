@@ -143,12 +143,65 @@ test('servicio de video de punta a punta', { skip: !hayFfmpeg && 'sin ffmpeg' },
     assert.equal(sin.cuerpo.corte.estilo, 'entrevista-larga');
   });
 
+  await t.test('style menu por marca → video con su marca → cambiar escenas y música → render', async () => {
+    mkdirSync(join(raiz, 'marcas', 'akai', 'musica'), { recursive: true });
+    ff('-f', 'lavfi', '-i', 'sine=f=330', '-t', '10', join(raiz, 'marcas/akai/musica/tema.m4a'));
+    const nueva = await api('POST', '/marcas', { id: 'akai', nombre: 'AKAI', colores: [{ nombre: 'Crema', hex: '#F3EAD8', uso: 'texto' }, { nombre: 'Rojo', hex: '#c0392b', uso: 'caja' }],
+      musica: [{ nombre: 'Tema', ruta: 'marcas/akai/musica/tema.m4a' }], guia: 'Cortes rápidos; nada de Halloween.' });
+    assert.equal(nueva.estado, 201, JSON.stringify(nueva.cuerpo));
+    for (const [seccion, id] of [['transiciones', 'fundido-negro'], ['efectos', 'punch-in'], ['efectos', 'color-calido'], ['estilos', 'caja-subtitulos'], ['transiciones', 'barrido']]) {
+      assert.equal((await api('POST', '/marcas/akai/elegir', { seccion, id })).estado, 200);
+    }
+    const ficha = (await api('GET', '/marcas/akai')).cuerpo;
+    assert.deepEqual(ficha.marca.elegidos.transiciones, ['fundido-negro', 'barrido']);
+    assert.deepEqual(ficha.archivos.musica.map((x) => x.ruta), ['marcas/akai/musica/tema.m4a'], 've lo que hay en su carpeta');
+    const guia = ficha.guia;
+    assert.deepEqual(guia.transiciones.map((x) => [x.id, x.render]), [['fundido-negro', true], ['barrido', false]]);
+    assert.ok(guia.reglas.some((r) => /Halloween/.test(r)));
+    assert.equal(guia.predeterminados.color_texto, '#f3ead8');
+
+    const escenas = [0, 1, 2].map((i) => ({ id: `m${i}`, clip: 'crudo/E01.mp4', inicio: i, fin: i + 1.2, texto: hayLibass ? `Frase ${i}` : null }));
+    const v = (await api('POST', '/videos', { titulo: 'Con marca', marca: 'akai', escenas })).cuerpo.video;
+    assert.equal(v.marca, 'akai');
+    assert.equal(v.musica.ruta, 'marcas/akai/musica/tema.m4a', 'la música de la marca entra sola');
+    assert.equal(v.musica.ducking, true);
+    const est = await api('POST', `/videos/${v.id}/estilo`, { estilo: 'caja-subtitulos' });
+    assert.equal(est.estado, 200, JSON.stringify(est.cuerpo));
+    if (hayLibass) assert.equal(est.cuerpo.video.escenas[0].capas[0].caja, '#c0392b', 'la caja toma el color de la marca');
+    assert.equal(est.cuerpo.video.escenas[1].estilo, 'caja-subtitulos');
+    const tr = await api('POST', `/videos/${v.id}/escenas/2`, { transicion: 'fundido-negro' });
+    assert.equal(tr.estado, 200, JSON.stringify(tr.cuerpo));
+    assert.deepEqual(tr.cuerpo.video.escenas[1].estilos.find((s) => s.tipo === 'transicion'), { tipo: 'transicion', entrada: 'fundido', duracion: 0.4 });
+    assert.match((await api('POST', `/videos/${v.id}/escenas/2`, { transicion: 'barrido' })).cuerpo.error, /todavía no tiene render/);
+    const ef = await api('POST', `/videos/${v.id}/escenas/3`, { efecto: 'color-calido' });
+    assert.ok(ef.cuerpo.video.escenas[2].estilos.some((s) => s.tipo === 'color' && s.preset === 'calido'));
+    const sinEf = await api('POST', `/videos/${v.id}/escenas/3`, { efecto: 'color-calido', quitar: true });
+    assert.ok(!sinEf.cuerpo.video.escenas[2].estilos.some((s) => s.tipo === 'color'));
+    const mu = await api('PUT', `/videos/${v.id}/musica`, { musica: { ruta: 'musica/pista.m4a', volumen: 0.3, ducking: true } });
+    assert.equal(mu.cuerpo.video.musica.ruta, 'musica/pista.m4a');
+    assert.equal((await api('PUT', `/videos/${v.id}/musica`, { musica: { ruta: '../fuera.m4a' } })).estado, 400);
+    assert.deepEqual((await api('GET', '/videos?marca=akai')).cuerpo.videos.map((x) => x.id), [v.id]);
+    const r = await api('POST', `/videos/${v.id}/render`);
+    await cola.vaciar();
+    const trab = cola.trabajo(r.cuerpo.trabajo.id);
+    assert.equal(trab.estado, 'listo', trab.error);
+    assert.ok((await sondear(trab.salida)).tieneAudio);
+  });
+
+  await t.test('las tres vistas se sirven como HTML estático (y nada más de la carpeta)', async () => {
+    for (const [v, texto] of [['estilo-marca.html', 'Style menu'], ['referencias.html', 'Referencias'], ['desglose.html', 'Desglose'], ['comun.mjs', 'copiarPrompt']]) {
+      const r = await fetch(`${base}/vistas/${v}`);
+      assert.equal(r.status, 200, v);
+      assert.ok((await r.text()).includes(texto), v);
+    }
+    assert.equal((await fetch(`${base}/vistas/..%2Fservidor.mjs`)).status, 401, 'fuera de la lista: pasa al resto (con token) y no sirve archivos');
+    assert.equal((await fetch(`${base}/editor/`)).status, 401, 'Retoque ya no existe');
+  });
+
   await t.test('las listas de medios y el MCP', async () => {
-    assert.deepEqual((await api('GET', '/medios/musica')).cuerpo.archivos, ['musica/pista.m4a']);
-    assert.deepEqual((await api('GET', '/medios/imagenes')).cuerpo.archivos, ['imagenes/sol.png']);
     const cliente = crearCliente({ base, token: 'secreto' });
     const lista = await responder({ jsonrpc: '2.0', id: 1, method: 'tools/list' }, cliente);
-    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'estilos_aplicar', 'estilos_listar', 'referencia_imitar', 'referencias_listar', 'video_derive', 'video_desglose', 'video_mascara', 'video_trabajo']);
+    assert.deepEqual(lista.result.tools.map((x) => x.name).sort(), ['corte_guardar', 'corte_leer', 'corte_primer', 'corte_render', 'estilos_aplicar', 'estilos_listar', 'marca_guia', 'marcas_listar', 'referencia_imitar', 'referencias_listar', 'video_derive', 'video_desglose', 'video_escena', 'video_mascara', 'video_musica', 'video_trabajo']);
     const d = await responder({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'video_derive', arguments: { videoId: 'crudo/E02-sin-audio', formato: '1:1' } } }, cliente);
     const id = JSON.parse(d.result.content[0].text).trabajo.id;
     await cola.vaciar();

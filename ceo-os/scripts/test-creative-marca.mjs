@@ -39,7 +39,7 @@ t('dna.mezclar: solo cambia la sección aceptada', () => {
 });
 t('dna.prompt: < 5000, pide dna y criterios, sin economía de Inherent', () => {
   const p = dna.prompt(ctx); assert(p.length < 5000); assert(p.includes(F + 'dna')); assert(p.includes(F + 'criterios')); assert(p.includes('Meta: 40K')); assert(/nada de costos/i.test(p));
-  assert(!/Q\d|tarifa de/i.test(p)); assert(dna.prompt({ ...ctx, seccion: 'voz' }).includes('br-voz'));
+  assert(!/Q\d|tarifa de/i.test(p)); assert(dna.prompt({ ...ctx, seccion: 'voz' }).includes('br-territorio-voz'));
   assert(dna.prompt({ ...ctx, aprobada: '' }).includes('SIN DATOS')); assert(dna.prompt({ ...ctx, aprobada: 'x'.repeat(9000), dna: dnaLleno() }).length < 5000);
 });
 t('dna.leer: bloque + criterios; roto → null', () => {

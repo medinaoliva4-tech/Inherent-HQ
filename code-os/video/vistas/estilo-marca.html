@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style menu de la marca</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  .resumen { display: flex; gap: 10px; flex-wrap: wrap; padding: 12px 14px; align-items: center; font-size: 13px; color: var(--tenue); }
+  .resumen b { color: var(--hueso); font-variant-numeric: tabular-nums; }
+  .tipos { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .tipo .ejemplo { font-size: 26px; line-height: 1.15; color: var(--crema); padding: 8px 2px; }
+  .colores { display: flex; gap: 12px; flex-wrap: wrap; }
+  .color { width: 120px; padding: 8px; }
+  .color .pastilla { height: 64px; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+  .color small { color: var(--apagado); font-size: 11px; }
+  .pistas { display: grid; gap: 8px; }
+  .pista { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; padding: 10px 12px; }
+  .pista audio { height: 30px; width: 220px; }
+  .assets { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .asset { padding: 8px; } .asset img, .asset video { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 9px; background: #050505; }
+  .asset span { display: block; font-size: 11.5px; color: var(--tenue); margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sin-registrar { opacity: .7; border-style: dashed; }
+  textarea.campo { width: 100%; min-height: 90px; resize: vertical; line-height: 1.5; }
+  .formcolor { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+  .formcolor input[type=color] { width: 38px; height: 32px; border: 0; background: none; padding: 0; }
+</style>
+</head>
+<body>
+<div class="envoltura">
+  <div class="cabeza">
+    <div><h1 id="titulo">Style menu</h1><p>Lo que esta marca usa en sus videos. El agente edita solo con lo que está <b>elegido</b>; lo demás es el catálogo disponible.</p></div>
+    <span class="esp"></span>
+    <div id="selector"></div>
+    <div class="segmentos vidrio" id="filtro"><button class="on" data-f="todo">Todo el catálogo</button><button data-f="elegido">Solo lo elegido</button></div>
+    <button class="btn primario" id="guia">Copiar guía para el agente</button>
+  </div>
+  <div class="resumen vidrio" id="resumen"></div>
+  <div id="contenido"></div>
+</div>
+<script type="module">
+import { $, h, pedir, aviso, medio, nombreArchivo, copiarPrompt, elegirMarca, muestra, alPadre } from './comun.mjs';
+
+let catalogo, marca, archivos, filtro = 'todo', idMarca;
+const SECCIONES = [
+  ['transiciones', 'Transiciones', 'Cómo se pasa de una escena a otra.'],
+  ['efectos', 'Efectos', 'Zoom, color, cosas detrás de la persona, imágenes que se mueven.'],
+  ['animaciones_texto', 'Animaciones de texto', 'Cómo entran los textos en pantalla.'],
+  ['estilos', 'Estilos (recetas completas)', 'Combinaciones listas por escena: gancho, cuerpo y cierre.'],
+];
+const elegido = (s, id) => marca.elegidos[s].includes(id);
+
+async function cargar() {
+  const r = await pedir('GET', `/marcas/${idMarca}`);
+  marca = r.marca; archivos = r.archivos;
+  for (const t of [...marca.tipografias, ...archivos.fuentes]) if (t.ruta) new FontFace(t.nombre, `url(${medio(t.ruta)})`).load().then((f) => { document.fonts.add(f); }).catch(() => {});
+  pintar();
+}
+async function alternar(seccion, item) {
+  try { const r = await pedir('POST', `/marcas/${idMarca}/elegir`, { seccion, id: item.id, elegido: !elegido(seccion, item.id) }); marca = r.marca; pintar(); alPadre('cambio', { marca: idMarca });
+    aviso(elegido(seccion, item.id) ? `«${item.nombre}» entra al style menu${item.render === false ? ' (todavía sin render: el agente lo pedirá como nota)' : ''}` : `«${item.nombre}» sale del style menu`); }
+  catch (e) { aviso(e.message, 4000); }
+}
+async function guardarMarca(cambios, mensaje) {
+  try { marca = (await pedir('PUT', `/marcas/${idMarca}`, { ...marca, ...cambios })).marca; pintar(); alPadre('cambio', { marca: idMarca }); aviso(mensaje); } catch (e) { aviso(e.message, 4000); }
+}
+
+function seccionCatalogo([s, titulo, ayuda]) {
+  const items = s === 'estilos' ? catalogo.estilos : catalogo[s];
+  const visibles = items.filter((x) => filtro === 'todo' || elegido(s, x.id));
+  const tarjetas = visibles.map((x) => {
+    const on = elegido(s, x.id);
+    return h('div', { className: `tarjeta vidrio clic${on ? ' elegida' : ''}`, title: on ? 'Clic para quitarlo del style menu' : 'Clic para elegirlo', onclick: () => alternar(s, x) },
+      s === 'estilos' ? h('div', { className: 'muestra', style: 'display:grid;place-items:center;height:56px' }, h('span', { className: 't', style: 'position:static;font-size:13px;font-weight:600', textContent: `${x.escenas_plantilla.length} plantillas · ${x.formato ?? 'cualquier formato'}` })) : muestra(s, x),
+      h('h3', { textContent: x.nombre }), h('p', { textContent: x.descripcion }),
+      h('div', { className: 'etiquetas' }, h('span', { className: `etiqueta${on ? ' si' : ''}`, textContent: on ? '✓ Elegida por la marca' : 'Disponible' }),
+        x.render === false ? h('span', { className: 'etiqueta pendiente', textContent: 'Sin render todavía' }) : null,
+        s === 'estilos' && x.requiere?.length ? h('span', { className: 'etiqueta', textContent: `pide ${x.requiere.map((r) => `${r.cantidad} ${r.recurso}`).join(', ')}` }) : null));
+  });
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: titulo }), h('span', { className: 'cuenta', textContent: `${marca.elegidos[s].length} elegidas de ${items.length} · ${ayuda}` })),
+    tarjetas.length ? h('div', { className: 'rejilla' }, tarjetas) : h('div', { className: 'vacio vidrio', textContent: 'Nada elegido todavía en esta sección.' }));
+}
+
+function seccionTipografias() {
+  const registradas = new Set(marca.tipografias.map((t) => t.ruta));
+  const todas = [...marca.tipografias.map((t) => ({ ...t, registrada: true })), ...archivos.fuentes.filter((f) => !registradas.has(f.ruta)).map((f) => ({ ...f, registrada: false }))];
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: 'Tipografías' }), h('span', { className: 'cuenta', textContent: `carpeta: marcas/${idMarca}/fuentes` })),
+    todas.length ? h('div', { className: 'tipos' }, todas.map((t) => h('div', { className: `tarjeta vidrio tipo${t.registrada ? '' : ' sin-registrar'}` },
+      h('div', { className: 'ejemplo', style: `font-family:"${t.nombre}"`, textContent: 'Sal de la rutina' }),
+      h('h3', { textContent: t.nombre }),
+      h('div', { className: 'etiquetas' }, t.registrada ? h('span', { className: 'etiqueta si', textContent: t.uso === 'texto' ? 'Para texto' : 'Para títulos' }) : h('span', { className: 'etiqueta', textContent: 'En la carpeta, sin registrar' }),
+        t.registrada ? h('button', { className: 'btn chico', textContent: t.uso === 'texto' ? 'Usar en títulos' : 'Usar en texto', onclick: () => guardarMarca({ tipografias: marca.tipografias.map((x) => (x.ruta === t.ruta ? { ...x, uso: x.uso === 'texto' ? 'titulos' : 'texto' } : x)) }, 'Tipografía actualizada') })
+          : h('button', { className: 'btn chico', textContent: 'Registrar', onclick: () => guardarMarca({ tipografias: [...marca.tipografias, { nombre: t.nombre, ruta: t.ruta, uso: marca.tipografias.length ? 'texto' : 'titulos' }] }, `«${t.nombre}» registrada`) })))))
+      : h('div', { className: 'vacio vidrio', textContent: `Sube sus .ttf/.otf a marcas/${idMarca}/fuentes y aparecerán aquí.` }));
+}
+
+function seccionColores() {
+  const nombre = h('input', { className: 'campo', placeholder: 'Nombre (p. ej. Crema)', style: 'width:150px' });
+  const hex = h('input', { type: 'color', value: '#f3ead8' });
+  const uso = h('select', { className: 'campo' }, [['texto', 'Texto'], ['caja', 'Caja de texto'], ['acento', 'Acento']].map(([v, t]) => h('option', { value: v, textContent: t })));
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: 'Colores' }), h('span', { className: 'cuenta', textContent: 'el de «texto» y el de «caja» se aplican solos a los textos' })),
+    h('div', { className: 'colores' }, marca.colores.map((c) => h('div', { className: 'tarjeta vidrio color' }, h('div', { className: 'pastilla', style: `background:${c.hex}` }),
+      h('div', { style: 'font-size:12.5px' }, c.nombre), h('small', { textContent: `${c.hex} · ${c.uso}` }),
+      h('button', { className: 'btn chico', textContent: 'Quitar', onclick: () => guardarMarca({ colores: marca.colores.filter((x) => x !== c) }, 'Color quitado') })))),
+    h('div', { className: 'formcolor' }, hex, nombre, uso, h('button', { className: 'btn chico', textContent: 'Agregar color', onclick: () => guardarMarca({ colores: [...marca.colores, { nombre: nombre.value || hex.value, hex: hex.value, uso: uso.value }] }, 'Color agregado') })));
+}
+
+function seccionAudio(clave, titulo) {
+  const reg = marca[clave], rutas = new Set(reg.map((x) => x.ruta));
+  const libres = archivos[clave].filter((a) => !rutas.has(a.ruta));
+  const fila = (a, registrada) => h('div', { className: `pista vidrio${registrada ? '' : ' sin-registrar'}` },
+    h('div', {}, h('div', { style: 'font-size:13.5px', textContent: a.nombre }), h('div', { style: 'font-size:11.5px;color:var(--apagado)', textContent: registrada ? (a.nota || nombreArchivo(a.ruta)) : 'En la carpeta, sin registrar' })),
+    h('audio', { controls: true, preload: 'none', src: medio(a.ruta) }),
+    registrada ? h('button', { className: 'btn chico', textContent: 'Quitar', onclick: () => guardarMarca({ [clave]: reg.filter((x) => x.ruta !== a.ruta) }, 'Quitado') })
+      : h('button', { className: 'btn chico', textContent: 'Registrar', onclick: () => guardarMarca({ [clave]: [...reg, { nombre: a.nombre, ruta: a.ruta }] }, `«${a.nombre}» registrada`) }));
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: titulo }), h('span', { className: 'cuenta', textContent: `carpeta: marcas/${idMarca}/${clave}${clave === 'musica' ? ' · la primera es la predeterminada (con ducking bajo la voz)' : ''}` })),
+    reg.length + libres.length ? h('div', { className: 'pistas' }, reg.map((a) => fila(a, true)), libres.map((a) => fila(a, false))) : h('div', { className: 'vacio vidrio', textContent: `Sube archivos a marcas/${idMarca}/${clave}.` }));
+}
+
+function seccionAssets() {
+  const rutas = new Set(marca.assets.map((x) => x.ruta));
+  const todos = [...marca.assets.map((a) => ({ ...a, registrado: true })), ...archivos.imagenes.filter((a) => !rutas.has(a.ruta)).map((a) => ({ ...a, registrado: false }))];
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: 'Assets guardados' }), h('span', { className: 'cuenta', textContent: `carpeta: marcas/${idMarca}/imagenes · logos, stickers, animaciones` })),
+    todos.length ? h('div', { className: 'assets' }, todos.map((a) => h('div', { className: `tarjeta vidrio asset${a.registrado ? '' : ' sin-registrar'}`, title: a.ruta },
+      /\.(mov|webm)$/i.test(a.ruta) ? h('video', { src: medio(a.ruta), muted: true, loop: true, autoplay: true, playsInline: true }) : h('img', { src: medio(a.ruta), alt: a.nombre }),
+      h('span', { textContent: `${a.nombre}${a.registrado ? ` · ${a.tipo}` : ''}` }),
+      a.registrado ? null : h('button', { className: 'btn chico', textContent: 'Registrar', onclick: () => guardarMarca({ assets: [...marca.assets, { nombre: a.nombre, ruta: a.ruta, tipo: /logo/i.test(a.nombre) ? 'logo' : /\.(mov|webm|gif)$/i.test(a.ruta) ? 'animacion' : 'imagen' }] }, 'Asset registrado') }))))
+      : h('div', { className: 'vacio vidrio', textContent: `Sube imágenes a marcas/${idMarca}/imagenes.` }));
+}
+
+function seccionGuia() {
+  const t = h('textarea', { className: 'campo', value: marca.guia, placeholder: 'Tono, ritmo, qué nunca hacer… (va en la guía del agente)' });
+  return h('section', { className: 'seccion' }, h('header', {}, h('h2', { textContent: 'Notas de edición' }), h('span', { className: 'cuenta', textContent: 'reglas propias de la marca para el agente' })),
+    h('div', { className: 'tarjeta vidrio' }, t, h('div', {}, h('button', { className: 'btn chico', textContent: 'Guardar notas', onclick: () => guardarMarca({ guia: t.value }, 'Notas guardadas') }))));
+}
+
+function pintar() {
+  $('titulo').textContent = `Style menu · ${marca.nombre}`;
+  $('resumen').replaceChildren(...SECCIONES.map(([s, t]) => h('span', {}, h('b', { textContent: marca.elegidos[s].length }), ` ${t.toLowerCase()}`)),
+    h('span', {}, h('b', { textContent: marca.tipografias.length }), ' tipografías'), h('span', {}, h('b', { textContent: marca.colores.length }), ' colores'),
+    h('span', {}, h('b', { textContent: marca.musica.length }), ' pistas'), h('span', {}, h('b', { textContent: marca.assets.length }), ' assets'));
+  $('contenido').replaceChildren(...SECCIONES.map(seccionCatalogo), seccionTipografias(), seccionColores(), seccionAudio('musica', 'Música'), seccionAudio('sonidos', 'Sonidos'), seccionAssets(), seccionGuia());
+}
+
+$('filtro').onclick = (ev) => { const f = ev.target.dataset?.f; if (!f) return; filtro = f; for (const b of $('filtro').children) b.classList.toggle('on', b.dataset.f === f); pintar(); };
+$('guia').onclick = async () => {
+  const { guia } = await pedir('GET', `/marcas/${idMarca}/guia`);
+  const lista = (t, xs) => (xs.length ? `${t}: ${xs.map((x) => `${x.nombre}${x.render === false ? ' (sin render)' : ''}`).join(', ')}.` : null);
+  copiarPrompt([`Edita para la marca «${guia.marca.nombre}» (${guia.marca.id}). Lee su guía con marca_guia y usa solo lo que trae.`,
+    lista('Transiciones', guia.transiciones), lista('Efectos', guia.efectos), lista('Animaciones de texto', guia.animaciones_texto), lista('Estilos', guia.estilos), ...guia.reglas].filter(Boolean).join('\n'));
+};
+
+try {
+  catalogo = await pedir('GET', '/catalogo');
+  const { actual } = await elegirMarca($('selector'), (id) => { idMarca = id; cargar(); });
+  idMarca = actual;
+  if (!idMarca) $('contenido').append(h('div', { className: 'vacio vidrio', textContent: 'Todavía no hay marcas. Crea una con POST /marcas o pídeselo al agente.' }));
+  else await cargar();
+} catch (e) { $('contenido').append(h('div', { className: 'vacio vidrio', textContent: `No se pudo cargar: ${e.message}` })); }
+</script>
+</body>
+</html>

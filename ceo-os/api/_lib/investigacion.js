@@ -1,11 +1,11 @@
 // Fase 4 · Investigación (Marcas › <marca> › Investigación).
-//   referentes → las cuentas a seguir de cada marca, en las 5 categorías de cr-fuentes y 4 redes. Viven donde ya vivían:
+//   referentes → las cuentas a seguir de cada marca, en las 5 categorías de mc-radar y 4 redes. Viven donde ya vivían:
 //                sources/cfg-<marca> (accounts con su «kind»; «Lo propio» en own) + lo del repo (onboarding y 99-referencias).
 //   scraping   → el motor es content.js (arranca los runs de Apify y los recoge). Aquí: qué marcas corren (las activas:
 //                con ficha de oferta, en las redes de su ficha), el webhook firmado y el botón «Actualizar ahora».
 //   research   → al terminar una búsqueda, cada post nuevo de cada referente se guarda en Research (content, kind
 //                «research») con el mismo id que usa guardar_research: sin duplicados. Con su resonancia: ×N el promedio
-//                de SU cuenta (cr-fuentes) y su juicio de Laya pendiente.
+//                de SU cuenta (mc-radar) y su juicio de Laya pendiente.
 import crypto from 'node:crypto';
 import * as db from './db.js';
 import * as content from './content.js';

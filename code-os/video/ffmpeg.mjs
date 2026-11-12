@@ -185,7 +185,13 @@ export function argsFinal({ entrada, salida, musica, subtitulos }) {
   let mapV = ['-map', '0:v'], codV = ['-c:v', 'copy'];
   if (subtitulos) { partes.push(`[0:v]subtitles='${escFiltro(subtitulos)}':force_style='Fontsize=14,Alignment=2,MarginV=60'[v]`); mapV = ['-map', '[v]']; codV = CODEC_V; }
   let mapA = ['-map', '0:a'], codA = ['-c:a', 'copy'];
-  if (musica) { partes.push(`[1:a]volume=${musica.volumen ?? 0.25}[m];[0:a][m]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]`); mapA = ['-map', '[a]']; codA = CODEC_A; }
+  if (musica) {
+    // ducking: la música baja sola cuando hay voz (sidechaincompress con la voz como llave)
+    partes.push(musica.ducking
+      ? `[1:a]volume=${musica.volumen ?? 0.25}[m0];[0:a]asplit=2[voz][llave];[m0][llave]sidechaincompress=threshold=0.03:ratio=8:attack=20:release=400[m];[voz][m]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]`
+      : `[1:a]volume=${musica.volumen ?? 0.25}[m];[0:a][m]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a]`);
+    mapA = ['-map', '[a]']; codA = CODEC_A;
+  }
   if (partes.length) args.push('-filter_complex', partes.join(';'));
   args.push(...mapV, ...mapA, ...codV, ...codA);
   if (musica) args.push('-shortest');

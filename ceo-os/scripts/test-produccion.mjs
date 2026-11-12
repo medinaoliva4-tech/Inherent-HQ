@@ -13,10 +13,9 @@ const F = '```';
 const pieza = (i, material = 'video', producible = 'si') => ({ id_creativo: `C-${i}`, formato: 'Reel', fecha: '2026-11-05', material, producible, nota: '' });
 const FICHA = { incluye: [{ k: 'volumen', v: '2 horas de grabación al mes en 2 sesiones' }] };
 
-t('COLUMNAS_CSV: las 16, iguales a la cabecera del CSV del método', () => {
+t('COLUMNAS_CSV: las 16 de siempre, en el orden del método (el CSV ya no está en agents/: el formato es del OS)', () => {
   assert.equal(P.COLUMNAS_CSV.length, 16);
-  const cab = fs.readFileSync(`${RAIZ}agents/05-production/brain/entregables/plan-de-produccion.csv`, 'utf8').split('\n')[0].trim();
-  assert.equal(P.COLUMNAS_CSV.join(','), cab);
+  assert.equal(P.COLUMNAS_CSV.join(','), 'id,id_creativo,campana,escena,accion,encuadre,duracion_s,locacion,talento,recursos,equipo,jornada,costo_estimado,riesgo,destino,estado');
 });
 t('aCsv: 16 columnas y costo_estimado vacío sin permiso', () => {
   const x = P.aCsv([{ id: 'PR-001', id_creativo: 'C-1', costo_estimado: 'Q500', accion: 'dice, con coma' }]).split('\n');

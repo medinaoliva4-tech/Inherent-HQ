@@ -5,10 +5,10 @@ import { plano, corta, entero, textos, leerHerramienta, contextoPrompt, SIN_DATO
 
 export const BLOQUE = 'dna';
 export const SECCIONES = [
-  { id: 'territorio', nombre: 'Territorio y arquetipo', agente: 'br-territorio' },
-  { id: 'personalidad', nombre: 'Personalidad', agente: 'br-territorio' },
-  { id: 'voz', nombre: 'Voz', agente: 'br-voz' },
-  { id: 'activos', nombre: 'Activos distintivos', agente: 'br-activos' },
+  { id: 'territorio', nombre: 'Territorio y arquetipo', agente: 'br-territorio-voz' },
+  { id: 'personalidad', nombre: 'Personalidad', agente: 'br-territorio-voz' },
+  { id: 'voz', nombre: 'Voz', agente: 'br-territorio-voz' },
+  { id: 'activos', nombre: 'Activos distintivos', agente: 'br-sistema' },
 ];
 // Los 6 ejes fijos (de 0 a 10; null = sin ubicar). Fijos para que el radar compare marcas entre sí.
 export const EJES = [
@@ -93,11 +93,11 @@ export function faltas(c, extra = {}) {
 }
 
 // ---------- Prompt ----------
-// seccion (opcional, ctx.seccion): una sola sección, para el paso a paso br-territorio → br-voz → br-activos.
+// seccion (opcional, ctx.seccion): una sola sección, para el paso a paso br-territorio-voz → br-sistema.
 // La estrategia aprobada llega en ctx.aprobada (texto corto); sin ella la vista no deja generar.
 export function prompt(ctx) {
   const c = plano(ctx) ? ctx : {}, sec = SECCIONES.find((s) => s.id === c.seccion);
-  const pasos = sec ? [`Hoy solo pides la sección «${sec.nombre}» (${sec.agente}); las demás van vacías.`] : ['Pasos: ① br-territorio (territorio, arquetipo y ejes) → ② br-voz → ③ br-activos.'];
+  const pasos = sec ? [`Hoy solo pides la sección «${sec.nombre}» (${sec.agente}); las demás van vacías.`] : ['Pasos: ① br-territorio-voz (territorio, arquetipo, ejes y voz) → ② br-sistema (activos distintivos).'];
   const antes = [
     'Eres ②A Branding de Inherent: armas el ADN de la marca de un cliente con su estrategia APROBADA. Trabajas en SOLO LECTURA: lo que escribes es un borrador que la persona acepta sección por sección.',
     'REGLAS: valores que se ejecutan, no adjetivos. Evidencia o etiqueta: lo que no tiene fuente va como [dice el cliente, sin verificar] o queda vacío (null), nunca 0. Nada de costos ni 06-ECONOMIA de Inherent. Roles, no nombres. Español de «tú», corto y humano. El repo no se edita desde aquí.',

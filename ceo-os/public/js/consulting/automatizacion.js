@@ -121,7 +121,7 @@ export function prompt(ctx) {
   const extra = pm ? (lineas.length ? lineas.map((l, i) => `${i ? '' : 'Entrada aprobada · pasos manuales de hoy del Mapa: '}${l}`) : ['Entrada aprobada · el Mapa no tiene pasos manuales de hoy']) : [`Entrada: ${SIN_DATOS}: el Mapa del camino del dinero aún no está aprobado; no inventes pasos (filas vacías)`];
   const cuerpo = [
     'MÉTODO',
-    `Lee en hormozi-brain: ${e ? e.ruta : 'references/roadmap/overview-las-10-etapas.md'}. La tabla es sobre los pasos manuales del Mapa: no agregues pasos que no estén ahí.`,
+    `Lee en la biblioteca de Hormozi: ${e ? e.ruta : 'ceo-os/data/hormozi/roadmap/overview-las-10-etapas.md'}. La tabla es sobre los pasos manuales del Mapa: no agregues pasos que no estén ahí.`,
     `POR FILA (id = el del paso): impacto en ventas 1-5 y esfuerzo 1-5 (con base en el dato; sin base, null), pierde (${PIERDE.map((x) => x.id).join('|')}: qué pierde el negocio mientras se hace a mano), que (qué se automatiza, en una frase), herramienta (tipo, no marca inventada), horas_mes y fuente_horas.`,
     'Va primero lo que pierde leads o ventas: velocidad de respuesta y seguimiento (Conversion OS 1-2), luego el cobro. Elegida = true solo en las 3 a 5 mejores.',
     'HORAS: las dice el cliente. Sin su cifra, horas_mes = null (⚠️ SIN DATOS); nunca las calcules de los minutos de un paso. Una cifra del cliente lleva su fuente, o [dice el cliente, sin verificar].',

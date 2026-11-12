@@ -629,7 +629,7 @@ export function citaLabel(c) {
   return `${corto || ruta}${p ? ' · pág ' + p : ''}`;
 }
 
-// ---------- Abrir una fuente: el archivo de hormozi-brain en la vista grande, en el pasaje exacto ----------
+// ---------- Abrir una fuente: el archivo de la biblioteca de Hormozi en la vista grande, en el pasaje exacto ----------
 async function abrirFuente(f, completo = false) {
   if (!f?.ruta) return;
   let d;
@@ -645,7 +645,7 @@ async function abrirFuente(f, completo = false) {
     return `<div class="ln${hit ? ' hit' : ''}"${hit ? ' id="es-hit"' : ''}>${esc(ln)}</div>`;
   }).join('');
   drawer(html`<article class="es-doc"><span class="lbl">${d.tipo}</span><h1>${d.titulo}</h1>
-      <p class="mut sm">${f.t ? `En ${f.t}. ` : f.p ? `En la pág. PDF ${f.p}. ` : ''}Texto literal de hormozi-brain${d.recortado ? ` · mostrando las líneas ${d.desde + 1}–${d.hasta} de ${d.total}` : ''}.</p>
+      <p class="mut sm">${f.t ? `En ${f.t}. ` : f.p ? `En la pág. PDF ${f.p}. ` : ''}Texto literal de la biblioteca de Hormozi${d.recortado ? ` · mostrando las líneas ${d.desde + 1}–${d.hasta} de ${d.total}` : ''}.</p>
       ${d.recortado ? html`<button class="btn ghost sm" data-act="completo">Ver el archivo completo</button>` : ''}
       <div class="es-srcbody">${raw(body)}</div></article>`,
   { completo: () => abrirFuente(f, true) }, { section: 'Estrategia', title: f.titulo || d.titulo });

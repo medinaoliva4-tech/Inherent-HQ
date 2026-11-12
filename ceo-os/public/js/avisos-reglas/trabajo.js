@@ -172,7 +172,7 @@ COBRAR.calcular = (d, p, hoy) => {
   }));
 };
 
-// anuncios-por-aprobar · CLAUDE.md «Reglas» (el gate de ⑩ Ads) y la skill ad-creativos, GATE 1: solo el CEO aprueba las variaciones.
+// anuncios-por-aprobar · CLAUDE.md «Reglas» (el gate de ⑩ Ads) y la skill ad-plan, GATE 1: solo el CEO aprueba las variaciones.
 // Una por marca: las de Borrador sin faltas y, en la segunda línea, las aprobadas que falta mandar a lanzar.
 const ANUNCIOS = { id: 'anuncios-por-aprobar', grupo: 'trabajo', area: 'marketing', urgencia: 'media', necesita: { rol: ['ceo'] } };
 ANUNCIOS.calcular = (d) => {

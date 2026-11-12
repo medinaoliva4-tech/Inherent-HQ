@@ -106,7 +106,7 @@ t('etapaHormozi: una etapa vacía es «sin ubicar» (null), no la etapa 0 · Imp
   assert.ok(!/Improvise/.test(salud.aMd(salud.vacio())));
 });
 
-t('cada ruta de hormozi-brain existe en disco: las 10 etapas, el overview, el 5-Star y los 4 tipos de oferta', () => {
+t('cada ruta de la biblioteca de Hormozi existe en disco: las 10 etapas, el overview, el 5-Star y los 4 tipos de oferta', () => {
   for (const e of M.ETAPAS_HORMOZI) assert.ok(fs.existsSync(RAIZ + e.ruta), `etapa ${e.n}: ${e.ruta}`);
   for (const [k, r] of Object.entries(M.RUTAS_HORMOZI)) assert.ok(fs.existsSync(RAIZ + r), `${k}: ${r}`);
   for (const o of M.TIPOS_OFERTA) assert.ok(fs.existsSync(RAIZ + o.ruta), `oferta ${o.id}: ${o.ruta}`);
@@ -309,7 +309,7 @@ t('procesos limpiar: pasos con tipo y rango; los ids no chocan entre listas; el 
 });
 
 // ---------- prompt ----------
-t('prompt de los 3: Evidencia o etiqueta, su BLOQUE y criterios, hormozi-brain y < 5 000 caracteres', () => {
+t('prompt de los 3: Evidencia o etiqueta, su BLOQUE y criterios, la biblioteca de Hormozi y < 5 000 caracteres', () => {
   for (const [n, m, bloque] of MODULOS) {
     assert.equal(m.BLOQUE, bloque, n);
     for (const [nombre, ctx] of [['vacío', {}], ['sin argumento', undefined], ['normal', CTX], ['enorme', GRANDE]]) {
@@ -318,7 +318,7 @@ t('prompt de los 3: Evidencia o etiqueta, su BLOQUE y criterios, hormozi-brain y
       assert.ok(p.length < 5000, `${n}/${nombre}: ${p.length} caracteres`);
       assert.ok(p.includes('Evidencia o etiqueta'), `${n}/${nombre}`);
       assert.ok(p.includes(`${F}${bloque}\n`) && p.includes(`${F}criterios\n`), `${n}/${nombre}: pide su bloque y criterios`);
-      assert.ok(p.includes('agents/01-strategy/brain/skills/hormozi-brain'), `${n}/${nombre}: nombra hormozi-brain`);
+      assert.ok(p.includes('ceo-os/data/hormozi'), `${n}/${nombre}: nombra la biblioteca de Hormozi`);
       assert.ok(p.includes('«No está en el material»'), `${n}/${nombre}: cita o dice que no está`);
       assert.ok(p.includes('FUERA DEL ALCANCE') && p.includes('⚠️ SIN DATOS'), n);
       for (const m06 of p.matchAll(/06-ECONOMIA/g)) assert.match(p.slice(Math.max(0, m06.index - 40), m06.index), /Nunca leas ni cites inherent\/$/, `${n}: 06-ECONOMIA solo como algo que NO se lee`);
@@ -335,7 +335,7 @@ t('prompt de salud: lee la etapa y trabado de Strategy (no los duplica) y pide 1
   assert.ok(p.includes('¿Dónde se traba?'), 'la semilla');
   assert.match(p, /exactamente 1/); assert.match(p, /LAS 12 PALANCAS/); assert.match(p, /FODA/); assert.match(p, /PRIORIDADES: 3/);
   for (const pal of M.PALANCAS) assert.ok(p.includes(`${pal.id} (${pal.nombre})`), pal.id);
-  const TRES = /Ubícala con las 3 preguntas de hormozi-brain: ¿cuánto factura al mes y desde cuándo\?, ¿cuántas personas trabajan\?, ¿dónde se traba\?/;
+  const TRES = /Ubícala con las 3 preguntas de la biblioteca de Hormozi: ¿cuánto factura al mes y desde cuándo\?, ¿cuántas personas trabajan\?, ¿dónde se traba\?/;
   assert.match(p, TRES, 'las 3 preguntas, también cuando Strategy ya ubicó la etapa');
   const sin = salud.prompt({ ...CTX, estrategia: { etapa: null, trabado: '', meta: '' } });
   assert.match(sin, TRES); assert.match(sin, /Strategy aún no la ubica: la ubicas tú/);

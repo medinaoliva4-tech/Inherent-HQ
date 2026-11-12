@@ -42,6 +42,8 @@ try { for (const d of fs.readdirSync(path.join(repo, 'agents'), { withFileTypes:
 
 // Agentes del servidor: el SKILL.md de cada skill (sin sus referencias). Lo lee api/_lib/conocimiento.js.
 try { for (const d of fs.readdirSync(path.join(repo, 'agents'), { withFileTypes: true })) if (d.isDirectory() && /^\d/.test(d.name)) walk(`agents/${d.name}/brain/skills`, (q) => /\/SKILL\.md$/.test(q)); } catch {}
+// Las skills comunes (recepcion, resultados) y el router (/inherent) viven fuera de las carpetas numeradas.
+for (const c of ['_comun', '_router']) walk(`agents/${c}/skills`, (q) => /\/SKILL\.md$/.test(q));
 
 // Intel: solo los archivos del mapa de entregables (public/js/intel-mapa.js), de cada cliente y de Inherent. Nada más del folder
 // (nada de 10-finanzas ni de lo que no es un entregable). Su fecha es la del último commit, si git está disponible en el build.
@@ -51,15 +53,16 @@ for (const f of Object.keys(files)) {
   try { const d = execFileSync('git', ['log', '-1', '--format=%cI', '--', f], { cwd: repo, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 4000 }).trim().slice(0, 10); if (d) dates[f] = d; } catch {}
 }
 
-// App 02 · Estrategia: el material de hormozi-brain (libros, roadmap y SOPs, ~5 MB) va aparte, en api/_data/fuentes.json:
-// solo lo lee la ruta de fuentes (api/_lib/estrategia.js), así el resto de la API no lo carga. Las rutas son las de references/.
+// App 02 · Estrategia: la biblioteca de Hormozi (libros, roadmap y SOPs, ~5 MB) es DATO del OS en ceo-os/data/hormozi (ya no es una
+// skill de agents/) y va aparte, en api/_data/fuentes.json: solo lo lee la ruta de fuentes (api/_lib/estrategia.js), así el resto de la
+// API no la carga. Las rutas son relativas a esa carpeta (books/…, roadmap/…, sops/…, briefs/…); README.md e INDEX.md no viajan.
 {
-  const ref = path.join(repo, 'agents/01-strategy/brain/skills/hormozi-brain/references'), fuentes = {};
-  const rd = (rel) => { let ents = []; try { ents = fs.readdirSync(path.join(ref, rel), { withFileTypes: true }); } catch {} for (const e of ents) { const q = rel ? rel + '/' + e.name : e.name; if (e.isDirectory()) rd(q); else if (/\.md$/i.test(q)) fuentes[q] = fs.readFileSync(path.join(ref, q), 'utf8'); } };
+  const ref = path.join(repo, 'ceo-os/data/hormozi'), fuentes = {};
+  const rd = (rel) => { let ents = []; try { ents = fs.readdirSync(path.join(ref, rel), { withFileTypes: true }); } catch {} for (const e of ents) { const q = rel ? rel + '/' + e.name : e.name; if (e.isDirectory()) rd(q); else if (/\.md$/i.test(q) && q.includes('/')) fuentes[q] = fs.readFileSync(path.join(ref, q), 'utf8'); } };
   rd('');
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(path.join(path.dirname(out), 'fuentes.json'), JSON.stringify({ at: new Date().toISOString(), files: fuentes }));
-  console.log(`snapshot: ${Object.keys(fuentes).length} fuentes de hormozi-brain`);
+  console.log(`snapshot: ${Object.keys(fuentes).length} fuentes de la biblioteca de Hormozi`);
 }
 
 fs.mkdirSync(path.dirname(out), { recursive: true });

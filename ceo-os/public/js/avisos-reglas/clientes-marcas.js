@@ -80,7 +80,7 @@ const hrefCamp = (slug) => `#/marcas/${url(slug)}/campanas`;
 const pasar = (slug, mes, label, hecho) => ({ label, api: { method: 'POST', ruta: `plan/${url(slug)}/${mes}/a-creatividad`, body: {} }, hecho });
 
 // mk-plan-del-mes · inherent/05-OPERACION.md §4 (días 1-3 el plan; «el ciclo de octubre es el contenido de noviembre») y
-// agents/03-marketing/brain/WORKFLOW.md «Tu ventana en el ciclo»: el calendario llega a ④ a más tardar el día 3. Del 1 al 20, si
+// agents/03-marketing-creative/brain/WORKFLOW.md «Tu ventana en el ciclo»: el calendario llega a ④ a más tardar el día 3. Del 1 al 20, si
 // corren ③ y ④: el plan de Mc vacío, en borrador o sin pasar a Ideas. Sin estrategia aprobada o brief de comunicación, «bloqueado»
 // y sin botón. Media del 1 al 3, alta desde el 4. Pasarlo pide editar Marcas · contenido (y, con slots por revisar, verlo antes).
 const PLAN = { id: 'mk-plan-del-mes', grupo: 'clientes', area: 'marketing', urgencia: 'alta', necesita: { area: 'content', nivel: 'completo' } };
@@ -110,8 +110,8 @@ PLAN.calcular = (d, p, hoy, { d: dia, M, Mc }) => {
   });
 };
 
-// mk-plan-por-revisar · agents/03-marketing/brain/WORKFLOW.md §2 («Las combinaciones que están prohibidas», «Todo slot traza a una
-// MUST BE TRUE»), la skill mk-pilares (el reparto cierra en 100%) y mk-campana §5 y §7. El plan de Mc con slots y algo por revisar
+// mk-plan-por-revisar · agents/03-marketing-creative/brain/WORKFLOW.md §2 («Las combinaciones que están prohibidas», «Todo slot traza a una
+// MUST BE TRUE»), la skill mc-pilares-angulos (el reparto cierra en 100%) y mc-campanas-piezas §5 y §7. El plan de Mc con slots y algo por revisar
 // (plan-mes.js · revisarSlots y sumaPilares, lo mismo que marca la pantalla). Media mientras no pasa a Creatividad; baja después.
 // La huella lleva el mes: los slots se llaman MK-001… cada mes, y un pospuesto del plan de un mes no tapa el del siguiente.
 const PLAN_REV = { id: 'mk-plan-por-revisar', grupo: 'clientes', area: 'marketing', urgencia: 'media', necesita: { area: 'content', nivel: 'completo' } };
@@ -132,8 +132,8 @@ PLAN_REV.calcular = (d, p, hoy, { Mc }) => marcas(d).flatMap((c) => {
   })];
 });
 
-// mk-plan-desactualizado · agents/03-marketing/brain/WORKFLOW.md §6 (a ④ Creatividad le toca el calendario completo) y
-// agents/04-creative/brain/WORKFLOW.md §2 (el calendario de ③ es lo único que bloquea). Ya pasó a Ideas y después cambiaron sus slots,
+// mk-plan-desactualizado · agents/03-marketing-creative/brain/WORKFLOW.md §6 (a ④ Creatividad le toca el calendario completo) y
+// agents/03-marketing-creative/brain/WORKFLOW.md §2 (el calendario de ③ es lo único que bloquea). Ya pasó a Ideas y después cambiaron sus slots,
 // o a Ideas le falta alguna pieza del plan (plan-mes.js · slotsAPiezas, ids fijos). «Poner al día» no toca lo que escribió ④.
 const PLAN_DES = { id: 'mk-plan-desactualizado', grupo: 'clientes', area: 'marketing', urgencia: 'media', necesita: { area: 'content', nivel: 'edita' } };
 PLAN_DES.calcular = (d, p, hoy, { Mc }) => marcas(d).flatMap((c) => {
@@ -152,7 +152,7 @@ PLAN_DES.calcular = (d, p, hoy, { Mc }) => marcas(d).flatMap((c) => {
   })];
 });
 
-// mk-canal-fuera-ficha · agents/03-marketing/brain/WORKFLOW.md §0 «Canales contratados» y §7 («No inventa un canal que el cliente
+// mk-canal-fuera-ficha · agents/03-marketing-creative/brain/WORKFLOW.md §0 «Canales contratados» y §7 («No inventa un canal que el cliente
 // no tiene»); CLAUDE.md «Escalar no es bloquear»: el alcance va al CEO. El plan de Mc usa un canal que no está en «Redes» de la
 // ficha (sin acentos ni mayúsculas). Sin «Redes» en la ficha (como la de Inherent), no se calcula. La huella lleva el mes.
 // Cada red se compara sin signos (el punto al final de la fila no cambia la red) y con los alias de los dos lados (IG = Instagram).
@@ -177,7 +177,7 @@ CANAL.calcular = (d, p, hoy, { Mc }) => marcas(d).flatMap((c) => {
   })];
 });
 
-// cr-sin-brief · agents/04-creative/brain/WORKFLOW.md §1 «Qué lleva brief-del-ciclo.md», «La carpeta del cliente» y «Tu ventana en
+// cr-sin-brief · agents/03-marketing-creative/brain/WORKFLOW.md §1 «Qué lleva brief-del-ciclo.md», «La carpeta del cliente» y «Tu ventana en
 // el ciclo» (días 1-3). Del 1 al 20, si corre ④ y el candado de Mc está cerrado (calendario-contenido.js · candado, el mismo de
 // reglasPieza en api/index.js): no hay brief del ciclo de Mc y el CEO no abrió el mes. Media del 1 al 3, alta desde el 4.
 // El brief vale en las dos rutas (la del servidor, 04-contenido/<mes>/, y la del manual, …/ideas/): c.briefCiclo, de avisos-datos.
@@ -199,8 +199,8 @@ BRIEF_C.calcular = (d, p, hoy, { d: dia, M, Mc }) => {
   });
 };
 
-// cr-ideas-faltan · agents/04-creative/brain/WORKFLOW.md «Tu ventana en el ciclo» (cierra a más tardar el día 3) y
-// agents/06-graphic-design/brain/WORKFLOW.md §6 (sin el Excel de ④, BLOQUEADO); el servidor no deja diseñar sin idea. Del 1 al 20,
+// cr-ideas-faltan · agents/03-marketing-creative/brain/WORKFLOW.md «Tu ventana en el ciclo» (cierra a más tardar el día 3) y
+// agents/05-graphic-design/brain/WORKFLOW.md §6 (sin el Excel de ④, BLOQUEADO); el servidor no deja diseñar sin idea. Del 1 al 20,
 // si corre ④ y el plan de Mc ya pasó a Ideas: piezas del plan sin idea_chat. Media del 1 al 3, alta desde el 4 (⑤ coordina).
 const IDEAS = { id: 'cr-ideas-faltan', grupo: 'clientes', area: 'diseno', urgencia: 'alta', necesita: { area: 'content', nivel: 'completo' } };
 IDEAS.calcular = (d, p, hoy, { d: dia, M, Mc }) => {
@@ -218,7 +218,7 @@ IDEAS.calcular = (d, p, hoy, { d: dia, M, Mc }) => {
   });
 };
 
-// mk-campana-a-tiempo · agents/03-marketing/brain/skills/mk-campana/SKILL.md § La anticipación, regla 3 («no puede exceder el ciclo»),
+// mk-campana-a-tiempo · agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md § La anticipación, regla 3 («no puede exceder el ciclo»),
 // y § 6 Bloqueos («El aviso llegó tarde. Se trabaja igual y se declara»). (a) campanas.js · revisarCampana dice que el aviso llegó
 // tarde o que el primer aviso ya pasó en borrador, y la campaña no ha terminado: alta. (b) Del 1 al 20, una en Borrador cuyo primer
 // aviso cae de hoy al fin de Mc y ni el plan ni ninguna pieza la nombran: media; alta si el primer aviso cae en 7 días o menos.
@@ -245,7 +245,7 @@ CAMP_T.calcular = (d, p, hoy, { d: dia, M, Mc, finMc }) => marcas(d).flatMap((c)
   });
 });
 
-// mk-campana-incompleta · agents/03-marketing/brain/skills/mk-campana/SKILL.md §2 («Una por ciclo. Dos como máximo»), §5 «Qué
+// mk-campana-incompleta · agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md §2 («Una por ciclo. Dos como máximo»), §5 «Qué
 // escribe», §6 Bloqueos y §7 Checklist. Una en Borrador o En curso a la que revisarCampana le encuentra algo que no es de fecha;
 // y, por marca, revisarMes de Mc (más de 2 en el ciclo). Media; baja si su primer aviso está a más de 30 días (la huella lleva la
 // urgencia: un pospuesto en baja vuelve cuando se acerca).
@@ -274,7 +274,7 @@ CAMP_I.calcular = (d, p, hoy, { Mc }) => marcas(d).flatMap((c) => {
   return out;
 });
 
-// mk-campana-sin-piezas · mk-campana § La anticipación, regla 1 («nunca un solo aviso») y regla 2 («el último empujón siempre
+// mk-campana-sin-piezas · mc-campanas-piezas § La anticipación, regla 1 («nunca un solo aviso») y regla 2 («el último empujón siempre
 // existe»). Una campaña En curso: cada paso de su anticipación de hoy al fin de Mc lleva una pieza que la nombra (p.campana), del
 // paso a 2 días antes; «El día» y «Último día», ese mismo día. Alta si falta el último empujón o un paso cae en 7 días o menos
 // (la huella lleva la urgencia: un pospuesto en media vuelve cuando el paso se acerca). Los recordatorios repetidos se cuentan.
@@ -299,7 +299,7 @@ CAMP_P.calcular = (d, p, hoy, { finMc }) => (!veMarcas(p) ? [] : marcas(d)).flat
   });
 });
 
-// gd-sin-sistema-visual · agents/06-graphic-design/brain/WORKFLOW.md §6: sin sistema-visual.md, BLOQUEADO (la ficha de NAO lo dice
+// gd-sin-sistema-visual · agents/05-graphic-design/brain/WORKFLOW.md §6: sin sistema-visual.md, BLOQUEADO (la ficha de NAO lo dice
 // en «Su pipeline»). Si corre ⑥A y no está 02-marca/sistema-visual.md. Alta desde el día 12 (montaje) o si ya hay carruseles,
 // estáticos o stories de Mc por diseñar; media si no. Lo escribe ②B Branding (br-sistema). En «resumen» no sale.
 const SISTEMA = { id: 'gd-sin-sistema-visual', grupo: 'clientes', area: 'diseno', urgencia: 'alta', necesita: { area: 'content', nivel: 'completo' } };
@@ -340,7 +340,7 @@ GRAB.calcular = (d, p, hoy, { d: dia, M }) => {
   });
 };
 
-// gd-por-disenar · agents/06-graphic-design/brain/WORKFLOW.md «Tu ventana en el ciclo»: del 12 al 15 se monta y el paquete sale a más
+// gd-por-disenar · agents/05-graphic-design/brain/WORKFLOW.md «Tu ventana en el ciclo»: del 12 al 15 se monta y el paquete sale a más
 // tardar el día 19. Del 12 al 19, si corre ⑥A y ya está su sistema visual: los carruseles, estáticos y stories de Mc sin diseñar
 // (diseno.js · «FALTA DISEÑAR»), y los del plan con su idea. Al perfil content (el operador). Media del 12 al 15, alta del 16 al 19.
 const DISENAR = { id: 'gd-por-disenar', grupo: 'clientes', area: 'diseno', urgencia: 'media', necesita: { area: 'content', nivel: 'completo' } };
@@ -380,7 +380,7 @@ FALTAN.calcular = (d, p, hoy, { d: dia, M, Mc }) => {
   });
 };
 
-// po-sin-hora-red · agents/09-posting/brain/WORKFLOW.md («④ Creatividad pone la fecha · Posting pone la hora») e inherent/05-OPERACION.md
+// po-sin-hora-red · agents/07-posting/brain/WORKFLOW.md («④ Creatividad pone la fecha · Posting pone la hora») e inherent/05-OPERACION.md
 // §4: el 20 llega completo, revisado y programado. Las piezas Listo sin hora o sin red (calendario-vistas.js · redDe), de hoy al fin
 // de Mc: las de Mc desde el día 16 y las que salen en 7 días o menos, siempre. Al perfil content. Alta si alguna sale en 2 días o menos.
 const HORA = { id: 'po-sin-hora-red', grupo: 'clientes', area: 'marketing', urgencia: 'media', necesita: { area: 'content', nivel: 'completo' } };
@@ -401,7 +401,7 @@ HORA.calcular = (d, p, hoy, { d: dia, Mc, finMc }) => {
 };
 
 // pz-vencidas · inherent/05-OPERACION.md §4 «Las reglas del calendario» (lo presentado se publica desde el día 1 del mes siguiente)
-// y agents/09-posting/brain/WORKFLOW.md (po-verificacion). Piezas de la marca con fecha de hace 30 días (el Archivo, element.js ·
+// y agents/07-posting/brain/WORKFLOW.md (po-carga). Piezas de la marca con fecha de hace 30 días (el Archivo, element.js ·
 // ARCHIVO_DIAS) a ayer, que siguen en Idea, En proceso o Listo. Se marcan Publicado o se les cambia la fecha.
 const VENCIDAS = { id: 'pz-vencidas', grupo: 'clientes', area: 'marketing', urgencia: 'alta', necesita: { area: 'content', nivel: 'completo' } };
 VENCIDAS.calcular = (d, p, hoy) => {

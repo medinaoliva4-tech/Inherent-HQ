@@ -27,7 +27,7 @@ t('el system prompt lleva reglas, harness, criterios, protocolo y el contexto co
   const s = sistemaDe('estrategia', { persona: 'Ana', puesto: 'CEO', fecha: '2026-10-26', cliente: 'Akai', carpeta: 'clients/akai', nivel: 'Brand Growth', extra: ['Paso: 2'], instrucciones: 'BLOQUE ESTRATEGIA' });
   assert.match(s, /^INHERENT LLM · MODO STRATEGY \(① Strategy\)/);
   for (const r of REGLAS_COMUNES) assert.ok(s.includes(r));
-  assert.ok(s.includes('hormozi-brain'));
+  assert.ok(s.includes('la biblioteca de Hormozi'));
   assert.ok(s.includes('CRITERIOS DE ACEPTACIÓN DE ESTE MODO'));
   assert.ok(s.includes('```criterios') && s.includes('```pregunta'));
   assert.ok(s.indexOf('BLOQUE ESTRATEGIA') < s.indexOf('CONTEXTO DE ESTA CONVERSACIÓN'));
@@ -201,12 +201,12 @@ t('encargos: Estrategia manda trabajo a Consulting o a Diseño y queda como tare
 
 t('Marketing: el plan del mes y las campañas salen del Chat como bloques', () => {
   const s = sistemaDe('marketing', { cliente: 'Nao', carpeta: 'clients/nao' });
-  assert.match(s, /^INHERENT LLM · MODO MARKETING \(③ Marketing\)/);
-  assert.ok(s.includes('```plan') && s.includes('```campana') && s.includes('mk-campana'));
+  assert.match(s, /^INHERENT LLM · MODO MARKETING \(③ Marketing y Creative\)/);
+  assert.ok(s.includes('```plan') && s.includes('```campana') && s.includes('mc-campanas-piezas'));
   const r = 'Va.\n```plan\n{"pilares":[{"nombre":"Autoridad","peso":40}],"inventado":1}\n```\n```campana\n{"nombre":"Apertura","tipo":"Apertura o inauguración","ancla":"2026-12-12"}\n```\n```campana\n{"nombre":"Otra","tipo":"evento"}\n```\n```campana\n{"nombre":"Tercera"}\n```';
   const k = leerTarjetas(r);
   assert.deepEqual(Object.keys(k.plan), ['pilares'], 'solo secciones conocidas del plan');
-  assert.equal(k.campanas.length, 2, 'dos campañas como máximo por respuesta (mk-campana § 2)');
+  assert.equal(k.campanas.length, 2, 'dos campañas como máximo por respuesta (mc-campanas-piezas § 2)');
   assert.equal(k.campanas[0].tipo, 'apertura');
   assert.equal(textoVisible(r), 'Va.');
   assert.equal(tareaDeEncargo({ area: 'marketing', titulo: 'Campaña de apertura' }, { cliente: 'nao', email: 'a' }).dept, '③ Marketing');
@@ -225,7 +225,7 @@ t('las áreas: los workspaces por su modo, más Organización', () => {
 
 t('Production: brief, guion, shot list, grabación y edición, con el ciclo y la ficha como techo', () => {
   const s = sistemaDe('produccion', { cliente: 'Akai', carpeta: 'clients/akai' });
-  assert.match(s, /^INHERENT LLM · MODO PRODUCTION \(⑤ Producción · ⑦ Video Editing\)/);
+  assert.match(s, /^INHERENT LLM · MODO PRODUCTION \(④ Producción · Pre y Post\)/);
   assert.match(s, /día 11/); assert.match(s, /FUERA DEL ALCANCE/); assert.match(s, /id_creativo/);
   assert.match(s, /- Marca: Akai \(clients\/akai\)/);
   assert.match(s, /Hook en los primeros 3 segundos/); assert.match(s, /safe zones/); assert.match(s, /marca de agua/);

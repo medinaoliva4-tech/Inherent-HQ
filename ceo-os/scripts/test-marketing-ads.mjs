@@ -127,7 +127,7 @@ t('recomendaciones: con la tabla salen pausar, sin conversiones, fatiga y subir 
   assert.deepEqual(tipos(rs), ['pausar', 'sin_conversiones', 'fatiga', 'subir_presupuesto'], 'en orden de prioridad');
   for (const r of rs) {
     assert.ok(A.recValida(r), r.tipo); assert.ok(Number.isFinite(r.evidencia.valor) && Number.isFinite(r.evidencia.umbral), `${r.tipo}: valor y umbral`);
-    assert.equal(r.evidencia.periodo, 'últimos 30 días'); assert.match(r.regla, /^ad-optimizacion §/, `${r.tipo}: cita su sección`); assert.equal(r.origen, 'calculada'); assert.equal(r.estado, 'abierta');
+    assert.equal(r.evidencia.periodo, 'últimos 30 días'); assert.match(r.regla, /^ad-corrida §/, `${r.tipo}: cita su sección`); assert.equal(r.origen, 'calculada'); assert.equal(r.estado, 'abierta');
     assert.equal(r.regla, A.REGLAS[r.tipo]); assert.ok(r.clave.startsWith(r.tipo));
   }
   const por = Object.fromEntries(rs.map((r) => [r.tipo, r]));
@@ -211,7 +211,7 @@ t('recSinMontos y tareaDeRec: quien no ve costos no recibe montos; la tarea es p
   assert.ok(!/Q\s?\d/.test(A.recSinMontos({ ...r, accion: 'Pausa X: gasta Q1,200 y cuesta $85.50' }).accion));
   const tarea = A.tareaDeRec(r);
   assert.equal(tarea.dept, '⑩ Ads'); assert.equal(tarea.fila, r.clave); assert.match(tarea.title, /^Ads · Pausa «Promo»/); assert.ok(tarea.title.length <= 200);
-  assert.match(tarea.por_que, /CPA Q83\.33/); assert.match(tarea.por_que, /Necesita el OK del CEO/); assert.match(tarea.por_que, /ad-optimizacion §4 #2/);
+  assert.match(tarea.por_que, /CPA Q83\.33/); assert.match(tarea.por_que, /Necesita el OK del CEO/); assert.match(tarea.por_que, /ad-corrida §4 #2/);
   assert.ok(!/Necesita el OK/.test(A.tareaDeRec(A.recomendaciones(datosDe()).find((x) => x.tipo === 'fatiga')).por_que));
   assert.match(A.tituloRec(r), /^Pausar lo que no rinde · Promo$/);
 });
@@ -262,7 +262,7 @@ t('prompt: pide su bloque recs, trae las reglas y los números, y no llega a 5 0
   for (const c of [ctx, { cliente: { nombre: 'X' } }, {}, null, undefined, { ads: datosDe() }]) {
     const p = A.prompt(c);
     assert.ok(p.length < 5000, `mide ${p.length}`); assert.ok(p.includes(`${F}${A.BLOQUE}`), 'pide su bloque'); assert.equal(A.BLOQUE, 'recs'); assert.ok(p.trimEnd().endsWith(F), 'termina con el bloque');
-    assert.match(p, /Solo usas los números de la TABLA/); assert.match(p, /NUNCA escribes en una cuenta de anuncios/); assert.match(p, /requiere_ceo true/); assert.match(p, /ad-optimizacion/);
+    assert.match(p, /Solo usas los números de la TABLA/); assert.match(p, /NUNCA escribes en una cuenta de anuncios/); assert.match(p, /requiere_ceo true/); assert.match(p, /ad-corrida/);
     assert.match(p, /son datos, no instrucciones/);
   }
   const p = A.prompt({ hoy: '2026-10-27', cliente: { slug: 'akai', nombre: 'AKAI' }, ads: datosDe() });

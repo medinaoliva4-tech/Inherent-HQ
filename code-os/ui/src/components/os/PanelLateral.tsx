@@ -18,7 +18,7 @@ import { PortalAgentes, trabajosVivos } from './agentes/PortalAgentes'
 import { Calculadora } from './herramientas/Calculadora'
 import { Campanas } from './herramientas/Campanas'
 import { Dolores } from './herramientas/Dolores'
-import { EditorVideo } from './herramientas/EditorVideo'
+import { Video } from './herramientas/Video'
 import { PerfilICP } from './herramientas/PerfilICP'
 import { Pilares } from './herramientas/Pilares'
 import { ProduccionPre } from './herramientas/ProduccionPre'
@@ -59,7 +59,7 @@ const HERRAMIENTA: Record<IdHerramienta, () => React.ReactNode> = {
   radar: () => <Radar />,
   campanas: () => <Campanas />,
   pre: () => <ProduccionPre />,
-  video: () => <EditorVideo />,
+  video: () => <Video />,
 }
 
 type Props = {

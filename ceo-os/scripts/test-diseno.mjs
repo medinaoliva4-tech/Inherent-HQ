@@ -8,7 +8,7 @@ let ok = 0; const t = (n, f) => { f(); ok++; console.log('✓', n); };
 
 t('La primera vez el pedido lleva el método, la marca y el contexto', () => {
   const p = promptDiseno({ marca: 'Cerantola', slug: 'cerantola', formato: 'Carrusel', contexto: textoIdea({ title: 'La apertura' }, 'Portada: el hotel'), pedido: 'Arma el carrusel', primera: true });
-  for (const x of ['agents/06-graphic-design/brain/WORKFLOW.md', 'clients/cerantola/02-marca/sistema-visual.md', 'kit-de-redes/kit.md', 'plan-contratado.md', 'get_screenshot', '```diseno', 'CONTEXTO QUE AGREGÓ LA PERSONA', 'IDEA DEL CALENDARIO', 'Portada: el hotel', 'Pedido: Arma el carrusel']) assert.ok(p.includes(x), x);
+  for (const x of ['agents/05-graphic-design/brain/WORKFLOW.md', 'clients/cerantola/02-marca/sistema-visual.md', 'kit-de-redes/kit.md', 'plan-contratado.md', 'get_screenshot', '```diseno', 'CONTEXTO QUE AGREGÓ LA PERSONA', 'IDEA DEL CALENDARIO', 'Portada: el hotel', 'Pedido: Arma el carrusel']) assert.ok(p.includes(x), x);
   assert.match(p, /\n\nCUANDO TERMINES/);
 });
 t('Después solo va el pedido, la lámina y el cierre', () => {

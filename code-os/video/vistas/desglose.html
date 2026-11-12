@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desglose del video</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  .fichas { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .ficha { padding: 12px 14px; display: grid; gap: 8px; min-width: 220px; }
+  .ficha small { color: var(--apagado); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
+  .ficha .grande { font-size: 15px; font-weight: 600; }
+  .ficha .etiquetas { align-items: center; align-self: start; }
+  .musica { display: grid; grid-template-columns: 1fr; gap: 8px; flex: 1; min-width: 320px; }
+  .fila { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--tenue); }
+  input[type=range] { accent-color: var(--crema); }
+  .escenas { display: grid; gap: 10px; }
+  .escena { display: grid; grid-template-columns: 96px 1fr 250px; gap: 14px; padding: 10px; align-items: start; }
+  .miniatura { width: 96px; border-radius: 10px; overflow: hidden; background: #050505; position: relative; }
+  .miniatura video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .miniatura .n { position: absolute; left: 6px; top: 6px; font-size: 11px; background: rgba(0,0,0,.6); border-radius: 6px; padding: 1px 6px; }
+  .cuerpo h3 { margin: 0 0 4px; font-size: 13.5px; font-weight: 600; }
+  .cuerpo .tiempo { font-size: 12px; color: var(--apagado); font-variant-numeric: tabular-nums; }
+  .aplicado { display: grid; gap: 4px; margin-top: 8px; }
+  .item { display: flex; gap: 8px; align-items: center; font-size: 12.5px; }
+  .item .que { width: 92px; flex: none; color: var(--apagado); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+  .item .x { border: 0; background: none; color: var(--apagado); cursor: pointer; padding: 0 4px; }
+  .item .x:hover { color: var(--hueso); }
+  .punto { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  .controles { display: grid; gap: 8px; }
+  .controles label { display: grid; gap: 4px; font-size: 11px; color: var(--apagado); text-transform: uppercase; letter-spacing: .05em; }
+  .controles select { width: 100%; }
+  @media (max-width: 760px) { .escena { grid-template-columns: 72px 1fr; } .controles { grid-column: 1 / -1; } .miniatura { width: 72px; } }
+</style>
+</head>
+<body>
+<div class="envoltura">
+  <div class="cabeza">
+    <div><h1 id="titulo">Desglose del video</h1><p>Cada escena y lo que se le aplica: estilo, transición, efectos, texto y la música del video. Aquí se cambia; el agente renderiza con eso.</p></div>
+    <span class="esp"></span>
+    <select class="campo" id="videos"></select>
+    <button class="btn" id="prompt">Copiar prompt</button>
+    <button class="btn primario" id="render">Renderizar</button>
+  </div>
+  <div class="fichas" id="fichas"></div>
+  <div class="escenas" id="escenas"></div>
+</div>
+<script type="module">
+import { $, h, q, pedir, aviso, medio, nombreArchivo, tiempo, duracionTxt, copiarPrompt, nombreEstilo, alPadre } from './comun.mjs';
+
+let catalogo, video, marca = null, guia = null, archivos = null, idVideo = q.get('video');
+const dur = (e) => e.fin - e.inicio;
+const total = () => video.escenas.reduce((s, e) => s + dur(e), 0);
+
+async function cargarVideo(id) {
+  idVideo = id;
+  video = (await pedir('GET', `/videos/${id}`)).video;
+  marca = guia = archivos = null;
+  if (video.marca) { const r = await pedir('GET', `/marcas/${video.marca}`); marca = r.marca; guia = r.guia; archivos = r.archivos; }
+  pintar();
+}
+async function cambiarEscena(n, cambio, mensaje) {
+  try { video = (await pedir('POST', `/videos/${idVideo}/escenas/${n}`, { ...cambio, version: video.version })).video; pintar(); alPadre('cambio', { video: idVideo }); aviso(mensaje); }
+  catch (e) { aviso(e.estado === 409 ? 'Alguien guardó otra versión: recarga.' : e.message, 4500); }
+}
+async function cambiarMusica(musica, mensaje) {
+  try { video = (await pedir('PUT', `/videos/${idVideo}/musica`, { musica, version: video.version })).video; pintar(); alPadre('cambio', { video: idVideo }); aviso(mensaje); }
+  catch (e) { aviso(e.message, 4500); }
+}
+
+// opciones: primero lo que eligió la marca; si no hay marca, todo el catálogo
+const opcionesDe = (seccion) => {
+  const ids = marca?.elegidos[seccion];
+  const lista = seccion === 'estilos' ? catalogo.estilos : catalogo[seccion];
+  return ids?.length ? lista.filter((x) => ids.includes(x.id)) : lista;
+};
+function selector(etq, seccion, actual, alElegir) {
+  const ops = opcionesDe(seccion);
+  const s = h('select', { className: 'campo' }, h('option', { value: '', textContent: actual ? `${actual} (actual)` : '—' }),
+    ops.map((x) => h('option', { value: x.id, textContent: `${x.nombre}${x.render === false ? ' · sin render' : ''}`, disabled: x.render === false })));
+  s.onchange = () => { if (s.value) alElegir(ops.find((x) => x.id === s.value)); };
+  return h('label', {}, `${etq}${marca ? ' (de la marca)' : ''}`, s);
+}
+
+function fichaMusica() {
+  const pistas = [...(marca?.musica ?? []), ...((archivos?.musica ?? []).filter((a) => !(marca?.musica ?? []).some((m) => m.ruta === a.ruta)))];
+  const m = video.musica;
+  const s = h('select', { className: 'campo' }, h('option', { value: '', textContent: 'Sin música' }),
+    pistas.map((p) => h('option', { value: p.ruta, textContent: p.nombre, selected: m?.ruta === p.ruta })), m && !pistas.some((p) => p.ruta === m.ruta) ? h('option', { value: m.ruta, textContent: nombreArchivo(m.ruta), selected: true }) : null);
+  s.onchange = () => cambiarMusica(s.value ? { ruta: s.value, volumen: m?.volumen ?? 0.22, inicio: 0, ducking: m?.ducking ?? true } : null, s.value ? 'Música cambiada' : 'Sin música');
+  const vol = h('input', { type: 'range', min: 0, max: 1, step: 0.01, value: m?.volumen ?? 0.22, disabled: !m });
+  vol.onchange = () => cambiarMusica({ ...m, volumen: Number(vol.value) }, `Volumen ${Math.round(vol.value * 100)} %`);
+  const duck = h('input', { type: 'checkbox', checked: !!m?.ducking, disabled: !m });
+  duck.onchange = () => cambiarMusica({ ...m, ducking: duck.checked }, duck.checked ? 'La música baja sola cuando hablan' : 'Volumen fijo');
+  return h('div', { className: 'ficha vidrio musica' }, h('small', { textContent: 'Música del video' }), s,
+    m ? h('audio', { controls: true, preload: 'none', src: medio(m.ruta), style: 'height:30px;width:100%' }) : null,
+    h('div', { className: 'fila' }, 'Volumen', vol, h('span', { textContent: m ? `${Math.round(m.volumen * 100)} %` : '' }), h('label', { className: 'fila' }, duck, 'Bajar bajo la voz (ducking)')));
+}
+
+function escena(e, i) {
+  const n = i + 1;
+  const receta = catalogo.estilos.find((x) => x.id === e.estilo);
+  const transicion = e.estilos.find((s) => s.tipo === 'transicion');
+  const efectos = e.estilos.filter((s) => s.tipo !== 'transicion');
+  const quitar = (s) => { const nom = nombreEstilo(s, catalogo); return nom.id ? h('button', { className: 'x', title: 'Quitar', textContent: '✕', onclick: () => cambiarEscena(n, { efecto: nom.id, quitar: true }, `«${nom.nombre}» quitado`) }) : null; };
+  const textos = e.capas.filter((c) => c.tipo === 'texto'), imagenes = e.capas.filter((c) => c.tipo === 'imagen');
+  const mini = h('video', { muted: true, preload: 'metadata', playsInline: true, src: `${medio(e.clip)}#t=${(e.inicio + 0.1).toFixed(2)}` });
+  mini.onmouseenter = () => { mini.currentTime = e.inicio; mini.play().catch(() => {}); };
+  mini.ontimeupdate = () => { if (mini.currentTime >= e.fin) mini.currentTime = e.inicio; };
+  mini.onmouseleave = () => { mini.pause(); mini.currentTime = e.inicio + 0.1; };
+  return h('article', { className: 'tarjeta vidrio escena' },
+    h('div', { className: 'miniatura', style: `aspect-ratio:${video.formato.replace(':', '/')}` }, mini, h('span', { className: 'n', textContent: n })),
+    h('div', { className: 'cuerpo' },
+      h('h3', { textContent: textos[0]?.texto || e.nota || `Escena ${n}` }),
+      h('div', { className: 'tiempo', textContent: `${tiempo(video.escenas.slice(0, i).reduce((s, x) => s + dur(x), 0))} · ${dur(e).toFixed(1)} s · ${nombreArchivo(e.clip)} (${tiempo(e.inicio)}–${tiempo(e.fin)})` }),
+      h('div', { className: 'aplicado' },
+        h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Estilo' }), h('span', { textContent: receta?.nombre ?? '—' })),
+        h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Transición' }), h('span', { textContent: transicion ? nombreEstilo(transicion, catalogo).nombre : 'Corte directo' })),
+        efectos.length ? efectos.map((s) => h('div', { className: 'item' }, h('span', { className: 'que', textContent: s.tipo.startsWith('animacion') ? 'Animación' : 'Efecto' }), h('span', { textContent: nombreEstilo(s, catalogo).nombre }), quitar(s)))
+          : h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Efectos' }), h('span', { textContent: 'ninguno' })),
+        textos.map((c) => h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Texto' }), h('span', { className: 'punto', style: `background:${c.caja ?? c.color}` }), h('span', { textContent: `«${c.texto}»${c.fuente ? ` · ${c.fuente}` : ''}${c.caja ? ' · en caja' : ''}` }))),
+        imagenes.map((c) => h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Imagen' }), h('span', { textContent: nombreArchivo(c.ruta) }))),
+        e.referencia ? h('div', { className: 'item' }, h('span', { className: 'que', textContent: 'Imita' }), h('span', { style: 'color:var(--crema)', textContent: e.referencia })) : null)),
+    h('div', { className: 'controles' },
+      selector('Cambiar estilo', 'estilos', receta?.nombre, (x) => cambiarEscena(n, { estilo: x.id }, `Escena ${n}: «${x.nombre}»`)),
+      selector('Transición', 'transiciones', transicion ? nombreEstilo(transicion, catalogo).nombre : null, (x) => cambiarEscena(n, { transicion: x.id }, `Escena ${n}: ${x.nombre}`)),
+      selector('Agregar efecto', 'efectos', null, (x) => cambiarEscena(n, { efecto: x.id }, `Escena ${n}: + ${x.nombre}`)),
+      selector('Animación de texto', 'animaciones_texto', null, (x) => cambiarEscena(n, { efecto: x.id }, `Escena ${n}: texto ${x.nombre.toLowerCase()}`))));
+}
+
+function pintar() {
+  $('titulo').textContent = video.titulo;
+  $('fichas').replaceChildren(
+    h('div', { className: 'ficha vidrio' }, h('small', { textContent: 'Video' }), h('div', { className: 'grande', textContent: `${video.escenas.length} escenas · ${duracionTxt(total())}` }),
+      h('div', { className: 'etiquetas' }, h('span', { className: 'etiqueta', textContent: video.formato }), h('span', { className: 'etiqueta', textContent: `versión ${video.version}` }),
+        video.imita ? h('span', { className: 'etiqueta si', textContent: `imita ${video.imita}` }) : null)),
+    h('div', { className: 'ficha vidrio' }, h('small', { textContent: 'Marca' }), h('div', { className: 'grande', textContent: marca?.nombre ?? 'Sin marca' }),
+      guia ? h('div', { className: 'etiquetas' }, h('span', { className: 'etiqueta', textContent: `${guia.transiciones.length} transiciones` }), h('span', { className: 'etiqueta', textContent: `${guia.efectos.length} efectos` }), h('span', { className: 'etiqueta', textContent: `${guia.estilos.length} estilos` }))
+        : h('span', { className: 'etiqueta pendiente', textContent: 'Sin style menu: se ofrece todo el catálogo' })),
+    fichaMusica());
+  $('escenas').replaceChildren(...video.escenas.map(escena));
+}
+
+$('videos').onchange = () => cargarVideo($('videos').value);
+$('prompt').onclick = () => copiarPrompt(`Revisa el video ${video.id} («${video.titulo}»)${video.marca ? ` de la marca ${video.marca} con su style menu (marca_guia)` : ''}: ${video.escenas.length} escenas, ${duracionTxt(total())}. Ajusta lo que no cumpla y renderiza con corte_render.`);
+$('render').onclick = async () => {
+  const b = $('render'); b.disabled = true;
+  try {
+    let { trabajo } = await pedir('POST', `/videos/${idVideo}/render`);
+    while (['pendiente', 'procesando'].includes(trabajo.estado)) { b.textContent = `Renderizando ${Math.round(trabajo.progreso * 100)} %`; await new Promise((r) => setTimeout(r, 1000)); ({ trabajo } = await pedir('GET', `/trabajos/${trabajo.id}`)); }
+    if (trabajo.estado === 'error') throw new Error(trabajo.error);
+    aviso(`Listo en ${trabajo.segundos} s`); window.open(`${q.get('api') ?? ''}${trabajo.archivo}${q.get('t') ? `?t=${q.get('t')}` : ''}`, '_blank');
+  } catch (e) { aviso(`Falló el render: ${e.message}`, 5000); } finally { b.disabled = false; b.textContent = 'Renderizar'; }
+};
+
+try {
+  catalogo = await pedir('GET', '/catalogo');
+  const { videos } = await pedir('GET', `/videos${q.get('marca') ? `?marca=${q.get('marca')}` : ''}`);
+  idVideo ??= videos[0]?.id;
+  $('videos').append(...videos.map((v) => h('option', { value: v.id, textContent: `${v.titulo} · ${v.escenas} escenas`, selected: v.id === idVideo })));
+  if (!idVideo) $('escenas').append(h('div', { className: 'vacio vidrio', textContent: 'Todavía no hay videos. El agente los crea con corte_primer.' }));
+  else await cargarVideo(idVideo);
+} catch (e) { $('escenas').append(h('div', { className: 'vacio vidrio', textContent: `No se pudo cargar: ${e.message}` })); }
+</script>
+</body>
+</html>

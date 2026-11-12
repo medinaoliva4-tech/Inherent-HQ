@@ -109,7 +109,7 @@ export function prompt(ctx) {
   const cuerpo = [
     'MÉTODO',
     `Fuentes (el contexto las trae si existen; lo que no está va ${SIN_DATOS} y dices de dónde saldría): la ficha de oferta (${carpeta}/00-onboarding/plan-contratado.md), ${carpeta}/00-onboarding/comprension.md y ${carpeta}/01-estrategia/nucleo.md del Intel, la Library y la Investigación (${carpeta}/99-referencias/investigacion/).`,
-    `Lee en hormozi-brain: ${RUTAS_HORMOZI.overview}${e ? ` y ${etapaHormozi(e.n).ruta}` : ''}.`,
+    `Lee en la biblioteca de Hormozi: ${RUTAS_HORMOZI.overview}${e ? ` y ${etapaHormozi(e.n).ruta}` : ''}.`,
     `1) SALUD: exactamente 6 ejes: ${EJES.map((x) => `${x.id} (${x.nombre})`).join(', ')}. Cada uno con estado ok, riesgo o falta, la evidencia que lo prueba y su fuente (archivo, cifra del cliente o [dice el cliente, sin verificar]). Sin evidencia el estado es falta y la evidencia va vacía: nunca ok «de memoria».`,
     '2) CONCLUSIÓN: una sola frase sobre cómo está el negocio hoy.',
     '3) TRABADO: dónde se traba, uno solo: oferta, modelo, leads o capacidad; en «porque», la razón en una o dos frases. Si la empresa es el estorbo, más demanda empeora el problema: primero la capacidad.',

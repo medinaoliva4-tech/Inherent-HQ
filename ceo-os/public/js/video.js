@@ -2,7 +2,7 @@
 // (api/_lib/video.js), la pantalla (video-ui.js) y las pruebas.
 //   videos  kit--<marca>  el kit: subtítulos, colores, transiciones, ritmo, intro y outro, música, safe zones, encuadre
 //           <id>          una ficha: { profile, titulo, formato, duracion, estado, assets, cortes, transicion, musica, notas, post, archivado }
-// El OS no edita el video: arma el pedido para ⑦ Video Editing, que el editor corre en su compu (ve-armado, ve-marca).
+// El OS no edita el video: arma el pedido para ⑦ Video Editing, que el editor corre en su compu (pr-post).
 export const COLL_V = 'videos';
 export const idKit = (slug) => `kit--${slug}`;
 export const ESTADOS_V = ['Por editar', 'En edición', 'En revisión', 'Listo'];
@@ -144,7 +144,7 @@ export function pedidoVideo(f, kit, marca, carpeta) {
   const k = kit || limpiarKit({}), s = k.subtitulos;
   const lineaCorte = (c, i) => `${i + 1}. ${reloj(c.desde)}–${reloj(c.hasta)} · ${c.toma || 'toma sin nombre'}${c.texto ? ` · texto en pantalla: «${c.texto}»` : ''}${c.nota ? ` · ${c.nota}` : ''}`;
   return [
-    `/video-editing Arma el video «${f.titulo || 'sin título'}» de ${marca} con su kit de edición. Sigue el WORKFLOW de ⑦ Video Editing (ve-armado → ve-marca → ve-export).`,
+    `/produccion Arma el video «${f.titulo || 'sin título'}» de ${marca} con su kit de edición. Sigue el Post de ④ Producción (skill pr-post).`,
     '',
     `## La ficha`,
     `- Formato: ${f.formato}${f.duracion ? ` · duración objetivo ${f.duracion} s` : ''}`,

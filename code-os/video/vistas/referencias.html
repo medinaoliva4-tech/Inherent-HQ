@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referencias de video</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  .refs { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .ref { padding: 10px; gap: 9px; }
+  .portada { position: relative; aspect-ratio: 16/9; border-radius: 11px; overflow: hidden; background: #050505; }
+  .portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .portada .dur { position: absolute; right: 8px; bottom: 8px; font-size: 11px; padding: 2px 7px; border-radius: 6px; background: rgba(0,0,0,.65); }
+  .tira { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; }
+  .acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  td, th { text-align: left; padding: 5px 4px; border-top: 1px solid var(--borde); vertical-align: top; color: var(--tenue); }
+  th { color: var(--apagado); font-weight: 500; font-size: 11px; }
+  td b { color: var(--hueso); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="envoltura">
+  <div class="cabeza">
+    <div><h1>Referencias</h1><p>Videos de otros (o propios) que vale la pena replicar. Cada uno trae por qué funciona y, si ya se desglosó, sus escenas. «Imitar» toma ese desglose y lo aplica a tu video con el style menu de la marca.</p></div>
+    <span class="esp"></span>
+    <div id="selector"></div>
+    <div class="segmentos vidrio" id="filtro"><button class="on" data-f="todas">Todas</button><button data-f="desglose">Con desglose</button><button data-f="radar">Del radar</button></div>
+  </div>
+  <div id="contexto" class="etiquetas" style="margin-bottom:14px"></div>
+  <div class="refs" id="refs"></div>
+</div>
+<script type="module">
+import { $, h, q, pedir, aviso, tiempo, duracionTxt, copiarPrompt, elegirMarca, alPadre } from './comun.mjs';
+
+let refs = [], estilos = [], filtro = 'todas', abierta = null, idMarca, video = null;
+const idVideo = q.get('video');
+const COLOR = { gancho: 'var(--crema)', cuerpo: 'rgba(236,230,218,.35)', cierre: '#e8735a' };
+
+function tira(d) {
+  return h('div', { className: 'tira', title: 'gancho · cuerpo · cierre' }, d.escenas.map((e) => h('span', { style: `flex:${e.duracion};background:${COLOR[e.rol]}`, title: `${e.rol} · ${e.duracion.toFixed(1)} s` })));
+}
+function tabla(d) {
+  return h('table', {}, h('tr', {}, ['Tiempo', 'Parte', 'Plano', 'Texto', 'Efecto'].map((t) => h('th', { textContent: t }))),
+    d.escenas.map((e) => h('tr', {}, h('td', { textContent: `${tiempo(e.inicio)}–${tiempo(e.fin)}` }), h('td', {}, h('b', { textContent: e.rol })), h('td', { textContent: e.plano ?? '—' }),
+      h('td', { textContent: e.texto ? `«${e.texto}»` : '—' }), h('td', { textContent: [e.efecto && e.efecto !== 'ninguno' ? e.efecto : null, e.fundido_entrada ? 'entra con fundido' : null].filter(Boolean).join(' · ') || '—' }))));
+}
+async function imitar(r) {
+  try {
+    const x = await pedir('POST', `/referencias/${r.id}/imitar`, { video: idVideo, version: video?.version });
+    video = x.video; alPadre('cambio', { video: idVideo });
+    aviso(x.metodo === 'desglose' ? `Listo: ${video.escenas.length} escenas con el ritmo de «${r.titulo.slice(0, 30)}». Revísalo en Desglose.` : `Sin desglose: se aplicó su estilo sugerido «${x.receta.nombre}».`, 4500);
+    pintar();
+  } catch (e) { aviso(`No se pudo imitar: ${e.message}`, 5000); }
+}
+function prompt(r) {
+  return [`Imita la referencia «${r.titulo}» (${r.id}${r.fuente_url ? `, ${r.fuente_url}` : ''})${idVideo ? ` en el video ${idVideo}` : ''}${idMarca ? ` con el style menu de la marca ${idMarca} (lee marca_guia)` : ''}.`,
+    r.breakdown ? 'Usa referencia_imitar y luego revisa escena por escena.' : 'Todavía no tiene desglose: bájala a una carpeta temporal, corre video_desglose con referencia y luego referencia_imitar.',
+    `Por qué funciona: ${r.por_que_funciona}`].join(' ');
+}
+function pintar() {
+  $('contexto').replaceChildren(idVideo ? h('span', { className: 'etiqueta si', textContent: `Video: ${video?.titulo ?? idVideo}${video?.imita ? ` · ya imita ${video.imita}` : ''}` }) : h('span', { className: 'etiqueta', textContent: 'Abre esta vista con ?video=<id> para imitar directo; si no, copia el prompt' }),
+    idMarca ? h('span', { className: 'etiqueta', textContent: `Marca: ${idMarca}` }) : null);
+  const lista = refs.filter((r) => filtro === 'todas' || (filtro === 'desglose' ? r.breakdown : r.origen === 'radar'));
+  $('refs').replaceChildren(...(lista.length ? lista.map((r) => {
+    const d = r.breakdown, sugerido = estilos.find((e) => e.id === r.estilo_sugerido);
+    return h('article', { className: `tarjeta vidrio ref${video?.imita === r.id ? ' elegida' : ''}` },
+      h('div', { className: 'portada' }, r.miniatura_url ? h('img', { src: r.miniatura_url, alt: '', loading: 'lazy', referrerPolicy: 'no-referrer' }) : h('div', { className: 'vacio', textContent: r.plataforma === 'propio' ? 'Video propio' : 'Sin miniatura' }),
+        h('span', { className: 'dur', textContent: duracionTxt(r.duracion) })),
+      h('h3', { textContent: r.titulo }),
+      h('div', { className: 'etiquetas' }, h('span', { className: 'etiqueta', textContent: r.plataforma }), r.autor ? h('span', { className: 'etiqueta', textContent: r.autor }) : null,
+        h('span', { className: 'etiqueta', textContent: r.origen }), r.metricas?.winner ? h('span', { className: 'etiqueta si', textContent: '★ winner del radar' }) : null),
+      h('p', { textContent: r.por_que_funciona }),
+      d ? [tira(d), h('div', { className: 'etiquetas' }, h('span', { className: 'etiqueta', textContent: `${d.escenas.length} escenas · ritmo ${d.ritmo.lectura}` }), h('span', { className: 'etiqueta', textContent: d.metodo }),
+        h('button', { className: 'btn chico', textContent: abierta === r.id ? 'Ocultar desglose' : 'Ver desglose', onclick: () => { abierta = abierta === r.id ? null : r.id; pintar(); } }))]
+        : h('div', { className: 'etiquetas' }, h('span', { className: 'etiqueta pendiente', textContent: 'Sin desglose' }), h('span', { className: 'etiqueta', textContent: `se imita con «${sugerido?.nombre ?? r.estilo_sugerido}»` })),
+      abierta === r.id && d ? tabla(d) : null,
+      r.fuente_url ? h('a', { href: r.fuente_url, target: '_blank', rel: 'noopener noreferrer', textContent: 'Ver original ↗', style: 'font-size:12px' }) : null,
+      h('div', { className: 'acciones' }, h('button', { className: 'btn chico', textContent: 'Copiar prompt', onclick: () => copiarPrompt(prompt(r)) }),
+        h('button', { className: 'btn chico primario', textContent: 'Imitar este', disabled: !idVideo, title: idVideo ? 'Aplicar su desglose a este video' : 'Abre la vista con un video para imitar directo', onclick: () => imitar(r) })));
+  }) : [h('div', { className: 'vacio vidrio', textContent: 'Nada en este filtro.' })]));
+}
+$('filtro').onclick = (ev) => { const f = ev.target.dataset?.f; if (!f) return; filtro = f; for (const b of $('filtro').children) b.classList.toggle('on', b.dataset.f === f); pintar(); };
+try {
+  [{ referencias: refs }, { estilos }] = await Promise.all([pedir('GET', '/referencias'), pedir('GET', '/estilos')]);
+  if (idVideo) { video = (await pedir('GET', `/videos/${idVideo}`)).video; idMarca = video.marca; }
+  else ({ actual: idMarca } = await elegirMarca($('selector'), (id) => { idMarca = id; pintar(); }));
+  pintar();
+} catch (e) { $('refs').append(h('div', { className: 'vacio vidrio', textContent: `No se pudo cargar: ${e.message}` })); }
+</script>
+</body>
+</html>

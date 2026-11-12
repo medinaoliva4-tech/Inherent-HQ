@@ -445,14 +445,14 @@ export async function render(el, { me, sub, alive }) {
   const CAMP_ST = ['Borrador', 'Activa', 'Pausada', 'Terminada'];
   // Las capas del WORKFLOW de ⑩ Ads, en orden, con la skill que las corre y cómo se reconoce su tarea.
   const STEPS = [
-    ['0', 'Encargo', 'ad-encargo', 'Objetivo en una métrica, presupuesto del cliente, acceso a las cuentas y tracking', /encargo|objetivo|presupuesto|tracking|acceso/i],
-    ['1', 'Estructura', 'ad-estructura', 'Cuántas campañas, con qué objetivo, qué públicos y cómo se reparte el presupuesto', /estructura|p[úu]blico|campañ|keyword|audienc/i],
-    ['2', 'Creativos', 'ad-creativos', 'Qué piezas se pautan y con qué variantes de hook · claims validados por ②B Branding', /creativ|variante|hook|claim/i],
+    ['0', 'Encargo', 'ad-plan', 'Objetivo en una métrica, presupuesto del cliente, acceso a las cuentas y tracking', /encargo|objetivo|presupuesto|tracking|acceso/i],
+    ['1', 'Estructura', 'ad-plan', 'Cuántas campañas, con qué objetivo, qué públicos y cómo se reparte el presupuesto', /estructura|p[úu]blico|campañ|keyword|audienc/i],
+    ['2', 'Creativos', 'ad-plan', 'Qué piezas se pautan y con qué variantes de hook · claims validados por ②B Branding', /creativ|variante|hook|claim/i],
     ['G', 'Gate 1 · OK del CEO', null, 'El CEO aprueba el plan y el presupuesto. Sin esto no se lanza', null],
-    ['3', 'Lanzamiento', 'ad-lanzamiento', 'Se corre lo aprobado y se anota qué quedó corriendo y desde cuándo', /lanz/i],
-    ['4', 'Optimización', 'ad-optimizacion', 'Pacing, fatiga y qué se mueve · un cambio a la vez · cada cambio de presupuesto pasa por el Gate 2', /optimiz|pacing|fatiga|pausa/i],
-    ['5', 'Atribución', 'ad-atribucion', 'Qué ventas vinieron de la pauta · solo Growth Partnership, con atribución limpia', /atribu/i],
-    ['↻', 'Loop', 'ad-loop', 'Qué hook ganó, qué fatigó, qué vuelve a ④ Creatividad y a ② Growth · escribe aprendizaje-de-pauta.md', /aprendiz|loop|cierre|revisi[óo]n del 20/i],
+    ['3', 'Lanzamiento', 'ad-corrida', 'Se corre lo aprobado y se anota qué quedó corriendo y desde cuándo', /lanz/i],
+    ['4', 'Optimización', 'ad-corrida', 'Pacing, fatiga y qué se mueve · un cambio a la vez · cada cambio de presupuesto pasa por el Gate 2', /optimiz|pacing|fatiga|pausa/i],
+    ['5', 'Atribución', 'ad-corrida', 'Qué ventas vinieron de la pauta · solo Growth Partnership, con atribución limpia', /atribu/i],
+    ['↻', 'Loop', 'resultados', 'Qué hook ganó, qué fatigó, qué vuelve a ④ Creatividad y a ② Growth · escribe aprendizaje-de-pauta.md', /aprendiz|loop|cierre|revisi[óo]n del 20/i],
   ];
   let adsSel = null, campaigns, campsOn = null;
   const adsInfo = {}, pautaInfo = {};
@@ -512,12 +512,12 @@ export async function render(el, { me, sub, alive }) {
     return box('Campañas', campsOn === false ? 'Se guardan como tareas de ⑩ Ads mientras se habilita la colección «campaigns»' : 'Lo que está armado y corriendo · nombre, plataforma, estado, presupuesto diario y fechas',
       campaigns === null && !l.length ? html`<p class="loading sm">Cargando…</p>` : l.length ? html`<div class="camps"><table class="wktable"><thead><tr><th>Campaña</th><th>Plataforma</th><th>Estado</th><th class="n">Diario</th><th>Desde</th><th>Hasta</th></tr></thead><tbody>
         ${l.map((c) => html`<tr class="click" data-act="campEdit" data-id="${c.id}" data-s="${sl}"><td><b style="font-weight:500">${c.name}</b>${c.objective ? html`<div class="mut sm">${c.objective}</div>` : ''}</td><td>${P[c.platform] || c.platform || '—'}</td><td><span class="chip sm2 ${c.status === 'Activa' ? 'lime' : c.status === 'Pausada' ? 'amber' : c.status === 'Terminada' ? 'green' : ''}">${c.status || 'Borrador'}</span></td><td class="n">${c.daily ? Q(c.daily) : '—'}</td><td>${c.from ? fdate(c.from) : '—'}</td><td>${c.to ? fdate(c.to) : '—'}</td></tr>`)}</tbody></table></div>`
-      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-estructura</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn sm" data-act="campNew" data-s="${sl}">+ Campaña</button>`, 'sp-panel');
+      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-plan</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn sm" data-act="campNew" data-s="${sl}">+ Campaña</button>`, 'sp-panel');
   }
   function learnBox(sl) {
     loadPauta(sl); const pi = pautaInfo[sl];
     return box('Aprendizaje', 'Lo que dejó el ciclo anterior · aprendizaje-de-pauta.md del cliente', !pi || pi.loading ? html`<p class="loading sm">Cargando…</p>` : pi.error ? html`<div class="mut sm">${pi.error}</div>`
-      : pi.aprendizaje ? html`<div class="adslearn">${md(pi.aprendizaje)}</div>` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay <code>aprendizaje-de-pauta.md</code> para este cliente. Lo escribe <b>ad-loop</b> al cerrar el ciclo (revisión del 20).</div>`,
+      : pi.aprendizaje ? html`<div class="adslearn">${md(pi.aprendizaje)}</div>` : html`<div class="mut sm" style="padding:6px 0">Todavía no hay <code>aprendizaje-de-pauta.md</code> para este cliente. Lo escribe <b>resultados</b> al cerrar el ciclo (revisión del 20).</div>`,
       pi && !pi.loading && !pi.error ? html`<span class="mut sm">${pi.plan ? 'plan ✓' : 'sin plan'} · ${pi.reporte ? 'reporte ✓' : 'sin reporte'}</span>` : '', 'sp-panel sp-read');
   }
   const cuentasBox = (slugs) => box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = adsAcc(sl);
@@ -685,7 +685,7 @@ export async function render(el, { me, sub, alive }) {
     deliver: (t, e) => { e.stopPropagation(); const x = tasks.find((y) => y.id === t.dataset.id); if (x) openDelivery(x, { me: { ...me, email: who }, projects, team }, (r) => { tasks = r ? tasks.map((y) => (y.id === r.id ? r : y)) : tasks.filter((y) => y.id !== x.id); paint(); }); },
     campNew: (t) => campForm(t.dataset.s),
     campEdit: (t) => { const c = campsFor(t.dataset.s).find((x) => x.id === t.dataset.id); if (c) campForm(t.dataset.s, c); },
-    skill: (t) => openClaude(`/inherent ${t.dataset.s}: ⑩ Ads · corre la capa «${t.dataset.n}» con la skill ${t.dataset.k}. Lee primero la ficha de oferta del cliente (clients/${t.dataset.s}/00-onboarding/plan-contratado.md) y el WORKFLOW de agents/10-ads-management.`),
+    skill: (t) => openClaude(`/inherent ${t.dataset.s}: ⑩ Ads · corre la capa «${t.dataset.n}» con la skill ${t.dataset.k}. Lee primero la ficha de oferta del cliente (clients/${t.dataset.s}/00-onboarding/plan-contratado.md) y el WORKFLOW de agents/08-ads.`),
     adsEdit: async (t) => {
       const sl = t.dataset.s, a = (accounts.find((x) => x.id === 'acc-' + sl) || {}).ads || {};
       const v = await ask(`Cuentas de pauta · ${sl.toUpperCase()}`, [{ k: 'meta', l: 'Meta · ID de la cuenta publicitaria (act_…)', v: a.meta || '' }, { k: 'google', l: 'Google Ads · ID de cliente (123-456-7890)', v: a.google || '' }, { k: 'linkedin', l: 'LinkedIn · ID de la cuenta de Campaign Manager', v: a.linkedin || '' }, { k: 'budget', l: 'Presupuesto mensual aprobado (Q)', t: 'number', v: a.budget || '' }]);

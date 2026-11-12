@@ -8,6 +8,14 @@ const REPO_APP = 'medinaoliva4-tech/Inherent-HQ'; // la app siempre se publica a
 const TAG = /^escritorio-v(\d+\.\d+\.\d+)-(\d+)$/;
 let CACHE = { at: 0, v: null };
 
+// Qué archivo de la release toca: el .zip (la app se actualiza sola) o el .dmg (el instalador, para bajarlo a mano).
+export function archivoDe(assets, arch, formato) {
+  const ext = formato === 'dmg' ? 'dmg' : 'zip';
+  return (assets || []).find((x) => x.nombre === `Inherent-OS-${arch === 'x64' ? 'x64' : 'arm64'}.${ext}`) || null;
+}
+// El identificador del despliegue web (Vercel lo pone en cada deploy). null en local: el cliente no avisa de nada.
+export const idDespliegue = () => process.env.VERCEL_GIT_COMMIT_SHA || process.env.VERCEL_DEPLOYMENT_ID || null;
+
 // La última versión publicada desde main (las de las ramas quedan como «prerelease» y no cuentan).
 async function ultima() {
   if (CACHE.v && Date.now() - CACHE.at < 5 * 60_000) return CACHE.v;
@@ -21,19 +29,26 @@ async function ultima() {
 }
 
 export function rutas(on) {
+  // Pública y ligera (sin sesión, sin GitHub): el OS la pregunta cada ~10 minutos para saber si hay un deploy nuevo.
+  on('GET', 'os/version', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ id: idDespliegue() });
+  });
   on('GET', 'escritorio/version', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const v = await ultima();
     if (!v) return res.json({ version: null });
     res.json({ version: v.version, n: v.n, tag: v.tag, fecha: v.fecha, archivos: v.assets.map((a) => a.nombre) });
   });
-  // El link de descarga del .zip para la Mac de quien pregunta (arm64: chip de Apple · x64: Intel).
+  // El link de descarga para la Mac de quien pregunta (arm64: chip de Apple · x64: Intel). Por defecto el .zip de la
+  // actualización automática; con formato=dmg, el instalador.
   on('GET', 'escritorio/descarga', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const arch = req.query.arch === 'x64' ? 'x64' : 'arm64';
     const v = await ultima();
-    const a = v?.assets.find((x) => x.nombre === `Inherent-OS-${arch}.zip`);
-    if (!a) return res.status(404).json({ error: 'Esta versión no trae actualización automática: bájala desde la página de descargas.' });
+    const dmg = req.query.formato === 'dmg';
+    const a = archivoDe(v?.assets, arch, dmg ? 'dmg' : 'zip');
+    if (!a) return res.status(404).json({ error: dmg ? 'No encontré el instalador de esta versión.' : 'Esta versión no trae actualización automática: bájala desde la página de descargas.' });
     const r = await ghApi(`releases/assets/${a.id}`, { headers: { Accept: 'application/octet-stream' }, redirect: 'manual' }, REPO_APP);
     const url = r.headers.get('location');
     if (!url) return res.status(502).json({ error: `GitHub no dio el link de descarga (${r.status})` });

@@ -26,10 +26,12 @@ const pedir = async (ruta, init = {}) => {
 };
 
 // ---- Sesiones ----
-async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo }) {
+// `sistema`: los lineamientos de un departamento (llm/departamentos.js). El puente solo los acepta al CREAR la sesión (systemPrompt,
+// máx. 8000), por eso cada departamento tiene su propia sesión dentro de la conversación: idOs = «<conversación>::<departamento>».
+async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo, sistema = '' }) {
   const m = leer(email);
   if (m[idOs]) return m[idOs];
-  const res = await pedir('/sessions', { method: 'POST', body: JSON.stringify({ projectId: proyectoDe(proyecto), model: modelo || 'nivel-medio', mode: modo, title: titulo }) });
+  const res = await pedir('/sessions', { method: 'POST', body: JSON.stringify({ projectId: proyectoDe(proyecto), model: modelo || 'nivel-medio', mode: modo, title: titulo, ...(sistema ? { systemPrompt: String(sistema).slice(0, 8000) } : {}) }) });
   const s = await res.json(); m[idOs] = s.id; guardar(email, m); return s.id;
 }
 
@@ -37,8 +39,8 @@ async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo }
  * Un turno de Code. on = { delta, tool, nota, permiso(p, responder) }. Resuelve al terminar el turno.
  * `responder(decision)` envía allow | deny | allow_all al puente para la tarjeta de permiso.
  */
-export async function turnoCode(idOs, { email, mensaje, proyecto, modelo, modo, titulo, signal, on = {} }) {
-  const sid = await sesionDe(email, idOs, { proyecto, modelo, modo, titulo });
+export async function turnoCode(idOs, { email, mensaje, proyecto, modelo, modo, titulo, sistema, signal, on = {} }) {
+  const sid = await sesionDe(email, idOs, { proyecto, modelo, modo, titulo, sistema });
   const ctrl = new AbortController(); signal?.addEventListener('abort', () => { pedir(`/sessions/${sid}/interrupt`, { method: 'POST' }).catch(() => {}); }, { once: true });
   await pedir(`/sessions/${sid}`, { method: 'PATCH', body: JSON.stringify({ ...(modelo ? { model: modelo } : {}), ...(modo ? { mode: modo } : {}) }) }).catch(() => {});
   const { turnId } = await (await pedir(`/sessions/${sid}/messages`, { method: 'POST', body: JSON.stringify({ text: mensaje, queue: false }) })).json();
@@ -67,6 +69,8 @@ export async function turnoCode(idOs, { email, mensaje, proyecto, modelo, modo, 
   return { texto: fin.result || est.texto, estado: 'completed', uso: fin.usage };
 }
 
+/** La sesión del puente de una conversación (la de Code, o la de un departamento con idOs «<conversación>::<dep>»), o ''. */
+export const sesionCode = (email, idOs) => leer(email)[idOs] || '';
 /** Archivos y cambios del proyecto de una conversación (el panel de Code). */
 export async function archivos(email, idOs) { const sid = leer(email)[idOs]; if (!sid) return []; return (await (await pedir(`/sessions/${sid}/files`)).json()).archivos; }
 export async function cambios(email, idOs) { const sid = leer(email)[idOs]; if (!sid) return []; return (await (await pedir(`/sessions/${sid}/diff`)).json()).archivos; }

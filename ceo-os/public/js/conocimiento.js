@@ -8,7 +8,7 @@ const MAX_NOMBRES = 6; // el método puede ser una frase: se prueban pocas palab
 const corto = (s, n) => { const t = String(s ?? '').replace(/\s+/g, ' ').trim(); return t.length > n ? `${t.slice(0, n - 1)}…` : t; };
 const lc = (s) => String(s || '').toLowerCase();
 
-// «cr-big-idea, cr-storytelling» → ['cr-big-idea', 'cr-storytelling']. Son candidatos: el OS se queda con los que existen.
+// «mc-radar, mc-campanas-piezas» → ['mc-radar', 'mc-campanas-piezas']. Son candidatos: el OS se queda con los que existen.
 export const nombresSkill = (e = {}) => [...new Set(lc(e.metodo || e.skill).match(/[a-z][a-z0-9]*(?:-[a-z0-9]+)*/g) || [])].slice(0, MAX_NOMBRES);
 
 // Sin el encabezado YAML. Si no cabe, se corta en el último «## » que entra, para no dejar una regla a la mitad.

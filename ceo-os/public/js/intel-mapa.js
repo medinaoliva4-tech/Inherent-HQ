@@ -41,55 +41,55 @@ export const ENTREGABLES = [
   E('revision-20', '01', '01-estrategia/revisiones-del-20/{mes}.md', 'Revisión del 20', 'Qué funcionó y qué no en el ciclo'),
   E('reporte', '01', '01-estrategia/reportes/{mes}.md', 'Reporte del mes', 'Cómo va el mes, en claro', true),
 
-  // ②B Branding — agents/01.2-branding/brain/WORKFLOW.md §2
+  // ②B Branding — agents/02-branding/brain/WORKFLOW.md §2
   E('guia-de-marca', '01.2', '02-marca/guia-de-marca.md', 'Guía de marca', 'Territorio, voz, activos y cómo se ve en cada formato', true),
   E('sistema-visual', '01.2', '02-marca/sistema-visual.md', 'Sistema visual', 'Colores, tipografías y reglas para ejecutar'),
   E('kit', '01.2', '02-marca/kit-de-redes/kit.md', 'Kit de redes', 'El Figma de la marca y sus exportes en Drive'),
   E('aprendizaje-branding', '01.2', '02-marca/aprendizaje-de-branding.md', 'Aprendizaje de marca', 'Qué se reconoció y qué cambia'),
 
-  // ② Growth — agents/02-growth/brain/WORKFLOW.md §0 y §4
+  // ② Growth — agents/01-strategy/brain/WORKFLOW.md §0 y §4
   E('ofertas-a-empujar', '02', '07-oferta-y-ventas/ofertas-a-empujar.md', 'Ofertas a empujar', 'Qué ofertas se empujan este ciclo y con qué objetivo'),
   // Growth Partnership: el workflow de ② Growth (§4) llama `motor-de-crecimiento.md` al documento que junta § La oferta, § La escalera, § Captura,
   // § Canales grandes y § Los números, pero no dice en qué carpeta vive; el CONTEXTO de 07-oferta-y-ventas dice que ahí escribe ② Growth (y lista `numeros.md`).
   E('motor-de-crecimiento', '02', '07-oferta-y-ventas/motor-de-crecimiento.md', 'Motor de crecimiento', 'La oferta, la escalera de upsells, la captura y los canales grandes (Growth Partnership)'),
   E('numeros', '02', '07-oferta-y-ventas/numeros.md', 'Los números', 'Los unit economics del cliente (Growth Partnership)', false, { costos: true }),
 
-  // ③ Marketing — agents/03-marketing/brain/WORKFLOW.md §2
+  // ③ Marketing — agents/03-marketing-creative/brain/WORKFLOW.md §2
   E('estrategia-contenido', '03', '03-marketing/{mes}/estrategia-de-contenido.md', 'Estrategia de contenido', 'La idea de campaña, los pilares y el mensaje'),
   E('plan-por-canal', '03', '03-marketing/{mes}/plan-por-canal.md', 'Plan por canal', 'Para qué sirve cada canal y qué no se hace ahí'),
   E('calendario', '03', '03-marketing/{mes}/calendario.csv', 'Calendario de slots', 'Qué sale, en qué canal y en qué semana'),
 
-  // ④ Creatividad — agents/04-creative/brain/WORKFLOW.md §1 y «La carpeta del cliente»
+  // ④ Creatividad — agents/03-marketing-creative/brain/WORKFLOW.md §1 y «La carpeta del cliente»
   E('brief-ciclo', '04', '04-contenido/{mes}/ideas/brief-del-ciclo.md', 'Brief del ciclo', 'La dirección creativa y las grandes ideas del mes', true),
   E('plan-contenido', '04', '04-contenido/{mes}/ideas/plan-de-contenido.csv', 'Plan de contenido', 'Una fila por pieza del ciclo', true),
   E('ideas', '04', '04-contenido/{mes}/ideas/ideas-*.md', 'Ideas', 'El guion, el copy y la dirección de cada pieza', true),
   E('swipe-file', '04', '99-referencias/investigacion/swipe-file.md', 'Swipe file', 'La bóveda de referencias'),
   E('aprendizaje-creativo', '04', '04-contenido/aprendizaje-creativo.md', 'Aprendizaje creativo', 'Qué patrón ganó y qué se refresca'),
 
-  // ⑤ Producción — agents/05-production/brain/WORKFLOW.md §7 (el presupuesto lleva montos: nunca al cliente)
+  // ⑤ Producción — agents/04-production/brain/WORKFLOW.md §7 (el presupuesto lleva montos: nunca al cliente)
   E('presupuesto', '05', '04-contenido/{mes}/produccion/presupuesto.md', 'Presupuesto de producción', 'Qué se produce, cuándo y cuánto cuesta', false, { costos: true }),
   E('plan-rodaje', '05', '04-contenido/{mes}/produccion/plan-de-rodaje.md', 'Plan de rodaje', 'Jornadas, orden de tiro y entrega'),
   E('material', '05', '04-contenido/{mes}/produccion/MATERIAL.md', 'Material grabado', 'Los links al Drive: crudo y final de cada sesión'),
   E('aprendizaje-produccion', '05', '04-contenido/{mes}/produccion/aprendizaje-de-produccion.md', 'Aprendizaje de producción', 'Qué se grabó, qué falló y qué se ajusta'),
 
-  // ⑥A Diseño gráfico — agents/06-graphic-design/brain/WORKFLOW.md §2
+  // ⑥A Diseño gráfico — agents/05-graphic-design/brain/WORKFLOW.md §2
   E('entregas-diseno', '06', '04-contenido/{mes}/diseno/entregas-diseno.md', 'Entregas de diseño', 'Cada pieza con su link al Drive y su estado'),
   E('aprendizaje-diseno', '06', '04-contenido/aprendizaje-de-diseno.md', 'Aprendizaje de diseño', 'Qué plantilla rindió y qué falta'),
 
-  // ⑦ Video Editing — agents/07-video-editing/brain/WORKFLOW.md §2
+  // ⑦ Video Editing — agents/04-production/brain/WORKFLOW.md §2
   E('entregas-video', '07', '04-contenido/{mes}/video/entregas-video.md', 'Entregas de video', 'Cada reel y derivado con su link y su estado'),
   E('aprendizaje-video', '07', '04-contenido/aprendizaje-de-video.md', 'Aprendizaje de video', 'Qué se devolvió y cuánto rindió cada grabación'),
 
-  // ⑧ Community — agents/08-community-management/brain/WORKFLOW.md §7
+  // ⑧ Community — agents/06-community/brain/WORKFLOW.md §7
   E('respuestas', '08', '05-comunidad/respuestas.md', 'Ficha de respuestas', 'Lo único que Community puede contestar'),
   E('seguimiento', '08', '05-comunidad/seguimiento/{mes}.md', 'Seguimiento', 'Quién preguntó y qué'),
 
-  // ⑨ Posting — agents/09-posting/brain/WORKFLOW.md
+  // ⑨ Posting — agents/07-posting/brain/WORKFLOW.md
   E('publicaciones', '09', '04-contenido/{mes}/publicacion/publicaciones.md', 'Publicaciones', 'Cada publicación con su caption, fecha y QA'),
   E('calendario-publicacion', '09', '04-contenido/{mes}/publicacion/calendario-de-publicacion.csv', 'Calendario de publicación', 'El registro de lo programado'),
   E('aprendizaje-posting', '09', '04-contenido/{mes}/publicacion/aprendizaje-de-posting.md', 'Aprendizaje de posting', 'Qué salió a tiempo y qué se atoró'),
 
-  // ⑩ Ads — agents/10-ads-management/brain/WORKFLOW.md §4. El plan y el reporte no dicen carpeta: el CONTEXTO de 06-pauta
+  // ⑩ Ads — agents/08-ads/brain/WORKFLOW.md §4. El plan y el reporte no dicen carpeta: el CONTEXTO de 06-pauta
   // los pone por mes y el OS (repo/client/:slug/pauta) los lee en la raíz; vale cualquiera de las dos.
   E('plan-pauta', '10', ['06-pauta/{mes}/plan-de-pauta.md', '06-pauta/plan-de-pauta.md'], 'Plan de pauta', 'Objetivo, estructura, públicos y creativos'),
   E('reporte-pauta', '10', ['06-pauta/{mes}/reporte-de-pauta.md', '06-pauta/reporte-de-pauta.md'], 'Reporte de pauta', 'Qué corrió, qué rindió y qué se cambió'),
