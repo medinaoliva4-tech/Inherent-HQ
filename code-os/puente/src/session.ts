@@ -2,6 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { pathViolation } from './guard.js';
 import type { Config } from './config.js';
 import { buildAgentEnv, pickRoute, type Route } from './sdk.js';
+import { userHome } from './claude.js';
+import { CAPACIDADES, clasificar, montajesSoloLectura, REGLAS, resolverEntrada, type CapId } from './capacidades.js';
+import { AGENTE_EJECUTOR, definicionEjecutor, hookPlan, modeloPlanificador, PROMPT_PLANIFICADOR, resolverPlan, type PlanResuelto } from './plan.js';
+import { herramientasMcp } from './herramientas-mcp.js';
 import type { UserRecord } from './config.js';
 import type { Services } from './services.js';
 import { HttpError, type AgentQuery, type EventBody, type Mode, type PuenteEvent, type QueryFn, type SessionMeta } from './types.js';
@@ -9,11 +13,12 @@ import { HttpError, type AgentQuery, type EventBody, type Mode, type PuenteEvent
 const LOG_CAP = 2000;
 const RESULT_CAP = 8000;
 
-export type Decision = { decision: 'allow' | 'deny' | 'allow_all'; message?: string; updatedInput?: Record<string, unknown> };
+export type Decision = { decision: 'allow' | 'deny' | 'allow_all'; message?: string; updatedInput?: Record<string, unknown>; aprobadoUsd?: number };
 interface Pending { event: Extract<EventBody, { type: 'permission_request' }>; resolve: (d: Decision) => void }
-export interface Deps { cfg: Config; user: UserRecord; svc: Services; query: QueryFn; save: (m: SessionMeta) => void; slots: { acquire(): boolean; release(): void } }
+export interface Deps { cfg: Config; user: UserRecord; svc: Services; query: QueryFn; save: (m: SessionMeta) => void; slots: { acquire(): boolean; release(): void }; sondeo: import('./capacidades.js').Sondeo }
 const LIMIT_RE = /usage limit|limit reached|rate.?limit|quota|credit balance|429|overloaded/i;
-interface TurnState { via: Route['via']; tools: number; t0: number; fallback?: string }
+interface TurnState { via: Route['via']; tools: number; t0: number; fallback?: string; caps: CapId[]; plan?: PlanResuelto; useFile: Map<string, string | null>; reparto: { planifica: Usage; ejecuta: Usage } }
+type Usage = { inputTokens: number; outputTokens: number; cacheReadTokens: number; cacheCreationTokens: number };
 
 export class Session {
   private log: PuenteEvent[] = [];
@@ -22,7 +27,7 @@ export class Session {
   private pending = new Map<string, Pending>();
   private allowAll = false;
   private current: { turnId: string; abort: AbortController; q?: AgentQuery } | null = null;
-  private turn: TurnState = { via: 'litellm', tools: 0, t0: 0 };
+  private turn: TurnState = nuevoTurno('litellm', 0);
   constructor(public meta: SessionMeta, private deps: Deps) {}
 
   get running() { return this.current !== null; }
@@ -46,9 +51,14 @@ export class Session {
     return () => { this.subs.delete(fn); };
   }
 
-  configure(patch: { model?: string; mode?: Mode; title?: string }) {
+  configure(patch: { model?: string; mode?: Mode; title?: string; capacidades?: string[]; planEjecucion?: SessionMeta['planEjecucion'] | null }) {
     if (this.running) throw new HttpError(409, 'Hay un turno en curso; espera a que termine o interrúmpelo');
     if (patch.model) this.meta.model = patch.model;
+    if (patch.capacidades !== undefined || patch.planEjecucion !== undefined) {
+      if (patch.capacidades !== undefined) this.meta.capacidades = patch.capacidades;
+      if (patch.planEjecucion === null) delete this.meta.planEjecucion; else if (patch.planEjecucion !== undefined) this.meta.planEjecucion = patch.planEjecucion;
+      this.emit({ type: 'capacidades_changed', capacidades: this.meta.capacidades ?? [], planEjecucion: this.meta.planEjecucion });
+    }
     if (patch.title !== undefined) this.meta.title = patch.title.slice(0, 120);
     if (patch.mode && patch.mode !== this.meta.mode) { this.meta.mode = patch.mode; this.emit({ type: 'mode_changed', mode: patch.mode }); }
     this.touch();
@@ -59,7 +69,7 @@ export class Session {
     const p = this.pending.get(requestId);
     if (!p) throw new HttpError(404, 'Permiso no encontrado (ya resuelto o expirado)');
     this.pending.delete(requestId);
-    if (d.decision === 'allow_all' && p.event.tool !== 'ExitPlanMode') this.allowAll = true;
+    if (d.decision === 'allow_all' && p.event.tool !== 'ExitPlanMode' && !p.event.tipo?.match(/irreversible|gasto/)) this.allowAll = true;
     this.emit({ type: 'permission_resolved', requestId, decision: d.decision, reason: d.message });
     p.resolve(d);
   }
@@ -95,12 +105,17 @@ export class Session {
   private buildOptions(abort: AbortController, route: Route): Record<string, any> {
     const { cfg } = this.deps;
     const m = this.meta;
-    const spawner = this.deps.svc.spawner?.(this.deps.user, m.cwd);
+    const legacy = m.capacidades === undefined;
+    const caps = this.turn.caps;
+    const plan = this.turn.plan;
+    const nombresMcp = legacy ? (m.mode !== 'chat' ? (m.mcp ?? []) : []) : CAPACIDADES.filter((c) => c.mcp && caps.includes(c.id)).map((c) => c.mcp!);
+    const mcpUsados = nombresMcp.filter((n) => n in cfg.mcpCatalog);
+    const spawner = this.deps.svc.spawner?.(this.deps.user, m.cwd, montajesSoloLectura(cfg, mcpUsados));
     const opts: Record<string, any> = {
       cwd: m.cwd,
       model: route.model,
       maxTurns: cfg.maxTurns,
-      env: buildAgentEnv(cfg, this.deps.user, route, !!spawner),
+      env: buildAgentEnv(cfg, this.deps.user, route, !!spawner, plan?.activo ? plan.ejecutor!.modelo : undefined),
       settingSources: [],
       strictMcpConfig: true,
       includePartialMessages: true,
@@ -108,22 +123,49 @@ export class Session {
       permissionMode: m.mode === 'plan' ? 'plan' : 'default',
       canUseTool: (tool: string, input: Record<string, unknown>, o: any) => this.canUseTool(tool, input, o),
     };
-    if (m.mode === 'chat') opts.tools = [];
+    const sinHerramientas = legacy ? m.mode === 'chat' : caps.length === 0;
+    if (sinHerramientas) opts.tools = [];
+    else if (!legacy && !caps.includes('codigo')) opts.tools = plan?.activo ? ['Agent'] : [];
     if (m.sdkSessionId) opts.resume = m.sdkSessionId;
-    if (m.systemPrompt) opts.systemPrompt = { type: 'preset', preset: 'claude_code', append: m.systemPrompt };
-    if (m.agents && m.mode !== 'chat') opts.agents = m.agents;
-    if (m.mcp?.length && m.mode !== 'chat') {
-      opts.mcpServers = Object.fromEntries(m.mcp.filter((n) => n in cfg.mcpCatalog).map((n) => [n, cfg.mcpCatalog[n]]));
-    }
+    const extra = [m.systemPrompt, ...(legacy ? [] : this.reglasTurno())].filter(Boolean).join('\n\n');
+    if (extra) opts.systemPrompt = { type: 'preset', preset: 'claude_code', append: extra };
+    const agents = { ...(m.agents && !sinHerramientas ? m.agents : {}) } as Record<string, any>;
+    if (plan?.activo && !agents[AGENTE_EJECUTOR]) agents[AGENTE_EJECUTOR] = definicionEjecutor(plan.ejecutor!.agente);
+    if (Object.keys(agents).length) opts.agents = agents;
+    if (plan?.activo) opts.hooks = { PreToolUse: [{ hooks: [hookPlan()] }] };
+    const ctx = { cfg, user: this.deps.user, cwd: m.cwd, home: userHome(cfg, this.deps.user) };
+    const servers: Record<string, unknown> = Object.fromEntries(mcpUsados.map((n) => [n, resolverEntrada(cfg.mcpCatalog[n], ctx)]));
+    if (!legacy && caps.includes('herramientas') && this.deps.svc.herramientas) servers.herramientas = herramientasMcp(this.deps.svc.herramientas, this.deps.user.id);
+    if (Object.keys(servers).length) opts.mcpServers = servers;
     if (spawner) opts.spawnClaudeCodeProcess = spawner;
     if (cfg.claudePath) opts.pathToClaudeCodeExecutable = cfg.claudePath;
     return opts;
   }
 
-  private async canUseTool(tool: string, input: Record<string, unknown>, o: { signal?: AbortSignal; toolUseID?: string; title?: string; description?: string }) {
+  /** Texto que se agrega al prompt de sistema: capacidades activas, las que faltan y el reparto planifica/ejecuta. */
+  private reglasTurno(): string[] {
+    const t = this.turn; const out: string[] = [];
+    if (t.caps.length) out.push(`Capacidades activas en esta conversación: ${t.caps.join(', ')}.`);
+    for (const c of t.caps) if (REGLAS[c]) out.push(REGLAS[c]!);
+    if (this.omitidas.length) out.push(`No disponibles ahora (díselo a la persona si las pide): ${this.omitidas.map((o) => `${o.id} — ${o.motivo}`).join('; ')}.`);
+    if (this.meta.figmaArchivo && t.caps.includes('figwright')) out.push(`Archivo de Figma fijado en esta conversación: «${this.meta.figmaArchivo}».`);
+    if (t.plan?.activo) out.push(PROMPT_PLANIFICADOR);
+    return out;
+  }
+  private omitidas: { id: string; motivo: string }[] = [];
+
+  private async canUseTool(tool: string, input: Record<string, unknown>, o: { signal?: AbortSignal; toolUseID?: string; title?: string; description?: string; agentID?: string }) {
     const bad = pathViolation(tool, input, this.meta.cwd);
     if (bad) return { behavior: 'deny' as const, message: bad };
-    const interactive = tool === 'ExitPlanMode' || tool === 'AskUserQuestion';
+    const clase = clasificar(tool, input);
+    if (clase.cap === 'figwright' && clase.tipo !== 'lectura' && !this.meta.figmaArchivo) {
+      return { behavior: 'deny' as const, message: 'Antes de escribir en Figma fija el archivo: llama a list_files, luego use_file con el archivo correcto, y di a la persona en qué archivo vas a trabajar.' };
+    }
+    // Lecturas de MCP (Figma, imágenes, video, herramientas): sin preguntar.
+    if (clase.cap && clase.cap !== 'codigo' && clase.tipo === 'lectura') return { behavior: 'allow' as const, updatedInput: input };
+    let pedido = input;
+    if (clase.tipo === 'gasto') { const { aprobado_usd: _a, ...resto } = input; pedido = resto; } // el monto solo lo pone la persona
+    const interactive = tool === 'ExitPlanMode' || tool === 'AskUserQuestion' || clase.tipo === 'irreversible' || clase.tipo === 'gasto';
     if (this.allowAll && !interactive) {
       this.emit({ type: 'permission_resolved', requestId: o.toolUseID ?? randomUUID(), decision: 'allow_all', auto: true });
       return { behavior: 'allow' as const, updatedInput: input };
@@ -135,12 +177,19 @@ export class Session {
       }, this.deps.cfg.permissionTimeoutMs);
       const done = (d: Decision) => { clearTimeout(timer); resolve(d); };
       o.signal?.addEventListener('abort', () => { if (this.pending.has(requestId)) { this.pending.delete(requestId); done({ decision: 'deny', message: 'Cancelado' }); } }, { once: true });
-      const event = { type: 'permission_request' as const, requestId, toolUseId: o.toolUseID, tool, input, title: o.title, description: o.description };
+      const event = { type: 'permission_request' as const, requestId, toolUseId: o.toolUseID, tool, input: pedido, title: o.title, description: o.description,
+        ...(clase.cap && clase.cap !== 'codigo' ? { capacidad: clase.cap } : {}), ...(clase.tipo !== 'lectura' ? { tipo: clase.tipo as 'escritura' | 'irreversible' | 'gasto' } : {}),
+        ...(clase.cap === 'figwright' && this.meta.figmaArchivo ? { archivo: this.meta.figmaArchivo } : {}), ...(clase.tipo === 'gasto' ? { requiereAprobadoUsd: true } : {}), ...(o.agentID ? { parentAgentId: o.agentID } : {}) };
       this.pending.set(requestId, { event, resolve: done });
       this.emit(event);
     });
     if (decision.decision === 'deny') return { behavior: 'deny' as const, message: decision.message ?? 'El usuario rechazó esta acción' };
-    const updatedInput = decision.updatedInput ?? input;
+    let updatedInput = decision.updatedInput ?? pedido;
+    if (clase.tipo === 'gasto') {
+      const usd = decision.aprobadoUsd;
+      if (typeof usd !== 'number' || !(usd > 0)) return { behavior: 'deny' as const, message: 'Falta el monto aprobado por la persona (aprobado_usd); vuelve a estimar y pide el OK' };
+      updatedInput = { ...pedido, ...(decision.updatedInput ?? {}), aprobado_usd: usd };
+    }
     if (tool === 'ExitPlanMode') {
       this.meta.mode = 'code'; this.emit({ type: 'mode_changed', mode: 'code' }); this.touch();
       return { behavior: 'allow' as const, updatedInput, updatedPermissions: [{ type: 'setMode' as const, mode: 'default' as const, destination: 'session' as const }] };
@@ -152,9 +201,24 @@ export class Session {
     const t0 = Date.now();
     const m = this.meta;
     const st = forceLitellm ? { active: false } : await this.deps.svc.claude.status(this.deps.user).catch(() => ({ active: false }));
-    const route = pickRoute(this.deps.cfg, m.model, st.active);
-    this.turn = { via: route.via, tools: 0, t0 };
-    if (!forceLitellm) this.emit({ type: 'turn_start', turnId, model: route.model, requestedModel: m.model, via: route.via, mode: m.mode });
+    const pedido = modeloPlanificador(m.planEjecucion, m.model);
+    const route = pickRoute(this.deps.cfg, pedido, st.active);
+    this.turn = nuevoTurno(route.via, t0);
+    this.omitidas = [];
+    if (m.capacidades) {
+      const estados = await this.deps.sondeo(this.deps.user).catch(() => []);
+      for (const c of m.capacidades as CapId[]) {
+        const e = estados.find((x) => x.id === c);
+        if (e?.estado === 'lista') this.turn.caps.push(c); else this.omitidas.push({ id: c, motivo: e?.motivo ?? 'No disponible' });
+      }
+      this.turn.plan = resolverPlan({ pe: m.planEjecucion, caps: this.turn.caps, route, planifica: pedido, user: this.deps.user, defaults: { claude: this.deps.cfg.ejecutorClaude ?? 'haiku', litellm: this.deps.cfg.ejecutorLitellm ?? 'nivel-medio' } });
+    } else if (m.planEjecucion !== undefined && m.mode !== 'chat') {
+      this.turn.plan = resolverPlan({ pe: m.planEjecucion, caps: ['codigo'], route, planifica: pedido, user: this.deps.user, defaults: { claude: this.deps.cfg.ejecutorClaude ?? 'haiku', litellm: this.deps.cfg.ejecutorLitellm ?? 'nivel-medio' } });
+    }
+    const p = this.turn.plan;
+    if (!forceLitellm) this.emit({ type: 'turn_start', turnId, model: route.model, requestedModel: pedido, via: route.via, mode: m.mode,
+      ...(m.capacidades ? { capacidades: this.turn.caps, ...(this.omitidas.length ? { capacidadesOmitidas: this.omitidas } : {}) } : {}),
+      planner: route.model, ...(p?.activo ? { executor: p.ejecutor!.modelo } : {}), planEjecucion: !!p?.activo, ...(p?.motivo ? { planMotivo: p.motivo } : {}) });
     let finish!: () => void;
     const done = new Promise<void>((r) => { finish = r; });
     async function* input() {
@@ -211,8 +275,12 @@ export class Session {
         const th = blocks.filter((b) => b.type === 'thinking').map((b) => b.thinking).join('');
         if (t || th) this.emit({ type: 'assistant_message', text: t, thinking: th || undefined, parentToolUseId: parent });
         for (const b of blocks) if (b.type === 'tool_use') this.turn.tools++;
-        for (const b of blocks) if (b.type === 'tool_use') this.emit({ type: 'tool_call', toolUseId: b.id, name: b.name, input: b.input, parentToolUseId: parent });
+        for (const b of blocks) if (b.type === 'tool_use') {
+          if (b.name === 'mcp__figwright__use_file') this.turn.useFile.set(b.id, b.input?.release === true ? null : String(b.input?.fileName ?? b.input?.sessionId ?? ''));
+          this.emit({ type: 'tool_call', toolUseId: b.id, name: b.name, input: b.input, parentToolUseId: parent });
+        }
         const u = msg.message?.usage;
+        if (u) { const r = this.turn.reparto[parent ? 'ejecuta' : 'planifica']; r.inputTokens += u.input_tokens ?? 0; r.outputTokens += u.output_tokens ?? 0; r.cacheReadTokens += u.cache_read_input_tokens ?? 0; r.cacheCreationTokens += u.cache_creation_input_tokens ?? 0; }
         if (u) this.emit({ type: 'usage', inputTokens: u.input_tokens ?? 0, outputTokens: u.output_tokens ?? 0, cacheReadTokens: u.cache_read_input_tokens ?? 0, cacheCreationTokens: u.cache_creation_input_tokens ?? 0 });
         return false;
       }
@@ -220,6 +288,11 @@ export class Session {
         const c = msg.message?.content;
         if (Array.isArray(c)) for (const b of c) if (b?.type === 'tool_result') {
           const raw = typeof b.content === 'string' ? b.content : Array.isArray(b.content) ? b.content.map((x: any) => x.text ?? `[${x.type}]`).join('\n') : '';
+          if (this.turn.useFile.has(b.tool_use_id) && !b.is_error) {
+            const archivo = this.turn.useFile.get(b.tool_use_id) || null;
+            if (archivo) this.meta.figmaArchivo = archivo; else delete this.meta.figmaArchivo;
+            this.touch(); this.emit({ type: 'figma_archivo', archivo });
+          }
           this.emit({ type: 'tool_result', toolUseId: b.tool_use_id, isError: !!b.is_error, content: raw.slice(0, RESULT_CAP), truncated: raw.length > RESULT_CAP, parentToolUseId: parent });
         }
         return false;
@@ -233,7 +306,9 @@ export class Session {
         if (this.turn.via === 'claude_login') void this.deps.svc.cuotas.reportClaudeLogin(this.deps.user, ok, Date.now() - t0);
         const why = String(msg.result ?? msg.errors ?? '');
         if (!ok && this.turn.via === 'claude_login' && this.turn.tools === 0 && LIMIT_RE.test(why)) { this.turn.fallback = why; return true; }
-        this.emit({ type: 'turn_end', turnId, ok, reason: msg.subtype ?? 'unknown', turns: msg.num_turns ?? 0, durationMs: msg.duration_ms ?? Date.now() - t0, usage, result: typeof msg.result === 'string' ? msg.result : undefined, error: ok ? undefined : (msg.errors?.join('; ') || msg.result || msg.subtype) });
+        const mu = msg.modelUsage && typeof msg.modelUsage === 'object' ? Object.fromEntries(Object.entries(msg.modelUsage as Record<string, any>).map(([k, v]) => [k, { inputTokens: v.inputTokens ?? 0, outputTokens: v.outputTokens ?? 0, cacheReadTokens: v.cacheReadInputTokens ?? 0, cacheCreationTokens: v.cacheCreationInputTokens ?? 0 }])) : undefined;
+        this.emit({ type: 'turn_end', turnId, ok, reason: msg.subtype ?? 'unknown', turns: msg.num_turns ?? 0, durationMs: msg.duration_ms ?? Date.now() - t0, usage, result: typeof msg.result === 'string' ? msg.result : undefined, error: ok ? undefined : (msg.errors?.join('; ') || msg.result || msg.subtype),
+          ...(mu ? { usageByModel: mu } : {}), ...(this.turn.plan?.activo ? { reparto: repartir(mu, this.turn.plan.ejecutor!.modelo) ?? this.turn.reparto } : {}) });
         return true;
       }
       default: return false;
@@ -241,3 +316,14 @@ export class Session {
   }
 }
 const zero = () => ({ inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheCreationTokens: 0 });
+/** Reparto planifica/ejecuta desde el uso por modelo del SDK (incluye las llamadas auxiliares, que van al barato). */
+function repartir(mu: Record<string, Usage> | undefined, ejecutor: string) {
+  if (!mu || !Object.keys(mu).length) return undefined;
+  const out = { planifica: zero(), ejecuta: zero() };
+  for (const [k, v] of Object.entries(mu)) {
+    const r = out[k === ejecutor || k.includes(ejecutor) ? 'ejecuta' : 'planifica'];
+    r.inputTokens += v.inputTokens; r.outputTokens += v.outputTokens; r.cacheReadTokens += v.cacheReadTokens; r.cacheCreationTokens += v.cacheCreationTokens;
+  }
+  return out;
+}
+const nuevoTurno = (via: Route['via'], t0: number): TurnState => ({ via, tools: 0, t0, caps: [], useFile: new Map(), reparto: { planifica: zero(), ejecuta: zero() } });

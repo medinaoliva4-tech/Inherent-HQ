@@ -1,0 +1,28 @@
+{
+  "_nota": "Catálogo MCP del puente (PUENTE_MCP_CONFIG). Los MCP stdio corren DENTRO de la jaula bubblewrap de cada sesión: solo ven /usr, su proyecto, el HOME de la persona y las carpetas de x-puente.ro (solo lectura). ${...} se sustituye por sesión: USUARIO_LLAVE_LITELLM (la llave virtual de esa persona, con su tope), LITELLM_URL, PROYECTO, HOME_USUARIO, USUARIO, CUOTAS_URL. Nunca pongas aquí la master ni llaves de proveedores. «herramientas» no va aquí: corre dentro del puente. «radar» y «video» quedan apagadas hasta que se agreguen.",
+  "mcpServers": {
+    "figwright": {
+      "type": "stdio",
+      "command": "/usr/bin/node",
+      "args": ["/opt/code-os-mcp/figwright/node_modules/@figwright/mcp/dist/index.mjs"],
+      "env": { "FIGWRIGHT_PORT": "3055" },
+      "description": "Figma por Figwright: seguidor del líder que corre en la Mac (túnel ssh -R 127.0.0.1:3055)",
+      "x-puente": { "ro": ["/opt/code-os-mcp/figwright"], "sondeo": "http://127.0.0.1:3055/ping" }
+    },
+    "imagen": {
+      "type": "stdio",
+      "command": "/usr/bin/node",
+      "args": ["/opt/code-os-mcp/imagen/src/mcp.mjs"],
+      "env": {
+        "IMAGEN_LITELLM_URL": "${LITELLM_URL}",
+        "IMAGEN_LITELLM_KEY": "${USUARIO_LLAVE_LITELLM}",
+        "IMAGEN_SALIDA": "${PROYECTO}/imagenes",
+        "IMAGEN_GASTO": "${HOME_USUARIO}/imagen-gasto.jsonl",
+        "IMAGEN_TOPE_LOTE_USD": "5",
+        "IMAGEN_TOPE_MES_USD": "50"
+      },
+      "description": "Imágenes (code-os/imagen): estimar, generar con OK de la persona, validar",
+      "x-puente": { "ro": ["/opt/code-os-mcp/imagen"] }
+    }
+  }
+}

@@ -29,7 +29,8 @@ if (cfg.confine === 'bwrap' && !canBwrap) { console.error('[puente] PUENTE_CONFI
 const svc: Services = {
   claude: makeClaudeProbe(cfg),
   cuotas: makeCuotasClient(cfg),
-  spawner: canBwrap ? (u, cwd) => makeBwrapSpawner({ workspace: cwd, home: userHome(cfg, u), readOnly: [join(here, 'node_modules')], rw: gitDirDe(cwd) }) : undefined,
+  // Solo lectura extra: node_modules del puente y las carpetas que el catálogo MCP declara (`x-puente.ro`, ya validadas).
+  spawner: canBwrap ? (u, cwd, ro = []) => makeBwrapSpawner({ workspace: cwd, home: userHome(cfg, u), readOnly: [join(here, 'node_modules'), ...ro], rw: gitDirDe(cwd) }) : undefined,
   // Memoria viva del cliente: un JSON por cliente en <data>/herramientas (fuera de los workspaces que ven los agentes).
   herramientas: new Memoria(new AlmacenJson(join(cfg.dataDir, 'herramientas'))),
 };

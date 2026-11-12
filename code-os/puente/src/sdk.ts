@@ -3,6 +3,7 @@ import { userHome } from './claude.js';
 import { bwrapWorks } from './confine.js';
 import type { Config, UserRecord } from './config.js';
 import type { QueryFn } from './types.js';
+import { CLAUDE_ALIAS, esAliasClaude } from './catalogo-modelos.js';
 
 /** ¿bubblewrap FUNCIONA aquí? (no basta con que exista: en Ubuntu 24.04 sin perfil de AppArmor falla). Se calcula una vez. */
 let bw: boolean | undefined;
@@ -16,6 +17,8 @@ export interface Route { via: 'claude_login' | 'litellm'; model: string }
  */
 export function pickRoute(cfg: Pick<Config, 'subscriptionModel'>, requested: string, claudeActive: boolean): Route {
   if (requested === 'nivel-alto' && claudeActive) return { via: 'claude_login', model: cfg.subscriptionModel };
+  // Alias de Claude (opus, sonnet, haiku): con login corren nativos; sin él, su nivel de LiteLLM.
+  if (esAliasClaude(requested)) return claudeActive ? { via: 'claude_login', model: requested } : { via: 'litellm', model: CLAUDE_ALIAS[requested]! };
   return { via: 'litellm', model: requested };
 }
 
@@ -24,7 +27,7 @@ export function pickRoute(cfg: Pick<Config, 'subscriptionModel'>, requested: str
  * virtual DE ESA PERSONA (con tope y niveles limitados); por suscripción no recibe ninguna llave: usa el login
  * guardado en el HOME propio de la persona.
  */
-export function buildAgentEnv(cfg: Config, user: UserRecord, route: Route, confined: boolean): Record<string, string> {
+export function buildAgentEnv(cfg: Config, user: UserRecord, route: Route, confined: boolean, executor?: string): Record<string, string> {
   const home = userHome(cfg, user);
   const env: Record<string, string> = {
     PATH: process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin',
@@ -46,9 +49,12 @@ export function buildAgentEnv(cfg: Config, user: UserRecord, route: Route, confi
       ANTHROPIC_CUSTOM_MODEL_OPTION: route.model,
       ANTHROPIC_DEFAULT_SONNET_MODEL: route.model,
       ANTHROPIC_DEFAULT_OPUS_MODEL: route.model,
-      ANTHROPIC_DEFAULT_HAIKU_MODEL: route.model,
-      CLAUDE_CODE_SUBAGENT_MODEL: route.model,
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: executor ?? route.model,
+      CLAUDE_CODE_SUBAGENT_MODEL: executor ?? route.model,
     });
+  } else if (executor) {
+    // Con login: cualquier subagente que no traiga modelo propio también corre con el barato.
+    env.CLAUDE_CODE_SUBAGENT_MODEL = executor;
   }
   return env;
 }

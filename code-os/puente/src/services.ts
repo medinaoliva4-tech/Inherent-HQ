@@ -12,7 +12,9 @@ export interface Services {
   /** Medidor de cuotas (127.0.0.1:4200). */
   cuotas: { get(): Promise<unknown | null>; reportClaudeLogin(u: UserRecord, ok: boolean, durationMs: number): Promise<void> };
   /** Crea el lanzador confinado para una sesión (undefined = sin confinar). */
-  spawner?: (u: UserRecord, cwd: string) => Spawner | undefined;
+  spawner?: (u: UserRecord, cwd: string, extraReadOnly?: string[]) => Spawner | undefined;
+  /** Disponibilidad real de cada capacidad (por defecto, el sondeo de capacidades.ts). */
+  sondeo?: import('./capacidades.js').Sondeo;
   /** Memoria viva del cliente y calculadoras (`code-os/herramientas`). Sin ella, /clientes y /calc dan 503. */
   herramientas?: Memoria;
 }
