@@ -16,6 +16,8 @@ Environment=PUENTE_FLAG_FILE=/home/deploy/code-os-data/interfaz-activada
 Environment=LITELLM_URL=http://127.0.0.1:4000
 Environment=CUOTAS_URL=http://127.0.0.1:4200
 Environment=PUENTE_DEFAULT_MODEL=nivel-medio
+# El secreto del pase del OS y los orígenes permitidos (los escribe publicar.sh, modo 600). El «-» evita fallar si aún no existe.
+EnvironmentFile=-/home/deploy/code-os-data/puente.env
 ExecStart=/usr/bin/node dist/server.js
 Restart=always
 RestartSec=3

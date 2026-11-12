@@ -12,5 +12,7 @@
 		X-Content-Type-Options nosniff
 		Referrer-Policy no-referrer
 		-Server
+		# Solo el OS puede enmarcar las herramientas dentro del Chat (el contrato embebido).
+		Content-Security-Policy "frame-ancestors https://inherent-work.vercel.app https://work.inherentglobal.com"
 	}
 }
