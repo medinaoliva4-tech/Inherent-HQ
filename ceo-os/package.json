@@ -26,7 +26,7 @@
     "test:strategy": "node scripts/test-strategy.mjs && node scripts/test-strategy-servidor.mjs && node scripts/test-strategy-p2.mjs && node scripts/test-strategy-radar.mjs",
     "test:marketing": "node scripts/test-marketing.mjs && node scripts/test-marketing-ads.mjs && node scripts/test-marketing-viral.mjs && node scripts/test-marketing-camp.mjs && node scripts/test-marketing-cal.mjs && node scripts/test-marketing-p2.mjs",
     "test:produccion": "node scripts/test-produccion.mjs && node scripts/test-shotlist.mjs && node scripts/test-produccion-p2.mjs",
-    "test:creative": "node scripts/test-creative.mjs && node scripts/test-creative-marca.mjs && node scripts/test-creative-p2.mjs",
+    "test:creative": "node scripts/test-creative.mjs && node scripts/test-creative-marca.mjs && node scripts/test-creative-p2.mjs && node scripts/test-criterio-elo.mjs",
     "capturas": "node scripts/capturas.mjs",
     "test:harness": "node scripts/test-harness.mjs",
     "test:visual": "node scripts/test-visual.mjs",

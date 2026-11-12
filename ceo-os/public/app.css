@@ -7510,6 +7510,12 @@ ul.hk-lista,ul.cp-lista,ul.cp-vars{list-style:none;margin:0;padding:0;display:gr
 .rcr-bloque{margin-top:16px}.rcr-fat{padding:10px 12px;border-radius:var(--r-2);background:var(--ui-fill)}.rcr-fat[data-estado="senal"]{background:var(--ui-amb-bg);color:var(--ui-amb-t)}.rcr-fat p{margin:4px 0 0}
 .rcr-sd{margin:0;padding:6px 10px;border-radius:var(--r-1);background:var(--ui-amb-bg);border:1px dashed color-mix(in srgb,var(--ui-amb-f) 42%,transparent);font-size:var(--fs-4);line-height:1.4;color:var(--ui-amb-t)}
 .rcr-res ul{margin:4px 0;padding-left:18px}.rcr-err{margin:0}
+.rcr-duelo{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;margin:12px 0}
+.rcr-duelo-p{display:flex;flex-direction:column;gap:4px;min-width:0;padding:12px;border:1px solid var(--ui-line);border-radius:var(--r-2);background:var(--ui-fill)}
+.rcr-duelo-p b{overflow-wrap:anywhere}.rcr-criterio-nota{width:100%;margin-top:6px}
+.rcr-ranking{display:grid;gap:0;margin:14px 0 0;padding:0;list-style:none;border-top:1px solid var(--ui-line)}
+.rcr-ranking li{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;padding:8px 0;border-bottom:1px solid var(--ui-line)}
+@media(max-width:560px){.rcr-duelo{grid-template-columns:1fr}.rcr-duelo>span{text-align:center}}
 /* ---- Production Planner ---- */
 .pl,.rp{display:grid;gap:14px;min-width:0}
 .pl-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.pl-head h2{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-8)}
