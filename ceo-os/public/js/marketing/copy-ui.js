@@ -64,7 +64,7 @@ export const vista = {
 
     const plural = (n, u) => `${n} ${u}${n === 1 ? '' : 's'}`;
     function pinta() {
-      mount(el, html`<div class="cp"><nav class="hk-tabs" role="tablist" aria-label="Marco o tablero"><button type="button" role="tab" class="${S.tab === 'marco' ? 'on' : ''}" aria-selected="${S.tab === 'marco'}" data-t="marco">${ico('layout-grid', 15)} Marco de mensajes</button>
+      mount(el, html`<div class="cp"><nav class="seg" role="tablist" aria-label="Marco o tablero"><button type="button" role="tab" class="${S.tab === 'marco' ? 'on' : ''}" aria-selected="${S.tab === 'marco'}" data-t="marco">${ico('layout-grid', 15)} Marco de mensajes</button>
         <button type="button" role="tab" class="${S.tab === 'tablero' ? 'on' : ''}" aria-selected="${S.tab === 'tablero'}" data-t="tablero">${ico('square-pen', 15)} Tablero de variantes</button></nav>
         ${S.tab === 'marco' ? pestanaMarco() : pestanaTablero()}</div>`);
     }

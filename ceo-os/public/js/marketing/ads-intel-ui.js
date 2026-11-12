@@ -120,7 +120,7 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
     const t = c?.tabla, cos = costos();
     const filas = Array.isArray(t?.[S.nivel]) ? t[S.nivel] : [];
     const nivelNom = NIVELES.find(([k]) => k === S.nivel)[1];
-    const cab = html`<div class="ain-sec-h"><h3>Por campaña, conjunto y anuncio</h3><div class="tabs mini">${NIVELES.map(([k, l]) => html`<button type="button" class="${S.nivel === k ? 'on' : ''}" data-ain="nivel" data-k="${k}">${l}${t ? html` <span class="mut">${(t[k] || []).length}</span>` : ''}</button>`)}</div></div>`;
+    const cab = html`<div class="ain-sec-h"><h3>Por campaña, conjunto y anuncio</h3><div class="seg mini" aria-label="Nivel">${NIVELES.map(([k, l]) => html`<button type="button" class="${S.nivel === k ? 'on' : ''}" data-ain="nivel" data-k="${k}">${l}${t ? html` <span class="mut">${(t[k] || []).length}</span>` : ''}</button>`)}</div></div>`;
     if (!c) return html`<section class="ain-sec">${cab}<p class="mut sm">${A.SIN_DATOS}: la tabla sale de Windsor (campaña, conjunto y anuncio de las cuentas de pauta de este cliente).</p></section>`;
     if (!t || t.error) return html`<section class="ain-sec">${cab}<p class="mut sm">${A.SIN_DATOS}: ${t?.error || 'Windsor no devolvió la tabla por campaña'}. Sale de Windsor y se guarda 6 horas.</p></section>`;
     const aviso = html`${t.viejo ? html`<p class="warnbox sm">Windsor no respondió: esta es la última tabla que se guardó (${t.at ? fdate(t.at.slice(0, 10)) : '—'}).</p>` : ''}${t.parcial?.length ? html`<p class="warnbox sm">Faltó la tabla de ${t.parcial.map((p) => PLAT[p] || p).join(', ')}: Windsor no la devolvió.</p>` : ''}`;
@@ -132,7 +132,7 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
   }
   function pintarResumen() {
     const el = $('#ain-res', host); if (!el) return;
-    const dias = html`<div class="tabs mini ain-dias" role="tablist" aria-label="Periodo">${DIAS.map((d) => html`<button type="button" role="tab" class="${d === S.dias ? 'on' : ''}" aria-selected="${d === S.dias ? 'true' : 'false'}" data-ain="dias" data-d="${d}">${d} días</button>`)}</div>`;
+    const dias = html`<div class="seg mini ain-dias" role="tablist" aria-label="Periodo">${DIAS.map((d) => html`<button type="button" role="tab" class="${d === S.dias ? 'on' : ''}" aria-selected="${d === S.dias ? 'true' : 'false'}" data-ain="dias" data-d="${d}">${d} días</button>`)}</div>`;
     const r = S.rep;
     if (r === undefined) return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${skel('fila', 3)}</section>`);
     if (r?.error) {

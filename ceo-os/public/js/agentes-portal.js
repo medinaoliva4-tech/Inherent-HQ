@@ -44,7 +44,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
         <div class="agp-name"><span class="agx-av" style="--c:var(${colorArea(wf.area)})">${(wf.nombre || '?').slice(0, 1)}</span><h1>${wf.nombre}</h1>${chipEstado(wf.estado)}</div>
       </div>
       <button class="btn" data-act="trabajo" ${wf.estado === 'pausado' ? raw('disabled title="El agente está en pausa"') : ''}>${ico('play', 13)} Nuevo trabajo</button></header>
-    <nav class="agp-tabs" aria-label="Secciones del agente">${TABS.map(([k, l]) => html`<a href="${rutaAgente(wf.id, k === 'overview' ? '' : k)}" class="${tab === k ? 'on' : ''}" ${tab === k ? raw('aria-current="page"') : ''}>${l}</a>`)}</nav>`;
+    <nav class="tabs" aria-label="Secciones del agente">${TABS.map(([k, l]) => html`<a href="${rutaAgente(wf.id, k === 'overview' ? '' : k)}" class="${tab === k ? 'on' : ''}" ${tab === k ? raw('aria-current="page"') : ''}>${l}</a>`)}</nav>`;
 
   const filaTrabajo = (t) => {
     const hechas = t.etapas.filter((e) => e.estado === 'aprobada').length, act = t.etapas[t.activa], [k, txt] = estadoTrabajo(t);
@@ -118,7 +118,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
         <label class="kf-f"><span>Descripción</span><textarea class="in" rows="3" data-s="descripcion" ${dis}>${wf.descripcion || ''}</textarea></label>
         <label class="kf-f"><span>Área</span><select class="in" data-s="area" ${dis}>${AREAS_AGENTE.map(([k, n]) => html`<option value="${k}" ${wf.area === k ? raw('selected') : ''}>${n}</option>`)}</select></label>`)}
       ${seccion('Estado', 'Si el equipo le puede encargar trabajos.', html`
-        <div class="agx-chips agp-seg">${ESTADOS_AGENTE.map(([k, n]) => html`<button type="button" data-act="estado" data-e="${k}" class="${wf.estado === k ? 'on' : ''}" ${dis}>${n}</button>`)}</div>
+        <div class="seg">${ESTADOS_AGENTE.map(([k, n]) => html`<button type="button" data-act="estado" data-e="${k}" class="${wf.estado === k ? 'on' : ''}" ${dis}>${n}</button>`)}</div>
         <p class="mut sm agp-est-ayuda">${AYUDA_ESTADO[wf.estado] || ''}</p>`)}
       ${seccion('IA', 'Con qué IA trabaja por defecto. Cada etapa del Flujo puede usar otra (por ejemplo, una gratis para preparar y una fuerte para decidir).', html`
         <label class="kf-f"><span>IA del agente</span><select class="in" data-s="ia" ${dis}>
@@ -160,7 +160,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
     if (a === 'trabajo') return nuevoTrabajo(me, resumen());
     if (a === 'estado') {
       wf.estado = b.dataset.e; guardar({ estado: wf.estado }, true);
-      el.querySelectorAll('.agp-seg button').forEach((x) => x.classList.toggle('on', x === b));
+      el.querySelectorAll('[data-act="estado"]').forEach((x) => x.classList.toggle('on', x === b));
       const ay = el.querySelector('.agp-est-ayuda'); if (ay) ay.textContent = AYUDA_ESTADO[wf.estado] || '';
       el.querySelector('.agp-name .agx-est')?.replaceWith(Object.assign(document.createElement('span'), { className: `agx-est ${wf.estado}`, textContent: ESTADOS_AGENTE.find(([k]) => k === wf.estado)[1] }));
       return;

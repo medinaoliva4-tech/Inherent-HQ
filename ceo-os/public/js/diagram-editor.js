@@ -173,7 +173,7 @@ export function diagramEditor(host, data, opts = {}) {
 
   // ---------- propiedades ----------
   const sw = (cur, act = 'fill') => `<div class="dg-sws">${M.PALETTE.map((p) => `<button type="button" class="dg-sw${cur === p.k ? ' on' : ''}" data-a="${act}:${p.k}" data-f="${p.k}" style="--c:${p.hex}" title="${esc(p.l)}" aria-label="${esc(p.l)}"></button>`).join('')}</div>`;
-  const seg = (items, cur) => `<div class="dg-seg">${items.map(([a, v, icon, l]) => `<button type="button" class="dg-b${cur === v ? ' on' : ''}" data-a="${a}:${v}" title="${esc(l)}">${ic(icon)}<span>${esc(l)}</span></button>`).join('')}</div>`;
+  const seg = (items, cur) => `<div class="seg ancho mini">${items.map(([a, v, icon, l]) => `<button type="button" class="dg-b${cur === v ? ' on' : ''}" data-a="${a}:${v}" title="${esc(l)}">${ic(icon)}<span>${esc(l)}</span></button>`).join('')}</div>`;
   function renderProps() {
     if (!props) return;
     const ns = [...sel].map(node).filter(Boolean), e = selEdge ? d.edges.find((x) => x.id === selEdge) : null;
@@ -182,15 +182,15 @@ export function diagramEditor(host, data, opts = {}) {
       const n = ns[0];
       h = `<div class="dg-ph"><b>${esc(M.SHAPES[n.type].l)}</b><span class="dg-fill"></span>${btn('dup', 'dup', `Duplicar (${MOD} D)`)}${btn('del', 'trash', 'Borrar (Supr)')}</div>
         <label class="dg-l">Texto</label><textarea class="in dg-in" data-p="text" rows="3" placeholder="Escribe…">${esc(n.text)}</textarea>
-        <label class="dg-l">Forma</label><div class="dg-seg dg-types">${M.TYPES.map((t) => `<button type="button" class="dg-b${n.type === t ? ' on' : ''}" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
+        <label class="dg-l">Forma</label><div class="seg ancho dg-icons" aria-label="Forma">${M.TYPES.map((t) => `<button type="button" class="dg-b${n.type === t ? ' on' : ''}" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
         <label class="dg-l">Relleno</label>${sw(n.fill)}
         <label class="dg-l">Tamaño</label><div class="dg-two"><label class="dg-num"><span>An</span><input class="in dg-in" type="number" data-p="w" min="40" step="${M.GRID}" value="${Math.round(n.w)}"></label><label class="dg-num"><span>Al</span><input class="in dg-in" type="number" data-p="h" min="28" step="${M.GRID}" value="${Math.round(n.h)}"></label></div>
         <p class="dg-tip">Arrastra un punto del borde para conectar con otro nodo.</p>`;
     } else if (ns.length > 1) {
       h = `<div class="dg-ph"><b>${ns.length} seleccionados</b><span class="dg-fill"></span>${btn('dup', 'dup', `Duplicar (${MOD} D)`)}${btn('del', 'trash', 'Borrar (Supr)')}</div>
-        <label class="dg-l">Alinear</label><div class="dg-seg dg-icons">${[['l', 'al'], ['c', 'ac'], ['r', 'ar'], ['t', 'at'], ['m', 'am'], ['b', 'ab']].map(([v, i]) => btn('align:' + v, i, 'Alinear')).join('')}</div>
-        <label class="dg-l">Distribuir</label><div class="dg-seg dg-icons">${btn('dist:h', 'dh', 'En horizontal', ns.length < 3 ? 'disabled' : '')}${btn('dist:v', 'dv', 'En vertical', ns.length < 3 ? 'disabled' : '')}</div>
-        <label class="dg-l">Forma</label><div class="dg-seg dg-types">${M.TYPES.map((t) => `<button type="button" class="dg-b" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
+        <label class="dg-l">Alinear</label><div class="dg-acciones">${[['l', 'al'], ['c', 'ac'], ['r', 'ar'], ['t', 'at'], ['m', 'am'], ['b', 'ab']].map(([v, i]) => btn('align:' + v, i, 'Alinear')).join('')}</div>
+        <label class="dg-l">Distribuir</label><div class="dg-acciones">${btn('dist:h', 'dh', 'En horizontal', ns.length < 3 ? 'disabled' : '')}${btn('dist:v', 'dv', 'En vertical', ns.length < 3 ? 'disabled' : '')}</div>
+        <label class="dg-l">Forma</label><div class="seg ancho dg-icons" aria-label="Forma">${M.TYPES.map((t) => `<button type="button" class="dg-b" data-a="type:${t}" title="${esc(M.SHAPES[t].l)}">${ic(t, 20)}</button>`).join('')}</div>
         <label class="dg-l">Relleno</label>${sw(ns.every((n) => n.fill === ns[0].fill) ? ns[0].fill : '')}`;
     } else if (e) {
       const a = node(e.from), b = node(e.to);

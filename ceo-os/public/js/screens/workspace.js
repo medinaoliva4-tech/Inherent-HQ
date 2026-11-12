@@ -155,7 +155,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Pestañas, hero y flujo ----------
   function tabs() {
-    return html`<nav class="ws-tabs" role="tablist" aria-label="${W.nombre}" style="--ws-c:var(${W.color})">${W.pestanas.map((p) => html`<a role="tab" class="${p.id === pestana.id ? 'on' : ''}" aria-selected="${p.id === pestana.id ? 'true' : 'false'}" href="${rutaPest(p)}">${p.nombre}</a>`)}</nav>`;
+    return html`<nav class="tabs ws-pestanas" role="tablist" aria-label="${W.nombre}" style="--ws-c:var(${W.color})">${W.pestanas.map((p) => html`<a role="tab" class="${p.id === pestana.id ? 'on' : ''}" aria-selected="${p.id === pestana.id ? 'true' : 'false'}" href="${rutaPest(p)}">${p.nombre}</a>`)}</nav>`;
   }
   function chips() {
     const out = [];
@@ -313,7 +313,7 @@ export async function render(el, { me, sub = [], alive }) {
         let sede = host;
         if (t.id === 'creative-direction-lab') {
           const sv = subLab, enlace = (id, nombre) => html`<a class="${sv === id ? 'on' : ''}" href="${id ? `${base}/${id}` : base}">${nombre}</a>`;
-          mount(host, html`<nav class="ws-sub-tabs" aria-label="Dirección, ideas o formatos">${enlace('', 'Dirección')}${enlace('ideas', 'Ideas')}${enlace('formatos', 'Formatos')}</nav><div id="ws-cdl"></div>`);
+          mount(host, html`<nav class="tabs mini" aria-label="Dirección, ideas o formatos">${enlace('', 'Dirección')}${enlace('ideas', 'Ideas')}${enlace('formatos', 'Formatos')}</nav><div id="ws-cdl"></div>`);
           sede = $('#ws-cdl', host);
           if (sv === 'ideas') return embed(sede, 'postear');
           if (sv === 'formatos') return formatosUI(sede, { me, b, alive });
@@ -321,13 +321,13 @@ export async function render(el, { me, sub = [], alive }) {
         // Performance Center: el reporte del mes es el centro; «Instagram» es la pantalla de analytics de siempre (ahí se conecta la cuenta).
         if (t.id === 'marketing-performance-center') {
           const ig = resto[0] === 'instagram';
-          mount(host, html`<nav class="ws-sub-tabs" aria-label="Reporte o Instagram"><a class="${ig ? '' : 'on'}" href="${base}">Reporte del mes</a><a class="${ig ? 'on' : ''}" href="${base}/instagram">Instagram</a></nav><div id="ws-mpc"></div>`);
+          mount(host, html`<nav class="tabs mini" aria-label="Reporte o Instagram"><a class="${ig ? '' : 'on'}" href="${base}">Reporte del mes</a><a class="${ig ? 'on' : ''}" href="${base}/instagram">Instagram</a></nav><div id="ws-mpc"></div>`);
           sede = $('#ws-mpc', host);
           if (ig) return modulesFor(me, b).includes('resultados') ? embed(sede, 'analytics') : mount(sede, html`${vacioOS({ icono: 'lock', titulo: 'Tu perfil no abre los analytics', linea: 'Pídele al CEO acceso a Contenido en Equipo → Vistas por rol.' })}`);
         }
         // Funnel Builder: el embudo es el centro; «Sitios y landings» son los sitios de siempre (techUI), sin shell.
         if (t.id === 'funnel-builder') {
-          mount(host, html`<nav class="ws-sub-tabs" aria-label="Embudo o sitios y landings"><a class="${sitios ? '' : 'on'}" href="${base}">Embudo</a><a class="${sitios ? 'on' : ''}" href="${base}/sitios">Sitios y landings</a></nav><div id="ws-fnl"></div>`);
+          mount(host, html`<nav class="tabs mini" aria-label="Embudo o sitios y landings"><a class="${sitios ? '' : 'on'}" href="${base}">Embudo</a><a class="${sitios ? 'on' : ''}" href="${base}/sitios">Sitios y landings</a></nav><div id="ws-fnl"></div>`);
           sede = $('#ws-fnl', host);
           if (sitios) return techUI(sede, { me, b, alive });
         }

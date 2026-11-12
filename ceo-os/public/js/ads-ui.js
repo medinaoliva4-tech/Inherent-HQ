@@ -47,7 +47,7 @@ export async function adsUI(el, { me, b, alive }) {
   function paint() {
     if (!alive()) return;
     const lista = S.items.filter((v) => !S.estado || v.estado === S.estado), nSel = S.sel.size;
-    mount(el, html`<div class="fm ax"><div class="fm-bar"><div class="tabs mini" role="tablist" aria-label="Estado">${[['', 'Todas'], ...ESTADOS_A.map((x) => [x, x])].map(([k, l]) => html`<button role="tab" class="${S.estado === k ? 'on' : ''}" aria-selected="${S.estado === k ? 'true' : 'false'}" data-ax="filtro" data-k="${k}">${l}${k ? html` <span class="mut">${S.items.filter((v) => v.estado === k).length}</span>` : ''}</button>`)}</div><span class="sp"></span>
+    mount(el, html`<div class="fm ax"><div class="fm-bar"><div class="seg mini" role="tablist" aria-label="Estado">${[['', 'Todas'], ...ESTADOS_A.map((x) => [x, x])].map(([k, l]) => html`<button role="tab" class="${S.estado === k ? 'on' : ''}" aria-selected="${S.estado === k ? 'true' : 'false'}" data-ax="filtro" data-k="${k}">${l}${k ? html` <span class="mut">${S.items.filter((v) => v.estado === k).length}</span>` : ''}</button>`)}</div><span class="sp"></span>
         ${ceo() ? html`<button class="btn sm" data-ax="lanzar" ${nSel ? '' : raw('disabled title="Marca «Para lanzar» en las aprobadas"')}>${ico('rocket', 13)} Lanzar${nSel ? ` (${nSel})` : ''}</button>` : ''}
         ${ed() ? html`<button class="btn ${ceo() ? 'ghost' : ''} sm" data-ax="crear">${ico('spark', 13)} Crear variaciones</button>` : ''}</div>
       <p class="mut sm ax-regla">${ico('lock', 12)} Pautar gasta dinero del cliente: solo el CEO aprueba, y «Lanzar» crea la tarea para ⑩ Ads con el presupuesto. El OS no toca ninguna cuenta de anuncios.</p>

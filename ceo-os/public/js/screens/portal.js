@@ -155,13 +155,13 @@ export async function render(el, { me, sub, alive }) {
       <div class="pd-hd"><div class="pd-av">${initials(d.name)}</div>
         <div style="min-width:0"><h1>${d.name}</h1><small>Últimos 30 días · ${fdate(r.desde)} al ${fdate(r.hasta)}</small></div>
         <div class="sp"></div><span class="pd-chip live">● En vivo</span>${d.plan ? html`<span class="pd-chip">Tu nivel: ${d.plan}</span>` : ''}</div>
-      <div class="pd-tabs" role="tablist">${TABS.map(([k, l]) => html`<button role="tab" data-tab="${k}" class="${TAB === k ? 'on' : ''}" aria-selected="${TAB === k}">${l}${k === 'contenido' && pendN ? html`<i class="pd-n">${pendN}</i>` : ''}</button>`)}</div>
+      <div class="tabs" role="tablist" data-tabs="portal">${TABS.map(([k, l]) => html`<button role="tab" data-tab="${k}" class="${TAB === k ? 'on' : ''}" aria-selected="${TAB === k}">${l}${k === 'contenido' && pendN ? html`<i class="pd-n">${pendN}</i>` : ''}</button>`)}</div>
       ${TABS.map(([k]) => html`<div class="pd-pane ${TAB === k ? 'on' : ''}" id="pd-${k}" role="tabpanel">${panes[k]}</div>`)}
     </div></div>`);
   const again = () => render(el, { me, sub, alive });
   $('#pt', el).addEventListener('click', async (e) => {
     const t = e.target.closest('[data-tab]');
-    if (t) { TAB = t.dataset.tab; $$('.pd-tabs button', el).forEach((b) => { const on = b.dataset.tab === TAB; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); $$('.pd-pane', el).forEach((p) => p.classList.toggle('on', p.id === 'pd-' + TAB)); return; }
+    if (t) { TAB = t.dataset.tab; $$('[data-tabs="portal"] button', el).forEach((b) => { const on = b.dataset.tab === TAB; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); $$('.pd-pane', el).forEach((p) => p.classList.toggle('on', p.id === 'pd-' + TAB)); return; }
     const pa = e.target.closest('[data-pa]');
     if (pa) {
       const x = d.content.find((c) => c.id === pa.dataset.id); if (!x) return;

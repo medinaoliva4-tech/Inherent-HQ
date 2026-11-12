@@ -127,7 +127,7 @@ export async function render(el, { me, sub = [], alive }) {
     <aside class="llm-side" id="llm-side" aria-label="Conversaciones"></aside>
     <main class="llm-main" id="llm-main">
       <header class="llm-head"><button type="button" class="llm-ib llm-solo-cel" data-a="side" aria-label="Conversaciones">${ICO_SIDE}</button>
-        <nav class="llm-work-switch" aria-label="Área del Chat"><button type="button" data-a="workspace-mode" data-v="chat">Chat</button>${modos.some((m) => m.id === 'code') ? html`<button type="button" data-a="workspace-mode" data-v="code">${ico('code', 14)} Code</button>` : ''}</nav>
+        <nav class="seg llm-work-switch" aria-label="Área del Chat"><button type="button" data-a="workspace-mode" data-v="chat">Chat</button>${modos.some((m) => m.id === 'code') ? html`<button type="button" data-a="workspace-mode" data-v="code">${ico('code', 14)} Code</button>` : ''}</nav>
         <div class="llm-titulo" id="llm-titulo"></div><span class="sp"></span>
         <button type="button" class="llm-bru-chip" data-a="ver-brujula" id="llm-bru" hidden title="La brújula de esta conversación"></button>
         <button type="button" class="llm-ib" data-a="ramificar" id="llm-rama" hidden aria-label="Ramificar: seguir en una conversación nueva con todo lo hablado" title="Ramificar">${ICO_RAMA}</button>

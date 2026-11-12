@@ -23,22 +23,23 @@ const CSS = fs.readFileSync(path.join(PUBLIC, 'app.css'), 'utf8');
 export const VIEJAS = {
   menus: ['menu', 'lat-menu', 'lat-ws-menu', 'llm-menu', 'es-menu', 'lib-menu', 'kf-menu', 'avi-menu', 'guia-menu', 'top-menu', 'pp-pop', 'dg-pop', 'ctx-pop'],
   dialogos: ['dlg', 'llm-sheet', 'pd-dlg', 'rsheet', 'rv-sheet', 'sp-sheet', 'llm-imagen-dialog', 'in-dlg'],
-  tabs: ['iai-tabs', 'pd-tabs', 'agp-tabs', 'ws-tabs', 'wfe-tabs', 'vil-tab', 'vil-tabs', 'pp-tabs', 'bx-seg', 'wstabs', 'dz-tab', 'dz-tabs', 'cs-med-seg', 'agp-seg', 'ws-sub-tabs', 'wfe-vtabs', 'kf-seg', 'hk-tabs', 'esc-tab', 'esc-tabs', 'dse-tabs', 'dg-seg', 'cc-seg', 'aitabs', 'vz-seg', 'sp-tab', 'sd-seg', 'sp-seg', 'pktab', 'ar-tabs', 'ar-sec-tab', 'intel-pill'],
+  // (cs-med-seg, cc-seg, vz-seg, dn-seg: segmentos de barras; sp-tab: botón de Spotify; pktab: una tabla; ar-sec-tab e intel-pill: no son pestañas)
+  tabs: ['iai-tabs', 'pd-tabs', 'agp-tabs', 'ws-tabs', 'wfe-tabs', 'vil-tab', 'vil-tabs', 'pp-tabs', 'bx-seg', 'wstabs', 'dz-tab', 'dz-tabs', 'agp-seg', 'ws-sub-tabs', 'wfe-vtabs', 'kf-seg', 'hk-tabs', 'esc-tab', 'esc-tabs', 'dse-tabs', 'dg-seg', 'aitabs', 'sd-seg', 'sp-seg', 'ar-tabs', 'cp-tabs'],
 };
 const enCss = (c) => new RegExp(`\\.${c.replace(/-/g, '\\-')}(?![\\w-])`).test(CSS);
 const enJs = (c) => JS.filter(([, s]) => new RegExp(`(class(Name)?\\s*=\\s*["'\`][^"'\`]*|classList\\.\\w+\\(\\s*['"]|querySelector(All)?\\(\\s*['"][^'"]*\\.|closest\\(\\s*['"][^'"]*\\.)(?<![\\w-])${c.replace(/-/g, '\\-')}(?![\\w-])`).test(s)).map(([f]) => f);
-if (!process.env.SIN_GREP) await t('grep: ninguna familia vieja de menú/popover, diálogo o tabs en app.css ni en js/', () => {
+await t('grep: ninguna familia vieja de menú/popover, diálogo o tabs en app.css ni en js/', () => {
   const quedan = [];
   for (const [g, cs] of Object.entries(VIEJAS)) for (const c of cs) { if (enCss(c)) quedan.push(`${g}: .${c} en app.css`); const fs_ = enJs(c); if (fs_.length) quedan.push(`${g}: ${c} en ${fs_.join(', ')}`); }
   assert.deepEqual(quedan, []);
 });
-if (!process.env.SIN_GREP) await t('grep: menu-contextual.js y chat-menu-posicion.js se fueron (y nadie los importa)', () => {
+await t('grep: menu-contextual.js y chat-menu-posicion.js se fueron (y nadie los importa)', () => {
   for (const f of ['menu-contextual.js', 'chat-menu-posicion.js']) { assert.ok(!fs.existsSync(path.join(PUBLIC, 'js', f)), f); assert.deepEqual(JS.filter(([, s]) => s.includes(f)).map(([n]) => n), []); }
 });
 await t('grep: ninguna pantalla importa Zag ni Floating UI directo (solo ui.js)', () => {
   assert.deepEqual(JS.filter(([f, s]) => f !== 'js/ui.js' && /vendor\/zag|@zag-js|@floating-ui/.test(s)).map(([f]) => f), []);
 });
-if (!process.env.SIN_GREP) await t('grep: <dialog> y showModal solo dentro de ui.js', () => {
+await t('grep: <dialog> y showModal solo dentro de ui.js', () => {
   assert.deepEqual(JS.filter(([f, s]) => f !== 'js/ui.js' && /createElement\(['"]dialog['"]\)|\.showModal\(/.test(s)).map(([f]) => f), []);
 });
 await t('vendor: lo vendorizado coincide con su README (sha256) y trae LICENSES', () => {

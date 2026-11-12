@@ -104,7 +104,7 @@ export function myProjects(box, { me, projects, tasks, team, clients = [], open 
     }).sort((a, z) => (projStatus(a, tasks) === 'Hecho') - (projStatus(z, tasks) === 'Hecho') || String(projEnd(a) || '9').localeCompare(String(projEnd(z) || '9')));
     const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
     mount(box, html`<div class="pp-mpbar">
-        <div class="tabs" style="margin:0">${[['todos', 'Todos'], ['activos', 'Activos'], ['mios', 'Míos'], ['riesgo', 'En riesgo'], ['hechos', 'Hechos']].map(([k, l]) => html`<button class="${f === k ? 'on' : ''}" data-mp="f" data-v="${k}">${l}</button>`)}</div>
+        <div class="seg" aria-label="Filtro">${[['todos', 'Todos'], ['activos', 'Activos'], ['mios', 'Míos'], ['riesgo', 'En riesgo'], ['hechos', 'Hechos']].map(([k, l]) => html`<button class="${f === k ? 'on' : ''}" data-mp="f" data-v="${k}">${l}</button>`)}</div>
         ${slugs.length > 1 ? html`<select class="in pp-mpsel" data-mpchg="cli" aria-label="Cliente"><option value="">Todos los clientes</option>${slugs.map((s) => html`<option value="${s}" ${s === cli ? raw('selected') : ''}>${s.toUpperCase()}</option>`)}</select>` : ''}
         <input class="in pp-mpq" data-mpq placeholder="Buscar proyecto…" value="${q}" aria-label="Buscar proyecto"></div>
       <div class="sp-panel pp-mp">
@@ -195,7 +195,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
             <div class="pp-pk">${ico('trend', 14)} Avance</div><div class="pp-prog"><span class="pp-meter big" title="${pct}% hecho${tpct != null ? ` · ${tpct}% del tiempo` : ''}"><i style="width:${pct}%"></i>${tpct != null ? html`<em style="left:${tpct}%"></em>` : ''}</span><b>${pct}%</b>${pace ? html`<span class="pp-pace ${pace === 'Al día' ? 'ok' : 'bad'}">${pace}</span>` : ''}${tpct != null ? html`<span class="mut sm">${tpct}% del tiempo</span>` : ''}</div>
           </div>
         </div></div>
-      <nav class="pp-tabs" role="tablist">${views().map(([k, l, i]) => html`<button role="tab" class="${view === k ? 'on' : ''}" aria-selected="${String(view === k)}" data-x="view" data-v="${k}">${ico(i, 15)}<span>${l}</span></button>`)}</nav>`;
+      <nav class="tabs" role="tablist" data-tabs="pp">${views().map(([k, l, i]) => html`<button role="tab" class="${view === k ? 'on' : ''}" aria-selected="${String(view === k)}" data-x="view" data-v="${k}">${ico(i, 15)}<span>${l}</span></button>`)}</nav>`;
   }
   const paintHead = () => { const h = $('#pphead', el); if (h) mount(h, head()); };
   function paint() { mount(el, html`<div class="pp"><div id="pphead">${head()}</div><div id="ppbody" class="pp-body"></div></div>`); paintBody(); }
@@ -278,7 +278,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
         arrows += `<path d="M${x1} ${y1} H${mx} V${y2} H${x2 - 2}" class="${pre.status === 'Hecha' ? 'ok' : ''}" marker-end="url(#pparr)"/>`; } }
     const tl = X(T) + dw / 2;
     mount(b, html`<div class="sp-panel pp-tl">
-      <div class="pp-tlbar"><div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${zoom === k ? 'on' : ''}" data-x="zoom" data-z="${k}">${l}</button>`)}</div><button class="btn ghost sm" data-x="tltoday">Hoy</button><span class="mut sm pp-tlhint">${edit ? 'Arrastra una barra para mover sus fechas; el borde derecho cambia el fin.' : 'Solo lectura.'}</span>${edit ? html`<div class="sp"></div><button class="btn ghost sm" data-x="phadd">${ico('plus', 13)} Fase</button>` : ''}</div>
+      <div class="pp-tlbar"><div class="seg" aria-label="Escala">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${zoom === k ? 'on' : ''}" data-x="zoom" data-z="${k}">${l}</button>`)}</div><button class="btn ghost sm" data-x="tltoday">Hoy</button><span class="mut sm pp-tlhint">${edit ? 'Arrastra una barra para mover sus fechas; el borde derecho cambia el fin.' : 'Solo lectura.'}</span>${edit ? html`<div class="sp"></div><button class="btn ghost sm" data-x="phadd">${ico('plus', 13)} Fase</button>` : ''}</div>
       <div class="pp-gwrap" style="--dw:${dw}px;--rh:${RH}px">
         <div class="pp-gantt" style="width:calc(var(--lw) + ${W}px)">
           <div class="pp-ghead"><div class="pp-glab pp-gcorner">Fase / tarea</div><div class="pp-gscale" style="width:${W}px">
@@ -376,7 +376,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const a = e.target.closest('[data-x]'); if (!a) return;
     const x = a.dataset.x;
     if (x === 'back') return back();
-    if (x === 'view') { view = a.dataset.v; setHash(); $$('.pp-tabs button', el).forEach((b2) => { const on = b2.dataset.v === view; b2.classList.toggle('on', on); b2.setAttribute('aria-selected', on); }); return paintBody(); }
+    if (x === 'view') { view = a.dataset.v; setHash(); $$('[data-tabs="pp"] button', el).forEach((b2) => { const on = b2.dataset.v === view; b2.classList.toggle('on', on); b2.setAttribute('aria-selected', on); }); return paintBody(); }
     if (x === 'task') { const t = T_(a.dataset.id); return t && openTask(t); }
     if (x === 'fold') { const k = a.dataset.k; folded.has(k) ? folded.delete(k) : folded.add(k); lsSet('pp.fold.' + id, [...folded]); return paintBody(); }
     if (x === 'zoom') { zoom = a.dataset.z; lsSet('pp.zoom', zoom); $('.pp-gwrap', el)?.removeAttribute('data-init'); const b2 = $('#ppbody', el); return timeline(b2); }

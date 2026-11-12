@@ -27,7 +27,7 @@ export async function formatosUI(el, { me, b, alive }) {
   function paint() {
     if (!alive()) return;
     const f = (l) => l.filter((x) => !S.tipo || x.tipo === S.tipo);
-    mount(el, html`<div class="fm"><div class="fm-bar"><div class="tabs mini" role="tablist" aria-label="Tipo">${[['', 'Todos'], ...TIPOS].map(([k, l]) => html`<button role="tab" class="${S.tipo === k ? 'on' : ''}" aria-selected="${S.tipo === k ? 'true' : 'false'}" data-fm="tipo" data-k="${k}">${l}</button>`)}</div><span class="sp"></span>
+    mount(el, html`<div class="fm"><div class="fm-bar"><div class="seg mini" role="tablist" aria-label="Tipo">${[['', 'Todos'], ...TIPOS].map(([k, l]) => html`<button role="tab" class="${S.tipo === k ? 'on' : ''}" aria-selected="${S.tipo === k ? 'true' : 'false'}" data-fm="tipo" data-k="${k}">${l}</button>`)}</div><span class="sp"></span>
         ${ed() ? html`<button class="btn ghost sm" data-fm="ref" ${S.refs.length ? '' : raw('disabled title="Marca un post de Investigación con «Usar como formato»"')}>${ico('repeat', 13)} Desde un referente${S.refs.length ? ` · ${S.refs.length}` : ''}</button><button class="btn sm" data-fm="nuevo">${ico('plus', 13)} Formato</button>` : ''}</div>
       <section><h2 class="fm-h">De ${b.name}</h2>${f(S.marca).length ? html`<div class="fm-grid">${f(S.marca).map(card)}</div>` : html`<p class="mut fm-vacio">Todavía no hay formatos propios. Duplica una plantilla del método y ajústala a la marca, o arma uno desde un referente que funcionó.</p>`}</section>
       <section><h2 class="fm-h">Plantillas del método <span class="mut sm">· ③ Marketing y Creative: mc-campanas-piezas</span></h2><div class="fm-grid">${f(S.base).map(card)}</div></section></div>`);

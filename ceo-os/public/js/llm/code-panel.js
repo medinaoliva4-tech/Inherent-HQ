@@ -11,7 +11,7 @@ const codigo = (s) => String(s || '').replace(/\x1b\[[0-9;?]*[ -/]*[@-~]/g, '').
 
 
 const listaArchivos = (ns) => html`<ul class="cp-files">${(Array.isArray(ns) ? ns : []).map((n) => html`<li>${n.tipo === 'carpeta' ? html`<details open><summary>${n.nombre || n.ruta}</summary>${listaArchivos(n.hijos)}</details>` : html`<button type="button" data-cp="abrir" data-ruta="${n.ruta}">${n.nombre || n.ruta}</button>`}</li>`)}</ul>`;
-const nav = (actual) => html`<nav class="cp-tabs" aria-label="Vistas de Código">${VISTAS.map(([id, nombre]) => html`<button type="button" data-cp="tab" data-v="${id}" aria-current="${actual === id ? 'page' : 'false'}">${nombre}</button>`)}</nav>`;
+const nav = (actual) => html`<nav class="tabs mini" aria-label="Vistas de Código">${VISTAS.map(([id, nombre]) => html`<button type="button" data-cp="tab" data-v="${id}" aria-current="${actual === id ? 'page' : 'false'}">${nombre}</button>`)}</nav>`;
 const vacio = (titulo, nota) => html`<div class="cp-empty"><b>${titulo}</b><p>${nota}</p></div>`;
 
 export async function pintarCodePanel(box, { email, idOs, estado, alChat, alive, aislada = false }) {

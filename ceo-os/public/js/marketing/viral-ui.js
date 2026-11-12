@@ -95,7 +95,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarTabs() {
     const el = $('#vil-tabs', root); if (!el) return;
     const n = { report: S.docs.length, oportunidades: oportunidades(S.docs.map((d) => d.contenido)).length };
-    mount(el, html`<nav class="vil-tabs" role="tablist" aria-label="Viral Intelligence Lab">${TABS.map(([k, l, i]) => html`<button type="button" role="tab" class="vil-tab ${S.tab === k ? 'on' : ''}" aria-selected="${S.tab === k ? 'true' : 'false'}" data-act="vil-tab" data-t="${k}">${ico(i, 14)} ${l}${n[k] ? html` <span class="vil-n">${n[k]}</span>` : ''}</button>`)}</nav>`);
+    mount(el, html`<nav class="tabs" role="tablist" aria-label="Viral Intelligence Lab">${TABS.map(([k, l, i]) => html`<button type="button" role="tab" class="${S.tab === k ? 'on' : ''}" aria-selected="${S.tab === k ? 'true' : 'false'}" data-act="vil-tab" data-t="${k}">${ico(i, 14)} ${l}${n[k] ? html` <span class="tab-n">${n[k]}</span>` : ''}</button>`)}</nav>`);
   }
   // La Investigación de hoy, tal cual: la monta el mismo embed que usaba la herramienta antes (una sola vez; las demás pestañas la dejan oculta).
   function montarLibrary() {

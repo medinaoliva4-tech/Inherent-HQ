@@ -68,8 +68,8 @@ export async function videoUI(el, { b, alive }) {
     if (!alive()) return;
     const lista = S.fichas.filter((f) => !S.estado || f.estado === S.estado);
     mount(el, html`<div class="fm vd">${kitCard()}
-      <div class="fm-bar"><div class="tabs mini" role="tablist" aria-label="Estado">${[['', 'Todos'], ...ESTADOS_V.map((x) => [x, x])].map(([k, l]) => html`<button role="tab" class="${S.estado === k ? 'on' : ''}" aria-selected="${S.estado === k ? 'true' : 'false'}" data-vd="estado" data-k="${k}">${l}${k ? html` <span class="mut">${S.fichas.filter((f) => f.estado === k).length}</span>` : ''}</button>`)}</div>
-        <div class="tabs mini" role="tablist" aria-label="Vista">${[['fichas', 'Fichas'], ['capas', 'Capas']].map(([k, l]) => html`<button role="tab" class="${S.vista === k ? 'on' : ''}" aria-selected="${S.vista === k ? 'true' : 'false'}" data-vd="vista" data-k="${k}">${l}</button>`)}</div>
+      <div class="fm-bar"><div class="seg mini" role="tablist" aria-label="Estado">${[['', 'Todos'], ...ESTADOS_V.map((x) => [x, x])].map(([k, l]) => html`<button role="tab" class="${S.estado === k ? 'on' : ''}" aria-selected="${S.estado === k ? 'true' : 'false'}" data-vd="estado" data-k="${k}">${l}${k ? html` <span class="mut">${S.fichas.filter((f) => f.estado === k).length}</span>` : ''}</button>`)}</div>
+        <div class="seg mini" role="tablist" aria-label="Vista">${[['fichas', 'Fichas'], ['capas', 'Capas']].map(([k, l]) => html`<button role="tab" class="${S.vista === k ? 'on' : ''}" aria-selected="${S.vista === k ? 'true' : 'false'}" data-vd="vista" data-k="${k}">${l}</button>`)}</div>
         <span class="sp"></span>${ed() ? html`<button class="btn sm" data-vd="nuevo">${ico('plus', 13)} Video</button>` : ''}</div>
       ${S.vista === 'capas' ? capas(lista) : lista.length ? html`<div class="fm-grid">${lista.map(card)}</div>` : html`<p class="mut fm-vacio">${S.fichas.length ? 'No hay videos en este estado.' : 'Todavía no hay fichas de video. Crea una por cada video del mes: los cortes, los assets y la música, y ⑦ lo arma con el kit de la marca.'}</p>`}</div>`);
   }

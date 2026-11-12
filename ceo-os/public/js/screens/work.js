@@ -160,7 +160,7 @@ export async function render(el, { me, sub, alive }) {
     const moreBody = Z.more ? Z.more() : '';
     mount(b, html`<div class="ws">
       ${solo ? '' : html`${oneLine(hoy.length, Z.extra ? Z.extra() : '')}<div class="wsgrid">${hoyBox(hoy)}${weekList(week, later)}</div>`}
-      <section class="wszone"><div class="wszhead"><h2>${Z.title}</h2>${tl.length > 1 ? html`<div class="tabs mini wstabs">${tl.map(([x, l, n]) => html`<button class="${x === k ? 'on' : ''}" data-act="ztab" data-z="${x}">${l}${n ? html`<span class="wsn">${n}</span>` : ''}</button>`)}</div>` : ''}</div><div id="wz"></div></section>
+      <section class="wszone"><div class="wszhead"><h2>${Z.title}</h2>${tl.length > 1 ? html`<div class="tabs mini">${tl.map(([x, l, n]) => html`<button class="${x === k ? 'on' : ''}" data-act="ztab" data-z="${x}">${l}${n ? html`<span class="tab-n">${n}</span>` : ''}</button>`)}</div>` : ''}</div><div id="wz"></div></section>
       <details class="wsmore" ${moreOpen ? raw('open') : ''}><summary>${ico('right', 14)}<b>Más</b><span class="mut sm">${Z.moreLbl || 'Checklist del ciclo, SOPs y subir trabajo'}</span></summary>
         ${moreBody ? html`<div class="wkgrid">${moreBody}</div>` : ''}
         <div class="wspurp">${purposeCard(asP ? { ...asP, role: asP.role || 'team', roles: asP.roles || [], email: who, viewsDoc: me.viewsDoc } : me, { area: 'work', own: !asP })}</div></details>
@@ -286,7 +286,7 @@ export async function render(el, { me, sub, alive }) {
       if (k === 'equipo') return mount(z, html`<div class="wsgrid2">${panel(html`<h4 class="wsh4">Accountability · este mes</h4>${accRows()}`)}${panel(html`<h4 class="wsh4">Pipelines</h4>${Object.keys(PIPES).map(pipeMini)}<button class="sm wslink" data-act="tab" data-t="pipes">Ver pipelines ›</button>`)}</div>`);
       const [, re, dept] = LANES[ceoLane];
       const laneList = open(tasks).filter((t) => re.test(t.dept || '') && (isMine(t) || accOf(t) === ceoKey));
-      mount(z, panel(html`<div class="row" style="gap:8px;margin-bottom:4px"><div class="tabs mini" style="margin:0">${Object.entries(LANES).map(([x, [l]]) => html`<button class="${x === ceoLane ? 'on' : ''}" data-act="lane" data-l="${x}">${l}</button>`)}</div><div class="sp"></div><button class="btn ghost sm" data-act="laneTask" data-d="${dept}">+ Tarea</button></div>
+      mount(z, panel(html`<div class="row" style="gap:8px;margin-bottom:4px"><div class="seg mini" aria-label="Carril">${Object.entries(LANES).map(([x, [l]]) => html`<button class="${x === ceoLane ? 'on' : ''}" data-act="lane" data-l="${x}">${l}</button>`)}</div><div class="sp"></div><button class="btn ghost sm" data-act="laneTask" data-d="${dept}">+ Tarea</button></div>
         ${ceoLane === 'ads' ? projects.filter((p) => p.pipeline?.['⑩']?.status === 'now').map((p) => html`<a class="wsrow" href="#/operations/pipe"><span class="chip red sm2">Gate</span><span class="grow">Aprobar pauta · ${p.client || p.name}</span></a>`) : ''}
         ${ceoLane === 'clientes' ? quotes.filter((q) => ['Borrador', 'Enviada'].includes(q.status)).slice(0, 3).map((q) => html`<a class="wsrow" href="#/sales/quotes"><span class="chip sm2">${q.status}</span><span class="grow">${q.number} · ${q.client}</span></a>`) : ''}
         ${laneList.length ? laneList.slice(0, 6).map((t) => trow(t)) : empty('Nada abierto.')}`));
@@ -381,7 +381,7 @@ export async function render(el, { me, sub, alive }) {
         return;
       }
       if (!posts) { mount(z, html`<p class="loading">Cargando…</p>`); posts = (await col('content').list().catch(() => [])).filter((c) => c.kind === 'post'); if (!alive() || ztab[role] !== 'plan') return; }
-      const head = html`<div class="row" style="gap:8px;margin-bottom:6px"><div class="tabs mini" style="margin:0"><button class="${planView === 'etapa' ? 'on' : ''}" data-act="planView" data-v="etapa">Por etapa</button><button class="${planView === 'fecha' ? 'on' : ''}" data-act="planView" data-v="fecha">Por fecha</button></div><div class="sp"></div><button class="btn sm" data-act="newPost">+ Pieza</button></div>`;
+      const head = html`<div class="row" style="gap:8px;margin-bottom:6px"><div class="seg mini" aria-label="Agrupar"><button class="${planView === 'etapa' ? 'on' : ''}" data-act="planView" data-v="etapa">Por etapa</button><button class="${planView === 'fecha' ? 'on' : ''}" data-act="planView" data-v="fecha">Por fecha</button></div><div class="sp"></div><button class="btn sm" data-act="newPost">+ Pieza</button></div>`;
       if (planView === 'fecha') {
         const list = posts.filter((p) => p.date >= addDays(T0, -3)).sort((a, z2) => String(a.date).localeCompare(String(z2.date)));
         return mount(z, panel(html`${head}${list.length ? html`<div class="wsscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Perfil</th><th>Formato</th><th>Idea</th><th>CTA</th><th>Estado</th></tr></thead><tbody>${list.slice(0, 12).map((p) => html`<tr class="click" data-act="post" data-id="${p.id}"><td>${p.date ? fdate(p.date) : '—'}</td><td class="mut">${p.profile}</td><td>${p.format || '—'}</td><td><b style="font-weight:500">${p.title}</b></td><td class="mut sm">${String(p.caption || '').split('\n').filter(Boolean).pop()?.slice(0, 40) || '—'}</td><td><span class="chip sm2">${p.status || 'Idea'}</span></td></tr>`)}</tbody></table></div>` : empty('Sin publicaciones con fecha.')}`));

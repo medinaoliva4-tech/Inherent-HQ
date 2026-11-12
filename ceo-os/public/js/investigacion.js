@@ -156,7 +156,7 @@ function renderFilters(b, { st }) {
   const reds = REDES.filter(([k]) => items.some((x) => redOf(x) === k));
   const opt = (v, l, cur) => html`<option value="${v}" ${cur === v ? raw('selected') : ''}>${l}</option>`;
   mount(box, html`<div class="inv-filters">
-    <div class="tabs inv-fmt" role="group" aria-label="Formato">${fmts.map(([k, l, i]) => html`<button class="${f.fmt === k ? 'on' : ''}" data-iv="fmt" data-k="${k}" aria-pressed="${f.fmt === k ? 'true' : 'false'}">${ico(i, 14)} ${l}</button>`)}</div>
+    <div class="seg inv-fmt" role="tablist" aria-label="Formato">${fmts.map(([k, l, i]) => html`<button class="${f.fmt === k ? 'on' : ''}" data-iv="fmt" data-k="${k}" aria-pressed="${f.fmt === k ? 'true' : 'false'}">${ico(i, 14)} ${l}</button>`)}</div>
     <div class="inv-fsel">
       <select class="in" data-f="cat" aria-label="Categoría">${opt('', 'Todas las categorías', f.cat)}${CATS.map(([k, l]) => opt(k, l, f.cat))}${legacy.map((k) => opt(k, LEGACY[k], f.cat))}${opt('replicar', 'Formatos a replicar', f.cat)}${opt('analisis', 'Con análisis', f.cat)}${opt('semana', `Mi semana · ${items.filter((x) => x.week === W).length}`, f.cat)}</select>
       ${reds.length > 1 || f.red ? html`<select class="in" data-f="red" aria-label="Red">${opt('', 'Todas las redes', f.red)}${REDES.filter(([k]) => reds.some(([r]) => r === k) || f.red === k).map(([k, l]) => opt(k, l, f.red))}</select>` : ''}

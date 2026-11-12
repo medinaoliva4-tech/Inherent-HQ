@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "test": "node scripts/test-parse.mjs && node scripts/test-lint-css.mjs && node scripts/lint-css.mjs",
+    "test": "node scripts/test-parse.mjs && node scripts/test-lint-css.mjs && node scripts/lint-css.mjs && node scripts/test-ui-comportamiento.mjs",
+    "test:ui-comportamiento": "node scripts/test-ui-comportamiento.mjs",
+    "vendor:ui": "node scripts/vendor-ui.mjs",
     "lint:css": "node scripts/lint-css.mjs",
     "test:fase4": "node scripts/test-fase4.mjs",
     "test:fase5": "node scripts/test-fase5.mjs",

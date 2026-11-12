@@ -93,7 +93,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
         <span class="kf-insp-k">${ico(t.icono, 15)} Paso ${sel + 1} · ${t.nombre}</span>
         <button type="button" class="btn-icon" data-act="cerrar" aria-label="Cerrar">${ico('x', 15)}</button>
       </div>
-      <div class="kf-seg" role="tablist">${[['construir', 'Construir'], ['reglas', 'Reglas'], ['conexiones', 'Conexiones']].map(([k, l]) => html`<button type="button" role="tab" aria-selected="${panel === k}" class="${panel === k ? 'on' : ''}" data-act="panel" data-p="${k}">${l}</button>`)}</div>
+      <div class="tabs mini" role="tablist">${[['construir', 'Construir'], ['reglas', 'Reglas'], ['conexiones', 'Conexiones']].map(([k, l]) => html`<button type="button" role="tab" aria-selected="${panel === k}" class="${panel === k ? 'on' : ''}" data-act="panel" data-p="${k}">${l}</button>`)}</div>
       <div class="kf-insp-b">
       ${panel === 'construir' ? html`
         ${campo('nombre', 'Nombre', e.nombre)}
