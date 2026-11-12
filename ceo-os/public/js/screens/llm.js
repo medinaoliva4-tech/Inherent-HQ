@@ -908,12 +908,21 @@ export async function render(el, { me, sub = [], alive }) {
     if (modelo && S.modo !== 'code' && !leerDepartamento(texto)) return toast(`Code pide ${modelo}: cambia a Code (o llama a un departamento con @) y envíalo`, true);
     ta.value = ''; crecer(ta); enviar(texto, { nivelForzado: modelo });
   }
+  // «codeos:juicio»: una herramienta de Code OS pide un juicio rápido de Laya. El OS habla con el puente local de esta persona;
+  // sin puente avisa una vez y la herramienta sigue (no bloquea).
+  let avisoLaya = false;
+  async function juicioParaCode(puerta, entrada) {
+    const { juicioRapido } = await import('../laya-ui.js');
+    const r = await juicioRapido(puerta, entrada);
+    if (r.sinPuente && !avisoLaya) { avisoLaya = true; toast(r.aviso); }
+    return r;
+  }
   async function pintarHerramientas(box, cab) {
     if (S.herr?.iframe?.isConnected && box.contains(S.herr.iframe)) { S.herr.contexto(); return; }
     S.herr?.destruir?.(); S.herr = null;
     mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="llm-herr"><p class="lp-mut" style="padding:16px">Abriendo Code OS…</p></div>`);
     const caja = $('.llm-herr', box);
-    const ctl = await montarHerramientas(caja, { pase: (forzar) => paseCode(forzar), contexto: contextoHerr, alChat: alChatDesdeCode, alError: (m) => { if (caja.isConnected) mount(caja, html`<p class="lp-mut" style="padding:16px">${m}</p>`); } });
+    const ctl = await montarHerramientas(caja, { pase: (forzar) => paseCode(forzar), contexto: contextoHerr, alChat: alChatDesdeCode, juicio: juicioParaCode, alError: (m) => { if (caja.isConnected) mount(caja, html`<p class="lp-mut" style="padding:16px">${m}</p>`); } });
     if (!ctl) return;
     if (!caja.isConnected || S.tab !== 'herramientas') return ctl.destruir();
     S.herr = ctl;

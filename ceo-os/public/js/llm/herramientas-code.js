@@ -4,6 +4,8 @@
 // Seguridad: solo se aceptan mensajes del iframe (e.source) y de SU origen exacto (e.origin); se responde solo a ese origen.
 // La parte pura (sin DOM ni red) la prueba scripts/test-herramientas-code.mjs; montarHerramientas es la parte de pantalla.
 
+import { RAPIDAS } from '../laya.js';
+
 export const VERSION_CONTRATO = 1;
 export const NIVELES_AL_CHAT = ['nivel-alto', 'nivel-medio', 'nivel-bajo'];
 const ROLES = ['ceo', 'coo', 'estrategia', 'creativo', 'produccion', 'editor', 'diseno'];
@@ -53,11 +55,26 @@ export function leerAlChat(d) {
   return { texto, enviar: d.enviar === true, modelo: NIVELES_AL_CHAT.includes(d.modelo) ? d.modelo : '' };
 }
 /**
+ * «codeos:juicio» (extensión del contrato que propone este PR): una herramienta pide un juicio rápido de Laya sobre un texto.
+ * { id, puerta: 'prospecto'|'dolor_deseo'|'gancho'|'quemado'|'voz', texto, contexto?: { marca, icp, voz, referencias } }.
+ * El OS es el que habla con el puente local de Laya de cada persona (127.0.0.1:7357): el iframe no puede ni debe tocarlo.
+ * → { id, puerta, entrada } limpio, o null.
+ */
+export function leerJuicio(d, rapidas = []) {
+  const id = typeof d?.id === 'string' && /^[\w-]{1,64}$/.test(d.id) ? d.id : ''; if (!id) return null;
+  const puerta = rapidas.includes(d.puerta) ? d.puerta : ''; if (!puerta) return null;
+  const texto = typeof d.texto === 'string' ? d.texto.trim().slice(0, 4000) : ''; if (!texto) return null;
+  const c = d.contexto && typeof d.contexto === 'object' ? d.contexto : {};
+  const contexto = Object.fromEntries(['marca', 'icp', 'voz', 'referencias'].filter((k) => typeof c[k] === 'string' && c[k].trim()).map((k) => [k, c[k].trim().slice(0, 2000)]));
+  return { id, puerta, entrada: { texto, contexto } };
+}
+/**
  * Qué hacer con un mensaje ya validado → [{ hacer: 'pase', forzar } | { hacer: 'contexto' } | { hacer: 'al-chat', ... }].
  * Puro: la pantalla ejecuta las acciones (montarHerramientas).
  */
-export function acciones(d) {
+export function acciones(d, { rapidas = RAPIDAS } = {}) {
   switch (d?.tipo) {
+    case 'codeos:juicio': { const x = leerJuicio(d, rapidas); return x ? [{ hacer: 'juicio', ...x }] : typeof d?.id === 'string' && /^[\w-]{1,64}$/.test(d.id) ? [{ hacer: 'juicio-invalido', id: d.id }] : []; }
     case 'codeos:listo': return [{ hacer: 'pase', forzar: false }, { hacer: 'contexto' }];
     case 'codeos:pedir-pase': return [{ hacer: 'pase', forzar: true }];
     case 'codeos:al-chat': { const x = leerAlChat(d); return x ? [{ hacer: 'al-chat', ...x }] : []; }
@@ -87,6 +104,12 @@ export async function montarHerramientas(caja, opts) {
       if (a.hacer === 'pase') { try { const q = await opts.pase(a.forzar); enviar({ tipo: 'codeos:pase', pase: q.pase, expira: q.expira }); } catch (er) { opts.alError?.(er.message || 'No pude renovar el pase'); } }
       else if (a.hacer === 'contexto') mandarContexto();
       else if (a.hacer === 'al-chat') opts.alChat({ texto: a.texto, enviar: a.enviar, modelo: a.modelo });
+      else if (a.hacer === 'juicio-invalido') enviar({ tipo: 'codeos:juicio-resultado', id: a.id, ok: false, aviso: 'Pedido de juicio inválido: puerta o texto' });
+      else if (a.hacer === 'juicio') {
+        // Nunca bloquea: sin Laya, la respuesta dice por qué y la herramienta sigue.
+        let r; try { r = opts.juicio ? await opts.juicio(a.puerta, a.entrada) : { ok: false, aviso: 'Este OS no tiene Laya' }; } catch (er) { r = { ok: false, aviso: er.message || 'Laya no pudo' }; }
+        enviar({ tipo: 'codeos:juicio-resultado', id: a.id, puerta: a.puerta, ...r });
+      }
     }
   }
   window.addEventListener('message', alMensaje);

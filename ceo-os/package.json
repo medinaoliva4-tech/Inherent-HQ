@@ -33,7 +33,8 @@
     "test:agentes": "node scripts/test-agentes.mjs",
     "test:db": "node scripts/test-db-cliente.mjs",
     "test:code": "node scripts/test-code.mjs && node scripts/test-herramientas-code.mjs",
-    "test:departamentos": "node scripts/test-departamentos.mjs"
+    "test:departamentos": "node scripts/test-departamentos.mjs",
+    "test:laya": "node scripts/test-laya-rapido.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
