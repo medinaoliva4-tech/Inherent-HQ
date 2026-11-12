@@ -1,5 +1,5 @@
 import { esImagen, prepararImagen, urlImagen } from '../chat-imagenes.js';
-import { menu as uiMenu, dialog, cerrarMenu } from '../ui.js';
+import { menu as uiMenu, dialog, cerrarMenu, popover } from '../ui.js';
 // El Inherent LLM (#/chat): el Chat de Inherent OS, una pantalla más dentro del shell (vive en #main, a la derecha de la
 // barra lateral; el elemento donde se monta lleva la clase llm-host): barra de conversaciones · conversación · panel. Responde
 // el SERVIDOR de Inherent (chat-gateway.js · PLAN-GATEWAY F3): las conversaciones se guardan en el OS, con web, los MCPs de la
@@ -26,10 +26,13 @@ import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
-import { turnoCode } from '../chat-code.js';
+import { turnoCode, capacidadesPuente, catalogoPuente, sesionCode } from '../chat-code.js';
+// Un solo chat, un solo motor por conversación: las capacidades se prenden por turno (llm/capacidades.js).
+import { CAPACIDADES, capDe, ESTADOS, vacias, normal as capsNormal, alternar as alternarCap, chips as chipsDe, activas, porIntencion, reglaSinCapacidad, modoMotor, agrupar, nombreModelo as nombreDeModelo, disponibleO, planDePreset, lineaPlan, dinero, plegar, contextoPuente } from '../llm/capacidades.js';
+import { COCINA } from '../llm/modelos-tabla.js';
 import { leerDepartamento, menuDepartamentos, departamentoDe, nivelDe, sistemaDepartamento, contextoPara, mensajeConContexto, leerPase, puedePasar, textoPase, DEPARTAMENTOS } from '../llm/departamentos.js';
 import { menuDepartamentosHtml, depChipHtml, paseHtml } from '../llm/departamentos-ui.js';
-import { rutear } from '../llm/router-code.js';
+import { rutear, detectarCapacidades } from '../llm/router-code.js';
 import { herramientaDe, rutaHerramienta, rutaModulo, WORKSPACES } from '../herramientas.js';
 // F4.5 · el Chat como centro: @agente, el plan platicado, los trabajos en el hilo y la ventana de agentes (PLAN-GATEWAY §20).
 import { conArchivos, motivoRechazo } from '../chat-archivos.js';
@@ -50,6 +53,10 @@ const K = (me) => `os.llm.${me.email}`;
 const KB = (me) => `os.llm.brujula.${me.email}`;
 const brujulas = (me) => { try { return JSON.parse(localStorage.getItem(KB(me)) || '{}') || {}; } catch { return {}; } };
 const guardarBrujula = (me, sid, b) => { if (!sid) return; try { const m = brujulas(me); if (b) m[sid] = b; else delete m[sid]; localStorage.setItem(KB(me), JSON.stringify(m)); } catch {} };
+// Las capacidades de cada conversación (Código, Figwright…): también en este navegador, por conversación.
+const KC = (me) => `os.llm.caps.${me.email}`;
+const capsGuardadas = (me) => { try { return JSON.parse(localStorage.getItem(KC(me)) || '{}') || {}; } catch { return {}; } };
+const guardarCapsDe = (me, sid, c) => { if (!sid) return; try { const m = capsGuardadas(me); m[sid] = c; const ks = Object.keys(m); for (const k of ks.slice(0, Math.max(0, ks.length - 200))) delete m[k]; localStorage.setItem(KC(me), JSON.stringify(m)); } catch {} };
 const angosto = () => matchMedia('(max-width: 1100px)').matches;
 const leer = (me) => { try { return JSON.parse(localStorage.getItem(K(me)) || '{}') || {}; } catch { return {}; } };
 const guardar = (me, v) => { try { localStorage.setItem(K(me), JSON.stringify(v)); } catch {} };
@@ -84,11 +91,14 @@ export async function render(el, { me, sub = [], alive }) {
     agentes: [], tab: 'modo', herramientaPanel: '', listaAgentes: null, cerradas: new Set(), code: { vista: 'cambios', comentarios: [] }, // F4.5: los trabajos ligados a la conversación y la pestaña abierta
     adjuntos: [], salud: null, modelos: null, sesiones: [], busca: '', side: false, skills: null,
     panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
+    // Un solo motor: lo que el puente sabe hacer (GET /capacidades), su catálogo (GET /models), lo prendido en esta
+    // conversación y el equipo elegido ('auto' = el router de cocina · id de preset · 'm:<modelo>' fijo).
+    caps: modoGuardado === 'code' ? { ...vacias(), on: ['codigo'] } : vacias(), puente: null, catalogo: null, preset: pref.preset || 'auto', sugeridas: [],
   };
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
-  const persistir = () => guardar(me, { panelW: S.panelW, abiertas: S.abiertas, modo: S.modo, ultimoChatModo: S.ultimoChatModo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
+  const persistir = () => guardar(me, { preset: S.preset, panelW: S.panelW, abiertas: S.abiertas, modo: S.modo, ultimoChatModo: S.ultimoChatModo, slugs: S.slugs, modelo: S.modelo, privado: S.privado, porIa: S.porIa, esfuerzo: S.esfuerzo, limite: S.limite, panel: angosto() ? pref.panel : S.panel, ...(borrador ? { borrador } : {}) });
   // El mes del plan que trabaja Marketing: el que mandó el plan del mes (abrirEnChat), o el de este mes.
   const mesPlan = /^\d{4}-\d{2}$/.test(pref.mes || '') ? pref.mes : today().slice(0, 7);
   // Modo privado: responde un modelo que corre en esta compu (LM Studio, Ollama…). El elegido si es local; si no, el primero que haya.
@@ -107,7 +117,16 @@ export async function render(el, { me, sub = [], alive }) {
   // Qué IA responde ahora: la del modelo elegido o la del servidor por defecto. '' si no se sabe.
   const iaAhora = () => (S.privado ? 'local' : S.modelo?.model ? iaDe(S.modelo.provider, S.modelo.model) : S.modelos?.actual?.provider ? iaDe(S.modelos.actual.provider, S.modelos.actual.model) : '');
   const nombreSlug = () => opciones().find(([s]) => s === slugAhora())?.[1] || slugAhora();
-  const listo = () => Boolean(S.salud?.on && S.salud?.auth);
+  // En línea: el chat de siempre (gateway) o, con el contrato nuevo, el puente (una conversación entera puede ir por él).
+  const gatewayOn = () => Boolean(S.salud?.on && S.salud?.auth);
+  const unificado = () => Boolean(S.puente?.real) && me.role !== 'client';
+  const listo = () => gatewayOn() || unificado();
+  // ---- Capacidades de esta conversación ----
+  const catalogoCaps = () => S.puente?.capacidades || [];
+  const capsOn = () => (S.privado || me.role === 'client' ? [] : activas(S.caps, catalogoCaps()));
+  const codigoOn = () => capsOn().includes('codigo');
+  const conCode = () => S.modo === 'code' || codigoOn();
+  function ponerCaps(c) { S.caps = capsNormal(c); guardarCapsDe(me, S.sesion, S.caps); }
   // El Chat corre en el servidor (PLAN-GATEWAY F3). B: las funciones que usa la pantalla.
   const enServidor = true;
   const B = {
@@ -198,7 +217,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- El centro: vacío (la pregunta grande, como Perplexity) o la conversación ----------
   const vacio = () => !S.msgs.length && !S.agentes.length && !S.cargando;
   function pintarTitulo() {
-    for (const b of R.querySelectorAll('.llm-work-switch button')) { const on = b.dataset.v === (S.modo === 'code' ? 'code' : 'chat'); b.setAttribute('aria-current', on ? 'page' : 'false'); }
+    for (const b of R.querySelectorAll('.llm-work-switch button')) { const on = b.dataset.v === (conCode() ? 'code' : 'chat'); b.setAttribute('aria-current', on ? 'page' : 'false'); }
     const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
     if (S.proyecto) return mount(C('llm-titulo'), html`<span class="lt-t">${nombreCliente(S.proyecto.id)}</span>`);
@@ -225,7 +244,7 @@ export async function render(el, { me, sub = [], alive }) {
   function heroHtml() {
     if (!listo()) return setupHtml();
     const cli = S.cliente ? nombreCliente(S.cliente) : '', primero = String(me.name || '').trim().split(/\s+/)[0], nombre = /^(ceo|admin|usuario|user)$/i.test(primero) ? '' : primero;
-    if (S.modo === 'code') return html`<div class="ch-nuevo ch-code-home"><span class="ch-code-k">INHERENT / CODE</span><h1>Construye y revisa en un solo lugar.</h1><p>El código, los cambios y los archivos comparten esta conversación. Elige un proyecto y pide el primer paso.</p><div class="ch-code-acciones"><button type="button" data-a="code-panel" data-v="codigo">${ico('code', 16)} Ver código y archivos</button><button type="button" data-a="code-panel" data-v="agentes">${ico('spark', 16)} Abrir agentes</button><button type="button" data-a="code-panel" data-v="herramientas">${ico('tool', 16)} Herramientas del OS</button></div></div>`;
+    if (conCode()) return html`<div class="ch-nuevo ch-code-home"><span class="ch-code-k">INHERENT / CODE</span><h1>Construye y revisa en un solo lugar.</h1><p>El código, los cambios y los archivos comparten esta conversación. Elige un proyecto y pide el primer paso.</p><div class="ch-code-acciones"><button type="button" data-a="code-panel" data-v="codigo">${ico('code', 16)} Ver código y archivos</button><button type="button" data-a="code-panel" data-v="agentes">${ico('spark', 16)} Abrir agentes</button><button type="button" data-a="code-panel" data-v="herramientas">${ico('tool', 16)} Herramientas del OS</button></div></div>`;
     return html`<div class="ch-nuevo"><h1>${cli ? `¿En qué trabajamos para ${cli}?` : nombre ? `De vuelta, ${nombre}` : '¿En qué trabajamos?'}</h1><div class="ch-sug">${(SUGERENCIAS[S.modo] || []).slice(0, 4).map(([t]) => html`<button type="button" data-a="sugerencia" data-t="${t}">${ico('arrow-right', 15)}<span>${t}</span></button>`)}</div></div>`;
   }
   // El servidor fuera de línea (raro): se dice y se puede reintentar; mientras, los chats por el puente siguen.
@@ -242,7 +261,16 @@ export async function render(el, { me, sub = [], alive }) {
   // El nombre del modelo en la caja: sin la IA (ya la dice el switch), salvo en «Otras» o por una pasarela (Kilo,
   // OpenRouter…), donde va el proveedor.
   const conProv = (x) => (iaDe(x.provider, x.model) === 'otras' || esLocal(x.provider) || PASARELAS.includes(x.provider) ? `${nombreProveedor(x.provider)} · ` : '') + x.model.split('/').pop();
+  // Va por el puente este turno: toda la conversación (contrato nuevo) o porque hay capacidades prendidas.
+  const porPuente = () => !S.privado && me.role !== 'client' && (unificado() || capsOn().length > 0);
+  // El equipo elegido, en palabras: «Auto», el nombre del preset o el del modelo fijo.
+  function nombreEquipo() {
+    const cat = S.catalogo; if (S.preset === 'auto' || !cat) return 'Auto';
+    if (S.preset.startsWith('m:')) return nombreDeModelo(cat, S.preset.slice(2));
+    return cat.presets.find((p) => p.id === S.preset)?.nombre || 'Auto';
+  }
   function nombreModelo() {
+    if (porPuente()) return nombreEquipo();
     if (S.privado) { const l = modeloLocal(); return l ? conProv(l) : 'Sin modelo local'; }
     const v = S.modelo, a = S.modelos?.actual;
     if (v?.model) return conProv(v);
@@ -289,6 +317,7 @@ export async function render(el, { me, sub = [], alive }) {
     mount(box, html`<div class="lc-w">
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.data ? html`<img class="lc-adj-img" src="${a.data}" alt="${a.nombre}">` : ''}${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
+        ${capsBarHtml()}
         <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : vacio() ? '¿Cómo puedo ayudarte hoy?' : 'Escribe un mensaje o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
           <button type="button" class="lc-mas" data-a="adjuntar" aria-label="Adjuntar archivo" title="Adjuntar archivo">${ico('plus', 16)}</button>
@@ -304,11 +333,58 @@ export async function render(el, { me, sub = [], alive }) {
     const ta = $('#llm-in', el); ta.value = prev;
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
-    ta.oninput = () => { crecer(ta); comandos(ta.value); };
+    ta.oninput = () => { crecer(ta); comandos(ta.value); sugerir(ta.value); };
     ta.onpaste = (e) => { const fs = [...(e.clipboardData?.files || [])]; if (fs.length) { e.preventDefault(); sumarArchivos(fs); } };
     // En el iPhone las opciones viven con el teclado abierto: tocarlas no debe cerrarlo.
     $('.lc-row', box)?.addEventListener('mousedown', (e) => { if (angosto() && e.target.closest('.lc-chip')) e.preventDefault(); });
   }
+  // La barra de capacidades: chips discretos que se prenden y apagan por conversación. Su estado viene del puente
+  // (lista · sin conexión · apagada); el motivo de una que no está se ve en un popover. Lo que la intención del texto
+  // detecta mientras escribes se marca como sugerido (al enviar, se prende si está lista).
+  function capsBarHtml() {
+    if (me.role === 'client' || S.privado || !S.puente) return '';
+    const xs = chipsDe(S.caps, catalogoCaps());
+    return html`<div class="lc-caps" role="group" aria-label="Capacidades de esta conversación">${xs.map((c) => html`<button type="button" class="lc-cap" data-a="cap" data-id="${c.id}" data-estado="${c.estado}" aria-pressed="${c.on ? 'true' : 'false'}" ${S.sugeridas.includes(c.id) && !c.on ? raw('data-sugerida=""') : ''} title="${c.estado === 'lista' ? (c.on ? `${c.nombre}: prendida · toca para apagar` : `${c.nombre}: toca para prender`) : `${c.nombre}: ${ESTADOS[c.estado].toLowerCase()}`}">${ico(c.icono, 13)}<span>${c.nombre}</span>${c.estado !== 'lista' ? html`<i class="lc-cap-dot" aria-hidden="true"></i>` : ''}</button>`)}${S.puente.mock ? html`<span class="lc-caps-mock" title="El puente aún no publica GET /capacidades: estado de respaldo">respaldo</span>` : ''}</div>`;
+  }
+  // Mientras escribes: qué capacidades pide el texto (el router por intención). Solo marca; no prende nada todavía.
+  let sugT = 0;
+  function sugerir(v) {
+    clearTimeout(sugT);
+    sugT = setTimeout(() => {
+      const ahora = $('#llm-in', el)?.value ?? v; // lo que hay en la caja ahora (si ya se envió, nada)
+      const ids = /^[@/]/.test(ahora.trim()) ? [] : detectarCapacidades(ahora).map((d) => d.id);
+      if (ids.join() === S.sugeridas.join()) return;
+      S.sugeridas = ids;
+      for (const b of el.querySelectorAll('.lc-cap')) { if (ids.includes(b.dataset.id) && b.getAttribute('aria-pressed') !== 'true') b.setAttribute('data-sugerida', ''); else b.removeAttribute('data-sugerida'); }
+    }, 220);
+  }
+  // Apagar al instante una capacidad (la que prendió la intención, desde el hilo o el aviso).
+  function apagarCap(id) {
+    if (S.enVuelo) return toast('Espera a que termine la respuesta para cambiar lo que puede hacer', true);
+    ponerCaps(alternarCap(S.caps, id, false)); toast(`${capDe(id)?.nombre || 'Capacidad'} apagado`);
+    pintarTitulo(); pintarCaja(); pintarHilo(); pintarPanel();
+  }
+  function prenderCap(id) {
+    if (S.enVuelo) return toast('Espera a que termine la respuesta para cambiar lo que puede hacer', true);
+    const x = chipsDe(S.caps, catalogoCaps()).find((c) => c.id === id); if (!x) return;
+    if (x.estado !== 'lista') return toast(`${x.nombre} no está disponible ahora${x.motivo ? `: ${x.motivo}` : ''}`, true);
+    ponerCaps(alternarCap(S.caps, id, true)); pintarTitulo(); pintarCaja(); pintarHilo(); pintarPanel();
+  }
+  // Tocar un chip: si está lista, se prende o se apaga; si no, el popover dice por qué y qué se puede hacer.
+  function tocarCap(b) {
+    const id = b.dataset.id, k = capDe(id), x = chipsDe(S.caps, catalogoCaps()).find((c) => c.id === id); if (!k || !x) return;
+    if (x.estado !== 'lista') {
+      const cuerpo = `<div class="lc-cap-pop"><b>${esc(k.nombre)} · ${esc(ESTADOS[x.estado].toLowerCase())}</b><p>${esc(x.motivo || 'El puente no dijo por qué.')}</p>${x.mock ? '<p class="lc-cap-mut">Estado de respaldo: el puente aún no publica sus capacidades.</p>' : ''}<span class="lc-cap-k">Mientras tanto</span><ul>${k.alternativas.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></div>`;
+      return popover(b, cuerpo, { etiqueta: `${k.nombre}: por qué no está`, clase: 'lc-cap-popw', ancho: 300, foco: false });
+    }
+    if (S.enVuelo) return toast('Espera a que termine la respuesta para cambiar lo que puede hacer', true);
+    const prender = !x.on;
+    ponerCaps(alternarCap(S.caps, id, prender));
+    if (id === 'codigo' && prender && !angosto()) ponerAncho(Math.max(S.panelW || 372, 600));
+    pintarTitulo(); pintarCaja(); if (vacio()) pintarHilo(); pintarPanel();
+    $('#llm-in', el)?.focus();
+  }
+
   // Soltar archivos en cualquier parte de la conversación.
   R.addEventListener('dragover', (e) => { if (e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); R.dataset.soltar = 'on'; } });
   R.addEventListener('dragleave', (e) => { if (!e.relatedTarget) delete R.dataset.soltar; });
@@ -355,14 +431,26 @@ export async function render(el, { me, sub = [], alive }) {
     if (x.r === 'plan') return planAgenteHtml(x.p, i);
     const ult = i === S.msgs.length - 1, busy = x.stream, m = modoDe(x.modo || S.modo);
     const pasos = x.tools || [];
+    // Con planifica/ejecuta, los pasos del ejecutor (parentToolUseId) van plegados bajo el paso del plan que los lanzó.
+    const { pasos: arriba, sueltos } = plegar(pasos), quienEjecuta = x.plan ? String(x.plan.executor).replace(/\s+\d+(\.\d+)*$/, '') : 'El ejecutor';
+    const pasoLi = (p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${nombrePasoVisual(p)}${p.imagen ? miniaturas([{ id: p.imagen, nombre: p.detalle || 'Imagen' }]) : ''}${p.detalle ? html`<small>${p.detalle}</small>` : ''}${p.hijos?.length ? ejecHtml(p.hijos) : ''}</span></li>`;
+    const ejecHtml = (hs) => html`<details class="lm-ejec"><summary>${quienEjecuta} · ${hs.length} ${hs.length === 1 ? 'paso' : 'pasos'}</summary><ol>${hs.map(pasoLi)}</ol></details>`;
     const pasosHtml = pasos.length ? html`<details class="lm-steps" ${busy ? raw('open') : ''}><summary>${busy ? html`<i class="lm-spin"></i>${nombrePasoVisual(pasos[pasos.length - 1])}` : pasos.length === 1 && pasos[0].nombre === 'ver_imagen' ? nombrePasoVisual(pasos[0]) : `${pasos.length} ${pasos.length === 1 ? 'paso' : 'pasos'}`}</summary>
-      <ol>${pasos.map((p) => html`<li class="${p.fase}">${ico(p.fase === 'error' ? 'alert' : p.fase === 'fin' ? 'check' : 'spark', 11)}<span>${nombrePasoVisual(p)}${p.imagen ? miniaturas([{ id: p.imagen, nombre: p.detalle || 'Imagen' }]) : ''}${p.detalle ? html`<small>${p.detalle}</small>` : ''}</span></li>`)}</ol></details>` : '';
+      <ol>${arriba.map(pasoLi)}${sueltos.length ? html`<li class="fin">${ico('spark', 11)}<span>${ejecHtml(sueltos)}</span></li>` : ''}</ol></details>` : '';
+    // La línea sutil del equipo («Opus planifica · Haiku ejecuta») y lo que hizo la intención con las capacidades.
+    const planLinea = x.plan ? html`<p class="lm-plan-l">${ico('layers', 12)}${lineaPlan(x.plan.planner, x.plan.executor)}</p>` : '';
+    const capsAv = (x.capsAvisos || []).map((a) => { const k = capDe(a.id); if (!k) return ''; const on = S.caps.on.includes(a.id);
+      return html`<div class="lm-cap" data-tipo="${a.tipo}">${ico(k.icono, 13)}<div><p>${a.texto}</p>${a.tipo === 'activada' && ult ? html`<div class="lm-ops">${on ? html`<button type="button" class="btn sm ghost" data-a="cap-apagar" data-id="${a.id}">Apagar ${k.nombre}</button>` : html`<span class="lm-cap-off">Apagada</span>`}</div>` : ''}${a.tipo === 'propuesta' && ult && !on ? html`<div class="lm-ops"><button type="button" class="btn sm ghost" data-a="cap-prender" data-id="${a.id}">Prender ${k.nombre}</button></div>` : ''}${(a.tipo === 'sin' || a.tipo === 'apagada') && a.alternativas?.length ? html`<div class="lm-ops">${a.alternativas.map((t) => html`<button type="button" class="btn sm ghost" data-a="a-caja" data-t="${t}">${t}</button>`)}</div>` : ''}</div></div>`; });
     const t = x.tarjetas || {};
     const crit = t.criterios ? html`<div class="lm-crit ${t.criterios.falta.length ? 'falta' : 'ok'}"><div class="lm-crit-h"><b>Criterios${t.criterios.entregable ? ` · ${t.criterios.entregable}` : ''}</b><span>${t.criterios.falta.length ? `Falta ${t.criterios.falta.length}` : 'Listo'}</span></div>
       ${t.criterios.cumple.map((c) => html`<div class="si">${ico('check', 12)}${c}</div>`)}${t.criterios.falta.map((c) => html`<div class="no"><i></i>${c}</div>`)}</div>` : '';
     const preg = t.pregunta ? html`<div class="lm-preg ${ult ? '' : 'hecha'}"><span class="lm-k">Una pregunta antes de seguir</span><b>${t.pregunta.texto}</b>${t.pregunta.por_que ? html`<small>${t.pregunta.por_que}</small>` : ''}${t.pregunta.opciones.length ? html`<div class="lm-ops">${t.pregunta.opciones.map((o) => html`<button type="button" data-a="opcion" data-t="${o}" ${ult ? '' : raw('disabled')}>${o}</button>`)}</div>` : ''}</div>` : '';
     // Code: cada permiso que pide el motor es una tarjeta; la persona decide aquí (el motor espera su respuesta).
-    const apr = (x.permisos || []).map((p, k) => html`<div class="lm-apr lm-prop"><span class="lm-k">${ico('alert', 12)} Code pide permiso</span><b>${p.titulo || p.herramienta}</b><code>${p.herramienta}</code>
+    // Lo que cuesta (imágenes, video): la tarjeta muestra el costo estimado y solo hay «Aprobar» o «No» (nunca «siempre»).
+    const apr = (x.permisos || []).map((p, k) => p.costo != null ? html`<div class="lm-apr lm-prop lm-costo"><span class="lm-k">${ico('wallet', 12)} Cuesta · necesita tu OK</span><b>${p.titulo || p.herramienta}</b>
+      ${p.descripcion ? html`<small>${p.descripcion}</small>` : ''}<p class="lm-costo-n">Costo estimado: <b>${dinero(p.costo)}</b></p>
+      ${p.estado ? html`<span class="${p.estado === 'no' ? 'lm-enc-no' : 'lm-meta-ok'}">${p.estado === 'no' ? 'No aprobado' : `Aprobado · ${dinero(p.costo)}`}</span>` : html`<div class="lm-ops"><button type="button" class="btn sm" data-a="code-permiso" data-d="allow" data-i="${i}" data-k="${k}">Aprobar ${dinero(p.costo)}</button><button type="button" class="btn sm ghost" data-a="code-permiso" data-d="deny" data-i="${i}" data-k="${k}">No</button></div>`}</div>`
+      : html`<div class="lm-apr lm-prop"><span class="lm-k">${ico('alert', 12)} Code pide permiso</span><b>${p.titulo || p.herramienta}</b><code>${p.herramienta}</code>
       ${p.descripcion ? html`<small>${p.descripcion}</small>` : ''}${p.entrada && Object.keys(p.entrada).length ? html`<dl class="lm-prop-d">${Object.entries(p.entrada).slice(0, 6).map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v).slice(0, 300) : String(v).slice(0, 300)}</dd>`)}</dl>` : ''}
       ${p.estado ? html`<span class="${p.estado === 'no' ? 'lm-enc-no' : 'lm-meta-ok'}">${p.estado === 'no' ? 'Rechazado' : 'Permitido'}</span>` : html`<div class="lm-ops"><button type="button" class="si" data-a="code-permiso" data-d="allow" data-i="${i}" data-k="${k}">Permitir</button><button type="button" class="si" data-a="code-permiso" data-d="allow_all" data-i="${i}" data-k="${k}">Siempre en esta sesión</button><button type="button" class="no" data-a="code-permiso" data-d="deny" data-i="${i}" data-k="${k}">Rechazar</button></div>`}</div>`);
     // Lo que el servidor propone cambiar en el OS: no pasa nada hasta que la persona lo aprueba (lo ejecuta el OS con su sesión).
@@ -374,8 +462,8 @@ export async function render(el, { me, sub = [], alive }) {
         ${datos.length ? html`<dl class="lm-prop-d">${datos.map(([k2, v]) => html`<dt>${k2}</dt><dd>${typeof v === 'object' ? JSON.stringify(v) : String(v)}</dd>`)}</dl>` : ''}${estado}</div>`;
     });
     const cuerpo = x.t ? cuerpoDe(x, ult) : busy && !pasos.length ? html`<span class="lm-think"><i></i>Pensando…</span>` : '';
-    return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${x.dep ? depChipHtml(x) : ''}${pasosHtml}<div class="lm-md">${cuerpo}</div>${!busy && x.pase ? paseHtml(x, i, me.role) : ''}${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
-      ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
+    return html`<div class="lm a"><span class="lm-av" data-m="${m.id}">${m.letra}</span><div class="lm-tx">${x.dep ? depChipHtml(x) : ''}${capsAv}${planLinea}${pasosHtml}<div class="lm-md">${cuerpo}</div>${!busy && x.pase ? paseHtml(x, i, me.role) : ''}${x.notas?.length ? html`<div class="lm-notas">${x.notas.map((n) => html`<p>${n}</p>`)}</div>` : ''}
+      ${apr}${props}${x.tarjetas?.meta ? metaHtml(x.tarjetas.meta, ult) : ''}${x.tarjetas?.plan ? planHtml(x.tarjetas.plan, i, x) : ''}${(x.tarjetas?.campanas || []).map((c, k) => campanaHtml(c, i, k, x))}${(x.tarjetas?.encargos || []).map((en, k) => encargoHtml(en, i, k, x))}${crit}${preg}${x.aplicado ? html`<span class="lm-upd">✦ ${x.aplicado}</span>` : ''}${x.caida ? html`<p class="lm-aviso lm-caida">${ico('alert', 13)} ${x.caida}</p>` : ''}${x.aviso ? html`<p class="lm-aviso">${x.aviso}</p>` : ''}${x.err ? html`<p class="lm-err">${x.err}</p>` : ''}
       ${!busy && (x.t || x.err) ? html`<div class="lm-acts">${x.t ? html`<button type="button" data-a="copiar" data-t="${sinUi(x.t)}">${ico('copy', 13)} Copiar</button>` : ''}${ult ? html`<button type="button" data-a="reintentar">${ico('redo', 13)} Reintentar</button>` : ''}${ult && S.sesion && !x.err ? html`<button type="button" data-a="ramificar">${ICO_RAMA} Ramificar</button>` : ''}</div>` : ''}</div></div>`;
   }
   let hiloDe = null, hiloN = 0;
@@ -512,9 +600,10 @@ export async function render(el, { me, sub = [], alive }) {
     // F4.5 · la ventana de agentes: una pestaña por trabajo ligado a la conversación (cerrar una pestaña no cierra el trabajo).
     const tabs = S.agentes.filter((r) => !S.cerradas?.has(r.id)), run = !['modo', 'agentes', 'herramientas', 'codigo'].includes(S.tab) && tabs.find((r) => r.id === S.tab);
     const herr = conHerramientas() && S.tab === 'herramientas';
-    const cab = tabs.length || conHerramientas() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : 'modo', { herramientas: conHerramientas() }) : '';
+    const tabCode = S.tab === 'codigo' && conCode();
+    const cab = tabs.length || conHerramientas() || conCode() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : tabCode ? 'codigo' : S.tab === 'agentes' ? 'agentes' : 'modo', { herramientas: conHerramientas(), codigo: conCode() }) : '';
     if (herr) return pintarHerramientas(box, cab);
-    if (S.tab === 'codigo' && S.modo === 'code') {
+    if (tabCode) {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="lp-code-host"></div>`);
       const host = $('.lp-code-host', box), sigue = () => gen === panelGen && alive() && host.isConnected && S.tab === 'codigo';
       const { pintarCodePanel } = await import('../llm/code-panel.js'); if (!sigue()) return;
@@ -574,9 +663,9 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Menús (modo, cliente/marca, modelo) ----------
   // El ui.menu del OS (Zag + Floating UI): se queda dentro de la ventana visible (también con el teclado del cel),
   // teclado completo, búsqueda cuando la lista es larga y el foco de vuelta al chip. items: [{ v, label, sub, on, off, ico, fin } | { grupo }]
-  function menu(anchor, titulo, items, onPick, { buscar = false, pie = '' } = {}) {
+  function menu(anchor, titulo, items, onPick, { buscar = false, pie = '', ancho = 300 } = {}) {
     return uiMenu(anchor, items.map((x) => (x.grupo ? { grupo: x.grupo } : { value: x.v, label: x.label, sub: x.sub, icon: x.ico, fin: x.fin, disabled: x.off, checked: Boolean(x.on), onSelect: () => onPick(x.v) })),
-      { titulo, buscar: buscar ? 'Buscar' : false, pie, clase: 'llm-pop', ancho: 300, vacio: 'Nada por aquí.' });
+      { titulo, buscar: buscar ? 'Buscar' : false, pie, clase: 'llm-pop', ancho, vacio: 'Nada por aquí.' });
   }
   // Las hojas del Chat (Ajustes, «Abrir y leer»): el diálogo único del OS dentro de la ventana del Chat, así sus
   // formularios siguen pasando por los mismos manejadores. Una a la vez.
@@ -597,17 +686,31 @@ export async function render(el, { me, sub = [], alive }) {
     // Si la IA de ahora ya no está lista, no se filtra: que siempre haya algo que elegir.
     const ia = iasListas(S.modelos).some(([k]) => k === iaAhora()) ? iaAhora() : '', deIa = (slug, x) => (S.privado ? esLocal(slug) : !esLocal(slug) && (!ia || iaDe(slug, x) === ia));
     const nombreIa = (IAS.find(([k]) => k === ia) || [])[1];
-    const items = [{ grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : nombreIa ? `Modelos de ${nombreIa}` : 'Qué modelo responde' }];
+    const items = [...equipoItems(), { grupo: 'Cuánto piensa' }, ...ESFUERZOS.map(([k, l, d]) => ({ v: 'esf:' + k, label: l, sub: d, on: (S.esfuerzo || '') === k })), { grupo: S.privado ? 'Modelos en tu compu (modo privado)' : unificado() ? 'Chat de siempre (si el puente no responde)' : nombreIa ? `Chat de siempre · ${nombreIa}` : 'Chat de siempre (sin capacidades)' }];
     if (!S.privado && (!ia || iaDe(S.modelos.actual.provider, S.modelos.actual.model) === ia)) items.push({ v: '', label: 'Por defecto del servidor', sub: S.modelos.actual.model ? `${nombreProveedor(S.modelos.actual.provider)} · ${S.modelos.actual.model}` : 'El modelo por defecto del servidor', on: !S.modelo?.model });
     const loc = S.privado ? modeloLocal() : null;
     for (const p of S.modelos.proveedores) for (const x of p.listo ? p.modelos.filter((x) => deIa(p.slug, x)).slice(0, PASARELAS.includes(p.slug) ? 40 : 8) : []) items.push({ v: `${p.slug}|${x}`, label: `${nombreProveedor(p.slug)} · ${x.split('/').pop()}`, sub: esLocal(p.slug) ? `${p.nombre} · en tu compu` : p.nombre, fin: fuertesHtml(x), on: S.privado ? loc?.provider === p.slug && loc?.model === x : S.modelo?.provider === p.slug && S.modelo?.model === x });
     if (S.privado && !loc) items.push({ v: 'x', label: 'Todavía no hay un modelo en tu compu', sub: 'El servidor no corre modelos locales', off: true });
     const pie = '';
     menu(a, 'Modelo', items, (v) => {
+      if (v.startsWith('eq:')) { S.preset = v.slice(3); persistir(); pintarCaja(); return toast(S.preset === 'auto' ? 'Auto: el equipo se elige por tarea' : `Fijado: ${nombreEquipo()}`); }
       if (v.startsWith('esf:')) S.esfuerzo = v.slice(4);
       else { S.modelo = v ? { provider: v.split('|')[0], model: v.split('|').slice(1).join('|') } : null; if (S.modelo) S.porIa[S.privado ? 'local' : iaDe(S.modelo.provider, S.modelo.model)] = S.modelo; ajustarModelo(); }
       persistir(); pintarCaja();
-    }, { buscar: items.length > 14, pie });
+    }, { buscar: items.length > 14, pie, ancho: equipoItems().length ? 360 : 300 });
+  }
+
+  // El equipo del puente: Auto (el router de cocina), los presets (el destacado primero) y el catálogo por nivel.
+  function equipoItems() {
+    const cat = S.catalogo; if (!cat || S.privado || me.role === 'client' || !S.puente || (!S.puente.real && !S.puente.puente)) return [];
+    const ps = [...cat.presets].sort((a, b) => Number(Boolean(b.destacado)) - Number(Boolean(a.destacado)));
+    const etiqueta = (m) => (m.disponible ? `${m.via === 'claude_login' ? 'Tu sesión de Claude' : m.via === 'gateway' ? 'Gateway' : m.via || 'Puente'}${m.costo_relativo === 0 ? ' · gratis' : ''}` : 'No disponible ahora');
+    return [
+      { grupo: `Equipo${cat.mock ? ' · catálogo de respaldo' : ''}` },
+      { v: 'eq:auto', label: 'Auto · equipo de cocina', sub: 'Elige por tarea: el modelo caro solo donde un error sale caro', on: S.preset === 'auto' },
+      ...ps.map((p) => ({ v: 'eq:' + p.id, label: p.nombre, sub: p.planifica === p.ejecuta ? `${nombreDeModelo(cat, p.planifica)} · ${p.nota}` : `${lineaPlan(nombreDeModelo(cat, p.planifica), nombreDeModelo(cat, p.ejecuta))} · ${p.nota}`, fin: p.destacado ? html`<span class="lmn-dest">Recomendado</span>` : '', on: S.preset === p.id })),
+      ...agrupar(cat.modelos).flatMap((g) => [{ grupo: g.nombre }, ...g.modelos.map((m) => ({ v: 'eq:m:' + m.id, label: m.nombre, sub: etiqueta(m), off: !m.disponible, on: S.preset === 'm:' + m.id }))]),
+    ];
   }
 
   // ---------- Ajustes: el servidor, el límite semanal y el tema ----------
@@ -630,6 +733,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (S.enVuelo) return toast('Espera a que termine la respuesta, o detenla, para cambiar de modo', true);
     if (id === 'code' && S.modo !== 'code') { S.ultimoChatModo = S.modo; if (!angosto()) ponerAncho(Math.max(S.panelW || 372, 600)); }
     S.modo = id;
+    if (id === 'code') S.caps = alternarCap(S.caps, 'codigo', true);
     if (!angosto()) { S.tab = id === 'code' ? 'codigo' : 'modo'; S.panel = true; R.dataset.panel = 'on'; }
     persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
     if (!vacio() || S.sesion) return nuevo();
@@ -637,7 +741,7 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
-    abrirGen++; S.cargando = false; S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = S.modo === 'code' && !angosto() ? 'codigo' : 'modo'; S.code = { vista: 'cambios', comentarios: [] }; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
+    abrirGen++; S.cargando = false; S.decidir = false; S.proyecto = null; S.sesion = null; S.msgs = []; S.titulo = ''; S.side = false; S.brujula = null; S.agentes = []; S.tab = S.modo === 'code' && !angosto() ? 'codigo' : 'modo'; S.code = { vista: 'cambios', comentarios: [] }; S.caps = S.modo === 'code' ? { ...vacias(), on: ['codigo'] } : vacias(); S.sugeridas = []; S.cerradas = new Set(); R.classList.remove('side-on'); pintarBrujula();
     if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
     pintarSide(); pintarCentro(); pintarPanel(); $('#llm-in', el)?.focus();
   }
@@ -647,6 +751,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!modos.some((m) => m.id === info.modo)) { toast('Esa conversación es de un modo que tu perfil no abre', true); return nuevo(); }
     S.decidir = false; S.proyecto = null; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
     S.cargando = true; S.titulo = S.sesiones.find((s) => s.id === id)?.title || S.titulo; S.brujula = brujulas(me)[id] || null; pintarBrujula();
+    S.caps = capsNormal(capsGuardadas(me)[id] || (S.modo === 'code' ? { on: ['codigo'] } : vacias()));
     const turno = ++abrirGen;
     pintarSide(); pintarTitulo(); // la barra responde al instante; lo de antes sigue visible hasta que llega lo nuevo
     try {
@@ -657,7 +762,7 @@ export async function render(el, { me, sub = [], alive }) {
         else if (r.role === 'assistant') {
           for (const tc of r.tool_calls || []) pend.push({ fase: 'fin', nombre: String(tc.function?.name || tc.name || 'herramienta'), detalle: '' });
           const raw0 = textoDe(r.content); if (!raw0.trim()) continue;
-          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: r.pasos?.length ? r.pasos : pend, propuestas: r.propuestas || [], ...(r.dep && departamentoDe(r.dep) ? { dep: r.dep, nivel: r.nivel || '', pase: leerPase(raw0) } : {}) }); pend = [];
+          out.push({ r: 'a', modo: S.modo, at: r.at, t: textoVisible(raw0), tarjetas: leerTarjetas(raw0), tools: r.pasos?.length ? r.pasos : pend, propuestas: r.propuestas || [], ...(r.motor === 'puente' ? { motor: 'puente' } : {}), ...(r.plan?.planner ? { plan: r.plan } : {}), ...(r.dep && departamentoDe(r.dep) ? { dep: r.dep, nivel: r.nivel || '', pase: leerPase(raw0) } : {}) }); pend = [];
         }
       }
       if (turno !== abrirGen) return; // ya se pidió otra conversación
@@ -776,36 +881,91 @@ export async function render(el, { me, sub = [], alive }) {
     const usuario = [...S.msgs].reverse().find((m) => m.r === 'u');
     let recibido = false;
     const msg = { r: 'a', modo: S.modo, t: '', stream: true, tools: [], notas: [] }; S.msgs.push(msg);
+    // La intención del texto prende lo que pide («entra a Figma…» → Figwright) si está lista; si no, lo dice y ofrece alternativas.
+    if (!reintento && S.puente && !S.privado && me.role !== 'client') {
+      const { caps: nc, avisos } = porIntencion(S.caps, detectarCapacidades(texto), catalogoCaps());
+      if (avisos.length) {
+        ponerCaps(nc); msg.capsAvisos = avisos; pintarCaja();
+        const act = avisos.find((x) => x.tipo === 'activada');
+        if (act) toast(`${capDe(act.id).nombre} activado`, { tipo: 'info', accion: { texto: 'Apagar', fn: () => apagarCap(act.id) } });
+      }
+      S.sugeridas = [];
+    }
     if (!S.titulo) S.titulo = tituloDe(texto);
     pintarCentro();
     try {
       if (!S.sesion) {
         const id = idSesion(S.modo, slugAhora());
         await B.crear({ id, titulo: tituloDe(texto) });
-        S.sesion = id; history.replaceState(null, '', '#/chat/' + id);
+        S.sesion = id; history.replaceState(null, '', '#/chat/' + id); guardarCapsDe(me, id, S.caps);
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
       const libre = S.modo === MODO_LIBRE.id;
-      const esCode = S.modo === 'code'; // Code: el motor es el puente del VPS; Claude Code trae su propio sistema
-      const sistema = esCode ? `${PROMPT_GENUI}\n\nEn Code, usa la interfaz para resumir un plan, una comparación o una revisión con datos reales. Las ediciones de archivos y comandos siguen pasando por los permisos del motor; nunca los representes como ya hechos si no ocurrieron.` : libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      // El router por tarea (Auto): el modelo caro solo donde un error sale caro; lo repetitivo, en el barato. Fijar un nivel lo apaga.
-      const ruta = esCode && !nivelForzado && (!S.nivelCode || S.nivelCode === 'auto') ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
-      const nivelCode = nivelForzado || (ruta ? ruta.nivel : S.nivelCode || 'nivel-medio');
-      if (esCode) S.ultimoNivelCode = nivelCode;
-      if (ruta) { msg.notas.push(`${ruta.nombre} · ${ruta.nivel}: ${ruta.motivo}`); pintarUltimo(); }
-      const turnoMotor = esCode ? (id, o) => turnoCode(id, { ...o, email: me.email, proyecto: slugAhora(), modelo: nivelCode, modo: 'code', titulo: tituloDe(texto) }) : (id, o) => B.turno(id, o);
-      const r = await turnoMotor(S.sesion, { mensaje: conArchivos(texto, adj), imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on: {
+      // Un solo motor por conversación: con el contrato nuevo, la sesión del puente de ESTA conversación responde todo y
+      // cambia de capacidades por turno (PATCH). Sin el contrato (puente viejo), el puente responde solo cuando hay
+      // capacidades prendidas (como el Code de antes) y lo demás, el chat de siempre. Si el puente no responde, cae al chat.
+      const caps = capsOn(), contrato = unificado();
+      const conImagenes = adj.some((x) => x.data) || (reintento && (usuario?.imagenes || []).length > 0);
+      const viaPuente = porPuente() && !(conImagenes && gatewayOn()); // las imágenes las lee el chat de siempre
+      if (porPuente() && !viaPuente) msg.notas.push('Las imágenes las lee el chat de siempre: este turno va sin capacidades.');
+      const esCode = S.modo === 'code';
+      const sistemaCode = `${PROMPT_GENUI}\n\nEn Code, usa la interfaz para resumir un plan, una comparación o una revisión con datos reales. Las ediciones de archivos y comandos siguen pasando por los permisos del motor; nunca los representes como ya hechos si no ocurrieron.`;
+      const sistemaChat = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
+      const sistema = esCode ? sistemaCode : sistemaChat;
+      // El equipo (Auto = el router de cocina por tarea; o el preset o el modelo que fijaste). Fijar un nivel desde Code OS gana.
+      const ruta = viaPuente && !nivelForzado ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
+      const cat = S.catalogo;
+      let equipo = { model: nivelForzado || '', plan_ejecucion: false };
+      if (viaPuente && !nivelForzado) {
+        if (S.preset.startsWith('m:') && cat) equipo.model = disponibleO(cat, S.preset.slice(2));
+        else if (!contrato || !cat || cat.mock) equipo.model = S.preset !== 'auto' && cat ? planDePreset(cat, S.preset, { conCaps: false })?.model || ruta.nivel : ruta.nivel; // puente viejo: los niveles de hoy
+        else {
+          const presetId = S.preset === 'auto' ? (caps.length || ruta.preset === 'maxima-calidad' ? ruta.preset : null) : S.preset; // sin capacidades prendidas no hay plan que ejecutar
+          if (presetId) equipo = { ...equipo, ...planDePreset(cat, presetId, { conCaps: caps.length > 0 }) };
+          if (!equipo.model) equipo.model = disponibleO(cat, (COCINA[ruta.cocinero] || COCINA.sous).modelos[0]);
+        }
+      }
+      if (viaPuente) S.ultimoNivelCode = equipo.model;
+      if (ruta) {
+        const quienN = S.preset === 'auto' ? (equipo.preset ? cat?.presets.find((x) => x.id === equipo.preset)?.nombre : '') || ruta.nombre : nombreEquipo();
+        msg.notas.push(contrato && cat && !cat.mock ? `${S.preset === 'auto' ? 'Auto · ' : ''}${quienN}: ${ruta.motivo}` : `${ruta.nombre} · ${equipo.model}: ${ruta.motivo}`);
+      }
+      if (equipo.plan_ejecucion) msg.plan = { planner: nombreDeModelo(cat, equipo.plan_ejecucion.planifica), executor: nombreDeModelo(cat, equipo.plan_ejecucion.ejecuta) };
+      pintarUltimo();
+      const regla = reglaSinCapacidad(msg.capsAvisos || []), pedido = [regla, conArchivos(texto, adj)].filter(Boolean).join('\n\n');
+      const on = {
         recibido: (xs) => { recibido = true; if (usuario) usuario.imagenes = xs; pintarHilo(); },
         run: (id) => { S.runId = id; },
         delta: (t) => { msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = t; msg.t = textoVisible(t); pintarUltimo(); alDelta?.(msg.t); }, // «En cola…» se va al empezar la respuesta
-        tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => x.nombre === p.nombre && x.fase === 'inicio'); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle, imagen: p.imagen || prev.imagen }); else msg.tools.push(p); pintarUltimo(); },
+        tool: (p) => { const prev = p.fase !== 'inicio' && [...msg.tools].reverse().find((x) => (p.id ? x.id === p.id : x.nombre === p.nombre && x.fase === 'inicio')); if (prev) Object.assign(prev, { fase: p.fase, detalle: p.detalle || prev.detalle, imagen: p.imagen || prev.imagen }); else msg.tools.push(p); pintarUltimo(); },
         nota: (n) => { if (/^Ventana /.test(n)) msg.notas = msg.notas.filter((x) => !/^Ventana /.test(x)); msg.notas.push(n); pintarUltimo(); },
+        // turn_start con planner y executor: la línea sutil «X planifica · Y ejecuta» (lo que de verdad corrió).
+        plan: (pl) => { msg.plan = pl; pintarUltimo(); },
         aprobacion: (ev) => { msg.aprob = ev; pintarUltimo(); },
         propuestas: (ps) => { msg.propuestas = ps; pintarUltimo(); },
-        // Code pide permiso para una herramienta (editar, correr un comando…): tarjeta con Sí / Siempre / No.
+        // El puente pide permiso para una herramienta (editar, correr un comando, gastar): tarjeta y la persona decide.
         permiso: (p, responder) => { (msg.permisos ||= []).push({ ...p, estado: '', responder }); pintarUltimo(); },
-      } });
+      };
+      const porGateway = () => B.turno(S.sesion, { mensaje: pedido, imagenes: adj.filter((a) => a.data), imagenIds: reintento ? (usuario?.imagenes || []).map((a) => a.id).filter(Boolean) : [], sistema: sistemaChat, modelo: modeloTurno(), esfuerzo: S.esfuerzo, signal: ctrl.signal, on });
+      let r;
+      if (viaPuente) {
+        const nueva = !sesionCode(me.email, S.sesion);
+        const mensaje = mensajeConContexto(pedido, contextoPuente(S.msgs.slice(0, -2), { nueva }));
+        try {
+          r = await turnoCode(S.sesion, { email: me.email, proyecto: slugAhora(), modelo: equipo.model, modo: contrato ? modoMotor(caps) : 'code', titulo: tituloDe(texto), sistema, mensaje, signal: ctrl.signal, on,
+            ...(contrato ? { capacidades: caps, planEjecucion: equipo.plan_ejecucion } : {}) });
+          msg.motor = 'puente';
+        } catch (e) {
+          // Caída al motor de chat: solo si nada llegó todavía, no lo detuviste y el chat de siempre está en línea.
+          if (e.name === 'AbortError' || msg.t || !gatewayOn()) throw e;
+          msg.caida = `El motor con capacidades no respondió (${e.message || 'sin red'}). Sigo con el chat de siempre${caps.length ? `, sin ${caps.map((c) => capDe(c)?.nombre).join(', ')}: no puedo hacer esas acciones en este turno` : ''}.`;
+          msg.tools = []; msg.plan = null; msg.permisos = []; msg.notas = []; pintarUltimo();
+          r = await porGateway();
+        }
+      } else r = await porGateway();
       msg.notas = msg.notas.filter((n) => !/^En cola/.test(n)); msg.raw = r.texto; msg.t = textoVisible(r.texto); msg.tarjetas = leerTarjetas(r.texto);
+      // Lo que respondió el puente queda en la conversación del OS (el chat de siempre guarda lo suyo): se retoma desde cualquier compu.
+      if (msg.motor === 'puente' && r.texto) api(`chat/sesiones/${enc(S.sesion)}/motor`, { method: 'POST', body: { pedido: texto, respuesta: r.texto, capacidades: caps, plan: msg.plan || null, modelo: equipo.model } }).catch(() => {});
     } catch (e) {
       if (!recibido && adj.length) S.adjuntos = adj;
       if (e.name === 'AbortError') msg.err = msg.t ? 'Detenido.' : 'Detenido antes de responder.';
@@ -949,7 +1109,7 @@ export async function render(el, { me, sub = [], alive }) {
   const runDe = (id) => S.agentes.find((r) => r.id === id);
   function ponerRun(run) { const k = S.agentes.findIndex((r) => r.id === run.id); if (k >= 0) S.agentes[k] = run; else S.agentes.push(run); }
   async function cargarAgentesDe(sesion) {
-    S.agentes = []; S.tab = S.tab === 'herramientas' ? 'herramientas' : S.modo === 'code' && !angosto() ? 'codigo' : 'modo'; S.cerradas = new Set();
+    S.agentes = []; S.tab = S.tab === 'herramientas' ? 'herramientas' : conCode() && !angosto() ? 'codigo' : 'modo'; S.cerradas = new Set();
     if (!sesion) return;
     try {
       const j = await api(`chat/sesiones/${enc(sesion)}?desde=999999`);
@@ -1073,13 +1233,31 @@ export async function render(el, { me, sub = [], alive }) {
     const pasoEst = e.target.closest('.llm-panel .ev-sec>header'); if (pasoEst) return pasoEst.parentElement.classList.toggle('abierto');
     const t = e.target.closest('[data-a]'); if (!t || !dentro(t)) return;
     const a = t.dataset.a;
-    if (a === 'workspace-mode') return cambiarModo(t.dataset.v === 'code' ? 'code' : (modos.some((m) => m.id === S.ultimoChatModo) ? S.ultimoChatModo : modos.find((m) => m.id !== 'code')?.id));
+    // Chat | Code ya no son dos mundos: es la MISMA conversación con la capacidad Código prendida o apagada.
+    if (a === 'workspace-mode') {
+      const quiere = t.dataset.v === 'code';
+      if (quiere === conCode()) return;
+      if (S.enVuelo) return toast('Espera a que termine la respuesta para cambiar lo que puede hacer', true);
+      if (!quiere && S.modo === 'code') { // el modo Code (de antes) vuelve al último modo de chat sin perder la conversación
+        const otro = modos.some((m) => m.id === S.ultimoChatModo) ? S.ultimoChatModo : modos.find((m) => m.id !== 'code')?.id;
+        if (vacio() && !S.sesion) { ponerCaps(alternarCap(S.caps, 'codigo', false)); return cambiarModo(otro); }
+      }
+      if (quiere) { const x = chipsDe(S.caps, catalogoCaps()).find((c) => c.id === 'codigo'); if (x && x.estado !== 'lista') return toast(`Código no está disponible ahora${x.motivo ? `: ${x.motivo}` : ''}`, true); }
+      ponerCaps(alternarCap(S.caps, 'codigo', quiere));
+      if (quiere && !angosto()) { ponerAncho(Math.max(S.panelW || 372, 600)); S.tab = 'codigo'; S.panel = true; R.dataset.panel = 'on'; }
+      if (!quiere && S.tab === 'codigo') S.tab = 'modo';
+      pintarTitulo(); pintarCaja(); if (vacio()) pintarHilo(); pintarPanel(); return;
+    }
+    if (a === 'cap') return tocarCap(t);
+    if (a === 'cap-apagar') return apagarCap(t.dataset.id);
+    if (a === 'cap-prender') return prenderCap(t.dataset.id);
     if (a === 'code-panel') { S.tab = t.dataset.v; S.panel = true; R.dataset.panel = 'on'; if (!angosto() && S.tab === 'codigo') ponerAncho(Math.max(S.panelW || 372, 600)); return pintarPanel(); }
-    if (a === 'code-archivo') { if (S.modo !== 'code') return toast('Abre una conversación de Code para ver sus archivos', true); S.code.vista = 'archivos'; S.code.ruta = t.dataset.ruta; S.tab = 'codigo'; S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
+    if (a === 'code-archivo') { if (!conCode()) return toast('Prende Código en esta conversación para ver sus archivos', true); S.code.vista = 'archivos'; S.code.ruta = t.dataset.ruta; S.tab = 'codigo'; S.panel = true; R.dataset.panel = 'on'; return pintarPanel(); }
     if (a === 'ag-start') { const ta = $('#llm-in', el); if (ta) { ta.value = `@${t.dataset.dep} `; crecer(ta); ta.focus(); } return; }
     if (a === 'code-permiso') { // la persona decidió un permiso de Code: se lo decimos al motor y la tarjeta queda marcada
       const p = S.msgs[+t.dataset.i]?.permisos?.[+t.dataset.k]; if (!p || p.estado) return;
-      p.estado = t.dataset.d === 'deny' ? 'no' : 'si'; p.responder?.(t.dataset.d); return pintarUltimo();
+      if (p.costo != null && t.dataset.d === 'allow_all') return; // lo que cuesta se aprueba cada vez
+      p.estado = t.dataset.d === 'deny' ? 'no' : 'si'; p.responder?.(t.dataset.d, p.costo != null && t.dataset.d === 'allow' ? { aprobado_usd: p.costo } : {}); return pintarUltimo();
     }
     if (a === 'nuevo') return nuevo();
     if (a === 'nuevo-en') { S.cliente = t.dataset.c === 'inherent' ? '' : t.dataset.c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[t.dataset.c] = true; persistir(); return nuevo(); }
@@ -1202,10 +1380,13 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Arranque: el servidor, las listas y la conversación de la ruta ----------
   async function revisar() {
-    S.salud = await saludServidor();
+    // El chat de siempre y el puente (sus capacidades y su catálogo) se preguntan a la vez; el puente es tolerante: sin el
+    // contrato responde con el respaldo marcado (mock). Un cliente del portal no usa el puente.
+    const [salud, puente, catalogo] = await Promise.all([saludServidor(), me.role === 'client' ? null : capacidadesPuente({ fresco: true }), me.role === 'client' ? null : catalogoPuente({ fresco: true })]);
+    S.salud = salud; S.puente = puente; S.catalogo = catalogo;
     if (!alive()) return;
     if (listo()) {
-      const [xs, mods] = await Promise.all([B.sesiones().catch(() => []), B.modelos().catch(() => null)]);
+      const [xs, mods] = await Promise.all([B.sesiones().catch(() => []), gatewayOn() ? B.modelos().catch(() => null) : null]);
       S.sesiones = xs; S.modelos = mods; ajustarModelo();
     }
     if (!alive()) return;

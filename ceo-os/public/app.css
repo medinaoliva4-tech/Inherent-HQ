@@ -10121,3 +10121,39 @@ button,a,.lc{touch-action:manipulation}
 @media (max-width:760px){.rv-lado .ui-dlg-in{padding:0 16px 16px}.rv-lado .rv-head{margin:0 -16px 8px;padding:14px 16px 10px}}
 .ws-pestanas>.on::after,.ws-pestanas>[aria-current="page"]::after{background:var(--ws-c,currentColor)}
 .dz-vars{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:10px 16px 0}
+
+/* ---------- Chat · capacidades por conversación, equipo planifica/ejecuta y gasto aprobado (llm/capacidades.js) ---------- */
+.lc-caps{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:0 0 6px -4px}
+.lc-cap{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:var(--r-pill);border:1px solid transparent;background:transparent;font-size:var(--fs-3);color:var(--ui-mut);position:relative;transition:background .15s,color .15s,border-color .15s}
+.lc-cap:hover{background:var(--ui-fill);color:var(--ui-ink)}
+.lc-cap[aria-pressed="true"]{color:var(--ui-ink);background:var(--ui-fill2);border-color:var(--ui-line2)}
+.lc-cap[data-estado="sin_conexion"],.lc-cap[data-estado="apagada"]{color:var(--ui-mut2)}
+.lc-cap[data-sugerida]{border-color:color-mix(in srgb,var(--ui-acc) 45%,transparent);color:var(--ui-ink)}
+.lc-cap-dot{width:5px;height:5px;border-radius:50%;background:var(--ui-amb-f)}
+.lc-cap[data-estado="apagada"] .lc-cap-dot{background:var(--ui-mut2)}
+.lc-caps-mock{font-size:var(--fs-2);color:var(--ui-mut2);padding:0 6px;letter-spacing:.02em}
+.lc-cap-pop{display:grid;gap:6px;padding:12px 14px;font-size:var(--fs-4);color:var(--ui-ink2)}
+.lc-cap-pop b{color:var(--ui-ink);font-weight:600}
+.lc-cap-pop ul{margin:0;padding-left:16px;display:grid;gap:3px}
+.lc-cap-k{font-size:var(--fs-2);text-transform:uppercase;letter-spacing:.06em;color:var(--ui-mut)}
+.lc-cap-mut{color:var(--ui-mut);font-size:var(--fs-3)}
+.lmn-dest{font-size:var(--fs-2);padding:2px 7px;border-radius:var(--r-pill);background:var(--ui-fill2);color:var(--ui-ink2);white-space:nowrap}
+.lm-plan-l{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:var(--fs-3);color:var(--ui-mut);letter-spacing:.01em}
+.lm-ejec{margin-top:4px}
+.lm-ejec summary{cursor:pointer;font-size:var(--fs-3);color:var(--ui-mut);list-style:none}
+.lm-ejec summary::-webkit-details-marker{display:none}
+.lm-ejec summary::before{content:"▸ ";color:var(--ui-mut2)}
+.lm-ejec[open] summary::before{content:"▾ "}
+.lm-ejec ol{margin-top:5px}
+.lm-cap{display:flex;gap:9px;align-items:flex-start;margin:0 0 10px;padding:9px 12px;border-radius:var(--r-3);border:1px solid var(--ui-line);background:var(--ui-fill);font-size:var(--fs-4);color:var(--ui-ink2)}
+.lm-cap>svg{margin-top:3px;flex:none;color:var(--ui-mut)}
+.lm-cap[data-tipo="activada"]>svg{color:var(--ui-ok-t)}
+.lm-cap[data-tipo="sin"],.lm-cap[data-tipo="apagada"]{border-color:color-mix(in srgb,var(--ui-amb-f) 35%,transparent);background:var(--ui-amb-bg)}
+.lm-cap[data-tipo="sin"]>svg,.lm-cap[data-tipo="apagada"]>svg{color:var(--ui-amb-t)}
+.lm-cap .lm-ops{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px}
+.lm-cap-off{font-size:var(--fs-3);color:var(--ui-mut)}
+.lm-costo-n{font-size:var(--fs-4);color:var(--ui-ink2)}
+.lm-costo-n b{color:var(--ui-ink)}
+.lm-caida{display:flex;gap:6px;align-items:flex-start;padding:8px 11px;border-radius:var(--r-3);background:var(--ui-amb-bg);color:var(--ui-amb-t)}
+/* El degradado sobre la caja del Chat sigue al tema (en claro era oscuro y lavaba la caja). */
+:root[data-theme="light"] .llm-compw::before{background:linear-gradient(transparent,color-mix(in srgb,var(--ui-bg) 88%,transparent))}

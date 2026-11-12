@@ -93,7 +93,7 @@ await t('la URL de la interfaz: CODEOS_UI_URL si es https o localhost; si no, la
   assert.equal(urlUi({ CODEOS_UI_URL: 'https://x.example/ruta' }), urlCode({}), 'sin rutas: solo el origen');
 });
 await t('la pantalla: pestaña Herramientas usa las herramientas y entregables nativos del OS', () => {
-  assert.match(LLM, /pestanasHtml\(/); assert.match(LLM, /\{ herramientas: conHerramientas\(\) \}/);
+  assert.match(LLM, /pestanasHtml\(/); assert.match(LLM, /\{ herramientas: conHerramientas\(\), codigo: conCode\(\) \}/);
   assert.match(LLM, /const conHerramientas = \(\) => me\.role !== 'client'/);
   assert.match(LLM, /panelHerramientas\(/);
   assert.match(LLM, /toolShell\(host, \{[^}]*embebido: true/);
