@@ -109,7 +109,7 @@ export function resumenTexto(contenido) {
 
 // ---------- El pedido a la IA (< 5 000 caracteres) ----------
 const F = '```';
-const LIBROS = `${HORMOZI}/references/books`;
+const LIBROS = `${HORMOZI}/books`;
 export function prompt(ctx) {
   const c = plano(ctx) ? ctx : {}, nivel = corta(c.cliente?.nivel?.id, 20), growth = nivel === 'growth', b = bloqueos(nivel), nombre = corta(c.cliente?.nombre, 80) || 'el cliente';
   const entrada = (tool, f) => { const e = entradaDe(c, tool); return e ? `Entrada aprobada · ${corta(e.titulo, 60) || tool} v${Number(e.version) || 1}: ${corta(f(e.contenido), 380)}` : ''; };
@@ -118,11 +118,11 @@ export function prompt(ctx) {
   const cuerpo = growth ? [
     'MÉTODO',
     `Este cliente es Brand Growth: NO se cambia qué se vende, ni el paquete, ni el precio (el stack, las variaciones y la escalera no se tocan). Solo eliges cuál de las ofertas que YA existen se empuja y cómo se cuenta.`,
-    `Lee en hormozi-brain (${LIBROS}/): 100m-offers/10-ch06-the-value-equation.md y 100m-offers/21-ch16-naming.md. ${cita}`,
+    `Lee en la biblioteca de Hormozi (${LIBROS}/): 100m-offers/10-ch06-the-value-equation.md y 100m-offers/21-ch16-naming.md. ${cita}`,
     '1) empujar.oferta: UNA de las ofertas que la ficha o el cliente ya tienen, y por qué (valor percibido, evidencia). 2) empujar.mensaje: cómo se cuenta esa oferta (una o dos frases). Un precio o una oferta nueva se escala al CEO.',
   ] : [
     'MÉTODO',
-    `Lee en hormozi-brain (${LIBROS}/): 100m-offers/10-ch06-the-value-equation.md, 13-ch09-grand-slam-offer-part-1-problems-solutions.md, 14-ch10-grand-slam-offer-part-2-trim-stack.md, 17-ch12-scarcity.md, 19-ch14-bonuses.md, 20-ch15-guarantees.md, 21-ch16-naming.md${b.escalera ? '' : ' y 100m-money-models/03-the-four-types-of-offers.md'}. ${cita}`,
+    `Lee en la biblioteca de Hormozi (${LIBROS}/): 100m-offers/10-ch06-the-value-equation.md, 13-ch09-grand-slam-offer-part-1-problems-solutions.md, 14-ch10-grand-slam-offer-part-2-trim-stack.md, 17-ch12-scarcity.md, 19-ch14-bonuses.md, 20-ch15-guarantees.md, 21-ch16-naming.md${b.escalera ? '' : ' y 100m-money-models/03-the-four-types-of-offers.md'}. ${cita}`,
     '1) ecuacion: sueno, probabilidad, tiempo y esfuerzo, cada uno valor 1 a 10 con su evidencia (tiempo y esfuerzo: 10 es lo peor). Sin evidencia, valor null = ⚠️ SIN DATOS.',
     '2) stack Grand Slam: problemas → soluciones → vehiculos, bonos, garantia, escasez y nombre.',
     '3) propuesta de valor en una o dos frases y 2 o 3 variaciones (nombre, precio, para_quien, diferencia). Todo precio es una PROPUESTA: se escala al CEO.',
@@ -132,7 +132,7 @@ export function prompt(ctx) {
   const json = growth ? '{"empujar":{"oferta":"…","mensaje":"…"}}'
     : `{"ecuacion":{"sueno":{"valor":8,"evidencia":"…"},"probabilidad":{…},"tiempo":{…},"esfuerzo":{…}},"stack":{"problemas":["…"],"soluciones":["…"],"vehiculos":["…"],"bonos":["…"],"garantia":"…","escasez":"…","nombre":"…"},"propuesta":"…","variaciones":[{"nombre":"…","precio":"…","para_quien":"…","diferencia":"…"}],${b.escalera ? '' : '"escalera":{"atraccion":{"hoy":"…","propuesta":"…","cita":"…"},"upsell":{…},"downsell":{…},"continuidad":{…}},'}"empujar":{"oferta":"…","mensaje":"…"}}`;
   const salida = ['Contesta con un resumen corto y termina con estos dos bloques (el OS los lee):', `${F}${BLOQUE}`, json, F, `${F}criterios`, '{"entregable":"Offer Architect","cumple":["…"],"falta":["… — por qué"]}', F];
-  return armarPrompt({ intro: `Eres Strategy de Inherent. ${growth ? `Define la OFERTA QUE SE EMPUJA de «${nombre}» (Offer Architect)` : `Arma la OFERTA de «${nombre}» (Offer Architect)`} con hormozi-brain, dentro del nivel que contrató.`, cuerpo, salida, extra }, c);
+  return armarPrompt({ intro: `Eres Strategy de Inherent. ${growth ? `Define la OFERTA QUE SE EMPUJA de «${nombre}» (Offer Architect)` : `Arma la OFERTA de «${nombre}» (Offer Architect)`} con la biblioteca de Hormozi, dentro del nivel que contrató.`, cuerpo, salida, extra }, c);
 }
 
 // Lo que contesta la IA → { contenido, criterios } | null (JSON roto, bloque a medias, sin bloque o un objeto sin nada de la oferta).

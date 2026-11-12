@@ -109,7 +109,7 @@ export function prompt(ctx) {
   const extra = [dx ? `Diagnóstico aprobado (v${Number(dx.version) || '?'}): ${resumenSalud(dx.contenido)}` : `Diagnóstico aprobado: ${SIN_DATOS}: sale del Diagnóstico de crecimiento, que aún no está aprobado`];
   const cuerpo = [
     'MÉTODO',
-    `Lee en hormozi-brain: ${e ? e.ruta : RUTAS_HORMOZI.overview} y ${RUTAS_HORMOZI.valor}.`,
+    `Lee en la biblioteca de Hormozi: ${e ? e.ruta : RUTAS_HORMOZI.overview} y ${RUTAS_HORMOZI.valor}.`,
     `RAÍZ: la brecha de la meta de Strategy, meta − actual en dinero (${es.meta ? 'la meta está en el contexto' : `meta y actual en null: ${SIN_DATOS}, sale de la meta de Strategy`}).`,
     `PRIMER NIVEL: los 5 factores de la ecuación de ingresos (leads × conversión × ticket × frecuencia × retención): ids ${ECUACION.join(', ')}. Cada uno con su número actual y el que haría falta, en la misma unidad (las tasas, de 0 a 1). Sin dato, null.`,
     `RAMAS: de cada factor baja a las causas de operación o de dinero (sistema: ${SISTEMAS_IDS.join(', ')}; palancas en ${SISTEMAS_IDS.map((s) => SISTEMAS[s].nombre).join(', ')}). padre = el id del factor o de otra causa. Empieza por la restricción del Diagnóstico.`,

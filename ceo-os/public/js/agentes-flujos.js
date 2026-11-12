@@ -67,12 +67,32 @@ function deTitulos(md) {
   return out;
 }
 
-// d) la tabla de capas: «| **0** | **`cm-ficha`** | qué hace | si falla |»
+// d) la tabla de capas: «| **0** | **`community`** | qué hace | si falla |»
 function deTabla(md) {
   const out = [];
   for (const l of seccion(md, /capas/i).split('\n')) {
     const m = l.match(/^\|\s*\*\*(\d+|↻)\*\*\s*\|\s*\*\*`([\w-]+)`\*\*\s*\|\s*(.+?)\s*\|\s*(.*?)\s*\|?\s*$/);
     if (m) out.push(etapa({ codigo: m[1], nombre: titulo(m[2].replace(/^[a-z]{2}-/, '').replace(/-/g, ' ')), proposito: limpiar(m[3]), skill: m[2], criterios: m[4] && m[4] !== '—' ? [limpiar(m[4])] : [], loop: m[1] === '↻' }));
+  }
+  return out;
+}
+
+// f) la tabla de pasos de los 9 agentes (PR #297): «| 1 | **Producto** — qué vende… | `st-producto-icp` · `x` | nodo `producto` |»
+//    Una fila 🔒 «Gate del CEO» o un 🚦 en la fila marcan el gate (de la fila anterior o de la misma). ↻ es el loop.
+function dePasos(md) {
+  const out = [];
+  for (const l of seccion(md, /pasos/i).split('\n')) {
+    const c = l.match(/^\|(.+)\|\s*$/)?.[1].split('|').map((x) => x.trim()); if (!c || c.length < 3) continue;
+    const cod = limpiar(c[0]); if (!/^(\d+[A-Z]?|↻|🔒)$/.test(cod)) continue;
+    const fila = c.join(' ');
+    if (cod === '🔒') { if (out.length) Object.assign(out[out.length - 1], { gate: true, nota_gate: limpiar(c[1]) }); continue; }
+    // Community pone la skill en la 2.ª columna («| **1** | `cm-triage` | qué hace | si falla |»); los demás, en la 3.ª.
+    if (/^`[\w-]+`/.test(c[1])) { const sk = c[1].match(/`([\w-]+)`/)[1]; out.push(etapa({ codigo: cod, nombre: titulo(sk.replace(/^[a-z]{2}-/, '').replace(/-/g, ' ')), proposito: limpiar(c[2]), skill: sk, criterios: c[3] && limpiar(c[3]) !== '—' ? [limpiar(c[3])] : [], loop: cod === '↻' })); continue; }
+    const negrita = c[1].match(/\*\*([^*]+)\*\*/), sk = (c[2].match(/`([\w-]+)`/) || [])[1] || '';
+    const nombre = negrita ? negrita[1] : c[1].split(/\s+[—–-]\s+/)[0];
+    const proposito = limpiar(c[1].replace(/\*\*[^*]+\*\*\s*[—–-]?\s*/, '')) || (sk ? '' : limpiar(c[2]));
+    const g = fila.match(/🚦\s*(.+)$/);
+    out.push(etapa({ codigo: cod, nombre: titulo(nombre), proposito, skill: sk, output: c[3] ? limpiar(c[3]) : '', loop: cod === '↻', gate: Boolean(g), nota_gate: g ? limpiar(g[1]) : '' }));
   }
   return out;
 }
@@ -86,6 +106,7 @@ export function leerWorkflow(md, { codigo = '' } = {}) {
   let etapas = deCodigo(t);
   if (etapas.length < 2) etapas = deTitulos(t);
   if (etapas.length < 2) etapas = deTabla(t);
+  if (etapas.length < 2) etapas = dePasos(t);
   if (etapas.length < 2) etapas = deFunciones(t);
   // El CEO solo frena el flujo en ① Strategy y ⑩ Ads: en Strategy la entrega es su gate.
   if (codigo === '01' && etapas.length) {
@@ -105,15 +126,15 @@ export const ESTRATEGIA_GUIADA = {
   id: 'estrategia-guiada', n: '01·G', nombre: 'Estrategia guiada', depto: '① Strategy', fuente: 'AGENTS IN OS.pdf',
   hace: 'Cada etapa produce el conocimiento que desbloquea la siguiente: diagnóstico, ICP, dolores, posicionamiento, oferta, crecimiento y plan.',
   limites: ['No avanza si faltan datos críticos', 'No inventa: lo que no tiene fuente va como ⚠️ SIN DATOS', 'No publica ni le manda nada al cliente'],
-  recibe: ['00 Account Manager — la información de la empresa, documentos y enlaces'], entrega: ['②B Branding · ② Growth · ③ Marketing — con el plan de ejecución aprobado'],
+  recibe: ['00 Account Manager — la información de la empresa, documentos y enlaces'], entrega: ['② Branding · ③ Marketing y Creative — con el plan de ejecución aprobado'],
   etapas: [
-    etapa({ codigo: '1', nombre: 'Diagnóstico comercial', proposito: 'Entender el negocio: situación, problemas, oportunidades y qué información falta', skill: 'context', inputs: ['Información de la empresa', 'Productos y servicios', 'Clientes actuales', 'Ventas y márgenes', 'Competidores', 'Objetivos del fundador', 'Documentos y enlaces'], tareas: ['Analizar el modelo de negocio', 'Detectar fortalezas y debilidades', 'Identificar inconsistencias', 'Comparar la empresa con su mercado', 'Determinar qué información falta'], output: 'Business Diagnosis: Situación actual | Problemas principales | Oportunidades | Cuellos de botella | Nivel de madurez | Preguntas pendientes', criterios: ['No faltan datos críticos', 'Cada problema tiene evidencia', 'Preguntas pendientes declaradas'] }),
-    etapa({ codigo: '2', nombre: 'Definición del ICP', proposito: 'Identificar el cliente ideal con mayor potencial', skill: 'analysis', inputs: ['Business Diagnosis aprobado', 'Datos de clientes', 'Contexto de mercado'], tareas: ['Crear segmentos posibles', 'Comparar tamaño y atractivo', 'Analizar capacidad de pago', 'Detectar urgencia del problema', 'Medir compatibilidad con la oferta'], output: 'Ideal Customer Profile: Segmento principal | Industria | Tamaño de empresa | Rol del comprador | Comportamientos | Presupuesto | Nivel de urgencia | Canales donde se encuentra | Razones para comprar', criterios: ['El segmento es específico', 'El dolor es urgente', 'El comprador está identificado', 'Hay evidencia'] }),
-    etapa({ codigo: '3', nombre: 'Dolores, deseos y disparadores', proposito: 'Mapear problemas, deseos, objeciones y lo que provoca la compra', skill: 'analysis', inputs: ['ICP aprobado'], tareas: ['Problemas funcionales y emocionales', 'Consecuencias de no resolverlos', 'Deseos y objeciones', 'Eventos que provocan la compra', 'Lenguaje real del cliente'], output: 'Customer Pain Map: Problema principal | Causas | Consecuencias | Deseos | Objeciones | Buying triggers | Mensajes clave', criterios: ['Cita el lenguaje literal del comprador', 'Cada dolor tiene fuente o etiqueta'] }),
-    etapa({ codigo: '4', nombre: 'Posicionamiento', proposito: 'Conectar ICP + dolores + capacidades de la empresa', skill: 'reverse-engineering', inputs: ['ICP aprobado', 'Customer Pain Map aprobado'], tareas: ['Cruzar ICP, dolores y capacidades', 'Ingeniería inversa de competidores', 'Formular la propuesta de valor', 'Definir diferenciadores'], output: 'Positioning: Categoría | Para quién | Problema que resuelve | Diferenciador | Prueba | Enemigo', criterios: ['Diferenciador defendible', 'Prueba verificable'] }),
-    etapa({ codigo: '5', nombre: 'Diseño de oferta', proposito: 'La oferta que el ICP compra', skill: 'methodology', inputs: ['Posicionamiento aprobado'], tareas: ['Definir la promesa', 'Estructurar paquetes', 'Revisar contra las capacidades reales'], output: 'Offer: Promesa | Entregables | Paquetes | Garantía | Objeciones resueltas', criterios: ['Solo promete lo que está en Capacidades reales', 'El precio no se cambia sin el cliente'], gate: true, nota_gate: 'Oferta y precio se escalan al CEO antes de llevarlos al cliente' }),
-    etapa({ codigo: '6', nombre: 'Estrategia de crecimiento', proposito: 'Canales, adquisición, mensajes, campañas y roadmap 30/60/90', skill: 'methodology', inputs: ['Oferta aprobada', 'Posicionamiento', 'Customer Pain Map'], tareas: ['Priorizar canales', 'Estrategia de adquisición', 'Mensajes y campañas', 'Métricas', 'Roadmap de 30, 60 y 90 días'], output: 'Growth Strategy: Objetivo | Audiencia | Canal | Mensaje | Oferta | Acción | KPI | Responsable | Fecha', criterios: ['Cada acción tiene KPI y responsable'] }),
-    etapa({ codigo: '7', nombre: 'Plan de ejecución', proposito: 'Bajar la estrategia a un plan que el equipo ejecuta', skill: 'methodology', inputs: ['Growth Strategy aprobada'], tareas: ['Bajar a tareas', 'Asignar responsables', 'Fechas y dependencias'], output: 'Execution Plan: Iniciativa | Tareas | Responsable | Fecha | Dependencias | Riesgos', criterios: ['Todo tiene dueño y fecha'], gate: true, nota_gate: 'El CEO aprueba la estrategia antes de que salga' }),
+    etapa({ codigo: '1', nombre: 'Diagnóstico comercial', proposito: 'Entender el negocio: situación, problemas, oportunidades y qué información falta', skill: 'st-producto-icp', inputs: ['Información de la empresa', 'Productos y servicios', 'Clientes actuales', 'Ventas y márgenes', 'Competidores', 'Objetivos del fundador', 'Documentos y enlaces'], tareas: ['Analizar el modelo de negocio', 'Detectar fortalezas y debilidades', 'Identificar inconsistencias', 'Comparar la empresa con su mercado', 'Determinar qué información falta'], output: 'Business Diagnosis: Situación actual | Problemas principales | Oportunidades | Cuellos de botella | Nivel de madurez | Preguntas pendientes', criterios: ['No faltan datos críticos', 'Cada problema tiene evidencia', 'Preguntas pendientes declaradas'] }),
+    etapa({ codigo: '2', nombre: 'Definición del ICP', proposito: 'Identificar el cliente ideal con mayor potencial', skill: 'st-producto-icp', inputs: ['Business Diagnosis aprobado', 'Datos de clientes', 'Contexto de mercado'], tareas: ['Crear segmentos posibles', 'Comparar tamaño y atractivo', 'Analizar capacidad de pago', 'Detectar urgencia del problema', 'Medir compatibilidad con la oferta'], output: 'Ideal Customer Profile: Segmento principal | Industria | Tamaño de empresa | Rol del comprador | Comportamientos | Presupuesto | Nivel de urgencia | Canales donde se encuentra | Razones para comprar', criterios: ['El segmento es específico', 'El dolor es urgente', 'El comprador está identificado', 'Hay evidencia'] }),
+    etapa({ codigo: '3', nombre: 'Dolores, deseos y disparadores', proposito: 'Mapear problemas, deseos, objeciones y lo que provoca la compra', skill: 'st-dolores-historia', inputs: ['ICP aprobado'], tareas: ['Problemas funcionales y emocionales', 'Consecuencias de no resolverlos', 'Deseos y objeciones', 'Eventos que provocan la compra', 'Lenguaje real del cliente'], output: 'Customer Pain Map: Problema principal | Causas | Consecuencias | Deseos | Objeciones | Buying triggers | Mensajes clave', criterios: ['Cita el lenguaje literal del comprador', 'Cada dolor tiene fuente o etiqueta'] }),
+    etapa({ codigo: '4', nombre: 'Posicionamiento', proposito: 'Conectar ICP + dolores + capacidades de la empresa', skill: 'st-dolores-historia', inputs: ['ICP aprobado', 'Customer Pain Map aprobado'], tareas: ['Cruzar ICP, dolores y capacidades', 'Ingeniería inversa de competidores', 'Formular la propuesta de valor', 'Definir diferenciadores'], output: 'Positioning: Categoría | Para quién | Problema que resuelve | Diferenciador | Prueba | Enemigo', criterios: ['Diferenciador defendible', 'Prueba verificable'] }),
+    etapa({ codigo: '5', nombre: 'Diseño de oferta', proposito: 'La oferta que el ICP compra', skill: 'st-producto-icp', inputs: ['Posicionamiento aprobado'], tareas: ['Definir la promesa', 'Estructurar paquetes', 'Revisar contra las capacidades reales'], output: 'Offer: Promesa | Entregables | Paquetes | Garantía | Objeciones resueltas', criterios: ['Solo promete lo que está en Capacidades reales', 'El precio no se cambia sin el cliente'], gate: true, nota_gate: 'Oferta y precio se escalan al CEO antes de llevarlos al cliente' }),
+    etapa({ codigo: '6', nombre: 'Estrategia de crecimiento', proposito: 'Canales, adquisición, mensajes, campañas y roadmap 30/60/90', skill: 'st-adquisicion', inputs: ['Oferta aprobada', 'Posicionamiento', 'Customer Pain Map'], tareas: ['Priorizar canales', 'Estrategia de adquisición', 'Mensajes y campañas', 'Métricas', 'Roadmap de 30, 60 y 90 días'], output: 'Growth Strategy: Objetivo | Audiencia | Canal | Mensaje | Oferta | Acción | KPI | Responsable | Fecha', criterios: ['Cada acción tiene KPI y responsable'] }),
+    etapa({ codigo: '7', nombre: 'Plan de ejecución', proposito: 'Bajar la estrategia a un plan que el equipo ejecuta', skill: 'strategy', inputs: ['Growth Strategy aprobada'], tareas: ['Bajar a tareas', 'Asignar responsables', 'Fechas y dependencias'], output: 'Execution Plan: Iniciativa | Tareas | Responsable | Fecha | Dependencias | Riesgos', criterios: ['Todo tiene dueño y fecha'], gate: true, nota_gate: 'El CEO aprueba la estrategia antes de que salga' }),
   ],
 };
 
@@ -175,7 +196,8 @@ export function normalizarEtapa(e = {}) {
 }
 // Las áreas donde vive un agente (los mismos ids de #/areas/<id>): un agente de estrategia sale en Strategy → Agents.
 export const AREAS_AGENTE = [['strategy', 'Strategy'], ['marketing', 'Marketing'], ['creative', 'Creative'], ['consulting', 'Consulting'], ['production', 'Production']];
-const AREA_PLANTILLA = { 'estrategia-guiada': 'strategy', account: 'strategy', strategy: 'strategy', branding: 'creative', growth: 'marketing', marketing: 'marketing', creative: 'creative', production: 'production', 'graphic-design': 'creative', 'video-editing': 'production', community: 'marketing', posting: 'marketing', ads: 'marketing' };
+// Los 9 agentes (PR #297) y, para los workflows viejos que ya se importaron, los ids de antes (growth, marketing, creative, video-editing).
+const AREA_PLANTILLA = { 'estrategia-guiada': 'strategy', account: 'strategy', strategy: 'strategy', branding: 'creative', 'marketing-creative': 'marketing', production: 'production', 'graphic-design': 'creative', community: 'marketing', posting: 'marketing', ads: 'marketing', growth: 'marketing', marketing: 'marketing', creative: 'creative', 'video-editing': 'production' };
 export const areaDePlantilla = (id) => AREA_PLANTILLA[id] || 'strategy';
 export const ESTADOS_AGENTE = [['borrador', 'Borrador'], ['activo', 'Activo'], ['pausado', 'Pausado']];
 

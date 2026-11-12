@@ -2,7 +2,8 @@
 // ficha (un video planificado = 20 min de cámara) y la lectura de la shot list de ④ (plan-de-contenido.csv + ideas-<formato>.md).
 // Existe para que el Production Brief, el Shot List Builder y la pantalla de contenido lean lo mismo. Sin dato no hay cifra: null, nunca 0.
 
-// Las 16 columnas de agents/05-production/brain/entregables/plan-de-produccion.csv (el orden es el del método).
+// Las 16 columnas del plan de producción. Eran la cabecera de agents/05-production/brain/entregables/plan-de-produccion.csv; la
+// reestructura de agents/ (PR #297) quitó los CSV entre etapas (ahora va «el hilo»), así que el formato es del OS y vive aquí.
 export const COLUMNAS_CSV = ['id', 'id_creativo', 'campana', 'escena', 'accion', 'encuadre', 'duracion_s', 'locacion', 'talento', 'recursos', 'equipo', 'jornada', 'costo_estimado', 'riesgo', 'destino', 'estado'];
 export const MIN_POR_VIDEO = 20;
 

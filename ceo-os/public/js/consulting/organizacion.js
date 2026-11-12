@@ -15,7 +15,7 @@ export const DESTINOS = [
   { id: 'elimina', nombre: 'Se elimina', columna: 'Nunca le debería llegar' },
 ];
 export const LETRAS = [['R', 'Hace'], ['A', 'Responde'], ['C', 'Consulta'], ['I', 'Informa']];
-// Los dos rituales de los SOPs de Acquisition.com (references/sops/5-scaling-frameworks/).
+// Los dos rituales de los SOPs de Acquisition.com (ceo-os/data/hormozi/sops/5-scaling-frameworks/).
 export const RITUALES = [
   { id: 'monday-hour-one', nombre: 'Monday Hour One', ruta: RUTAS_HORMOZI.monday_hour_one, que: 'Una hora para bloquear la semana: mirar atrás, mirar adelante, priorizar y agendar' },
   { id: 'gametape', nombre: 'Gametape Review', ruta: RUTAS_HORMOZI.gametape, que: 'Revisar la grabación de una llamada o reunión con el equipo para mejorar' },
@@ -162,7 +162,7 @@ export function prompt(ctx) {
   ];
   const cuerpo = [
     'MÉTODO',
-    `Lee en hormozi-brain: ${e ? e.ruta : RUTAS_HORMOZI.overview}${sig ? `, la etapa siguiente ${sig.ruta}` : ''}, ${RUTAS_HORMOZI.monday_hour_one} y ${RUTAS_HORMOZI.gametape}.`,
+    `Lee en la biblioteca de Hormozi: ${e ? e.ruta : RUTAS_HORMOZI.overview}${sig ? `, la etapa siguiente ${sig.ruta}` : ''}, ${RUTAS_HORMOZI.monday_hour_one} y ${RUTAS_HORMOZI.gametape}.`,
     '1) ORGANIGRAMA: «hoy» y «siguiente» (etapa 0-9, headcount y rol del fundador con cita del roadmap, y sus puestos). Puesto: id, rol (nunca una persona), reporta (id de su jefe, vacío el primero), fundador (true en el del fundador).',
     '2) DECISIONES que hoy toma el fundador: cada una con destino queda | delega | elimina. Delega lleva criterio (cómo decide el equipo sin preguntar) y rol; elimina lleva por qué. Las que se quedan son «Solo el fundador»; las otras, «Nunca le debería llegar».',
     '3) VALORES como criterios de decisión: valor + criterio («cuando pase X, se decide Y»), 3 a 5.',

@@ -3,7 +3,7 @@
 // con el método de ⑥A Diseño gráfico; el repo es de solo lectura. Lo terminado se guarda en la idea del planner (Listo).
 
 export const FORMATOS = [['Carrusel', 'Varias láminas 4:5'], ['Estático', 'Una pieza 4:5'], ['Story', 'Una o varias 9:16'], ['Plantilla', 'Un molde nuevo del kit']];
-// Las sugerencias del inicio (un clic llena la caja). Las fotos no se retocan con IA: lo dice gd-imagen.
+// Las sugerencias del inicio (un clic llena la caja). Las fotos no se retocan con IA: lo dice gd-assets.
 export const SUGERENCIAS = ['Estático de cifra', 'Stories de la semana', 'Plantilla nueva de carrusel'];
 
 const una = (s, n = 400) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
@@ -81,7 +81,7 @@ export function promptDiseno(m) {
     '',
     'ANTES DE DISEÑAR, LEE (en este orden):',
     '- inherent/00-PRINCIPIOS.md',
-    '- agents/06-graphic-design/brain/WORKFLOW.md y las skills que indica (gd-recepcion, gd-plantillas, gd-imagen, gd-composicion, gd-export)',
+    '- agents/05-graphic-design/brain/WORKFLOW.md y las skills que indica (recepcion, gd-figma, gd-assets, gd-figma)',
     `- ${root}/00-onboarding/plan-contratado.md: el alcance contratado es el techo. Sin ficha, no diseñes: dilo.`,
     `- ${root}/02-marca/sistema-visual.md (los valores que se ejecutan) y ${root}/02-marca/kit-de-redes/kit.md (cómo se aplica en redes y el link de Figma)`,
     `- ${root}/02-marca/guia-de-marca.md, si existe`,

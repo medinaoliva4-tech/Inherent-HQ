@@ -82,7 +82,32 @@ export const PUERTAS = {
   etapa: { label: 'Etapa del negocio', donde: 'Estrategia', area: 'estrategia', coll: 'strategy', preguntas: [
     { id: 'etapa', tipo: 'choice', chip: 'etapa', texto: '¿En qué etapa del $100M Scaling Roadmap de Acquisition.com (de la 0 a la 9) está este negocio hoy?', opciones: OPCIONES_ETAPA },
   ] },
+  // ---------- Juicios rápidos de las herramientas de los departamentos (Code OS, pestaña «Herramientas» del Chat) ----------
+  // No juzgan un elemento guardado del OS: juzgan un texto suelto (un prospecto, una frase de entrevista, un gancho, un post,
+  // un copy) que manda la herramienta. rapida: true · coll: null. El juicio no se guarda: se contesta y la persona decide.
+  prospecto: { label: 'Prospecto vs. ICP', donde: 'Strategy · calculadora y perfil del cliente ideal', area: 'estrategia', coll: null, rapida: true, preguntas: [
+    { id: 'encaja_icp', tipo: 'score', chip: 'encaja con el ICP', texto: '¿Qué tanto encaja este prospecto o lead con el perfil del cliente ideal (ICP) descrito al inicio?',
+      niveles: ['nada: no cumple los criterios del ICP', 'poco: cumple alguno, le faltan los importantes', 'bastante: cumple casi todos los criterios', 'mucho: es exactamente el cliente ideal'], umbral: null },
+  ] },
+  dolor_deseo: { label: 'Dolor o deseo', donde: 'Strategy · dolores, deseos y entrevistas', area: 'estrategia', coll: null, rapida: true, preguntas: [
+    { id: 'dolor_o_deseo', tipo: 'choice', chip: 'expresa', texto: '¿Este texto del cliente expresa un dolor o un deseo?', opciones: {
+      dolor: 'un problema, una frustración o algo que le cuesta o le da miedo', deseo: 'algo que quiere lograr, tener o sentir', ninguno: 'no expresa ni un dolor ni un deseo: es un dato, una pregunta o ruido' } },
+  ] },
+  gancho: { label: 'Gancho', donde: 'Marketing y Creative · campañas y piezas', area: 'content', coll: null, rapida: true, preguntas: [
+    { id: 'engancha', tipo: 'score', chip: 'engancha', texto: '¿Qué tanto engancha este gancho (hook) al cliente ideal de la marca descrita al inicio?',
+      niveles: ['nada: nadie se detendría', 'poco: genérico, podría ser de cualquier marca', 'bastante: le habla a su problema o a su deseo', 'mucho: lo detiene y lo obliga a seguir viendo'], umbral: null },
+  ] },
+  quemado: { label: 'Contenido quemado', donde: 'Marketing y Creative · radar', area: 'content', coll: null, rapida: true, preguntas: [
+    { id: 'quemado', tipo: 'noul', chip: 'quemado', texto: '¿Este contenido parece quemado o repetido: una idea, un formato o un gancho que ya se vio demasiado en esta categoría?',
+      si: 'ya se vio muchas veces: la misma idea, el mismo formato o el mismo gancho de siempre', no: 'se siente nuevo o tiene un giro propio', umbral: null },
+  ] },
+  voz: { label: 'Voz de la marca', donde: 'Branding · br-guardian y copy de las piezas', area: 'content', coll: null, rapida: true, preguntas: [
+    { id: 'respeta_voz', tipo: 'noul', chip: 'respeta la voz', texto: '¿Este copy respeta la voz de la marca descrita al inicio (su tono, sus palabras y lo que nunca dice)?',
+      si: 'suena a la marca: su tono, sus palabras, sin nada de lo prohibido', no: 'no suena a la marca o usa palabras o un tono que la marca no usa', umbral: null },
+  ] },
 };
+// Las puertas de juicio rápido: las que piden las herramientas de los departamentos con texto suelto (pedidoRapido).
+export const RAPIDAS = Object.keys(PUERTAS).filter((g) => PUERTAS[g].rapida);
 export const GATES = Object.keys(PUERTAS);
 // La puerta que le toca a un elemento de una colección (content se separa por kind).
 export function puertaDeDoc(coll, d) {
@@ -192,9 +217,39 @@ export function textoDe(gate, el = {}, marca = null, contexto = {}) {
     t = [marcaTexto(marca), '', linea('Formato', el.format), linea('Pilar', el.pillar), linea('Hook o idea', el.title), el.caption ? `Copy:\n${String(el.caption).trim()}` : ''].join('\n').replace(/\n{3,}/g, '\n\n');
   } else if (gate === 'etapa') {
     t = textoEtapa(contexto);
+  } else if (PUERTAS[gate]?.rapida) {
+    // Juicio rápido: el contexto (la marca, su ICP y su voz) va primero, como en «idea»; después el texto que manda la herramienta.
+    const c = contexto && typeof contexto === 'object' ? contexto : {};
+    const que = { prospecto: 'Prospecto o lead', dolor_deseo: 'Lo que dijo el cliente', gancho: 'Gancho (hook)', quemado: 'Contenido', voz: 'Copy' }[gate];
+    t = [marcaTexto(marca || (c.marca || c.icp || c.voz ? { name: c.marca, avatares: c.icp ? [String(c.icp).slice(0, 1500)] : [], voz: c.voz ? String(c.voz).slice(0, 1500) : '' } : null)),
+      gate === 'quemado' && c.referencias ? `Lo que ya se vio en la categoría:\n${String(c.referencias).slice(0, 2000)}` : '', `${que}:\n${String(el.texto || '').trim()}`].filter(Boolean).join('\n\n');
   } else throw new Error(`Puerta desconocida: ${gate}`);
   t = t.trim();
   return t.length > MAX_TEXTO ? t.slice(0, MAX_TEXTO) : t;
+}
+
+// El pedido de un juicio rápido (lo que va al puente local /juzgar): { texto, questions, model }. Lanza con un mensaje humano si no
+// es una puerta rápida o si no hay texto. entrada = { texto, contexto: { marca, icp, voz, referencias } } (todo texto suelto).
+export function pedidoRapido(gate, entrada = {}, settings = null) {
+  if (!RAPIDAS.includes(gate)) throw new Error(`«${gate}» no es una puerta de juicio rápido`);
+  const texto = String(entrada?.texto ?? '').trim().slice(0, 4000); if (!texto) throw new Error('No hay texto que juzgar');
+  return { texto: textoDe(gate, { texto }, null, entrada?.contexto || {}), questions: preguntasDe(gate, settings), model: MODELO };
+}
+
+// Un juicio rápido con degradación elegante: sin el puente local, NO bloquea — avisa y la herramienta sigue (no hay elemento
+// del OS que dejar «pendiente» para Claude Code). deps = { settings, estado() → { on, listo }, juzgar(pedido) → respuesta de Laya }.
+// → { ok, gate, respuestas, model, engine } · o { ok: false, sinPuente?, aviso }.
+export const AVISO_SIN_PUENTE = 'Laya no está encendida en tu compu: sigue sin su juicio (instálala en Inherent → Laya para tenerlo al instante).';
+export async function juzgarRapido(gate, entrada, { settings = null, estado, juzgar } = {}) {
+  let pedido; try { pedido = pedidoRapido(gate, entrada, settings); } catch (e) { return { ok: false, aviso: e.message }; }
+  let st = { on: false }; try { st = (await estado?.()) || st; } catch { /* sin puente */ }
+  if (!st.on) return { ok: false, sinPuente: true, aviso: AVISO_SIN_PUENTE };
+  if (st.listo === false) return { ok: false, sinPuente: true, aviso: 'Laya se está preparando en tu compu (la primera vez baja el modelo): sigue sin su juicio por ahora.' };
+  let res; try { res = await juzgar(pedido); } catch (e) { return { ok: false, sinPuente: true, aviso: `Laya no pudo contestar (${e.message}): sigue sin su juicio.` }; }
+  const leida = leerRespuesta(res, pedido.questions);
+  if (!leida.ok) return { ok: false, aviso: leida.error || 'Laya contestó algo que no se puede leer' };
+  const qs = puertasDe(settings)[gate].preguntas;
+  return { ok: true, gate, model: leida.model, engine: 'laya-local', respuestas: leida.respuestas.map((r) => ({ ...r, frase: frase(r, qs.find((q) => q.id === r.question_id)), cumple: cumple(qs.find((q) => q.id === r.question_id), r) })) };
 }
 
 // ---------- leer lo que devuelve Laya ----------

@@ -1,18 +1,18 @@
 // App 02 · Estrategia — lo que comparten el servidor (api/_lib/estrategia.js), Laya (la puerta «etapa») y la interfaz.
 // Todo es puro (sin DOM ni red). Los datos salen de:
 //   · agents/01-strategy/brain/WORKFLOW.md (el flujo, el techo del alcance y hasta dónde cierra la estrategia en cada nivel)
-//   · agents/02-growth/brain/WORKFLOW.md y gr-oferta · gr-upsells · gr-captura · gr-canales-grandes (qué corre en cada nivel)
-//   · agents/01-strategy/brain/skills/hormozi-brain (INDEX.md y las guías del $100M Scaling Roadmap: cada etapa)
+//   · agents/01-strategy/brain/WORKFLOW.md y st-producto-icp · st-adquisicion (qué corre en cada nivel)
+//   · ceo-os/data/hormozi (INDEX.md y las guías del $100M Scaling Roadmap: cada etapa)
 //   · inherent/03-OFERTA.md (los tres niveles y sus límites)
 // Nada se inventa: lo que un workflow no dice, no está aquí.
 import { levelOf } from './levels.js';
 
 export const COLL = 'strategy';
-export const HORMOZI = 'agents/01-strategy/brain/skills/hormozi-brain';
+export const HORMOZI = 'ceo-os/data/hormozi';
 
 // ---------- Las 10 etapas del $100M Scaling Roadmap (0 a 9) ----------
 // rol · gente · traba · graduar: la tabla «YOUR ROLE · HEADCOUNT · BOTTOM LINE · GRADUATE BY» de la guía de cada etapa (literal, en inglés).
-// es: la misma idea en español, para quien la lee y para Laya. video / guia: dónde está en hormozi-brain/references.
+// es: la misma idea en español, para quien la lee y para Laya. video / guia: dónde está en ceo-os/data/hormozi.
 const G = (n) => `roadmap/guides/guide-stage-${n}`;
 export const ETAPAS = [
   { n: 0, id: 'improvise', nombre: 'Improvise', rol: 'Researcher', gente: 'N/A', traba: 'Nothing is happening', graduar: 'Get people to try your stuff for free',
@@ -48,7 +48,7 @@ export const OPCIONES_ETAPA = Object.fromEntries(ETAPAS.map((e) => [etapaLabel(e
 // entregables: los ids del mapa de Intel (public/js/intel-mapa.js) que alimentan el bloque, en orden de importancia. `sec` = la
 // sección («§ La oferta») de motor-de-crecimiento.md que le toca al bloque: ese documento junta las de varios bloques.
 // `apoyo` = contexto que se muestra, pero que por sí solo no cuenta como «el entregable del bloque» (el bloque sigue Vacío).
-// material: lo que Hormozi dice del tema (archivo dentro de hormozi-brain/references), para tenerlo a un clic aunque el chat no lo haya citado.
+// material: lo que Hormozi dice del tema (archivo dentro de ceo-os/data/hormozi), para tenerlo a un clic aunque el chat no lo haya citado.
 const LIB = (b, f, t) => ({ ruta: `books/${b}/${f}.md`, titulo: t });
 export const BLOQUES = [
   { id: 'diagnostico', n: 1, nombre: 'Diagnóstico', corto: 'La etapa', pide: 'En qué etapa del $100M Scaling Roadmap (0 a 9) está el negocio.',
@@ -176,7 +176,7 @@ export function promptDe(d) {
     ...(rutas ? ['El entregable de este bloque, si existe:', rutas] : []),
     '',
     'Reglas:',
-    `- Usa la skill hormozi-brain: lee ${HORMOZI}/SKILL.md y ${HORMOZI}/INDEX.md, y busca con Grep en ${HORMOZI}/references/. Responde solo con base en ese material, nunca de memoria. Si no está: «No está en el material».`,
+    `- Usa la biblioteca de Hormozi: lee ${HORMOZI}/README.md y ${HORMOZI}/INDEX.md, y busca con Grep en ${HORMOZI}/. Responde solo con base en ese material, nunca de memoria. Si no está: «No está en el material».`,
     '- Cita SIEMPRE la fuente exacta, entre corchetes y con el formato del INDEX: [$100M OFFERS | 6. Value Offer: The Value Equation | pág. PDF 81] para un libro, o [ROADMAP VIDEO | STAGE 3: STABILIZE | 00:12:40] para un video (libro y capítulo, o etapa y timestamp). Pega el pasaje literal en inglés y explícalo aparte en español.',
     '- Lo que el material recomienda y el nivel contratado no incluye, márcalo FUERA DEL ALCANCE y no lo metas al plan.',
     '- Evidencia o etiqueta: un dato del cliente sin fuente va como [dice el cliente, sin verificar] o ⚠️ SIN DATOS. Nunca inventes cifras.',

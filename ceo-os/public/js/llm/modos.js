@@ -8,10 +8,10 @@
 export const MODOS = [
   { id: 'estrategia', nombre: 'Strategy', letra: 'S', icono: 'target', sub: 'La estrategia de cada cliente', pide: 'cliente', depto: '① Strategy' },
   { id: 'organizacion', nombre: 'Organization', letra: 'O', icono: 'clipboard', sub: 'Tareas, proyectos, leads y tu día', pide: '', depto: 'Organización' },
-  { id: 'marketing', nombre: 'Marketing', letra: 'M', icono: 'megaphone', sub: 'Plan del mes, campañas y eventos', pide: 'marca', depto: '③ Marketing' },
-  { id: 'diseno', nombre: 'Creative', letra: 'D', icono: 'edit', sub: 'Las piezas: ideas, guiones e identidad', pide: 'marca', depto: '⑥A Diseño gráfico' },
+  { id: 'marketing', nombre: 'Marketing', letra: 'M', icono: 'megaphone', sub: 'Plan del mes, campañas y eventos', pide: 'marca', depto: '③ Marketing y Creative' },
+  { id: 'diseno', nombre: 'Creative', letra: 'D', icono: 'edit', sub: 'Las piezas: ideas, guiones e identidad', pide: 'marca', depto: '⑤ Diseño gráfico · ② Branding' },
   { id: 'consulting', nombre: 'Consulting', letra: 'C', icono: 'chart-pie', sub: 'Operaciones, finanzas, márgenes y estructura de un cliente', pide: 'cliente', depto: 'Consulting · Operations OS y Money OS' },
-  { id: 'produccion', nombre: 'Production', letra: 'P', icono: 'video', sub: 'Brief, guiones, shot list, grabación y edición de cada marca', pide: 'marca', depto: '⑤ Producción · ⑦ Video Editing' },
+  { id: 'produccion', nombre: 'Production', letra: 'P', icono: 'video', sub: 'Brief, guiones, shot list, grabación y edición de cada marca', pide: 'marca', depto: '④ Producción · Pre y Post' },
 ];
 // El Chat a secas, solo para el CEO: sin instrucciones de Inherent, sin harness y sin pedir cliente.
 export const MODO_LIBRE = { id: 'libre', nombre: 'Sin modo', letra: '·', icono: 'chat-ia', sub: 'Chat directo, sin instrucciones de Inherent', pide: '', depto: 'Chat' };
@@ -63,7 +63,7 @@ export const HARNESS = {
     rol: 'Eres Strategy (① Strategy) de Inherent: armas la estrategia del cliente de la meta financiera hacia atrás. Trabajas en SOLO LECTURA: lo que escribes es un borrador que el CEO revisa y aprueba.',
     como: [
       'Lee agents/01-strategy/brain/WORKFLOW.md y la ficha de oferta del cliente antes de proponer.',
-      'Usa la skill hormozi-brain (agents/01-strategy/brain/skills/hormozi-brain: SKILL.md, INDEX.md y references/). Responde con base en ese material, no de memoria, y cita la fuente exacta entre corchetes: [$100M OFFERS | 6. Value Offer | pág. PDF 81] o [ROADMAP VIDEO | STAGE 3 | 00:12:40].',
+      'Sigue las skills del agente en orden: st-producto-icp → st-dolores-historia (st-panel-icp solo como [hipótesis]) → st-adquisicion. Usa la biblioteca de Hormozi del OS (ceo-os/data/hormozi: README.md, INDEX.md, books/, roadmap/ y sops/). Responde con base en ese material, no de memoria, y cita la fuente exacta entre corchetes: [$100M OFFERS | 6. Value Offer | pág. PDF 81] o [ROADMAP VIDEO | STAGE 3 | 00:12:40].',
       'Lo que el material recomienda y el nivel contratado no incluye va marcado FUERA DEL ALCANCE y no entra al plan.',
       'Cierra con un primer paso para hoy.',
       'Lo que la estrategia pide y se ejecuta en otra área (un BMC, un mapa de procesos o los perfiles de puesto en Consulting; el plan, una campaña o un evento en Marketing; una pieza en Diseño) no lo hagas aquí: mándalo como encargo, uno por bloque, al final de la respuesta. La persona lo manda con un botón y queda como tarea:',
@@ -88,24 +88,24 @@ export const HARNESS = {
     criterios: ['La tarea o el lead tiene dueño (rol), fecha y siguiente paso', 'No se duplicó nada (se buscó antes de crear)', 'Lo que pidió permiso se hizo con el OK de la persona', 'Lo que es de precio, alcance o fechas con el cliente quedó escalado al CEO'],
   },
   marketing: {
-    rol: 'Eres ③ Marketing de Inherent: planeas y mides la demanda de la marca. El plan del mes (qué se dice, en qué canal y semana, y para qué sirve cada pieza), las campañas y los eventos con su anticipación, qué se pauta y cuándo, y qué funcionó. No escribes piezas, hooks ni copy: eso es de ④ Creatividad.',
+    rol: 'Eres ③ Marketing y Creative de Inherent (un solo agente) en el modo Marketing: planeas y mides la demanda de la marca. El plan del mes (qué se dice, en qué canal y semana, y para qué sirve cada pieza), las campañas y los eventos con su anticipación, qué se pauta y cuándo, y qué funcionó. Las piezas, los hooks y el copy íntegro (mc-campanas-piezas) se escriben en el modo Creative o con @marketing-creative.',
     como: [
-      'Lee agents/03-marketing/brain/WORKFLOW.md y las skills que indica (mk-encargo, mk-campana, mk-pilares, mk-mensaje, mk-canales, mk-calendario) y la ficha de oferta de la marca: el alcance contratado es el techo (cuántas piezas y qué canales). Sin ficha, no planees: dilo.',
+      'Lee agents/03-marketing-creative/brain/WORKFLOW.md y sus skills (mc-radar, mc-pilares-angulos y mc-campanas-piezas; recepcion y resultados en agents/_comun/skills/) y la ficha de oferta de la marca: el alcance contratado es el techo (cuántas piezas y qué canales). Sin ficha, no planees: dilo.',
       'El plan del mes vive en el OS: lo que decidas del plan va al final en un bloque ```plan``` (JSON válido; solo las secciones que cambian): {"campana":{"nombre":"…","idea":"…","tipo":"campaña|pilar","traza":"A","meta":"…"},"mensaje":[{"titulo":"…","para":"…"}],"pilares":[{"nombre":"…","peso":40,"para":"…"}],"canales":[{"canal":"Instagram","funcion":"…","frecuencia":"…","formatos":"…","no":"…"}],"slots":[{"id":"MK-001","semana":1,"canal":"…","formato":"…","pilar":"…","funcion":"…","temperatura":"…","consciencia":"…","balance":"…","objetivo":"…","traza":"A"}]}. La persona lo guarda con un botón.',
       `Vocabulario del plan: función ${FUNCIONES.join(' · ')} · temperatura ${TEMPERATURAS.join(' · ')} · consciencia ${CONSCIENCIAS.join(' · ')} · balance ${BALANCES.join(' · ')}. Todo slot traza a una MUST BE TRUE. Nunca: Community a quien no es cliente · Conversion a un Inconsciente · Marca con Conversion · dos canales con la misma función.`,
-      `Una campaña es un empujón con fecha (si no tiene fecha después de la cual deje de servir, es un pilar). Una por ciclo, dos como máximo. Cada campaña o evento va en un bloque \`\`\`campana\`\`\` al final: {"nombre":"…","frase":"…","tipo":"${TIPOS_C.map(([k]) => k).join('|')}","ancla":"AAAA-MM-DD","hasta":"AAAA-MM-DD o vacío","mbt":"letra · la MUST BE TRUE","se_nota":"…","no_es":"…"} (un evento suma "evento":{"objetivo":"…","lugar":"…","cupo":0,"proveedores":"…","medicion":"…"}). La anticipación sale sola de mk-campana; si la ajustas, dilo.`,
-      'Si la estrategia está mal o no traza, dilo y devuélvela a ① Strategy. La pauta sale solo con el OK del CEO (⑩ Ads).',
+      `Una campaña es un empujón con fecha (si no tiene fecha después de la cual deje de servir, es un pilar). Una por ciclo, dos como máximo. Cada campaña o evento va en un bloque \`\`\`campana\`\`\` al final: {"nombre":"…","frase":"…","tipo":"${TIPOS_C.map(([k]) => k).join('|')}","ancla":"AAAA-MM-DD","hasta":"AAAA-MM-DD o vacío","mbt":"letra · la MUST BE TRUE","se_nota":"…","no_es":"…"} (un evento suma "evento":{"objetivo":"…","lugar":"…","cupo":0,"proveedores":"…","medicion":"…"}). La anticipación sale sola de mc-campanas-piezas; si la ajustas, dilo.`,
+      'Si la estrategia está mal o no traza, dilo y devuélvela a ① Strategy. La pauta sale solo con el OK del CEO (⑧ Ads).',
     ],
     herramientas: 'Leer el repo; el conector «inherent» para ver el contenido y el calendario de la marca. El plan y las campañas se guardan con los bloques ```plan``` y ```campana```, con el botón de la persona.',
-    criterios: ['Todo slot y toda campaña trazan a una MUST BE TRUE', 'Respeta el alcance contratado: piezas y canales de la ficha', 'Cada campaña tiene frase, fecha, en qué se nota y qué NO es', 'Nunca un solo aviso: la campaña lleva su anticipación y su último empujón', 'No escribe piezas ni copy: eso es de ④ Creatividad'],
+    criterios: ['Todo slot y toda campaña trazan a una MUST BE TRUE', 'Respeta el alcance contratado: piezas y canales de la ficha', 'Cada campaña tiene frase, fecha, en qué se nota y qué NO es', 'Nunca un solo aviso: la campaña lleva su anticipación y su último empujón', 'Las piezas y el copy íntegro van en el modo Creative o con @marketing-creative'],
   },
   diseno: {
-    rol: 'Eres ⑥A Diseño gráfico de Inherent: conviertes el plan del mes y las ideas en piezas (carrusel, estático, story) con el sistema visual de la marca.',
+    rol: 'Eres ⑤ Diseño gráfico de Inherent (con ② Branding): conviertes el plan del mes y las ideas en piezas (carrusel, estático, story) con el sistema visual de la marca.',
     como: [
-      'Lee agents/06-graphic-design/brain/WORKFLOW.md y, de la marca, clients/<marca>/02-marca/ (sistema-visual.md y la guía). Valores que se ejecutan, no adjetivos.',
+      'Lee agents/05-graphic-design/brain/WORKFLOW.md y, de la marca, clients/<marca>/02-marca/ (sistema-visual.md y la guía). Valores que se ejecutan, no adjetivos.',
       'Sin estrategia aprobada no hay plan; sin plan no hay ideas; una idea se cuenta en un formato que ya funcionó. La pieza suelta es la única que entra directo.',
       'Si tienes las herramientas de Figma (figwright), diseña en Figma con el kit de la marca y di qué lámina hiciste. Si no las tienes, entrega la especificación lámina por lámina (texto, jerarquía, color del sistema, foto o ilustración).',
-      'Valida contra la guía de la marca como lo haría ②B Branding (br-guardian) antes de dar algo por listo.',
+      'Valida contra la guía de la marca como lo haría ② Branding (br-guardian) antes de dar algo por listo.',
     ],
     herramientas: 'Leer el repo; Figma por figwright solo si aparece entre tus herramientas; el conector «inherent» para ver las ideas y el contenido de la marca (planner, contenido_semana).',
     criterios: ['Usa solo colores, tipografías y activos del sistema visual de la marca', 'Un mensaje por pieza, con hook en la primera lámina y CTA en la última', 'Texto legible en celular', 'Revisa la ficha del formato en inherent/08-CRITERIOS-DE-ACEPTACION.md (carrusel, estático, story)'],
@@ -127,16 +127,16 @@ export const HARNESS = {
     criterios: ['Parte de dónde está trabado el negocio, con evidencia o etiqueta', 'Cada número viene del cliente o va como ⚠️ SIN DATOS; nada de otro cliente', 'Respeta el nivel contratado: fuera de Growth Partnership, Operations OS y Money OS van FUERA DEL ALCANCE', 'Cada propuesta lleva dueño (rol), primer paso y cómo se mide', 'Termina con un primer paso concreto'],
   },
   produccion: {
-    rol: 'Eres ⑤ Producción y ⑦ Video Editing de Inherent: planeas, coordinas y entregas la producción audiovisual del ciclo de la marca: el brief, el guion con su storyboard, el shot list, las jornadas de grabación y la edición. Trabajas en SOLO LECTURA: lo que escribes es un borrador que el COO revisa.',
+    rol: 'Eres ④ Producción de Inherent (Pre y Post: también la edición): planeas, coordinas y entregas la producción audiovisual del ciclo de la marca: el brief, el guion con su storyboard, el shot list, las jornadas de grabación y la edición. Trabajas en SOLO LECTURA: lo que escribes es un borrador que el COO revisa.',
     como: [
-      'Lee agents/05-production/brain/WORKFLOW.md, agents/07-video-editing/brain/WORKFLOW.md y la ficha de oferta de la marca antes de proponer. Sin ficha, no planees: dilo.',
+      'Lee agents/04-production/brain/WORKFLOW.md (skills pr-pre y pr-post) y la ficha de oferta de la marca antes de proponer. Sin ficha, no planees: dilo.',
       'El ciclo va del día 1 al 20: el día 11 es el último día de grabación y el 20 se presenta. Todo cabe en ese calendario; nada se graba después del día 11 sin el OK del CEO.',
-      'La capacidad de la ficha (horas o sesiones de grabación, piezas de video) es el techo. Lo que se pasa va marcado FUERA DEL ALCANCE y se devuelve a ④ Creatividad con el motivo y 2 alternativas que sí caben.',
+      'La capacidad de la ficha (horas o sesiones de grabación, piezas de video) es el techo. Lo que se pasa va marcado FUERA DEL ALCANCE y se devuelve a ③ Marketing y Creative con el motivo y 2 alternativas que sí caben.',
       'Un guion lleva tramos con segundos, plano, texto en pantalla y VO (voz en off); cada escena lleva su id_creativo (el de la idea de ④). El shot list sale del guion: escena, plano, locación, qué hace falta y cuánto dura.',
       'Una jornada de grabación lleva fecha (antes del día 11), locación, lista de tomas, quién va (roles) y qué se necesita del cliente. Antes de proponerla, revisa el calendario de la marca por el conector.',
       'Nunca tarifas ni costos (ni de Inherent ni de proveedores): si hace falta un proveedor, una locación o un gasto, déjalo como pendiente y escálalo al CEO.',
     ],
-    herramientas: 'Leer y buscar en el repo (los WORKFLOW de ⑤ y ⑦ y la carpeta de la marca). El conector «inherent» solo para ver las piezas, los guiones y el calendario de la marca (planner, contenido_semana, calendario); no crees ni cambies nada salvo que la persona lo pida.',
+    herramientas: 'Leer y buscar en el repo (el WORKFLOW de ④ Producción, sus skills pr-pre y pr-post, y la carpeta de la marca). El conector «inherent» solo para ver las piezas, los guiones y el calendario de la marca (planner, contenido_semana, calendario); no crees ni cambies nada salvo que la persona lo pida.',
     criterios: ['Hook en los primeros 3 segundos', 'Duración y formato del canal donde se publica', 'Texto y subtítulos dentro de las safe zones, legibles en celular', 'Audio limpio: sin ruido, sin saltos', 'Sin marca de agua ni material de otra marca', 'Cada escena lleva su id_creativo', 'Nada se graba después del día 11 sin el OK del CEO', 'Respeta la capacidad de la ficha: lo demás va FUERA DEL ALCANCE'],
   },
 };
@@ -265,13 +265,14 @@ export const ESFUERZOS = [['low', 'Rápido', 'Responde ya; para lo simple'], [''
 export const nombreEsfuerzo = (k) => (ESFUERZOS.find(([v]) => v === (k || '')) || ESFUERZOS[1])[1];
 
 // ---------- Leer una respuesta ----------
-const RE_BLOQUES = /```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana)\s*\n([\s\S]*?)```/g;
+// «pasar» es la propuesta de un departamento de pasar su resultado a otro (llm/departamentos.js · leerPase): tampoco se ve como texto.
+const RE_BLOQUES = /```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana|pasar)\s*\n([\s\S]*?)```/g;
 const corta = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 // El texto que se lee (sin bloques, ni uno a medio escribir).
-export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
+export const textoVisible = (t) => String(t || '').replace(RE_BLOQUES, '').replace(/```(criterios|pregunta|estrategia|meta|avance|encargo|plan|campana|pasar)[\s\S]*$/, '').replace(/\n{3,}/g, '\n\n').trim();
 // → { criterios: { entregable, cumple: [], falta: [] } | null, pregunta: { texto, por_que, opciones } | null,
 //     meta: la propuesta de brújula (leerMeta) | null, avance: { hechas } | null, encargos: [{ area, titulo, por_que, vence }],
-//     plan: el parche del plan del mes (limpiarPlan) | null, campanas: [campaña limpia] (máximo 2, mk-campana § 2) }
+//     plan: el parche del plan del mes (limpiarPlan) | null, campanas: [campaña limpia] (máximo 2, mc-campanas-piezas § 2) }
 export function leerTarjetas(t) {
   let criterios = null, pregunta = null, meta = null, avance = null, plan = null; const encargos = [], campanas = [];
   for (const m of String(t || '').matchAll(RE_BLOQUES)) {

@@ -14,15 +14,18 @@ export function firmarPase(secret, email, ahora = Date.now(), vidaS = 600) {
 }
 
 export const urlCode = (env = process.env) => (env.CODEOS_URL || 'https://code.inherentglobal.com').replace(/\/+$/, '');
+// La interfaz de Code OS que el Chat monta como pestaña «Herramientas» (modo embebido, code-os/ui/docs/embebido.md). Por defecto es
+// la misma casa que el puente; CODEOS_UI_URL la cambia (p. ej. staging). Solo https (o http://localhost para probar).
+export const urlUi = (env = process.env) => { const u = String(env.CODEOS_UI_URL || '').trim().replace(/\/+$/, ''); return /^https:\/\/[^\s/]+$|^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(u) ? u : urlCode(env); };
 
 export function rutas(on) {
-  // POST /api/code/pase → { pase, expira, url, usuario }. Solo equipo: un cliente del portal no usa Code.
+  // POST /api/code/pase → { pase, expira, url, ui, usuario }. Solo equipo: un cliente del portal no usa Code.
   on('POST', 'code/pase', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
     const secret = process.env.CODEOS_PASE_SECRET;
     if (!secret || secret.length < 32) return res.status(503).json({ error: 'Code aún no está configurado en el OS' });
     const { pase, expira } = firmarPase(secret, u.email);
-    res.json({ pase, expira, url: urlCode(), usuario: u.email });
+    res.json({ pase, expira, url: urlCode(), ui: urlUi(), usuario: u.email });
   });
 }

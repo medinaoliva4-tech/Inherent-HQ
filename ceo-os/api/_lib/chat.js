@@ -21,6 +21,7 @@ import { scoper } from './access.js';
 import { bloqueEquipo, bloqueInstrucciones, MAX_INSTRUCCIONES } from '../../public/js/conocimiento.js';
 import { agenteDeSesion, carpetaDe } from '../../public/js/llm/carpetas.js';
 import { conversacionLigada } from '../../public/js/chat-agentes.js';
+import { departamentoDe } from '../../public/js/llm/departamentos.js';
 
 export const COLL = 'chat_sesiones';
 const GW = 'gateway_estado';
@@ -146,6 +147,22 @@ export function rutas(on) {
     const nuevos = (Array.isArray(body(req).mensajes) ? body(req).mensajes : []).slice(0, 200).map((m) => ({ role: m?.role === 'assistant' ? 'assistant' : 'user', content: txt(m?.content, MAX_MSG).trim(), at: ahora() })).filter((m) => m.content);
     if (!nuevos.length) return res.status(400).json({ error: 'Nada que guardar' });
     const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), ...nuevos].slice(-MAX_MSGS) });
+    if (d) res.json({ ok: true });
+  });
+
+  // Un turno de un departamento (llm/departamentos.js): lo responde el puente de Code, pero queda en la conversación del OS
+  // con qué departamento y qué nivel, para retomarlo desde cualquier compu y para que el Chat lo tenga como contexto.
+  on('POST', 'chat/sesiones/:id/departamento', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    const s = await mia(req, res, u); if (!s) return;
+    const b = body(req), dep = departamentoDe(b.dep);
+    if (!dep) return res.status(400).json({ error: 'Ese departamento no existe' });
+    const pedido = txt(b.pedido, MAX_MSG).trim(), respuesta = txt(b.respuesta, MAX_MSG).trim();
+    if (!pedido || !respuesta) return res.status(400).json({ error: 'Nada que guardar' });
+    const nivel = ['nivel-alto', 'nivel-medio', 'nivel-bajo'].includes(b.nivel) ? b.nivel : '';
+    const at = ahora();
+    const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), { role: 'user', content: pedido, at, dep: dep.id }, { role: 'assistant', content: respuesta, at, dep: dep.id, nivel, modelo: nivel }].slice(-MAX_MSGS) });
     if (d) res.json({ ok: true });
   });
 

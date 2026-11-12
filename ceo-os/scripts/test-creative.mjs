@@ -38,8 +38,8 @@ t('leer: a medias y basura → null', () => {
 t('prompt: < 5000, pide su bloque, criterios y el método; sin economía', () => {
   const p = d.prompt({ cliente: { nombre: 'X'.repeat(60), slug: 'akai' }, hoy: '2026-10-27', aprendizajes: ['a'.repeat(300)], entradas: [{ tool: 'campaign-architect', contenido: { campana: { nombre: 'Sol', frase: 'f'.repeat(240), mbt: 'm'.repeat(400) } } }] });
   assert.ok(p.length < 5000, String(p.length));
-  for (const s of [`${F}direccion`, `${F}criterios`, 'cr-brief', 'cr-big-idea', 'cr-storytelling']) assert.ok(p.includes(s), s);
-  assert.ok(p.indexOf('cr-brief') < p.indexOf('cr-big-idea') && p.indexOf('cr-big-idea') < p.indexOf('cr-storytelling'));
+  for (const s of [`${F}direccion`, `${F}criterios`, 'recepcion', 'mc-campanas-piezas', 'mc-campanas-piezas']) assert.ok(p.includes(s), s);
+  assert.ok(p.indexOf('recepcion') < p.indexOf('mc-campanas-piezas') && p.indexOf('mc-campanas-piezas') < p.lastIndexOf('mc-campanas-piezas'), 'recepcion → campaña → piezas');
   assert.ok(/nunca leas ni cites inherent\/06-ECONOMIA/i.test(p));
   assert.ok(d.prompt({}).length < 5000);
 });

@@ -1,7 +1,7 @@
 // App 01 · Marca › Publicar › Ads (servidor): las variaciones de anuncio de cada marca, en la colección «ad_variants»
 // (área content). Las reglas viven en public/js/ads-studio.js.
 // Pautar gasta dinero del cliente: solo el CEO aprueba (y reabre). «Lanzar» no toca ninguna cuenta de anuncios: crea la
-// tarea para ⑩ Ads con lo aprobado y el presupuesto que dio el CEO, y ⑩ lanza con ad-lanzamiento.
+// tarea para ⑩ Ads con lo aprobado y el presupuesto que dio el CEO, y ⑩ lanza con ad-corrida.
 import * as db from './db.js';
 import { edits } from './access.js';
 import { body } from './http.js';

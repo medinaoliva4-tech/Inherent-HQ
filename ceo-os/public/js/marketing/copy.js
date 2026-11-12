@@ -116,7 +116,7 @@ export function prompt(ctx) {
   const lim = `Meta: texto ${LIMITES.meta.texto}, título ${LIMITES.meta.titulo} · Google: título ${LIMITES.google.titulo}, descripción ${LIMITES.google.descripcion} · caption 2200`;
   const cuerpo = [
     'MÉTODO',
-    'Lee agents/04-creative/brain/skills/cr-hook-copy/SKILL.md (copy y consciencia) y, si existe, el mensaje del plan del mes (plans.mensaje).',
+    'Lee agents/03-marketing-creative/brain/skills/mc-campanas-piezas/SKILL.md (copy y consciencia) y, si existe, el mensaje del plan del mes (plans.mensaje).',
     '1) MARCO: una fila por consciencia (1 a 5) × anillo de la diana (0 a 4) o avatar: mensaje, prueba (con fuente; sin prueba real va vacía = ⚠️ SIN DATOS, no la inventes) y la objeción.',
     `2) ACTIVOS: cada uno con su canal (${CANAL_IDS.join(', ')}) y de 3 a 5 variantes que respeten el límite (${lim}). Cuenta los caracteres.`,
     '3) Sin promesas, precios ni garantías que no estén en la ficha. El copy de anuncio no se aprueba aquí: queda Borrador y lo aprueba el CEO. No elijas ganadora: la elige la persona.',

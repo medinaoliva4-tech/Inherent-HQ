@@ -1,6 +1,6 @@
 // Marketing Performance Center · el reporte mensual (bloque «reporte»): el resumen del mes, la foto de sus KPIs, los hallazgos (cada
 // uno cita un KPI), 3 a 5 siguientes acciones y la nota interna. Es el contenido del entregable de la herramienta
-// marketing-performance-center (uno por mes). Existe para que el pedido a la IA (con mk-loop), la lectura de su respuesta, las reglas
+// marketing-performance-center (uno por mes). Existe para que el pedido a la IA (con resultados), la lectura de su respuesta, las reglas
 // de aprobación, el export y la versión que va al portal vivan en un solo módulo puro (sin DOM ni red) que comparten la vista, el servidor
 // y las pruebas. Nada se inventa: una afirmación sin KPI es una falta, y un dato que falta es null con su fuente, nunca 0.
 import { SIN_DATOS, plano, corta, numeroONull, leerHerramienta, contextoPrompt, celda, sinAcentos } from '../consulting/marcos.js';
@@ -191,7 +191,7 @@ export function prompt(ctx) {
     lineas || `${SIN_DATOS}: los KPIs no llegaron a este pedido. No inventes números: lo que falte va null con su fuente, y el resumen dice qué falta.`,
   ].join('\n');
   const metodo = [
-    'MÉTODO (agents/03-marketing/brain/skills/mk-loop/SKILL.md):',
+    'MÉTODO (agents/_comun/skills/resultados/SKILL.md):',
     '1) Lee por función, por pilar y por canal; cada canal con la métrica de su ficha. Un pilar que no mueve nada en dos ciclos sale; un canal que no cumple en dos se propone cortar y se escala.',
     '2) Lee la consciencia: si todo rinde en «Listo para comprar» y nada en «Inconsciente», el negocio se está exprimiendo.',
     '3) Lo que falló por rumbo va a ① Strategy como dato, no como reclamo; si Conversion no cobró, puede ser la oferta (② Growth).',

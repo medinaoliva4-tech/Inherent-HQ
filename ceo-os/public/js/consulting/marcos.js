@@ -5,8 +5,8 @@
 import { leerTarjetas } from '../llm/modos.js';
 
 // ---------- Dónde está el método (rutas desde la raíz del repo; las pruebas revisan que existan) ----------
-export const HORMOZI = 'agents/01-strategy/brain/skills/hormozi-brain';
-const REF = `${HORMOZI}/references`;
+export const HORMOZI = 'ceo-os/data/hormozi';
+const REF = HORMOZI;
 const SOP = `${REF}/sops/5-scaling-frameworks`;
 export const RUTAS_HORMOZI = {
   overview: `${REF}/roadmap/overview-las-10-etapas.md`,
@@ -193,7 +193,7 @@ export function reglasPrompt(ctx) {
     'REGLAS (no se negocian):',
     '- Evidencia o etiqueta: un dato sin fuente va como [dice el cliente, sin verificar] o ⚠️ SIN DATOS. No inventes cifras ni nombres; lo que no tiene dato va vacío (null), nunca 0.',
     `- El alcance contratado es el techo (${nivel ? `nivel ${nivel}` : '⚠️ SIN DATOS: sin ficha de oferta'}${fuera ? `; fuera de la ficha: ${fuera}` : ''}). Lo que el material recomiende y la ficha no incluya va marcado FUERA DEL ALCANCE y no entra al plan.`,
-    `- Hormozi: lee ${HORMOZI}/ (SKILL.md, INDEX.md y references/) y cita la referencia exacta, como [LIBRO | capítulo | pág. PDF N] o [ROADMAP VIDEO | STAGE N | HH:MM:SS]. Si no está en el material, escribe «No está en el material».`,
+    `- Hormozi: lee ${HORMOZI}/ (README.md, INDEX.md, books/, roadmap/ y sops/) y cita la referencia exacta, como [LIBRO | capítulo | pág. PDF N] o [ROADMAP VIDEO | STAGE N | HH:MM:SS]. Si no está en el material, escribe «No está en el material».`,
     '- Si la empresa no aguanta más demanda, no recomiendes más demanda: primero capacidad. Una sola restricción a la vez. Todo termina en un número de crecimiento: ventas, margen, CAC, LTV o caja.',
     '- Nunca leas ni cites inherent/06-ECONOMIA.md ni costos, márgenes o tarifas de Inherent, ni datos de otro cliente. No gastes dinero, publiques ni borres. Precio, alcance y fechas se escalan al CEO.',
     '- Roles, no nombres de personas. Español de «tú», corto y humano. El repo no se edita desde aquí.',
