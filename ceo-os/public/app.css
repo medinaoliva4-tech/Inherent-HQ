@@ -9705,20 +9705,36 @@ html[data-vidrio="real"] :is(.lat-top,.llm-head) :is(button,a,select,input){-web
 .spot-gh{font-size:12.5px;letter-spacing:0;text-transform:none}
 .spot-ic,.spot kbd{background:rgb(var(--tinta) / .08);box-shadow:none;color:var(--ui-ink2)}
 .spot-row.on,.spot-row:hover{background:rgb(var(--tinta) / .1)}
-/* Actualización de la app de Mac, junto a tu perfil */
-.lat-act{display:grid;gap:4px;margin:0 2px 8px;padding:11px 12px;border-radius:12px;background:rgb(var(--tinta) / .07);box-shadow:var(--v-borde);font-size:12.5px;color:var(--ui-mut)}
-.lat-act[hidden],html[data-lat-mini] .lat-act{display:none}
-.lat-act b{font-size:13.5px;font-weight:600;color:var(--ui-ink)}
-.lat-act .btn{height:30px;margin-top:6px;font-size:13px}
-.lat-act i{height:3px;margin-top:6px;border-radius:2px;background:rgb(var(--tinta) / .12);overflow:hidden}
-.lat-act i::after{content:"";display:block;width:var(--pc,4%);height:100%;background:var(--ui-ink);transition:width .3s ease-out}
+/* Panel de novedades (app-mac.js): tarjeta pequeña flotante, abajo a la izquierda sobre el perfil. No es una pantalla. */
+.os-nov{--nov-bg:var(--ui-surf2,#1b1b1d);position:fixed;left:12px;bottom:76px;z-index:60;width:min(292px,calc(100vw - 24px));display:grid;gap:10px;padding:13px 14px;border-radius:14px;background:var(--nov-bg);color:var(--ui-ink);box-shadow:var(--ui-sh-2);font-size:12.5px;line-height:1.4;animation:osNovEntra .22s ease-out}
+.os-nov[hidden]{display:none}
+html[data-vidrio="real"] .os-nov{background:var(--ui-glass);-webkit-backdrop-filter:var(--v-blur);backdrop-filter:var(--v-blur)}
+.os-nov-c{display:flex;gap:10px;align-items:flex-start}
+.os-nov-i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:rgb(var(--ui-ink-rgb) / .08);color:var(--ui-ink)}
+.os-nov-t{display:grid;gap:2px;min-width:0}
+.os-nov-t b{font-size:13.5px;font-weight:600}
+.os-nov-t span{color:var(--ui-mut)}
+.os-nov-a{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.os-nov button{font:inherit;font-size:12.5px;height:30px;padding:0 12px;border:0;border-radius:99px;cursor:pointer;transition:opacity .15s}
+.os-nov-p{background:var(--ui-acc);color:var(--ui-acc-ink);font-weight:600}
+.os-nov-s{background:rgb(var(--ui-ink-rgb) / .08);color:var(--ui-ink)}
+.os-nov-l{margin-left:auto;background:none;color:var(--ui-mut);padding:0 4px!important;text-decoration:underline;text-underline-offset:2px}
+.os-nov button:hover{opacity:.85}.os-nov button[disabled]{opacity:.5;cursor:default}
+.os-nov button:focus-visible{outline:2px solid var(--ui-azul);outline-offset:2px}
+.os-nov-err{margin:0;color:var(--ui-bad-t,var(--ui-bad))}.os-nov-err:empty{display:none}
+.os-nov-b{height:3px;border-radius:2px;background:rgb(var(--ui-ink-rgb) / .12);overflow:hidden}
+.os-nov-b::after{content:"";display:block;width:var(--pc,4%);height:100%;background:var(--ui-azul);transition:width .3s ease-out}
+html[data-lat-mini] .os-nov{left:12px}
+@media (max-width:760px){.os-nov{left:12px;right:12px;width:auto;bottom:84px}}
+@media (prefers-reduced-motion:reduce){.os-nov{animation:none}}
+@keyframes osNovEntra{from{opacity:0;transform:translateY(8px)}}
 
 /* ===== Acentos: azul para lo activo y el avance; rojo para lo que borra. El botón principal sigue en hueso ===== */
 :root{--ui-azul:#4a86e8;--ui-rojo:#ff6b5e}
 input.switch:checked,input[role=switch]:checked{background:var(--ui-azul)}
 input.switch:checked::after,input[role=switch]:checked::after{background:#fff}
 input[type=checkbox]:not(.switch):not([role=switch]),input[type=radio],input[type=range]{accent-color:var(--ui-azul)}
-.sp-meter i,.wc-prog i,.lat-act i::after{background:var(--ui-azul)}
+.sp-meter i,.wc-prog i{background:var(--ui-azul)}
 :focus-visible{outline-color:var(--ui-azul)}
 .in:focus,.in:focus-visible{box-shadow:inset 0 0 0 1.5px var(--ui-azul)}
 :is(button,a,.btn):is([data-act="del"],[data-act="evdel"],[data-x="linkdel"],[data-x="goaldel"],[data-v="del"],[data-rsp="del"],[data-rc="del"],[data-q="del"],[data-pop="del"],[data-pk="delrole"],[data-pk="delph"],[data-act*="borrar"],[data-act*="eliminar"],.danger){color:var(--ui-rojo)}

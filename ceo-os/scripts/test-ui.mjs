@@ -234,17 +234,6 @@ t('transiciones (Apple Motion): breves, sin desplazamiento y se pueden interrump
   assert.match(b, /view-transition-old\(vt-main\)\{animation:vtFuera 110ms/);
   assert.match(b, /prefers-contrast:more/);
 });
-t('app de Mac: la actualización aparece junto al perfil solo si hay una más nueva', () => {
-  assert.equal(estadoApp('0.1.5', { version: '0.1.6' }), 'nueva');
-  assert.equal(estadoApp('0.1.6', { version: '0.1.6' }), 'aldia');
-  assert.equal(estadoApp('0.1.10', { version: '0.1.9' }), 'aldia');
-  assert.equal(estadoApp('0.1.6', { version: null }), 'aldia');
-  assert.match(APP, /id="lat-act"/);
-});
-t('app de Mac: el aviso solo existe si hay actualización', () => {
-  const mac = JS.find(([f]) => f === path.join('js', 'app-mac.js'))[1];
-  assert.match(mac, /caja\.hidden = !app\(\) \|\| !hay/); assert.ok(!mac.includes('No pude revisar'));
-});
 t('acentos: azul en lo activo y rojo en lo que borra', () => {
   const b = CSS.slice(CSS.indexOf('/* ===== Acentos'));
   assert.match(b, /--ui-azul:#4a86e8/); assert.match(b, /--ui-rojo:#ff6b5e/);
