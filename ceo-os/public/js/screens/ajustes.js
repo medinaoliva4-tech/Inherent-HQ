@@ -2,8 +2,9 @@
 // Arriba los tres pasos (se van marcando solos), después «Para qué se usa» (IA para Agents, para investigar y para el Chat:
 // cada uso elige proveedor y modelo de los conectados) y abajo todos los proveedores con su logo. Las llaves se guardan
 // cifradas en el servidor y nunca vuelven aquí (solo sus últimos 4). Conectan el CEO y el COO; el resto ve el estado.
-import { html, raw, mount, ico, skel, toast, api, drawer, closeDrawer } from '../core.js';
+import { html, raw, mount, ico, skel, toast, api, drawer, closeDrawer, confirmAsk } from '../core.js';
 import { PROVEEDORES, USOS, proveedorDe, logoDe } from '../ia-proveedores.js';
+import { fallo } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
 const logo = (id, cls = '') => html`<span class="aj-logo ${cls}"><img src="${logoDe(id)}" alt="" loading="lazy"></span>`;
@@ -11,7 +12,7 @@ const logo = (id, cls = '') => html`<span class="aj-logo ${cls}"><img src="${log
 export async function render(el, { me, alive }) {
   mount(el, skel('pagina'));
   let est;
-  try { est = await api('ia/estado'); } catch (e) { return mount(el, html`<div class="empty card">${e.message}</div>`); }
+  try { est = await api('ia/estado'); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir Ajustes', linea: e.message })}`); }
   if (!alive()) return;
   const ed = est.editor;
   const st = (id) => est.proveedores.find((p) => p.id === id) || {};
@@ -68,7 +69,7 @@ export async function render(el, { me, alive }) {
       <ol class="aj-con-pasos">
         ${p.forma === 'url' ? html`<li><b>La dirección de tu servidor</b><span class="mut sm">La que expone la API compatible con OpenAI (termina en /v1).</span><input class="in" id="aj-base" placeholder="${p.ejemplo}" value="${s.base || ''}" autocomplete="off"></li>
           <li><b>Su llave, si pide</b><input class="in" id="aj-llave" type="password" placeholder="Opcional" autocomplete="off"></li>`
-        : html`<li><b>Consigue tu llave</b><span class="mut sm">Se abre la página de ${p.nombre}: crea una y cópiala.</span><a class="btn ghost sm" href="${p.llave}" target="_blank" rel="noreferrer">${ico('external-link', 13)} Abrir ${p.nombre}</a></li>
+        : html`<li><b>Consigue tu llave</b><span class="mut sm">Se abre la página de ${p.nombre}: crea una y cópiala.</span><a class="btn ghost" href="${p.llave}" target="_blank" rel="noreferrer">${ico('external-link', 13)} Abrir ${p.nombre}</a></li>
           <li><b>Pégala aquí</b><input class="in" id="aj-llave" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false"></li>`}
       </ol>
       ${msg ? html`<p class="aj-err sm">${ico('triangle-alert', 13)} ${msg}</p>` : ''}
@@ -88,7 +89,7 @@ export async function render(el, { me, alive }) {
         } catch (e) { drawer(cuerpo('', e.message), accs, { title: p.nombre }); }
       },
       modelos: async () => { try { est = await api('ia/modelos', { method: 'POST', body: { proveedor: id } }); toast('Modelos actualizados'); drawer(cuerpo(), accs, { title: p.nombre }); pinta(); } catch (e) { toast(e.message, true); } },
-      quitar: async () => { if (!confirm(`¿Desconectar ${p.nombre}? Se borra su llave.`)) return; try { est = await api('ia/desconectar', { method: 'POST', body: { proveedor: id } }); closeDrawer(); toast(`${p.nombre} desconectada`); pinta(); } catch (e) { toast(e.message, true); } },
+      quitar: async () => { if (!(await confirmAsk(`¿Desconectar ${p.nombre}? Se borra su llave.`))) return; try { est = await api('ia/desconectar', { method: 'POST', body: { proveedor: id } }); closeDrawer(); toast(`${p.nombre} desconectada`); pinta(); } catch (e) { toast(e.message, true); } },
     };
     drawer(cuerpo(), accs, { title: p.nombre });
     setTimeout(() => document.getElementById(p.forma === 'url' ? 'aj-base' : 'aj-llave')?.focus(), 80);

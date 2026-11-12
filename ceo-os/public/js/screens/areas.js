@@ -64,7 +64,7 @@ export async function render(el, { me, sub, alive }) {
   let arrastrando = '';
 
   try { notas = (await C.list()).map(leerNota); }
-  catch (e) { return mount(el, html`<div class="empty"><b>${e.status === 403 ? 'Tu perfil no ve esta sección' : `No pude leer ${area.nombre}`}</b>${e.message}</div>`); }
+  catch (e) { return mount(el, html`${vacio({ icono: 'lock', titulo: `${e.status === 403 ? 'Tu perfil no ve esta sección' : `No pude leer ${area.nombre}`}`, linea: e.message })}`); }
   if (!alive()) return;
   // La lista de clientes suele estar ya (la usa el Chat); si no, llega después y se repintan el filtro y los nombres.
   if (!contextoLista().length) cargarContexto(me).then(() => { if (alive()) { pintarClientes(); paintDatos(); } }).catch(() => {});
@@ -101,9 +101,9 @@ export async function render(el, { me, sub, alive }) {
     const largo = !tab && (n.texto.length > (grande ? 200 : 140) || n.texto.split('\n').filter(Boolean).length > (grande ? 3 : 2));
     const acciones = !puede ? '' : n.archivado
       ? html`<button class="btn ghost ar-rest" type="button" data-act="restaurar">${ico('rotate-cw', 13)} Restaurar</button>`
-      : html`<button class="ar-btn ar-pin ${n.importante ? 'on' : ''}" type="button" data-act="fijar" aria-pressed="${n.importante ? 'true' : 'false'}" title="${n.importante ? 'Quitar de importante' : 'Fijar como importante'}" aria-label="${n.importante ? 'Quitar de importante' : 'Fijar como importante'}">${ico('star', 15)}</button>
-        <button class="ar-btn" type="button" data-act="editar" title="Editar" aria-label="Editar">${ico('pencil', 15)}</button>
-        <button class="ar-btn" type="button" data-act="archivar" title="Archivar" aria-label="Archivar">${ico('inbox', 15)}</button>`;
+      : html`<button class="btn-icon ar-pin ${n.importante ? 'on' : ''}" type="button" data-act="fijar" aria-pressed="${n.importante ? 'true' : 'false'}" title="${n.importante ? 'Quitar de importante' : 'Fijar como importante'}" aria-label="${n.importante ? 'Quitar de importante' : 'Fijar como importante'}">${ico('star', 15)}</button>
+        <button class="btn-icon" type="button" data-act="editar" title="Editar" aria-label="Editar">${ico('pencil', 15)}</button>
+        <button class="btn-icon" type="button" data-act="archivar" title="Archivar" aria-label="Archivar">${ico('inbox', 15)}</button>`;
     const chips = [chipCliente(n), tab ? '' : chipEstado(n), chipFecha(n, h)].filter((x) => x && String(x));
     return html`<article class="ar-card ar-card2 ${grande ? 'ar-big' : ''} ${tab ? 'ar-kcard' : ''} ${n.importante ? 'is-pin' : ''} ${n.archivado ? 'is-arch' : ''} ${n.estado === 'Hecho' ? 'is-hecho' : ''}" data-id="${n.id}" ${tab && dnd && !n.archivado ? raw('draggable="true"') : ''}>
       <div class="ar-top">${cuadrito(TIPO_ICONO[n.tipo], { color: 'var(--ar-c)', titulo: TIPO_NOMBRE[n.tipo], tam: tab ? 'sm' : 'md' })}
@@ -164,7 +164,7 @@ export async function render(el, { me, sub, alive }) {
       ${String(resumen) ? html`<div class="ar-resumen">${resumen}</div>` : ''}
       <div class="ar-board">${[...ESTADOS, SIN_ESTADO].map((e) => {
         const val = e === SIN_ESTADO ? '' : e, l = g[e];
-        return html`<section class="ar-col ar-e-${clave(val)}" data-estado="${val}" aria-label="${e}"><div class="ar-col-h"><h3>${e}</h3><span class="ar-n" aria-label="${l.length} en «${e}»">${l.length}</span><div class="sp"></div>${puede ? html`<button class="ar-btn" type="button" data-act="nueva" data-estado="${val}" title="Agregar en «${e}»" aria-label="Agregar en «${e}»">${ico('plus', 15)}</button>` : ''}</div>
+        return html`<section class="ar-col ar-e-${clave(val)}" data-estado="${val}" aria-label="${e}"><div class="ar-col-h"><h3>${e}</h3><span class="ar-n" aria-label="${l.length} en «${e}»">${l.length}</span><div class="sp"></div>${puede ? html`<button class="btn-icon" type="button" data-act="nueva" data-estado="${val}" title="Agregar en «${e}»" aria-label="Agregar en «${e}»">${ico('plus', 15)}</button>` : ''}</div>
           <div class="ar-col-b">${l.length ? l.map((n) => tarjeta(n, 'tablero')) : html`<div class="ar-col-vacia mut sm">${dnd ? 'Arrastra una nota aquí' : 'Sin notas'}</div>`}</div></section>`;
       })}</div></section>`;
   }
@@ -178,11 +178,11 @@ export async function render(el, { me, sub, alive }) {
     const celda = (d, i) => {
       const dentro = d.startsWith(`${mes}-`), l = dias[d] || [];
       return html`<div class="ar-dia ${dentro ? '' : 'fuera'} ${d === h ? 'hoy' : ''} ${l.length ? 'con' : 'vacio'}" data-fecha="${d}"><div class="ar-dia-h"><span class="ar-dia-n">${Number(d.slice(8))}</span><span class="ar-dia-s">${DIAS_CORTO[i % 7]}</span>
-        ${puede && dentro ? html`<button class="ar-btn ar-dia-add" type="button" data-act="nueva" data-fecha="${d}" title="Agregar en este día" aria-label="Agregar el ${fdateLong(d)}">${ico('plus', 13)}</button>` : ''}</div>${dentro ? l.map(chipDia) : ''}</div>`;
+        ${puede && dentro ? html`<button class="btn-icon ar-dia-add" type="button" data-act="nueva" data-fecha="${d}" title="Agregar en este día" aria-label="Agregar el ${fdateLong(d)}">${ico('plus', 13)}</button>` : ''}</div>${dentro ? l.map(chipDia) : ''}</div>`;
     };
-    const mini = (n) => html`<div class="ar-mini" data-id="${n.id}">${cuadrito(TIPO_ICONO[n.tipo], { color: 'var(--ar-c)', titulo: TIPO_NOMBRE[n.tipo], tam: 'sm' })}<span class="ar-mini-t">${n.titulo || 'Sin título'}</span>${chipCliente(n)}${chipEstado(n)}<div class="sp"></div>${puede ? html`<button class="ar-btn" type="button" data-act="editar" title="Editar" aria-label="Editar">${ico('pencil', 15)}</button>` : ''}</div>`;
+    const mini = (n) => html`<div class="ar-mini" data-id="${n.id}">${cuadrito(TIPO_ICONO[n.tipo], { color: 'var(--ar-c)', titulo: TIPO_NOMBRE[n.tipo], tam: 'sm' })}<span class="ar-mini-t">${n.titulo || 'Sin título'}</span>${chipCliente(n)}${chipEstado(n)}<div class="sp"></div>${puede ? html`<button class="btn-icon" type="button" data-act="editar" title="Editar" aria-label="Editar">${ico('pencil', 15)}</button>` : ''}</div>`;
     return html`<section class="ar-sec ar-sec-cal"><div class="ar-sec-h"><h2>Calendario</h2><div class="sp"></div>${acc}</div>
-      <div class="ar-cal"><div class="ar-cal-h"><button class="ar-btn" type="button" data-act="mes-ant" title="Mes anterior" aria-label="Mes anterior">${ico('chevron-left', 16)}</button><h3 class="ar-cal-mes" aria-live="polite">${nombreMes(mes)}</h3><button class="ar-btn" type="button" data-act="mes-sig" title="Mes siguiente" aria-label="Mes siguiente">${ico('chevron-right', 16)}</button><div class="sp"></div><button class="btn ghost" type="button" data-act="mes-hoy">Hoy</button></div>
+      <div class="ar-cal"><div class="ar-cal-h"><button class="btn-icon" type="button" data-act="mes-ant" title="Mes anterior" aria-label="Mes anterior">${ico('chevron-left', 16)}</button><h3 class="ar-cal-mes" aria-live="polite">${nombreMes(mes)}</h3><button class="btn-icon" type="button" data-act="mes-sig" title="Mes siguiente" aria-label="Mes siguiente">${ico('chevron-right', 16)}</button><div class="sp"></div><button class="btn ghost" type="button" data-act="mes-hoy">Hoy</button></div>
         <div class="ar-grid">${DIAS_CORTO.map((d) => html`<div class="ar-dh">${d}</div>`)}${grillaMes(mes).flat().map(celda)}</div></div>
       <div class="ar-sin-fecha"><div class="ar-sec-h"><h2>Sin fecha</h2><span class="mut sm">${sinFecha.length}</span></div>
         ${sinFecha.length ? html`<div class="ar-minis">${sinFecha.map(mini)}</div>` : html`<div class="ar-hint mut">Todas las notas tienen fecha.</div>`}</div></section>`;

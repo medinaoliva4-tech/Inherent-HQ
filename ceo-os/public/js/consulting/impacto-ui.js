@@ -110,10 +110,10 @@ export const vista = {
         <label class="im-c"><span class="lbl">Valor meta</span>${num(`metas.${i}.valor`, m.valor, { et: `Valor meta de ${m.titulo || `la meta ${i + 1}`}`, ph: 'Número', sin: SIN_DATOS })}</label>
         <label class="im-c"><span class="lbl">Actual</span>${num(`metas.${i}.actual`, m.actual, { et: `Valor actual de ${m.titulo || `la meta ${i + 1}`}`, ph: 'Número', sin: SIN_DATOS })}</label>
         <label class="im-c"><span class="lbl">Fecha</span>${ed ? html`<input class="in im-in" type="date" data-ruta="metas.${i}.fecha" aria-label="Fecha de ${m.titulo || `la meta ${i + 1}`}" value="${m.fecha}">` : ro(m.fecha)}</label>
-        ${ed ? html`<button type="button" class="btn ghost xs" data-acc="quitar-meta" data-i="${i}" aria-label="Quitar la meta ${i + 1}">${ico('x', 14)}</button>` : ''}</div>`)}</div>
+        ${ed ? html`<button type="button" class="btn ghost sm" data-acc="quitar-meta" data-i="${i}" aria-label="Quitar la meta ${i + 1}">${ico('x', 14)}</button>` : ''}</div>`)}</div>
       ${!c.metas.length ? html`<p class="im-sin im-fuente">${SIN_DATOS}: las metas salen de las métricas del Plan de crecimiento 90 días aprobado.</p>` : ''}
-      ${ed ? html`<div class="im-barra"><button type="button" class="btn ghost sm" data-acc="agregar-meta" ${c.metas.length >= MAX_METAS ? raw('disabled') : ''}>${ico('plus', 14)} Agregar meta</button></div>` : ''}
-      <div class="im-mandar">${puedeClientes ? html`<button type="button" class="btn sm" data-acc="mandar">${ico('send', 14)} Mandar metas a Clientes</button><span class="mut sm">Las agrega a las metas del cliente; las que ya mandaste no se repiten.</span>`
+      ${ed ? html`<div class="im-barra"><button type="button" class="btn ghost" data-acc="agregar-meta" ${c.metas.length >= MAX_METAS ? raw('disabled') : ''}>${ico('plus', 14)} Agregar meta</button></div>` : ''}
+      <div class="im-mandar">${puedeClientes ? html`<button type="button" class="btn" data-acc="mandar">${ico('send', 14)} Mandar metas a Clientes</button><span class="mut sm">Las agrega a las metas del cliente; las que ya mandaste no se repiten.</span>`
         : html`<p class="mut sm">Para mandar las metas pídeselo al COO o al CEO.</p>`}</div>`;
     const reporteHtml = () => html`<label class="im-c im-c-rep"><span class="lbl">Reporte para el cliente</span>${ed
         ? html`<textarea class="in im-in" rows="9" maxlength="6000" data-ruta="reporte" aria-label="Reporte para el cliente" placeholder="Qué se hizo, qué se movió (con sus números) y qué sigue.">${c.reporte}</textarea>` : ro(c.reporte, `${SIN_DATOS}: se genera con «Generar con IA» y se revisa aquí`)}</label>

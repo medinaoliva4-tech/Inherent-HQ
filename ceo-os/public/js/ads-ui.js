@@ -8,6 +8,7 @@ import { layaBox, juzgarLocal, puenteEstado } from './laya-ui.js';
 import { tokenDe, saludPuente, preguntar } from './puente-chat.js';
 import { resumenAvatar } from './avatares.js';
 import { ESTADOS_A, ESTADO_AYUDA, PLATAFORMAS, FORMATOS_A, CTAS, LIMITES, faltas, siguientes, promptVariaciones, leerVariaciones } from './ads-studio.js';
+import { fallo } from './visual.js';
 
 const TONO = { Borrador: '', Aprobada: 'av-st-ok', Lanzada: 'av-st-borr', Ganadora: 'av-st-ok', Quemada: 'av-st-no' };
 const plat = (k) => PLATAFORMAS.find(([x]) => x === k)?.[1] || k;
@@ -22,7 +23,7 @@ export async function adsUI(el, { me, b, alive }) {
     Object.assign(S, { items: r.items || [], puede: r.puede || {}, avatares: (av.avatares || []).filter((a) => a.estado === 'aprobado'),
       piezas: todo.filter((p) => p.kind === 'post' && p.profile === b.slug && ['Listo', 'Publicado'].includes(p.status) && !p.archivado).sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).slice(0, 40),
       guiones: (g.guiones || []).slice(0, 40) });
-  } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir Ads</b>${e.message}</div>`); return; }
+  } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir Ads', linea: e.message })}`); return; }
   if (!alive()) return;
   const ed = () => Boolean(S.puede.editar), ceo = () => Boolean(S.puede.aprobar);
   const carpeta = b.slug === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.slug}`;
@@ -39,16 +40,16 @@ export async function adsUI(el, { me, b, alive }) {
       ${v.lanzar ? html`<p class="mut sm">${ico('check', 11)} En la cola de ⑩ Ads · ${v.lanzar.presupuesto}</p>` : ''}${v.lanzada?.campana ? html`<p class="sm"><a href="${v.lanzada.campana}" target="_blank" rel="noopener noreferrer">${ico('link', 11)} La campaña</a></p>` : ''}
       <div class="ax-laya" data-laya="${v.id}"></div>
       <footer>${elegible ? html`<label class="check"><input type="checkbox" data-ax="sel" data-id="${v.id}" ${S.sel.has(v.id) ? raw('checked') : ''}> Para lanzar</label>` : ''}
-        ${v.estado === 'Borrador' && ed() ? html`<button class="btn ghost xs" data-ax="editar" data-id="${v.id}">${ico('edit', 13)} Editar</button>` : ''}
-        ${sig.filter((s) => (s === 'Aprobada' || (v.estado === 'Aprobada' && s === 'Borrador') ? ceo() : ed() && (s !== 'Lanzada' || v.lanzar))).map((s) => html`<button class="btn ${s === 'Aprobada' ? '' : 'ghost'} xs" data-ax="estado" data-id="${v.id}" data-a="${s}" ${s === 'Aprobada' && f.length ? raw('disabled') : ''}>${s === 'Aprobada' ? html`${ico('check', 13)} Aprobar` : s === 'Borrador' ? 'Reabrir' : `Marcar ${s.toLowerCase()}`}</button>`)}
-        ${['Borrador', 'Aprobada', 'Ganadora', 'Quemada'].includes(v.estado) && ed() && !(v.estado === 'Aprobada' && v.lanzar) ? html`<button class="btn ghost xs" data-ax="archivar" data-id="${v.id}" aria-label="Archivar">${ico('trash', 13)}</button>` : ''}</footer></article>`;
+        ${v.estado === 'Borrador' && ed() ? html`<button class="btn ghost sm" data-ax="editar" data-id="${v.id}">${ico('edit', 13)} Editar</button>` : ''}
+        ${sig.filter((s) => (s === 'Aprobada' || (v.estado === 'Aprobada' && s === 'Borrador') ? ceo() : ed() && (s !== 'Lanzada' || v.lanzar))).map((s) => html`<button class="btn ${s === 'Aprobada' ? '' : 'ghost'} sm" data-ax="estado" data-id="${v.id}" data-a="${s}" ${s === 'Aprobada' && f.length ? raw('disabled') : ''}>${s === 'Aprobada' ? html`${ico('check', 13)} Aprobar` : s === 'Borrador' ? 'Reabrir' : `Marcar ${s.toLowerCase()}`}</button>`)}
+        ${['Borrador', 'Aprobada', 'Ganadora', 'Quemada'].includes(v.estado) && ed() && !(v.estado === 'Aprobada' && v.lanzar) ? html`<button class="btn ghost sm" data-ax="archivar" data-id="${v.id}" aria-label="Archivar">${ico('trash', 13)}</button>` : ''}</footer></article>`;
   }
   function paint() {
     if (!alive()) return;
     const lista = S.items.filter((v) => !S.estado || v.estado === S.estado), nSel = S.sel.size;
     mount(el, html`<div class="fm ax"><div class="fm-bar"><div class="tabs mini" role="tablist" aria-label="Estado">${[['', 'Todas'], ...ESTADOS_A.map((x) => [x, x])].map(([k, l]) => html`<button role="tab" class="${S.estado === k ? 'on' : ''}" aria-selected="${S.estado === k ? 'true' : 'false'}" data-ax="filtro" data-k="${k}">${l}${k ? html` <span class="mut">${S.items.filter((v) => v.estado === k).length}</span>` : ''}</button>`)}</div><span class="sp"></span>
-        ${ceo() ? html`<button class="btn xs" data-ax="lanzar" ${nSel ? '' : raw('disabled title="Marca «Para lanzar» en las aprobadas"')}>${ico('rocket', 13)} Lanzar${nSel ? ` (${nSel})` : ''}</button>` : ''}
-        ${ed() ? html`<button class="btn ${ceo() ? 'ghost' : ''} xs" data-ax="crear">${ico('spark', 13)} Crear variaciones</button>` : ''}</div>
+        ${ceo() ? html`<button class="btn sm" data-ax="lanzar" ${nSel ? '' : raw('disabled title="Marca «Para lanzar» en las aprobadas"')}>${ico('rocket', 13)} Lanzar${nSel ? ` (${nSel})` : ''}</button>` : ''}
+        ${ed() ? html`<button class="btn ${ceo() ? 'ghost' : ''} sm" data-ax="crear">${ico('spark', 13)} Crear variaciones</button>` : ''}</div>
       <p class="mut sm ax-regla">${ico('lock', 12)} Pautar gasta dinero del cliente: solo el CEO aprueba, y «Lanzar» crea la tarea para ⑩ Ads con el presupuesto. El OS no toca ninguna cuenta de anuncios.</p>
       ${lista.length ? html`<div class="fm-grid">${lista.map(card)}</div>` : html`<p class="mut fm-vacio">${S.items.length ? 'No hay variaciones en este estado.' : 'Todavía no hay variaciones. Elige una pieza que funcionó y Claude escribe una por avatar, para Meta y para Google.'}</p>`}</div>`);
     for (const box of $$('[data-laya]', el)) layaBox(box, { coll: 'ad_variants', id: box.dataset.laya, compact: true }).catch(() => {});

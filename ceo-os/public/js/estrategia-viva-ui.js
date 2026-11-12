@@ -68,7 +68,7 @@ export function panelViva({ v = {}, data, bid, editable, esCeo, aprobada }) {
     ${sec(P.entrega, filasRm.length ? html`<div class="ev-rm"><div></div>${['Mes 1–3', '4–6', '7–9', '10–12'].map((t) => html`<div class="h">${t}</div>`)}
         ${filasRm.map((f) => html`<div class="d">${f.area}</div>${f.celdas.map((x, k) => html`<div>${x ? html`<span class="${k === 0 && f.area === filasRm[0].area ? 'k' : ''}">${x}</span>` : ''}</div>`)}`)}
         ${metasRm ? html`<div class="d">Meta</div>${metasRm.map((x) => html`<div><b>${x != null ? dinero(x, M) : ''}</b></div>`)}` : ''}</div>
-        <div class="ev-end">${aprobada ? html`<span class="ev-aprob">✓ Aprobada por el CEO</span>${esCeo ? html`<button type="button" class="btn ghost xs" data-act="viva-aprobar" data-no="1">Reabrir</button>` : ''}` : esCeo ? html`<button type="button" class="btn xs" data-act="viva-aprobar">Aprobar la estrategia</button>` : html`<span class="mut sm">El CEO la aprueba antes de pasar a los departamentos.</span>`}</div>`
+        <div class="ev-end">${aprobada ? html`<span class="ev-aprob">✓ Aprobada por el CEO</span>${esCeo ? html`<button type="button" class="btn ghost sm" data-act="viva-aprobar" data-no="1">Reabrir</button>` : ''}` : esCeo ? html`<button type="button" class="btn sm" data-act="viva-aprobar">Aprobar la estrategia</button>` : html`<span class="mut sm">El CEO la aprueba antes de pasar a los departamentos.</span>`}</div>`
       : html`<p class="ev-vacio">Cuando los pasos estén listos, Strategy arma el roadmap por trimestres (en el Tablero de Estrategia: «✦ Agregar roadmap»).</p>`, 'roadmap')}
   </div>`;
 }

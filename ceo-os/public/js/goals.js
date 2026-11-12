@@ -4,6 +4,7 @@
 // `blueprint_fila` (la fila o meta dentro de él). Son campos opcionales: el wizard no los pide y editar una meta los conserva.
 import { html, raw, fdate, fdateLong, today, ask, confirmAsk, toast, wizard, ico, docView, docHead } from './core.js';
 import { priceLabel, avatar } from './mentors.js';
+import { vacio } from './visual.js';
 
 const RM = { todo: ['Pendiente', ''], now: ['En curso', 'lime'], done: ['Logrado', 'green'] };
 const HEALTH = { ok: ['En camino', 'green', '#626263'], riesgo: ['En riesgo', 'amber', '#a0a0a1'], off: ['Fuera de ruta', 'red', '#515152'] };
@@ -72,8 +73,8 @@ export function goalsUI(ctx) {
           ${edit ? html`<button class="sm mut" data-act="gckadd" data-g="${g.i}" style="margin-top:6px">+ checkpoint</button>` : ''}</div>
       </div></details></div>`;
   }
-  const section = () => { const rm = goalsOf(ctx.get()).map((x, i) => ({ ...x, i })); return html`<div class="sec-title"><h2>Metas</h2><span class="mut sm">${rm.length ? `${rm.filter((x) => x.status === 'done').length}/${rm.length} logradas` : 'Sin metas todavía'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="gadd">+ Meta</button>` : ''}<button class="btn ghost xs" data-act="gpdf">↓ PDF</button></div>
-    ${rm.length ? html`<div class="goals">${rm.map(card)}</div>` : html`<div class="empty"><b>Sin metas todavía</b>Una meta trae cómo la medimos, dónde estamos, a dónde vamos y cuándo revisamos.</div>`}`; };
+  const section = () => { const rm = goalsOf(ctx.get()).map((x, i) => ({ ...x, i })); return html`<div class="sec-title"><h2>Metas</h2><span class="mut sm">${rm.length ? `${rm.filter((x) => x.status === 'done').length}/${rm.length} logradas` : 'Sin metas todavía'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost sm" data-act="gadd">+ Meta</button>` : ''}<button class="btn ghost sm" data-act="gpdf">↓ PDF</button></div>
+    ${rm.length ? html`<div class="goals">${rm.map(card)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin metas todavía', linea: 'Una meta trae cómo la medimos, dónde estamos, a dónde vamos y cuándo revisamos.' })}`}`; };
   function pdf(planName) {
     const a = ctx.get(), rm = goalsOf(a);
     docView(html`${docHead('Roadmap', html`${a.name}<br>${fdateLong(today())}`)}

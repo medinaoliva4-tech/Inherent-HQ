@@ -112,10 +112,37 @@ export const col = (name) => ({
 });
 
 // ---------- UI: toast, drawer, diálogo ----------
-let tt;
-export function toast(msg, err) {
-  const t = $('#toast'); t.textContent = msg; t.className = 'on' + (err ? ' err' : '');
-  clearTimeout(tt); tt = setTimeout(() => (t.className = ''), 2800);
+// toast(msg) = aviso neutro · toast(msg, true) = error · toast(msg, 'ok' | 'error' | 'info') · toast(msg, { tipo, accion: { texto, fn | href }, duracion }).
+// Se apilan (hasta 3 a la vez; el resto espera su turno). Duran según el tipo: ok 2.8 s, info 4 s, error 6 s, con acción 7 s;
+// pasar el mouse por encima las detiene. El texto siempre va como texto (nunca html).
+const TOAST_MAX = 3, TOAST_MS = { neutro: 2800, ok: 2800, info: 4000, error: 6000, accion: 7000 };
+const toastCola = []; let toastVivos = 0;
+const tipoToast = (o) => (o === true ? 'error' : typeof o === 'string' ? o : o?.tipo || 'neutro');
+export function toast(msg, opts) {
+  const o = opts && typeof opts === 'object' ? opts : {}, tipo = ['ok', 'error', 'info'].includes(tipoToast(opts)) ? tipoToast(opts) : 'neutro';
+  toastCola.push({ msg: String(msg ?? ''), tipo, accion: o.accion && o.accion.texto ? o.accion : null, duracion: o.duracion });
+  toastSigue();
+}
+function toastSigue() {
+  const caja = $('#toast'); if (!caja) return;
+  while (toastVivos < TOAST_MAX && toastCola.length) {
+    const x = toastCola.shift(), el = document.createElement('div'); toastVivos++;
+    el.className = `toast-i toast-${x.tipo}`; el.setAttribute('role', x.tipo === 'error' ? 'alert' : 'status');
+    const tx = document.createElement('span'); tx.className = 'toast-t'; tx.textContent = x.msg;
+    if (x.tipo !== 'neutro') { const ic = document.createElement('span'); ic.className = 'toast-ic'; ic.innerHTML = svgIco(x.tipo === 'ok' ? 'check' : x.tipo === 'error' ? 'triangle-alert' : 'info', 15); el.append(ic); }
+    el.append(tx);
+    let timer, cerrado = false;
+    const cerrar = () => { if (cerrado) return; cerrado = true; clearTimeout(timer); el.classList.remove('on'); setTimeout(() => { el.remove(); toastVivos--; toastSigue(); }, 220); };
+    if (x.accion) {
+      const b = document.createElement(x.accion.href ? 'a' : 'button'); b.className = 'toast-a'; b.textContent = x.accion.texto;
+      if (x.accion.href) b.href = x.accion.href; else b.type = 'button';
+      b.addEventListener('click', () => { try { x.accion.fn?.(); } catch {} cerrar(); }); el.append(b);
+    }
+    const ms = x.duracion ?? (x.accion ? TOAST_MS.accion : TOAST_MS[x.tipo]);
+    const arma = () => { clearTimeout(timer); timer = setTimeout(cerrar, ms); };
+    el.addEventListener('mouseenter', () => clearTimeout(timer)); el.addEventListener('mouseleave', arma);
+    caja.append(el); requestAnimationFrame(() => el.classList.add('on')); arma();
+  }
 }
 // ---------- La vista grande: lo que antes se abría en un panel de costado ahora se abre a pantalla completa ----------
 // drawer(content, map, opts) es la misma API de siempre. Arriba lleva «← <Sección> / <título>»: la flecha (o Esc)
@@ -438,7 +465,7 @@ export function wizard(title, steps, doneLabel = 'Crear') {
       if (a[s.k] === undefined && typeof s.v === 'function') a[s.k] = s.v(a); // valor por defecto que depende de respuestas anteriores
       const val = a[s.k];
       const opts = (typeof s.opts === 'function' ? s.opts(a) : s.opts) || [];
-      mount(v, html`<div class="wizbox"><div class="row"><span class="mut sm">${title}</span><div class="sp"></div><span class="wizdots">${L.map((_, j) => html`<i class="${j <= i ? 'on' : ''}"></i>`)}</span><button class="arrow light" data-w="x" style="margin-left:10px">${ico('x', 16)}</button></div>
+      mount(v, html`<div class="wizbox"><div class="row"><span class="mut sm">${title}</span><div class="sp"></div><span class="wizdots">${L.map((_, j) => html`<i class="${j <= i ? 'on' : ''}"></i>`)}</span><button class="btn-icon end" data-w="x" style="margin-left:10px">${ico('x', 16)}</button></div>
         <h2 class="wizq">${typeof s.q === 'function' ? s.q(a) : s.q}</h2>${s.sub ? html`<div class="mut" style="margin:-6px 0 14px">${typeof s.sub === 'function' ? s.sub(a) : s.sub}</div>` : ''}
         ${s.type === 'cards' || s.type === 'multi' ? html`<div class="wizopts ${opts.length > 6 ? 'many' : ''}">${opts.map((o) => { const on = s.type === 'multi' ? (val || []).includes(o.v) : val === o.v; return html`<button class="wizopt ${on ? 'on' : ''}" data-w="opt" data-v="${o.v}">${o.i ? html`<span class="wi">${o.i}</span>` : ''}<b>${o.l}</b>${o.d ? html`<span class="mut sm">${o.d}</span>` : ''}${s.type === 'multi' ? html`<span class="wck">${on ? ico('check', 12) : ''}</span>` : ''}</button>`; })}</div>`
           : s.type === 'when' ? html`<div class="wizopts">${WHEN.map(([l, f]) => html`<button class="wizopt ${val === f() ? 'on' : ''}" data-w="when" data-v="${f()}"><b>${l}</b><span class="mut sm">${fdate(f())}</span></button>`)}<label class="wizopt"><b>Otra fecha</b><input class="in" type="date" data-w="date" value="${val && !WHEN.some(([, f]) => f() === val) ? val : ''}"></label>${s.req ? '' : html`<button class="wizopt ${val === '' ? 'on' : ''}" data-w="when" data-v=""><b>Sin fecha</b></button>`}</div>`
@@ -649,7 +676,7 @@ export function sheetForm(title, fields, { okLabel = 'Guardar', chip = '', note 
     const input = (f) => f.t === 'select' ? html`<select class="in" name="${f.k}">${(f.opts || []).map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return html`<option value="${v}" ${String(v) === String(f.v ?? '') ? raw('selected') : ''}>${l}</option>`; })}</select>`
       : f.t === 'textarea' ? html`<textarea class="in" name="${f.k}" rows="3">${f.v ?? ''}</textarea>`
       : html`<input class="in" name="${f.k}" type="${f.t || 'text'}" value="${f.v ?? ''}" ${f.t === 'number' ? raw('step="any" inputmode="decimal"') : ''}>`;
-    const d = drawer(html`<div class="row">${chip ? html`<span class="chip">${chip}</span>` : ''}<div class="sp"></div><button class="arrow light" type="button" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
+    const d = drawer(html`<div class="row">${chip ? html`<span class="chip">${chip}</span>` : ''}<div class="sp"></div><button class="btn-icon end" type="button" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
       <form class="form" id="sheetform"><h2>${title}</h2>${note ? html`<div class="mut sm" style="margin:-4px 0 12px">${note}</div>` : ''}
         ${fields.map((f) => html`<div style="margin-bottom:12px"><label class="f">${f.l}${f.req ? ' *' : ''}</label>${input(f)}${f.help ? html`<div class="mut sm" style="margin-top:4px">${f.help}</div>` : ''}</div>`)}</form>
       <div class="row" style="gap:8px"><button class="btn" type="button" data-act="ok">${okLabel}</button><button class="btn ghost" type="button" data-act="close">Cancelar</button></div>`, {

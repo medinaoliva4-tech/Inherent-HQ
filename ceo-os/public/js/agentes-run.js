@@ -1,9 +1,10 @@
 // Agent Area · la vista por etapas (#/ai/agentes/<agente>/trabajos/<run>/etapas): historial y detalle de un trabajo, SOLO LECTURA.
 //   Se trabaja en el Chat (PLAN-GATEWAY §20): ahí se llama al agente, se lee el documento y se aprueba. Aquí queda lo que pasó:
 //   la línea de etapas · Inputs y evidencia · Actividad del agente · Resultado. Se puede pausar, archivar o restaurar.
-import { html, raw, mount, ico, skel, toast, api, md, drawer, closeDrawer } from './core.js';
+import { html, raw, mount, ico, skel, toast, api, md, drawer, closeDrawer, confirmAsk } from './core.js';
 import { activa, completo, progreso, leerOutput, CONEXIONES, enServidor } from './agentes-flujos.js';
 import { rutaAgente, rutaTrabajo } from './agentes-ui.js';
+import { fallo } from './visual.js';
 
 const enc = encodeURIComponent;
 const VIA = { gateway: 'Servidor', servidor: 'Servidor', os: 'IA del OS', hermes: 'Hermes (retirado)', puente: 'Claude · suscripción (puente)', 'claude-web': 'claude.ai (pegar)', simulado: 'Simulado' };
@@ -17,7 +18,7 @@ export async function pintarRun(el, me, id, alive) {
   mount(el, skel('pagina'));
   let run, sel = null, verMd = false;
   try { ({ run } = await api('agentes/runs/' + enc(id))); }
-  catch (e) { if (alive()) mount(el, html`<div class="empty card">${e.message}<a class="btn ghost sm" href="#/ai/agentes">Volver</a></div>`); return; }
+  catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir este trabajo', linea: e.message, boton: { texto: 'Volver a Agentes', href: '#/ai/agentes' } })}`); return; }
   if (!alive()) return;
 
   const pinta = () => {
@@ -52,9 +53,9 @@ export async function pintarRun(el, me, id, alive) {
           <h1>${run.titulo}</h1>
           <span class="mut sm">${run.cliente ? run.cliente_nombre || run.cliente : 'Inherent'} · ${run.objetivo || run.flujo.nombre}</span>
           <span class="mut sm xs">${ico('play', 12)} Run: una ejecución concreta del agente, etapa por etapa, con tu aprobación en cada gate.</span></div>
-        <div class="ag-head-a"><a class="btn sm" href="${rutaTrabajo(run.flujo.id, run.id)}">${ico('chat', 13)} Abrir en el Chat</a>
-          ${run.archivado ? html`<button class="btn ghost sm" data-act="restaurar">Restaurar</button>` : html`<button class="btn sm ${run.pausado ? '' : 'ag-dark'}" data-act="pausa">${ico(run.pausado ? 'play' : 'pause', 13)} ${run.pausado ? 'Reanudar agente' : 'Pausar agente'}</button>
-          <button class="btn ghost sm" data-act="mas" aria-label="Más">${ico('more', 14)}</button>`}</div>
+        <div class="ag-head-a"><a class="btn" href="${rutaTrabajo(run.flujo.id, run.id)}">${ico('chat', 13)} Abrir en el Chat</a>
+          ${run.archivado ? html`<button class="btn ghost" data-act="restaurar">Restaurar</button>` : html`<button class="btn ${run.pausado ? '' : 'ag-dark'}" data-act="pausa">${ico(run.pausado ? 'play' : 'pause', 13)} ${run.pausado ? 'Reanudar agente' : 'Pausar agente'}</button>
+          <button class="btn ghost" data-act="mas" aria-label="Más">${ico('more', 14)}</button>`}</div>
       </header>
 
       <ol class="ag-stepper" aria-label="Etapas">${run.etapas.map((x, i) => html`<li class="${x.estado} ${i === n ? 'sel' : ''} ${i === act && !completo(run) ? 'act' : ''}">
@@ -80,7 +81,7 @@ export async function pintarRun(el, me, id, alive) {
         </section>
 
         <section class="card ag-col">
-          <div class="ag-col-h"><div><h2>Resultado en trabajo</h2><p class="sm mut">${e.salida ? `Propuesta de ${o.titulo} para revisión.` : `Se entregará: ${o.titulo}.`}</p></div>${e.salida ? html`<button type="button" class="btn ghost xs" data-act="md">${verMd ? 'Ver campos' : 'Ver documento'}</button>` : ''}</div>
+          <div class="ag-col-h"><div><h2>Resultado en trabajo</h2><p class="sm mut">${e.salida ? `Propuesta de ${o.titulo} para revisión.` : `Se entregará: ${o.titulo}.`}</p></div>${e.salida ? html`<button type="button" class="btn ghost sm" data-act="md">${verMd ? 'Ver campos' : 'Ver documento'}</button>` : ''}</div>
           <div class="ag-out">
             <div class="ag-out-h"><b>${o.titulo}</b>${e.salida ? html`<span class="chip sm2 ${e.confianza >= 70 ? 'ok' : e.confianza ? 'warn' : ''}">${ico('chart', 11)} ${e.confianza ? `${e.confianza}% confianza` : 'Sin evidencia'}</span>` : ''}</div>
             ${e.salida ? (verMd || !e.campos?.length ? html`<div class="ag-md">${raw(md(e.salida))}</div>` : e.campos.map(filaCampo))
@@ -94,7 +95,7 @@ export async function pintarRun(el, me, id, alive) {
         <span class="sm">Paso ${Math.min(act + 1, run.etapas.length)} de ${run.etapas.length}</span>
         <span class="ag-prog"><i style="width:${pr.pct}%"></i></span><span class="sm mut">${pr.pct}%</span>
         <span class="ag-foot-sp"></span>
-        ${n !== act && !completo(run) && !(n === act - 1 && run.etapas[act].estado === 'pendiente') ? html`<button class="btn ghost sm" data-act="ir">Ir a la etapa activa</button>` : ''}
+        ${n !== act && !completo(run) && !(n === act - 1 && run.etapas[act].estado === 'pendiente') ? html`<button class="btn ghost" data-act="ir">Ir a la etapa activa</button>` : ''}
         ${run.archivado || completo(run) ? html`<span class="chip ${completo(run) ? 'ok' : ''}">${completo(run) ? 'Trabajo completo' : 'Archivado'}</span>` : ''}
       </footer></div>`);
   };
@@ -127,7 +128,7 @@ export async function pintarRun(el, me, id, alive) {
     mas: () => drawer(html`<div class="ag-rev"><h1>Trabajo</h1><p class="sm mut">Creado por ${quien(run.creado_por)} · workflow «${run.flujo.nombre}»</p>
         <div class="ag-rev-a"><a class="btn ghost" href="${rutaAgente(run.flujo.id, 'workflow')}" data-act="close">${ico('pencil', 14)} Ver el workflow del agente</a><button class="btn ghost" data-act="archivar">Archivar trabajo</button></div>
         <h2 class="sm">Historial</h2><ol class="ag-hist">${[...(run.historial || [])].reverse().slice(0, 80).map((h) => html`<li><b>${quien(h.quien)}</b> ${ACC[h.accion] || h.accion}${h.etapa != null && run.etapas[h.etapa] ? html` <span class="mut">· ${run.etapas[h.etapa].nombre}</span>` : ''}<span class="mut xs">${cuando(h.at)}</span>${h.nota ? html`<span class="ag-nota xs">${h.nota}</span>` : ''}</li>`)}</ol></div>`,
-      { archivar: async () => { if (!confirm('¿Archivar este trabajo? Nada se borra.')) return; closeDrawer(); await guardar('archivar', { archivado: true }, 'Trabajo archivado'); } }, { title: 'Trabajo' }),
+      { archivar: async () => { if (!(await confirmAsk('¿Archivar este trabajo? Nada se borra.'))) return; closeDrawer(); await guardar('archivar', { archivado: true }, 'Trabajo archivado'); } }, { title: 'Trabajo' }),
     restaurar: () => guardar('archivar', { archivado: false }, 'Trabajo restaurado'),
   };
   el.addEventListener('click', (ev) => { const t = ev.target.closest('[data-act]'); if (t && el.contains(t)) mapa[t.dataset.act]?.(t, ev); });

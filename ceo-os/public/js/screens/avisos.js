@@ -20,24 +20,24 @@ export async function render(el, { me, alive }) {
   const boton = (a, cls, k) => {
     if (!a) return '';
     // Un link de afuera (la app de Mac en GitHub, Google) abre en otra pestaña: el OS no se va.
-    if (a.href) return /^https?:/.test(a.href) ? html`<a class="btn sm ${cls}" href="${a.href}" target="_blank" rel="noopener">${a.label}</a>` : html`<a class="btn sm ${cls}" href="${a.href}">${a.label}</a>`;
-    return html`<button type="button" class="btn sm ${cls}" data-av="${k}">${a.label}</button>`;
+    if (a.href) return /^https?:/.test(a.href) ? html`<a class="btn ${cls}" href="${a.href}" target="_blank" rel="noopener">${a.label}</a>` : html`<a class="btn ${cls}" href="${a.href}">${a.label}</a>`;
+    return html`<button type="button" class="btn ${cls}" data-av="${k}">${a.label}</button>`;
   };
   const fila = (v) => html`<article class="avi" data-u="${v.urgencia}" data-clave="${v.clave}">
     <span class="avi-dot" title="${URG[v.urgencia]}"></span>
     <div class="avi-t"><b>${v.titulo}${v.vivo?.desde ? html` <span class="avi-reloj" data-wait="${v.vivo.desde}"></span>` : ''}</b>${v.detalle ? html`<small>${v.detalle}</small>` : ''}${v.cliente ? html`<span class="avi-cli">${v.clienteNombre || v.cliente}</span>` : ''}</div>
-    <div class="avi-ops">${boton(v.accion, '', 'a')}${boton(v.accion2, 'ghost', 'b')}${v.fijo ? '' : html`<button type="button" class="btn ghost sm avi-pos" data-av="pos" aria-haspopup="menu" title="Posponer">${ico('clock', 14)}<span>Después</span></button>`}</div></article>`;
+    <div class="avi-ops">${boton(v.accion, '', 'a')}${boton(v.accion2, 'ghost', 'b')}${v.fijo ? '' : html`<button type="button" class="btn ghost avi-pos" data-av="pos" aria-haspopup="menu" title="Posponer">${ico('clock', 14)}<span>Después</span></button>`}</div></article>`;
   const pintar = () => {
     const xs = todos(), n = cuentaDe(x), pos = x.r?.pospuestos || [];
     pintarCampana(n);
     mount(el, html`<div class="avs">
       <header class="avs-h"><div><h1>Avisos</h1><p>${n ? html`<b>${n}</b> ${n === 1 ? 'pide' : 'piden'} atención.` : 'Nada urgente por ahora.'} Lo que falta en tu trabajo, en cada cliente y en la plataforma.</p></div>
-        <button type="button" class="btn ghost sm" data-av="revisar">${ico('redo', 14)} Revisar otra vez</button></header>
+        <button type="button" class="btn ghost" data-av="revisar">${ico('redo', 14)} Revisar otra vez</button></header>
       ${x.r?.error ? html`<div class="avi-err">${ico('alert', 14)} No pude leer los avisos del servidor: ${x.r.error}</div>` : ''}
       ${GRUPOS.map(([g, nombre]) => { const ys = xs.filter((v) => v.grupo === g); return html`<section class="avs-g" data-g="${g}"><h2>${nombre}${ys.length ? html` <span class="avs-n">${ys.length}</span>` : ''}</h2>
         ${ys.length ? html`<div class="avs-l">${ys.map(fila)}</div>` : html`<p class="avs-vacio">${ico('check', 14)} ${g === 'trabajo' ? 'Tu trabajo está al día.' : g === 'clientes' ? 'Ningún cliente tiene algo pendiente que veas tú.' : 'Todo conectado.'}</p>`}</section>`; })}
       ${pos.length ? html`<section class="avs-g avs-p"><button type="button" class="avs-pt" data-av="ver-pos" aria-expanded="${verPos}">${ico(verPos ? 'down' : 'right', 14)} Pospuestos <span class="avs-n">${pos.length}</span></button>
-        ${verPos ? html`<div class="avs-l">${pos.map((v) => html`<article class="avi" data-u="${v.urgencia}" data-clave="${v.clave}"><span class="avi-dot"></span><div class="avi-t"><b>${v.titulo}</b></div><div class="avi-ops"><button type="button" class="btn ghost sm" data-av="volver">Regresar</button></div></article>`)}</div>` : ''}</section>` : ''}
+        ${verPos ? html`<div class="avs-l">${pos.map((v) => html`<article class="avi" data-u="${v.urgencia}" data-clave="${v.clave}"><span class="avi-dot"></span><div class="avi-t"><b>${v.titulo}</b></div><div class="avi-ops"><button type="button" class="btn ghost" data-av="volver">Regresar</button></div></article>`)}</div>` : ''}</section>` : ''}
       ${x.r?.errores?.length ? html`<details class="avi-err"><summary>${x.r.errores.length} reglas fallaron (solo lo ves tú)</summary><ul>${x.r.errores.map((e) => html`<li><code>${e}</code></li>`)}</ul></details>` : ''}
     </div>`);
   };

@@ -48,7 +48,7 @@ function panel(bx, mode) {
       <div class="bx-k" style="margin-top:14px">Calibración · conversiones por anillo (seguidores, DMs, leads, ventas)</div>
       ${L.length ? html`<div class="bx-cal"><div class="bx-cal-h"><span>Lote</span><span>${ico('target', 16)}</span><span>A1</span><span>A2</span><span>Decisión</span></div>${L.map((c) => html`<div><span>${c.lote}</span><span>${c.c0}</span><span>${c.c1}</span><span>${c.c2}</span><span>${c.decision || '—'}</span></div>`)}</div>` : ''}
       <div class="bx-mut sm">${L.length >= 2 ? html`Por video, convierte más <b style="color:#fdfaf3">${NAME[best].toLowerCase()}</b>: inclina los próximos lotes hacia ahí.` : 'Corre el 3/1/1 en 2 o 3 lotes de 10 videos; luego anota qué anillo trajo conversiones y la mezcla se inclina hacia ese.'}</div>
-      <button class="btn ghost xs bx-btn" data-act="bxLote">+ Anotar lote</button>`;
+      <button class="btn ghost sm bx-btn" data-act="bxLote">+ Anotar lote</button>`;
   }
   const q = (s) => encodeURIComponent(s);
   return html`<div class="bx-mut sm" style="margin-bottom:10px"><b style="color:#fdfaf3">Los temas</b> salen del centro y el anillo 1 (el 2, a veces): si no hay nadie en tu centro, es tu oportunidad — toma el tema de un creador del anillo 1 y re-apúntalo a tu centro. <b style="color:#fdfaf3">El craft</b> (formato, hook, historia, edición) se toma de donde sea.</div>
@@ -60,11 +60,11 @@ function panel(bx, mode) {
 export function bullseye(host, { name, bx, save, prompt }) {
   const paint = () => {
     if (!bx) {
-      return mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn xs bx-cta" data-act="bxAI">${ico('spark')} Armarla con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Escribirla yo</button></div>
+      return mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn sm bx-cta" data-act="bxAI">${ico('spark')} Armarla con Claude</button><button class="btn ghost sm bx-btn" data-act="bxEdit">Escribirla yo</button></div>
         <div class="bx-steps"><div><b>1 · Define</b>Una persona exacta, no «emprendedores».</div><div><b>2 · Acierta</b>Cada video le habla a esa persona.</div><div><b>3 · Expande</b>El algoritmo aprende a quién mostrarlo y abre el alcance solo.</div></div>
         <div class="bx-mut sm">Apunta más chico para crecer más grande. Claude te hace unas preguntas, una a la vez, y arma el centro, los 4 anillos, la mezcla 3/1/1 y dónde buscar inspiración.</div></div>`);
     }
-    mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn ghost xs bx-btn" data-act="bxAI">${ico('spark')} Rehacer con Claude</button><button class="btn ghost xs bx-btn" data-act="bxEdit">Editar</button></div>
+    mount(host, html`<div class="card bx"><div class="row" style="flex-wrap:wrap;gap:10px"><h3 class="bx-t">${ico('target', 16)} La diana de ${name}</h3><div class="sp"></div><button class="btn ghost sm bx-btn" data-act="bxAI">${ico('spark')} Rehacer con Claude</button><button class="btn ghost sm bx-btn" data-act="bxEdit">Editar</button></div>
       <div class="bx-center">${bx.center || bx.rings[0].label}</div>${bx.buyer ? html`<div class="bx-mut sm">Quien paga: ${bx.buyer}</div>` : ''}
       <div class="bx-seg">${[['diana', 'La diana'], ['mix', 'Mezcla 3/1/1'], ['fuentes', 'De dónde inspirarse']].map(([k, l]) => html`<button class="${MODE === k ? 'on' : ''}" data-act="bxMode" data-m="${k}">${l}</button>`)}</div>
       <div class="bx-grid"><div>${board(bx, MODE)}</div><div style="min-width:0">${panel(bx, MODE)}</div></div></div>`);
@@ -93,7 +93,7 @@ export function bullseye(host, { name, bx, save, prompt }) {
 function edit(bx, commit) {
   const b = bx || { center: '', buyer: '', rings: NAME.map(() => ({ label: '', relaxed: '', size: '', conversion: '', competition: '', search: [] })), mix: [0, 0, 0, 1, 2].map((ring) => ({ ring, topic: '' })), calib: [] };
   const f = (k, l, v, ph = '', area) => html`<div><label class="f">${l}</label>${area ? html`<textarea class="in" data-bk="${k}" placeholder="${ph}" style="min-height:56px">${v || ''}</textarea>` : html`<input class="in" data-bk="${k}" value="${v || ''}" placeholder="${ph}">`}</div>`;
-  const d = drawer(html`<div class="row"><h2 style="margin:0">Editar la diana</h2><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+  const d = drawer(html`<div class="row"><h2 style="margin:0">Editar la diana</h2><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
     <div class="form" style="margin-top:12px">
       ${f('center', 'El centro, en una frase', b.center, '[persona específica] que [situación] y batalla con [problema]', true)}
       ${f('buyer', 'Quien paga (solo si no es quien ve)', b.buyer)}

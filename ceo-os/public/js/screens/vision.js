@@ -1,6 +1,7 @@
 // Inherent → Visión y misión: hacia dónde va Inherent y para qué existe. La escribe el CEO; la lee todo el equipo.
 // Vive en settings «vision» ({ vision, mission }). Mientras el CEO no la guarde, la visión es la frase de la identidad.
 import { html, mount, col, toast, ico, sheetForm, fdate, acts, fromLink } from '../core.js';
+import { fallo } from '../visual.js';
 
 export const IDENTITY = 'We build cool brands—and the growth systems behind them.';
 
@@ -8,7 +9,7 @@ export async function render(el, { me, alive }) {
   const S = col('settings'), ceo = me.role === 'ceo';
   let doc = null;
   // Se lee de la lista de settings (así no hay un 404 cuando todavía no se guarda).
-  try { doc = (await S.list()).find((x) => x.id === 'vision') || null; } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer la visión</b>${e.message}</div>`); }
+  try { doc = (await S.list()).find((x) => x.id === 'vision') || null; } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer la visión', linea: e.message })}`); }
   if (!alive()) return;
   const val = () => ({ vision: String(doc?.vision ?? IDENTITY), mission: String(doc?.mission ?? '') });
 

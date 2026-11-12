@@ -9,6 +9,7 @@ import { herramientaDe } from '../herramientas.js';
 import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { BLOQUE, SECCIONES, EJES, MIN_ACTIVOS, MAX_ACTIVOS, TONO_N, vacio, limpiar, mezclar, seccionLlena, radar, faltas, prompt, leer, aMd } from './dna.js';
+import { fallo, vacio as vacioOS } from '../visual.js';
 
 const BB = col('brand_boards');
 const enc = encodeURIComponent;
@@ -61,9 +62,9 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
 
   // ---------- Pintar ----------
   const lista = (id, v, ph, dis) => html`<textarea data-k="${id}" rows="3" placeholder="${ph}" ${dis ? 'disabled' : ''}>${v.join('\n')}</textarea>`;
-  const prop = (id) => (S.prop[id] && seccionLlena(S.prop[id], id) ? html`<div class="dna-prop"><b>${ico('sparkles', 13)} Propuesta de la IA</b><pre>${JSON.stringify(vistaSec(S.prop[id], id), null, 1)}</pre><div class="dna-acts"><button class="btn xs" data-act="aceptar" data-s="${id}">${ico('check', 13)} Aceptar esta sección</button><button class="btn ghost xs" data-act="descartar" data-s="${id}">Descartar</button></div></div>` : '');
+  const prop = (id) => (S.prop[id] && seccionLlena(S.prop[id], id) ? html`<div class="dna-prop"><b>${ico('sparkles', 13)} Propuesta de la IA</b><pre>${JSON.stringify(vistaSec(S.prop[id], id), null, 1)}</pre><div class="dna-acts"><button class="btn sm" data-act="aceptar" data-s="${id}">${ico('check', 13)} Aceptar esta sección</button><button class="btn ghost sm" data-act="descartar" data-s="${id}">Descartar</button></div></div>` : '');
   const vistaSec = (c, id) => { const x = limpiar(c); return id === 'personalidad' ? Object.fromEntries(x.personalidad.map((p, i) => [`${EJES[i].izq} ↔ ${EJES[i].der}`, p.valor])) : x[id]; };
-  const gen = (id) => html`<button class="btn ghost xs" data-act="gen" data-s="${id}" ${puedeGenerar() ? '' : 'disabled'} title="${razonOff()}">${ico('sparkles', 13)} ${S.ocupado === id ? 'Generando…' : 'Generar'}</button>`;
+  const gen = (id) => html`<button class="btn ghost sm" data-act="gen" data-s="${id}" ${puedeGenerar() ? '' : 'disabled'} title="${razonOff()}">${ico('sparkles', 13)} ${S.ocupado === id ? 'Generando…' : 'Generar'}</button>`;
   const cab = (s, extra = '') => html`<div class="dna-h"><h3>${s.nombre}</h3><span class="sp"></span>${extra}${edit ? gen(s.id) : ''}</div>`;
 
   function radarSvg(c) {
@@ -84,7 +85,7 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
         <span class="chip ${conFicha() ? '' : 'warn'}">${ico('file-text', 12)} ${conFicha() ? 'Con ficha' : 'Sin ficha'}</span><span class="chip ${aprobada() ? 'lime' : ''}">${ico(aprobada() ? 'check' : 'edit', 12)} ${aprobada() ? 'Estrategia aprobada' : 'Estrategia sin aprobar'}</span>
         ${S.doc?.dna_validado ? html`<span class="chip lime">${ico('check', 12)} Validado</span>` : ''}</div>
       ${razonOff() && edit ? html`<p class="mut sm">${ico('lock', 13)} «Generar» está apagado: ${razonOff()}.</p>` : ''}
-      ${!conFicha() ? html`<div class="empty sm"><b>Bloqueado: sin ficha de oferta</b>${SIN_DATOS}: sale de clients/${slug}/00-onboarding/plan-contratado.md. Completa la ficha en Clientes y vuelve.</div>` : ''}
+      ${!conFicha() ? html`${vacioOS({ icono: 'inbox', titulo: 'Bloqueado: sin ficha de oferta', linea: `${SIN_DATOS}: sale de clients/${slug}/00-onboarding/plan-contratado.md. Completa la ficha en Clientes y vuelve.`, compacto: true })}` : ''}
       <div class="dna-bar">${edit ? html`<button class="btn" data-act="gen" data-s="" ${puedeGenerar() ? '' : 'disabled'} title="${razonOff()}">${ico('sparkles', 14)} ${S.ocupado === 'todo' ? 'Generando…' : 'Generar todo'}</button><button class="btn ghost" data-act="guardar" ${sucio() ? '' : 'disabled'}>Guardar${sucio() ? ' · hay cambios' : ''}</button><button class="btn ghost" data-act="validar" ${f.length || sucio() ? 'disabled' : ''} title="${f.length ? 'Falta: ' + f[0] : sucio() ? 'Guarda primero' : ''}">${ico('check', 14)} Validar</button>` : ''}
         <span class="sp"></span><button class="btn ghost" data-act="md">${ico('download', 14)} .md</button><button class="btn ghost" data-act="pdf">${ico('download', 14)} PDF</button></div>
       <section class="dna-sec">${cab(SECCIONES[0])}${prop('territorio')}
@@ -100,7 +101,7 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
         <div class="dna-2"><label>Palabras sí${lista('voz.si', x.voz.si, 'una por línea', ro)}</label><label>Palabras no${lista('voz.no', x.voz.no, 'una por línea', ro)}</label></div></section>
       <section class="dna-sec">${cab(SECCIONES[3], html`<span class="mut sm">${x.activos.length} de ${MIN_ACTIVOS}–${MAX_ACTIVOS}${x.activos.length < MIN_ACTIVOS ? ' · con menos de 3 no se valida' : ''}</span>`)}${prop('activos')}
         <div class="dna-activos">${act.map((a, i) => html`<div class="dna-activo"><b>${i + 1}</b><label>Activo<input data-k="activos.${i}.nombre" value="${a.nombre}" ${ro ? 'disabled' : ''}></label><label>Qué es<input data-k="activos.${i}.que" value="${a.que}" ${ro ? 'disabled' : ''}></label><label>Su prueba${a.nombre && !a.prueba ? html` <span class="chip warn">${SIN_DATOS}</span>` : ''}<input data-k="activos.${i}.prueba" value="${a.prueba}" placeholder="Dónde se reconoce sin el logo" ${ro ? 'disabled' : ''}></label></div>`)}</div>
-        ${edit && x.activos.length < MAX_ACTIVOS ? html`<button class="btn ghost xs" data-act="masact">+ Activo</button>` : ''}</section>
+        ${edit && x.activos.length < MAX_ACTIVOS ? html`<button class="btn ghost sm" data-act="masact">+ Activo</button>` : ''}</section>
       ${f.length ? html`<section class="dna-sec"><h3>Para validar falta</h3><ul>${f.map((m) => html`<li>${m}</li>`)}</ul></section>` : html`<p class="mut sm">${ico('check', 13)} Todo listo para validar.</p>`}
     </div>`);
   }
@@ -152,6 +153,6 @@ export async function dnaTool(host, { me, slug, b, alive } = {}) {
     pdf: async () => { try { await exportarPdf(aMd(S.dna, { cliente: nombre }), `guia-de-marca-${slugArchivo(slug)}.pdf`); } catch (e) { toast(e.message, true); } },
   });
 
-  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`<div class="empty"><b>No pude leer el ADN de la marca</b>${e.message}</div>`); return; }
+  try { await leerTodo(); } catch (e) { if (alive()) mount(host, html`${fallo({ titulo: 'No pude leer el ADN de la marca', linea: e.message })}`); return; }
   pintar();
 }

@@ -6,6 +6,7 @@ import { purposeCard } from '../purpose.js';
 import { roleTable, changeRole } from '../rolemap.js';
 import { cargarGuias, vistosDe } from '../guia.js';
 import { videosDe } from '../guia-secciones.js';
+import { vacio } from '../visual.js';
 
 const COLORS = ['var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)', 'var(--ui-ink2)'];
 const KIND = { persona: 'Persona', ia: 'Agente IA', externo: 'Externo' };
@@ -32,7 +33,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     if (!rp) { Promise.all([col('projects').list().catch(() => []), col('tasks').list().catch(() => [])]).then(([projects, tasks]) => { rp = { projects, tasks }; if (view === 'roles') paint(); }); return html`<p class="loading">Cargando…</p>`; }
     const live = rp.projects.filter((p) => (p.phases || []).some((x) => x.status !== 'done') || !(p.phases || []).length);
     const edit = isCeo || me.role === 'coo';
-    if (!live.length) return html`<div class="empty"><b>Sin proyectos activos</b>Cuando haya un proyecto con roles aparece aquí quién cubre cada uno.</div>`;
+    if (!live.length) return html`${vacio({ icono: 'inbox', titulo: 'Sin proyectos activos', linea: 'Cuando haya un proyecto con roles aparece aquí quién cubre cada uno.' })}`;
     return html`<div class="mut sm" style="margin-bottom:12px">${edit ? 'Cambia a alguien y sus tareas abiertas de ese rol pasan a la persona nueva (queda en el historial de cada tarea).' : 'Las personas que cubren cada rol de cada proyecto.'}</div>
       <div class="grid g11">${live.map((p) => { const t = roleTable(p, { tasks: rp.tasks, team: people, edit }); return html`<div class="card wkbox"><div class="wkhead"><div><h3>${p.client ? p.client + ' · ' : ''}${p.name}</h3><span class="mut sm">${p.kind || ''}</span></div></div>${t || html`<div class="mut sm">Sin roles en este proyecto.</div>`}</div>`; })}</div>`;
   }
@@ -77,7 +78,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     return html`<div class="node ${cls}" data-act="open" data-id="${p.id}"><div style="display:flex;justify-content:center;margin-bottom:10px">${av(p)}</div><b>${p.name}</b><span class="mut sm">${p.title || KIND[p.kind] || ''}</span>${p.birthday ? html`<span class="mut sm">${ico('cake')} ${bdayText(p.birthday)}</span>` : ''}</div>`;
   }
   function org() {
-    if (!people.length) return html`<div class="empty"><b>Todavía no hay nadie</b>Cada persona aparece aquí cuando entra con Google por primera vez.</div>`;
+    if (!people.length) return html`${vacio({ icono: 'inbox', titulo: 'Aún no hay nadie', linea: 'Cada persona aparece aquí cuando entra con Google por primera vez.' })}`;
     const roots = people.filter((p) => !p.reports_to || !byId(p.reports_to));
     const levels = [roots]; const seen = new Set(roots.map((r) => r.id));
     while (levels.length < 6) {
@@ -88,7 +89,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function cards() {
     return html`<div class="grid g3">${people.map((p) => html`<div class="card" style="cursor:pointer" data-act="open" data-id="${p.id}">
-      <div class="row">${av(p, 52)}<div><b style="font-weight:500;font-size:16px">${p.name}</b><div class="mut sm">${p.title || KIND[p.kind] || ''}</div></div><div class="arrow light" style="width:34px;height:34px;margin-left:auto">↗</div></div>
+      <div class="row">${av(p, 52)}<div><b style="font-weight:500;font-size:16px">${p.name}</b><div class="mut sm">${p.title || KIND[p.kind] || ''}</div></div><div class="btn-icon end" style="width:34px;height:34px;margin-left:auto">↗</div></div>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:14px">
         ${p.kind === 'ia' ? html`<span class="chip">Agente IA</span>` : p.kind === 'externo' ? html`<span class="chip">Externo</span>` : html`<span class="chip ${p.google ? 'green' : ''}">${p.google ? 'Google conectado' : 'Aún no entra'}</span>`}
         ${p.active === false ? html`<span class="chip red">Desactivado</span>` : ''}
@@ -113,7 +114,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     return html`${purposeCard({ ...people.find((p) => (p.roles || []).includes(rvRole)) || {}, role: 'team', roles: [rvRole] }, { own: false, open: true })}<section class="sp-panel" style="padding-bottom:18px;margin-top:16px">
       <div class="sp-panel-h"><div class="mut sm" style="max-width:680px">Elige un perfil de trabajo y decide <b>qué ve</b>, <b>qué tan a fondo</b>, <b>de qué clientes</b> y <b>dónde abre</b>. Se guarda al tocar y se aplica en el servidor: lo oculto no sale ni por la app ni por el conector de Claude. Un perfil sin configurar sigue como hoy. Si una persona tiene varios perfiles, gana el más amplio. Tú, como CEO, siempre ves y editas todo.</div>
       <div class="sp-seg" style="margin:14px 0 2px">${WORK_ROLES.filter(([k]) => k !== 'ceo').map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] || (rv?.scope || {})[k] || (rv?.start || {})[k] ? ' ●' : ''}</button>`)}</div></div>
-      <div class="row sm" style="margin:10px 0 6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
+      <div class="row sm" style="margin:10px 0 6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost sm" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
       <div class="grid g11" style="gap:12px;margin:10px 0 6px">
         <div class="sp-inset"><b style="font-weight:600">Qué datos ve</b><div class="mut sm" style="margin:2px 0 8px">${SCOPE_HELP[rvScope()]}</div>
           <div class="tabs mini" style="margin:0">${SCOPES.map(([v, lb]) => html`<button class="${rvScope() === v ? 'on' : ''}" data-act="rvscope" data-v="${v}">${lb}</button>`)}</div></div>
@@ -134,7 +135,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function paint() {
     // Dentro del Centro de control: solo la matriz.
-    if (embed === 'vistas') { mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Vistas por rol</h1><p>Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.</p></div>${isCeo ? vistas() : html`<div class="empty"><b>Solo el CEO</b>La matriz de vistas la decide el CEO.</div>`}`); const st0 = $('[data-act=rvstart]', el); if (st0) st0.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st0.value } }); return; }
+    if (embed === 'vistas') { mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Vistas por rol</h1><p>Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.</p></div>${isCeo ? vistas() : html`${vacio({ icono: 'lock', titulo: 'Solo el CEO', linea: 'La matriz de vistas la decide el CEO.' })}`}`); const st0 = $('[data-act=rvstart]', el); if (st0) st0.onchange = () => rvSave({ start: { ...(rv?.start || {}), [rvRole]: st0.value } }); return; }
     const SUB = { org: html`Quién hace qué en <em>Inherent</em>.`, people: html`Cada persona, <em>sus perfiles de trabajo</em>.`, roles: html`Quién cubre <em>cada rol</em> en cada proyecto.`, vistas: html`Qué ve cada perfil, <em>qué tan a fondo</em> y dónde abre.`, recetas: html`Cómo se arma el trabajo: <em>tareas, dueños y fechas</em>.` };
     const TABS = [['org', 'Organigrama'], ['people', 'Perfiles'], ['roles', 'Roles'], ...(isCeo ? [['vistas', 'Vistas por rol']] : [])];
     mount(el, html`<div class="row" style="align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:12px">
@@ -185,7 +186,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function open(p) {
     const boss = byId(p.reports_to);
-    drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <div style="margin-top:6px">${av(p, 84)}</div>
       <h2>${p.name}</h2><div class="mut">${p.title || KIND[p.kind] || ''}</div>
       ${p.birthday || p.phone || p.bio ? html`<div class="sm" style="margin-top:10px;display:grid;gap:4px">${p.birthday ? html`<div>${ico('cake')} ${bdayText(p.birthday)}</div>` : ''}${p.phone ? html`<div>${ico('mobile')} ${p.phone}</div>` : ''}${p.bio ? html`<div class="mut">${p.bio}</div>` : ''}</div>` : ''}
@@ -199,7 +200,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
       ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">${ico('camera')} ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
-      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px;text-decoration:none">${ico('eye')} Ver su Workspace</a>` : ''}
+      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px">${ico('eye')} Ver su Workspace</a>` : ''}
       ${isCeo ? html`<div class="row"><button class="btn" data-act="edit">Editar perfil</button>${p.id !== me.email ? html`<button class="btn ghost" data-act="del">Quitar</button>` : ''}</div>` : ''}`,
     { nophoto: () => setPhoto(p, null), edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
     const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { const ph = await cropImage(pi.files[0]); pi.value = ''; if (ph) await setPhoto(p, ph); } catch (err) { toast(err.message, true); } };

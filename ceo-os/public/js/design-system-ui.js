@@ -1,5 +1,6 @@
 import { html, raw, mount, api, col, toast, ico, inline, md as mdDoc, acts, canEdit, $, $$ } from './core.js';
 import { leerSistema, fuentesUrl, tokensCss, contraste, sinEmoji, figmaDe, tipoAsset, escribirSistema, huella, contrasteFino, pasaAA, matrizContraste, parContraste, faltasSistema, medidasDe, colorEn, plano, hexOk, sistemaVacio, AA } from './sistema-visual.js';
+import { fallo, vacio } from './visual.js';
 
 // Marca › Diseño › Design system (herramienta Visual Identity Builder): el sistema visual de la marca a la vista, como un portal de marca
 // (zeroheight, Frontify). Dos pestañas: «Publicado» (lo de siempre: 02-marca/sistema-visual.md del repo, cada valor se copia con un clic)
@@ -15,9 +16,9 @@ const copiar = async (t, msg = 'Copiado') => { try { await navigator.clipboard.w
 async function publicadoUI(el, { me, b, alive }) {
   el.dataset.island = '1';
   mount(el, html`<p class="loading">Cargando…</p>`);
-  if (b.personal) return mount(el, html`<div class="empty"><b>La marca personal no tiene design system todavía</b>Por ahora vive en Identidad.</div>`);
+  if (b.personal) return mount(el, html`${vacio({ icono: 'inbox', titulo: 'La marca personal no tiene design system todavía', linea: 'Por ahora vive en Identidad.' })}`);
   let d;
-  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el sistema visual</b>${e.message}</div>`); }
+  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer el sistema visual', linea: e.message })}`); }
   if (!alive()) return;
   if (!d.md) return mount(el, html`<section class="sp-panel dsy-vacio"><span class="soon-ic">${ico('layers', 22)}</span><h2>${b.name} todavía no tiene su sistema visual</h2>
     <p>Lo escribe ②B Branding con <b>br-sistema</b>, en <code>${d.path}</code>: los colores con su hex, las tipografías con sus tamaños, la grilla y las reglas. Cuando esté en el repo, aparece aquí solo.</p>
@@ -46,7 +47,7 @@ async function publicadoUI(el, { me, b, alive }) {
 
   function assetsHtml() {
     if (!A.folder) return html`<p class="mut sm" style="margin:0">Esta marca todavía no tiene su carpeta de Drive. Créala en Clientes › la marca › Ajustes › Drive, y sube ahí los íconos, las texturas y las fotos.</p>`;
-    const abrir = html`<a class="btn ghost xs" href="${A.folder}" target="_blank" rel="noopener">${ico('drive', 12)} Abrir la carpeta</a>`;
+    const abrir = html`<a class="btn ghost sm" href="${A.folder}" target="_blank" rel="noopener">${ico('drive', 12)} Abrir la carpeta</a>`;
     if (A.error) return html`<div class="row" style="gap:10px"><span class="mut sm">${A.error}</span>${abrir}</div>`;
     if (!A.files) return html`<p class="mut sm" style="margin:0">Leyendo la carpeta…</p>`;
     if (!A.files.length) return html`<div class="row" style="gap:10px"><span class="mut sm">La carpeta está vacía.</span>${abrir}</div>`;
@@ -67,7 +68,7 @@ async function publicadoUI(el, { me, b, alive }) {
       <nav class="dsy-idx">${IDX.map(([k, l]) => html`<button type="button" class="${S.on === k ? 'on' : ''}" data-act="ir" data-k="${k}"><i></i>${l}</button>`)}
         <div class="dsy-src"><span class="lbl" style="margin:0">De dónde sale</span><span><b>sistema-visual.md</b> · el que abren ⑥A Diseño gráfico y ⑦ Video para ejecutar</span>
           <a href="${REPO + d.path}" target="_blank" rel="noopener">${ico('link', 12)} Ver el archivo</a>
-          <button type="button" class="btn ghost xs" data-act="tokens">${ico('copy', 12)} Copiar tokens CSS</button></div>
+          <button type="button" class="btn ghost sm" data-act="tokens">${ico('copy', 12)} Copiar tokens CSS</button></div>
         ${sis.referentes.length ? html`<div class="dsy-src"><span class="lbl" style="margin:0">Referentes</span>${sis.referentes.map((r) => html`<span><b>${r.quien}</b> · ${r.que}</span>`)}</div>` : ''}</nav>
       <main class="dsy-main">
         ${sec('color', 'Color', sis.colores.length ? `${sis.colores.length} colores${sis.colores.some((c) => /acento/i.test(c.rol)) ? ' · un solo acento' : ''}. Clic en un hex para copiarlo.` : 'El archivo no trae la tabla de color.', html`
@@ -129,8 +130,8 @@ async function editorUI(host, { me, b, alive }) {
   mount(host, html`<p class="loading">Cargando el editor…</p>`);
   const BB = col('brand_boards'), puede = canEdit(me, 'clients'), extiende = NIVEL_EXTIENDE.test(b.nivel?.nombre || '');
   let d, doc = null, isNew = false;
-  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(host, html`<div class="empty"><b>No pude leer el sistema visual</b>${e.message}</div>`); }
-  try { doc = await BB.get(b.slug); } catch (e) { if (e.status === 404) isNew = true; else return mount(host, html`<div class="empty"><b>No pude leer el borrador</b>${e.message}</div>`); }
+  try { d = await api(`repo/client/${encodeURIComponent(b.slug)}/sistema`); } catch (e) { return mount(host, html`${fallo({ titulo: 'No pude leer el sistema visual', linea: e.message })}`); }
+  try { doc = await BB.get(b.slug); } catch (e) { if (e.status === 404) isNew = true; else return mount(host, html`${fallo({ titulo: 'No pude leer el borrador', linea: e.message })}`); }
   if (!alive()) return;
   const base = d.md ? leerSistema(d.md) : null, hAhora = huella(d.md || '');
   const S = { sec: 'paleta', sucio: false, conflicto: false, fondo: 0, formato: '' };
@@ -161,7 +162,7 @@ async function editorUI(host, { me, b, alive }) {
         <label class="dse-chk"><input type="checkbox" data-p="contrastes.${i}.ok" ${x.ok ? raw('checked') : ''} ${!puede || (!pasa && !x.ok) ? raw('disabled') : ''}> ok</label>
         <input class="in" type="text" data-p="contrastes.${i}.nota" value="${x.nota}" maxlength="120" aria-label="Nota del par" ${puede ? '' : raw('disabled')}>
         ${!pasa ? html`<small class="dse-par-no">${x.ok ? `Está en ok con ${r ?? 'sin dato'}: quítale el ok` : r !== null && r >= 3 ? 'Solo texto grande: no puede ir en ok' : 'No sirve: no puede ir en ok'}</small>` : ''}
-        ${puede ? html`<button type="button" class="btn ghost xs" data-act="par-x" data-i="${i}" title="Quitar el par">${ico('x', 12)}</button>` : ''}</div>`; })}</div>` : html`<p class="mut sm">Aún no hay pares. Toca una celda de la matriz para agregarlo.</p>`}`;
+        ${puede ? html`<button type="button" class="btn ghost sm" data-act="par-x" data-i="${i}" title="Quitar el par">${ico('x', 12)}</button>` : ''}</div>`; })}</div>` : html`<p class="mut sm">Aún no hay pares. Toca una celda de la matriz para agregarlo.</p>`}`;
   };
   const maquetas = () => {
     const sis = D(), M = medidasDe(sis.composicion), cs = sis.colores.filter((c) => hexOk(c.hex));
@@ -200,26 +201,26 @@ async function editorUI(host, { me, b, alive }) {
   const inp = (ruta, v, o = {}) => html`<input class="in" type="${o.t || 'text'}" data-p="${ruta}" ${o.n ? raw(`data-n="${o.n}"`) : ''} value="${v ?? ''}" maxlength="${o.max || 160}" placeholder="${o.ph || ''}" aria-label="${o.label || ''}" ${o.bloq || !puede ? raw('disabled') : ''} ${o.step ? raw(`step="${o.step}"`) : ''} autocomplete="off">`;
   const aviso = () => html`${!puede ? html`<p class="dse-aviso">Tu perfil solo puede ver el borrador.</p>` : ''}
     ${extiende ? html`<p class="dse-aviso">${ico('triangle-alert', 14)} En ${b.nivel.nombre} el sistema visual ya viene de Brand Foundation: aquí solo lo extiendes. Lo que ya está en el archivo no se quita ni se renombra.</p>` : ''}
-    ${desfasado() ? html`<p class="dse-aviso dse-aviso-no">${ico('triangle-alert', 14)} El archivo del repo cambió desde que empezaste este borrador. ${puede && !extiende ? html`<button type="button" class="btn ghost xs" data-act="reiniciar">Empezar de nuevo desde el archivo</button>` : ''}</p>` : ''}
-    ${S.conflicto ? html`<p class="dse-aviso dse-aviso-no">Alguien más guardó el borrador. <button type="button" class="btn ghost xs" data-act="recargar">Traer la última versión</button> (se pierden tus cambios sin guardar).</p>` : ''}`;
+    ${desfasado() ? html`<p class="dse-aviso dse-aviso-no">${ico('triangle-alert', 14)} El archivo del repo cambió desde que empezaste este borrador. ${puede && !extiende ? html`<button type="button" class="btn ghost sm" data-act="reiniciar">Empezar de nuevo desde el archivo</button>` : ''}</p>` : ''}
+    ${S.conflicto ? html`<p class="dse-aviso dse-aviso-no">Alguien más guardó el borrador. <button type="button" class="btn ghost sm" data-act="recargar">Traer la última versión</button> (se pierden tus cambios sin guardar).</p>` : ''}`;
   const sPaleta = () => { const sis = D(); return html`
     <p class="dse-sub">Cada color con su hex, dónde se usa y dónde no. Un solo acento.</p>
     <div class="dse-rows">${sis.colores.map((c, i) => { const bloq = esBase('colores', 'nombre', c.nombre); return html`<div class="dse-row dse-row-c">
       <span class="dse-chip" style="background:${hx(c.hex)}"></span>
       ${inp(`colores.${i}.rol`, c.rol, { label: 'Rol', ph: 'Rol', max: 40 })}${inp(`colores.${i}.nombre`, c.nombre, { label: 'Nombre', ph: 'Nombre', max: 40, bloq })}${inp(`colores.${i}.hex`, c.hex, { label: 'Hex', ph: '#RRGGBB', max: 7, bloq })}
       ${inp(`colores.${i}.usa`, c.usa, { label: 'Dónde se usa', ph: 'Dónde se usa', max: 140 })}${inp(`colores.${i}.no`, c.no, { label: 'Dónde no', ph: 'Dónde no', max: 140 })}
-      ${puede && !bloq ? html`<button type="button" class="btn ghost xs" data-act="color-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`; })}
+      ${puede && !bloq ? html`<button type="button" class="btn ghost sm" data-act="color-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`; })}
       ${!sis.colores.length ? html`<p class="mut sm">${SIN('sale de la guía de marca y del brief')}</p>` : ''}</div>
-    ${puede ? html`<button type="button" class="btn ghost xs" data-act="color-mas">${ico('plus', 12)} Agregar color</button>` : ''}
+    ${puede ? html`<button type="button" class="btn ghost sm" data-act="color-mas">${ico('plus', 12)} Agregar color</button>` : ''}
     <span class="lbl">Notas de color (una por línea)</span><textarea class="in" rows="2" data-lineas="colorNotas" ${dis} aria-label="Notas de color">${sis.colorNotas.join('\n')}</textarea>
     <span class="lbl">Matriz de contraste</span><div id="dse-matriz">${matriz()}</div>`; };
   const sTipo = () => { const sis = D(), T = sis.tipo, fams = T.familias.map((f) => f.nombre).filter(Boolean); return html`
     <p class="dse-sub">Las familias y la escala. Cada nivel se ve con su estilo mientras lo cambias.</p>
     <span class="lbl">Familias</span>
     <div class="dse-rows">${T.familias.map((f, i) => html`<div class="dse-row dse-row-f">${inp(`tipo.familias.${i}.nombre`, f.nombre, { label: 'Familia', ph: 'Familia', max: 40, bloq: extiende && base?.tipo.familias.some((x) => x.nombre === f.nombre) })}${inp(`tipo.familias.${i}.para`, f.para, { label: 'Para qué', ph: 'Para qué', max: 80 })}${inp(`tipo.familias.${i}.pesos`, f.pesos, { label: 'Pesos', ph: 'Medium 500 · Regular 400', max: 80 })}
-      ${puede && !(extiende && base?.tipo.familias.some((x) => x.nombre === f.nombre)) ? html`<button type="button" class="btn ghost xs" data-act="fam-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}
+      ${puede && !(extiende && base?.tipo.familias.some((x) => x.nombre === f.nombre)) ? html`<button type="button" class="btn ghost sm" data-act="fam-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}
       ${!T.familias.length ? html`<p class="mut sm">${SIN('sale de la guía de marca')}</p>` : ''}</div>
-    ${puede ? html`<button type="button" class="btn ghost xs" data-act="fam-mas">${ico('plus', 12)} Agregar familia</button>` : ''}
+    ${puede ? html`<button type="button" class="btn ghost sm" data-act="fam-mas">${ico('plus', 12)} Agregar familia</button>` : ''}
     <span class="lbl">Escala</span>
     <div class="dse-rows">${T.escala.map((e, i) => { const bloq = extiende && base?.tipo.escala.some((x) => x.nivel === e.nivel); return html`<div class="dse-row dse-row-e">
       ${inp(`tipo.escala.${i}.nivel`, e.nivel, { label: 'Nivel', ph: 'Nivel', max: 30, bloq })}
@@ -228,16 +229,16 @@ async function editorUI(host, { me, b, alive }) {
       ${inp(`tipo.escala.${i}.size`, e.size, { t: 'number', n: 1, label: 'Tamaño en px', max: 4, step: 1 })}
       <input class="in" type="number" step="5" data-p="tipo.escala.${i}.lh" data-n="1" data-k="100" value="${Math.round((Number(e.lh) || 0) * 100)}" aria-label="Interlineado en %" ${dis}>
       <input class="in" type="number" step="0.5" data-p="tipo.escala.${i}.tracking" data-n="1" data-k="100" value="${+((Number(e.tracking) || 0) * 100).toFixed(2)}" aria-label="Espaciado entre letras en %" ${dis}>
-      <label class="dse-chk"><input type="checkbox" data-p="tipo.escala.${i}.mayus" ${e.mayus ? raw('checked') : ''} ${dis}> MAYÚS</label>
+      <label class="sw-row"><input type="checkbox" class="switch" data-p="tipo.escala.${i}.mayus" ${e.mayus ? raw('checked') : ''} ${dis}> MAYÚS</label>
       <select class="in" data-p="tipo.escala.${i}.color" aria-label="Color" ${dis}><option value="">Color: el de la pieza</option>${sis.colores.filter((c) => hexOk(c.hex)).map((c) => html`<option value="${c.hex}" ${c.hex === e.color ? raw('selected') : ''}>${c.nombre}</option>`)}</select>
-      ${puede && !bloq ? html`<button type="button" class="btn ghost xs" data-act="esc-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}
+      ${puede && !bloq ? html`<button type="button" class="btn ghost sm" data-act="esc-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}
       <div class="dse-smp" data-i="${i}" style="${estiloE(e)}">${e.size >= 30 ? b.name : 'Así se lee el texto de la marca en una pieza.'}</div></div>`; })}
       ${!T.escala.length ? html`<p class="mut sm">${SIN('sale de la guía de marca y del kit de redes')}</p>` : ''}</div>
-    ${puede ? html`<button type="button" class="btn ghost xs" data-act="esc-mas">${ico('plus', 12)} Agregar nivel</button>` : ''}
+    ${puede ? html`<button type="button" class="btn ghost sm" data-act="esc-mas">${ico('plus', 12)} Agregar nivel</button>` : ''}
     <span class="lbl">Combinaciones</span>
     <div class="dse-rows">${T.combinaciones.map((c, i) => html`<div class="dse-row dse-row-k">${inp(`tipo.combinaciones.${i}.n`, c.n, { label: 'Nombre', ph: '01 · Titular + texto', max: 60 })}${inp(`tipo.combinaciones.${i}.que`, c.que, { label: 'Combinación', ph: 'Inter Tight Medium 56 + Inter Light 18', max: 160 })}
-      ${puede ? html`<button type="button" class="btn ghost xs" data-act="comb-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}</div>
-    ${puede ? html`<button type="button" class="btn ghost xs" data-act="comb-mas">${ico('plus', 12)} Agregar combinación</button>` : ''}
+      ${puede ? html`<button type="button" class="btn ghost sm" data-act="comb-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}</div>
+    ${puede ? html`<button type="button" class="btn ghost sm" data-act="comb-mas">${ico('plus', 12)} Agregar combinación</button>` : ''}
     <span class="lbl">Notas de tipografía (una por línea)</span><textarea class="in" rows="2" data-lineas="tipo.notas" ${dis} aria-label="Notas de tipografía">${T.notas.join('\n')}</textarea>`; };
   const sLogos = () => { const sis = D(); return html`
     <p class="dse-sub">Cada versión con su fondo. El nombre lleva «A sobre B» con colores de la paleta; el archivo vive en <code>02-marca/logos/</code>.</p>
@@ -245,17 +246,17 @@ async function editorUI(host, { me, b, alive }) {
       <span class="dse-lgv" style="background:${hx(l.fondo?.hex, '#ffffff')}">${logoSrc(l) ? html`<img alt="${l.version}" src="${logoSrc(l)}">` : html`<small>${l.archivo || 'sin archivo'}</small>`}</span>
       ${inp(`logos.${i}.version`, l.version, { label: 'Versión', ph: 'Blanco sobre Negro mate', max: 100, bloq })}${inp(`logos.${i}.archivo`, l.archivo, { label: 'Archivo', ph: 'logo-blanco.svg', max: 60, bloq })}${inp(`logos.${i}.donde`, l.donde, { label: 'Dónde', ph: 'Dónde se usa', max: 120 })}
       ${!l.fondo || !l.tinta ? html`<small class="dse-sd">La versión no nombra dos colores de la paleta.</small>` : ''}
-      ${puede && !bloq ? html`<button type="button" class="btn ghost xs" data-act="logo-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`; })}
+      ${puede && !bloq ? html`<button type="button" class="btn ghost sm" data-act="logo-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`; })}
       ${!sis.logos.length ? html`<p class="mut sm">${SIN('los archivos del logo vienen del cliente (02-marca/logos/)')}</p>` : ''}</div>
-    ${puede ? html`<button type="button" class="btn ghost xs" data-act="logo-mas">${ico('plus', 12)} Agregar versión</button>` : ''}`; };
+    ${puede ? html`<button type="button" class="btn ghost sm" data-act="logo-mas">${ico('plus', 12)} Agregar versión</button>` : ''}`; };
   const sGrilla = () => { const sis = D(), M = medidasDe(sis.composicion); return html`
     <p class="dse-sub">Grilla, márgenes y safe zones: de aquí salen las maquetas. Las filas se escriben como en el archivo.</p>
     <div class="dse-medidas"><span>Márgenes <b>${M.margen == null ? SIN('fila «Márgenes»') : `${M.margen}% del lado corto`}</b></span><span>Columnas <b>${M.columnas ?? SIN('fila «Grilla»')}</b></span>
       <span>Safe zones 9:16 <b>${M.safe ? `${M.safe.arriba}% arriba · ${M.safe.abajo}% abajo · ${M.safe.der}% derecha` : SIN('fila «Safe zones»')}</b></span></div>
     ${sis.composicion.map((t, ti) => html`${t.titulo ? html`<span class="lbl">${t.titulo}</span>` : ''}<div class="dse-rows">${t.rows.map((r, ri) => html`<div class="dse-row dse-row-g">${r.map((c, ci) => inp(`composicion.${ti}.rows.${ri}.${ci}`, c, { label: t.head[ci] || (ci ? 'Valor' : 'Regla'), max: 400 }))}
-      ${puede ? html`<button type="button" class="btn ghost xs" data-act="regla-x" data-t="${ti}" data-i="${ri}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}</div>
-      ${puede ? html`<button type="button" class="btn ghost xs" data-act="regla-mas" data-t="${ti}">${ico('plus', 12)} Agregar fila</button>` : ''}`)}
-    ${!sis.composicion.length ? html`<p class="mut sm">${SIN('sale de la guía de marca')}</p>${puede ? html`<button type="button" class="btn ghost xs" data-act="comp-nueva">${ico('plus', 12)} Empezar con Grilla, Márgenes y Safe zones</button>` : ''}` : ''}`; };
+      ${puede ? html`<button type="button" class="btn ghost sm" data-act="regla-x" data-t="${ti}" data-i="${ri}" title="Quitar">${ico('x', 12)}</button>` : ''}</div>`)}</div>
+      ${puede ? html`<button type="button" class="btn ghost sm" data-act="regla-mas" data-t="${ti}">${ico('plus', 12)} Agregar fila</button>` : ''}`)}
+    ${!sis.composicion.length ? html`<p class="mut sm">${SIN('sale de la guía de marca')}</p>${puede ? html`<button type="button" class="btn ghost sm" data-act="comp-nueva">${ico('plus', 12)} Empezar con Grilla, Márgenes y Safe zones</button>` : ''}` : ''}`; };
   const sNo = () => html`<p class="dse-sub">Lo que nunca va. Una regla por línea, escrita como valor, no como adjetivo.</p>
     <textarea class="in" rows="8" data-lineas="prohibido" ${dis} aria-label="Lo prohibido">${D().prohibido.join('\n')}</textarea>
     ${!D().prohibido.length ? html`<p class="mut sm">${SIN('sale de la guía de marca y de lo que el cliente rechazó')}</p>` : ''}`;
@@ -272,7 +273,7 @@ async function editorUI(host, { me, b, alive }) {
   function paint() {
     mount(host, html`<div class="dse">
       <div class="dse-top"><nav class="dse-tabs" aria-label="Secciones del editor">${SECS.map(([k, l, ic]) => html`<button type="button" class="${S.sec === k ? 'on' : ''}" data-act="sec" data-k="${k}">${ico(ic, 13)} ${l}</button>`)}</nav>
-        ${puede ? html`<button type="button" class="btn xs" data-act="guardar">${ico('check', 12)} Guardar borrador</button>` : ''}</div>
+        ${puede ? html`<button type="button" class="btn sm" data-act="guardar">${ico('check', 12)} Guardar borrador</button>` : ''}</div>
       ${aviso()}<div id="dse-barra">${barra()}</div>
       <section class="dse-cuerpo">${CUERPO[S.sec]()}</section></div>`);
     vivo(['mock']);

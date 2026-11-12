@@ -4,6 +4,7 @@
 // (api/_lib/intel.js): esta pantalla solo pinta lo que llega. Lo que todavía no existe se ve en gris, con «Pronto».
 import { html, mount, api, fdate, ico, drawer, md } from './core.js';
 import { mesLabel } from './intel-mapa.js';
+import { fallo } from './visual.js';
 
 // Los documentos del repo vienen con saltos de línea a mitad de párrafo: se unen las líneas de texto seguidas para que se lean
 // como un solo párrafo (títulos, listas, tablas, citas y bloques de código quedan como están).
@@ -24,7 +25,7 @@ export async function intelView(box, { slug, alive = () => true }) {
   mount(box, html`<p class="loading">Cargando…</p>`);
   let d;
   try { d = await api(`repo/client/${encodeURIComponent(slug)}/intel`); }
-  catch (e) { return mount(box, html`<div class="empty"><b>No pude abrir los entregables</b>${e.message}</div>`); }
+  catch (e) { return mount(box, html`${fallo({ titulo: 'No pude abrir los entregables', linea: e.message })}`); }
   if (!alive()) return;
   const team = d.vista === 'equipo';
   const items = d.depts.flatMap((x) => x.items.map((it) => ({ ...it, dept: x.nombre })));

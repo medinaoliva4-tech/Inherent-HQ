@@ -6,6 +6,7 @@ import { html, raw, mount, col, toast, confirmAsk, ico, $, $$ } from './core.js'
 import { recipesWith, isDefaultId, serviceRecipe, bundleRecipe, RECIPE_ROLES, TASK_TIPOS, repeatText } from './recipes.js';
 import { isLink } from './tasktype.js';
 import { recetasPanel } from './recetas.js';
+import { vacio } from './visual.js';
 
 const RC = col('recipes');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -77,7 +78,7 @@ export async function responsabilidadesTab(el, ctx) {
         <input class="in" data-i="${i}" data-f="soplink" placeholder="https://…" value="${link ? r.sop : ''}" style="margin-top:4px" ${link ? '' : raw('hidden')} ${dis}></div>
       <div><div class="lb">Tipo</div>${sel('tipo', TASK_TIPOS.map((t) => [t, t]), r.tipo || 'Delivery')}</div>
       <div><div class="lb">Depende de</div>${others.length ? html`<div class="deps">${r.after?.includes('*') ? html`<span class="chip sm2">todo lo anterior</span>` : ''}${rc.tasks.map((x, j) => (j === i ? '' : html`<button type="button" class="${(r.after || []).includes(x.key) ? 'on' : ''}" data-dep="${x.key}" data-i="${i}" title="${x.title || x.key}" ${dis}>${j + 1}</button>`))}</div>` : html`<span class="mut sm">—</span>`}</div>
-      <div class="rm">${ceo ? html`<button class="btn ghost xs" data-rsp="rm" data-i="${i}" title="Quitar">${ico('trash', 14)}</button>` : ''}</div>
+      <div class="rm">${ceo ? html`<button class="btn ghost sm" data-rsp="rm" data-i="${i}" title="Quitar">${ico('trash', 14)}</button>` : ''}</div>
     </div>`;
   }
   function paint() {
@@ -88,9 +89,9 @@ export async function responsabilidadesTab(el, ctx) {
         <div style="flex:1;min-width:240px"><label class="f">Paquete / Servicio</label><select class="in" id="rspick"><option value="">Elige qué programar…</option>${opts.map(([g, l]) => (l.length ? html`<optgroup label="${g}">${l.map(([k, n, has]) => html`<option value="${k}" ${k === key ? raw('selected') : ''}>${n}${has ? '' : ' · sin responsables'}</option>`)}</optgroup>` : ''))}</select></div>
         ${rc && ceo ? html`<button class="btn" data-rsp="add">${ico('plus', 13)} Responsabilidad</button>` : ''}</div>
       <div class="mut sm" style="margin-top:10px;max-width:720px">Al activar un paquete en un cliente, estas responsabilidades se vuelven tareas con dueño (quien cubre el rol), fecha y SOP, en el orden que marcan las dependencias.${ceo ? '' : ' Solo el CEO las edita.'}</div>
-      ${!rc ? html`<div class="empty" style="margin-top:18px"><b>Elige un paquete o un servicio</b>Verás quién hace qué, cuándo y con qué SOP. ${bundles.length || services.length ? '' : 'Primero crea un servicio o un paquete.'}</div>` : html`
+      ${!rc ? html`${vacio({ icono: 'inbox', titulo: 'Elige un paquete o un servicio', linea: `Verás quién hace qué, cuándo y con qué SOP. ${bundles.length || services.length ? '' : 'Primero crea un servicio o un paquete.'}` })}` : html`
         <div class="row" style="margin-top:18px;gap:8px;flex-wrap:wrap"><h3 style="margin:0;font-weight:500">${cur?.[1] || rc.name}</h3><span class="chip sm2">${rc.type === 'paquete' ? 'Paquete' : rc.type === 'servicio' ? 'Servicio' : rc.type === 'interna' ? 'Recurrente' : 'Proyecto'}</span>${isNew ? html`<span class="chip sm2 amber">Nueva · sin guardar</span>` : rc.edited ? html`<span class="chip sm2 dark">${rc.own ? 'Tuya' : 'Editada'}</span>` : html`<span class="chip sm2">De siempre</span>`}<div class="sp"></div>
-          ${ceo ? html`<label class="chip rdep"><input type="checkbox" id="rsactive" ${rc.active !== false ? raw('checked') : ''}> Activa</label>` : ''}</div>
+          ${ceo ? html`<label class="sw-row"><input type="checkbox" class="switch" id="rsactive" ${rc.active !== false ? raw('checked') : ''}> Activa</label>` : ''}</div>
         ${rc.type === 'paquete' ? html`<div class="mut sm" style="margin:4px 0 10px">Lo propio del paquete. Cada servicio que incluye suma además sus propias responsabilidades (elígelo arriba para verlas).</div>` : ''}
         <div class="rsp" style="margin-top:12px">
           <div class="rh"><span></span><span>Qué</span><span>Responsable</span><span>Revisa</span><span>${dayLabel() || 'Cuándo'}</span><span>Horas</span><span>SOP</span><span>Tipo</span><span>Depende de</span><span></span></div>

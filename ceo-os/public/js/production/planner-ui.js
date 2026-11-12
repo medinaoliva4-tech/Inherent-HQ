@@ -67,24 +67,24 @@ export async function plannerTool(host, { me, slug, b, alive } = {}) {
       <div class="pl-acts">${ed ? html`<button type="button" class="btn" data-a="guardar">${ico('check', 14)} Guardar</button>` : ''}${!nuevo ? html`<button type="button" class="btn ghost" data-a="callsheet">${ico('file-text', 14)} Call sheet</button>${S.puede ? html`<button type="button" class="btn ghost" data-a="${j.archivado ? 'desarchivar' : 'archivar'}">${j.archivado ? 'Desarchivar' : 'Archivar'}</button>` : ''}` : ''}<button type="button" class="btn ghost" data-a="cerrar">Cerrar</button></div></section>`;
   }
   function ordenHtml(j, o, ed) {
-    if (!j.escenas.length) return html`<p class="pl-sd">${SIN_DATOS}: las escenas salen de la Shot List del mes.</p>${ed ? html`<button type="button" class="btn sm" data-a="shotlist">${ico('download', 14)} Traer de la Shot List</button>` : ''}`;
+    if (!j.escenas.length) return html`<p class="pl-sd">${SIN_DATOS}: las escenas salen de la Shot List del mes.</p>${ed ? html`<button type="button" class="btn" data-a="shotlist">${ico('download', 14)} Traer de la Shot List</button>` : ''}`;
     return html`<p class="mut sm">${o.sinCall ? `${SIN_DATOS}: pon el call time para ver las horas` : `Termina ${o.fin || SIN_DATOS}`} · ${o.horas} h con márgenes${o.faltan.length ? ` · faltan los minutos de ${o.faltan.join(', ')}` : ''}</p>
       <ol class="pl-orden">${o.filas.map((e, i) => html`<li data-id="${e.id}"><b>${e.inicio || '--:--'}</b> <span>${e.id} · ${e.accion || e.id_creativo || ''}${e.lugar ? html` <span class="mut">· ${e.lugar}</span>` : ''}</span>
         <input class="in sm" type="number" min="0" step="1" data-e="${e.id}" value="${e.min ?? ''}" placeholder="min" aria-label="Minutos de ${e.id}" ${ed ? '' : 'disabled'}>
-        ${ed ? html`<button type="button" class="btn sm ghost" data-a="subir" data-id="${e.id}" aria-label="Subir ${e.id}" ${i ? '' : 'disabled'}>↑</button><button type="button" class="btn sm ghost" data-a="bajar" data-id="${e.id}" aria-label="Bajar ${e.id}" ${i < o.filas.length - 1 ? '' : 'disabled'}>↓</button>` : ''}</li>`)}</ol>
-      ${ed ? html`<button type="button" class="btn sm" data-a="shotlist">${ico('download', 14)} Traer de la Shot List otra vez</button>` : ''}`;
+        ${ed ? html`<button type="button" class="btn ghost" data-a="subir" data-id="${e.id}" aria-label="Subir ${e.id}" ${i ? '' : 'disabled'}>↑</button><button type="button" class="btn ghost" data-a="bajar" data-id="${e.id}" aria-label="Bajar ${e.id}" ${i < o.filas.length - 1 ? '' : 'disabled'}>↓</button>` : ''}</li>`)}</ol>
+      ${ed ? html`<button type="button" class="btn" data-a="shotlist">${ico('download', 14)} Traer de la Shot List otra vez</button>` : ''}`;
   }
   function recursosHtml(j, ed) {
     const r = j.produccion.recursos, t = montos ? totalRecursos(j) : null;
     return html`${r.length ? html`<ul class="pl-rec">${r.map((x, i) => html`<li><input class="in" data-r="${i}" data-f="nombre" value="${x.nombre}" aria-label="Recurso" ${ed ? '' : 'disabled'}><input class="in sm" type="number" min="0" data-r="${i}" data-f="cantidad" value="${x.cantidad ?? ''}" placeholder="cant." aria-label="Cantidad" ${ed ? '' : 'disabled'}>
-      ${montos ? html`<input class="in sm" type="number" min="0" step="any" data-r="${i}" data-f="monto" value="${x.monto ?? ''}" placeholder="monto" aria-label="Monto" ${ed ? '' : 'disabled'}>` : ''}${ed ? html`<button type="button" class="btn sm ghost" data-a="quitar-r" data-i="${i}" aria-label="Quitar recurso">${ico('x', 14)}</button>` : ''}</li>`)}</ul>` : html`<p class="pl-sd">${SIN_DATOS}: aún no hay recursos (transporte, renta de equipo, comida…).</p>`}
-      ${montos ? html`<p class="sm">Total de recursos: ${t === null ? html`<span class="pl-sd">${SIN_DATOS}</span>` : html`<b>${t}</b>`}</p>` : ''}${ed ? html`<button type="button" class="btn sm" data-a="agregar-r">${ico('plus', 14)} Recurso</button>` : ''}`;
+      ${montos ? html`<input class="in sm" type="number" min="0" step="any" data-r="${i}" data-f="monto" value="${x.monto ?? ''}" placeholder="monto" aria-label="Monto" ${ed ? '' : 'disabled'}>` : ''}${ed ? html`<button type="button" class="btn ghost" data-a="quitar-r" data-i="${i}" aria-label="Quitar recurso">${ico('x', 14)}</button>` : ''}</li>`)}</ul>` : html`<p class="pl-sd">${SIN_DATOS}: aún no hay recursos (transporte, renta de equipo, comida…).</p>`}
+      ${montos ? html`<p class="sm">Total de recursos: ${t === null ? html`<span class="pl-sd">${SIN_DATOS}</span>` : html`<b>${t}</b>`}</p>` : ''}${ed ? html`<button type="button" class="btn" data-a="agregar-r">${ico('plus', 14)} Recurso</button>` : ''}`;
   }
   function pintar() {
     if (!alive()) return;
     const arch = jornadas().filter((x) => x.archivado);
     mount(host, html`<div class="pl"><header class="pl-head"><h2>${ico('clock', 16)} Production Planner</h2><span class="grm-cli">${b?.name || slug}</span></header>
-      <div class="pl-mes"><button type="button" class="btn sm ghost" data-a="mes" data-n="-1" aria-label="Mes anterior">←</button><b>${nombreMes(S.mes)}</b><button type="button" class="btn sm ghost" data-a="mes" data-n="1" aria-label="Mes siguiente">→</button></div>
+      <div class="pl-mes"><button type="button" class="btn ghost" data-a="mes" data-n="-1" aria-label="Mes anterior">←</button><b>${nombreMes(S.mes)}</b><button type="button" class="btn ghost" data-a="mes" data-n="1" aria-label="Mes siguiente">→</button></div>
       <div class="pl-cuerpo"><div class="pl-izq">${tiraHtml()}${medidorHtml()}</div><div class="pl-der" id="pl-jor">${jornadaHtml()}</div></div>
       ${arch.length ? html`<details class="pl-arch" ${S.archivadas ? 'open' : ''}><summary>Archivadas (${arch.length})</summary>${arch.map((j) => html`<button type="button" class="pl-j" data-a="elegir" data-id="${j.id}" data-estado="Cancelado">${j.date || ''} · ${j.title || 'Jornada'}</button>`)}</details>` : ''}</div>`);
   }

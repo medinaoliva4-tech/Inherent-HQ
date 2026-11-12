@@ -42,7 +42,7 @@ export const vista = {
     function hooks(x) {
       return html`<ul class="rp-hooks">${x.hooks.map((h, i) => html`<li data-enviado="${h.enviado ? 1 : 0}"><input class="in" data-h="${i}" data-f="texto" value="${h.texto}" maxlength="200" placeholder="El gancho" aria-label="Gancho ${i + 1}" ${ed && !h.enviado ? '' : 'disabled'}>
         <input class="in" data-h="${i}" data-f="caption" value="${h.caption}" maxlength="${limiteDe('hook')}" placeholder="Caption (hasta ${limiteDe('hook')})" aria-label="Caption del gancho ${i + 1}" ${ed && !h.enviado ? '' : 'disabled'}>
-        ${h.enviado ? html`<span class="chip">En Ads Studio</span>` : ''}</li>`)}</ul>${ed ? html`<button type="button" class="btn sm" data-a="hook-nuevo">${ico('plus', 14)} Gancho</button>` : ''}`;
+        ${h.enviado ? html`<span class="chip">En Ads Studio</span>` : ''}</li>`)}</ul>${ed ? html`<button type="button" class="btn" data-a="hook-nuevo">${ico('plus', 14)} Gancho</button>` : ''}`;
     }
     function detalle() {
       const e = elegida(); if (!e) return html`<p class="mut sm">Toca una celda de la matriz para trabajar esa salida.</p>`;

@@ -7,6 +7,7 @@ import { ctxMenu, wireDnd, moveDialog, folderIcon, homeIcon } from '../library-u
 import { diagramEditor, diagramView, measure, fromDoc, toMermaid, template, empty as emptyDiagram } from '../diagram-editor.js';
 import { SECCIONES, nombreSeccion } from '../guia-secciones.js';
 import { olvidarGuias } from '../guia.js';
+import { vacio } from '../visual.js';
 
 // Library: SOPs, playbooks, videos y notas que el equipo escribe aquí, en carpetas.
 // Una carpeta se puede conectar a una carpeta de Google Drive: se ve su contenido y se crean Docs ahí.
@@ -279,7 +280,7 @@ export async function render(el, { me, sub, alive }) {
   // ---------- una carpeta (o la raíz): ruta, subcarpetas, documentos y su Drive ----------
   async function browse(fid) {
     const f = fid ? folders.find((x) => x.id === fid) : null;
-    if (fid && !f) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a><div class="empty" style="margin-top:16px"><b>Esa carpeta no existe</b>Puede que la hayan movido o borrado.</div>`);
+    if (fid && !f) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a>${vacio({ icono: 'inbox', titulo: 'Esa carpeta no existe', linea: 'Puede que la hayan movido o borrado.' })}`);
     curFid = fid;
     if (f) { for (const a of pathOf(folders, fid)) openSet.add(a.id); saveOpen(); }
     let drive = null, dErr = null;
@@ -298,17 +299,17 @@ export async function render(el, { me, sub, alive }) {
             <div class="row lib-acts" style="gap:8px;flex-wrap:wrap"><button class="btn ghost" data-act="newFolderHere">+ Carpeta</button><button class="btn ghost" data-act="recHere">${ico('dot', 13)} Grabar video</button><button class="btn" data-act="newDocHere">+ Documento</button></div></div>`}
         <label class="lib-search">${ico('search', 20)}<input class="in" id="q" type="search" placeholder="${f ? `Buscar en ${f.name}…` : 'Buscar en la biblioteca…'}" value="${q}" aria-label="Buscar"><span class="mut sm">${((n) => `${n} documento${n === 1 ? '' : 's'}`)((scope ? docs.filter((d) => scope.has(d.folder_id)) : docs).length)}</span></label>
         ${q ? html`${foundF.length ? html`<div class="sec-title"><h2>Carpetas</h2><span class="mut sm">${foundF.length}</span></div><div class="sp-tiles lib-folders">${foundF.map(folderTile)}</div>` : ''}
-            <section class="sp-panel lib-list"><div class="sp-panel-h row"><h3>Resultados</h3><span class="mut sm">${found.length}</span></div>${found.length ? found.slice(0, 60).map((d) => docRow(d)) : html`<div class="empty" style="margin:12px 0"><b>Nada con eso</b>Prueba otra palabra.</div>`}</section>`
+            <section class="sp-panel lib-list"><div class="sp-panel-h row"><h3>Resultados</h3><span class="mut sm">${found.length}</span></div>${found.length ? found.slice(0, 60).map((d) => docRow(d)) : html`${vacio({ icono: 'inbox', titulo: 'Nada con eso', linea: 'Prueba otra palabra.' })}`}</section>`
           : html`${subs.length ? html`<div class="sec-title"><h2>Carpetas</h2><span class="mut sm">${subs.length}</span></div><div class="sp-tiles lib-folders">${subs.map(folderTile)}<button type="button" class="sp-tile add lib-fadd" data-act="newFolderHere">+ Nueva carpeta</button></div>`
-              : !fid ? html`<div class="empty"><b>Todavía no hay carpetas</b>Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… Adentro puedes poner más carpetas, y conectarla a una carpeta de Drive si quieres.</div>` : ''}
+              : !fid ? html`${vacio({ icono: 'inbox', titulo: 'Aún no hay carpetas', linea: 'Crea la primera: «Onboarding de cliente», «Producción», «Playbooks de venta»… Adentro puedes poner más carpetas, y conectarla a una carpeta de Drive si quieres.' })}` : ''}
             ${fid || here.length ? html`<section class="sp-panel lib-list" data-drop="${fid || ''}"><div class="sp-panel-h row"><h3>${fid ? 'Documentos' : 'Sin carpeta'}</h3><span class="mut sm">${here.length}</span>${fid ? '' : html`<span class="mut sm lib-hint">Arrástralos a una carpeta</span>`}</div>
-              ${here.length ? here.map((d) => docRow(d, false)) : html`<div class="empty" style="margin:12px 0"><b>Sin documentos aquí</b>Crea un SOP, playbook o video con «+ Documento», o arrastra uno desde otra carpeta.</div>`}</section>` : ''}
+              ${here.length ? here.map((d) => docRow(d, false)) : html`${vacio({ icono: 'inbox', titulo: 'Sin documentos aquí', linea: 'Crea un SOP, playbook o video con «+ Documento», o arrastra uno desde otra carpeta.' })}`}</section>` : ''}
             ${recent.length ? html`<section class="sp-panel lib-list"><div class="sp-panel-h row"><h3>Recientes</h3></div>${recent.map((d) => docRow(d))}</section>` : ''}
-            ${f ? html`<div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost xs" data-act="gnew">+ Google Doc</button><a class="btn ghost xs" href="${f.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${IC.drive} Abrir en Drive</a></div>` : ''}</div>
+            ${f ? html`<div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost sm" data-act="gnew">+ Google Doc</button><a class="btn ghost sm" href="${f.drive}" target="_blank" rel="noopener noreferrer" >${IC.drive} Abrir en Drive</a></div>` : ''}</div>
               ${!f.drive ? connectCard('drive', 'Conecta esta carpeta con Google Drive', 'Verás aquí sus archivos y podrás crear Docs, Sheets y Slides directo en ella.', 'connectDrive', 'Conectar con Drive')
                 : drive === null ? html`<p class="loading">Leyendo tu Drive…</p>` : dErr ? html`<div class="warnbox">${dErr}</div>`
                 : drive.files.length ? html`<section class="sp-panel lib-list">${drive.files.map((x) => { const [t, c] = MIME(x.mime); return html`<button class="lib-row" data-act="dfile" data-id="${x.id}"><span class="lib-ic mime" style="--k:${c}">${t}</span><span class="lib-t"><b>${x.name}</b><span class="mut sm">${x.owner || '—'}</span></span><span class="lib-when mut sm">${x.modified ? fdate(x.modified.slice(0, 10)) : ''}</span><span class="sp-tile-go" aria-hidden="true">↗</span></button>`; })}</section>`
-                : html`<div class="empty"><b>La carpeta de Drive está vacía</b>Crea un Google Doc con el botón de arriba.</div>`}` : ''}`}
+                : html`${vacio({ icono: 'inbox', titulo: 'La carpeta de Drive está vacía', linea: 'Crea un Google Doc con el botón de arriba.' })}`}` : ''}`}
       </div></div>`);
       scrollTo(0, y);
       const qi = $('#q', el); qi.oninput = () => { q = qi.value; const pos = qi.selectionStart; paint(); const n = $('#q', el); n.focus(); n.setSelectionRange(pos, pos); };
@@ -329,9 +330,9 @@ export async function render(el, { me, sub, alive }) {
       gnew: async () => { const v = await ask('Nuevo archivo en Drive', [{ k: 'name', l: 'Nombre', req: true }, { k: 'type', l: 'Tipo', t: 'select', opts: [['doc', 'Google Doc'], ['sheet', 'Google Sheet'], ['slides', 'Google Slides'], ['folder', 'Carpeta']] }], 'Crear'); if (!v) return;
         try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       dfile: (t) => { const x = drive.files.find((y) => y.id === t.dataset.id); const em = /folder/.test(x.mime) ? null : `https://drive.google.com/file/d/${x.id}/preview`;
-        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
+        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
           ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:var(--surface)" loading="lazy"></iframe>` : ''}
-          <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;text-decoration:none;display:inline-flex">Abrir en Drive ↗</a>`); },
+          <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;display:inline-flex">Abrir en Drive ↗</a>`); },
     });
     paint();
     if (f?.drive) loadDrive();
@@ -409,7 +410,7 @@ ${qa}`;
   // ---------- Documento: leer y editar ----------
   async function docPage(id) {
     let d = docs.find((x) => x.id === id);
-    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a><div class="empty" style="margin-top:16px"><b>Ese documento no existe</b></div>`);
+    if (!d) return mount(el, html`<a class="btn ghost" href="#/library">← Library</a>${vacio({ icono: 'inbox', titulo: 'Ese documento no existe' })}`);
     let editing = sub[2] === 'edit', ed = null;
     const back = inFolder(d) ? `#/library/${d.folder_id}` : '#/library';
     const paint = () => {
@@ -434,8 +435,8 @@ ${qa}`;
               <h1 class="lib-title">${d.title}</h1>
               ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:16/9;border:0;border-radius:20px;margin-bottom:22px;background:var(--ui-ink2)" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>` : d.url ? html`<a class="artifact" href="${d.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-bottom:18px"><span class="fi">↗</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
               ${d.kind === 'Prompt' ? html`<div class="row" style="gap:8px;margin-bottom:10px"><span class="chip">${d.client ? d.client.toUpperCase() : 'General'}</span><span class="chip">${d.vtype || 'Video'}</span><div class="sp"></div><button class="btn ghost" data-act="copyPrompt">Copiar prompt</button>${canClaude ? html`<button class="btn" data-act="claudePrompt">${ICON.sparkle} Abrir en Claude</button>` : ''}</div><pre class="repo-pre" id="ptext">${d.body || ''}</pre>`
-                : isDg ? (dg ? (dg.nodes.length ? html`<div class="lib-dgview" id="dgview"></div>` : html`<div class="empty"><b>Diagrama vacío</b>Dale «Editar» para dibujarlo.</div>`) : d.body ? diagram(d.body) : html`<div class="empty"><b>Diagrama vacío</b>Dale «Editar» para dibujarlo.</div>`)
-                : !d.body ? html`<div class="empty"><b>Documento vacío</b>Dale «Editar» para escribirlo.</div>`
+                : isDg ? (dg ? (dg.nodes.length ? html`<div class="lib-dgview" id="dgview"></div>` : html`${vacio({ icono: 'inbox', titulo: 'Diagrama vacío', linea: 'Dale «Editar» para dibujarlo.' })}`) : d.body ? diagram(d.body) : html`${vacio({ icono: 'inbox', titulo: 'Diagrama vacío', linea: 'Dale «Editar» para dibujarlo.' })}`)
+                : !d.body ? html`${vacio({ icono: 'inbox', titulo: 'Documento vacío', linea: 'Dale «Editar» para escribirlo.' })}`
                 : d.kind === 'Entrevista' ? (() => { const iv = interview(d.body, d.answers || {}); return html`<div class="iq-bar"><span id="iqcount">${iv.done} de ${iv.total} respondidas</span><span class="sp"></span><span id="iqsave" class="mut"></span><button class="btn" data-act="diag">${ICON.sparkle} ${d.diagnosis ? 'Rehacer diagnóstico' : 'Pedir diagnóstico'}</button></div>
                   ${d.diagnosis ? html`<details class="iq-diag" open><summary><b>Diagnóstico</b><span class="mut sm">${d.diagnosis_at ? fdate(d.diagnosis_at) : ''}</span></summary>${md(d.diagnosis)}</details>` : ''}${iv.view}`; })() : html`<div class="lib-body">${md(d.body)}</div>`}</div>`}
         </div>`);
@@ -475,7 +476,7 @@ ${qa}`;
         if (iv.done < iv.total * 0.3 && !(await confirmAsk(`Solo hay ${iv.done} de ${iv.total} respondidas. ¿Pedir el diagnóstico igual?`))) return;
         const prompt = diagPrompt(d, iv.items, folders.find((f) => f.id === d.folder_id)?.name || '');
         const copy = async () => { try { await navigator.clipboard.writeText(prompt); } catch { const ta = $('#dprompt'); ta.select(); document.execCommand('copy'); } };
-        drawer(html`<div class="row"><b style="font-size:20px;font-weight:500">Diagnóstico con Claude</b><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+        drawer(html`<div class="row"><b style="font-size:20px;font-weight:500">Diagnóstico con Claude</b><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
           <p class="mut" style="margin:6px 0 16px">${iv.done} de ${iv.total} respondidas van en el pedido, con su pregunta y «Lo ideal».</p>
           <div class="dsteps">
             <div><span class="iq-n">1</span><div><b>Copia el pedido</b><button class="btn" data-act="dcopy" style="margin-top:8px">Copiar el pedido</button></div></div>

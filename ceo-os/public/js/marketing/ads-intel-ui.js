@@ -14,6 +14,7 @@ import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { adsUI } from '../ads-ui.js';
 import { competenciaUI } from './competencia-ui.js';
 import * as A from './ads.js';
+import { vacio } from '../visual.js';
 
 const K_DIAS = 'os.ain.dias';
 const DIAS = [7, 30, 90];
@@ -136,11 +137,11 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
     if (r === undefined) return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${skel('fila', 3)}</section>`);
     if (r?.error) {
       const sin = r.status === 403;
-      return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${sin ? html`<div class="empty"><b>Tu perfil no lee la pauta</b>${r.error}. Las variaciones de anuncio sí están en su pestaña.</div>` : html`<div class="warnbox">${r.error}</div>`}</section>${kpis(null)}`);
+      return mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div>${sin ? html`${vacio({ icono: 'lock', titulo: 'Tu perfil no lee la pauta', linea: `${r.error}. Las variaciones de anuncio sí están en su pestaña.` })}` : html`<div class="warnbox">${r.error}</div>`}</section>${kpis(null)}`);
     }
     const c = cliente();
-    const aviso = !r.on ? html`<div class="empty"><b>Conecta Windsor</b>Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app; mientras, esto queda vacío y cada número dice de dónde saldrá.</div>`
-      : !c ? html`<div class="empty"><b>Este cliente no tiene cuentas de pauta</b>Agrégalas en Mis tareas › Ads › Cuentas (Meta, Google Ads o LinkedIn) y aquí aparece su pauta.</div>` : '';
+    const aviso = !r.on ? html`${vacio({ icono: 'inbox', titulo: 'Conecta Windsor', linea: 'Las cuentas de pauta todavía no están conectadas al OS. Pídeselo a quien administra la app; mientras, esto queda vacío y cada número dice de dónde saldrá.' })}`
+      : !c ? html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene cuentas de pauta', linea: 'Agrégalas en Mis tareas › Ads › Cuentas (Meta, Google Ads o LinkedIn) y aquí aparece su pauta.' })}` : '';
     const errs = erroresDe(r);
     mount(el, html`<section class="ain-sec"><div class="ain-sec-h"><h3>Cómo va la pauta</h3>${dias}</div><p class="mut sm">Últimos ${S.dias} días · Meta, Google Ads y LinkedIn vía Windsor (solo lectura).</p>
       ${aviso}${errs.length ? html`<div class="warnbox sm" style="margin:8px 0">${errs}</div>` : ''}${kpis(c)}
@@ -161,17 +162,17 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
       <p class="ain-rec-ev">${ico('chart-column', 12)} ${evidencia(r, oculto)}</p>${r.detalle && !oculto ? html`<p class="mut sm">${r.detalle}</p>` : ''}
       <p class="mut sm ain-rec-regla">${ico('book-open', 12)} ${r.regla}</p>
       ${r.requiere_ceo ? html`<p class="ain-ceo">${ico('lock', 13)} <span><b>Necesita el OK del CEO.</b> ${ok?.vigente ? `Hay OK de ${ok.month}.` : 'Todavía no hay OK de este mes.'} El CEO lo da en <a href="#/work/zona/ads">Mis tareas › Ads</a>.</span></p>` : ''}
-      <footer class="ain-rec-f">${doc ? html`${conTarea ? html`<span class="chip sm2 lime">${ico('check', 11)} Tarea creada para ⑩ Ads</span>` : ed ? html`<button type="button" class="btn xs" data-ain="tarea" data-id="${doc.id}" ${S.ocupado ? raw('disabled') : ''}>${ico('list-checks', 13)} Crear tarea para ⑩ Ads</button>` : ''}${ed ? html`<button type="button" class="btn ghost xs" data-ain="archivar" data-id="${doc.id}" ${S.ocupado ? raw('disabled') : ''}>Archivar</button>` : ''}`
-        : ed ? html`<button type="button" class="btn xs" data-ain="tarea-nueva" data-src="${src}" data-i="${i}" ${S.ocupado ? raw('disabled') : ''}>${ico('list-checks', 13)} Crear tarea para ⑩ Ads</button><button type="button" class="btn ghost xs" data-ain="guardar" data-src="${src}" data-i="${i}" ${S.ocupado ? raw('disabled') : ''}>Guardar</button>${src === 'ia' ? html`<button type="button" class="btn ghost xs" data-ain="quitar" data-i="${i}">Descartar</button>` : ''}` : ''}</footer></article>`;
+      <footer class="ain-rec-f">${doc ? html`${conTarea ? html`<span class="chip sm2 lime">${ico('check', 11)} Tarea creada para ⑩ Ads</span>` : ed ? html`<button type="button" class="btn sm" data-ain="tarea" data-id="${doc.id}" ${S.ocupado ? raw('disabled') : ''}>${ico('list-checks', 13)} Crear tarea para ⑩ Ads</button>` : ''}${ed ? html`<button type="button" class="btn ghost sm" data-ain="archivar" data-id="${doc.id}" ${S.ocupado ? raw('disabled') : ''}>Archivar</button>` : ''}`
+        : ed ? html`<button type="button" class="btn sm" data-ain="tarea-nueva" data-src="${src}" data-i="${i}" ${S.ocupado ? raw('disabled') : ''}>${ico('list-checks', 13)} Crear tarea para ⑩ Ads</button><button type="button" class="btn ghost sm" data-ain="guardar" data-src="${src}" data-i="${i}" ${S.ocupado ? raw('disabled') : ''}>Guardar</button>${src === 'ia' ? html`<button type="button" class="btn ghost sm" data-ain="quitar" data-i="${i}">Descartar</button>` : ''}` : ''}</footer></article>`;
   }
   function panelIA() {
     const ia = S.ia;
     if (!ia) return '';
-    if (ia.fase === 'corriendo') return html`<div class="ain-ia"><span class="lbl">La IA está leyendo la tabla…</span><pre class="ain-ia-t">${ia.texto || ia.paso || 'Pidiéndole recomendaciones con los números de la tabla'}</pre><button type="button" class="btn ghost xs" data-ain="ia-cancelar">Cancelar</button></div>`;
+    if (ia.fase === 'corriendo') return html`<div class="ain-ia"><span class="lbl">La IA está leyendo la tabla…</span><pre class="ain-ia-t">${ia.texto || ia.paso || 'Pidiéndole recomendaciones con los números de la tabla'}</pre><button type="button" class="btn ghost sm" data-ain="ia-cancelar">Cancelar</button></div>`;
     if (ia.fase === 'error') return html`<div class="warnbox sm">${ia.error} <button type="button" class="linkish sm" data-ain="ia">Reintentar</button></div>`;
     const guardadasClaves = new Set(guardadas().map(({ r }) => r.clave)), pend = ia.recs.map((r, i) => ({ r, i })).filter(({ r }) => !guardadasClaves.has(r.clave));
     const descartes = [ia.sin_numeros ? `${ia.sin_numeros} sin números` : '', ia.inventadas ? `${ia.inventadas} con números que no están en la tabla` : ''].filter(Boolean).join(' y ');
-    return html`<div class="ain-ia-r"><div class="ain-sec-h"><h4>Propuestas de la IA <span class="mut sm">· ${ia.modelo || ia.via} · revísalas antes de guardar</span></h4>${pend.length > 1 && editar() ? html`<button type="button" class="btn ghost xs" data-ain="guardar-ia" ${S.ocupado ? raw('disabled') : ''}>Guardar todas</button>` : ''}</div>
+    return html`<div class="ain-ia-r"><div class="ain-sec-h"><h4>Propuestas de la IA <span class="mut sm">· ${ia.modelo || ia.via} · revísalas antes de guardar</span></h4>${pend.length > 1 && editar() ? html`<button type="button" class="btn ghost sm" data-ain="guardar-ia" ${S.ocupado ? raw('disabled') : ''}>Guardar todas</button>` : ''}</div>
       ${descartes ? html`<p class="mut sm">Descarté ${descartes}: una recomendación sin números de la tabla no se muestra.</p>` : ''}
       ${pend.length ? html`<div class="ain-lista">${pend.map(({ r, i }) => tarjeta(r, { src: 'ia', i }))}</div>` : html`<p class="mut sm">La IA no propuso nada nuevo con estos números.</p>`}</div>`;
   }
@@ -181,7 +182,7 @@ export async function adsIntelTool(host, { me, slug, b, alive = () => true, rest
     const calc = c ? A.recomendaciones(datos()).filter((r) => !claves.has(r.clave)) : [];
     S.calc = calc;
     const corriendo = S.ia?.fase === 'corriendo';
-    mount(el, html`<div class="ain-sec-h"><h3>Recomendaciones</h3><button type="button" class="btn xs" data-ain="ia" ${!c || corriendo || S.ocupado ? raw('disabled') : ''} title="${c ? 'Le pasa la tabla a la IA: solo puede usar esos números' : 'Sin datos de Windsor no hay qué pedirle a la IA'}">${ico('sparkles', 13)} Pedir recomendaciones a la IA</button></div>
+    mount(el, html`<div class="ain-sec-h"><h3>Recomendaciones</h3><button type="button" class="btn sm" data-ain="ia" ${!c || corriendo || S.ocupado ? raw('disabled') : ''} title="${c ? 'Le pasa la tabla a la IA: solo puede usar esos números' : 'Sin datos de Windsor no hay qué pedirle a la IA'}">${ico('sparkles', 13)} Pedir recomendaciones a la IA</button></div>
       <p class="mut sm">Un cambio a la vez, y nada sin datos suficientes (ad-corrida §1). Cada recomendación trae su evidencia: sin números no se muestra.</p>
       ${S.alcance?.abierto === false ? html`<div class="warnbox sm">${S.alcance.texto || 'Este cliente no tiene ficha de oferta: no se pueden guardar recomendaciones.'}</div>` : ''}
       ${S.docsError ? html`<div class="warnbox sm">No pude leer las recomendaciones guardadas: ${S.docsError}</div>` : !S.puede.editar && S.docs ? html`<p class="mut sm">Tu perfil solo las lee: guardarlas y crear tareas es de quien edita Contenido.</p>` : ''}

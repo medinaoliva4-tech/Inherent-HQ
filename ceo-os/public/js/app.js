@@ -606,7 +606,7 @@ async function render() {
   if (!alive()) return;
   // Si lo que falló fue bajar el código de la pantalla, «Reintentar» recarga la página (el navegador de la app de Mac
   // recuerda el módulo que falló y volver a pedirlo fallaría igual).
-  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost xs" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
+  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost sm" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
   main.addEventListener('click', (e) => { const b = e.target.closest('[data-reintentar]'); if (b && alive()) { if (b.dataset.reintentar === 'recargar') location.reload(); else render(); } });
   let lista = null;
   const pintar = () => {
@@ -640,6 +640,8 @@ async function render() {
 
 window.addEventListener('hashchange', () => me && render());
 document.addEventListener('click', (e) => { const b = e.target.closest('[data-mig]'); if (b) history[b.dataset.mig === 'atras' ? 'back' : 'forward'](); });
+// Estado vacío con «Armarlo en el Chat» (visual.js › vacio): abre el Chat en el modo que trae el botón.
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-vac-chat]'); if (b && me) abrirEnChat(me.email, { modo: b.dataset.vacChat, slug: b.dataset.vacSlug || '', borrador: b.dataset.vacBorrador || '' }); });
 // El CEO cambió la matriz de Vistas por rol: la barra se recalcula y, si la ruta ya no se ve, se vuelve a pintar.
 events.addEventListener('roleviews', (e) => { if (!me) return; applyViews(me, e.detail); markNav(); const cur = resolve(hashNow()); if (cur.url !== hashNow()) render(); });
 // Una pantalla cambió su ruta sola: la barra se pone al día.

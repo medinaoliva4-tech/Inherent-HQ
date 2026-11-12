@@ -34,15 +34,15 @@ export function openConnect(me, after) {
       steps: html`<ol class="sm aisteps"><li>Pega esto en tu terminal, una sola vez:</li></ol><pre class="aicode">codex mcp add inherent-os --url ${url} && codex mcp login inherent-os</pre><ol class="sm aisteps" start="2"><li>Se abre el navegador: ${allow}.</li></ol>` },
   };
   const apps = () => me.mcp_apps || [];
-  const draw = () => drawer(html`<div class="row">${tiles()}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+  const draw = () => drawer(html`<div class="row">${tiles()}<div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
     <h2>Conecta tu IA</h2>
     <p class="mut">Como cualquier conector: pegas esta URL y la app te pide entrar con tu Google. Actúa como <b>tú</b> y solo ve y hace lo que tu perfil permite.</p>
-    <div class="aiurl"><code>${url}</code><button class="btn xs" data-act="copy">Copiar</button></div>
+    <div class="aiurl"><code>${url}</code><button class="btn sm" data-act="copy">Copiar</button></div>
     <div class="aitabs">${Object.entries(APPS).map(([k, a]) => html`<button class="${tab === k ? 'on' : ''}" data-act="tab" data-t="${k}"><span class="ailogo sm">${LOGO[k]}</span>${a.name}</button>`)}</div>
     ${APPS[tab].steps}<button class="btn" data-act="go" style="margin-top:12px">${APPS[tab].btn}${APPS[tab].open ? ' ↗' : ''}</button>
     ${apps().length || me.mcp ? html`<div style="margin-top:26px"><div class="sm mut" style="margin-bottom:8px">Conectadas</div>
-      ${apps().map((x) => html`<div class="row aiconn"><span class="grow">${x.name}<span class="mut sm"> · ${String(x.at || '').slice(0, 10)}</span></span><button class="btn ghost xs" data-act="cut" data-g="${x.g}">Desconectar</button></div>`)}
-      <button class="btn ghost xs" data-act="cut" style="margin-top:8px">Desconectar todo</button></div>` : ''}`, {
+      ${apps().map((x) => html`<div class="row aiconn"><span class="grow">${x.name}<span class="mut sm"> · ${String(x.at || '').slice(0, 10)}</span></span><button class="btn ghost sm" data-act="cut" data-g="${x.g}">Desconectar</button></div>`)}
+      <button class="btn ghost sm" data-act="cut" style="margin-top:8px">Desconectar todo</button></div>` : ''}`, {
     copy: () => copy(url, 'URL copiada'),
     tab: (t) => { tab = t.dataset.t; draw(); },
     go: () => { const a = APPS[tab]; if (a.open) window.open(a.open, '_blank', 'noopener'); copy(a.cmd || url, a.open ? 'URL copiada · pégala en la app' : 'Copiado · pégalo en tu terminal'); },

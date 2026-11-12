@@ -19,6 +19,7 @@ const cliDe = (t) => { const s = t.client_slug || ''; return s ? estrategiaNow()
 import { PURPOSE } from '../roleviews.js';
 import { rutaModulo, rutaHerramienta } from '../herramientas.js';
 import { competenciaUI } from '../marketing/competencia-ui.js';
+import { vacio as vacioOS } from '../visual.js';
 // Los símbolos de las listas de Mis tareas, como íconos de línea del set del OS.
 const GLIFO = { '◷': 'clock', '!': 'alert', '⚑': 'badge-check', '▦': 'calendar-days', '◧': 'layers', '▤': 'kanban', '◈': 'star', '⇢': 'arrow-right', '◉': 'users' };
 
@@ -173,7 +174,7 @@ export async function render(el, { me, sub, alive }) {
     const txt = P ? (asP ? `${P.name} · ${P.does}` : P.short || P.does) : asP ? 'Sin perfil de trabajo asignado' : 'Todavía no tienes perfil de trabajo: te lo asigna el CEO en Equipo.';
     return html`<div class="wsline"><span class="lbl">${asP ? `Puesto de ${asP.name.split(' ')[0]}` : 'Tu puesto'}</span><span class="wsdoes">${txt}</span><div class="sp"></div><span class="wscount ${n ? 'on' : ''}"><b>${n}</b> para hoy</span>${extra}</div>`;
   }
-  const dayRow = (t) => html`<div class="wsrow" data-act="task" data-id="${t.id}"><span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock', 13)} </span>` : ''}${t.title}<span class="mut sm"> · ${cli(t)}</span></span>${dueChip(t.due, status(t))}<button class="btn xs ${status(t) === 'En revisión' ? 'ghost' : ''}" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`;
+  const dayRow = (t) => html`<div class="wsrow" data-act="task" data-id="${t.id}"><span class="grow">${status(t) !== 'Hecha' && blockersOf(t, tasks).length ? html`<span title="Espera a otra tarea">${ico('lock', 13)} </span>` : ''}${t.title}<span class="mut sm"> · ${cli(t)}</span></span>${dueChip(t.due, status(t))}<button class="btn sm ${status(t) === 'En revisión' ? 'ghost' : ''}" data-act="deliver" data-id="${t.id}">${status(t) === 'En revisión' ? 'Ver' : 'Entregar'}</button></div>`;
   function hoyBox(list) {
     const shown = showAll ? list : list.slice(0, 5);
     return html`<section class="card wsbox"><div class="wshead"><h3>Hoy</h3>${list.length ? html`<span class="mut sm">${list.length === 1 ? '1 por entregar' : `${list.length} por entregar`}</span>` : ''}<div class="sp"></div>${list.length > 5 ? html`<button class="sm wslink" data-act="hoyAll">${showAll ? 'Ver menos' : `Ver todas (${list.length})`}</button>` : ''}</div>
@@ -285,7 +286,7 @@ export async function render(el, { me, sub, alive }) {
       if (k === 'equipo') return mount(z, html`<div class="wsgrid2">${panel(html`<h4 class="wsh4">Accountability · este mes</h4>${accRows()}`)}${panel(html`<h4 class="wsh4">Pipelines</h4>${Object.keys(PIPES).map(pipeMini)}<button class="sm wslink" data-act="tab" data-t="pipes">Ver pipelines ›</button>`)}</div>`);
       const [, re, dept] = LANES[ceoLane];
       const laneList = open(tasks).filter((t) => re.test(t.dept || '') && (isMine(t) || accOf(t) === ceoKey));
-      mount(z, panel(html`<div class="row" style="gap:8px;margin-bottom:4px"><div class="tabs mini" style="margin:0">${Object.entries(LANES).map(([x, [l]]) => html`<button class="${x === ceoLane ? 'on' : ''}" data-act="lane" data-l="${x}">${l}</button>`)}</div><div class="sp"></div><button class="btn ghost xs" data-act="laneTask" data-d="${dept}">+ Tarea</button></div>
+      mount(z, panel(html`<div class="row" style="gap:8px;margin-bottom:4px"><div class="tabs mini" style="margin:0">${Object.entries(LANES).map(([x, [l]]) => html`<button class="${x === ceoLane ? 'on' : ''}" data-act="lane" data-l="${x}">${l}</button>`)}</div><div class="sp"></div><button class="btn ghost sm" data-act="laneTask" data-d="${dept}">+ Tarea</button></div>
         ${ceoLane === 'ads' ? projects.filter((p) => p.pipeline?.['⑩']?.status === 'now').map((p) => html`<a class="wsrow" href="#/operations/pipe"><span class="chip red sm2">Gate</span><span class="grow">Aprobar pauta · ${p.client || p.name}</span></a>`) : ''}
         ${ceoLane === 'clientes' ? quotes.filter((q) => ['Borrador', 'Enviada'].includes(q.status)).slice(0, 3).map((q) => html`<a class="wsrow" href="#/sales/quotes"><span class="chip sm2">${q.status}</span><span class="grow">${q.number} · ${q.client}</span></a>`) : ''}
         ${laneList.length ? laneList.slice(0, 6).map((t) => trow(t)) : empty('Nada abierto.')}`));
@@ -301,7 +302,7 @@ export async function render(el, { me, sub, alive }) {
     extra: () => { const n = cooReview().length; return n ? pill(`${n} por revisar`) : ''; },
     tabs: () => [['rev', 'Por revisar', cooReview().length], ['ciclo', 'Controles del ciclo'], ['equipo', 'Equipo']],
     body: (k, z) => {
-      if (k === 'rev') { const review = cooReview(); return mount(z, panel(review.length ? html`${review.slice(0, 8).map((t) => html`<div class="wsrow" data-act="task" data-id="${t.id}">${av(t.assignee, 20)}<span class="grow">${t.title}<span class="mut sm"> · ${cli(t)}</span></span><button class="btn ghost xs" data-act="approveQ" data-id="${t.id}" title="Aprobar">${ico('check', 14)}</button></div>`)}${review.length > 8 ? html`<div class="mut sm">+ ${review.length - 8} más en el Kanban</div>` : ''}` : empty('Nada por revisar.'))); }
+      if (k === 'rev') { const review = cooReview(); return mount(z, panel(review.length ? html`${review.slice(0, 8).map((t) => html`<div class="wsrow" data-act="task" data-id="${t.id}">${av(t.assignee, 20)}<span class="grow">${t.title}<span class="mut sm"> · ${cli(t)}</span></span><button class="btn ghost sm" data-act="approveQ" data-id="${t.id}" title="Aprobar">${ico('check', 14)}</button></div>`)}${review.length > 8 ? html`<div class="mut sm">+ ${review.length - 8} más en el Kanban</div>` : ''}` : empty('Nada por revisar.'))); }
       if (k === 'ciclo') {
         const up = projects.flatMap((p) => (p.phases || []).filter((x) => x.status !== 'done' && x.start && x.start <= addDays(T0, 10) && (x.end || x.start) >= T0).map((x) => ({ p, x }))).sort((a, z2) => a.x.start.localeCompare(z2.x.start));
         return mount(z, panel(html`<div class="wsnote">Día <b>${Math.min(+T0.slice(8), 31)}</b> del ciclo · el 11 cierra producción · el 20 se presenta</div>
@@ -355,7 +356,7 @@ export async function render(el, { me, sub, alive }) {
         ? html`<a class="wsrow" href="${h}" ${/^https/.test(h) ? raw('target="_blank" rel="noopener noreferrer"') : ''}><span style="width:22px;text-align:center">${i}</span><span class="grow">${t}<span class="mut sm"> · ${sub}</span></span><span class="mut">${/^https/.test(h) ? '↗' : '›'}</span></a>`
         : html`<div class="wsrow static"><span style="width:22px;text-align:center">${i}</span><span class="grow mut sm">${t}: ${driveOf(clientSel).loading ? 'cargando…' : 'sin carpeta conectada. La conecta Content.'}</span></div>`)}
       <h4 class="wsh4">Prompts de ${clientSel.toUpperCase()}</h4>
-      ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wsrow static"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost xs" data-act="copyP" data-id="${l[0].id}">Copiar</button><button class="btn xs" data-act="claudeP" data-id="${l[0].id}" title="Abre tu Claude con este prompt (usa tu cuenta)">${ICON.sparkle} Claude</button></div>`)
+      ${prompts.length ? Object.entries(byType).map(([ty, l]) => html`<div class="wsrow static"><span class="chip sm2">${ty}</span><span class="grow">${l.map((d, i) => html`${i ? ' · ' : ''}<a href="#/library/${d.folder_id || '_'}/${d.id}" style="color:inherit">${d.title}</a>`)}</span><button class="btn ghost sm" data-act="copyP" data-id="${l[0].id}">Copiar</button><button class="btn sm" data-act="claudeP" data-id="${l[0].id}" title="Abre tu Claude con este prompt (usa tu cuenta)">${ICON.sparkle} Claude</button></div>`)
         : empty('Sin prompts para esta marca. El CEO los crea en Library → Prompt de video.')}`}`);
   }
 
@@ -366,7 +367,7 @@ export async function render(el, { me, sub, alive }) {
     title: 'Contenido',
     tabs: () => [['plan', 'Plan'], ['diseno', 'Diseño', designT().length], ['community', 'Community']],
     body: async (k, z) => {
-      if (k === 'diseno') { const d = designT().sort(byDue); return mount(z, panel(html`<div class="row" style="margin-bottom:2px"><span class="mut sm">Tus tareas de ⑥A Diseño gráfico y static ads</span><div class="sp"></div><button class="btn ghost xs" data-act="laneTask" data-d="⑥A Diseño gráfico">+ Tarea</button></div>${d.length ? d.map(dayRow) : empty('Nada pendiente.')}`)); }
+      if (k === 'diseno') { const d = designT().sort(byDue); return mount(z, panel(html`<div class="row" style="margin-bottom:2px"><span class="mut sm">Tus tareas de ⑥A Diseño gráfico y static ads</span><div class="sp"></div><button class="btn ghost sm" data-act="laneTask" data-d="⑥A Diseño gráfico">+ Tarea</button></div>${d.length ? d.map(dayRow) : empty('Nada pendiente.')}`)); }
       if (k === 'community') {
         const slugs = [...new Set(projects.map((p) => p.client_slug).filter(Boolean))];
         const accs = await col('accounts').list().catch(() => []); if (!alive()) return;
@@ -380,7 +381,7 @@ export async function render(el, { me, sub, alive }) {
         return;
       }
       if (!posts) { mount(z, html`<p class="loading">Cargando…</p>`); posts = (await col('content').list().catch(() => [])).filter((c) => c.kind === 'post'); if (!alive() || ztab[role] !== 'plan') return; }
-      const head = html`<div class="row" style="gap:8px;margin-bottom:6px"><div class="tabs mini" style="margin:0"><button class="${planView === 'etapa' ? 'on' : ''}" data-act="planView" data-v="etapa">Por etapa</button><button class="${planView === 'fecha' ? 'on' : ''}" data-act="planView" data-v="fecha">Por fecha</button></div><div class="sp"></div><button class="btn xs" data-act="newPost">+ Pieza</button></div>`;
+      const head = html`<div class="row" style="gap:8px;margin-bottom:6px"><div class="tabs mini" style="margin:0"><button class="${planView === 'etapa' ? 'on' : ''}" data-act="planView" data-v="etapa">Por etapa</button><button class="${planView === 'fecha' ? 'on' : ''}" data-act="planView" data-v="fecha">Por fecha</button></div><div class="sp"></div><button class="btn sm" data-act="newPost">+ Pieza</button></div>`;
       if (planView === 'fecha') {
         const list = posts.filter((p) => p.date >= addDays(T0, -3)).sort((a, z2) => String(a.date).localeCompare(String(z2.date)));
         return mount(z, panel(html`${head}${list.length ? html`<div class="wsscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Perfil</th><th>Formato</th><th>Idea</th><th>CTA</th><th>Estado</th></tr></thead><tbody>${list.slice(0, 12).map((p) => html`<tr class="click" data-act="post" data-id="${p.id}"><td>${p.date ? fdate(p.date) : '—'}</td><td class="mut">${p.profile}</td><td>${p.format || '—'}</td><td><b style="font-weight:500">${p.title}</b></td><td class="mut sm">${String(p.caption || '').split('\n').filter(Boolean).pop()?.slice(0, 40) || '—'}</td><td><span class="chip sm2">${p.status || 'Idea'}</span></td></tr>`)}</tbody></table></div>` : empty('Sin publicaciones con fecha.')}`));
@@ -494,8 +495,8 @@ export async function render(el, { me, sub, alive }) {
       <div><span class="lbl">Presupuesto del cliente</span>${a.budget ? html`${Q(a.budget)}/mes <span class="mut sm">· lo pone el cliente, aparte</span>` : v(null)}</div>
       <div><span class="lbl">Ficha de oferta</span>${!info || info.loading ? html`<span class="mut sm">Cargando…</span>` : f ? html`${f}` : html`<span class="nd">Sin fila «Pauta» en la ficha: revisa el alcance antes de prometer</span>`}</div></div>
       <div class="adsgate ${ok ? 'ok' : ''}">${ok ? html`${ico('check', 15)}<span><b style="font-weight:500">OK del CEO</b> · ${fdate(ok.at)} · ${Q(ok.budget)}/mes</span>` : html`${ico('lock', 15)}<span><b style="font-weight:500">Esperando OK del CEO</b> · sin el OK del plan y el presupuesto no se lanza nada</span>`}<div class="sp"></div>
-        ${isCeo && !asP ? html`<button class="btn xs ${ok ? 'ghost' : ''}" data-act="adsOk" data-s="${sl}" data-v="${ok ? '0' : '1'}">${ok ? 'Retirar OK' : 'Dar OK'}</button>` : ''}</div>`,
-      html`<button class="btn ghost xs" data-act="encargoEdit" data-s="${sl}">Editar</button>`, 'sp-panel');
+        ${isCeo && !asP ? html`<button class="btn sm ${ok ? 'ghost' : ''}" data-act="adsOk" data-s="${sl}" data-v="${ok ? '0' : '1'}">${ok ? 'Retirar OK' : 'Dar OK'}</button>` : ''}</div>`,
+      html`<button class="btn ghost sm" data-act="encargoEdit" data-s="${sl}">Editar</button>`, 'sp-panel');
   }
   function stepsBox(sl) {
     const a = adsAcc(sl), ok = okOf(a), camps = campsFor(sl);
@@ -503,7 +504,7 @@ export async function render(el, { me, sub, alive }) {
     const rows = STEPS.map((s) => { let st = stepState(sl, s, camps, a, ok); if (!marked && st !== 'hecho') { marked = true; if (st === 'pend') st = 'ahora'; } return [s, st]; });
     const LBL = { hecho: ['Hecho', 'green'], curso: ['En curso', 'lime'], ahora: ['Ahora', 'dark'], espera: ['Esperando OK del CEO', 'amber'], bloq: ['Sin OK: no se lanza', 'red'], pend: ['Pendiente', ''] };
     return box('Pasos del método', 'El flujo de ⑩ Ads · cada paso dice qué skill correr en Claude', html`<div class="adsteps sp-steps">${rows.map(([[k, name, skill, sub], st]) => html`<div class="adstep ${st}"><span class="n">${k}</span><span><b style="font-weight:500">${name}</b></span>
-      <span class="st"><span class="chip sm2 ${LBL[st][1]}">${LBL[st][0]}</span>${skill ? html`<button class="sk" data-act="skill" data-k="${skill}" data-s="${sl}" data-n="${name}" title="Abre Claude con este paso">${skill}</button>` : isCeo && !asP && !ok ? html`<button class="btn xs" data-act="adsOk" data-s="${sl}" data-v="1">Dar OK</button>` : html`<span class="sk" style="cursor:default">CEO</span>`}</span>
+      <span class="st"><span class="chip sm2 ${LBL[st][1]}">${LBL[st][0]}</span>${skill ? html`<button class="sk" data-act="skill" data-k="${skill}" data-s="${sl}" data-n="${name}" title="Abre Claude con este paso">${skill}</button>` : isCeo && !asP && !ok ? html`<button class="btn sm" data-act="adsOk" data-s="${sl}" data-v="1">Dar OK</button>` : html`<span class="sk" style="cursor:default">CEO</span>`}</span>
       <span class="sub">${sub}</span></div>`)}</div>`, html`<span class="sm">${rows.filter(([, st]) => st === 'hecho').length}/${rows.length}</span>`, 'sp-panel');
   }
   function campsBox(sl) {
@@ -511,7 +512,7 @@ export async function render(el, { me, sub, alive }) {
     return box('Campañas', campsOn === false ? 'Se guardan como tareas de ⑩ Ads mientras se habilita la colección «campaigns»' : 'Lo que está armado y corriendo · nombre, plataforma, estado, presupuesto diario y fechas',
       campaigns === null && !l.length ? html`<p class="loading sm">Cargando…</p>` : l.length ? html`<div class="camps"><table class="wktable"><thead><tr><th>Campaña</th><th>Plataforma</th><th>Estado</th><th class="n">Diario</th><th>Desde</th><th>Hasta</th></tr></thead><tbody>
         ${l.map((c) => html`<tr class="click" data-act="campEdit" data-id="${c.id}" data-s="${sl}"><td><b style="font-weight:500">${c.name}</b>${c.objective ? html`<div class="mut sm">${c.objective}</div>` : ''}</td><td>${P[c.platform] || c.platform || '—'}</td><td><span class="chip sm2 ${c.status === 'Activa' ? 'lime' : c.status === 'Pausada' ? 'amber' : c.status === 'Terminada' ? 'green' : ''}">${c.status || 'Borrador'}</span></td><td class="n">${c.daily ? Q(c.daily) : '—'}</td><td>${c.from ? fdate(c.from) : '—'}</td><td>${c.to ? fdate(c.to) : '—'}</td></tr>`)}</tbody></table></div>`
-      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-plan</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn xs" data-act="campNew" data-s="${sl}">+ Campaña</button>`, 'sp-panel');
+      : html`<div class="mut sm" style="padding:6px 0">Sin campañas registradas. Cuando <b>ad-plan</b> las arme, anótalas aquí; «Activa» solo con el OK del CEO.</div>`, html`<button class="btn sm" data-act="campNew" data-s="${sl}">+ Campaña</button>`, 'sp-panel');
   }
   function learnBox(sl) {
     loadPauta(sl); const pi = pautaInfo[sl];
@@ -521,7 +522,7 @@ export async function render(el, { me, sub, alive }) {
   }
   const cuentasBox = (slugs) => box('Cuentas de pauta', 'Por cliente: abre su Ads Manager directo', slugs.length ? html`${slugs.map((sl) => { const a = adsAcc(sl);
     return html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="adsplat">${ADS.map(([k, l, url]) => a[k] ? html`<a class="adsp" href="${url(a[k])}" target="_blank" rel="noopener noreferrer"><span class="ailogo sm">${LOGO[k]}</span>${l} ↗</a>` : html`<span class="adsp off"><span class="ailogo sm">${LOGO[k]}</span>${l}</span>`)}</div>
-      ${a.budget ? html`<span class="mut sm">${Q(a.budget)}/mes</span>` : ''}<button class="btn ghost xs" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`);
+      ${a.budget ? html`<span class="mut sm">${Q(a.budget)}/mes</span>` : ''}<button class="btn ghost sm" data-act="adsEdit" data-s="${sl}">Cuentas</button></div>`; })}` : html`<div class="mut sm">Sin clientes con proyecto activo.</div>`);
   function adsState() {
     const slugs = [...new Set(projects.filter((p) => p.client_slug && p.status !== 'cerrado').map((p) => p.client_slug))];
     loadInfos(slugs); loadCamps();
@@ -536,8 +537,8 @@ export async function render(el, { me, sub, alive }) {
     tabs: () => { const { withAds } = adsState(); const act = withAds.reduce((n, sl) => n + campsFor(sl).filter((c) => c.status === 'Activa').length, 0); return [['encargo', 'Encargo'], ['camps', 'Campañas', act], ['learn', 'Aprendizaje']]; },
     body: (k, z) => {
       const { slugs, withAds, loading } = adsState();
-      const chips = withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}<div class="sp"></div><button class="btn ghost xs" data-act="adsTask" data-s="${adsSel}">+ Tarea de ⑩</button></div>` : '';
-      const none = html`<div class="empty" style="margin-bottom:12px"><b>${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}</b>${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}</div>`;
+      const chips = withAds.length ? html`<div class="adscli">${withAds.map((sl) => html`<span class="chip ${sl === adsSel ? 'dark' : ''}" data-act="adsCli" data-s="${sl}"><i class="${okOf(adsAcc(sl)) ? 'ok' : ''}"></i>${sl.toUpperCase()}</span>`)}${loading ? html`<span class="mut sm">Leyendo fichas…</span>` : ''}<div class="sp"></div><button class="btn ghost sm" data-act="adsTask" data-s="${adsSel}">+ Tarea de ⑩</button></div>` : '';
+      const none = html`${vacioOS({ icono: 'inbox', titulo: `${loading ? 'Leyendo las fichas…' : 'Ningún cliente con pauta contratada'}`, linea: `${loading ? '' : 'Un cliente entra aquí cuando su ficha incluye pauta o cuando tiene cuenta o presupuesto de pauta (pestaña Campañas → Cuentas).'}` })}`;
       if (k === 'camps') mount(z, html`${chips}${adsSel ? campsBox(adsSel) : ''}<div class="wsgrid2" style="margin-top:12px">${pautaBox(withAds)}${cuentasBox(slugs)}</div>`);
       else if (!adsSel) mount(z, none);
       else if (k === 'learn') mount(z, html`${chips}<div class="wsgrid2">${learnBox(adsSel)}<div id="adscomp"></div></div>`);
@@ -571,7 +572,7 @@ export async function render(el, { me, sub, alive }) {
   }
   // Cómo va la pauta y la competencia ya no se pintan aquí: la pauta vive en Marketing › Ads Intelligence (un link por cliente) y los
   // anuncios de la competencia son el componente compartido de marketing/competencia-ui.js.
-  const pautaBox = (slugs) => box('Cómo va la pauta', 'Gasto, CTR, CPA y ROAS están en Marketing › Ads Intelligence', slugs.length ? html`${slugs.map((sl) => html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="sp"></div><a class="btn ghost xs" href="${rutaHerramienta('marketing', sl, 'ads-intelligence')}">Ver la pauta ${ico('arrow-right', 13)}</a></div>`)}` : html`<div class="mut sm">Ningún cliente con pauta todavía.</div>`);
+  const pautaBox = (slugs) => box('Cómo va la pauta', 'Gasto, CTR, CPA y ROAS están en Marketing › Ads Intelligence', slugs.length ? html`${slugs.map((sl) => html`<div class="adsrow"><b style="font-weight:500;min-width:90px">${sl.toUpperCase()}</b><div class="sp"></div><a class="btn ghost sm" href="${rutaHerramienta('marketing', sl, 'ads-intelligence')}">Ver la pauta ${ico('arrow-right', 13)}</a></div>`)}` : html`<div class="mut sm">Ningún cliente con pauta todavía.</div>`);
   const ZONES = { ceo: ceoZ, coo: cooZ, content: contentZ, video: videoZ, ads: adsZ, ventas: ventasZ, finance: financeZ, cobros: cobrosZ };
 
   // ---------- conexiones de las piezas ----------
@@ -608,7 +609,7 @@ export async function render(el, { me, sub, alive }) {
       <div style="margin-bottom:10px">${tipoChips(tipoF, 'tipof', tasks.filter((t) => pipeOf(t) === pipeSel))}</div>
       ${list.length ? html`<div class="card wkbox"><table class="wktable"><thead><tr><th>Tarea</th><th>Proyecto</th><th>Responsable → rinde cuentas</th><th>Estado</th><th>Vence</th></tr></thead><tbody>
         ${list.map((t) => html`<tr class="click" data-act="task" data-id="${t.id}"><td><b style="font-weight:500">${t.title}</b>${t.dept ? html`<span class="mut sm"> · ${t.dept}</span>` : ''}${tipoBadge(t)}</td><td class="mut">${proj(t.project_id)?.name || '—'}</td><td><span class="chain">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}${av(k, 22)}`)}</span></td><td><span class="chip sm2">${status(t)}</span></td><td>${dueChip(t.due, status(t)) || '—'}</td></tr>`)}</tbody></table></div>`
-        : html`<div class="empty"><b>Sin tareas en ${PIPES[pipeSel].name}</b>Las tareas de sus proyectos aparecen aquí.</div>`}`);
+        : html`${vacioOS({ icono: 'inbox', titulo: `Sin tareas en ${PIPES[pipeSel].name}`, linea: 'Las tareas de sus proyectos aparecen aquí.' })}`}`);
   }
   function equipo(b) {
     const sel = personSel && person(personSel);
@@ -616,7 +617,7 @@ export async function render(el, { me, sub, alive }) {
     mount(b, html`<div class="wkgrid">${people().map((p) => { const k = keyOf(p), s = stats(k), pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
       return html`<div class="card wkbox" data-act="person" data-k="${k}" style="cursor:pointer;${personSel === k ? 'outline:2px solid var(--ink)' : ''}"><div class="row">${av(k, 36)}<div class="grow"><b style="font-weight:500">${p.name}</b><div class="mut sm">${(p.roles || []).map(roleName).join(' · ') || p.title || ''}</div></div><i class="dot" style="background:${s.dot}"></i></div>
         <div class="row" style="margin-top:10px"><b style="font-size:22px;font-weight:400">${s.done}<span class="mut sm">/${s.total}</span></b><div class="sp"></div><span class="sm" style="${s.late ? 'color:var(--warn);font-weight:700' : ''}">${s.late ? s.late + ' atrasadas' : 'Al día'}</span></div><div class="wkprog"><i style="width:${pct}%"></i></div></div>`; })}</div>
-      ${sel ? html`<div class="sec-title"><h2>Tareas de ${sel.name}</h2><button class="btn ghost xs" data-act="assignTo">+ Asignarle</button></div><div class="card wkbox">${list.length ? list.map((t) => trow(t)) : html`<div class="mut sm">Sin tareas.</div>`}</div>` : ''}`);
+      ${sel ? html`<div class="sec-title"><h2>Tareas de ${sel.name}</h2><button class="btn ghost sm" data-act="assignTo">+ Asignarle</button></div><div class="card wkbox">${list.length ? list.map((t) => trow(t)) : html`<div class="mut sm">Sin tareas.</div>`}</div>` : ''}`);
   }
 
   // =================== tareas ===================
@@ -627,7 +628,7 @@ export async function render(el, { me, sub, alive }) {
   function openTask(t) {
     const draw = () => {
       const p = proj(t.project_id);
-      drawer(html`<div class="row"><select class="in" id="wst" style="width:auto">${COLS.map(([s, l]) => html`<option value="${s}" ${s === status(t) ? raw('selected') : ''}>${l}</option>`)}</select><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      drawer(html`<div class="row"><select class="in" id="wst" style="width:auto">${COLS.map(([s, l]) => html`<option value="${s}" ${s === status(t) ? raw('selected') : ''}>${l}</option>`)}</select><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
         <input class="in" id="wtitle" value="${t.title}" style="font-size:22px;font-weight:500;letter-spacing:-.5px;margin-top:12px;border:0;padding:6px 0;background:transparent">
         <div class="mut sm">${p ? (p.client ? p.client + ' · ' : '') + p.name : 'Interno'}${pipeOf(t) ? ' · ' + PIPES[pipeOf(t)].name : ''}</div>
         <div class="chain" style="margin-top:10px">${chain(t).map((k, i) => html`${i ? html`<span class="mut">→</span>` : ''}<span class="row" style="gap:5px">${av(k, 22)}<span class="sm">${nameOf(k).split(' ')[0]}</span></span>`)}</div>

@@ -2,6 +2,7 @@
 import { html, mount, col, ask, ico, toast, fdate, $ } from './core.js';
 import { cargarContexto, contextoLista, nombreContexto } from './contexto.js';
 import { AREAS_MOV, DECISIONES, limpiarMovimiento, errorMovimiento, filtrarMovimientos, resumenMovimientos } from './movimientos-datos.js';
+import { fallo, vacio } from './visual.js';
 
 const C = col('movimientos');
 const q = (n) => `Q${Number(n || 0).toLocaleString('es-GT')}`;
@@ -32,7 +33,7 @@ export async function pintarMovimientos(el, { me, area = '', cliente = '', alive
       <p>${r.total} ${r.total === 1 ? 'movimiento' : 'movimientos'} · ${q(r.invertido)} invertidos · ${r.sinResultado} sin resultado</p><button class="btn" type="button" data-mv="nuevo">${ico('plus', 14)} Movimiento</button></div>
     ${xs.length ? html`<div class="mv-t"><table><thead><tr><th>Movimiento</th>${cliente ? '' : html`<th>Cliente</th>`}${area ? '' : html`<th>Área</th>`}<th>Costo</th><th>Esperábamos</th><th>Qué pasó</th><th>Decisión</th></tr></thead><tbody>
       ${xs.map((m) => html`<tr tabindex="0" data-mv="abrir" data-id="${m.id}"><td data-t="Movimiento"><b>${m.titulo}</b><small>${m.fecha ? fdate(m.fecha) : ''}</small></td>${cliente ? '' : html`<td data-t="Cliente">${nombreContexto(m.client_slug) || m.client_slug}</td>`}${area ? '' : html`<td data-t="Área">${(AREAS_MOV.find(([k]) => k === m.area) || [, ''])[1]}</td>`}<td data-t="Costo">${q(m.costo)}</td><td data-t="Esperábamos">${m.espera}</td><td data-t="Qué pasó">${m.paso || html`<span class="mv-falta">Falta el resultado</span>`}</td><td data-t="Decisión"><span class="mv-d" data-d="${m.decision}">${m.decision}</span></td></tr>`)}
-    </tbody></table></div>` : html`<div class="empty"><b>Todavía no hay movimientos</b>Anota lo que se hace para crecer: qué se hizo, cuánto costó y qué esperan que pase.</div>`}`);
+    </tbody></table></div>` : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay movimientos', linea: 'Anota lo que se hace para crecer: qué se hizo, cuánto costó y qué esperan que pase.' })}`}`);
     const s = $('#mv-cl', el); if (s) s.onchange = () => { f.cliente = s.value; pintar(); };
   }
   async function cargar() { filas = await C.list(); pintar(); }
@@ -43,5 +44,5 @@ export async function pintarMovimientos(el, { me, area = '', cliente = '', alive
     const v = await ask('Movimiento', form(m)); if (v) guardar(v, m);
   };
   el.onkeydown = (e) => { if (e.key === 'Enter' && e.target.matches('tr[data-mv]')) e.target.click(); };
-  try { await cargar(); } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir los movimientos</b>${e.message}</div>`); }
+  try { await cargar(); } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir los movimientos', linea: e.message })}`); }
 }

@@ -14,6 +14,7 @@ import { goalsOf } from '../goals.js';
 import { alcanceConsulting, consultingAbierto, leerTarjetas } from '../llm/modos.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
 import { BLOQUE, AREAS_RM_INFO, TRIMESTRES, TRIMESTRE_NOMBRE, MAX_ITEMS, MAX_HITOS, areaInfo, limpiar, limpiarItems, limpiarHitos, tareasMarcadas, aMetas, claveHito, faltas, aMd, prompt, resumenTexto } from './roadmap.js';
+import { fallo } from '../visual.js';
 
 const K_VISTA = 'os.grm.vista';
 const MAX_TAREAS_LOTE = 60; // tareas por tanda: se crean una por una
@@ -95,8 +96,8 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
     const d = S.data, esc = editable(), su = sucio(), fa = faltasAhora(), n = itemsLimpios().length, nh = limpiarHitos(S.hitos).length, corriendo = S.gen?.fase === 'corriendo';
     const metas = canEdit(me, 'clients') && nh > 0;
     if (!hayCambio('acts', [esc, aprobada(), su, fa, n, nh, S.ocupado, corriendo, Boolean(d.puede?.aprobar), metas])) return;
-    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm grm-act" data-act="grm-${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
-    const enlace = (href, icono, txt, primario = false) => html`<a class="btn ${primario ? '' : 'ghost'} sm grm-act" href="${href}">${ico(icono, 14)} ${txt}</a>`;
+    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm" data-act="grm-${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
+    const enlace = (href, icono, txt, primario = false) => html`<a class="btn ${primario ? '' : 'ghost'} sm" href="${href}">${ico(icono, 14)} ${txt}</a>`;
     const g1 = [esc ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : '', esc ? btn('guardar', 'check', 'Guardar', { off: !su, tip: su ? '' : 'No hay cambios que guardar' }) : '', esc && su ? btn('descartar', 'x', 'Descartar cambios') : ''];
     const ceo = d.puede?.aprobar ? (aprobada() ? btn('reabrir', 'refresh-cw', 'Reabrir la estrategia')
       : btn('aprobar', 'badge-check', 'Aprobar la estrategia', { primario: true, off: fa.length > 0 || su, tip: su ? 'Guarda tus cambios antes de aprobar' : fa.length ? `No se puede aprobar. Falta: ${fa.join(' · ')}` : 'Solo el CEO aprueba' })) : '';
@@ -121,13 +122,13 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
     ? html`<li class="grm-it" data-id="${x.id}"><input class="in grm-it-t" type="text" data-f="titulo" data-id="${x.id}" maxlength="160" value="${x.titulo}" placeholder="Un resultado, no una actividad suelta" aria-label="Título de la fila" autocomplete="off">
         <div class="grm-it-m"><select class="in" data-f="area" data-id="${x.id}" aria-label="Área de la fila">${AREAS_RM_INFO.map((a) => html`<option value="${a.id}" ${a.id === x.area ? raw('selected') : ''}>${a.nombre}</option>`)}</select>
           <select class="in" data-f="trimestre" data-id="${x.id}" aria-label="Trimestre de la fila">${TRIMESTRES.map((t) => html`<option value="${t}" ${t === x.trimestre ? raw('selected') : ''}>${t}</option>`)}</select>
-          <button type="button" class="btn ghost xs grm-x" data-act="grm-quitar" data-id="${x.id}" aria-label="Quitar esta fila">${ico('x', 14)}</button></div>${extras(x)}</li>`
+          <button type="button" class="btn ghost sm grm-x" data-act="grm-quitar" data-id="${x.id}" aria-label="Quitar esta fila">${ico('x', 14)}</button></div>${extras(x)}</li>`
     : html`<li class="grm-it" data-id="${x.id}"><p class="grm-it-ro">${x.titulo}</p>${extras(x)}</li>`);
   function timeline() {
     const ed = editable(), hay = itemsLimpios().length > 0, fuera = !consultingOk();
     const celda = (a, t) => {
       const xs = S.items.filter((x) => x.area === a.id && x.trimestre === t);
-      return html`<td class="grm-celda" data-area="${a.id}" data-t="${t}">${xs.length ? html`<ul class="grm-its">${xs.map((x) => item(x, ed))}</ul>` : ''}${ed ? html`<button type="button" class="btn ghost xs grm-mas" data-act="grm-agregar" data-a="${a.id}" data-t="${t}" aria-label="Agregar una fila en ${a.nombre}, ${t}">${ico('plus', 14)}</button>` : ''}</td>`;
+      return html`<td class="grm-celda" data-area="${a.id}" data-t="${t}">${xs.length ? html`<ul class="grm-its">${xs.map((x) => item(x, ed))}</ul>` : ''}${ed ? html`<button type="button" class="btn ghost sm grm-mas" data-act="grm-agregar" data-a="${a.id}" data-t="${t}" aria-label="Agregar una fila en ${a.nombre}, ${t}">${ico('plus', 14)}</button>` : ''}</td>`;
     };
     return html`${hay ? '' : html`<p class="grm-sd">${SIN_DATOS}: el roadmap todavía no tiene filas. Salen de «Generar con IA»${ed ? ' o de agregarlas con el + de cada celda' : ''}.</p>`}
       <div class="grm-sc"><table class="grm-grid" aria-label="Roadmap por área y trimestre">
@@ -150,8 +151,8 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
     const el = $('#grm-cuerpo', root); if (!el) return;
     const sc = $('.grm-sc', el), left = sc ? sc.scrollLeft : 0, plan = S.vista === 'plan';
     mount(el, html`<div class="grm-vistas" role="group" aria-label="Qué ver">
-      <button type="button" class="btn ${plan ? 'ghost' : ''} sm" data-act="grm-vista" data-v="timeline" aria-pressed="${plan ? 'false' : 'true'}">${ico('calendar', 14)} Timeline por trimestre</button>
-      <button type="button" class="btn ${plan ? '' : 'ghost'} sm" data-act="grm-vista" data-v="plan" aria-pressed="${plan ? 'true' : 'false'}">${ico('target', 14)} Plan de 90 días</button></div>
+      <button type="button" class="btn ${plan ? 'ghost' : ''}" data-act="grm-vista" data-v="timeline" aria-pressed="${plan ? 'false' : 'true'}">${ico('calendar', 14)} Timeline por trimestre</button>
+      <button type="button" class="btn ${plan ? '' : 'ghost'}" data-act="grm-vista" data-v="plan" aria-pressed="${plan ? 'true' : 'false'}">${ico('target', 14)} Plan de 90 días</button></div>
       ${plan ? plan90() : timeline()}`);
     const nuevo = $('.grm-sc', el); if (nuevo && left) nuevo.scrollLeft = left;
   }
@@ -159,7 +160,7 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
     ? html`<li class="grm-h" data-id="${h.id}"><label class="grm-f"><span class="lbl">Hito</span><input class="in" type="text" data-h="titulo" data-id="${h.id}" maxlength="120" value="${h.titulo}" placeholder="Qué se logra" aria-label="Título del hito" autocomplete="off"></label>
         <label class="grm-f"><span class="lbl">Fecha</span><input class="in" type="date" data-h="fecha" data-id="${h.id}" value="${h.fecha}" aria-label="Fecha del hito"></label>
         <label class="grm-f"><span class="lbl">Meta</span><input class="in" type="text" data-h="meta" data-id="${h.id}" maxlength="240" value="${h.meta}" placeholder="${SIN_DATOS}: sale de la meta de la estrategia" aria-label="Meta del hito" autocomplete="off"></label>
-        <button type="button" class="btn ghost xs grm-x" data-act="grm-hito-quitar" data-id="${h.id}" aria-label="Quitar este hito">${ico('x', 14)}</button></li>`
+        <button type="button" class="btn ghost sm grm-x" data-act="grm-hito-quitar" data-id="${h.id}" aria-label="Quitar este hito">${ico('x', 14)}</button></li>`
     : html`<li class="grm-h" data-id="${h.id}"><b>${h.titulo}</b><span>${h.fecha ? fdateLong(h.fecha) : html`<span class="grm-sd">${SIN_DATOS}: sin fecha</span>`}</span><span>${h.meta || html`<span class="grm-sd">${SIN_DATOS}: sale de la meta de la estrategia</span>`}</span></li>`);
   function pintarHitos() {
     const el = $('#grm-hitos', root); if (!el) return;
@@ -167,7 +168,7 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
     mount(el, html`<div class="grm-sec-h"><h3>${ico('target', 16)} Hitos <span class="mut sm">la meta de cada tramo del roadmap</span></h3></div>
       ${hs.length ? html`<ol class="grm-hs">${hs.map((h) => hito(h, ed))}</ol>` : html`<p class="grm-sd">${SIN_DATOS}: los hitos salen de la meta de la estrategia y de «Generar con IA».</p>`}
       ${viejo && (ed || hs.length) ? html`<p class="mut sm">El plan de 90 días trae las metas por trimestre en el formato de antes (míralas en «Plan de 90 días»): si guardas hitos aquí, las reemplazan.</p>` : ''}
-      ${ed && hs.length < MAX_HITOS ? html`<button type="button" class="btn ghost xs grm-mas" data-act="grm-hito-mas">${ico('plus', 14)} Agregar un hito</button>` : ''}`);
+      ${ed && hs.length < MAX_HITOS ? html`<button type="button" class="btn ghost sm grm-mas" data-act="grm-hito-mas">${ico('plus', 14)} Agregar un hito</button>` : ''}`);
   }
   // Las chips del Opportunity Map: la herramienta llega en la Fase 3e; las filas que vengan de ahí llevan su oportunidad_id.
   function pintarOpp() {
@@ -179,9 +180,9 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
   function pintarGen() {
     const g = S.gen, el = $('#grm-gen', root); if (!el) return;
     if (!g) return mount(el, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-act="grm-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-act="grm-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="grm-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-act="grm-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-act="grm-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="grm-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el, html`<section class="grm-gen" data-fase="corriendo"><header><span class="grm-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm grm-paso"></span><button type="button" class="btn ghost sm" data-act="grm-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="grm-stream" aria-live="polite"></pre></section>`);
+      mount(el, html`<section class="grm-gen" data-fase="corriendo"><header><span class="grm-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm grm-paso"></span><button type="button" class="btn ghost" data-act="grm-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="grm-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -193,12 +194,12 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
           ${c.hitos.length ? html`<ul class="grm-prop-l">${c.hitos.map((h) => html`<li><b>${h.titulo}</b>${h.fecha ? ` · ${fdateLong(h.fecha)}` : ''}${h.meta ? ` · ${h.meta}` : ''}</li>`)}</ul>` : ''}</details>
         ${(cr.cumple || []).length + (cr.falta || []).length + fa.length ? html`<ul class="grm-crit">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${[...(cr.falta || []), ...fa].map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que presiones Guardar${pisa && c.items.length ? `: cargarla reemplaza las ${plural(pisa, 'fila', 'filas')} de la grilla` : ''}.</p>
-        <div class="grm-prop-bt"><button type="button" class="btn sm" data-act="grm-usar">${ico('check', 14)} Cargar en la grilla</button><button type="button" class="btn ghost sm" data-act="grm-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-act="grm-cerrar-gen">Descartar</button></div></section>`);
+        <div class="grm-prop-bt"><button type="button" class="btn" data-act="grm-usar">${ico('check', 14)} Cargar en la grilla</button><button type="button" class="btn ghost" data-act="grm-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-act="grm-cerrar-gen">Descartar</button></div></section>`);
       return;
     }
     mount(el, html`<section class="grm-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : html`No vino el roadmap con filas por área y trimestre. Reintenta o pega la respuesta.`}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="grm-stream">${g.texto}</pre></details>` : ''}
-      <div class="grm-prop-bt"><button type="button" class="btn sm" data-act="grm-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
+      <div class="grm-prop-bt"><button type="button" class="btn" data-act="grm-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
   }
   const verStream = () => { const pre = $('.grm-stream', root); if (pre && S.gen) { pre.textContent = S.gen.texto || ''; pre.scrollTop = pre.scrollHeight; } };
   const verPaso = () => { const p = $('.grm-paso', root); if (p && S.gen) p.textContent = S.gen.paso || ''; };
@@ -406,7 +407,7 @@ export async function roadmapTool(host, { me, slug, b, alive, resto = [] } = {})
 
   // ---------- El primer pintado ----------
   try { tomar(await leer()); }
-  catch (e) { if (!alive()) return; return mount(host, html`<div class="empty"><b>No pude abrir el roadmap</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(host, html`${fallo({ titulo: 'No pude abrir el roadmap', linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
   mount(host, html`<div class="grm" id="grm" data-aprobada="${aprobada() ? 1 : 0}"><div id="grm-head"></div><div id="grm-banner"></div>
     <div class="grm-acts" id="grm-acts" role="toolbar" aria-label="Acciones del roadmap"></div><div id="grm-gen" aria-live="polite"></div>
