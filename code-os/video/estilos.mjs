@@ -98,7 +98,7 @@ export function aplicarEstilo(corte, estilo, recursos = {}) {
     const { texto: _t, fuente: _f, ...resto } = e;
     // imitar el ritmo: la plantilla puede traer su duración (nunca alarga la escena: no sabemos cuánto clip queda)
     const fin = p.duracion > 0 ? Math.min(e.fin, e.inicio + p.duracion) : e.fin;
-    return { ...resto, fin, capas, estilos, referencia: p.referencia ?? e.referencia ?? null };
+    return { ...resto, fin, capas, estilos, referencia: p.referencia ?? e.referencia ?? null, estilo: estilo.id };
   });
   try {
     return { corte: normalizarCorte({ ...corte, formato: estilo.formato ?? corte.formato, estilo: estilo.id, escenas }), pendientes };

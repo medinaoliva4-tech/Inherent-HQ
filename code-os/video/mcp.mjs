@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Servidor MCP (stdio) para que un agente use el servicio de video. Sin dependencias: JSON-RPC por líneas.
+// Servidor MCP (stdio): producir video = prompting. El agente lee la guía de la marca, arma el video, le aplica
+// estilos o imita una referencia, cambia escenas y música, y renderiza con ffmpeg. Sin dependencias: JSON-RPC por líneas.
 //   claude mcp add video -e VIDEO_URL=http://127.0.0.1:4310 -e VIDEO_TOKEN=… -- node code-os/video/mcp.mjs
 import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
@@ -13,19 +14,31 @@ export const HERRAMIENTAS = [
     description: 'Estado de un trabajo de video (pendiente, procesando, listo, error), progreso 0–1 y ruta del archivo.',
     inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
   { name: 'corte_primer', title: 'Armar primer corte', annotations: { readOnlyHint: false, destructiveHint: false },
-    description: 'Arma el primer corte desde el shot list de Producción y los clips grabados. Cada toma puede traer su receta: texto, fuente, capas y estilos (zoom, color, transicion, animacion-texto, detras-de-persona). Devuelve el corte (JSON de escenas) y las tomas que faltan. El editor humano lo revisa en el tablero de Retoque.',
-    inputSchema: { type: 'object', properties: { shotlist: { type: 'object' }, clips: { type: 'array', items: { type: 'object' } } }, required: ['shotlist', 'clips'] } },
+    description: 'Arma el primer corte (el video) desde el shot list de Producción y los clips grabados. Con `marca`, aplica sus tipografías, colores y música. Cada toma puede traer su receta: texto, fuente, capas y estilos (zoom, color, transicion, animacion-texto, detras-de-persona). Devuelve el corte (JSON de escenas) y las tomas que faltan. El editor humano lo revisa en el tablero de Retoque.',
+    inputSchema: { type: 'object', properties: { shotlist: { type: 'object' }, clips: { type: 'array', items: { type: 'object' } }, marca: { type: 'string' } }, required: ['shotlist', 'clips'] } },
   { name: 'corte_leer', title: 'Leer corte', annotations: { readOnlyHint: true },
     description: 'Lee un corte (con las correcciones del editor humano, si las hay).',
     inputSchema: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] } },
   { name: 'corte_guardar', title: 'Guardar corte', annotations: { readOnlyHint: false, destructiveHint: false },
     description: 'Guarda un corte completo. Pasa `version` (la que leíste) para no pisar la corrección del humano.',
     inputSchema: { type: 'object', properties: { corte: { type: 'object' }, version: { type: 'number' } }, required: ['corte'] } },
+  { name: 'marcas_listar', title: 'Marcas', annotations: { readOnlyHint: true },
+    description: 'Lista las marcas con style menu (id y nombre).',
+    inputSchema: { type: 'object', properties: {} } },
+  { name: 'marca_guia', title: 'Guía de edición de la marca', annotations: { readOnlyHint: true },
+    description: 'El style menu de la marca como guía para editar: transiciones, efectos, animaciones de texto y estilos que eligió (con su receta y si tienen render), tipografías, colores, música, sonidos, assets y reglas. Léela ANTES de editar un video de esa marca y usa solo lo que trae.',
+    inputSchema: { type: 'object', properties: { marca: { type: 'string' } }, required: ['marca'] } },
+  { name: 'video_escena', title: 'Cambiar una escena', annotations: { readOnlyHint: false, destructiveHint: false },
+    description: 'Cambia una escena del video (n desde 1): otra receta (estilo), otra transición o poner/quitar un efecto del catálogo (ids de GET /catalogo o de marca_guia).',
+    inputSchema: { type: 'object', properties: { video: { type: 'string' }, n: { type: 'number' }, estilo: { type: 'string' }, transicion: { type: 'string' }, efecto: { type: 'string' }, quitar: { type: 'boolean' }, version: { type: 'number' } }, required: ['video', 'n'] } },
+  { name: 'video_musica', title: 'Cambiar la música', annotations: { readOnlyHint: false, destructiveHint: false },
+    description: 'Pone, cambia o quita la música del video: {ruta, volumen 0–1, ducking (baja sola bajo la voz)}. Usa la música de la marca (marca_guia).',
+    inputSchema: { type: 'object', properties: { video: { type: 'string' }, musica: { type: ['object', 'null'] }, version: { type: 'number' } }, required: ['video'] } },
   { name: 'estilos_listar', title: 'Catálogo de estilos', annotations: { readOnlyHint: true },
     description: 'Lista los estilos de edición del catálogo (id, nombre, categoría, descripción, formato, recursos que pide). Úsalo para elegir cómo editar un video.',
     inputSchema: { type: 'object', properties: { categoria: { type: 'string', enum: ['cortos', 'largos', 'tarjetas', 'ctas', 'posts'] } } } },
   { name: 'estilos_aplicar', title: 'Aplicar estilo', annotations: { readOnlyHint: false, destructiveHint: false },
-    description: 'Aplica un estilo del catálogo a un corte guardado: cada escena conserva clip, tramo y texto, y recibe capas y estilos de la receta (gancho, cuerpo, cierre). Devuelve el corte y lo pendiente (p. ej. máscaras para «detrás de la persona»). Si el estilo pide recursos (reels, tarjetas), pásalos como rutas.',
+    description: 'Aplica un estilo del catálogo (de preferencia uno que la marca eligió) a un video guardado; si el video tiene marca, sus tipografías, colores y música mandan. cada escena conserva clip, tramo y texto, y recibe capas y estilos de la receta (gancho, cuerpo, cierre). Devuelve el corte y lo pendiente (p. ej. máscaras para «detrás de la persona»). Si el estilo pide recursos (reels, tarjetas), pásalos como rutas.',
     inputSchema: { type: 'object', properties: { corte: { type: 'string', description: 'id del corte' }, estilo: { type: 'string' }, recursos: { type: 'object', description: 'p. ej. {"reels": ["imagenes/r1.png", …]}' }, version: { type: 'number' } }, required: ['corte', 'estilo'] } },
   { name: 'referencias_listar', title: 'Videos de referencia', annotations: { readOnlyHint: true },
     description: 'Biblioteca de videos de referencia (curados, winners del radar y propios): enlace, por qué funciona, estilo sugerido y si ya tiene desglose.',
@@ -61,6 +74,10 @@ export function crearCliente({ base = process.env.VIDEO_URL ?? 'http://127.0.0.1
     referencias_listar: async () => { const r = await pedir('GET', '/referencias'); return { referencias: r.referencias.map(({ breakdown, ...x }) => ({ ...x, con_desglose: !!breakdown })) }; },
     video_desglose: (a) => pedir('POST', '/desglose', a),
     referencia_imitar: (a) => pedir('POST', `/referencias/${encodeURIComponent(a.referencia)}/imitar`, { corte: a.corte, recursos: a.recursos, version: a.version }),
+    marcas_listar: async () => ({ marcas: (await pedir('GET', '/marcas')).marcas.map((m) => ({ id: m.id, nombre: m.nombre })) }),
+    marca_guia: (a) => pedir('GET', `/marcas/${encodeURIComponent(a.marca)}/guia`),
+    video_escena: (a) => pedir('POST', `/videos/${encodeURIComponent(a.video)}/escenas/${a.n}`, a),
+    video_musica: (a) => pedir('PUT', `/videos/${encodeURIComponent(a.video)}/musica`, { musica: a.musica ?? null, version: a.version }),
     estilos_listar: async (a) => { const r = await pedir('GET', '/estilos'); return a.categoria ? { ...r, estilos: r.estilos.filter((e) => e.categoria === a.categoria) } : r; },
     estilos_aplicar: (a) => pedir('POST', `/cortes/${encodeURIComponent(a.corte)}/estilo`, { estilo: a.estilo, recursos: a.recursos, version: a.version }),
     corte_render: (a) => pedir('POST', `/cortes/${encodeURIComponent(a.id)}/render`),

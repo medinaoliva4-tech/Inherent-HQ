@@ -69,15 +69,16 @@ describe('departamentos: herramientas, hilo y agentes', () => {
     expect(within(hilo).getByText(/↑ perfil del cliente ideal/)).toBeInTheDocument()
   })
 
-  it('el workspace cambia con el rol: el editor ve el editor de video, no el ICP', async () => {
+  it('el workspace cambia con el rol: el editor ve Video, no el ICP', async () => {
     montar()
     screen.getByRole('button', { name: /ver como/i }).focus()
     await userEvent.keyboard('{ArrowDown}')
     await userEvent.click(await screen.findByRole('menuitemradio', { name: 'Editor de video' }))
     await seccion(/herramientas/i)
     const nav = within(panel()).getByRole('navigation', { name: 'Herramientas' })
-    expect(within(nav).getAllByRole('button').map((b) => b.textContent)).toEqual(['Editor de video', 'Production Pre'])
-    expect(within(panel()).getByRole('region', { name: /editor de video/i })).toBeInTheDocument()
+    expect(within(nav).getAllByRole('button').map((b) => b.textContent)).toEqual(['Video', 'Production Pre'])
+    expect(within(panel()).getByRole('region', { name: 'Video' })).toBeInTheDocument()
+    expect(within(panel()).getByText('Style menu')).toBeInTheDocument()
   })
 
   it('@estrategia: sugiere el agente, pide tu aporte en el chat, escribe el documento en vivo y deja tarjetas', async () => {

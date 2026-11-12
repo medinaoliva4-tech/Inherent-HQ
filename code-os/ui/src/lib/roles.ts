@@ -10,7 +10,7 @@ export const HERRAMIENTAS: Record<IdHerramienta, { nombre: string; area: Area; a
   radar: { nombre: 'Radar', area: 'creative', ayuda: 'Referentes, winners y contenido quemado' },
   campanas: { nombre: 'Campañas', area: 'creative', ayuda: 'Copy ↔ ideas ↔ piezas ↔ resultado esperado' },
   pre: { nombre: 'Production Pre', area: 'production', ayuda: 'Hoja imprimible: jornada, shot list, permisos' },
-  video: { nombre: 'Editor de video', area: 'production', ayuda: 'Post: primer corte y derivadas' },
+  video: { nombre: 'Video', area: 'production', ayuda: 'Style menu de la marca, referencias y desglose por video' },
 }
 
 /**
