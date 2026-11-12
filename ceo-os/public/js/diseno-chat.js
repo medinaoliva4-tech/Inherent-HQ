@@ -130,22 +130,22 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
       if (faltaMotor(me, s.chat, { diseno: true })) return 'motor';
       return 'listo';
     }
-    const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
+    const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost sm" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
     function setup(f) {
       const inst = sistemaDe(navigator.userAgent || '') === 'win' ? INSTALAR_WIN : INSTALAR_MAC;
-      const otra = html`<button class="btn xs" data-act="reintentar">Ya lo hice</button>`;
-      if (f === 'sin-sistema') return html`<div class="es-setup"><b>${b.name} todavía no tiene su sistema visual</b><p>Sin sistema visual, ⑥A Diseño gráfico no arranca. Lo escribe ②B Branding con br-sistema.</p><a class="btn xs" href="${rutaModulo(b.slug, 'design')}">Ver el Design system</a></div>`;
+      const otra = html`<button class="btn sm" data-act="reintentar">Ya lo hice</button>`;
+      if (f === 'sin-sistema') return html`<div class="es-setup"><b>${b.name} todavía no tiene su sistema visual</b><p>Sin sistema visual, ⑥A Diseño gráfico no arranca. Lo escribe ②B Branding con br-sistema.</p><a class="btn sm" href="${rutaModulo(b.slug, 'design')}">Ver el Design system</a></div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
       if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p>${otra}</div>`;
       if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p>${otra}</div>`;
-      if (f === 'apagado' && inst === INSTALAR_MAC) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn xs" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(inst)}${otra}</div>`;
+      if (f === 'apagado' && inst === INSTALAR_MAC) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn sm" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat de Diseño. Corre otra vez el comando y se actualiza solo:</p>${cmd(inst)}${otra}</div>`;
       if (f === 'motor') return faltaHtml(faltaMotor(me, S.salud?.chat, { diseno: true }), cmd);
       if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p>${otra}</div>`;
       if (['bajando_repo', 'sin_github', 'repo_error', 'sin_repo', 'repo_invalido'].includes(f)) return html`<div class="es-setup"><b>El puente está preparando el repo</b><p>${S.salud?.chat?.error_repo || 'Si en un minuto sigue igual, corre otra vez el comando de instalar.'}</p>${cmd(inst)}${otra}</div>`;
       return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Es el mismo token del chat de Estrategia. Para verlo:</p>${cmd(sistemaDe(navigator.userAgent || '') === 'win' ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
-        <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
+        <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn sm" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
     }
 
     // ---------- El chat ----------
@@ -351,7 +351,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
           : html`<div class="dz-empty"><span class="es-hint-i">${ico('layers', 22)}</span><b>${p ? 'Todavía no hay láminas de esta pieza' : 'Elige una pieza del mes'}</b><p class="mut">Claude las arma en Figma con el design system de ${b.name} y las revisa contra su guía. Cada intento queda como variación A, B o C: eliges una y las demás se conservan.</p>
             ${sis?.colores.length ? html`<div class="dz-pal">${sis.colores.map((c) => html`<span title="${c.nombre} · ${c.hex}" style="background:${c.hex}"></span>`)}</div>` : ''}</div>`}</div></div>
         ${cur ? html`<footer class="ad-f">${id === 'draft' ? html`<span>${malas.length ? `Antes de guardar, revisa: ${malas.map((x) => x.texto).join(' · ')}. ` : ''}Se guarda como <b>variación ${letraNueva}</b> en ${p ? `«${p.title}»` : 'una pieza nueva del calendario'}.</span><span class="sp"></span><button class="btn" data-act="guardar" ${S.guardando ? raw('disabled') : ''}>${S.guardando ? 'Guardando…' : `Guardar variación ${letraNueva}`}</button>`
-          : html`<span>${elegida === id ? html`Es la <b>elegida</b>. Las otras variaciones se conservan.` : 'Elegirla no borra las otras.'}</span><span class="sp"></span><button class="btn ghost xs" data-act="rehacer" data-l="${id}">Rehacer ${id}</button>${elegida === id ? '' : html`<button class="btn xs" data-act="elegir" data-l="${id}" ${S.guardando ? raw('disabled') : ''}>Elegir ${id}</button>`}`}</footer>` : ''}</div>`;
+          : html`<span>${elegida === id ? html`Es la <b>elegida</b>. Las otras variaciones se conservan.` : 'Elegirla no borra las otras.'}</span><span class="sp"></span><button class="btn ghost sm" data-act="rehacer" data-l="${id}">Rehacer ${id}</button>${elegida === id ? '' : html`<button class="btn sm" data-act="elegir" data-l="${id}" ${S.guardando ? raw('disabled') : ''}>Elegir ${id}</button>`}`}</footer>` : ''}</div>`;
     }
     function infoHtml() {
       const p = pieza(), { cur } = vista(), l = S.lamina || cur?.laminas?.[0];
@@ -360,7 +360,7 @@ export async function disenoChat(el, { me, sub = [], alive, brands = [] }) {
         <section class="dz-sec"><h4>Copy</h4>${p?.caption ? html`<p class="dz-copy">${p.caption}</p>` : sin('la pieza no tiene caption todavía')}</section>
         <section class="dz-sec"><h4>Revisión</h4>${cur?.revision?.length ? html`<ul class="dz-chk">${cur.revision.map((x) => html`<li class="${x.ok ? 'ok' : 'am'}">${ico(x.ok ? 'check' : 'alert', 12)} ${x.texto}</li>`)}</ul>` : html`<p class="mut sm">Claude revisa cada lámina contra el sistema visual y la lista sale aquí.</p>`}</section>
         <section class="dz-sec"><h4>El ojo</h4>${l ? html`<span class="dz-ojo" data-ojo="${l.id}" data-c="0">${ojoChip(OJO.get(`${b.slug}|${l.id}`))}</span><p class="mut sm">${l.nombre}</p>` : html`<p class="mut sm">Sin láminas todavía.</p>`}</section>
-        <div class="row" style="gap:6px;flex-wrap:wrap">${cur?.figma ? html`<a class="btn ghost xs" href="${cur.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${cur?.laminas?.some((x) => img(x.id)) ? html`<button class="btn ghost xs" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}<a class="btn ghost xs" href="${rutaModulo(b.slug, 'design')}">${ico('layers', 12)} Design system</a></div>`;
+        <div class="row" style="gap:6px;flex-wrap:wrap">${cur?.figma ? html`<a class="btn ghost sm" href="${cur.figma}" target="_blank" rel="noopener">${ico('link', 12)} Abrir en Figma</a>` : ''}${cur?.laminas?.some((x) => img(x.id)) ? html`<button class="btn ghost sm" data-act="bajar">${ico('down', 12)} PNG</button>` : ''}<a class="btn ghost sm" href="${rutaModulo(b.slug, 'design')}">${ico('layers', 12)} Design system</a></div>`;
     }
     function paintPane() {
       ponerArea();

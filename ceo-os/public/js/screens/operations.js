@@ -80,12 +80,12 @@ export async function render(el, { me, sub, alive }) {
   function openEvent(e) {
     const when = e.allDay ? fdate(String(e.start).slice(0, 10)) + (String(e.end).slice(0, 10) > addDays(String(e.start).slice(0, 10), 1) ? ' – ' + fdate(addDays(String(e.end).slice(0, 10), -1)) : ' · todo el día')
       : `${fdate(String(e.start).slice(0, 10))} · ${String(e.start).slice(11, 16)} – ${String(e.end).slice(11, 16)}`;
-    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${e.summary}</h2><div class="mut">${when}</div>
       ${e.location ? html`<div style="margin-top:12px">${ico('pin')} ${e.location}</div>` : ''}
       ${e.description ? html`<p class="sm" style="margin-top:12px;white-space:pre-wrap">${e.description}</p>` : ''}
-      <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Entrar a Meet</a>` : ''}
-        ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Abrir en Google ↗</a>` : ''}
+      <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" >Entrar a Meet</a>` : ''}
+        ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" >Abrir en Google ↗</a>` : ''}
         <div class="sp"></div>${e.editable ? html`<button class="btn ghost" data-act="evdel">${ico('trash')}</button>` : ''}</div>`,
     { evdel: async () => { if (!(await confirmAsk(`¿Borrar «${e.summary}» de tu Google Calendar?`))) return; try { await api(`google/calendar/${encodeURIComponent(e.id)}`, { method: 'DELETE' }); closeDrawer(); toast('Evento borrado'); events = null; cal($('#obody', el)); } catch (err) { toast(err.message, true); } } });
   }
@@ -104,7 +104,7 @@ export async function render(el, { me, sub, alive }) {
   // Un hito del ciclo: qué pasa ese día y los proyectos de ciclo mensual a los que aplica.
   function openHito(d) {
     const cyc = projects.filter((p) => p.kind === 'Ciclo mensual');
-    drawer(html`<div class="row"><span class="chip">Ciclo de contenido</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>${hitoHtml(d)}
+    drawer(html`<div class="row"><span class="chip">Ciclo de contenido</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>${hitoHtml(d)}
       <div class="sec-title" style="margin-top:18px"><h2 style="font-size:17px">Proyectos del ciclo</h2><span class="mut sm">${cyc.length}</span></div>
       ${cyc.length ? cyc.map((p) => html`<a class="wkrow" href="#/operations/p/${encodeURIComponent(p.id)}"><span class="grow">${p.name}</span><span class="mut sm">${p.client || ''}</span></a>`) : html`<div class="mut sm">Ningún proyecto de ciclo mensual todavía.</div>`}
       <p class="mut sm" style="margin-top:14px">Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 se respetan.</p>`);
@@ -129,7 +129,7 @@ export async function render(el, { me, sub, alive }) {
   function openTask(t) {
     const draw = () => {
       const who = person(t.assignee);
-      drawer(html`<div class="row"><select class="in" id="tstatus" style="width:auto">${Object.keys(TSTATUS).map((s) => html`<option ${s === (t.status || 'Por empezar') ? raw('selected') : ''}>${s}</option>`)}</select><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      drawer(html`<div class="row"><select class="in" id="tstatus" style="width:auto">${Object.keys(TSTATUS).map((s) => html`<option ${s === (t.status || 'Por empezar') ? raw('selected') : ''}>${s}</option>`)}</select><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
         <input class="in" id="ttitle" value="${t.title}" style="font-size:24px;font-weight:500;letter-spacing:-.6px;margin-top:16px;border:0;padding:6px 0;background:transparent">
         <div class="mut">${pname(t.project_id)}</div>
         <div class="form" style="margin-top:16px">
@@ -189,7 +189,7 @@ export async function render(el, { me, sub, alive }) {
     newEvent: () => newEvent(),
     day: (t) => newEvent(t.dataset.date),
     ev: (t, e) => { e.stopPropagation(); openEvent(events[+t.dataset.i]); },
-    dayall: (t) => { const d = t.dataset.date; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(d)}</h2><div style="margin-top:14px">${diaHtml(dayMap[d] || [])}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)), hito: (x) => openHito(x.dataset.d) }); },
+    dayall: (t) => { const d = t.dataset.date; drawer(html`<div class="row"><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(d)}</h2><div style="margin-top:14px">${diaHtml(dayMap[d] || [])}</div>`, { ev: (x) => openEvent(events[+x.dataset.i]), task: (x) => openTask(tasks.find((y) => y.id === x.dataset.id)), hito: (x) => openHito(x.dataset.d) }); },
     task: (t) => openTask(tasks.find((x) => x.id === t.dataset.id)),
     newTask: () => addTask(kb?.project() ? { project_id: kb.project() } : {}),
   });

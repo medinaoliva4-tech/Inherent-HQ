@@ -63,7 +63,7 @@ function tarjeta(x, i, f, editable) {
   const r = (k) => html`<div data-r="${k}" data-i="${i}"></div>`;
   return html`<article class="rd-card" data-id="${x.id}">
     <header class="rd-card-h"><h4>${editable ? f.txt(`competidores.${i}.nombre`, x.nombre, { max: 80, label: 'Nombre del competidor', ph: 'Nombre' }) : x.nombre || x.url || 'Competidor'}</h4>
-      ${editable ? html`<button type="button" class="btn ghost xs" data-act="archivar" data-i="${i}" aria-label="Archivar competidor">Archivar</button>` : ''}</header>
+      ${editable ? html`<button type="button" class="btn ghost sm" data-act="archivar" data-i="${i}" aria-label="Archivar competidor">Archivar</button>` : ''}</header>
     <label class="rd-f"><span class="lbl">Sitio o red</span>${f.txt(`competidores.${i}.url`, x.url, { max: 300, label: 'Url del competidor', ph: 'https://…', sd: SD.competidores })}</label>
     <label class="rd-f"><span class="lbl">Qué ofrece</span>${f.area(`competidores.${i}.oferta`, x.oferta, { max: 300, label: 'Oferta del competidor', ph: 'Su oferta en una o dos frases', sd: SD.competidores })}</label>
     <div class="rd-f"><span class="lbl">Precio</span>${editable
@@ -86,16 +86,16 @@ function plantilla({ c, editable }, f) {
   return html`<div class="rd" data-editable="${editable ? 1 : 0}">
     <section class="rd-sec" aria-label="Competidores"><h3 class="rd-t">${ico('radar', 16)} Competidores <span class="mut sm">oferta, precio, canales y su mejor post</span></h3>
       ${act.length ? html`<div class="rd-cards">${act.map(([x, i]) => tarjeta(x, i, f, editable))}</div>` : html`<p class="rd-sd">${SIN_DATOS}: sale de ${SD.competidores}</p>`}
-      ${editable ? html`<button type="button" class="btn xs" data-act="agregar">${ico('plus', 13)} Agregar competidor</button>` : ''}</section>
+      ${editable ? html`<button type="button" class="btn sm" data-act="agregar">${ico('plus', 13)} Agregar competidor</button>` : ''}</section>
     <section class="rd-sec" aria-label="Anuncios activos"><h3 class="rd-t">${ico('megaphone', 16)} Anuncios activos <span class="mut sm">lo que tienen corriendo en Meta ahora</span></h3><div data-ads></div></section>
     <section class="rd-sec" aria-label="Mapa de posicionamiento"><h3 class="rd-t">${ico('target', 16)} Mapa de posicionamiento <span class="mut sm">2 ejes, solo con evidencia</span></h3>
       ${editable ? html`<div class="rd-fila rd-ejes"><label class="rd-f"><span class="lbl">Eje X</span>${f.txt('ejes.x.nombre', c.ejes.x.nombre, { max: 40, label: 'Nombre del eje X' })}</label>${f.txt('ejes.x.bajo', c.ejes.x.bajo, { max: 40, label: 'Extremo bajo del eje X' })}${f.txt('ejes.x.alto', c.ejes.x.alto, { max: 40, label: 'Extremo alto del eje X' })}</div>
         <div class="rd-fila rd-ejes"><label class="rd-f"><span class="lbl">Eje Y</span>${f.txt('ejes.y.nombre', c.ejes.y.nombre, { max: 40, label: 'Nombre del eje Y' })}</label>${f.txt('ejes.y.bajo', c.ejes.y.bajo, { max: 40, label: 'Extremo bajo del eje Y' })}${f.txt('ejes.y.alto', c.ejes.y.alto, { max: 40, label: 'Extremo alto del eje Y' })}</div>` : ''}
       <div class="rd-mapa" data-r="mapa"></div></section>
     <section class="rd-sec" aria-label="Huecos"><h3 class="rd-t">${ico('compass', 16)} Huecos <span class="mut sm">lo que nadie ocupa, con la url que lo muestra</span></h3>
-      ${hs.length ? html`<ul class="rd-huecos">${hs.map(([h, i]) => html`<li class="rd-hueco"><div class="rd-fila">${f.txt(`huecos.${i}.texto`, h.texto, { max: 300, label: 'Hueco', ph: 'Qué espacio queda libre', sd: SD.huecos })}${f.txt(`huecos.${i}.url`, h.url, { max: 300, label: 'Url de la evidencia del hueco', ph: 'https://…', sd: SD.huecos })}${editable ? html`<button type="button" class="btn ghost xs" data-act="archivar-hueco" data-i="${i}" aria-label="Archivar hueco">Archivar</button>` : ''}</div><div data-r="aviso_h" data-i="${i}"></div></li>`)}</ul>`
+      ${hs.length ? html`<ul class="rd-huecos">${hs.map(([h, i]) => html`<li class="rd-hueco"><div class="rd-fila">${f.txt(`huecos.${i}.texto`, h.texto, { max: 300, label: 'Hueco', ph: 'Qué espacio queda libre', sd: SD.huecos })}${f.txt(`huecos.${i}.url`, h.url, { max: 300, label: 'Url de la evidencia del hueco', ph: 'https://…', sd: SD.huecos })}${editable ? html`<button type="button" class="btn ghost sm" data-act="archivar-hueco" data-i="${i}" aria-label="Archivar hueco">Archivar</button>` : ''}</div><div data-r="aviso_h" data-i="${i}"></div></li>`)}</ul>`
         : html`<p class="rd-sd">${SIN_DATOS}: sale de ${SD.huecos}</p>`}
-      ${editable ? html`<button type="button" class="btn xs" data-act="agregar-hueco">${ico('plus', 13)} Agregar hueco</button>` : ''}</section>
+      ${editable ? html`<button type="button" class="btn sm" data-act="agregar-hueco">${ico('plus', 13)} Agregar hueco</button>` : ''}</section>
   </div>`;
 }
 

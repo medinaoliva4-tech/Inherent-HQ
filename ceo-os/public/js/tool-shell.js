@@ -195,7 +195,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     const el = $('#tsh-acts', root); if (!el) return;
     const d = S.doc, est = estadoDe(), esc = escribe(), edit = editable(), fa = faltasAhora(), corriendo = S.gen?.fase === 'corriendo';
     if (!hayCambio('acts', [S.sucio, S.ocupado, S.gen?.fase, d?.id, est, d?.version, d?.archivado, fa.length, S.puede, S.alcance.abierto, S.alcance.code, Boolean(S.cmp), (d?.tareas || []).length])) return;
-    const btn = (act, icono, txt, { primario = false, off = false, tip = '', tool: t = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm tsh-act" data-act="tsh-${act}" ${t ? html`data-tool="${t}"` : ''} title="${tip}" ${off ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
+    const btn = (act, icono, txt, { primario = false, off = false, tip = '', tool: t = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm" data-act="tsh-${act}" ${t ? html`data-tool="${t}"` : ''} title="${tip}" ${off ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
     const flujo = [], salida = [];
     const g1 = [
       edit && puedeIA ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : '',
@@ -215,7 +215,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (d && esc && ['Aprobado', 'Entregado'].includes(est)) (tool.va_a || []).forEach((id) => { const h = herramientaDe(id); if (h && (typeof h.puede !== 'function' || h.puede(me, b))) salida.push(btn('siguiente', 'arrow-right', `Enviar a ${h.nombre}`, { tool: id })); });
     if (typeof tool.aMd === 'function' && (d || S.alcance.abierto)) salida.push(btn('exportar', 'download', 'Exportar'), btn('copiar', 'copy', 'Copiar'));
     // El chat de Strategy de hoy (puente/Hermes) de esta herramienta: sigue intacto, ahora en su propia ruta.
-    if (tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
+    if (tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
     salida.push(btn('chat', 'chat-ia', 'Continuar en el Chat'));
     if (d && esc) salida.push(btn('archivar', 'trash-2', 'Archivar'));
     mount(el, html`<div class="tsh-grp">${g1}</div>${flujo.length ? html`<div class="tsh-grp">${flujo}</div>` : ''}<div class="tsh-grp">${salida}</div>`);
@@ -224,9 +224,9 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   function pintarGen() {
     const g = S.gen, el = $('#tsh-gen', root); if (!el) return;
     if (!g) return mount(el, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-act="tsh-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-act="tsh-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="tsh-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-act="tsh-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-act="tsh-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="tsh-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el, html`<section class="tsh-gen" data-fase="corriendo"><header><span class="tsh-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm tsh-paso"></span><button type="button" class="btn ghost sm" data-act="tsh-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="tsh-stream" aria-live="polite"></pre></section>`);
+      mount(el, html`<section class="tsh-gen" data-fase="corriendo"><header><span class="tsh-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm tsh-paso"></span><button type="button" class="btn ghost" data-act="tsh-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="tsh-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -237,12 +237,12 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
         <div class="tsh-prop-res">${resumen}</div>
         ${(cr.cumple || []).length + (cr.falta || []).length ? html`<ul class="tsh-crit-ul">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${(cr.falta || []).map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que la uses.</p>
-        <div class="tsh-prop-bt"><button type="button" class="btn sm" data-act="tsh-usar">${ico('check', 14)} Usar esta propuesta</button><button type="button" class="btn ghost sm" data-act="tsh-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-act="tsh-cerrar-gen">Descartar</button></div></section>`);
+        <div class="tsh-prop-bt"><button type="button" class="btn" data-act="tsh-usar">${ico('check', 14)} Usar esta propuesta</button><button type="button" class="btn ghost" data-act="tsh-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-act="tsh-cerrar-gen">Descartar</button></div></section>`);
       return;
     }
     mount(el, html`<section class="tsh-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : html`No vino el bloque «${tool.bloque}». Reintenta o pega la respuesta.`}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="tsh-json">${g.texto}</pre></details>` : ''}
-      <div class="tsh-prop-bt"><button type="button" class="btn sm" data-act="tsh-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
+      <div class="tsh-prop-bt"><button type="button" class="btn" data-act="tsh-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
   }
   const verStream = () => { const pre = $('.tsh-stream', root); if (pre && S.gen) { pre.textContent = S.gen.texto || ''; pre.scrollTop = pre.scrollHeight; } };
   const verPaso = () => { const p = $('.tsh-paso', root); if (p && S.gen) p.textContent = S.gen.paso || ''; };
@@ -255,8 +255,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
       let r = ''; try { r = vista.resumen(d.contenido); } catch { r = ''; }
       return html`<div class="tsh-cmp-col"><h4>v${n}${n === S.doc?.version ? html` <span class="chip">actual</span>` : ''}</h4><div class="tsh-cmp-res">${r}</div>
         <details><summary>Ver el JSON</summary><pre class="tsh-json">${JSON.stringify(d.contenido, null, 2)}</pre></details>
-        ${editable() && n !== S.doc?.version ? html`<button type="button" class="btn ghost sm" data-act="tsh-restaurar" data-v="${n}">Cargar esta versión</button>` : ''}</div>`; };
-    mount(el, html`<section class="tsh-cmp"><header><h3>${ico('layers', 14)} Comparar versiones</h3><button type="button" class="btn ghost sm" data-act="tsh-cmp-cerrar">${ico('x', 14)} Cerrar</button></header>
+        ${editable() && n !== S.doc?.version ? html`<button type="button" class="btn ghost" data-act="tsh-restaurar" data-v="${n}">Cargar esta versión</button>` : ''}</div>`; };
+    mount(el, html`<section class="tsh-cmp"><header><h3>${ico('layers', 14)} Comparar versiones</h3><button type="button" class="btn ghost" data-act="tsh-cmp-cerrar">${ico('x', 14)} Cerrar</button></header>
       ${c.lista.length < 2 ? html`<p class="mut sm">Solo hay una versión: todavía no hay con qué comparar.</p>` : html`<div class="tsh-cmp-sel"><label>Antes <select class="in" data-act="tsh-cmp-a">${op(c.a)}</select></label><label>Después <select class="in" data-act="tsh-cmp-b">${op(c.b)}</select></label></div>
       <div class="tsh-cmp-cols">${col(c.a)}${col(c.b)}</div>`}</section>`);
   }
@@ -293,7 +293,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     mount(el, html`<div class="tsh-pie-col tsh-res"><h3>Resultados</h3>
         ${res.length ? html`<ul class="tsh-pie-ul">${res.map((r) => html`<li><b>${r.metrica}</b>${r.valor !== '' && r.valor != null ? html`: ${r.valor}` : ''} <span class="mut sm">${fdate(r.en)} · ${quien(r.por)}</span>${r.nota ? html`<p>${r.nota}</p>` : ''}</li>`)}</ul>`
           : html`<p class="tsh-sindatos">⚠️ SIN DATOS: los resultados los registra quien mide el entregable después de entregarlo</p>`}
-        ${d && escribe() ? html`<div class="tsh-r-form"><input class="in tsh-r-in" id="tsh-r-metrica" maxlength="80" placeholder="Métrica" aria-label="Métrica"><input class="in tsh-r-in" id="tsh-r-valor" maxlength="80" placeholder="Valor" aria-label="Valor"><input class="in tsh-r-in" id="tsh-r-nota" maxlength="300" placeholder="Nota (qué aprendimos)" aria-label="Nota"><button type="button" class="btn ghost sm" data-act="tsh-resultado">Registrar</button></div>` : ''}</div>
+        ${d && escribe() ? html`<div class="tsh-r-form"><input class="in tsh-r-in" id="tsh-r-metrica" maxlength="80" placeholder="Métrica" aria-label="Métrica"><input class="in tsh-r-in" id="tsh-r-valor" maxlength="80" placeholder="Valor" aria-label="Valor"><input class="in tsh-r-in" id="tsh-r-nota" maxlength="300" placeholder="Nota (qué aprendimos)" aria-label="Nota"><button type="button" class="btn ghost" data-act="tsh-resultado">Registrar</button></div>` : ''}</div>
       <div class="tsh-pie-col tsh-hist"><h3>Historial</h3>
         ${his.length ? html`<ul class="tsh-pie-ul">${his.map((h) => html`<li><span class="tsh-h-en">${fdate(h.en)}</span> <b>${h.accion}</b> <span class="mut sm">${quien(h.por)}${h.version ? ` · v${h.version}` : ''}</span>${h.nota ? html`<p class="mut sm">${h.nota}</p>` : ''}</li>`)}</ul>`
           : html`<p class="tsh-sindatos">⚠️ SIN DATOS: el historial empieza cuando se guarda el primer borrador</p>`}</div>`);

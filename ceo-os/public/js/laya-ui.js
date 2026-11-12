@@ -59,7 +59,7 @@ export async function layaBox(el, { coll, id, compact = false } = {}) {
     const tip = [...det.map(({ q, j }) => linea(q, j)), r.at ? `${ENGINE_LABEL[det[0]?.j.engine] || ''} · ${fdate(String(r.at).slice(0, 10))}` : ''].filter(Boolean).join('\n');
     const chips = html`<span class="chip ly-chip ${r.estado} ${first && r.estado === 'listo' ? tono(first, r.ultimos[first.id]) : ''}" title="${tip || 'Todavía sin juicio de Laya'}">${r.chip}</span>
       ${r.extra.map((x, k) => { const q = det[k + (r.estado === 'pendiente' ? 0 : 1)]?.q; return html`<span class="chip ly-chip sub ${q ? tono(q, r.ultimos[q.id]) : ''}">${x}</span>`; })}`;
-    const btn = puede ? html`<button class="btn xs ghost ly-ask" type="button" data-ly="ask">${r.estado === 'vacio' ? 'Pedir a Laya' : 'Otra vez'}</button>` : '';
+    const btn = puede ? html`<button class="btn sm ghost ly-ask" type="button" data-ly="ask">${r.estado === 'vacio' ? 'Pedir a Laya' : 'Otra vez'}</button>` : '';
     mount(el, compact ? html`<span class="ly-chips">${chips}</span>${btn}`
       : html`<div class="ly-head"><b class="sm">Laya</b><span class="ly-chips">${chips}</span><span class="sp"></span>${btn}</div>
         ${r.estado === 'pendiente' ? html`<div class="mut sm ly-note">Pendiente: sin el puente encendido, lo resuelve Claude Code (juicios_pendientes).</div>` : ''}
@@ -121,22 +121,22 @@ export async function layaView(el, { me } = {}) {
   const mdTexto = () => (md.on ? (md.tiene === false ? `Ollama corriendo, pero falta bajar ${MODELO_LOCAL}: vuelve a correr el comando.` : `Modelo local corriendo · ${MODELO_LOCAL}`) : 'Opcional. Sin él, el texto repetitivo lo escribe Claude.');
   const modeloOpcional = (compacto) => compacto
     ? html`<div class="card ly-card ly-run" style="margin-top:8px"><span class="dot ${md.on ? 'ly-on' : 'ly-off'}"></span><b>Modelo local (opcional)</b><span class="mut">· ${mdTexto()}</span>
-        <span class="sp"></span>${md.on && md.tiene !== false ? '' : html`<button class="btn xs ghost" data-l="copiarm">Copiar comando</button>`}</div>`
+        <span class="sp"></span>${md.on && md.tiene !== false ? '' : html`<button class="btn sm ghost" data-l="copiarm">Copiar comando</button>`}</div>`
     : html`<li class="${md.on ? 'hecho' : ''}">${num(md.on, 4)}<div><b>Modelo local (opcional)</b>
           <div class="mut sm">Para variantes de caption, alt text y títulos cortos sin gastar créditos de Claude. Baja ${MODELO_LOCAL} (~3.4 GB).</div>
-          <div class="aiurl"><code>${cmdModelo()}</code><button class="btn xs ghost" data-l="copiarm">Copiar</button></div>
+          <div class="aiurl"><code>${cmdModelo()}</code><button class="btn sm ghost" data-l="copiarm">Copiar</button></div>
           <div class="ly-estado"><span class="dot ${md.on ? 'ly-on' : 'ly-off'}"></span><span class="sm">${mdTexto()}</span></div></div></li>`;
   function puenteCard() {
     if (st.on && st.listo && !abierto) {
       return html`<div class="card ly-card ly-run"><span class="dot ly-on"></span><b>Laya corriendo</b><span class="mut">· modelo ${st.modelo || MODELO}</span>
-        <span class="sp"></span><button class="btn xs ghost" data-l="abrir" title="Vuelve a correr el comando para actualizar Laya">Actualizar</button></div>
+        <span class="sp"></span><button class="btn sm ghost" data-l="abrir" title="Vuelve a correr el comando para actualizar Laya">Actualizar</button></div>
         ${modeloOpcional(true)}`;
     }
     const h1 = copiado || st.on, h2 = st.on, h3 = st.on && st.listo;
     return html`<div class="card ly-card ly-inst"><b>Deja Laya corriendo en tu compu</b><span class="mut sm"> · una sola vez; después arranca solo, también al reiniciar</span>
       <ol class="ly-pasos">
         <li class="${h1 ? 'hecho' : ''}">${num(h1, 1)}<div><b>Copia este comando</b>
-          <div class="aiurl"><code>${cmd()}</code><button class="btn xs" data-l="copiar">Copiar</button></div>
+          <div class="aiurl"><code>${cmd()}</code><button class="btn sm" data-l="copiar">Copiar</button></div>
           <button class="ly-lnk mut sm" type="button" data-l="sis">${sis === 'win' ? '¿Usas Mac o Linux?' : '¿Usas Windows?'}</button></div></li>
         <li class="${h2 ? 'hecho' : ''}">${num(h2, 2)}<div><b>${sis === 'win' ? 'Pégalo en PowerShell y espera' : 'Pégalo en la Terminal y espera'}</b>
           <div class="mut sm">${TERMINAL[sis]}</div>
@@ -146,7 +146,7 @@ export async function layaView(el, { me } = {}) {
         ${modeloOpcional(false)}
       </ol>
       <div class="mut sm ly-permiso">Chrome te va a preguntar si dejas que Inherent OS hable con tu compu: dale <b>Permitir</b>.</div>
-      ${abierto ? html`<button class="btn xs ghost" data-l="cerrar" style="margin-top:10px">Cerrar</button>` : ''}</div>`;
+      ${abierto ? html`<button class="btn sm ghost" data-l="cerrar" style="margin-top:10px">Cerrar</button>` : ''}</div>`;
   }
   const pintarPuente = () => { const b = el.querySelector?.('[data-ly-puente]'); if (b) mount(b, puenteCard()); };
   const firma = (v) => [v.on, v.listo, v.cargando, v.error, v.modelo].join('|');
@@ -172,7 +172,7 @@ export async function layaView(el, { me } = {}) {
     <div class="ly-qrow"><input class="in" data-f="chip" value="${q.chip}" placeholder="Palabra del chip" aria-label="Palabra del chip">
       <select class="in" data-f="tipo" aria-label="Tipo">${TIPOS.map((t) => html`<option value="${t}" ${t === q.tipo ? raw('selected') : ''}>${TIPO_LABEL[t]}</option>`)}</select>
       ${q.tipo !== 'choice' ? html`<input class="in" data-f="umbral" type="number" min="0" max="1" step="0.05" value="${q.umbral ?? ''}" placeholder="sin umbral" title="De 0 a 1. Vacío = sin umbral" aria-label="Umbral">` : html`<span class="mut sm">sin umbral</span>`}
-      <button class="arrow light" type="button" data-q="del" title="Quitar la pregunta" aria-label="Quitar la pregunta">${ico('trash', 15)}</button></div>
+      <button class="btn-icon end" type="button" data-q="del" title="Quitar la pregunta" aria-label="Quitar la pregunta">${ico('trash', 15)}</button></div>
     <textarea class="in" data-f="texto" rows="2" placeholder="La pregunta">${q.texto}</textarea>
     ${q.tipo === 'noul' ? html`<div class="two"><input class="in" data-f="si" value="${q.si || ''}" placeholder="Qué cuenta como sí (opcional)"><input class="in" data-f="no" value="${q.no || ''}" placeholder="Qué cuenta como no (opcional)"></div>`
       : html`<textarea class="in" data-f="opciones" rows="${Math.min(8, 2 + (q.tipo === 'choice' ? Object.keys(q.opciones || {}).length : (q.niveles || []).length))}" placeholder="${q.tipo === 'score' ? 'Un nivel por línea, de menor a mayor («corto: descripción»)' : 'Una opción por línea («etiqueta: descripción»)'}">${opcionesTexto(q)}</textarea>`}</div>`;
@@ -188,10 +188,10 @@ export async function layaView(el, { me } = {}) {
     mount(el, html`<div class="hello sp-hero" style="margin-top:0"><h1>Laya</h1><p>El motor de decisiones que <em>corre en tu compu</em>.</p></div>
       <div data-ly-puente>${puenteCard()}</div>
       <details class="ly-mcp mut sm"><summary>Sin Laya en tu compu, «Pedir a Laya» deja el juicio pendiente: así lo resuelve Claude Code</summary>
-        <div class="aiurl"><code>${INSTALAR_MCP}</code><button class="btn xs ghost" data-l="copymcp">Copiar</button></div></details>
+        <div class="aiurl"><code>${INSTALAR_MCP}</code><button class="btn sm ghost" data-l="copymcp">Copiar</button></div></details>
       <div class="sec-title" style="margin:26px 0 10px"><h2 style="font-size:19px">Puertas y preguntas</h2><span class="mut sm">${ceo ? 'Las cambia el CEO. Umbral de 0 a 1; vacío = sin umbral.' : 'Solo el CEO las cambia.'}</span></div>
       ${GATES.map((g) => html`<section class="ly-gate"><div class="row"><b>${PUERTAS[g].label}</b><span class="mut sm">· ${PUERTAS[g].donde}</span>${guardadas[g] ? html`<span class="chip sm2">editada</span>` : html`<span class="chip sm2 off">de fábrica</span>`}<span class="sp"></span>
-          ${ceo ? html`<button class="btn xs ghost" data-l="add" data-g="${g}">+ Pregunta</button>${guardadas[g] ? html`<button class="btn xs ghost" data-l="reset" data-g="${g}">De fábrica</button>` : ''}<button class="btn xs" data-l="save" data-g="${g}">Guardar</button>` : ''}</div>
+          ${ceo ? html`<button class="btn sm ghost" data-l="add" data-g="${g}">+ Pregunta</button>${guardadas[g] ? html`<button class="btn sm ghost" data-l="reset" data-g="${g}">De fábrica</button>` : ''}<button class="btn sm" data-l="save" data-g="${g}">Guardar</button>` : ''}</div>
         ${ceo ? draft[g].map((q, k) => qForm(g, q, k)) : html`<ul class="ly-list">${draft[g].map((q) => html`<li><b>${q.chip}</b> <span class="mut sm">· ${TIPO_LABEL[q.tipo]}${umbralTexto(q) ? ` · ${umbralTexto(q)}` : ''}</span><br>${q.texto}</li>`)}</ul>`}</section>`)}
       <div class="sec-title" style="margin:26px 0 10px"><h2 style="font-size:19px">Últimos juicios</h2><span class="mut sm">${J.items.length || ''}</span></div>
       ${J.items.length ? html`<div class="card"><table><thead><tr><th>Fecha</th><th>Elemento</th><th>Pregunta</th><th>Respuesta</th><th>Motor</th></tr></thead><tbody>

@@ -56,13 +56,13 @@ function plantilla(c, S, o) {
     : S.modo === 'tablero' ? tablero(c, lista, o) : tabla(c, lista, o);
   return html`<div class="sl" data-modo="${S.modo}">
     <div class="sl-barra">
-      <div class="sl-vistas" role="group" aria-label="Vista"><button type="button" class="btn sm" data-a="modo" data-v="tabla" aria-pressed="${S.modo === 'tabla'}">${ico('list', 14)} Tabla</button><button type="button" class="btn sm" data-a="modo" data-v="tablero" aria-pressed="${S.modo === 'tablero'}">${ico('layout-grid', 14)} Tablero</button></div>
+      <div class="sl-vistas" role="group" aria-label="Vista"><button type="button" class="btn" data-a="modo" data-v="tabla" aria-pressed="${S.modo === 'tabla'}">${ico('list', 14)} Tabla</button><button type="button" class="btn" data-a="modo" data-v="tablero" aria-pressed="${S.modo === 'tablero'}">${ico('layout-grid', 14)} Tablero</button></div>
       <div class="sl-chips" role="group" aria-label="Agrupar por">${AGRUPAR.map(([k, n]) => html`<button type="button" class="chip" data-a="agrupar" data-v="${k}" aria-pressed="${S.agrupar === k}">${n}</button>`)}</div>
       <span class="sl-prog mut sm">${p.grabadas} de ${p.total} grabadas · ${Math.round(segundos(lista))} s</span>
     </div>
     <div class="sl-barra">
-      ${o.ed ? html`<button type="button" class="btn sm" data-a="nueva">${ico('plus', 14)} Escena</button><label class="btn sm sl-imp">${ico('upload', 14)} Importar CSV<input type="file" accept=".csv,text/csv" data-a="importar" hidden></label>` : ''}
-      <button type="button" class="btn sm" data-a="exportar" ${lista.length ? '' : 'disabled'}>${ico('download', 14)} Exportar CSV</button>
+      ${o.ed ? html`<button type="button" class="btn" data-a="nueva">${ico('plus', 14)} Escena</button><label class="btn sl-imp">${ico('upload', 14)} Importar CSV<input type="file" accept=".csv,text/csv" data-a="importar" hidden></label>` : ''}
+      <button type="button" class="btn" data-a="exportar" ${lista.length ? '' : 'disabled'}>${ico('download', 14)} Exportar CSV</button>
       ${o.costos ? '' : html`<span class="sl-nota mut sm">El CSV sale sin costo estimado.</span>`}
     </div>
     ${cuerpo}</div>`;

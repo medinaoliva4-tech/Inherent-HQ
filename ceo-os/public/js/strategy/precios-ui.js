@@ -52,7 +52,7 @@ const REGIONES = { aviso: avisoPaquete, res: resultados };
 function tarjeta(p, i, f, editable, conCosto) {
   return html`<article class="pr-card" data-recomendado="${p.recomendado ? 1 : 0}" data-id="${p.id}">
     <header class="pr-card-h">${p.recomendado ? html`<span class="chip pr-rec">${ico('star', 13)} Recomendado</span>` : ''}
-      ${editable ? html`<button type="button" class="btn ghost xs" data-act="archivar" data-i="${i}" aria-label="Archivar paquete">Archivar</button>` : ''}</header>
+      ${editable ? html`<button type="button" class="btn ghost sm" data-act="archivar" data-i="${i}" aria-label="Archivar paquete">Archivar</button>` : ''}</header>
     <label class="pr-f"><span class="lbl">Nombre</span>${f.txt(`paquetes.${i}.nombre`, p.nombre, { max: 60, label: 'Nombre del paquete', ph: 'Nombre del paquete', sd: SD.paquetes })}</label>
     <div class="pr-f"><span class="lbl">Precio <span class="mut sm">propuesta: se escala al CEO</span></span>${editable
       ? html`<div class="pr-fila">${f.num(`paquetes.${i}.precio`, p.precio, { label: 'Precio del paquete', ph: 'Monto' })}${f.txt(`paquetes.${i}.moneda`, p.moneda, { max: 8, label: 'Moneda', ph: 'GTQ' })}</div>`
@@ -69,15 +69,15 @@ function plantilla({ c, editable, ver, real }, f) {
     <p class="pr-nota" role="note">${ico('tag', 14)} Todo precio es una propuesta: se escala al CEO antes de decirlo al cliente.</p>
     <section class="pr-sec" aria-label="Paquetes"><h3 class="pr-t">${ico('layers', 16)} Paquetes <span class="mut sm">de 2 a ${MAX_PAQUETES}, uno recomendado</span></h3>
       ${vivos.length ? html`<div class="pr-cards">${vivos.map(([p, i]) => tarjeta(p, i, f, editable, ver && real))}</div>` : html`<p class="pr-sd">${SIN_DATOS}: sale de ${SD.paquetes}</p>`}
-      ${editable && vivos.length < MAX_PAQUETES ? html`<button type="button" class="btn xs" data-act="agregar">${ico('plus', 13)} Agregar paquete</button>` : ''}
+      ${editable && vivos.length < MAX_PAQUETES ? html`<button type="button" class="btn sm" data-act="agregar">${ico('plus', 13)} Agregar paquete</button>` : ''}
       <label class="pr-f pr-porque"><span class="lbl">Por qué se recomienda ese paquete</span>${f.area('porque', c.porque, { max: 500, filas: 3, label: 'Por qué se recomienda', ph: 'La razón en una o dos frases, con el dato que la apoya', sd: SD.paquetes })}</label></section>
     <section class="pr-sec" aria-label="Matriz de paquetes por features"><h3 class="pr-t">${ico('list', 16)} Matriz <span class="mut sm">qué incluye cada paquete</span></h3>
       ${cols.length && c.features.length ? html`<div class="pr-scroll"><table class="pr-mx"><thead><tr><th scope="col">Feature</th>${cols.map(([p]) => html`<th scope="col" data-recomendado="${p.recomendado ? 1 : 0}">${p.nombre || p.id}</th>`)}${editable ? html`<th scope="col"><span class="sr-only">Archivar</span></th>` : ''}</tr></thead>
         <tbody>${c.features.map((x, fi) => html`<tr><th scope="row">${editable ? f.txt(`features.${fi}.nombre`, x.nombre, { max: 80, label: 'Nombre del feature', ph: 'Feature' }) : x.nombre}</th>${cols.map(([p, pi]) => html`<td data-recomendado="${p.recomendado ? 1 : 0}">${editable
           ? html`<input type="checkbox" data-c="@inc.${pi}.${x.id}" ${p.incluye.includes(x.id) ? 'checked' : ''} aria-label="${p.nombre || p.id} incluye ${x.nombre}">`
-          : html`<span aria-label="${p.incluye.includes(x.id) ? 'Incluido' : 'No incluido'}">${p.incluye.includes(x.id) ? '✓' : '—'}</span>`}</td>`)}${editable ? html`<td><button type="button" class="btn ghost xs" data-act="quitar-feature" data-i="${fi}" aria-label="Quitar feature de la matriz">Quitar</button></td>` : ''}</tr>`)}</tbody></table></div>`
+          : html`<span aria-label="${p.incluye.includes(x.id) ? 'Incluido' : 'No incluido'}">${p.incluye.includes(x.id) ? '✓' : '—'}</span>`}</td>`)}${editable ? html`<td><button type="button" class="btn ghost sm" data-act="quitar-feature" data-i="${fi}" aria-label="Quitar feature de la matriz">Quitar</button></td>` : ''}</tr>`)}</tbody></table></div>`
         : html`<p class="pr-sd">${SIN_DATOS}: la matriz sale de los paquetes y de lo que incluye cada oferta (Offer Architect)</p>`}
-      ${editable && c.features.length < MAX_FEATURES ? html`<button type="button" class="btn xs" data-act="agregar-feature">${ico('plus', 13)} Agregar feature</button>` : ''}</section>
+      ${editable && c.features.length < MAX_FEATURES ? html`<button type="button" class="btn sm" data-act="agregar-feature">${ico('plus', 13)} Agregar feature</button>` : ''}</section>
     ${ver ? html`<section class="pr-sec" aria-label="Costos del cliente"><h3 class="pr-t">${ico('lock', 16)} Costos del cliente <span class="mut sm">solo los ve quien ve costos</span></h3>
       ${real ? html`<p class="pr-etq">${ETIQUETA_CLIENTE} · cada dato dice su fuente</p>
         <div class="pr-fila"><label class="pr-f"><span class="lbl">CAC</span>${f.num('costos.cac', c.costos.cac, { label: 'Costo de adquisición del cliente', ph: 'Por cliente nuevo' })}</label><label class="pr-f"><span class="lbl">Clientes nuevos al mes</span>${f.num('costos.volumen', c.costos.volumen, { label: 'Volumen mensual de clientes nuevos', ph: 'Volumen' })}</label><label class="pr-f"><span class="lbl">Compras por cliente</span>${f.num('costos.compras', c.costos.compras, { label: 'Compras por cliente', ph: 'En su vida como cliente' })}</label></div>
@@ -85,7 +85,7 @@ function plantilla({ c, editable, ver, real }, f) {
         : html`<p class="pr-sd">${SIN_DATOS}: los costos reales entran solo con Growth Partnership y Finanzas en la ficha (sale de ${SD.costos}). Mientras tanto el simulador es de ejemplo.</p>`}</section>
     <section class="pr-sec" aria-label="Simulador de margen"><h3 class="pr-t">${ico('chart-column', 16)} Simulador de margen <span class="mut sm">${real ? 'con los costos del cliente' : 'con números de ejemplo, no son del cliente'} · no se guarda</span></h3>
       <div class="pr-fila pr-sim"><label class="pr-f"><span class="lbl">Precio</span><input class="in" type="number" min="0" step="any" data-s="precio" aria-label="Simulador: precio"></label><label class="pr-f"><span class="lbl">Costo unitario</span><input class="in" type="number" min="0" step="any" data-s="costo" aria-label="Simulador: costo unitario"></label><label class="pr-f"><span class="lbl">CAC</span><input class="in" type="number" min="0" step="any" data-s="cac" aria-label="Simulador: CAC"></label><label class="pr-f"><span class="lbl">Clientes nuevos al mes</span><input class="in" type="number" min="0" step="any" data-s="volumen" aria-label="Simulador: volumen"></label><label class="pr-f"><span class="lbl">Compras por cliente</span><input class="in" type="number" min="0" step="any" data-s="compras" aria-label="Simulador: compras por cliente"></label></div>
-      <button type="button" class="btn ghost xs" data-act="usar-rec">Partir del paquete recomendado</button>
+      <button type="button" class="btn ghost sm" data-act="usar-rec">Partir del paquete recomendado</button>
       <div data-r="res"></div></section>` : ''}
   </div>`;
 }

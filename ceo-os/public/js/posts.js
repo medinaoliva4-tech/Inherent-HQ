@@ -123,7 +123,7 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
     return html`<b class="sm" style="display:block;margin-top:18px">Archivos en Drive${l.length ? ` · ${l.length}` : ''} <span id="as-ojo">${ojoChip(p.ojo, { compact: true })}</span></b>
       ${l.length ? html`<div class="as-grid">${l.map((a) => html`<div class="as-i">${miniatura(a) ? html`<a href="${a.link || '#'}" target="_blank" rel="noopener noreferrer"><img src="${miniatura(a)}" alt="${a.name}" loading="lazy"></a>` : html`<a class="as-f" href="${a.link || '#'}" target="_blank" rel="noopener noreferrer">${ico(/^video\//.test(a.mime || '') ? 'video' : 'doc', 18)}</a>`}
         <span class="as-n" title="${a.name}">${a.name}</span><button type="button" class="as-x" data-act="aquitar" data-id="${a.id}" aria-label="Quitar de la pieza">×</button></div>`)}</div>` : html`<p class="mut sm" style="margin-top:4px">Todavía no hay archivos: sube la foto, el video o la lámina y queda en Drive, ligado a esta pieza.</p>`}
-      <div class="row" style="gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn ghost xs" data-act="asub">${ico('upload', 13)} Subir a Drive</button><span class="mut sm" id="as-prog"></span><input type="file" id="as-file" accept="image/*,video/*,.pdf" style="display:none"></div>`;
+      <div class="row" style="gap:8px;margin-top:8px;align-items:center"><button type="button" class="btn ghost sm" data-act="asub">${ico('upload', 13)} Subir a Drive</button><span class="mut sm" id="as-prog"></span><input type="file" id="as-file" accept="image/*,video/*,.pdf" style="display:none"></div>`;
   }
   function openPost(p) {
     queueMicrotask(() => { const i = $('#as-file'); if (i) i.onchange = () => subirAsset(p, i.files[0]); });
@@ -132,7 +132,7 @@ export function postsBoard(b, profile, list, onChange, opts = {}) {
     queueMicrotask(() => layaBox(document.getElementById('laya-idea'), { coll: 'content', id: p.id })); // Fase 3 · Laya: ¿engancha?, ¿suena a la marca?
     const em = embedUrl(p.url);
     const e = estadoDe(p);
-    drawer(html`<div class="row"><span class="chip ${PCLS[e]}">${e}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip ${PCLS[e]}">${e}</span><span class="chip">${p.format || 'Pieza'}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${p.title}</h2><div class="mut sm" style="margin-top:2px">${nombreDe(p, opts.brand)}</div><div class="mut">${p.date ? 'Sale el ' + fdate(p.date) : 'Sin fecha'}${p.published_at ? ` · publicado el ${fdate(p.published_at)}` : ''}</div>
       ${em ? html`<iframe src="${em}" style="width:100%;aspect-ratio:9/12;border:0;border-radius:18px;margin-top:16px;background:#1a120c" allow="autoplay; fullscreen" loading="lazy"></iframe>` : p.url ? html`<a class="artifact" href="${p.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:14px"><span class="fi">${ico('play', 13)}</span><div><b style="font-weight:500">Abrir video</b></div></a>` : ''}
       ${p.caption ? html`<b class="sm" style="display:block;margin-top:18px">Caption</b><p style="white-space:pre-wrap;margin-top:6px">${p.caption}</p>` : ''}

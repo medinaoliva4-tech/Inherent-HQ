@@ -91,7 +91,7 @@ const porAprobar = (p) => estadoDe(p) === 'En revisión' || (p.por_aprobar === t
 export async function render(el, { me, sub = [], alive }) {
   const [ws0, slug0, pest0, tool0, ...resto] = sub;
   const W = wsDe(ws0 || '');
-  if (!W) return mount(el, html`<div class="empty ws-vacio"><b>Ese workspace no existe</b>Elige uno:<div class="ws-links">${WORKSPACES.map((w) => html`<a class="btn ghost sm" href="#/ws/${w.id}">${ico(w.icono, 14)} ${w.nombre}</a>`)}</div></div>`);
+  if (!W) return mount(el, html`<div class="empty ws-vacio"><b>Ese workspace no existe</b>Elige uno:<div class="ws-links">${WORKSPACES.map((w) => html`<a class="btn ghost" href="#/ws/${w.id}">${ico(w.icono, 14)} ${w.nombre}</a>`)}</div></div>`);
   const ws = W.id;
   if (!puedeWs(me, ws)) return mount(el, html`${vacioOS({ icono: 'lock', titulo: `Tu perfil no abre ${W.nombre}`, linea: 'Pídele al CEO acceso en Equipo → Vistas por rol.' })}`);
   mount(el, esqueleto());
@@ -242,7 +242,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (ws === 'creative' && pestana.id === 'brief') return brandBrief(x, { me, b, alive });
     if (ws === 'creative' && pestana.id === 'review') return revision(x);
     if (ws === 'production' && pestana.id === 'delivery') return delivery(x);
-    if (ws === 'marketing' && pestana.id === 'audience' && veEstrategia(me)) return mount(x, seccion('De Strategy, en solo lectura', 'La diana y los avatares se editan en Strategy; aquí se leen', html`<div class="ws-links"><a class="btn ghost sm" href="#/ws/strategy/${slug}/research/customer-bullseye">${ico('target', 14)} Ver la diana en Strategy</a><a class="btn ghost sm" href="#/ws/strategy/${slug}/research/customer-avatar-studio">${ico('eye', 14)} Avatares aprobados</a></div>`));
+    if (ws === 'marketing' && pestana.id === 'audience' && veEstrategia(me)) return mount(x, seccion('De Strategy, en solo lectura', 'La diana y los avatares se editan en Strategy; aquí se leen', html`<div class="ws-links"><a class="btn ghost" href="#/ws/strategy/${slug}/research/customer-bullseye">${ico('target', 14)} Ver la diana en Strategy</a><a class="btn ghost" href="#/ws/strategy/${slug}/research/customer-avatar-studio">${ico('eye', 14)} Avatares aprobados</a></div>`));
   }
   // Las piezas que el equipo mandó a aprobar (lista simple sobre content).
   async function piezasRevision() {
@@ -267,7 +267,7 @@ export async function render(el, { me, sub = [], alive }) {
   // ---------- Una herramienta: su cabecera y el módulo que la monta (o su ficha si es «Pronto») ----------
   function head(t) {
     const de = (t.viene_de || []).map(nomTool).join(' · '), a = (t.va_a || []).map(nomTool).join(' · ');
-    return html`<div class="tool-head" style="--ws-c:var(${W.color})"><a class="btn ghost sm" href="${rutaPest()}">${ico('arrow-left', 14)} ${pestana.nombre}</a>
+    return html`<div class="tool-head" style="--ws-c:var(${W.color})"><a class="btn ghost" href="${rutaPest()}">${ico('arrow-left', 14)} ${pestana.nombre}</a>
       <div class="tool-head-t"><b>${ico(t.icono || 'target', 16)} ${t.nombre}</b><span class="mut sm">${de ? html`${de} → ` : ''}<strong>${t.nombre}</strong>${a ? html` → ${a}` : ''}</span></div>
       <span class="tool-card-est" data-est="${t.estado}">${EST[t.estado] || t.estado}</span></div>`;
   }

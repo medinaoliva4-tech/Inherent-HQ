@@ -37,7 +37,7 @@ function campos(editable) {
     chk: (r, v, o = {}) => (editable ? html`<input type="checkbox" data-c="${r}" ${v ? 'checked' : ''} aria-label="${o.label || ''}">` : ro(v ? 'Sí' : 'No', o)),
   };
 }
-const del = (a, ...d) => html`<button type="button" class="btn ghost sm org-btn" data-act="${a}" data-i="${d[0]}" data-j="${d[1] ?? ''}" aria-label="Quitar" title="Quitar">${ico('x', 14)}</button>`;
+const del = (a, ...d) => html`<button type="button" class="btn ghost" data-act="${a}" data-i="${d[0]}" data-j="${d[1] ?? ''}" aria-label="Quitar" title="Quitar">${ico('x', 14)}</button>`;
 
 // ---------- Regiones derivadas (se recalculan solas y no llevan campos de escritura salvo el «reporta», que depende de los roles) ----------
 const reporta = ({ c, f, lista, i }) => {
@@ -63,7 +63,7 @@ function puestos(lista, E) {
     <span class="org-f" data-r="rep" data-lista="${lista}" data-i="${i}"></span>
     <label class="org-f org-chk"><span class="mut sm">Fundador</span>${f.chk(`${lista}.${i}.fundador`, p.fundador, { label: 'Es el puesto del fundador' })}</label>
     ${editable ? del('org-del-puesto', i, lista) : ''}</li>`)}</ul>` : html`<p class="org-sd">${SIN_DATOS}: ${lista === 'hoy' ? 'cómo está armado el equipo hoy (roles, no nombres)' : 'sale del headcount que pide la etapa siguiente de Hormozi'}</p>`}
-    ${editable ? html`<button type="button" class="btn ghost sm org-btn" data-act="org-add-puesto" data-j="${lista}">${ico('plus', 14)} Agregar puesto</button>` : ''}`;
+    ${editable ? html`<button type="button" class="btn ghost" data-act="org-add-puesto" data-j="${lista}">${ico('plus', 14)} Agregar puesto</button>` : ''}`;
 }
 function raci(E) {
   const { c, f, editable } = E, { roles, filas } = c.raci;
@@ -73,7 +73,7 @@ function raci(E) {
       ${roles.map((x) => html`<td>${f.sel(`raci.filas.${i}.celdas.${x.id}`, LETRAS.map(([k, l]) => [k, `${k} · ${l}`]), r.celdas[x.id], { label: `${r.actividad || 'Actividad'} · ${x.nombre}` })}</td>`)}
       <td class="org-a" data-r="raci" data-i="${i}"></td>${editable ? html`<td>${del('org-del-fila', i)}</td>` : ''}</tr>`)}</tbody></table></div>`
     : html`<p class="org-sd">${SIN_DATOS}: la RACI sale de las actividades del equipo de la siguiente etapa y de sus roles</p>`}
-    ${editable ? html`<div class="org-fila-btn"><button type="button" class="btn ghost sm org-btn" data-act="org-add-rol" ${roles.length >= 10 ? 'disabled' : ''}>${ico('plus', 14)} Agregar rol</button> <button type="button" class="btn ghost sm org-btn" data-act="org-add-fila" ${roles.length ? '' : 'disabled'}>${ico('plus', 14)} Agregar fila</button></div>` : ''}`;
+    ${editable ? html`<div class="org-fila-btn"><button type="button" class="btn ghost" data-act="org-add-rol" ${roles.length >= 10 ? 'disabled' : ''}>${ico('plus', 14)} Agregar rol</button> <button type="button" class="btn ghost" data-act="org-add-fila" ${roles.length ? '' : 'disabled'}>${ico('plus', 14)} Agregar fila</button></div>` : ''}`;
 }
 function plantilla(E) {
   const { c, f, editable, es } = E, s = c.siguiente, st = sig(es), e = etapaHormozi(s.etapa);
@@ -137,12 +137,12 @@ const LISTAS_PINTAR = {
     <label class="org-f"><span class="lbl">Rol que la toma</span>${f.txt(`decisiones.${i}.rol`, d.rol, { max: 60, label: 'Rol que la toma', ph: 'Si se delega' })}</label>
     <label class="org-f org-f-ancho"><span class="lbl">Criterio</span>${f.txt(`decisiones.${i}.criterio`, d.criterio, { max: 300, label: 'Criterio: cómo decide sin preguntar (o por qué se elimina)', ph: 'Cuando pase X, se decide Y' })}</label>
     ${editable ? del('org-del-dec', i) : ''}</li>`)}</ul>` : html`<p class="org-sd">${SIN_DATOS}: salen de los pasos del Mapa que dependen del fundador y de la entrevista</p>`}
-    ${editable ? html`<button type="button" class="btn ghost sm org-btn" data-act="org-add-dec" ${c.decisiones.length >= 25 ? 'disabled' : ''}>${ico('plus', 14)} Agregar decisión</button>` : ''}`; },
+    ${editable ? html`<button type="button" class="btn ghost" data-act="org-add-dec" ${c.decisiones.length >= 25 ? 'disabled' : ''}>${ico('plus', 14)} Agregar decisión</button>` : ''}`; },
   valores: (E) => { const { c, f, editable } = E; return html`${c.valores.length ? html`<ul class="org-val">${c.valores.map((v, i) => html`<li class="org-v">
     <label class="org-f"><span class="lbl">Valor</span>${f.txt(`valores.${i}.valor`, v.valor, { max: 80, label: 'Valor', ph: 'Ej. Velocidad' })}</label>
     <label class="org-f org-f-ancho"><span class="lbl">Criterio de decisión</span>${f.txt(`valores.${i}.criterio`, v.criterio, { max: 300, label: 'Criterio de decisión de este valor', ph: 'Cuando pase X, se decide Y', sd: 'un valor sin criterio no sirve' })}</label>
     ${editable ? del('org-del-val', i) : ''}</li>`)}</ul>` : html`<p class="org-sd">${SIN_DATOS}: salen de cómo decide hoy el fundador</p>`}
-    ${editable ? html`<button type="button" class="btn ghost sm org-btn" data-act="org-add-val" ${c.valores.length >= 8 ? 'disabled' : ''}>${ico('plus', 14)} Agregar valor</button>` : ''}`; },
+    ${editable ? html`<button type="button" class="btn ghost" data-act="org-add-val" ${c.valores.length >= 8 ? 'disabled' : ''}>${ico('plus', 14)} Agregar valor</button>` : ''}`; },
   raci: (E) => raci(E),
   perfiles: (E) => { const { c, f, editable } = E; return html`${c.perfiles.length ? html`<div class="org-perfiles">${c.perfiles.map((p, i) => html`<article class="org-perfil"><header><label class="org-f"><span class="lbl">Rol</span>${f.txt(`perfiles.${i}.rol`, p.rol, { max: 60, label: 'Rol del perfil', ph: 'Rol' })}</label>${editable ? del('org-del-perfil', i) : ''}</header>
     <label class="org-f org-f-ancho"><span class="lbl">Misión</span>${f.area(`perfiles.${i}.mision`, p.mision, { max: 300, label: 'Misión del puesto', ph: 'Para qué existe este puesto', sd: 'falta la misión' })}</label>
@@ -150,7 +150,7 @@ const LISTAS_PINTAR = {
     <label class="org-f"><span class="lbl">Decide</span>${f.lin(`perfiles.${i}.decide`, p.decide, { label: 'Qué decide solo' })}</label>
     <label class="org-f"><span class="lbl">Escala</span>${f.lin(`perfiles.${i}.escala`, p.escala, { label: 'Qué escala al fundador' })}</label>
     <label class="org-f"><span class="lbl">Se mide por</span>${f.lin(`perfiles.${i}.mide`, p.mide, { label: 'Cómo se mide' })}</label></article>`)}</div>` : html`<p class="org-sd">${SIN_DATOS}: un perfil por puesto de la siguiente etapa</p>`}
-    ${editable ? html`<button type="button" class="btn ghost sm org-btn" data-act="org-add-perfil" ${c.perfiles.length >= 15 ? 'disabled' : ''}>${ico('plus', 14)} Agregar perfil</button>` : ''}`; },
+    ${editable ? html`<button type="button" class="btn ghost" data-act="org-add-perfil" ${c.perfiles.length >= 15 ? 'disabled' : ''}>${ico('plus', 14)} Agregar perfil</button>` : ''}`; },
 };
 
 export const vista = {

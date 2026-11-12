@@ -70,7 +70,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
   }));
 
   const acciones = () => (ro ? '' : html`<aside class="kf-panel kf-acts ${accAbierto ? 'open' : ''}" aria-label="Acciones">
-    <div class="kf-panel-h"><b>Acciones</b><button type="button" class="kf-ib" data-act="acciones" aria-expanded="${accAbierto}" aria-label="${accAbierto ? 'Plegar acciones' : 'Abrir acciones'}">${ico(accAbierto ? 'chevron-up' : 'chevron-down', 15)}</button></div>
+    <div class="kf-panel-h"><b>Acciones</b><button type="button" class="btn-icon" data-act="acciones" aria-expanded="${accAbierto}" aria-label="${accAbierto ? 'Plegar acciones' : 'Abrir acciones'}">${ico(accAbierto ? 'chevron-up' : 'chevron-down', 15)}</button></div>
     ${accAbierto ? html`<div class="kf-acts-b">
       <p class="kf-hint">Toca un tipo para agregarlo ${sel == null ? 'al final' : `después del paso ${sel + 1}`}.</p>
       ${GRUPOS.map(([g, ids]) => html`<section><span class="kf-grp">${g}</span>${ids.map((id) => { const t = tipoDe(id); return html`<button type="button" class="kf-act" data-tt="${t.id}" data-act="agregar" data-t="${t.id}">${ico(t.icono, 15)}<span><b>${t.nombre}</b><span>${t.sub}</span></span>${ico('plus', 13)}</button>`; })}</section>`)}
@@ -91,7 +91,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     return html`<aside class="kf-panel kf-insp" data-tt="${t.id}" aria-label="Etapa ${sel + 1}">
       <div class="kf-insp-h">
         <span class="kf-insp-k">${ico(t.icono, 15)} Paso ${sel + 1} · ${t.nombre}</span>
-        <button type="button" class="kf-ib" data-act="cerrar" aria-label="Cerrar">${ico('x', 15)}</button>
+        <button type="button" class="btn-icon" data-act="cerrar" aria-label="Cerrar">${ico('x', 15)}</button>
       </div>
       <div class="kf-seg" role="tablist">${[['construir', 'Construir'], ['reglas', 'Reglas'], ['conexiones', 'Conexiones']].map(([k, l]) => html`<button type="button" role="tab" aria-selected="${panel === k}" class="${panel === k ? 'on' : ''}" data-act="panel" data-p="${k}">${l}</button>`)}</div>
       <div class="kf-insp-b">
@@ -122,14 +122,14 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       : html`
         <p class="kf-hint">Con qué trabaja el agente en esta etapa.</p>
         <div class="kf-cons">${cons.map((c) => html`<label class="kf-con ${c.off ? 'off' : ''}"><input type="checkbox" data-con="${c.id}" ${(e.herramientas || []).includes(c.id) ? raw('checked') : ''} ${dis}>${c.logo ? html`<img src="${c.logo}" alt="">` : html`<span class="kf-con-ic">${ico('link', 13)}</span>`}<span><b>${c.nombre}</b><small>${c.sub}</small></span></label>`)}</div>
-        <a class="btn ghost sm" href="#/ai/mcps">${ico('puzzle', 13)} Conectar un MCP</a>`}
+        <a class="btn ghost" href="#/ai/mcps">${ico('puzzle', 13)} Conectar un MCP</a>`}
       </div>
       <div class="kf-insp-f">
         ${ro ? '' : html`<div class="kf-tools">
-          <button type="button" class="kf-ib" data-act="subir" aria-label="Subir" title="Subir" ${sel ? '' : raw('disabled')}>${ico('arrow-up', 14)}</button>
-          <button type="button" class="kf-ib" data-act="bajar" aria-label="Bajar" title="Bajar" ${ultimo ? raw('disabled') : ''}>${ico('arrow-down', 14)}</button>
-          <button type="button" class="kf-ib" data-act="duplicar" aria-label="Duplicar" title="Duplicar">${ico('copy', 14)}</button>
-          <button type="button" class="kf-ib" data-act="quitar" aria-label="Quitar" title="Quitar" ${etapas.length > 1 ? '' : raw('disabled')}>${ico('trash-2', 14)}</button></div>`}
+          <button type="button" class="btn-icon" data-act="subir" aria-label="Subir" title="Subir" ${sel ? '' : raw('disabled')}>${ico('arrow-up', 14)}</button>
+          <button type="button" class="btn-icon" data-act="bajar" aria-label="Bajar" title="Bajar" ${ultimo ? raw('disabled') : ''}>${ico('arrow-down', 14)}</button>
+          <button type="button" class="btn-icon" data-act="duplicar" aria-label="Duplicar" title="Duplicar">${ico('copy', 14)}</button>
+          <button type="button" class="btn-icon" data-act="quitar" aria-label="Quitar" title="Quitar" ${etapas.length > 1 ? '' : raw('disabled')}>${ico('trash-2', 14)}</button></div>`}
         ${ultimo ? (ro ? '' : html`<button type="button" class="btn kf-next" data-act="menu" data-i="${sel}">${ico('plus', 14)} Agregar etapa</button>`)
           : html`<button type="button" class="btn kf-next" data-act="siguiente">Siguiente etapa ${ico('arrow-down', 14)}</button>`}
       </div>
@@ -140,8 +140,8 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     mount(el, html`<div class="kf ${ro ? 'ro' : ''} ${full ? 'full' : ''}">
       <div class="kf-bar">
         <p><b>${etapas.length} etapa${etapas.length === 1 ? '' : 's'}</b><span class="mut"> · cada trabajo las recorre en este orden y tú apruebas cada una</span>${sucio ? html`<span class="kf-sucio">Cambios sin guardar</span>` : ''}</p>
-        <div class="kf-bar-a">${ro ? html`<span class="mut sm">Solo el CEO o el COO editan el flujo</span>` : html`<button class="btn sm" data-act="guardar" ${sucio && !guardando ? '' : raw('disabled')}>${guardando ? 'Guardando…' : 'Guardar'}</button>`}
-          <button type="button" class="kf-ib kf-full-b" data-act="full" aria-pressed="${full}" aria-label="${full ? 'Salir de pantalla completa' : 'Pantalla completa'}" title="${full ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa (F)'}">${ico(full ? 'x' : 'scan', 16)}</button></div>
+        <div class="kf-bar-a">${ro ? html`<span class="mut sm">Solo el CEO o el COO editan el flujo</span>` : html`<button class="btn" data-act="guardar" ${sucio && !guardando ? '' : raw('disabled')}>${guardando ? 'Guardando…' : 'Guardar'}</button>`}
+          <button type="button" class="btn-icon kf-full-b" data-act="full" aria-pressed="${full}" aria-label="${full ? 'Salir de pantalla completa' : 'Pantalla completa'}" title="${full ? 'Salir de pantalla completa (Esc)' : 'Pantalla completa (F)'}">${ico(full ? 'x' : 'scan', 16)}</button></div>
       </div>
       <div class="kf-canvas" data-canvas>
         <div class="kf-world" style="transform:translate(${view.x}px,${view.y}px) scale(${view.z})">
@@ -153,9 +153,9 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
         ${acciones()}
         ${inspector()}
         <div class="kf-zoom" aria-label="Zoom">
-          <button type="button" class="kf-ib" data-act="zoom-in" aria-label="Acercar" ${view.z >= ZMAX - 0.01 ? raw('disabled') : ''}>${ico('plus', 15)}</button>
-          <button type="button" class="kf-ib" data-act="zoom-out" aria-label="Alejar" ${view.z <= ZMIN + 0.01 ? raw('disabled') : ''}>${ico('minus', 15)}</button>
-          <button type="button" class="kf-ib" data-act="ajustar" aria-label="Ajustar a la pantalla" title="Ajustar">${ico('scan', 15)}</button>
+          <button type="button" class="btn-icon" data-act="zoom-in" aria-label="Acercar" ${view.z >= ZMAX - 0.01 ? raw('disabled') : ''}>${ico('plus', 15)}</button>
+          <button type="button" class="btn-icon" data-act="zoom-out" aria-label="Alejar" ${view.z <= ZMIN + 0.01 ? raw('disabled') : ''}>${ico('minus', 15)}</button>
+          <button type="button" class="btn-icon" data-act="ajustar" aria-label="Ajustar a la pantalla" title="Ajustar">${ico('scan', 15)}</button>
         </div>
       </div>
     </div>`);

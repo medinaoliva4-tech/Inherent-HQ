@@ -24,22 +24,22 @@ export async function techUI(el, { b, alive }) {
       <h3>${s.nombre}</h3>${s.url ? html`<a class="sm tc-url" href="${s.url}" target="_blank" rel="noopener noreferrer">${ico('link', 11)} ${s.url.replace(/^https:\/\//, '')}</a>` : html`<p class="mut sm">Sin link todavía</p>`}
       <p class="mut sm">${s.actualizado ? `Actualizada el ${fdate(s.actualizado)}` : 'Sin fecha de actualización'}${s.fuente ? ` · se alimenta de: ${s.fuente}` : ''}</p>
       ${s.tipo === 'Landing' ? (s.intake?.key ? html`<p class="sm">${ico('check', 11)} Conectada al CRM · fuente «${s.intake.nombre}»</p>` : html`<p class="mut sm">Sin conectar al CRM: los leads de su formulario no entran solos.</p>`) : ''}
-      <footer>${s.tipo === 'Landing' && s.intake?.key ? html`<button class="btn xs" data-tc="form" data-id="${s.id}">${ico('copy', 13)} El formulario</button>` : ''}
-        ${s.tipo === 'Landing' && !s.intake?.key && ceo() ? html`<button class="btn xs" data-tc="conectar" data-id="${s.id}">${ico('link', 13)} Conectar al CRM</button>` : ''}
-        ${s.url ? html`<button class="btn ghost xs" data-tc="auditar" data-url="${s.url}">${ico('search', 13)} Auditar SEO</button>` : ''}
-        ${ed() ? html`<button class="btn ghost xs" data-tc="editar" data-id="${s.id}">${ico('edit', 13)} Editar</button>` : ''}</footer></article>`;
+      <footer>${s.tipo === 'Landing' && s.intake?.key ? html`<button class="btn sm" data-tc="form" data-id="${s.id}">${ico('copy', 13)} El formulario</button>` : ''}
+        ${s.tipo === 'Landing' && !s.intake?.key && ceo() ? html`<button class="btn sm" data-tc="conectar" data-id="${s.id}">${ico('link', 13)} Conectar al CRM</button>` : ''}
+        ${s.url ? html`<button class="btn ghost sm" data-tc="auditar" data-url="${s.url}">${ico('search', 13)} Auditar SEO</button>` : ''}
+        ${ed() ? html`<button class="btn ghost sm" data-tc="editar" data-id="${s.id}">${ico('edit', 13)} Editar</button>` : ''}</footer></article>`;
   }
   function paint() {
     if (!alive()) return;
     const on = Boolean(S.viva?.on);
     mount(el, html`<div class="fm tc">
-      <section><div class="fm-bar"><h2 class="fm-h" style="margin:0">Sitios y herramientas</h2><span class="sp"></span>${ed() ? html`<button class="btn xs" data-tc="nuevo">${ico('plus', 13)} Sitio</button>` : ''}</div>
+      <section><div class="fm-bar"><h2 class="fm-h" style="margin:0">Sitios y herramientas</h2><span class="sp"></span>${ed() ? html`<button class="btn sm" data-tc="nuevo">${ico('plus', 13)} Sitio</button>` : ''}</div>
         ${S.sitios.length ? html`<div class="fm-grid">${S.sitios.map(sitio)}</div>` : html`<p class="mut fm-vacio">Todavía no hay sitios. Agrega su web, cada landing de campaña y las herramientas que le construimos.</p>`}</section>
       <section class="tc-viva ${on ? 'on' : ''}"><div class="row" style="gap:10px;align-items:center"><span class="tc-dot"></span><h2 class="fm-h" style="margin:0">Web viva</h2><span class="chip sm2 ${on ? 'av-st-ok' : ''}">${on ? 'Encendida' : 'Apagada'}</span><span class="sp"></span>
-          ${ceo() ? html`<button class="btn ${on ? 'ghost' : ''} xs" data-tc="viva">${on ? 'Apagar' : 'Encender'}</button>` : ''}</div>
+          ${ceo() ? html`<button class="btn ${on ? 'ghost' : ''} sm" data-tc="viva">${on ? 'Apagar' : 'Encender'}</button>` : ''}</div>
         <p class="mut sm">${on ? 'La web de la marca puede leer lo que ya se publicó en sus redes (título, texto, fecha y formato) desde este link, sin sesión:' : 'Encendida, la web de la marca lee del OS lo que ya se publicó en redes, sin que nadie la actualice a mano. Solo se comparte lo publicado; nunca los links internos de Drive ni de Figma.'}</p>
-        ${on ? html`<div class="es-cmd"><code>${feed()}</code><button type="button" class="btn ghost xs" data-tc="copiar" data-t="${feed()}">${ico('copy', 13)} Copiar</button></div>` : ''}</section>
-      <section><div class="fm-bar"><h2 class="fm-h" style="margin:0">Auditoría de SEO</h2><span class="sp"></span>${ed() ? html`<button class="btn ghost xs" data-tc="auditar">${ico('search', 13)} Pedir auditoría</button><button class="btn xs" data-tc="guardarAud">${ico('plus', 13)} Guardar resultado</button>` : ''}</div>
+        ${on ? html`<div class="es-cmd"><code>${feed()}</code><button type="button" class="btn ghost sm" data-tc="copiar" data-t="${feed()}">${ico('copy', 13)} Copiar</button></div>` : ''}</section>
+      <section><div class="fm-bar"><h2 class="fm-h" style="margin:0">Auditoría de SEO</h2><span class="sp"></span>${ed() ? html`<button class="btn ghost sm" data-tc="auditar">${ico('search', 13)} Pedir auditoría</button><button class="btn sm" data-tc="guardarAud">${ico('plus', 13)} Guardar resultado</button>` : ''}</div>
         ${S.auditorias.length ? html`<div class="tc-auds">${S.auditorias.map((a) => html`<button type="button" class="tc-aud" data-tc="verAud" data-id="${a.id}"><span class="tc-pts ${a.puntaje == null ? '' : a.puntaje >= 80 ? 'ok' : a.puntaje >= 50 ? 'med' : 'bajo'}">${a.puntaje ?? '—'}</span><span><b>${a.url ? a.url.replace(/^https:\/\//, '') : 'Auditoría'}</b><span class="mut sm">${a.fecha ? fdate(a.fecha) : ''}</span></span></button>`)}</div>`
           : html`<p class="mut fm-vacio">Sin auditorías todavía. «Pedir auditoría» abre Claude Code con el pedido (plugin claude-seo); pega aquí lo que conteste.</p>`}</section></div>`);
   }

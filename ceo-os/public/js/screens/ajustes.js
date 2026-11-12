@@ -69,7 +69,7 @@ export async function render(el, { me, alive }) {
       <ol class="aj-con-pasos">
         ${p.forma === 'url' ? html`<li><b>La dirección de tu servidor</b><span class="mut sm">La que expone la API compatible con OpenAI (termina en /v1).</span><input class="in" id="aj-base" placeholder="${p.ejemplo}" value="${s.base || ''}" autocomplete="off"></li>
           <li><b>Su llave, si pide</b><input class="in" id="aj-llave" type="password" placeholder="Opcional" autocomplete="off"></li>`
-        : html`<li><b>Consigue tu llave</b><span class="mut sm">Se abre la página de ${p.nombre}: crea una y cópiala.</span><a class="btn ghost sm" href="${p.llave}" target="_blank" rel="noreferrer">${ico('external-link', 13)} Abrir ${p.nombre}</a></li>
+        : html`<li><b>Consigue tu llave</b><span class="mut sm">Se abre la página de ${p.nombre}: crea una y cópiala.</span><a class="btn ghost" href="${p.llave}" target="_blank" rel="noreferrer">${ico('external-link', 13)} Abrir ${p.nombre}</a></li>
           <li><b>Pégala aquí</b><input class="in" id="aj-llave" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false"></li>`}
       </ol>
       ${msg ? html`<p class="aj-err sm">${ico('triangle-alert', 13)} ${msg}</p>` : ''}

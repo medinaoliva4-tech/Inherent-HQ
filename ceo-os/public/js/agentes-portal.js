@@ -55,7 +55,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
       <span><span class="agp-st ${k}">${txt}</span></span>
       <span class="mut sm">${cuando(t.actualizado)}</span></a>`;
   };
-  const vacioTrabajos = (txt) => html`<div class="agp-vacio"><span class="agp-vacio-ic">${ico('play', 16)}</span><b>${txt}</b><span class="mut sm">Un trabajo es un encargo concreto: el agente recorre sus ${wf.etapas.length} etapas y tú apruebas cada una.</span><button class="btn sm" data-act="trabajo">${ico('play', 13)} Nuevo trabajo</button></div>`;
+  const vacioTrabajos = (txt) => html`<div class="agp-vacio"><span class="agp-vacio-ic">${ico('play', 16)}</span><b>${txt}</b><span class="mut sm">Un trabajo es un encargo concreto: el agente recorre sus ${wf.etapas.length} etapas y tú apruebas cada una.</span><button class="btn" data-act="trabajo">${ico('play', 13)} Nuevo trabajo</button></div>`;
 
   // ---------- Resumen ----------
   const overview = () => {
@@ -72,13 +72,13 @@ export async function pintarPortal(el, me, id, tab, alive) {
         <a class="agp-kpi" href="${rutaAgente(wf.id, 'trabajos')}"><span>Completados</span><b>${listos.length}</b><small>trabajos</small></a>
       </div>
       <section class="agp-card">
-        <div class="agp-card-h"><div><b>Cómo trabaja</b><small>Cada trabajo recorre estas etapas en orden. Tú apruebas cada una antes de pasar a la siguiente.</small></div><a class="btn ghost sm" href="${rutaAgente(wf.id, 'workflow')}">${editor ? 'Editar flujo' : 'Ver flujo'}</a></div>
+        <div class="agp-card-h"><div><b>Cómo trabaja</b><small>Cada trabajo recorre estas etapas en orden. Tú apruebas cada una antes de pasar a la siguiente.</small></div><a class="btn ghost" href="${rutaAgente(wf.id, 'workflow')}">${editor ? 'Editar flujo' : 'Ver flujo'}</a></div>
         <ol class="agp-steps">${wf.etapas.map((e, i) => { const t = tipoDe(e.tipo); return html`<li data-tt="${t.id}"><a href="${rutaAgente(wf.id, 'workflow')}">
           <span class="agp-step-n">${i + 1}</span><span class="agp-step-k">${ico(t.icono, 12)} ${t.nombre}</span><b>${e.nombre}</b>
           ${e.gate ? html`<span class="kf-gate">${ico('lock', 10)} Aprueba el CEO</span>` : ''}</a></li>`; })}</ol>
       </section>
       <div class="agp-grid">
-        <section class="agp-card"><div class="agp-card-h"><div><b>Trabajos recientes</b></div>${trabajos.length ? html`<a class="btn ghost sm" href="${rutaAgente(wf.id, 'trabajos')}">Ver todos</a>` : ''}</div>
+        <section class="agp-card"><div class="agp-card-h"><div><b>Trabajos recientes</b></div>${trabajos.length ? html`<a class="btn ghost" href="${rutaAgente(wf.id, 'trabajos')}">Ver todos</a>` : ''}</div>
           ${trabajos.length ? html`<div class="agp-jobs mini">${trabajos.slice(0, 5).map(filaTrabajo)}</div>` : vacioTrabajos('Todavía no le encargas nada')}</section>
         <section class="agp-card agp-ficha"><div class="agp-card-h"><div><b>Ficha</b></div></div>
           <dl>
@@ -125,11 +125,11 @@ export async function pintarPortal(el, me, id, tab, alive) {
           <option value="">La de Ajustes · ${def?.proveedor ? `${proveedorDe(def.proveedor)?.nombre || def.proveedor}${def.modelo ? ` · ${def.modelo}` : ''}` : 'sin configurar'}</option>
           ${conectados.map((p) => html`<optgroup label="${proveedorDe(p.id)?.nombre || p.id}">${(p.modelos || []).slice(0, 60).map((m) => html`<option value="${p.id}|${m}" ${wf.ia?.proveedor === p.id && wf.ia?.modelo === m ? raw('selected') : ''}>${m}</option>`)}</optgroup>`)}
         </select></label>
-        <a class="btn ghost sm" href="#/ajustes/ia">${ico('settings', 13)} Conectar otra IA</a>`)}
+        <a class="btn ghost" href="#/ajustes/ia">${ico('settings', 13)} Conectar otra IA</a>`)}
       ${seccion('Límites', 'Lo que este agente nunca hace. Viaja en cada pedido a la IA.', html`
         <label class="kf-f"><span>Uno por línea</span><textarea class="in" rows="5" data-s="limites" ${dis}>${(wf.limites || []).join('\n')}</textarea></label>`)}
       ${editor ? seccion('Más', 'Duplicar crea una copia independiente. Archivar lo esconde; nada se borra y sus trabajos siguen.', html`
-        <div class="agp-more"><button class="btn ghost sm" data-act="duplicar">${ico('copy', 13)} Duplicar agente</button><button class="btn ghost sm agp-danger" data-act="archivar">Archivar agente</button></div>`, 'agp-sec-more') : ''}
+        <div class="agp-more"><button class="btn ghost" data-act="duplicar">${ico('copy', 13)} Duplicar agente</button><button class="btn ghost agp-danger" data-act="archivar">Archivar agente</button></div>`, 'agp-sec-more') : ''}
     </div>`;
   };
 

@@ -51,7 +51,7 @@ export async function pintarAgentes(el, me, alive, { area = '', titulo = 'Agente
         <label class="agx-q">${ico('search', 15)}<input class="in" data-f="q" type="search" placeholder="Buscar agente" value="${f.q}" aria-label="Buscar agente"></label>
         ${area ? '' : chips('area', AREAS_AGENTE, 'Todas')}
         ${chips('estado', ESTADOS_AGENTE, 'Cualquier estado')}
-        ${!cabecera && editor ? html`<button class="btn sm agx-crear" data-act="crear">${ico('plus', 14)} Crear agente</button>` : ''}
+        ${!cabecera && editor ? html`<button class="btn agx-crear" data-act="crear">${ico('plus', 14)} Crear agente</button>` : ''}
       </div>
       <div class="agx-tabla" role="table" aria-label="Agentes">
         <div class="agx-tr agx-th" role="row"><span>Agente</span>${area ? '' : html`<span>Área</span>`}<span>Etapas</span><span>Trabajos</span><span>Estado</span><span>Editado</span></div>

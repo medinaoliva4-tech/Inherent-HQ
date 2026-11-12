@@ -89,7 +89,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function cards() {
     return html`<div class="grid g3">${people.map((p) => html`<div class="card" style="cursor:pointer" data-act="open" data-id="${p.id}">
-      <div class="row">${av(p, 52)}<div><b style="font-weight:500;font-size:16px">${p.name}</b><div class="mut sm">${p.title || KIND[p.kind] || ''}</div></div><div class="arrow light" style="width:34px;height:34px;margin-left:auto">↗</div></div>
+      <div class="row">${av(p, 52)}<div><b style="font-weight:500;font-size:16px">${p.name}</b><div class="mut sm">${p.title || KIND[p.kind] || ''}</div></div><div class="btn-icon end" style="width:34px;height:34px;margin-left:auto">↗</div></div>
       <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:14px">
         ${p.kind === 'ia' ? html`<span class="chip">Agente IA</span>` : p.kind === 'externo' ? html`<span class="chip">Externo</span>` : html`<span class="chip ${p.google ? 'green' : ''}">${p.google ? 'Google conectado' : 'Aún no entra'}</span>`}
         ${p.active === false ? html`<span class="chip red">Desactivado</span>` : ''}
@@ -114,7 +114,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
     return html`${purposeCard({ ...people.find((p) => (p.roles || []).includes(rvRole)) || {}, role: 'team', roles: [rvRole] }, { own: false, open: true })}<section class="sp-panel" style="padding-bottom:18px;margin-top:16px">
       <div class="sp-panel-h"><div class="mut sm" style="max-width:680px">Elige un perfil de trabajo y decide <b>qué ve</b>, <b>qué tan a fondo</b>, <b>de qué clientes</b> y <b>dónde abre</b>. Se guarda al tocar y se aplica en el servidor: lo oculto no sale ni por la app ni por el conector de Claude. Un perfil sin configurar sigue como hoy. Si una persona tiene varios perfiles, gana el más amplio. Tú, como CEO, siempre ves y editas todo.</div>
       <div class="sp-seg" style="margin:14px 0 2px">${WORK_ROLES.filter(([k]) => k !== 'ceo').map(([k]) => html`<button class="chip ${rvRole === k ? 'dark' : ''}" data-act="rvrole" data-r="${k}" style="padding:8px 14px">${rvShort(k)}${(rv?.views || {})[k] || (rv?.scope || {})[k] || (rv?.start || {})[k] ? ' ●' : ''}</button>`)}</div></div>
-      <div class="row sm" style="margin:10px 0 6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost xs" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
+      <div class="row sm" style="margin:10px 0 6px"><b style="font-weight:500">${roleName(rvRole)}</b><span class="mut">${holders.length ? ' · lo tienen: ' + holders.map((x) => x.name.split(' ')[0]).join(', ') : ' · nadie lo tiene todavía'}</span><div class="sp"></div>${touched ? html`<button class="btn ghost sm" data-act="rvreset">Restablecer (como hoy)</button>` : html`<span class="mut sm">Sin configurar · como hoy</span>`}</div>
       <div class="grid g11" style="gap:12px;margin:10px 0 6px">
         <div class="sp-inset"><b style="font-weight:600">Qué datos ve</b><div class="mut sm" style="margin:2px 0 8px">${SCOPE_HELP[rvScope()]}</div>
           <div class="tabs mini" style="margin:0">${SCOPES.map(([v, lb]) => html`<button class="${rvScope() === v ? 'on' : ''}" data-act="rvscope" data-v="${v}">${lb}</button>`)}</div></div>
@@ -186,7 +186,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
   }
   function open(p) {
     const boss = byId(p.reports_to);
-    drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <div style="margin-top:6px">${av(p, 84)}</div>
       <h2>${p.name}</h2><div class="mut">${p.title || KIND[p.kind] || ''}</div>
       ${p.birthday || p.phone || p.bio ? html`<div class="sm" style="margin-top:10px;display:grid;gap:4px">${p.birthday ? html`<div>${ico('cake')} ${bdayText(p.birthday)}</div>` : ''}${p.phone ? html`<div>${ico('mobile')} ${p.phone}</div>` : ''}${p.bio ? html`<div class="mut">${p.bio}</div>` : ''}</div>` : ''}
@@ -200,7 +200,7 @@ export async function render(el, { me, sub = [], embed = '' }) {
         ${p.email ? html`<span>Google</span><span class="row" style="color:var(--ink)">${p.google?.calendar ? html`<span class="gbadge">${IC.cal} Calendar</span>` : ''}${p.google?.drive ? html`<span class="gbadge">${IC.drive} Drive</span>` : ''}${!p.google ? 'Aún no entra' : ''}</span>` : ''}
       </div>
       ${p.id === me.email || isCeo ? html`<div class="row" style="margin-bottom:10px"><label class="btn ghost" style="cursor:pointer">${ico('camera')} ${p.photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="photoIn" hidden></label>${p.photo ? html`<button class="btn ghost" data-act="nophoto">Quitar foto</button>` : ''}</div>` : ''}
-      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px;text-decoration:none">${ico('eye')} Ver su Workspace</a>` : ''}
+      ${isCeo && p.id !== me.email && p.kind !== 'ia' ? html`<a class="btn ghost" href="#/work/zona/_/${p.email || p.id}" style="margin-bottom:10px">${ico('eye')} Ver su Workspace</a>` : ''}
       ${isCeo ? html`<div class="row"><button class="btn" data-act="edit">Editar perfil</button>${p.id !== me.email ? html`<button class="btn ghost" data-act="del">Quitar</button>` : ''}</div>` : ''}`,
     { nophoto: () => setPhoto(p, null), edit: () => edit(p), del: async () => { if (!(await confirmAsk(`¿Quitar a ${p.name} del equipo?`))) return; await T.remove(p.id); people = people.filter((x) => x.id !== p.id); closeDrawer(); paint(); } });
     const pi = $('#photoIn'); if (pi) pi.onchange = async () => { if (pi.files[0]) try { const ph = await cropImage(pi.files[0]); pi.value = ''; if (ph) await setPhoto(p, ph); } catch (err) { toast(err.message, true); } };

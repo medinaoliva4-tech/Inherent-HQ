@@ -35,7 +35,7 @@ export function faltaMotor(me, chat, { diseno = false } = {}) {
   if (!v.modelo || !m.local.modelos.includes(v.modelo)) return { t: 'Elige qué modelo local usar', p: `En esta compu hay: ${m.local.modelos.join(', ')}.`, elegir: true };
   return null;
 }
-export const faltaHtml = (f, cmd) => html`<div class="es-setup"><b>${f.t}</b><p>${f.p}</p>${f.cmd ? cmd(f.cmd) : ''}<div class="row" style="gap:8px">${f.cmd || f.instalar ? html`<button class="btn xs" data-act="reintentar">Ya lo hice</button>` : ''}<button class="btn ghost xs" data-act="motor">${f.elegir ? 'Elegir modelo' : 'Cambiar de modelo'}</button></div></div>`;
+export const faltaHtml = (f, cmd) => html`<div class="es-setup"><b>${f.t}</b><p>${f.p}</p>${f.cmd ? cmd(f.cmd) : ''}<div class="row" style="gap:8px">${f.cmd || f.instalar ? html`<button class="btn sm" data-act="reintentar">Ya lo hice</button>` : ''}<button class="btn ghost sm" data-act="motor">${f.elegir ? 'Elegir modelo' : 'Cambiar de modelo'}</button></div></div>`;
 
 // servidor = { en_linea, modelos } (saludServidor) cuando la pantalla lo averiguó.
 export function menuMotor(anchor, me, chat, onPick, { diseno = false, laya = null, servidor = null } = {}) {

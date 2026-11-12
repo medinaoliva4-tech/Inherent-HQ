@@ -105,7 +105,7 @@ function paso(p, lista, E) {
       <td class="pro-c-modo">${f.sel(ref('modo'), MODOS, p.modo, { label: 'Manual o automático' })}</td>
       <td class="pro-c-perd">${f.num(ref('perdida'), p.perdida, { label: '% de leads o ventas que se pierden aquí', ph: '%', max: 100, sd: true })}</td>
       <td class="pro-c-fund">${f.chk(ref('fundador'), p.fundador, { label: 'Depende del fundador' })}</td>
-      ${editable ? html`<td class="pro-c-x"><button type="button" class="btn ghost sm pro-btn" data-act="pro-del" data-l="${lista}" data-id="${p.id}" aria-label="Quitar este paso" title="Quitar este paso">${ico('x', 14)}</button></td>` : ''}
+      ${editable ? html`<td class="pro-c-x"><button type="button" class="btn ghost sm" data-act="pro-del" data-l="${lista}" data-id="${p.id}" aria-label="Quitar este paso" title="Quitar este paso">${ico('x', 14)}</button></td>` : ''}
     </tr>
     <tr class="pro-paso-2"><td colspan="${cols}"><div class="pro-paso-2g">
       <label class="pro-f-dolor"><span class="lbl">Dolor</span>${f.txt(ref('dolor'), p.dolor, { max: 300, label: 'Dolor: qué se cae en este paso', ph: 'Qué se cae aquí' })}</label>
@@ -119,14 +119,14 @@ function tabla(lista, etapa, E) {
   return html`${ps.length ? html`<table class="pro-tabla"><caption class="sr-only">${LISTAS.find(([l]) => l === lista)[1]}: ${ETAPAS_CAMINO.find((e) => e.id === etapa)?.nombre || 'sin etapa'}</caption>
       <thead><tr><th scope="col">Paso</th><th scope="col">Rol</th><th scope="col" title="Minutos de trabajo humano">Min</th><th scope="col">Modo</th><th scope="col" title="% de leads o ventas que se pierden aquí">% se pierde</th><th scope="col" title="Depende del fundador">Fundador</th>${E.editable ? html`<th scope="col"><span class="sr-only">Quitar</span></th>` : ''}</tr></thead>
       ${ps.map((p) => paso(p, lista, E))}</table>` : html`<p class="pro-vacio mut sm">${E.editable ? 'Sin pasos en esta etapa.' : 'Sin pasos'}</p>`}
-    ${E.editable && etapa ? html`<button type="button" class="btn ghost sm pro-btn" data-act="pro-add" data-l="${lista}" data-e="${etapa}" ${cuantos >= MAX_PASOS ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>` : ''}`;
+    ${E.editable && etapa ? html`<button type="button" class="btn ghost sm" data-act="pro-add" data-l="${lista}" data-e="${etapa}" ${cuantos >= MAX_PASOS ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>` : ''}`;
 }
 function listaEstandar(E) {
   const ps = E.c.estandar.pasos;
   return html`${ps.length ? html`<ol class="pro-std-ol">${ps.map((x, i) => html`<li class="pro-std-p">${E.editable
-      ? html`<textarea class="in" rows="2" maxlength="240" data-c="estandar.pasos.${i}" aria-label="Paso ${i + 1} del estándar" placeholder="Concern: … Se mide: …">${x}</textarea><button type="button" class="btn ghost sm pro-btn" data-act="pro-std-del" data-i="${i}" aria-label="Quitar el paso ${i + 1} del estándar" title="Quitar este paso">${ico('x', 14)}</button>`
+      ? html`<textarea class="in" rows="2" maxlength="240" data-c="estandar.pasos.${i}" aria-label="Paso ${i + 1} del estándar" placeholder="Concern: … Se mide: …">${x}</textarea><button type="button" class="btn ghost sm" data-act="pro-std-del" data-i="${i}" aria-label="Quitar el paso ${i + 1} del estándar" title="Quitar este paso">${ico('x', 14)}</button>`
       : html`<span>${x}</span>`}</li>`)}</ol>` : html`<p class="pro-sd">${SIN_DATOS}: faltan los pasos del estándar (uno por estrella, con cómo se mide)</p>`}
-    ${E.editable ? html`<button type="button" class="btn ghost sm pro-btn" data-act="pro-std-add" ${ps.length >= MAX_ESTANDAR ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>` : ''}`;
+    ${E.editable ? html`<button type="button" class="btn ghost sm" data-act="pro-std-add" ${ps.length >= MAX_ESTANDAR ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>` : ''}`;
 }
 
 function plantilla(E) {
@@ -137,7 +137,7 @@ function plantilla(E) {
 
     <section class="pro-recorrido" aria-label="El recorrido del dinero">
       <header class="pro-h"><h3 class="pro-t">${ico('git-branch', 16)} Del lead a la recompra <span class="mut sm">hoy vs optimizado, etapa por etapa</span></h3>
-        ${editable ? html`<button type="button" class="btn ghost sm pro-btn" data-act="pro-copiar" title="Copia los pasos de hoy al optimizado para ajustar lo que cambia" ${c.optimizado.length || !c.hoy.length ? 'disabled' : ''}>Partir del recorrido de hoy</button>` : ''}</header>
+        ${editable ? html`<button type="button" class="btn ghost sm" data-act="pro-copiar" title="Copia los pasos de hoy al optimizado para ajustar lo que cambia" ${c.optimizado.length || !c.hoy.length ? 'disabled' : ''}>Partir del recorrido de hoy</button>` : ''}</header>
       <p class="pro-nota mut sm">Hoy es como se hace de verdad; optimizado es el mismo camino, mejorado. Minutos y % que se pierde ${SD_MEDIDAS}: sin dato dicen ${SIN_DATOS}, nunca 0.</p>
       <datalist id="pro-roles"></datalist>
       <div class="pro-etapas">${[...ETAPAS_CAMINO, { id: '', nombre: 'Sin etapa' }].map((e, i) => html`<section class="pro-etapa" data-e="${e.id}" ${e.id ? '' : 'hidden'}>

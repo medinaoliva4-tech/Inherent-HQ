@@ -40,7 +40,7 @@ export const vista = {
       const r = el.querySelector('#pb-pie'); if (!r) return;
       const f = faltas(c, extra());
       mount(r, html`${f.length ? html`<ul class="pb-faltas" aria-label="Lo que falta para cerrar">${f.map((x) => html`<li>${x}</li>`)}</ul>` : html`<p class="pb-ok">${ico('check', 14)} Listo para cerrar.</p>`}
-        ${ed ? html`<button type="button" class="btn sm" data-act="cerrar" ${f.length || c.cerrado ? 'disabled' : ''}>${c.cerrado ? 'Brief cerrado' : 'Cerrar brief'}</button>` : ''}`);
+        ${ed ? html`<button type="button" class="btn" data-act="cerrar" ${f.length || c.cerrado ? 'disabled' : ''}>${c.cerrado ? 'Brief cerrado' : 'Cerrar brief'}</button>` : ''}`);
     }
     const derivadas = () => { pintarTecho(); pintarPie(); };
 
@@ -49,7 +49,7 @@ export const vista = {
       const pend = sinDevolver(c);
       mount(el, html`<div class="pb" data-editable="${ed ? 1 : 0}">
         <section class="pb-izq" aria-label="Piezas a producir"><div class="row" style="gap:8px;flex-wrap:wrap"><h3 class="pb-t">${ico('video', 15)} Piezas a producir <span class="mut sm">${c.piezas.length}</span></h3><div class="sp"></div>
-          ${ed ? html`<button type="button" class="btn ghost xs" data-act="traer" ${S.trayendo ? 'disabled' : ''}>${S.trayendo ? 'Leyendo ④…' : 'Traer de ④'}</button>` : ''}</div>
+          ${ed ? html`<button type="button" class="btn ghost sm" data-act="traer" ${S.trayendo ? 'disabled' : ''}>${S.trayendo ? 'Leyendo ④…' : 'Traer de ④'}</button>` : ''}</div>
           ${c.piezas.length ? html`<div class="card tscroll"><table class="wktable pb-tbl"><thead><tr><th>Pieza</th><th>Formato</th><th>Fecha</th><th>Material</th><th>¿Se puede producir?</th></tr></thead><tbody>
             ${c.piezas.map((p, i) => html`<tr><td><b>${p.id_creativo}</b>${p.nota ? html`<div class="mut sm">${p.nota}</div>` : ''}</td><td>${p.formato || '—'}</td><td>${p.fecha || '—'}</td>
               <td>${p.material === 'foto' ? html`${ico('camera', 14)} foto` : html`${ico('video', 14)} video`}</td>
@@ -66,7 +66,7 @@ export const vista = {
               <label>Motivo ${ed ? html`<textarea class="in" rows="2" maxlength="300" data-d="${i}" data-k="motivo" placeholder="Locación, talento, fecha o tiempo">${d.motivo}</textarea>` : html`<span>${d.motivo || SIN_DATOS}</span>`}</label>
               ${[0, 1].map((j) => html`<label>Alternativa ${j + 1} ${ed ? html`<input class="in" type="text" maxlength="240" data-d="${i}" data-k="alt" data-j="${j}" value="${d.alternativas[j] || ''}">` : html`<span>${d.alternativas[j] || SIN_DATOS}</span>`}</label>`)}</article>`)
               : html`<p class="mut sm">Ninguna. Una pieza marcada «No» se devuelve a ④ con motivo y 2 alternativas.</p>`}
-            ${ed && pend.length ? html`<div class="pb-pend">${pend.map((p) => html`<button type="button" class="btn ghost xs" data-act="devolver" data-id="${p.id_creativo}">Devolver ${p.id_creativo} a ④</button>`)}</div>` : ''}
+            ${ed && pend.length ? html`<div class="pb-pend">${pend.map((p) => html`<button type="button" class="btn ghost sm" data-act="devolver" data-id="${p.id_creativo}">Devolver ${p.id_creativo} a ④</button>`)}</div>` : ''}
             <p class="mut sm">Cada devolución sale como tarea para ④ Creatividad con «Convertir en tareas».</p></section>
           <footer class="pb-pie" id="pb-pie"></footer>
         </aside></div>`);

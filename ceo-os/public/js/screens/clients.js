@@ -92,9 +92,9 @@ export async function render(el, { me, sub, alive }) {
       if (!alive()) return;
       const mo = month(slug);
       mount(el, html`
-        <div class="row" style="margin-bottom:14px">${tab === 'info' ? html`<a class="btn ghost xs" href="#/clients">← Clientes</a>` : html`<button class="btn ghost xs" data-act="tab" data-t="info">← ${a.name}</button>`}</div>
+        <div class="row" style="margin-bottom:14px">${tab === 'info' ? html`<a class="btn ghost sm" href="#/clients">← Clientes</a>` : html`<button class="btn ghost sm" data-act="tab" data-t="info">← ${a.name}</button>`}</div>
         ${tab === 'info' ? html`<header class="cp-hd"><span class="cp-mono">${initials(a.name)}</span><div class="cp-hd-t"><h1>${a.name}</h1><p>Cómo va la cuenta hoy</p><div id="cchips">${chips()}</div></div>
-          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost xs" href="#/ws/marketing/${slug}/overview">${ico('spark', 13)} Marketing ↗</a>` : ''}${edit ? html`<button class="btn ghost xs" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
+          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost sm" href="#/ws/marketing/${slug}/overview">${ico('spark', 13)} Marketing ↗</a>` : ''}${edit ? html`<button class="btn ghost sm" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
           : html`<header class="cp-hd sm"><div class="cp-hd-t"><h1>${(TABS.find(([k]) => k === tab) || [, ''])[1]}</h1><p>${a.name}</p></div></header>`}
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
@@ -163,14 +163,14 @@ export async function render(el, { me, sub, alive }) {
     function ajustesTab(b) {
       if (resumen) return mount(b, html`<p class="mut">Tu vista de Clientes es resumen.</p>`);
       mount(b, html`<div class="grid g11" style="align-items:start;margin-top:22px">
-          <div class="card"><div class="row"><b style="font-weight:500">Accesos del equipo</b><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="acadd">+ Acceso</button>` : ''}</div><div class="mut sm" style="margin:2px 0 8px">${ico('lock')} Nunca contraseñas: solo qué cuenta, qué usuario y dónde está la clave</div>
+          <div class="card"><div class="row"><b style="font-weight:500">Accesos del equipo</b><div class="sp"></div>${edit ? html`<button class="btn ghost sm" data-act="acadd">+ Acceso</button>` : ''}</div><div class="mut sm" style="margin:2px 0 8px">${ico('lock')} Nunca contraseñas: solo qué cuenta, qué usuario y dónde está la clave</div>
             ${!managesAcc && !('accesos' in a) ? html`<div class="mut sm">Solo los ven el CEO, el COO, quien edita Clientes y las personas que ellos elijan.</div>`
             : html`${(a.accesos || []).map((x, i) => html`<div class="row sm" style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-weight:500;min-width:110px">${x.servicio}</b><span style="flex:1">${x.usuario || '—'}<span class="mut"> · ${x.donde || '—'}</span></span>${edit ? html`<button class="sm mut" data-act="acedit" data-i="${i}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="acdel" data-i="${i}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`)}${!(a.accesos || []).length ? html`<div class="mut sm">Sin accesos anotados.</div>` : ''}
-            ${managesAcc ? html`<div class="mut sm" style="margin-top:12px">${ico('eye', 14)} También los ven: ${(a.accesos_to || []).length ? (a.accesos_to || []).map((e) => html`<span class="chip" style="margin:2px">${person(e)?.name || e}${edit ? html` <button class="sm mut" data-act="acwdel" data-e="${e}">${ico('x', 14)}</button>` : ''}</span>`) : 'nadie más'}${edit ? html` <button class="btn ghost xs" data-act="acwadd">+ Persona</button>` : ''}</div>` : ''}`}</div>
+            ${managesAcc ? html`<div class="mut sm" style="margin-top:12px">${ico('eye', 14)} También los ven: ${(a.accesos_to || []).length ? (a.accesos_to || []).map((e) => html`<span class="chip" style="margin:2px">${person(e)?.name || e}${edit ? html` <button class="sm mut" data-act="acwdel" data-e="${e}">${ico('x', 14)}</button>` : ''}</span>`) : 'nadie más'}${edit ? html` <button class="btn ghost sm" data-act="acwadd">+ Persona</button>` : ''}</div>` : ''}`}</div>
           <div class="card"><div class="row"><b style="font-weight:500">Portal y especialista</b></div>
             <div class="mut sm" style="margin:2px 0 8px">El cliente ve su avance, contenido, reuniones y metas. Nada de costos.</div>
-            <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn ghost xs" href="#/portal/${slug}">${ico('eye')} Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn xs" data-act="portalAdd">+ Dar acceso</button>` : ''}${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}">${ico('x', 14)}</button>` : ''}</span>`)}</div>
-            <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:14px"><span class="sm mut">${isGrowth() ? 'Especialista incluido en Growth Partnership' : 'Especialista: su nivel no lo incluye, va como add-on'}</span>${edit ? html`<button class="btn ghost xs" data-act="esadd">+ Especialista</button>` : ''}</div>
+            <div class="row" style="gap:6px;flex-wrap:wrap"><a class="btn ghost sm" href="#/portal/${slug}">${ico('eye')} Ver su portal</a>${me.role === 'ceo' ? html`<button class="btn sm" data-act="portalAdd">+ Dar acceso</button>` : ''}${portalPeople.map((x) => html`<span class="chip">${x.email}${me.role === 'ceo' ? html` <button class="sm mut" data-act="portalDel" data-id="${x.id}">${ico('x', 14)}</button>` : ''}</span>`)}</div>
+            <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:14px"><span class="sm mut">${isGrowth() ? 'Especialista incluido en Growth Partnership' : 'Especialista: su nivel no lo incluye, va como add-on'}</span>${edit ? html`<button class="btn ghost sm" data-act="esadd">+ Especialista</button>` : ''}</div>
             ${(a.mentors || []).map((x, k) => { const m = mentors.find((y) => y.id === x.id); if (!m) return ''; const [f, cc] = isGrowth() ? fit(m) : ['Add-on facturado', 'red']; return html`<div class="row sm" style="padding:8px 0;border-top:1px solid var(--line)"><span style="flex:1"><b style="font-weight:500">${m.name}</b> · ${m.industry} · ${priceLabel(m)} · ${CADENCE.find(([v]) => v === x.cadence)?.[1] || ''}</span><span class="chip ${cc}" style="font-size:11px">${f}</span>${edit ? html`<button class="sm mut" data-act="esedit" data-k="${k}" title="Editar">${ico('edit')}</button><button class="sm mut" data-act="esdel" data-k="${k}" title="Quitar">${ico('x', 16)}</button>` : ''}</div>`; })}</div>
         </div>`);
     }
@@ -190,7 +190,7 @@ export async function render(el, { me, sub, alive }) {
     function estrategiaCard() {
       if (!veEst) return '';
       const e = est;
-      return html`<section class="card cl-card" id="cl-est"><div class="row"><b class="cl-h">Estrategia</b><div class="sp"></div><a class="btn ghost xs" href="#/ws/strategy/${slug}/overview">Abrir</a></div>
+      return html`<section class="card cl-card" id="cl-est"><div class="row"><b class="cl-h">Estrategia</b><div class="sp"></div><a class="btn ghost sm" href="#/ws/strategy/${slug}/overview">Abrir</a></div>
         ${e === undefined ? html`<p class="mut sm">Cargando…</p>` : !e ? html`<p class="mut sm">Este cliente todavía no tiene estrategia en el OS.</p>` : html`
         <div class="cl-kv"><div><span class="mut sm">Etapa</span><b>${e.etapa && etapaDe(e.etapa.n) ? `${etapaLabel(etapaDe(e.etapa.n))}${e.etapa.confirmada ? '' : ' · sin confirmar'}` : 'Sin etapa'}</b></div><div><span class="mut sm">Aprobado por el CEO</span><b>${e.aprobados} de 5 bloques</b></div></div>
         <div class="cl-blocks">${BLOQUES.map((x) => html`<a href="${rutaBloque(slug, x.id)}" class="${e.bloques[x.id] || 'vacio'}" title="${x.nombre}"><i></i><span>${x.nombre}</span></a>`)}</div>`}</section>`;
@@ -198,7 +198,7 @@ export async function render(el, { me, sub, alive }) {
     function proyectosCard() {
       const pct = (p) => { const ts = tasks.filter((t) => t.project_id === p.id); return ts.length ? Math.round((ts.filter((t) => t.status === 'Hecha').length / ts.length) * 100) : null; };
       const fase = (p) => (p.phases || []).find((f) => f.status === 'now')?.name || (p.phases || []).find((f) => f.status !== 'done')?.name || '';
-      return html`<section class="card cl-card"><div class="row"><b class="cl-h">Proyectos</b><span class="mut sm">${ps.length || ''}</span><div class="sp"></div><a class="btn ghost xs" href="#/operations">Ver en Proyectos</a></div>
+      return html`<section class="card cl-card"><div class="row"><b class="cl-h">Proyectos</b><span class="mut sm">${ps.length || ''}</span><div class="sp"></div><a class="btn ghost sm" href="#/operations">Ver en Proyectos</a></div>
         ${ps.length ? html`<div class="cl-projs">${ps.map((p) => { const n = pct(p); return html`<a class="cl-proj" href="#/operations/p/${encodeURIComponent(p.id)}"><span class="cl-proj-t"><b>${p.name}</b><span class="mut sm">${[p.kind, fase(p)].filter(Boolean).join(' · ') || 'Sin fase'}</span></span><span class="cl-proj-p"><i style="width:${n ?? 0}%"></i></span><span class="mut sm cl-proj-n">${n == null ? '—' : n + '%'}</span></a>`; })}</div>`
           : html`<p class="mut sm">Todavía no hay proyectos de ${a.name}. Se crean en <a href="#/operations">Proyectos</a> y quedan ligados a este cliente.</p>`}</section>`;
     }

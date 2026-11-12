@@ -77,7 +77,7 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
       const keep = fresh ? {} : curForm(); fresh = false; const fv = { ...(s || {}), ...keep };
       const cur = { ...(s || {}), tasks, level };
       const c = costOf(cur, level), sug = suggested(cur, level);
-      drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      drawer(html`<div class="row"><span class="chip">Servicio</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
         <h2>${s ? 'Editar servicio' : 'Nuevo servicio'}</h2>
         <form class="form" id="sf" style="margin-top:14px">
           <div><label class="f">Nombre *</label><input class="in" name="name" value="${fv.name || ''}"></div>
@@ -94,11 +94,11 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
           <div><label class="f">Cómo genera ese crecimiento <span class="mut">(sale en la cotización)</span></label><input class="in" name="growth_how" value="${fv.growth_how || ''}" placeholder="Ej. el agente responde y agenda 24/7: más leads atendidos = más ventas"></div>
         </form>
         <div class="row sm mut" style="margin:18px 0 8px"><span style="flex:1">Horas por rol</span><span style="width:90px;text-align:center">Sencillo · 5</span><span style="width:90px;text-align:center">Fuerte · 10</span><span style="width:44px"></span></div>
-        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}
+        ${tasks.map((t, i) => html`<div class="row" style="margin-bottom:8px"><select class="in" data-i="${i}" data-f="role">${[...new Set([...roles, t.role])].map((r) => html`<option ${r === t.role ? raw('selected') : ''}>${r}</option>`)}</select><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours" value="${t.hours}"><input class="in" style="max-width:90px" type="number" step="0.5" data-i="${i}" data-f="hours10" value="${t.hours10}"><button class="btn ghost" data-act="rmTask" data-i="${i}" >${ico('x', 16)}</button></div>`)}
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><b style="font-weight:500">Nivel de entrega</b><div class="sp"></div><span class="chip ${level >= 8 ? 'dark' : ''}">${level <= 6 ? 'Sencillo' : level >= 9 ? 'Fuerte' : 'Medio'} · ${level}</span></div>
           <input type="range" min="3" max="10" step="1" value="${level}" id="svlv" style="width:100%;margin:10px 0 4px">
           <div id="svprev">${prev(fv)}</div></div>
-        <button class="btn ghost" data-act="addTask" style="padding:8px 14px">+ Rol</button>
+        <button class="btn ghost" data-act="addTask" >+ Rol</button>
         ${isCeo ? html`<div class="card glass" style="margin-top:18px;padding:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><div class="mut sm">Costo en este nivel</div><b style="font-weight:500">${c ? (c.miss.length ? `falta costo/h de ${c.miss.join(', ')}` : Q(c.cost)) : '—'}</b></div>
           <div><div class="mut sm">Margen objetivo</div><b style="font-weight:500">${marginOf(rates)}%</b></div><div class="sp"></div>
           <div style="text-align:right"><div class="mut sm">Precio automático</div><b style="font-size:22px;font-weight:500">${sug ? Q(sug) : '—'}</b></div></div>
@@ -133,11 +133,11 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
   async function editRates() {
     const rates = getR();
     let roles = (rates?.roles || DEFAULT_ROLES.map(([role, rate]) => ({ role, rate }))).map((r) => ({ ...r }));
-    const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    const draw = () => drawer(html`<div class="row"><span class="chip dark">${ico('lock', 13)} Solo CEO</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>Costos por hora</h2><p class="mut sm" style="margin-top:6px">Lo que le cuesta a Inherent una hora de cada rol, según el nivel del servicio. Los niveles de en medio se calculan solos. Si dejas vacío el 3 o el 10, se usa el del nivel 5.</p>
       <div class="row mut sm" style="margin-top:14px;gap:8px"><span style="flex:1">Rol</span><span style="width:84px;text-align:center">Nivel 3 (Q)</span><span style="width:84px;text-align:center">Nivel 5 (Q)</span><span style="width:84px;text-align:center">Nivel 10 (Q)</span><span style="width:44px"></span></div>
-      <div style="margin-top:8px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px;gap:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate3" value="${r.rate3 ?? ''}" placeholder="= nivel 5" title="Nivel 3"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta" title="Nivel 5"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate10" value="${r.rate10 ?? ''}" placeholder="= nivel 5" title="Nivel 10"><button class="btn ghost" data-act="rm" data-i="${i}" style="padding:8px 12px">${ico('x', 16)}</button></div>`)}</div>
-      <button class="btn ghost" data-act="add" style="padding:8px 14px">+ Rol</button>
+      <div style="margin-top:8px">${roles.map((r, i) => html`<div class="row" style="margin-bottom:8px;gap:8px"><input class="in" data-i="${i}" data-f="role" value="${r.role}"><span class="mut">Q</span><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate3" value="${r.rate3 ?? ''}" placeholder="= nivel 5" title="Nivel 3"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate" value="${r.rate ?? ''}" placeholder="falta" title="Nivel 5"><input class="in" style="max-width:84px" type="number" data-i="${i}" data-f="rate10" value="${r.rate10 ?? ''}" placeholder="= nivel 5" title="Nivel 10"><button class="btn ghost" data-act="rm" data-i="${i}" >${ico('x', 16)}</button></div>`)}</div>
+      <button class="btn ghost" data-act="add" >+ Rol</button>
       <div class="card glass" style="margin-top:18px;padding:14px"><b style="font-weight:500">Margen</b><p class="mut sm" style="margin:4px 0 10px">El precio de todos los servicios sale del costo para dejar este margen: precio = costo ÷ (1 − margen). El rango permitido es de 70 a 80%.</p>
         <div class="row" style="gap:8px"><span class="sm">Margen</span><input class="in" id="margin" type="number" step="1" min="1" max="95" value="${marginOf(rates)}" style="max-width:90px"><span class="mut">%</span></div></div>
       <div class="row" style="margin-top:18px"><button class="btn" data-act="saveRates">Guardar</button></div>`,

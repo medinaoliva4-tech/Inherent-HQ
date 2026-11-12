@@ -305,7 +305,7 @@ export async function render(el, { me, sub, alive }) {
             ${fid || here.length ? html`<section class="sp-panel lib-list" data-drop="${fid || ''}"><div class="sp-panel-h row"><h3>${fid ? 'Documentos' : 'Sin carpeta'}</h3><span class="mut sm">${here.length}</span>${fid ? '' : html`<span class="mut sm lib-hint">Arrástralos a una carpeta</span>`}</div>
               ${here.length ? here.map((d) => docRow(d, false)) : html`${vacio({ icono: 'inbox', titulo: 'Sin documentos aquí', linea: 'Crea un SOP, playbook o video con «+ Documento», o arrastra uno desde otra carpeta.' })}`}</section>` : ''}
             ${recent.length ? html`<section class="sp-panel lib-list"><div class="sp-panel-h row"><h3>Recientes</h3></div>${recent.map((d) => docRow(d))}</section>` : ''}
-            ${f ? html`<div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost xs" data-act="gnew">+ Google Doc</button><a class="btn ghost xs" href="${f.drive}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${IC.drive} Abrir en Drive</a></div>` : ''}</div>
+            ${f ? html`<div class="sec-title"><h2>Google Drive</h2>${f.drive ? html`<div class="row" style="gap:8px"><button class="btn ghost sm" data-act="gnew">+ Google Doc</button><a class="btn ghost sm" href="${f.drive}" target="_blank" rel="noopener noreferrer" >${IC.drive} Abrir en Drive</a></div>` : ''}</div>
               ${!f.drive ? connectCard('drive', 'Conecta esta carpeta con Google Drive', 'Verás aquí sus archivos y podrás crear Docs, Sheets y Slides directo en ella.', 'connectDrive', 'Conectar con Drive')
                 : drive === null ? html`<p class="loading">Leyendo tu Drive…</p>` : dErr ? html`<div class="warnbox">${dErr}</div>`
                 : drive.files.length ? html`<section class="sp-panel lib-list">${drive.files.map((x) => { const [t, c] = MIME(x.mime); return html`<button class="lib-row" data-act="dfile" data-id="${x.id}"><span class="lib-ic mime" style="--k:${c}">${t}</span><span class="lib-t"><b>${x.name}</b><span class="mut sm">${x.owner || '—'}</span></span><span class="lib-when mut sm">${x.modified ? fdate(x.modified.slice(0, 10)) : ''}</span><span class="sp-tile-go" aria-hidden="true">↗</span></button>`; })}</section>`
@@ -330,9 +330,9 @@ export async function render(el, { me, sub, alive }) {
       gnew: async () => { const v = await ask('Nuevo archivo en Drive', [{ k: 'name', l: 'Nombre', req: true }, { k: 'type', l: 'Tipo', t: 'select', opts: [['doc', 'Google Doc'], ['sheet', 'Google Sheet'], ['slides', 'Google Slides'], ['folder', 'Carpeta']] }], 'Crear'); if (!v) return;
         try { const r = await api('google/drive', { method: 'POST', body: { ...v, folder: f.drive } }); toast('Creado en tu Drive'); if (r.link) window.open(r.link, '_blank', 'noopener'); drive = null; paint(); loadDrive(); } catch (e) { toast(e.message, true); } },
       dfile: (t) => { const x = drive.files.find((y) => y.id === t.dataset.id); const em = /folder/.test(x.mime) ? null : `https://drive.google.com/file/d/${x.id}/preview`;
-        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
+        drawer(html`<div class="row"><span class="ftype" style="background:${MIME(x.mime)[1]}">${MIME(x.mime)[0]}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div><h2>${x.name}</h2><div class="mut">${x.owner || ''}${x.modified ? ' · ' + fdate(x.modified.slice(0, 10)) : ''}</div>
           ${em ? html`<iframe src="${em}" style="width:100%;height:58vh;border:0;border-radius:18px;margin-top:16px;background:var(--surface)" loading="lazy"></iframe>` : ''}
-          <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;text-decoration:none;display:inline-flex">Abrir en Drive ↗</a>`); },
+          <a class="btn" href="${x.link}" target="_blank" rel="noopener noreferrer" style="margin-top:16px;display:inline-flex">Abrir en Drive ↗</a>`); },
     });
     paint();
     if (f?.drive) loadDrive();
@@ -476,7 +476,7 @@ ${qa}`;
         if (iv.done < iv.total * 0.3 && !(await confirmAsk(`Solo hay ${iv.done} de ${iv.total} respondidas. ¿Pedir el diagnóstico igual?`))) return;
         const prompt = diagPrompt(d, iv.items, folders.find((f) => f.id === d.folder_id)?.name || '');
         const copy = async () => { try { await navigator.clipboard.writeText(prompt); } catch { const ta = $('#dprompt'); ta.select(); document.execCommand('copy'); } };
-        drawer(html`<div class="row"><b style="font-size:20px;font-weight:500">Diagnóstico con Claude</b><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+        drawer(html`<div class="row"><b style="font-size:20px;font-weight:500">Diagnóstico con Claude</b><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
           <p class="mut" style="margin:6px 0 16px">${iv.done} de ${iv.total} respondidas van en el pedido, con su pregunta y «Lo ideal».</p>
           <div class="dsteps">
             <div><span class="iq-n">1</span><div><b>Copia el pedido</b><button class="btn" data-act="dcopy" style="margin-top:8px">Copiar el pedido</button></div></div>

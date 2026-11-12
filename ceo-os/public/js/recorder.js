@@ -13,7 +13,7 @@ export function recorder({ onDone }) {
   const fmt = (ms) => { const s = Math.floor(ms / 1000); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; };
 
   function setup() {
-    mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">${ico('dot', 14)} Grabar video</b><div class="sp"></div><button class="arrow light" data-r="x">${ico('x', 16)}</button></div>
+    mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">${ico('dot', 14)} Grabar video</b><div class="sp"></div><button class="btn-icon end" data-r="x">${ico('x', 16)}</button></div>
       <div class="mut sm" style="margin:4px 0 14px">Como Loom: se graba tu pantalla con tu voz y tu cámara en una burbuja. Se guarda en tu Drive y en la Library.</div>
       <div class="recopts">${[['screen+cam', html`${ico('monitor', 16)} + ${ico('smile', 16)}`, 'Pantalla y cámara'], ['screen', ico('monitor'), 'Solo pantalla'], ['cam', ico('smile'), 'Solo cámara']].map(([k, i, l]) => html`<button class="${k === mode ? 'on' : ''}" data-r="mode" data-m="${k}"><span style="font-size:20px">${i}</span>${l}</button>`)}</div>
       <label class="sw-row" style="margin-top:10px"><input type="checkbox" class="switch" id="recMic" ${mic ? raw('checked') : ''}> Grabar mi micrófono</label>
@@ -43,14 +43,14 @@ export function recorder({ onDone }) {
     } catch (e) { stopAll(); toast(e.name === 'NotAllowedError' ? 'Cancelaste o no diste permiso para grabar.' : e.message, true); setup(); }
   }
   function recording() {
-    mount(v, html`<div class="recbar"><i class="recdot"></i><b id="recT">00:00</b><button class="btn ghost xs" data-r="pause">${paused ? 'Seguir' : 'Pausa'}</button><button class="btn xs" data-r="stop">${ico('stop', 12)} Terminar</button><button class="btn ghost xs" data-r="cancel">Descartar</button></div>`);
+    mount(v, html`<div class="recbar"><i class="recdot"></i><b id="recT">00:00</b><button class="btn ghost sm" data-r="pause">${paused ? 'Seguir' : 'Pausa'}</button><button class="btn sm" data-r="stop">${ico('stop', 12)} Terminar</button><button class="btn ghost sm" data-r="cancel">Descartar</button></div>`);
     v.classList.add('min');
     clearInterval(tick); tick = setInterval(() => { const el = $('#recT', v); if (el && !paused) el.textContent = fmt(Date.now() - t0); }, 500);
   }
   function review() {
     v.classList.remove('min');
     const url = URL.createObjectURL(blob);
-    mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">Tu video</b><div class="sp"></div><button class="arrow light" data-r="x">${ico('x', 16)}</button></div>
+    mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">Tu video</b><div class="sp"></div><button class="btn-icon end" data-r="x">${ico('x', 16)}</button></div>
       <video src="${url}" controls playsinline style="width:100%;border-radius:16px;margin:12px 0;background:#1a120c;max-height:46vh"></video>
       <input class="in" id="recTitle" placeholder="Título (ej. Cómo entregar el ciclo)" style="margin-bottom:8px">
       <div class="wkbar" id="recBar" hidden><i style="width:0%"></i></div>

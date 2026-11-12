@@ -498,7 +498,7 @@ t('Strategy 3a · estáticas: el shell aprueba y reabre Offer Architect con su b
   assert.match(sh, /a\.code === 'APROBADO'\) return mount\(el, html`<div class="tsh-aprobada" role="status"/);
   assert.match(sh, /e\?\.status === 409 && e\.code === 'APROBADO'/);
   // (c) El botón del chat de Strategy: solo en Strategy y con bloque; no reemplaza a «Continuar en el Chat».
-  assert.match(sh, /tool\.ws === 'strategy' && tool\.bloque_hz\) salida\.push\(html`<a class="btn ghost sm tsh-act tsh-act-chat" href="\$\{rutaHerramienta\(tool\.ws, slug, tool\.id, \['chat'\]\)\}"/);
+  assert.match(sh, /tool\.ws === 'strategy' && tool\.bloque_hz\) salida\.push\(html`<a class="btn ghost sm tsh-act-chat" href="\$\{rutaHerramienta\(tool\.ws, slug, tool\.id, \['chat'\]\)\}"/);
   assert.match(sh, /'tsh-chat': \(\) => abrirEnChat\(me\.email, \{ modo, slug \}\)/);
   // «Usar esta propuesta» pasa por alUsar de la herramienta.
   assert.match(sh, /tool\.alUsar\(nuevo, clon\(S\.contenido\), S\.ctx\)/);

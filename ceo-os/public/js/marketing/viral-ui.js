@@ -138,9 +138,9 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
     const ok = escribe() && !S.ocupado && !S.cargandoDocs, hay = itemsLib().length >= MIN_ITEMS, corriendo = S.gen?.fase === 'corriendo';
     const sin = !hay ? 'La Investigación todavía no tiene posts: se llena con la primera actualización (Library).' : '';
     mount(el, html`<div class="vil-barra" role="toolbar" aria-label="Patrones">
-      <button type="button" class="btn sm" data-act="vil-ia" title="${sin}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('sparkles', 14)} Agrupar con IA</button>
-      <button type="button" class="btn ghost sm" data-act="vil-sugerir" title="${sin || 'Agrupa por formato y tipo de gancho, sin IA'}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('layers', 14)} Sugerir sin IA</button>
-      <button type="button" class="btn ghost sm" data-act="vil-nuevo" ${ok && hay ? '' : raw('disabled')}>${ico('plus', 14)} Nuevo patrón</button>
+      <button type="button" class="btn" data-act="vil-ia" title="${sin}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('sparkles', 14)} Agrupar con IA</button>
+      <button type="button" class="btn ghost" data-act="vil-sugerir" title="${sin || 'Agrupa por formato y tipo de gancho, sin IA'}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('layers', 14)} Sugerir sin IA</button>
+      <button type="button" class="btn ghost" data-act="vil-nuevo" ${ok && hay ? '' : raw('disabled')}>${ico('plus', 14)} Nuevo patrón</button>
       <span class="sp"></span><span class="mut sm">${S.inv ? `${plural(itemsLib().length, 'post', 'posts')} en la Biblioteca` : S.cargandoInv ? 'Leyendo la Biblioteca…' : `⚠️ SIN DATOS: no pude leer la Biblioteca${S.errInv ? ` (${S.errInv})` : ''}`}</span></div>`);
   }
   function tarjeta({ d, p }) {
@@ -156,12 +156,12 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
       <p class="vil-t vil-niv"><span class="lbl">Lectura de hoy</span> ${niv}${sen.posts ? html` <span class="mut sm">· ${plural(sen.cuentas || 0, 'cuenta', 'cuentas')}${sen.recientes !== null ? ` · ${sen.recientes} de ${sen.conFecha} posts con fecha son de las últimas 4 semanas` : ''}</span>` : ''}</p>
       <details class="vil-ejs" open><summary>Ejemplos · ${plural(p.items.length, 'post', 'posts')}</summary><ul>${p.items.map(ejemplo)}</ul></details>
       <footer class="vil-acts">
-        ${ed ? html`<button type="button" class="btn ghost sm" data-act="vil-editar" data-id="${d.id}" ${off}>${ico('pencil', 14)} Editar</button>` : ''}
-        ${ed && est === 'Borrador' ? html`<button type="button" class="btn ghost sm" data-act="vil-estado" data-id="${d.id}" data-a="En revisión" ${off}>Mandar a revisión</button>` : ''}
-        ${ed && est === 'En revisión' ? html`<button type="button" class="btn ghost sm" data-act="vil-estado" data-id="${d.id}" data-a="Borrador" ${off}>Devolver a borrador</button>` : ''}
-        ${S.puede.aprobar && S.alcance.abierto && est === 'En revisión' ? html`<button type="button" class="btn sm" data-act="vil-estado" data-id="${d.id}" data-a="Aprobado" ${off}>${ico('badge-check', 14)} Aprobar</button>` : ''}
-        <button type="button" class="btn ghost sm" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar</button>
-        ${ed ? html`<button type="button" class="btn ghost sm" data-act="vil-archivar" data-id="${d.id}" ${off}>${ico('trash-2', 14)} Archivar</button>` : ''}
+        ${ed ? html`<button type="button" class="btn ghost" data-act="vil-editar" data-id="${d.id}" ${off}>${ico('pencil', 14)} Editar</button>` : ''}
+        ${ed && est === 'Borrador' ? html`<button type="button" class="btn ghost" data-act="vil-estado" data-id="${d.id}" data-a="En revisión" ${off}>Mandar a revisión</button>` : ''}
+        ${ed && est === 'En revisión' ? html`<button type="button" class="btn ghost" data-act="vil-estado" data-id="${d.id}" data-a="Borrador" ${off}>Devolver a borrador</button>` : ''}
+        ${S.puede.aprobar && S.alcance.abierto && est === 'En revisión' ? html`<button type="button" class="btn" data-act="vil-estado" data-id="${d.id}" data-a="Aprobado" ${off}>${ico('badge-check', 14)} Aprobar</button>` : ''}
+        <button type="button" class="btn ghost" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar</button>
+        ${ed ? html`<button type="button" class="btn ghost" data-act="vil-archivar" data-id="${d.id}" ${off}>${ico('trash-2', 14)} Archivar</button>` : ''}
       </footer></article>`;
   }
   function pintarLista() {
@@ -200,7 +200,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         <label class="vil-q">${ico('search', 14)}<input class="in" type="search" data-ef="buscar" value="${e.buscar}" placeholder="Buscar cuenta, tema o hook" aria-label="Buscar en la Biblioteca" autocomplete="off"></label>
         <ul class="vil-pick-l" id="vil-ed-pick"></ul></div>
       <ul class="vil-fl" id="vil-ed-faltas" aria-live="polite"></ul>
-      <div class="vil-ed-bt"><button type="button" class="btn sm" id="vil-ed-ok" data-act="vil-ed-guardar">${ico('check', 14)} Guardar</button><button type="button" class="btn ghost sm" data-act="vil-ed-cerrar">Cancelar</button></div></section>`);
+      <div class="vil-ed-bt"><button type="button" class="btn" id="vil-ed-ok" data-act="vil-ed-guardar">${ico('check', 14)} Guardar</button><button type="button" class="btn ghost" data-act="vil-ed-cerrar">Cancelar</button></div></section>`);
     pintarPick(); pintarEdFaltas();
   }
   // La lista de posts del editor: los elegidos arriba y luego los de más resonancia que coincidan con la búsqueda.
@@ -362,9 +362,9 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarGen() {
     const el = $('#vil-gen', root); if (!el) return;
     const g = S.gen; if (!g) return mount(el, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-act="vil-ia-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-act="vil-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-act="vil-ia-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-act="vil-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el, html`<section class="vil-gen" data-fase="corriendo"><header><span class="vil-gen-t">${ico('loader-circle', 14)} Agrupando con IA…</span><span class="mut sm vil-paso"></span><button type="button" class="btn ghost sm" data-act="vil-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="vil-stream" aria-live="polite"></pre></section>`);
+      mount(el, html`<section class="vil-gen" data-fase="corriendo"><header><span class="vil-gen-t">${ico('loader-circle', 14)} Agrupando con IA…</span><span class="mut sm vil-paso"></span><button type="button" class="btn ghost" data-act="vil-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="vil-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -381,13 +381,13 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         })}</ul>
         ${(cr.cumple || []).length + (cr.falta || []).length ? html`<ul class="vil-crit">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${(cr.falta || []).map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que presiones Guardar. Los que ya existen se actualizan con una versión nueva.</p>
-        <div class="vil-prop-bt"><button type="button" class="btn sm" id="vil-prop-ok" data-act="vil-guardar-prop" ${g.sel.size && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Guardar <span id="vil-prop-n">${g.sel.size}</span></button>
-          ${g.via === 'manual' && g.modelo ? html`<button type="button" class="btn ghost sm" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button>` : html`<button type="button" class="btn ghost sm" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>`}<button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">Descartar</button></div></section>`);
+        <div class="vil-prop-bt"><button type="button" class="btn" id="vil-prop-ok" data-act="vil-guardar-prop" ${g.sel.size && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Guardar <span id="vil-prop-n">${g.sel.size}</span></button>
+          ${g.via === 'manual' && g.modelo ? html`<button type="button" class="btn ghost" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button>` : html`<button type="button" class="btn ghost" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>`}<button type="button" class="btn ghost" data-act="vil-cerrar-gen">Descartar</button></div></section>`);
       return;
     }
     mount(el, html`<section class="vil-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : 'No vino ningún patrón con posts reales de la lista. Reintenta o pega la respuesta.'}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="vil-stream">${g.texto}</pre></details>` : ''}
-      <div class="vil-prop-bt">${g.soloCerrar ? html`<button type="button" class="btn sm" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button><button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>` : html`<button type="button" class="btn sm" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>${otros}`}</div></section>`);
+      <div class="vil-prop-bt">${g.soloCerrar ? html`<button type="button" class="btn" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button><button type="button" class="btn ghost" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>` : html`<button type="button" class="btn" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>${otros}`}</div></section>`);
   }
 
   // ---------- Trend Radar ----------
@@ -454,9 +454,9 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         <p class="vil-t"><span class="lbl">Hook</span> ${p.hook || html`<span class="vil-sd">${SIN_DATOS}</span>`}</p>
         <p class="vil-t"><span class="lbl">Por qué funciona</span> ${p.por_que || html`<span class="vil-sd">${SIN_DATOS}</span>`}</p>
         <p class="mut sm">${plural(p.items.length, 'post de ejemplo', 'posts de ejemplo')} · <button type="button" class="vil-link" data-act="vil-ver" data-pid="${p.id}">Ver los ejemplos</button></p>
-        <footer class="vil-acts">${abre ? html`<a class="btn sm" href="${rutaHerramienta('marketing', slug, 'content-strategy-studio')}">Mandar a Content Strategy Studio ${ico('arrow-right', 14)}</a>` : html`<span class="mut sm">Tu perfil no abre Content Strategy Studio.</span>`}
+        <footer class="vil-acts">${abre ? html`<a class="btn" href="${rutaHerramienta('marketing', slug, 'content-strategy-studio')}">Mandar a Content Strategy Studio ${ico('arrow-right', 14)}</a>` : html`<span class="mut sm">Tu perfil no abre Content Strategy Studio.</span>`}
           <span class="chip sm2 vil-pronto" title="El Hook Laboratory llega en la Fase 3e">Hook Lab: llega en la Fase 3e</span>
-          <button type="button" class="btn ghost sm" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar el patrón</button></footer></article>`)}</div>`
+          <button type="button" class="btn ghost" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar el patrón</button></footer></article>`)}</div>`
         : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay oportunidades', linea: S.docs.length ? 'Un patrón es oportunidad con momentum alto y saturación baja. Califícalos en Pattern Report o mira el Trend Radar.' : 'Primero se crean los patrones en Pattern Report.' , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos las oportunidades de esta marca.' } }})}`}`);
   }
 

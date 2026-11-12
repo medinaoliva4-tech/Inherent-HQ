@@ -52,7 +52,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
   const reproductor = (f) => {
     const vs = versionDe(f, S.ver), src = vs ? srcDe(vs.link, S.salto) : null;
     if (!vs) return html`<div class="empty sm"><b>⚠️ SIN DATOS</b>Esta ficha no tiene versiones: salen de Post-Production (versiones por ficha).</div>`;
-    if (!src) return html`${fallo({ titulo: 'No puedo mostrar este link aquí', linea: html`${vs.link ? html`<a class="btn ghost sm" href="${vs.link}" target="_blank" rel="noopener noreferrer">${ico('external-link', 14)} Abrir el video</a>` : '⚠️ SIN DATOS: la versión no trae link. Se agrega en Post-Production.'}` })}`;
+    if (!src) return html`${fallo({ titulo: 'No puedo mostrar este link aquí', linea: html`${vs.link ? html`<a class="btn ghost" href="${vs.link}" target="_blank" rel="noopener noreferrer">${ico('external-link', 14)} Abrir el video</a>` : '⚠️ SIN DATOS: la versión no trae link. Se agrega en Post-Production.'}` })}`;
     return html`<iframe src="${src}" title="${f.titulo} v${S.ver}" allow="autoplay; fullscreen" allowfullscreen style="width:100%;aspect-ratio:${ratio(f.formato)};max-height:560px;border:0;border-radius:12px;background:#000"></iframe>`;
   };
   const comparacion = (f) => {
@@ -65,7 +65,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
     const saltar = puedeSaltar(versionDe(f, S.ver)?.link);
     if (!cs.length) return html`${vacio({ icono: 'inbox', titulo: `Sin comentarios en la v${S.ver}`, linea: 'Salen del cliente (portal) y del equipo; cada uno lleva su segundo.', compacto: true })}`;
     return html`<div class="pd-list">${cs.slice().sort((a, z) => (a.seg ?? -1) - (z.seg ?? -1)).map((c) => html`<div class="pd-li">
-      ${c.seg != null ? html`<button class="btn xs ghost" data-seg="${c.seg}" title="${saltar ? 'Saltar a este segundo' : 'Segundo del comentario'}">${ico('clock', 12)} ${reloj(c.seg)}</button>` : html`<span class="chip">General</span>`}
+      ${c.seg != null ? html`<button class="btn sm ghost" data-seg="${c.seg}" title="${saltar ? 'Saltar a este segundo' : 'Segundo del comentario'}">${ico('clock', 12)} ${reloj(c.seg)}</button>` : html`<span class="chip">General</span>`}
       <span>${c.texto}<small>${quien(c.por)}${c.interno ? ' · interno' : ''}${c.en ? ` · ${fdate(String(c.en).slice(0, 10))}` : ''}</small></span></div>`)}</div>${saltar ? '' : html`<p class="mut sm">Este reproductor no deja saltar al segundo: el pin te dice dónde mirar.</p>`}`;
   };
   function pintarTodo() {
@@ -94,7 +94,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
           <input class="in sm" name="seg" placeholder="Segundo (ej. 0:12)" style="max-width:150px" aria-label="Segundo">
           <input class="in" name="texto" placeholder="Comentario" style="flex:1;min-width:200px" aria-label="Comentario" required>
           ${veInterno ? html`<label class="sw-row"><input type="checkbox" class="switch" name="interno"> <span>Nota interna</span></label>` : ''}
-          <button class="btn sm" type="submit">${ico('send', 14)} Comentar</button></form>` : ''}</section>
+          <button class="btn" type="submit">${ico('send', 14)} Comentar</button></form>` : ''}</section>
       <section class="sp-panel"><div class="sp-panel-h row"><h3>Caption</h3></div>${f.caption_pieza ? html`<div style="white-space:pre-wrap">${f.caption_pieza}</div>` : html`<div class="mut sm" id="rv-cap">⚠️ SIN DATOS: sale de la pieza ligada a este video (Calendario).</div>`}</section>
       ${mia ? html`<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-a="aprobar" ${!ENREV(f) || S.ver !== vigente(f) ? 'disabled' : ''}>${ico('check', 14)} Aprobar v${S.ver}</button><button class="btn ghost" data-a="cambios" ${!ENREV(f) ? 'disabled' : ''}>Pedir cambios</button>${!ENREV(f) ? html`<span class="mut sm" style="align-self:center">Solo se revisa lo que está «En revisión».</span>` : S.ver !== vigente(f) ? html`<span class="mut sm" style="align-self:center">Aprobar solo vale sobre la versión vigente (v${vigente(f)}).</span>` : ''}</div>` : html`<div class="mut sm">Solo lectura: tu perfil no edita videos.</div>`}` : ''}
     </div>`);

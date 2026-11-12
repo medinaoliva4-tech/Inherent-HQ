@@ -36,7 +36,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!alive()) return;
     return lista(el, me, tareas);
   }
-  mount(el, html`<div class="cs"><a class="btn ghost sm" href="#/ws/consulting">${ico('arrow-left', 14)} Todos los clientes</a><div id="cs-det"></div></div>`);
+  mount(el, html`<div class="cs"><a class="btn ghost" href="#/ws/consulting">${ico('arrow-left', 14)} Todos los clientes</a><div id="cs-det"></div></div>`);
   return consultingOverview($('#cs-det', el), { me, slug, alive });
 }
 
@@ -68,7 +68,7 @@ function heroHtml({ slug, data, alc, abierto, items, falloEntregables }) {
     cuerpo = html`<p class="cs-sd">${SIN_DATOS}: sale del Diagnóstico de crecimiento</p>
       <p class="cs-hero-por">${pendiente ? `Hay un Diagnóstico ${pendiente.estado === 'En revisión' ? 'en revisión' : 'en borrador'}: se lee aquí cuando se apruebe.` : 'Todavía no hay uno. Con él salen la etapa, la restricción y la capacidad.'}</p>
       ${etapaStrategy ? html`<p class="cs-hero-ref">Strategy ubicó la etapa: ${etapaLabel(etapaStrategy)}${data.etapa?.confirmada ? '' : ' · propuesta'}.</p>` : ''}
-      <a class="btn sm" href="${ruta(pendiente?.id)}">${ico('chart-pie', 14)} ${pendiente ? 'Abrir el Diagnóstico' : 'Empezar el Diagnóstico'}</a>`;
+      <a class="btn" href="${ruta(pendiente?.id)}">${ico('chart-pie', 14)} ${pendiente ? 'Abrir el Diagnóstico' : 'Empezar el Diagnóstico'}</a>`;
   } else {
     const { doc, c } = ap, e = c.etapa, r = c.restriccion;
     const et = e.n != null ? ETAPAS_HORMOZI.find((x) => x.n === e.n) : null;
@@ -119,10 +119,10 @@ export async function consultingOverview(el, { me, slug, alive, cabecera = true,
 
   const encargoHtml = (t) => html`<div class="cs-enc ${t.status === 'Hecha' ? 'hecho' : ''}"><span class="cs-enc-i">${ico(t.status === 'Hecha' ? 'check' : 'send', 14)}</span>
     <div class="cs-enc-t"><b>${t.title}</b><small>${t.status || 'Por empezar'}${t.due ? ` · vence ${fdate(t.due)}` : ''}${t.description ? ` · ${String(t.description).split('\n\n')[0]}` : ''}</small></div>
-    ${t.status === 'Hecha' ? '' : !abierto ? html`<span class="cs-alc fuera">Fuera del alcance · escálalo al CEO</span>` : html`<button type="button" class="btn sm" data-c="hacer" data-id="${t.id}">${ico('chat-ia', 14)} Hacerlo en el Chat</button><button type="button" class="btn ghost sm" data-c="hecha" data-id="${t.id}">Hecha</button>`}</div>`;
+    ${t.status === 'Hecha' ? '' : !abierto ? html`<span class="cs-alc fuera">Fuera del alcance · escálalo al CEO</span>` : html`<button type="button" class="btn" data-c="hacer" data-id="${t.id}">${ico('chat-ia', 14)} Hacerlo en el Chat</button><button type="button" class="btn ghost" data-c="hecha" data-id="${t.id}">Hecha</button>`}</div>`;
   const pintar = () => mount(el, html`<div class="cs">
     ${cabecera ? html`<header class="cs-head"><span class="cs-mono">${initials(data.nombre || c.nombre)}</span><div><h1>${data.nombre || c.nombre}</h1><p>${data.nivel?.nombre || 'Sin ficha de oferta'} · operaciones, finanzas y equipo</p></div>
-      <a class="btn ghost sm" href="#/ws/strategy/${esc(slug)}/overview">${ico('target', 14)} Su estrategia</a></header>` : ''}
+      <a class="btn ghost" href="#/ws/strategy/${esc(slug)}/overview">${ico('target', 14)} Su estrategia</a></header>` : ''}
     ${avisoConsulting(data.nivel, data.ficha)}
     ${heroHtml({ slug, data, alc, abierto, items, falloEntregables })}
     <section class="cs-sec"><div class="cs-sec-h"><h2>Encargos de Estrategia</h2><span class="mut sm">Lo que la estrategia pide que se haga aquí</span></div>

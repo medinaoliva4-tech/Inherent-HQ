@@ -606,7 +606,7 @@ async function render() {
   if (!alive()) return;
   // Si lo que falló fue bajar el código de la pantalla, «Reintentar» recarga la página (el navegador de la app de Mac
   // recuerda el módulo que falló y volver a pedirlo fallaría igual).
-  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost xs" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
+  const fallo = (e) => { main.style.minHeight = ''; const recarga = e === err || /dynamically imported module|Importing a module script failed|module script/i.test(e?.message || ''); mount(main, html`<div class="warnbox ui-fallo">${e.code === 'NO_DB' ? 'La base de datos todavía no está conectada.' : recarga ? 'No se pudo abrir esta parte (¿se fue el internet?).' : e.message || 'No cargó.'} <button type="button" class="btn ghost sm" data-reintentar="${recarga ? 'recargar' : ''}">Reintentar</button></div>`); };
   main.addEventListener('click', (e) => { const b = e.target.closest('[data-reintentar]'); if (b && alive()) { if (b.dataset.reintentar === 'recargar') location.reload(); else render(); } });
   let lista = null;
   const pintar = () => {

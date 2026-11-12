@@ -100,10 +100,10 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
         ${c.evento ? html`${c.evento.objetivo ? html`<div><dt>Objetivo</dt><dd>${c.evento.objetivo}</dd></div>` : ''}${c.evento.lugar || c.evento.cupo ? html`<div><dt>Dónde</dt><dd>${[c.evento.lugar, c.evento.cupo ? `${c.evento.cupo} personas` : ''].filter(Boolean).join(' · ')}</dd></div>` : ''}${c.evento.proveedores ? html`<div><dt>Proveedores</dt><dd>${c.evento.proveedores}</dd></div>` : ''}${c.evento.medicion ? html`<div><dt>Se mide con</dt><dd>${c.evento.medicion}</dd></div>` : ''}` : ''}</dl>
       ${falta.length && !cer ? html`<ul class="cm-falta">${falta.map((f) => html`<li>${ico('alert', 12)} ${f}</li>`)}</ul>` : ''}
       <footer><span class="cm-resp">${c.responsable ? html`<i>${initials(nombreDe(c.responsable))}</i>${nombreDe(c.responsable)}` : html`<span class="mut">Sin responsable</span>`}</span><span class="sp"></span>
-        <button type="button" class="btn ghost xs" data-cm="chat">${ico('chat-ia', 13)} Trabajarla en el Chat</button>
-        ${edit && c.estado !== 'Archivada' ? html`<button type="button" class="btn ghost xs" data-cm="estado" data-e="${cer ? 'En curso' : 'Cerrada'}">${cer ? 'Reabrir' : 'Cerrar'}</button><button type="button" class="btn ghost xs" data-cm="estado" data-e="Archivada" title="No se borra: se archiva">Archivar</button>` : ''}
-        ${edit && c.estado === 'Archivada' ? html`<button type="button" class="btn ghost xs" data-cm="estado" data-e="En curso">Reabrir</button>` : ''}
-        <button type="button" class="btn xs" data-cm="abrir">${ico('arrow-right', 13)} Abrir</button></footer></article>`;
+        <button type="button" class="btn ghost sm" data-cm="chat">${ico('chat-ia', 13)} Trabajarla en el Chat</button>
+        ${edit && c.estado !== 'Archivada' ? html`<button type="button" class="btn ghost sm" data-cm="estado" data-e="${cer ? 'En curso' : 'Cerrada'}">${cer ? 'Reabrir' : 'Cerrar'}</button><button type="button" class="btn ghost sm" data-cm="estado" data-e="Archivada" title="No se borra: se archiva">Archivar</button>` : ''}
+        ${edit && c.estado === 'Archivada' ? html`<button type="button" class="btn ghost sm" data-cm="estado" data-e="En curso">Reabrir</button>` : ''}
+        <button type="button" class="btn sm" data-cm="abrir">${ico('arrow-right', 13)} Abrir</button></footer></article>`;
   };
   // Lo que llegó de otra herramienta (los entregables de Campaign Architect en Borrador con entradas, p. ej. el de Offer Architect).
   const pendientes = () => { const usados = new Set(xs.map((c) => c.entregable_ref).filter(Boolean)); return (S.entr || []).filter((x) => !usados.has(x.item.id)); };
@@ -117,7 +117,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
           <h3>${item.titulo || 'Campaña'}</h3>
           ${pre && (pre.oferta || pre.mensaje) ? html`<dl class="cm-dl">${pre.oferta ? html`<div><dt>Oferta</dt><dd>${pre.oferta}</dd></div>` : ''}${pre.mensaje ? html`<div><dt>Mensaje</dt><dd>${pre.mensaje}</dd></div>` : ''}</dl>`
             : html`<p class="cma-sd">${SIN_DATOS}: no pude leer lo que mandó ${nomTool(e.tool)} (sale de esa herramienta; tu perfil puede no verla). Puedes crear la campaña y llenarla a mano.</p>`}
-          <footer><span class="sp"></span><button type="button" class="btn xs" data-cm="crear-entrada" ${puede ? '' : raw('disabled')} title="${puede ? '' : aprobada ? 'Tu perfil solo ve las campañas' : 'Primero el CEO aprueba la estrategia'}">${ico('plus', 13)} Crear campaña con esto</button></footer></article>`; })}</div></section>`;
+          <footer><span class="sp"></span><button type="button" class="btn sm" data-cm="crear-entrada" ${puede ? '' : raw('disabled')} title="${puede ? '' : aprobada ? 'Tu perfil solo ve las campañas' : 'Primero el CEO aprueba la estrategia'}">${ico('plus', 13)} Crear campaña con esto</button></footer></article>`; })}</div></section>`;
   };
   function lista() {
     S.gen?.ctrl?.abort(); S.id = null; S.W = null; S.sel = null; S.gen = null; S.enviado = null; root = null; ruta('');
@@ -207,9 +207,9 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
   function pintarCab() {
     const c = S.W, el_ = R('cab'); if (!el_) return;
     const [, tn] = tipoDe(c.tipo), su = sucio(), falta = faltaParaCreative(c), corriendo = S.gen?.fase === 'corriendo', ed = editable(), enviada = (S.creative || []).length > 0;
-    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm" data-cma="${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
+    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'}" data-cma="${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
     const tipCreative = !aprobada ? 'Primero el CEO aprueba la estrategia' : su ? 'Guarda tus cambios: Creative recibe lo guardado' : falta.length ? `Para enviar a Creative falta: ${falta.join(' · ')}` : 'Crea el entregable de Creative Direction Lab con esta campaña y sus briefs';
-    mount(el_, html`<header class="cma-cab" data-id="${c.id}"><div class="cma-cab-t"><button type="button" class="btn ghost xs" data-cma="lista">← Campañas</button>
+    mount(el_, html`<header class="cma-cab" data-id="${c.id}"><div class="cma-cab-t"><button type="button" class="btn ghost sm" data-cma="lista">← Campañas</button>
       <h2>${ico(ICO_T[c.tipo] || 'target', 16)} ${c.nombre}</h2><span class="cm-tipo">${tn}</span><span class="cm-est">${c.estado}</span>
       ${su ? html`<span class="chip cma-sucio">Sin guardar</span>` : ''}${enviada ? html`<span class="chip" title="Ya hay un Borrador de Creative con esta campaña">Enviada a Creative</span>` : ''}</div>
       <div class="cma-acts">
@@ -217,8 +217,8 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
         ${puedeGuardar() ? btn('guardar', 'check', 'Guardar', { off: !su, tip: su ? '' : 'No hay cambios que guardar' }) : ''}${puedeGuardar() && su ? btn('descartar', 'x', 'Descartar cambios') : ''}
         ${edit && c.estado !== 'Archivada' ? btn('creative', 'send', 'Enviar a Creative', { off: !aprobada || su || falta.length > 0, tip: tipCreative }) : ''}
         ${btn('chat', 'chat-ia', 'Trabajarla en el Chat')}
-        ${edit && c.estado !== 'Archivada' ? html`<button type="button" class="btn ghost sm" data-cm="estado" data-e="${cerrada() ? 'En curso' : 'Cerrada'}" ${S.ocupado ? raw('disabled') : ''}>${cerrada() ? 'Reabrir' : 'Cerrar'}</button><button type="button" class="btn ghost sm" data-cm="estado" data-e="Archivada" title="No se borra: se archiva" ${S.ocupado ? raw('disabled') : ''}>Archivar</button>` : ''}
-        ${edit && c.estado === 'Archivada' ? html`<button type="button" class="btn ghost sm" data-cm="estado" data-e="En curso">Reabrir</button>` : ''}</div></header>`);
+        ${edit && c.estado !== 'Archivada' ? html`<button type="button" class="btn ghost" data-cm="estado" data-e="${cerrada() ? 'En curso' : 'Cerrada'}" ${S.ocupado ? raw('disabled') : ''}>${cerrada() ? 'Reabrir' : 'Cerrar'}</button><button type="button" class="btn ghost" data-cm="estado" data-e="Archivada" title="No se borra: se archiva" ${S.ocupado ? raw('disabled') : ''}>Archivar</button>` : ''}
+        ${edit && c.estado === 'Archivada' ? html`<button type="button" class="btn ghost" data-cm="estado" data-e="En curso">Reabrir</button>` : ''}</div></header>`);
   }
   function pintarAviso() {
     const el_ = R('aviso'); if (!el_) return;
@@ -284,7 +284,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
         ${ed ? html`<input class="in" type="date" data-k="fecha" ${raw(at)} value="${k.fecha}" aria-label="Fecha de ${nombre}">` : html`<span class="cma-ro" data-vacio="${k.fecha ? 0 : 1}">${k.fecha ? fdate(k.fecha) : 'Sin fecha'}</span>`}
         ${ed ? html`<input class="in" type="text" data-k="pieza" ${raw(at)} value="${k.pieza}" maxlength="160" placeholder="Pieza o acción" aria-label="Pieza de ${nombre}" autocomplete="off">` : html`<span class="cma-ro" data-vacio="${k.pieza ? 0 : 1}">${k.pieza || 'Sin pieza'}</span>`}
         ${costos ? (ed ? html`<span class="cma-monto"><i aria-hidden="true">Q</i><input class="in" type="number" min="0" step="any" data-k="monto" ${raw(at)} value="${k.monto ?? ''}" placeholder="Monto" aria-label="Monto en quetzales de ${nombre}"></span>` : html`<span class="cma-ro" data-vacio="${k.monto === null ? 1 : 0}">${k.monto === null ? 'Sin monto' : `Q${k.monto.toLocaleString('en-US')}`}</span>`) : ''}
-        <button type="button" class="btn ghost xs cma-bt" data-cma="brief" ${raw(at)} data-listo="${listo ? 1 : 0}" aria-pressed="${sel ? 'true' : 'false'}">${ico(listo ? 'check' : 'pencil', 12)} <span class="cma-bt-t">${listo ? 'Brief listo' : 'Escribir brief'}</span></button></div>` : ''}</td>`;
+        <button type="button" class="btn ghost sm cma-bt" data-cma="brief" ${raw(at)} data-listo="${listo ? 1 : 0}" aria-pressed="${sel ? 'true' : 'false'}">${ico(listo ? 'check' : 'pencil', 12)} <span class="cma-bt-t">${listo ? 'Brief listo' : 'Escribir brief'}</span></button></div>` : ''}</td>`;
   }
   function pintarTotal() {
     const el_ = $('#cma-total', root); if (!el_) return;
@@ -316,7 +316,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
     }
     const { fase, canal } = S.sel, k = celdaDe(fase, canal), x = briefDe(fase, canal) || {};
     const area = (clave, etq, max, filas = 3, ph = '') => html`<label class="cma-campo"><span class="lbl">${etq}</span>${ed ? html`<textarea class="in" data-bf="${clave}" rows="${filas}" maxlength="${max}" placeholder="${ph}" aria-label="${etq}">${x[clave] || ''}</textarea>` : html`<span class="cma-ro" data-vacio="${x[clave] ? 0 : 1}">${x[clave] || '—'}</span>`}</label>`;
-    mount(el_, html`<div class="cma-lado-cab"><button type="button" class="btn ghost xs" data-cma="brief-cerrar">← Todos</button><h3>${ico(ICO_CANAL[canal], 15)} ${NOMBRE_CANAL_C[canal]} · ${NOMBRE_FASE_C[fase]}</h3></div>
+    mount(el_, html`<div class="cma-lado-cab"><button type="button" class="btn ghost sm" data-cma="brief-cerrar">← Todos</button><h3>${ico(ICO_CANAL[canal], 15)} ${NOMBRE_CANAL_C[canal]} · ${NOMBRE_FASE_C[fase]}</h3></div>
       <p class="mut sm">${[k.fecha ? fdate(k.fecha) : '', k.pieza].filter(Boolean).join(' · ') || 'Esta celda todavía no tiene fecha ni pieza'}</p>
       ${area('objetivo', 'Objetivo', 200, 2, 'Qué cambia en quien lo ve')}${area('mensaje', 'Mensaje', 400, 3, 'Una frase')}
       <label class="cma-campo"><span class="lbl">Formato</span>${ed ? html`<input class="in" type="text" data-bf="formato" list="cma-formatos" maxlength="80" value="${x.formato || ''}" placeholder="reel, carrusel, story…" aria-label="Formato" autocomplete="off">` : html`<span class="cma-ro" data-vacio="${x.formato ? 0 : 1}">${x.formato || '—'}</span>`}</label>
@@ -390,7 +390,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
     const c = S.W, rs = c.resultados || [], puede = edit && aprobada && c.estado !== 'Archivada';
     mount(el_, html`<div class="cma-sec-h"><h3>${ico('list-checks', 15)} Resultados</h3><span class="mut sm">lo que dejó la campaña; solo se agregan</span></div>
       ${rs.length ? html`<ul class="cma-res">${rs.map((r) => html`<li><b>${r.metrica}</b><span>${r.valor || '—'}</span>${r.nota ? html`<span class="mut sm">${r.nota}</span>` : ''}<span class="mut sm">${r.en ? fdate(r.en) : ''}</span></li>`)}</ul>` : html`<p class="cma-sd">${SIN_DATOS}: los resultados salen de lo que se mide al cierre (reservas, asistentes, leads…).</p>`}
-      ${puede ? html`<button type="button" class="btn ghost xs" data-cma="resultado">${ico('plus', 13)} Anotar un resultado</button>` : ''}`);
+      ${puede ? html`<button type="button" class="btn ghost sm" data-cma="resultado">${ico('plus', 13)} Anotar un resultado</button>` : ''}`);
   }
   async function anotarResultado() {
     const v = await ask('Anotar un resultado', [{ k: 'metrica', l: 'Qué se midió', req: true }, { k: 'valor', l: 'Cuánto', half: true }, { k: 'nota', l: 'Nota', half: true }], 'Anotar');
@@ -524,9 +524,9 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
   function pintarGen() {
     const g = S.gen, el_ = root && R('gen'); if (!el_) return;
     if (!g) return mount(el_, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-cma="gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-cma="gen-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-cma="gen-cerrar">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-cma="gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-cma="gen-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-cma="gen-cerrar">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el_, html`<section class="cma-gen" data-fase="corriendo"><header><span class="cma-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm cma-paso"></span><button type="button" class="btn ghost sm" data-cma="gen-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="cma-stream" aria-live="polite"></pre></section>`);
+      mount(el_, html`<section class="cma-gen" data-fase="corriendo"><header><span class="cma-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm cma-paso"></span><button type="button" class="btn ghost" data-cma="gen-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="cma-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -538,12 +538,12 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
         ${c.briefs.length ? html`<details class="cma-prop-d"><summary>Ver los briefs</summary><ul class="cma-prop-l">${c.briefs.map((x) => html`<li><b>${NOMBRE_CANAL_C[x.canal]} · ${NOMBRE_FASE_C[x.fase]}</b> ${x.objetivo}${x.mensaje ? ` — ${x.mensaje}` : ''}${x.formato ? html` <span class="mut sm">(${x.formato})</span>` : ''}</li>`)}</ul></details>` : ''}
         ${(cr.cumple || []).length + (cr.falta || []).length ? html`<ul class="cma-crit">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${(cr.falta || []).map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que presiones Guardar. Los montos y las fechas de la campaña no cambian.</p>
-        <div class="cma-prop-bt"><button type="button" class="btn sm" data-cma="gen-usar">${ico('check', 14)} Cargar ${conBp ? 'todo' : 'en la campaña'}</button>${conBp ? html`<button type="button" class="btn ghost sm" data-cma="gen-usar-canales">Solo canales y briefs</button>` : ''}<button type="button" class="btn ghost sm" data-cma="gen-reintentar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-cma="gen-cerrar">Descartar</button></div></section>`);
+        <div class="cma-prop-bt"><button type="button" class="btn" data-cma="gen-usar">${ico('check', 14)} Cargar ${conBp ? 'todo' : 'en la campaña'}</button>${conBp ? html`<button type="button" class="btn ghost" data-cma="gen-usar-canales">Solo canales y briefs</button>` : ''}<button type="button" class="btn ghost" data-cma="gen-reintentar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-cma="gen-cerrar">Descartar</button></div></section>`);
       return;
     }
     mount(el_, html`<section class="cma-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : 'No vino el bloque de la campaña con su frase, canales o briefs. Reintenta o pega la respuesta.'}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="cma-stream">${g.texto}</pre></details>` : ''}
-      <div class="cma-prop-bt"><button type="button" class="btn sm" data-cma="gen-reintentar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
+      <div class="cma-prop-bt"><button type="button" class="btn" data-cma="gen-reintentar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
   }
 
   // =============================== Eventos ===============================

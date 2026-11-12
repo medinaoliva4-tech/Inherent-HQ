@@ -33,7 +33,7 @@ export const vista = {
       const caja = cajaDe(h.caja), rw = reescrito(h, S.research);
       return html`<li class="hk-fila" data-id="${h.id}"><div class="hk-f1">
           ${ed && h.fuente !== 'research' ? html`<input class="in" data-k="texto" value="${h.texto}" maxlength="240" aria-label="Hook" autocomplete="off">` : html`<b class="hk-texto">${h.texto}</b>`}
-          ${ed ? html`<button class="btn sm" type="button" data-a="archivar" title="Se archiva, no se borra">${ico('inbox', 14)} Archivar</button>` : ''}</div>
+          ${ed ? html`<button class="btn" type="button" data-a="archivar" title="Se archiva, no se borra">${ico('inbox', 14)} Archivar</button>` : ''}</div>
         <div class="hk-f2">
           ${ed ? html`<select class="in" data-k="caja" aria-label="Caja"><option value="">Caja…</option>${CAJAS.map((k) => html`<option value="${k.id}" ${h.caja === k.id ? 'selected' : ''}>${k.nombre}</option>`)}</select>
             <select class="in" data-k="consciencia" aria-label="Consciencia"><option value="">Consciencia…</option>${CONSCIENCIAS.map((n, i) => html`<option value="${i + 1}" ${h.consciencia === i + 1 ? 'selected' : ''}>${i + 1} · ${n}</option>`)}</select>

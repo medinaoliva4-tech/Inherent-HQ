@@ -78,7 +78,7 @@ export async function responsabilidadesTab(el, ctx) {
         <input class="in" data-i="${i}" data-f="soplink" placeholder="https://…" value="${link ? r.sop : ''}" style="margin-top:4px" ${link ? '' : raw('hidden')} ${dis}></div>
       <div><div class="lb">Tipo</div>${sel('tipo', TASK_TIPOS.map((t) => [t, t]), r.tipo || 'Delivery')}</div>
       <div><div class="lb">Depende de</div>${others.length ? html`<div class="deps">${r.after?.includes('*') ? html`<span class="chip sm2">todo lo anterior</span>` : ''}${rc.tasks.map((x, j) => (j === i ? '' : html`<button type="button" class="${(r.after || []).includes(x.key) ? 'on' : ''}" data-dep="${x.key}" data-i="${i}" title="${x.title || x.key}" ${dis}>${j + 1}</button>`))}</div>` : html`<span class="mut sm">—</span>`}</div>
-      <div class="rm">${ceo ? html`<button class="btn ghost xs" data-rsp="rm" data-i="${i}" title="Quitar">${ico('trash', 14)}</button>` : ''}</div>
+      <div class="rm">${ceo ? html`<button class="btn ghost sm" data-rsp="rm" data-i="${i}" title="Quitar">${ico('trash', 14)}</button>` : ''}</div>
     </div>`;
   }
   function paint() {

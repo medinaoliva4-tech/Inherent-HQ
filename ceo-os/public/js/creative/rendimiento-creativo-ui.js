@@ -39,7 +39,7 @@ function patronesHtml(c, ed) {
     ${l.length ? html`<ol class="rcr-pats">${l.map((x, i) => html`<li class="rcr-pat"><b>${nom(x.dimension, DIMENSIONES)}: ${x.valor}</b><span class="mut sm"> · ${x.n} piezas · ${x.ratio === null ? SIN_DATOS : `${x.ratio}x la base`}</span>
       ${ed ? html`<label><span class="sr-only">Qué repetir del patrón ${i + 1}</span><input class="in" type="text" data-c="patrones.${i}.leccion" value="${x.leccion}" maxlength="300" placeholder="Qué repetir" autocomplete="off"></label>` : html`<p class="rcr-ro sm">${x.leccion || `${SIN_DATOS}: falta qué repetir`}</p>`}</li>`)}</ol>`
       : html`<p class="rcr-sd">${SIN_DATOS}: sin patrones. Hacen falta 2 o más piezas de un mismo formato, pilar o etapa por encima de la línea base.</p>`}
-    ${ed ? html`<button type="button" class="btn ghost sm" data-a="patrones" ${c.piezas.length ? '' : 'disabled'}>${ico('chart-no-axes-column-increasing', 14)} Proponer los patrones de las piezas</button>` : ''}`;
+    ${ed ? html`<button type="button" class="btn ghost" data-a="patrones" ${c.piezas.length ? '' : 'disabled'}>${ico('chart-no-axes-column-increasing', 14)} Proponer los patrones de las piezas</button>` : ''}`;
 }
 function fatigaHtml(f) {
   return html`<div class="rcr-fat" data-estado="${f.estado}"><b>${f.estado === 'senal' ? 'Señal de fatiga' : f.estado === 'sin-senal' ? 'Sin señal de fatiga' : 'Fatiga sin datos'}</b>
@@ -54,7 +54,7 @@ export const vista = {
     mount(el, html`<div class="rcr" data-editable="${ed ? 1 : 0}">
       <section class="rcr-sec" aria-label="Scorecard por pieza"><h3 class="rcr-t">${ico('chart-no-axes-column-increasing', 16)} Piezas publicadas <span class="rcr-t-m" data-r="mes-n"></span></h3>
         <div data-r="aviso"></div><div data-r="base"></div><div data-r="piezas"></div>
-        ${ed ? html`<div class="rcr-acc"><button type="button" class="btn ghost sm" data-a="leer">${ico('refresh-cw', 14)} Volver a leer el mes</button><button type="button" class="btn ghost sm" data-a="resultado" ${c.piezas.length ? '' : 'disabled'}>${ico('check', 14)} Guardar el resultado en cada pieza</button></div>` : ''}</section>
+        ${ed ? html`<div class="rcr-acc"><button type="button" class="btn ghost" data-a="leer">${ico('refresh-cw', 14)} Volver a leer el mes</button><button type="button" class="btn ghost" data-a="resultado" ${c.piezas.length ? '' : 'disabled'}>${ico('check', 14)} Guardar el resultado en cada pieza</button></div>` : ''}</section>
       <section class="rcr-sec" aria-label="Patrones y fatiga"><div data-r="patrones"></div><div class="rcr-bloque" data-r="fatiga"></div></section>
       <section class="rcr-sec" aria-label="Lo que aprendimos"><label class="lbl" for="rcr-apr">Lo que aprendimos este mes</label>${ed
         ? html`<textarea class="in" id="rcr-apr" data-c="aprendizaje" rows="3" maxlength="800" placeholder="Una o dos frases: qué se repite y qué se ajusta">${c.aprendizaje}</textarea>`

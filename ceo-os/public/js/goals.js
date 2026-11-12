@@ -73,7 +73,7 @@ export function goalsUI(ctx) {
           ${edit ? html`<button class="sm mut" data-act="gckadd" data-g="${g.i}" style="margin-top:6px">+ checkpoint</button>` : ''}</div>
       </div></details></div>`;
   }
-  const section = () => { const rm = goalsOf(ctx.get()).map((x, i) => ({ ...x, i })); return html`<div class="sec-title"><h2>Metas</h2><span class="mut sm">${rm.length ? `${rm.filter((x) => x.status === 'done').length}/${rm.length} logradas` : 'Sin metas todavía'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="gadd">+ Meta</button>` : ''}<button class="btn ghost xs" data-act="gpdf">↓ PDF</button></div>
+  const section = () => { const rm = goalsOf(ctx.get()).map((x, i) => ({ ...x, i })); return html`<div class="sec-title"><h2>Metas</h2><span class="mut sm">${rm.length ? `${rm.filter((x) => x.status === 'done').length}/${rm.length} logradas` : 'Sin metas todavía'}</span><div class="sp"></div>${edit ? html`<button class="btn ghost sm" data-act="gadd">+ Meta</button>` : ''}<button class="btn ghost sm" data-act="gpdf">↓ PDF</button></div>
     ${rm.length ? html`<div class="goals">${rm.map(card)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin metas todavía', linea: 'Una meta trae cómo la medimos, dónde estamos, a dónde vamos y cuándo revisamos.' })}`}`; };
   function pdf(planName) {
     const a = ctx.get(), rm = goalsOf(a);

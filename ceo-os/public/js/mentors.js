@@ -50,7 +50,7 @@ export function editMentor(m, inds = []) {
     let photo = m?.photo || null; let done = false;
     const end = (v) => { if (!done) { done = true; resolve(v); } };
     const draw = () => {
-      drawer(html`<div class="row"><span class="chip">Especialista</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      drawer(html`<div class="row"><span class="chip">Especialista</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
         <h2>${m ? m.name : 'Nuevo especialista'}</h2>
         <div class="row" style="gap:12px;margin:14px 0">${avatar({ name: $('#mf [name=name]')?.value || m?.name || '?', photo }, 64)}<label class="btn ghost" style="cursor:pointer">${ico('camera')} ${photo ? 'Cambiar foto' : 'Subir foto'}<input type="file" accept="image/*" id="mphoto" hidden></label>${photo ? html`<button class="btn ghost" data-act="nophoto">Quitar</button>` : ''}</div>
         <form class="form" id="mf">

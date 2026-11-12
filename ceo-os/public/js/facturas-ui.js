@@ -55,7 +55,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
     const mine = invs.filter((i) => i.kind === kind);
     const open = mine.filter((i) => ['pendiente', 'vencida'].includes(estadoFactura(i, T))).sort((a, z) => String(a.due).localeCompare(String(z.due)));
     const closed = mine.filter((i) => !open.includes(i)).sort((a, z) => String(z.paid_at || z.due).localeCompare(String(a.paid_at || a.due)));
-    return html`<section class="fx-list"><div class="fx-head"><h3>${kind === 'cobrar' ? 'Por cobrar' : 'Por pagar'}</h3><span class="mut sm">${open.length || ''}</span><span class="sp"></span>${ceo && kind === 'cobrar' ? html`<button class="btn ghost xs" data-fx="addcobrar">+ Por cobrar</button>` : ''}</div>
+    return html`<section class="fx-list"><div class="fx-head"><h3>${kind === 'cobrar' ? 'Por cobrar' : 'Por pagar'}</h3><span class="mut sm">${open.length || ''}</span><span class="sp"></span>${ceo && kind === 'cobrar' ? html`<button class="btn ghost sm" data-fx="addcobrar">+ Por cobrar</button>` : ''}</div>
       ${open.length ? open.map(fila) : html`${vacio({ icono: 'inbox', titulo: `${kind === 'cobrar' ? 'Nada por cobrar' : 'Nada por pagar'}`, linea: `${ceo ? (kind === 'cobrar' ? 'Genera los cobros del mes.' : 'Agrega una con «+ Por pagar».') : 'Todo cobrado.'}`, compacto: true })}`}
       ${closed.length ? html`<details class="fx-closed"><summary class="sm mut">Pagadas y anuladas · ${closed.length}</summary>${closed.slice(0, 30).map(fila)}</details>` : ''}</section>`;
   }
@@ -66,7 +66,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
       <span class="fx-due mut sm">${e === 'pagada' ? `pagada ${fdate(i.paid_at)}` : fdate(i.due)}</span>
       <b class="fx-amt">${money(i)}</b>
       <span class="chip sm2 fx-st ${e}">${ESTADO[e]}</span>
-      ${ceo && open ? html`<button class="btn ghost xs" data-fx="paid" data-id="${i.id}">Marcar pagada</button>` : ''}</div>`;
+      ${ceo && open ? html`<button class="btn ghost sm" data-fx="paid" data-id="${i.id}">Marcar pagada</button>` : ''}</div>`;
   }
 
   // Lo que quedó registrado solo al cobrarse: el ingreso y las por pagar que nacieron de este cobro.
@@ -116,7 +116,7 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
   function abrir(i) {
     if (ceo && i.kind === 'pagar') queueMicrotask(() => layaBox(document.getElementById('laya-fac'), { coll: 'invoices', id: i.id })); // Fase 3 · Laya
     const e = estadoFactura(i, T), open = e === 'pendiente' || e === 'vencida';
-    drawer(html`<div class="row"><span class="chip fx-st ${e}">${ESTADO[e]}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip fx-st ${e}">${ESTADO[e]}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${name(i)}</h2><div class="mut">${i.concept}</div><div class="big" style="font-size:44px;margin-top:10px">${money(i)}</div>
       <div class="kv"><span>Tipo</span><b style="font-weight:500">Por ${i.kind}</b><span>Emitida</span><b style="font-weight:500">${fdate(i.issued)}</b><span>Vence</span><b style="font-weight:500">${fdate(i.due)}</b>
         ${i.paid_at ? html`<span>Pagada</span><b style="font-weight:500">${fdate(i.paid_at)}</b>` : ''}${i.bank_ref ? html`<span>Banco</span><b style="font-weight:500">${i.bank_ref}</b>` : ''}
@@ -164,13 +164,13 @@ export async function facturasTab(b, { me, clients = [], movs = [], onMov = null
     const pairs = cruzar(invs, moves, T);
     if (!pairs.length) { closeDrawer(); return; }
     const I = (id) => invs.find((x) => x.id === id), M = (id) => moves.find((x) => x.id === id);
-    drawer(html`<div class="row"><span class="chip dark">Banco</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip dark">Banco</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>Cruce con el banco</h2><p class="mut sm" style="margin:4px 0 14px">Mismo monto y fecha cerca del vencimiento. Confirma las que estén bien.</p>
       ${pairs.map((p) => { const i = I(p.invoice_id), m = M(p.move_id); return html`<div class="fx-pair">
         <div><b>${name(i)}</b><span class="mut sm">${i.concept} · vence ${fdate(i.due)}</span><span class="sm">${money(i)}</span></div>
         <span class="fx-arrow">${ico('link')}</span>
         <div><b>${m.type === 'credito' ? 'Crédito' : 'Débito'} · ${fdate(m.date)}</b><span class="mut sm">${m.desc || m.ref || '—'}</span><span class="sm">${Q(m.amount)}</span></div>
-        <button class="btn xs" data-act="ok" data-i="${i.id}" data-m="${m.id}">Confirmar</button></div>`; })}
+        <button class="btn sm" data-act="ok" data-i="${i.id}" data-m="${m.id}">Confirmar</button></div>`; })}
       ${pairs.length > 1 ? html`<div class="row" style="margin-top:14px"><button class="btn" data-act="all">Confirmar todas</button></div>` : ''}`,
     { ok: async (t) => { await uno(t.dataset.i, t.dataset.m); cruce(); },
       all: async () => { for (const p of cruzar(invs, moves, T)) if (!(await uno(p.invoice_id, p.move_id))) break; cruce(); } });
@@ -219,7 +219,7 @@ export async function costosPorCliente(box, { services = [], rates = null, proje
     if (editing === x.slug) return editor(x);
     const t = totalReceta(x.rec), precio = x.fee.amount == null ? null : enGTQ({ amount: x.fee.amount, currency: x.fee.currency });
     return html`<div class="cpc-card">
-      <div class="cpc-head"><b>${x.name}</b>${x.saved ? '' : html`<span class="chip sm2">Propuesta</span>`}<span class="sp"></span>${edit ? html`<button class="btn ghost xs" data-cpc="edit" data-k="${x.slug}">Editar</button>` : ''}</div>
+      <div class="cpc-head"><b>${x.name}</b>${x.saved ? '' : html`<span class="chip sm2">Propuesta</span>`}<span class="sp"></span>${edit ? html`<button class="btn ghost sm" data-cpc="edit" data-k="${x.slug}">Editar</button>` : ''}</div>
       ${x.rec.lines.length ? x.rec.lines.map((l) => html`<div class="cpc-line"><span class="cpc-c">${l.concepto}<span class="mut sm">${[l.proveedor, l.categoria, l.horas ? `${l.horas} h` : ''].filter(Boolean).join(' · ')}</span></span><span class="cpc-m">${monto(l)}</span></div>`)
         : html`<div class="mut sm">${x.saved ? 'Sin líneas.' : 'Sin módulos por mes activos: agrega sus costos a mano.'}</div>`}
       ${(x.rec.avisos || []).map((w) => html`<div class="mut sm">${ico('alert')} ${w}</div>`)}
@@ -238,8 +238,8 @@ export async function costosPorCliente(box, { services = [], rates = null, proje
         <input class="in" type="number" min="0" step="0.01" data-i="${i}" data-f="monto" value="${l.monto ?? ''}" placeholder="${l.rol ? '⚠️ sin costo por hora' : 'Monto'}">
         <select class="in" data-i="${i}" data-f="moneda">${['GTQ', 'USD'].map((v) => opt(v, l.moneda || 'GTQ'))}</select>
         <select class="in" data-i="${i}" data-f="categoria">${CATS_OUT.map((v) => opt(v, l.categoria || 'Pagos por servicio'))}</select>
-        <button class="btn ghost xs" data-cpc="rm" data-i="${i}" title="Quitar">${ico('x', 14)}</button></div>`)}
-      <div class="cpc-acts"><button class="btn ghost xs" data-cpc="add">+ Línea</button><span class="sp"></span><button class="btn ghost xs" data-cpc="cancel">Cancelar</button><button class="btn xs" data-cpc="save" data-k="${x.slug}">Guardar</button></div>
+        <button class="btn ghost sm" data-cpc="rm" data-i="${i}" title="Quitar">${ico('x', 14)}</button></div>`)}
+      <div class="cpc-acts"><button class="btn ghost sm" data-cpc="add">+ Línea</button><span class="sp"></span><button class="btn ghost sm" data-cpc="cancel">Cancelar</button><button class="btn sm" data-cpc="save" data-k="${x.slug}">Guardar</button></div>
     </div>`;
   }
   function paint() {

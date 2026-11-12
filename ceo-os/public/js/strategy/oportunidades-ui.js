@@ -33,9 +33,9 @@ function pintarOportunidades(el, { contenido, editable: ed = false, onCambio, me
   // ---------- Barra: agregar, enviar, tareas ----------
   function barra() {
     const r = ranking(c), envia = r.filter(puedeEnviar).length, fuera = r.filter((x) => x.fuera_alcance).length, elegidas = r.filter((x) => ['elegida', 'enviada'].includes(x.estado) && !x.fuera_alcance).length;
-    poner('om-bar', html`<div class="om-acts">${ed ? html`<button type="button" class="btn sm" data-act="om-mas" ${c.items.length >= MAX_ITEMS || S.ocupado ? raw('disabled') : ''}>${ico('plus', 14)} Agregar oportunidad</button>` : ''}
-      ${ed ? html`<button type="button" class="btn ghost sm" data-act="om-roadmap" ${envia && !S.ocupado ? '' : raw('disabled')} title="${envia ? '' : 'Elige una oportunidad dentro del alcance'}">${ico('arrow-right', 14)} Enviar al Roadmap${envia ? ` (${envia})` : ''}</button>` : ''}
-      ${puedeTareas ? html`<button type="button" class="btn ghost sm" data-act="om-tareas" ${elegidas && !S.ocupado ? '' : raw('disabled')}>${ico('list-checks', 14)} Convertir en tareas${elegidas ? ` (${elegidas})` : ''}</button>` : ''}</div>
+    poner('om-bar', html`<div class="om-acts">${ed ? html`<button type="button" class="btn" data-act="om-mas" ${c.items.length >= MAX_ITEMS || S.ocupado ? raw('disabled') : ''}>${ico('plus', 14)} Agregar oportunidad</button>` : ''}
+      ${ed ? html`<button type="button" class="btn ghost" data-act="om-roadmap" ${envia && !S.ocupado ? '' : raw('disabled')} title="${envia ? '' : 'Elige una oportunidad dentro del alcance'}">${ico('arrow-right', 14)} Enviar al Roadmap${envia ? ` (${envia})` : ''}</button>` : ''}
+      ${puedeTareas ? html`<button type="button" class="btn ghost" data-act="om-tareas" ${elegidas && !S.ocupado ? '' : raw('disabled')}>${ico('list-checks', 14)} Convertir en tareas${elegidas ? ` (${elegidas})` : ''}</button>` : ''}</div>
       ${fuera ? html`<p class="om-fuera" role="status">${ico('lock', 14)} ${plural(fuera, 'oportunidad está', 'oportunidades están')} FUERA DEL ALCANCE contratado: no se envían al Roadmap y se escalan al CEO.</p>` : ''}`);
   }
 
@@ -79,10 +79,10 @@ function pintarOportunidades(el, { contenido, editable: ed = false, onCambio, me
       ${ed ? html`<input class="in om-ev" type="text" data-f="evidencia" data-id="${x.id}" maxlength="400" value="${x.evidencia}" placeholder="Evidencia: la razón de los puntajes y su fuente" aria-label="Evidencia de ${x.titulo}" autocomplete="off">` : x.evidencia ? html`<p class="om-evt">${x.evidencia}</p>` : html`<p class="om-sd">${SIN_DATOS}: falta la evidencia</p>`}
       ${x.fuera_alcance ? html`<p class="om-fuera sm">${ico('lock', 14)} Fuera del alcance contratado: no se envía al Roadmap. Escálalo al CEO.</p>` : ''}
       <div class="om-it-a">${ed ? html`<label class="sw-row"><input type="checkbox" class="switch" data-f="fuera_alcance" data-id="${x.id}" ${x.fuera_alcance ? raw('checked') : ''}> Fuera del alcance</label>` : ''}
-        ${ed && puedeElegir(x) && x.estado !== 'elegida' ? html`<button type="button" class="btn ghost xs" data-act="om-elegir" data-id="${x.id}">${ico('check', 14)} Elegir</button>` : ''}
-        ${ed && x.estado === 'elegida' ? html`<button type="button" class="btn ghost xs" data-act="om-quitar-eleccion" data-id="${x.id}">Quitar elección</button>` : ''}
-        ${ed && x.estado !== 'descartada' && x.estado !== 'enviada' ? html`<button type="button" class="btn ghost xs" data-act="om-descartar" data-id="${x.id}">${ico('x', 14)} Descartar</button>` : ''}
-        ${ed && x.estado === 'descartada' ? html`<button type="button" class="btn ghost xs" data-act="om-reabrir" data-id="${x.id}">${ico('refresh-cw', 14)} Reabrir</button>` : ''}
+        ${ed && puedeElegir(x) && x.estado !== 'elegida' ? html`<button type="button" class="btn ghost sm" data-act="om-elegir" data-id="${x.id}">${ico('check', 14)} Elegir</button>` : ''}
+        ${ed && x.estado === 'elegida' ? html`<button type="button" class="btn ghost sm" data-act="om-quitar-eleccion" data-id="${x.id}">Quitar elección</button>` : ''}
+        ${ed && x.estado !== 'descartada' && x.estado !== 'enviada' ? html`<button type="button" class="btn ghost sm" data-act="om-descartar" data-id="${x.id}">${ico('x', 14)} Descartar</button>` : ''}
+        ${ed && x.estado === 'descartada' ? html`<button type="button" class="btn ghost sm" data-act="om-reabrir" data-id="${x.id}">${ico('refresh-cw', 14)} Reabrir</button>` : ''}
         <label class="om-ck"><input type="checkbox" data-cmp="${x.id}" ${S.cmp.has(x.id) ? raw('checked') : ''}> Comparar</label></div></li>`;
   }
   const enfocado = () => { const a = document.activeElement; return a && root.contains(a) && a.dataset?.id && a.dataset?.f ? [a.dataset.id, a.dataset.f] : null; };

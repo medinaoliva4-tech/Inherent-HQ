@@ -38,10 +38,10 @@ export async function render(el, { me, alive }) {
       <div class="rmt-main"><div class="rmt-title">${t.title}</div>
         <div class="sm ${lt ? 'rmt-late' : 'mut'}">${t.date ? html`${ico('cal', 14)} ${fdate(t.date)}${hhmm(t.time) ? ' · ' + t.time : ''}${t.minutes ? ' · ' + t.minutes + ' min' : ''}${lt ? ' · atrasada' : ''}` : 'Sin fecha'}</div></div>
       <div class="row rmt-acts">
-        ${t.event_link ? html`<a class="btn ghost xs" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${ico('check', 14)} En tu calendario</a>`
-          : html`<button class="btn ghost xs" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
-        <button class="btn ghost xs" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar tarea" title="Quitar tarea">${ico('trash', 15)}</button>
+        ${t.event_link ? html`<a class="btn ghost sm" href="${t.event_link}" target="_blank" rel="noopener noreferrer">${ico('check', 14)} En tu calendario</a>`
+          : html`<button class="btn ghost sm" data-act="cal" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" ${t.date ? '' : raw('disabled title="Ponle fecha primero"')}>${ico('cal', 14)} Agregar a mi calendario</button>`}
+        <button class="btn ghost sm" data-act="editTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}">Editar</button>
+        <button class="btn ghost sm" data-act="delTask" data-m="${m.id}" data-p="${p.id}" data-t="${t.id}" aria-label="Quitar tarea" title="Quitar tarea">${ico('trash', 15)}</button>
       </div></div>`;
   };
   const projectBlock = (m, p) => {
@@ -49,9 +49,9 @@ export async function render(el, { me, alive }) {
     const lk = projects.find((x) => x.id === p.project_id), dn = ts.filter((t) => t.done).length;
     return html`<section class="rmproj-box">
       <div class="row rmproj" style="gap:8px;flex-wrap:wrap"><b>${p.name}</b><span class="mut sm">${dn}/${ts.length}</span>${lk ? html`<a class="chip" href="#/operations" style="font-size:11px;text-decoration:none">${ico('link', 13)} ${lk.name}</a>` : ''}<div class="sp"></div>
-        <button class="btn ghost xs" data-act="addTask" data-m="${m.id}" data-p="${p.id}">+ Tarea</button>
-        <button class="btn ghost xs" data-act="editProject" data-m="${m.id}" data-p="${p.id}">Editar</button>
-        <button class="btn ghost xs" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto" title="Quitar proyecto">${ico('trash', 15)}</button></div>
+        <button class="btn ghost sm" data-act="addTask" data-m="${m.id}" data-p="${p.id}">+ Tarea</button>
+        <button class="btn ghost sm" data-act="editProject" data-m="${m.id}" data-p="${p.id}">Editar</button>
+        <button class="btn ghost sm" data-act="delProject" data-m="${m.id}" data-p="${p.id}" aria-label="Quitar proyecto" title="Quitar proyecto">${ico('trash', 15)}</button></div>
       ${ts.length ? ts.map((t) => taskRow(m, p, t)) : html`<div class="mut sm" style="padding:8px 0">Sin tareas todavía.</div>`}</section>`;
   };
   const dates = (m) => (m.start || m.end ? `${m.start ? fdate(m.start) : '…'} → ${m.end ? fdate(m.end) : '…'}` : 'Sin fechas');
@@ -79,7 +79,7 @@ export async function render(el, { me, alive }) {
   // El detalle de una meta en el sheet: su anillo, para qué es, sus fechas y sus proyectos con tareas.
   const sheet = (m) => {
     const { done, total } = progress(m);
-    return html`<div class="row"><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span><span class="mut sm">${dates(m)}</span><div class="sp"></div><button class="arrow light" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
+    return html`<div class="row"><span class="chip ${STATUS[m.status] || ''}">${m.status || 'Activo'}</span><span class="mut sm">${dates(m)}</span><div class="sp"></div><button class="btn-icon end" data-act="close" aria-label="Cerrar">${ico('x', 16)}</button></div>
       <div class="rm-sh-top">${ring(pctOf(m), true)}<div style="min-width:0"><h2 style="margin:0">${m.name}</h2>${m.why ? html`<p class="mut" style="margin:6px 0 0">${m.why}</p>` : ''}<div class="mut sm" style="margin-top:6px">${(m.projects || []).length} proyecto${(m.projects || []).length === 1 ? '' : 's'} · ${done}/${total} tareas</div></div></div>
       ${(m.projects || []).length ? (m.projects || []).map((p) => projectBlock(m, p)) : html`<div class="sp-callout info" style="margin-top:14px"><span class="grow">Agrega los proyectos que forman este paso con «+ Proyecto».</span></div>`}
       <div class="row"><button class="btn" data-act="addProject" data-m="${m.id}">+ Proyecto</button><button class="btn ghost" data-act="editMega" data-m="${m.id}">Editar</button><div class="sp"></div><button class="btn ghost" data-act="delMega" data-m="${m.id}" aria-label="Quitar meta" title="Quitar meta">${ico('trash', 15)}</button></div>`;

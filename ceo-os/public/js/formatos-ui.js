@@ -22,13 +22,13 @@ export async function formatosUI(el, { me, b, alive }) {
     return html`<article class="fm-card"><header><span class="chip sm2">${tipoNombre(f.tipo)}</span>${f.base ? html`<span class="mut sm">Del método</span>` : f.ref ? html`<span class="mut sm">${ico('repeat', 11)} De un referente</span>` : ''}</header>
       <h3>${f.nombre}</h3>${f.mejor_para ? html`<p class="mut sm">${f.mejor_para}</p>` : ''}
       <ol class="fm-tramos">${(f.partes || []).map((p) => html`<li title="${p.que}"><b>${p.nombre}</b>${p.seg ? html`<span>${p.seg}</span>` : ''}</li>`)}</ol>
-      <footer><a class="btn xs" href="${nuevoGuion(f.id)}">${ico('edit', 13)} Escribir guion</a>${ed() ? (f.base ? html`<button class="btn ghost xs" data-fm="dup" data-id="${f.id}">Duplicar para ${b.name}</button>` : html`<button class="btn ghost xs" data-fm="edit" data-id="${f.id}">Editar</button>`) : html`<button class="btn ghost xs" data-fm="ver" data-id="${f.id}">Ver</button>`}</footer></article>`;
+      <footer><a class="btn sm" href="${nuevoGuion(f.id)}">${ico('edit', 13)} Escribir guion</a>${ed() ? (f.base ? html`<button class="btn ghost sm" data-fm="dup" data-id="${f.id}">Duplicar para ${b.name}</button>` : html`<button class="btn ghost sm" data-fm="edit" data-id="${f.id}">Editar</button>`) : html`<button class="btn ghost sm" data-fm="ver" data-id="${f.id}">Ver</button>`}</footer></article>`;
   }
   function paint() {
     if (!alive()) return;
     const f = (l) => l.filter((x) => !S.tipo || x.tipo === S.tipo);
     mount(el, html`<div class="fm"><div class="fm-bar"><div class="tabs mini" role="tablist" aria-label="Tipo">${[['', 'Todos'], ...TIPOS].map(([k, l]) => html`<button role="tab" class="${S.tipo === k ? 'on' : ''}" aria-selected="${S.tipo === k ? 'true' : 'false'}" data-fm="tipo" data-k="${k}">${l}</button>`)}</div><span class="sp"></span>
-        ${ed() ? html`<button class="btn ghost xs" data-fm="ref" ${S.refs.length ? '' : raw('disabled title="Marca un post de Investigación con «Usar como formato»"')}>${ico('repeat', 13)} Desde un referente${S.refs.length ? ` · ${S.refs.length}` : ''}</button><button class="btn xs" data-fm="nuevo">${ico('plus', 13)} Formato</button>` : ''}</div>
+        ${ed() ? html`<button class="btn ghost sm" data-fm="ref" ${S.refs.length ? '' : raw('disabled title="Marca un post de Investigación con «Usar como formato»"')}>${ico('repeat', 13)} Desde un referente${S.refs.length ? ` · ${S.refs.length}` : ''}</button><button class="btn sm" data-fm="nuevo">${ico('plus', 13)} Formato</button>` : ''}</div>
       <section><h2 class="fm-h">De ${b.name}</h2>${f(S.marca).length ? html`<div class="fm-grid">${f(S.marca).map(card)}</div>` : html`<p class="mut fm-vacio">Todavía no hay formatos propios. Duplica una plantilla del método y ajústala a la marca, o arma uno desde un referente que funcionó.</p>`}</section>
       <section><h2 class="fm-h">Plantillas del método <span class="mut sm">· ④ Creatividad: cr-estructura-reel y cr-estructura-story</span></h2><div class="fm-grid">${f(S.base).map(card)}</div></section></div>`);
   }
@@ -44,7 +44,7 @@ export async function formatosUI(el, { me, b, alive }) {
           <label class="av-f"><span class="av-l">Tipo</span><select class="in" id="fm-tipo" ${soloVer ? raw('disabled') : ''}>${TIPOS.map(([k, l]) => html`<option value="${k}" ${f.tipo === k ? raw('selected') : ''}>${l}</option>`)}</select></label>
           <label class="av-f"><span class="av-l">Duración (s)</span><input class="in" id="fm-dur" type="number" min="0" max="180" value="${f.duracion || ''}" placeholder="${DURACION}" ${soloVer ? raw('disabled') : ''}></label>
           <label class="av-f w"><span class="av-l">Mejor para</span><input class="in" id="fm-mejor" value="${f.mejor_para || ''}" placeholder="Ej. MOF · confianza" ${soloVer ? raw('disabled') : ''}></label></div>
-        <span class="lbl" style="margin-top:18px">Tramos, en orden</span><div id="fm-partes" class="fm-partes"></div>${soloVer ? '' : html`<button type="button" class="btn ghost xs" data-act="mas">${ico('plus', 13)} Tramo</button>`}
+        <span class="lbl" style="margin-top:18px">Tramos, en orden</span><div id="fm-partes" class="fm-partes"></div>${soloVer ? '' : html`<button type="button" class="btn ghost sm" data-act="mas">${ico('plus', 13)} Tramo</button>`}
         <label class="av-f w" style="margin-top:14px"><span class="av-l">Notas (ritmo, voz, safe zones…)</span><textarea class="in" id="fm-notas" rows="3" ${soloVer ? raw('disabled') : ''}>${f.notas || ''}</textarea></label>
         <div class="row" style="margin-top:18px;gap:8px">${soloVer ? '' : html`<button class="btn" data-act="guardar">${ico('check', 14)} Guardar</button>`}${f.id && !f.base && !soloVer ? html`<button class="btn ghost" data-act="archivar">Archivar</button>` : ''}${f.id ? html`<a class="btn ghost" href="${nuevoGuion(f.id)}" data-act="cerrar">${ico('edit', 14)} Escribir guion</a>` : ''}</div></article>`,
       {

@@ -98,9 +98,9 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     const el = $('#cd-acts', root); if (!el) return;
     const esc = editable(), su = sucio(), n = S.c.acciones.length, corriendo = S.gen?.fase === 'corriendo', hayCu = todosLosCuellos(vivaLocal(), S.c).length > 0;
     if (!hayCambio('acts', [esc, su, n, S.ocupado, corriendo, hayCu, aprobada()])) return;
-    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'} sm" data-act="cd-${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
+    const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'}" data-act="cd-${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
     mount(el, html`<div class="cd-grp">${esc ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : ''}${esc ? btn('guardar', 'check', 'Guardar', { off: !su, tip: su ? '' : 'No hay cambios que guardar' }) : ''}${esc && su ? btn('descartar', 'x', 'Descartar cambios') : ''}</div>
-      <div class="cd-grp">${puedeTareas && n ? btn('tareas', 'list-checks', 'Convertir en tareas') : ''}${S.data.puede?.editar && hayCu ? btn('opp', 'arrow-right', 'Cuellos → Opportunity Map') : ''}${btn('exportar', 'download', 'Exportar')}${btn('copiar', 'copy', 'Copiar')}<a class="btn ghost sm" href="${chatRuta}">${ico('chat-ia', 14)} Chat de Strategy</a></div>`);
+      <div class="cd-grp">${puedeTareas && n ? btn('tareas', 'list-checks', 'Convertir en tareas') : ''}${S.data.puede?.editar && hayCu ? btn('opp', 'arrow-right', 'Cuellos → Opportunity Map') : ''}${btn('exportar', 'download', 'Exportar')}${btn('copiar', 'copy', 'Copiar')}<a class="btn ghost" href="${chatRuta}">${ico('chat-ia', 14)} Chat de Strategy</a></div>`);
   }
   function pintarScore() {
     const el = $('#cd-score', root); if (!el) return;
@@ -133,8 +133,8 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     mount(el, html`<h3>Cuellos de botella</h3>${calc.length || S.c.bottlenecks.length ? '' : html`<p class="cd-sd">Sin cuellos con los datos de hoy. Un cuello es una tasa que falta o un hueco de alcance de más de 20%.</p>`}
       <ul class="cd-cu">${calc.map((x) => html`<li class="cd-cu-i" data-tipo="${x.tipo}"><span class="chip sm2">${NOMBRE_ETAPA[x.etapa]}</span> ${x.texto}</li>`)}
       ${S.c.bottlenecks.map((x) => html`<li class="cd-cu-i cd-cu-ed" data-id="${x.id}"><select class="in" data-b="etapa" data-id="${x.id}" aria-label="Etapa del cuello" ${ed ? '' : raw('disabled')}><option value="">Etapa</option>${ETAPAS_EMBUDO.map((e) => html`<option value="${e}" ${e === x.etapa ? raw('selected') : ''}>${NOMBRE_ETAPA[e]}</option>`)}</select>
-        <input class="in" type="text" data-b="texto" data-id="${x.id}" maxlength="240" value="${x.texto}" aria-label="Qué pasa" ${ed ? '' : raw('disabled')}>${ed ? html`<button type="button" class="btn ghost xs" data-act="cd-cu-quitar" data-id="${x.id}" aria-label="Quitar este cuello">${ico('x', 14)}</button>` : ''}</li>`)}</ul>
-      ${ed ? html`<button type="button" class="btn ghost sm" data-act="cd-cu-mas">${ico('plus', 14)} Anotar un cuello</button>` : ''}`);
+        <input class="in" type="text" data-b="texto" data-id="${x.id}" maxlength="240" value="${x.texto}" aria-label="Qué pasa" ${ed ? '' : raw('disabled')}>${ed ? html`<button type="button" class="btn ghost sm" data-act="cd-cu-quitar" data-id="${x.id}" aria-label="Quitar este cuello">${ico('x', 14)}</button>` : ''}</li>`)}</ul>
+      ${ed ? html`<button type="button" class="btn ghost" data-act="cd-cu-mas">${ico('plus', 14)} Anotar un cuello</button>` : ''}`);
   }
   function pintarPlan() {
     const el = $('#cd-plan', root); if (!el) return;
@@ -145,8 +145,8 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
         <div class="cd-ac-m"><select class="in" data-a="area" data-id="${x.id}" aria-label="Área" ${ed ? '' : raw('disabled')}><option value="">Área</option>${AREAS_RM_INFO.map((r) => html`<option value="${r.id}" ${r.id === x.area ? raw('selected') : ''}>${r.nombre}</option>`)}</select>
           <input class="in" type="date" data-a="fecha" data-id="${x.id}" value="${x.fecha}" aria-label="Fecha" ${ed ? '' : raw('disabled')}>
           <select class="in" data-a="cuello" data-id="${x.id}" aria-label="Cuello que ataca" ${ed ? '' : raw('disabled')}><option value="">Sin cuello</option>${cu.map((c) => html`<option value="${c.id}" ${c.id === x.cuello ? raw('selected') : ''}>${NOMBRE_ETAPA[c.etapa] || 'Embudo'} · ${c.texto.slice(0, 40)}</option>`)}</select>
-          ${ed ? html`<button type="button" class="btn ghost xs" data-act="cd-ac-quitar" data-id="${x.id}" aria-label="Quitar esta acción">${ico('x', 14)}</button>` : ''}</div></li>`)}</ul>
-      ${ed ? html`<button type="button" class="btn ghost sm" data-act="cd-ac-mas" ${a.length >= MAX_ACCIONES ? raw('disabled') : ''}>${ico('plus', 14)} Agregar acción</button>` : ''}`);
+          ${ed ? html`<button type="button" class="btn ghost sm" data-act="cd-ac-quitar" data-id="${x.id}" aria-label="Quitar esta acción">${ico('x', 14)}</button>` : ''}</div></li>`)}</ul>
+      ${ed ? html`<button type="button" class="btn ghost" data-act="cd-ac-mas" ${a.length >= MAX_ACCIONES ? raw('disabled') : ''}>${ico('plus', 14)} Agregar acción</button>` : ''}`);
   }
   function pintarFaltas() {
     const el = $('#cd-faltas', root); if (!el) return;
@@ -157,7 +157,7 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
   function pintarGen() {
     const g = S.gen, el = $('#cd-gen', root); if (!el) return;
     if (!g) return mount(el, '');
-    if (g.fase === 'corriendo') { mount(el, html`<section class="cd-gen"><header><span>${ico('loader-circle', 14)} Generando con IA…</span><button type="button" class="btn ghost sm" data-act="cd-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="cd-stream" aria-live="polite"></pre></section>`); verStream(); return; }
+    if (g.fase === 'corriendo') { mount(el, html`<section class="cd-gen"><header><span>${ico('loader-circle', 14)} Generando con IA…</span><button type="button" class="btn ghost" data-act="cd-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="cd-stream" aria-live="polite"></pre></section>`); verStream(); return; }
     if (g.fase === 'propuesta') {
       const c = g.prop.contenido, fa = faltas(c, { hoy: hoy() });
       mount(el, html`<section class="cd-prop"><header><h3>${ico('sparkles', 14)} Propuesta de la IA</h3><span class="mut sm">${g.via === 'manual' ? 'Pegada a mano' : g.modelo || g.via}</span></header>
@@ -165,11 +165,11 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
         <ul class="cd-prop-l">${c.acciones.map((x) => html`<li><b>${x.titulo}</b> · ${areaInfo(x.area)?.nombre || SIN_DATOS} · ${x.fecha ? fdate(x.fecha) : SIN_DATOS}</li>`)}</ul>
         ${fa.length ? html`<ul class="cd-fl">${fa.map((x) => html`<li class="cd-sd">${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que presiones Guardar.</p>
-        <div class="cd-grp"><button type="button" class="btn sm" data-act="cd-usar">${ico('check', 14)} Cargar en el plan</button><button type="button" class="btn ghost sm" data-act="cd-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-act="cd-cerrar-gen">Descartar</button></div></section>`);
+        <div class="cd-grp"><button type="button" class="btn" data-act="cd-usar">${ico('check', 14)} Cargar en el plan</button><button type="button" class="btn ghost" data-act="cd-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-act="cd-cerrar-gen">Descartar</button></div></section>`);
       return;
     }
     mount(el, html`<section class="cd-gen" role="alert"><p>${g.fase === 'error' ? g.error : 'No vino el bloque con cuellos y acciones. Reintenta o pega la respuesta.'}</p>${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="cd-stream">${g.texto}</pre></details>` : ''}
-      <div class="cd-grp"><button type="button" class="btn sm" data-act="cd-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-act="cd-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="cd-cerrar-gen">${ico('x', 14)} Cerrar</button></div></section>`);
+      <div class="cd-grp"><button type="button" class="btn" data-act="cd-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-act="cd-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="cd-cerrar-gen">${ico('x', 14)} Cerrar</button></div></section>`);
   }
   const verStream = () => { const pre = $('.cd-stream', root); if (pre && S.gen) { pre.textContent = S.gen.texto || ''; pre.scrollTop = pre.scrollHeight; } };
   const recalcular = () => { pintarHead(); pintarActs(); pintarScore(); pintarEmbudo(); pintarCuellos(); pintarPlan(); pintarFaltas(); };

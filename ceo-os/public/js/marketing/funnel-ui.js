@@ -46,10 +46,10 @@ function mejorasHtml(c, ed) {
           <label class="fnl-f-ancho"><span class="sr-only">Mejora ${i + 1}</span><input class="in" type="text" data-c="mejoras.${i}.accion" value="${m.accion}" maxlength="240" placeholder="Qué se hace" aria-label="Mejora ${i + 1}" autocomplete="off"></label>
           <label><span class="sr-only">Área de la mejora ${i + 1}</span><select class="in" data-c="mejoras.${i}.area" aria-label="Área de la mejora ${i + 1}">${areaOpts(m.area)}</select></label>
           <label><span class="sr-only">Fecha de la mejora ${i + 1}</span><input class="in" type="date" data-c="mejoras.${i}.fecha" value="${m.fecha}" aria-label="Fecha de la mejora ${i + 1}"></label>
-          <button type="button" class="btn ghost sm" data-a="m-" data-i="${i}" aria-label="Quitar la mejora ${i + 1}">${ico('x', 14)}</button></div>`
+          <button type="button" class="btn ghost" data-a="m-" data-i="${i}" aria-label="Quitar la mejora ${i + 1}">${ico('x', 14)}</button></div>`
       : html`<p class="fnl-ro"><b>${m.etapa ? nombreEtapa(m.etapa) : SIN_DATOS}</b> · ${m.accion}<span class="mut sm"> · ${m.area || SIN_DATOS} · ${m.fecha || SIN_DATOS}</span></p>`}</li>`)}</ol>`
       : html`<p class="fnl-sd">${SIN_DATOS}: faltan las mejoras (cada una ataca una caída del embudo)</p>`}
-    ${ed && n < MAX_MEJORAS ? html`<button type="button" class="btn ghost sm" data-a="m+">${ico('plus', 14)} Agregar una mejora</button>` : ''}
+    ${ed && n < MAX_MEJORAS ? html`<button type="button" class="btn ghost" data-a="m+">${ico('plus', 14)} Agregar una mejora</button>` : ''}
     <p class="mut sm">Un cambio de pauta es una tarea para ⑩ Ads o el OK del CEO: aquí no se hace.</p>`;
 }
 
@@ -63,8 +63,8 @@ export const vista = {
     mount(el, html`<div class="fnl" data-editable="${ed ? 1 : 0}">
       <section class="fnl-sec" aria-label="El embudo"><div class="fnl-bar"><h3 class="fnl-t">${ico('funnel', 16)} El embudo <span class="fnl-t-m" data-r="mes-n"></span></h3>
         <label class="fnl-mes"><span class="sr-only">Mes</span><select class="in" data-mes aria-label="Mes del embudo">${mesesRecientes(hoy, 12).map((m) => html`<option value="${m}" ${S.mes === m ? 'selected' : ''}>${nombreMes(m)}</option>`)}</select></label>
-        <a class="btn ghost sm" href="${rutaHerramienta('marketing', slug, 'funnel-builder')}/sitios">${ico('link', 14)} Sitios y landings</a>
-        ${ed ? html`<button type="button" class="btn ghost sm" data-a="numeros" disabled>${ico('chart-column', 14)} Usar los números de arriba</button>` : ''}</div>
+        <a class="btn ghost" href="${rutaHerramienta('marketing', slug, 'funnel-builder')}/sitios">${ico('link', 14)} Sitios y landings</a>
+        ${ed ? html`<button type="button" class="btn ghost" data-a="numeros" disabled>${ico('chart-column', 14)} Usar los números de arriba</button>` : ''}</div>
         <div data-r="canvas"></div><div class="fnl-bloque"><h4 class="fnl-h4">${ico('chart-no-axes-column-increasing', 14)} Dónde se cae</h4><div data-r="caidas"></div></div></section>
       <section class="fnl-sec" aria-label="Mejoras"><div data-r="mejoras"></div></section></div>`);
     const root = el.firstElementChild, region = (n) => root.querySelector(`[data-r="${n}"]`), vivo = () => root.isConnected;

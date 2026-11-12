@@ -106,7 +106,7 @@ export async function consistenciaTool(host, { me, slug, b, alive, resto = [] } 
     mount(host, html`<div class="cns" data-editable="${S.puede ? 1 : 0}">
       <header class="cns-bar"><label class="sr-only" for="cns-pieza">Pieza</label><select class="in" id="cns-pieza" aria-label="Pieza">${S.piezas.map((x) => html`<option value="${x.id}" ${x.id === S.sel ? 'selected' : ''}>${x.title || x.name || 'Sin título'} · ${estadoDe(x)}</option>`)}</select>
         ${r ? html`<span class="cns-ver" data-v="${v}">${VEREDICTO[v]}</span>` : ''}<span class="sp"></span>
-        <a class="btn ghost sm" href="${rutaHerramienta('creative', slug, 'design-studio')}">${ico('edit', 14)} Design Studio</a></header>
+        <a class="btn ghost" href="${rutaHerramienta('creative', slug, 'design-studio')}">${ico('edit', 14)} Design Studio</a></header>
       <div class="cns-g"><div class="cns-pieza" aria-label="La pieza">${imgs.length ? html`<div class="cns-imgs">${imgs.map((u, i) => html`<img src="${u}" alt="Lámina ${i + 1} de ${p.title || 'la pieza'}" loading="lazy" referrerpolicy="no-referrer">`)}</div>` : html`<div class="cns-sd">${SIN_DATOS}: la pieza no tiene láminas ni imágenes en Drive (salen de Design Studio o de sus archivos)</div>`}
           <p class="cns-meta mut sm">${p.format || 'Formato sin definir'}${p.date ? ` · ${fdate(p.date)}` : ''} · ${estadoDe(p)}</p>
           <div class="cns-chips">${S.ojo ? ojoChip(S.ojo) : html`<span class="chip sm2">Sin CLIP: sin Parecido</span>`}${layaSuena() ? html`<span class="chip sm2">Laya · suena ${Math.round(layaSuena().prob * 100)}%</span>` : html`<span class="chip sm2">Laya · sin juicio</span>`}</div></div>
@@ -117,9 +117,9 @@ export async function consistenciaTool(host, { me, slug, b, alive, resto = [] } 
           ${r ? html`${k ? html`<p class="cns-res"><b>${k.pasa}</b> pasan · <b>${k.noPasa}</b> no pasan · <b>${k.sinDatos}</b> sin datos</p>` : ''}${r.resumen ? html`<p class="cns-resumen">${r.resumen}</p>` : ''}
               <div class="cns-secs">${r.secciones.map(seccion)}</div>
               ${K.faltas(r).length ? html`<ul class="cns-faltas">${K.faltas(r).map((x) => html`<li>${ico('triangle-alert', 13)} ${x}</li>`)}</ul>` : ''}
-              <div class="cns-acc"><button type="button" class="btn ghost sm" data-a="copiar" ${k.noPasa ? '' : 'disabled'}>${ico('copy', 14)} Copiar las correcciones</button>
-                <button type="button" class="btn ghost sm" data-a="md">${ico('file-text', 14)} Copiar el reporte</button>
-                ${S.puede ? html`<button type="button" class="btn sm" data-a="guardar" ${ocupado || K.faltas(r).length ? 'disabled' : ''}>${ico('check', 14)} ${S.ocupado === 'guardar' ? 'Guardando…' : 'Guardar la ronda'}</button>` : ''}</div>`
+              <div class="cns-acc"><button type="button" class="btn ghost" data-a="copiar" ${k.noPasa ? '' : 'disabled'}>${ico('copy', 14)} Copiar las correcciones</button>
+                <button type="button" class="btn ghost" data-a="md">${ico('file-text', 14)} Copiar el reporte</button>
+                ${S.puede ? html`<button type="button" class="btn" data-a="guardar" ${ocupado || K.faltas(r).length ? 'disabled' : ''}>${ico('check', 14)} ${S.ocupado === 'guardar' ? 'Guardando…' : 'Guardar la ronda'}</button>` : ''}</div>`
             : html`<p class="cns-sd">${SIN_DATOS}: esta pieza todavía no tiene reporte. «Pasar la revisión» lo arma con el sistema visual, el ojo y Laya.${S.sinSistema ? ` Sin sistema visual: ${S.sinSistema}.` : ''}</p>`}
           ${historial()}</div></div></div>`);
   }
