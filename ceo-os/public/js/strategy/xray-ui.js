@@ -57,7 +57,7 @@ function propuesta({ es, editable, S }) {
   const p = es.propuesta, e = p && p.estado === 'listo' && p.n != null ? etapaDe(p.n) : null;
   if (e) {
     const prob = Number.isFinite(p.prob) ? ` · ${Math.round(p.prob * 100)}%` : '';
-    return html`<p class="xr-prop"><span class="chip xr-chip">Laya propone${prob}</span> <b>${etapaLabel(e)}</b>${p.why ? html` <span class="mut sm">${p.why}</span>` : ''}${editable && S.sel !== e.n ? html` <button type="button" class="btn ghost xs xr-usar" data-act="xr-usar" data-n="${e.n}" ${S.ocupado ? 'disabled' : ''}>Usar esta</button>` : ''}</p>`;
+    return html`<p class="xr-prop"><span class="chip xr-chip">Laya propone${prob}</span> <b>${etapaLabel(e)}</b>${p.why ? html` <span class="mut sm">${p.why}</span>` : ''}${editable && S.sel !== e.n ? html` <button type="button" class="btn ghost sm xr-usar" data-act="xr-usar" data-n="${e.n}" ${S.ocupado ? 'disabled' : ''}>Usar esta</button>` : ''}</p>`;
   }
   if (p?.estado === 'pendiente') return html`<p class="mut sm">Laya quedó pendiente: sin el puente encendido, lo resuelve Claude Code.</p>`;
   return es.cargado ? html`<p class="mut sm">Laya la propone con lo que hay en el repo del cliente. El CEO la confirma.</p>` : '';
@@ -69,9 +69,9 @@ function accionEtapa({ es, c, editable, esCeo, S }) {
   const detalle = html`<p class="xr-etapa-det"><i>«${e.traba}»</i> ${e.es}</p>`;
   if (!editable) return detalle;
   const yaConfirmada = Boolean(es.etapa?.confirmada) && es.etapa.n === n, yaPropuesta = Boolean(es.etapa) && es.etapa.n === n;
-  if (esCeo) return html`${detalle}${yaConfirmada ? '' : html`<div class="xr-etapa-bt"><button type="button" class="btn xs" data-act="xr-confirmar" data-n="${n}" ${S.ocupado ? 'disabled' : ''}>${ico('check', 13)} Confirmar ${etapaLabel(e)}</button><span class="mut sm">Solo tú la confirmas.</span></div>`}`;
+  if (esCeo) return html`${detalle}${yaConfirmada ? '' : html`<div class="xr-etapa-bt"><button type="button" class="btn sm" data-act="xr-confirmar" data-n="${n}" ${S.ocupado ? 'disabled' : ''}>${ico('check', 13)} Confirmar ${etapaLabel(e)}</button><span class="mut sm">Solo tú la confirmas.</span></div>`}`;
   if (es.etapa?.confirmada) return html`${detalle}<p class="mut sm">La confirmó el CEO: solo él la cambia.</p>`;
-  return html`${detalle}${yaPropuesta ? '' : html`<div class="xr-etapa-bt"><button type="button" class="btn xs" data-act="xr-proponer" data-n="${n}" ${S.ocupado ? 'disabled' : ''}>Proponer ${etapaLabel(e)}</button><span class="mut sm">El CEO la confirma.</span></div>`}`;
+  return html`${detalle}${yaPropuesta ? '' : html`<div class="xr-etapa-bt"><button type="button" class="btn sm" data-act="xr-proponer" data-n="${n}" ${S.ocupado ? 'disabled' : ''}>Proponer ${etapaLabel(e)}</button><span class="mut sm">El CEO la confirma.</span></div>`}`;
 }
 // Lo que falta o se contradice en un eje: sin evidencia no hay «bien» ni «riesgo»; un eje sin datos dice de dónde sale.
 function avisoEje({ c, editable, i }) {
@@ -140,7 +140,7 @@ function plantilla({ c, es, S }, f, editable) {
       <div data-r="ana"></div>
     </section>
 
-    <div class="xr-pie"><button type="button" class="btn ghost sm xr-huecos" disabled title="Llega en la Fase 3e">${ico('arrow-right', 14)} Enviar huecos al Opportunity Map</button><span class="mut sm">Llega en la Fase 3e</span></div>
+    <div class="xr-pie"><button type="button" class="btn ghost xr-huecos" disabled title="Llega en la Fase 3e">${ico('arrow-right', 14)} Enviar huecos al Opportunity Map</button><span class="mut sm">Llega en la Fase 3e</span></div>
   </div>`;
 }
 

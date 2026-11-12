@@ -5,6 +5,7 @@ import { quotesShort, quotesBase } from './quotes-short.js';
 import { moduleCost } from './finscope.js';
 import { serviceRecipe, RECIPE_ROLES } from './recipes.js';
 import { monthStrip, PAL } from './charts.js';
+import { vacio } from './visual.js';
 
 const roleName = (r) => RECIPE_ROLES.find(([k]) => k === r)?.[1] || r;
 const addDays = (s, n) => { const d = new Date(s + 'T12:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
@@ -61,7 +62,7 @@ export function serviceTab(ctx) {
       <div class="row sm" style="gap:8px;flex-wrap:wrap;margin:4px 0 8px"><span class="chip sm2">${ico('cal', 13)} ${m.pending ? m.pending : when(m.p, m.unit)}</span>${m.p?.roles_map ? Object.entries(m.p.roles_map).slice(0, 6).map(([r, k]) => html`<span class="chip sm2">${roleName(r)}: ${person(k).split(' ')[0]}</span>`) : ''}</div>
       ${m.includes ? html`<div class="mut sm" style="margin-bottom:6px">${String(m.includes).split('\n').filter(Boolean).slice(0, 4).join(' · ')}</div>` : ''}
       ${m.p ? html`${stepRows(steps(m.p, m.it))}<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${fromLink({ label: 'Responsabilidades', href: respHref(m.it), title: 'Quién hace qué y cuándo: la receta del servicio o paquete' })}${fromLink({ label: 'Proyectos', href: '#/operations/tasks', title: 'Las tareas reales del proyecto' })}</div>` : ''}</div>`)
-    : html`<div class="empty"><b>Sin servicio activo</b>Aparece cuando el cliente tiene un proyecto (se crea al confirmar el pago de su cotización, o en Proyectos).</div>`}
+    : html`${vacio({ icono: 'inbox', titulo: 'Sin servicio activo', linea: 'Aparece cuando el cliente tiene un proyecto (se crea al confirmar el pago de su cotización, o en Proyectos).' })}`}
     <div style="margin:4px 0 16px">${quotesShort(quotes, me, { title: 'Sus cotizaciones', sub: 'Las de este cliente · se arman en Comercial', empty: 'Este cliente no tiene cotizaciones todavía.' })}</div>
     ${fields.length || info?.pipeline?.length ? html`<details class="sp-panel" style="margin-top:4px;padding-top:14px;padding-bottom:14px"><summary class="sm" style="cursor:pointer;font-weight:500">Ficha de oferta del repo</summary>${ctx.planPath ? html`<div style="margin:8px 0 4px">${fromLink({ repo: ctx.planPath, docs: ctx.docs })}</div>` : ''}
       ${fields.map((f) => html`<div class="row sm" style="padding:7px 0;border-top:1px solid var(--line);align-items:flex-start"><span class="mut" style="min-width:150px">${f.key}</span><span style="flex:1">${f.value}</span></div>`)}

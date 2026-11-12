@@ -9,6 +9,7 @@ import { SIN_DATOS } from '../consulting/marcos.js';
 import { mesOk, nombreMes } from '../plan-mes.js';
 import { KPIS, kpiDe, nombreKpi, textoValor, FUENTE_COSTOS, mesDe, mesesRecientes } from './kpis.js';
 import { AREAS, MIN_SIGUIENTES, MAX_SIGUIENTES, vacio, limpiar, fotoDe, aMdPortal, recordarKpis } from './reporte.js';
+import { fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
 const MAX_HALLAZGOS = 8, MAX_ACCIONES = MAX_SIGUIENTES;
@@ -48,7 +49,7 @@ function tabla(titulo, filas, vacioTxt) {
     : html`<p class="rnd-sd">${SIN_DATOS}: ${vacioTxt}</p>`}</div>`;
 }
 function mesHtml(S) {
-  if (S.error) return html`<div class="empty rnd-err" role="alert"><b>No pude leer los KPIs</b>${S.error.message || 'Inténtalo de nuevo en un momento.'}${techDetail(S.error)}</div>`;
+  if (S.error) return html`${fallo({ titulo: 'No pude leer los KPIs', linea: S.error.message || 'Inténtalo de nuevo en un momento.', detalle: techDetail(S.error) })}`;
   const d = S.data;
   if (!d) return html`<p class="loading">Leyendo los KPIs del mes…</p>`;
   const sd = 'sin piezas con fecha en este mes (sale del Plan del mes y del calendario de contenido)';
@@ -96,26 +97,26 @@ function editorHtml({ c, S, ed, costos, nuevoDoc, meses }) {
       ? html`<textarea class="in" id="rnd-resumen" data-c="resumen" rows="3" maxlength="1200" placeholder="Dos o tres frases con lo que pasó este mes">${c.resumen}</textarea>`
       : c.resumen ? html`<p class="rnd-ro">${c.resumen}</p>` : html`<p class="rnd-sd">${SIN_DATOS}: falta el resumen del mes</p>`}</div>
 
-    <div class="rnd-campo"><div class="rnd-campo-h"><span class="lbl">La foto de los KPIs del mes</span>${ed ? html`<button type="button" class="btn ghost sm" data-a="foto" ${S.data ? '' : 'disabled'}>${ico('chart-column', 14)} Usar los KPIs de arriba</button>` : ''}</div>${foto}</div>
+    <div class="rnd-campo"><div class="rnd-campo-h"><span class="lbl">La foto de los KPIs del mes</span>${ed ? html`<button type="button" class="btn ghost" data-a="foto" ${S.data ? '' : 'disabled'}>${ico('chart-column', 14)} Usar los KPIs de arriba</button>` : ''}</div>${foto}</div>
 
     <div class="rnd-campo"><div class="rnd-campo-h"><span class="lbl">Qué vimos</span><span class="mut sm">Cada hallazgo cita un KPI</span></div>
       ${c.hallazgos.length ? html`<ol class="rnd-lista">${c.hallazgos.map((h, i) => html`<li class="rnd-h" data-i="${i}">${ed
         ? html`<div class="rnd-fila"><label class="rnd-f-ancho"><span class="sr-only">Hallazgo ${i + 1}</span><textarea class="in" data-c="hallazgos.${i}.texto" rows="2" maxlength="400" placeholder="Qué pasó, con su número" aria-label="Hallazgo ${i + 1}">${h.texto}</textarea></label>
             <label><span class="lbl">KPI</span><select class="in" data-c="hallazgos.${i}.kpi" aria-label="KPI del hallazgo ${i + 1}"><option value="">— elige un KPI</option>${optKpi(c, h, costos)}</select></label>
-            <button type="button" class="btn ghost sm rnd-quitar" data-a="h-" data-i="${i}" aria-label="Quitar el hallazgo ${i + 1}">${ico('x', 14)}</button></div>`
+            <button type="button" class="btn ghost rnd-quitar" data-a="h-" data-i="${i}" aria-label="Quitar el hallazgo ${i + 1}">${ico('x', 14)}</button></div>`
         : html`<p class="rnd-ro">${h.texto}</p>`}<div data-r="h-av" data-i="${i}">${avisoHallazgo(c, i)}</div></li>`)}</ol>`
         : html`<p class="rnd-sd">${SIN_DATOS}: faltan los hallazgos (cada uno con su KPI)</p>`}
-      ${ed && c.hallazgos.length < MAX_HALLAZGOS ? html`<button type="button" class="btn ghost sm" data-a="h+">${ico('plus', 14)} Agregar un hallazgo</button>` : ''}</div>
+      ${ed && c.hallazgos.length < MAX_HALLAZGOS ? html`<button type="button" class="btn ghost" data-a="h+">${ico('plus', 14)} Agregar un hallazgo</button>` : ''}</div>
 
     <div class="rnd-campo"><div class="rnd-campo-h"><span class="lbl">Qué sigue</span><span class="mut sm">De ${MIN_SIGUIENTES} a ${MAX_SIGUIENTES} acciones, cada una con su área y su fecha</span><span data-r="cuenta">${contadorAcciones(c)}</span></div>
       ${c.siguientes.length ? html`<ol class="rnd-lista">${c.siguientes.map((s, i) => html`<li class="rnd-s" data-i="${i}">${ed
         ? html`<div class="rnd-fila"><label class="rnd-f-ancho"><span class="sr-only">Acción ${i + 1}</span><input class="in" type="text" data-c="siguientes.${i}.accion" value="${s.accion}" maxlength="240" placeholder="Qué se hace" aria-label="Acción ${i + 1}" autocomplete="off"></label>
             <label><span class="sr-only">Área de la acción ${i + 1}</span><select class="in" data-c="siguientes.${i}.area" aria-label="Área de la acción ${i + 1}">${areaOpts(s.area)}</select></label>
             <label><span class="sr-only">Fecha de la acción ${i + 1}</span><input class="in" type="date" data-c="siguientes.${i}.fecha" value="${s.fecha}" aria-label="Fecha de la acción ${i + 1}"></label>
-            <button type="button" class="btn ghost sm rnd-quitar" data-a="s-" data-i="${i}" aria-label="Quitar la acción ${i + 1}">${ico('x', 14)}</button></div>`
+            <button type="button" class="btn ghost rnd-quitar" data-a="s-" data-i="${i}" aria-label="Quitar la acción ${i + 1}">${ico('x', 14)}</button></div>`
         : html`<p class="rnd-ro">${s.accion}<span class="mut sm"> · ${s.area || SIN_DATOS} · ${s.fecha || SIN_DATOS}</span></p>`}</li>`)}</ol>`
         : html`<p class="rnd-sd">${SIN_DATOS}: faltan las siguientes acciones</p>`}
-      ${ed && c.siguientes.length < MAX_ACCIONES ? html`<button type="button" class="btn ghost sm" data-a="s+">${ico('plus', 14)} Agregar una acción</button>` : ''}
+      ${ed && c.siguientes.length < MAX_ACCIONES ? html`<button type="button" class="btn ghost" data-a="s+">${ico('plus', 14)} Agregar una acción</button>` : ''}
       <p class="mut sm">Un cambio de pauta es una tarea para ⑩ Ads o el OK del CEO: aquí no se hace.</p></div>
 
     <div class="rnd-campo"><label class="lbl" for="rnd-nota">Nota interna <span class="mut sm">· solo el equipo, no va al portal</span></label>${ed
@@ -125,7 +126,7 @@ function editorHtml({ c, S, ed, costos, nuevoDoc, meses }) {
     <aside class="rnd-portal" aria-label="La versión para el portal">
       <p class="rnd-portal-t">${ico('lock', 14)} La versión para el portal va sin costos ni notas internas</p>
       <details class="rnd-portal-prev"><summary>Ver cómo queda</summary><pre class="rnd-md" data-r="portal"></pre></details>
-      <button type="button" class="btn ghost sm" data-a="portal-copiar">${ico('copy', 14)} Copiar la versión del portal</button>
+      <button type="button" class="btn ghost" data-a="portal-copiar">${ico('copy', 14)} Copiar la versión del portal</button>
     </aside>`;
 }
 

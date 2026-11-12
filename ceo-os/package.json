@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "test": "node scripts/test-parse.mjs",
+    "test": "node scripts/test-parse.mjs && node scripts/test-lint-css.mjs && node scripts/lint-css.mjs",
+    "lint:css": "node scripts/lint-css.mjs",
     "test:fase4": "node scripts/test-fase4.mjs",
     "test:fase5": "node scripts/test-fase5.mjs",
     "test:viva": "node scripts/test-viva.mjs",

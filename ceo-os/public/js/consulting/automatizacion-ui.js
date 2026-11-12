@@ -72,7 +72,7 @@ function fila(f, i, E) {
       <label class="aut-f"><span class="lbl">Con qué</span>${g.txt(r('herramienta'), f.herramienta, { max: 120, label: 'Herramienta', ph: 'Tipo de herramienta' })}</label>
       <label class="aut-f aut-chk"><span class="lbl">Va al Plan de 90 días</span>${g.chk(r('elegida'), f.elegida, { label: 'Mandar esta fila al Plan de 90 días' })}</label>
       <span class="aut-est" data-r="estado" data-id="${f.id}"></span>
-      ${editable ? html`<button type="button" class="btn ghost sm aut-btn" data-act="aut-del" data-id="${f.id}" aria-label="Quitar este paso" title="Quitar este paso">${ico('x', 14)}</button>` : ''}</div></li>`;
+      ${editable ? html`<button type="button" class="btn ghost" data-act="aut-del" data-id="${f.id}" aria-label="Quitar este paso" title="Quitar este paso">${ico('x', 14)}</button>` : ''}</div></li>`;
 }
 const tabla = (E) => html`${E.c.filas.length ? html`<ul class="aut-filas">${E.c.filas.map((f, i) => fila(f, i, E))}</ul>` : html`<p class="aut-sd">${SIN_DATOS}: no hay pasos manuales; salen del Mapa del camino del dinero aprobado</p>`}`;
 
@@ -91,8 +91,8 @@ function plantilla(E) {
       <h3 class="aut-t">${ico('wrench', 16)} Pasos manuales <span class="mut sm">del Mapa del camino del dinero</span></h3>
       <p class="aut-nota mut sm">Las horas las dice el cliente: sin su cifra dicen ${SIN_DATOS}, nunca 0 ni un cálculo con los minutos del paso.</p>
       <div class="aut-lista"></div>
-      ${editable ? html`<div class="aut-btns"><button type="button" class="btn ghost sm aut-btn" data-act="aut-add" ${E.c.filas.length >= MAX_FILAS ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>
-        <button type="button" class="btn ghost sm aut-btn" data-act="aut-traer" ${hayMapa ? '' : 'disabled'} title="${hayMapa ? 'Agrega los pasos manuales de hoy del Mapa que aún no están' : 'El Mapa del camino del dinero aún no está aprobado'}">${ico('shuffle', 14)} Traer pasos del Mapa</button></div>` : ''}
+      ${editable ? html`<div class="aut-btns"><button type="button" class="btn ghost" data-act="aut-add" ${E.c.filas.length >= MAX_FILAS ? 'disabled' : ''}>${ico('plus', 14)} Agregar paso</button>
+        <button type="button" class="btn ghost" data-act="aut-traer" ${hayMapa ? '' : 'disabled'} title="${hayMapa ? 'Agrega los pasos manuales de hoy del Mapa que aún no están' : 'El Mapa del camino del dinero aún no está aprobado'}">${ico('shuffle', 14)} Traer pasos del Mapa</button></div>` : ''}
     </section>
     <section class="aut-sec aut-plan" aria-label="Va al Plan de 90 días">
       <h3 class="aut-t">${ico('send', 16)} Va al Plan de 90 días <span class="mut sm">cada fila elegida; se envía con «Enviar a» al aprobar</span></h3>

@@ -30,11 +30,11 @@ function accionCola(run, n, modelos) {
   const e = run.etapas[n];
   if (n !== activa(run) || run.archivado || completo(run) || enServidor(e)) return '';
   if (e.estado === 'pregunta') return html`<span class="wc-note">${ico('chat', 12)} Responde en el Chat</span>`;
-  if (run.plan_ok && n > run.plan_ok.hasta && e.estado === 'pendiente') return html`<button type="button" class="btn sm ag-dark" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
+  if (run.plan_ok && n > run.plan_ok.hasta && e.estado === 'pendiente') return html`<button type="button" class="btn" data-act="plan">${ico('chat', 12)} Platicar lo que sigue</button>`;
   if (faltaAporte(run, n)) return html`<span class="wc-note">${ico('chat', 12)} Falta tu aporte: dalo en el Chat</span>`;
-  if (e.estado === 'revision') return html`<button type="button" class="btn sm ag-dark" data-act="doc" data-n="${n}">${ico('file-text', 12)} Abrir documento</button>`;
+  if (e.estado === 'revision') return html`<button type="button" class="btn" data-act="doc" data-n="${n}">${ico('file-text', 12)} Abrir documento</button>`;
   if (!['pendiente', 'ajuste', 'detenida'].includes(e.estado)) return '';
-  return html`<button type="button" class="btn sm ag-dark" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico(e.estado === 'pendiente' ? 'play' : 'rotate-cw', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : e.estado === 'detenida' ? 'Reintentar' : 'Continuar'}</button>`;
+  return html`<button type="button" class="btn" data-act="continuar" ${run.pausado || !modelos.length ? raw(`disabled title="${run.pausado ? 'El agente está en pausa' : 'El servidor no está en línea'}"`) : ''}>${ico(e.estado === 'pendiente' ? 'play' : 'rotate-cw', 12)} ${e.estado === 'ajuste' ? 'Re-ejecutar' : e.estado === 'detenida' ? 'Reintentar' : 'Continuar'}</button>`;
 }
 
 export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () => {}, onPlan = () => {} }) {
@@ -47,9 +47,9 @@ export function pintarVentana(box, { me, run, rol, modelos = [], onCambio = () =
       <span class="wc-chip ${completo(run) ? 'ok' : e.estado}">${completo(run) ? 'Completo' : `${n + 1}/${run.etapas.length}`}</span></header>
     <div class="av-meta"><span class="wc-prog" title="${pr.hechas} de ${pr.total} aprobadas"><i style="width:${pr.pct}%"></i></span>
       ${completo(run) ? '' : html`<span>${e.nombre} · ${e.modelo || modeloDeEtapa(e, modelos)}</span>`}
-      ${ajena && ['ceo', 'coo'].includes(rol) ? html`<button type="button" class="btn ghost xs" data-act="ver-chat">${ico('eye', 11)} Ver la conversación de ${quien(run.chat.owner)}</button>` : ''}
-      ${run.chat ? '' : html`<button type="button" class="btn ghost xs" data-act="chat-anterior">${ico('chat', 11)} Conversación anterior</button>`}
-      <a class="btn ghost xs" href="${rutaEtapas(run.flujo.id, run.id)}">${ico('kanban', 11)} Historial</a></div>
+      ${ajena && ['ceo', 'coo'].includes(rol) ? html`<button type="button" class="btn ghost sm" data-act="ver-chat">${ico('eye', 11)} Ver la conversación de ${quien(run.chat.owner)}</button>` : ''}
+      ${run.chat ? '' : html`<button type="button" class="btn ghost sm" data-act="chat-anterior">${ico('chat', 11)} Conversación anterior</button>`}
+      <a class="btn ghost sm" href="${rutaEtapas(run.flujo.id, run.id)}">${ico('kanban', 11)} Historial</a></div>
 
     <section class="av-sec" aria-label="Etapas"><h3>${ico('list', 12)} Etapas</h3>
       <ol class="wc-queue">${run.etapas.map((x, i) => html`<li class="${x.estado} ${i === n && !completo(run) ? 'act' : ''}">

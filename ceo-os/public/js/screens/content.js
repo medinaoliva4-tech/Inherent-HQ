@@ -8,6 +8,7 @@ import { calendarioHtml, rango, porDia, diaHtml, hitoHtml } from '../calendario-
 import { mezclaDelMes, mezclaHtml, filtrar, filtrosHtml, ejes, replicasDe, marcasPieza, tituloPieza, mesesConBrief, candado, mesNombre, bandasDelMes, bandasPorDia, slotDe, tituloSlot, metricasDe, resumenMetricas, motivoNoMover, moverEnLista, ponerPieza, falloAlMover } from '../calendario-contenido.js';
 import { rutaModulo } from '../herramientas.js';
 import { archivar } from '../production/planner.js';
+import { fallo, vacio } from '../visual.js';
 
 // Content: el área donde el CEO y Content deciden. Guiones y piezas viven en Google Drive;
 // del repo solo salen las cuentas (LINKS.md) y la competencia. Más el scrape semanal y Analytics.
@@ -47,9 +48,9 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
   let coff = new Set((() => { try { return JSON.parse(localStorage.getItem('os.cal.marca.off') || '[]'); } catch { return []; } })());
 
   async function load() {
-    try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
+    try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer el repo', linea: e.message })}`); }
     slug = data.profile.slug; week = null; posts = null; rs = null; shoots = null; ig = null; inbox = null; rf = null; gstack = null; gfiles = null; gcur = null;
-    if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`); }
+    if (fixed) { if (slug !== fixed) return mount(el, fixed === 'personal' ? html`${vacio({ icono: 'lock', titulo: 'La marca personal es solo del CEO', linea: 'Tu perfil no la ve.' })}` : html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene perfil de contenido', linea: 'Se crea con su folder en clients/.' })}`); }
     else { data.profiles = (data.profiles || []).filter((x) => !isPersonal(x.slug)); try { localStorage.setItem('content.profile', slug); } catch {} }
     paint();
   }
@@ -90,10 +91,10 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (week.warn) return mount(b, html`${head}<div class="warnbox">${week.warn}</div>`);
     const r = week.result;
     if (!data.apify && !r) return mount(b, html`${head}<div class="warnbox">La lectura semanal de redes todavía no está activada. <span class="sm" style="opacity:.8">Quien administra la app la activa con la variable APIFY_TOKEN en Vercel.</span></div>`);
-    if (!r) return mount(b, html`${head}<div class="empty"><b>${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}</b>${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a> y dale «Scrapear ahora».`}</div>`);
+    if (!r) return mount(b, html`${head}${vacio({ icono: 'inbox', titulo: `${week.status === 'running' ? 'Leyendo tus redes…' : 'Sin semana todavía'}`, linea: html`${week.status === 'running' ? 'Tarda unos minutos. Esta pantalla se actualiza sola.' : html`Revisa las <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a> y dale «Scrapear ahora».`}` })}`);
     mount(b, html`${head}
       <div class="sec-title" style="margin-top:0"><h2>Top 10 del nicho</h2><span class="mut sm">Cuántas veces supera el promedio de <b>su propia cuenta</b></span></div>
-      ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`<div class="empty"><b>Sin videos esta semana</b>Agrega hashtags o cuentas en Fuentes.</div>`}
+      ${r.top.length ? html`<div class="grid g5">${r.top.map(videoCard)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin videos esta semana', linea: 'Agrega hashtags o cuentas en Fuentes.' })}`}
       ${(r.refs || []).length ? html`<div class="sec-title"><h2>Lo último de tus referentes</h2><span class="mut sm">Para ver estilos y de qué están hablando</span></div><div class="grid g5">${r.refs.slice(0, 10).map(videoCard)}</div>` : ''}
       ${(r.comp || []).length ? html`<div class="sec-title"><h2>Lo último de la competencia</h2></div><div class="grid g5">${r.comp.slice(0, 10).map(videoCard)}</div>` : ''}
       ${r.added.length ? html`<div class="sec-title"><h2>Los que agregaste</h2></div><div class="grid g5">${r.added.map(videoCard)}</div>` : ''}`);
@@ -106,13 +107,13 @@ export async function render(el, { me, sub, alive, fixed = null, embed = null })
     if (rf.error) return mount(b, html`<div class="warnbox">${rf.error}</div>`);
     clearTimeout(rfPoll); if (rf.status === 'running') rfPoll = setTimeout(() => { if (alive() && tab === 'refs') { rf = null; refsTab($('#cbody', el)); } }, 15000);
     const pillars = (data.cfg.pillars || []).map((x) => x.name).filter(Boolean);
-    if (!pillars.length) return mount(b, html`<div class="empty"><b>Primero los pilares</b>Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.</div>`);
+    if (!pillars.length) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Primero los pilares', linea: 'Defínelos en Planner. Luego aquí pegas hasta 5 videos de referencia por pilar.' })}`);
     const res = rf.result || {};
     mount(b, html`<div class="mut sm" style="margin-bottom:12px">Por pilar, pega hasta <b>5 videos</b> que te sirvan de referencia (Reels o TikToks). El OS busca lo que más rindió de <b>esos mismos creadores</b> y de <b>sus hashtags</b>, comparado con lo normal de cada cuenta. Después lo desglosas con Claude: hook, retención, estructura y cómo adaptarlo.</div>
       ${rf.status === 'running' ? html`<div class="warnbox sm" style="margin-bottom:12px">${rf.phase === 1 ? 'Leyendo tus referencias' : 'Buscando similares'}… Esto se actualiza solo.</div>` : ''}${rf.warn ? html`<div class="warnbox sm">${rf.warn}</div>` : ''}${!rf.apify ? html`<div class="warnbox sm">Falta APIFY_TOKEN en Vercel.</div>` : ''}
       ${pillars.map((p) => { const urls = rf.videos?.[p] || [], r = res[p], bd = rf.breakdown?.[p];
         return html`<div class="card refpil"><div class="row" style="gap:8px;flex-wrap:wrap"><b style="font-weight:500;font-size:17px">${p}</b><span class="mut sm">${urls.length}/5 referencias</span><div class="sp"></div>
-            ${r && (r.refs.length || r.similar.length) ? html`<button class="btn xs" data-act="refBreak" data-p="${p}">${ico('spark')} Desglosar con Claude</button>` : ''}</div>
+            ${r && (r.refs.length || r.similar.length) ? html`<button class="btn sm" data-act="refBreak" data-p="${p}">${ico('spark')} Desglosar con Claude</button>` : ''}</div>
           <div class="refurls">${[0, 1, 2, 3, 4].map((i) => html`<input class="in" data-ref="${p}" value="${urls[i] || ''}" placeholder="Link de un Reel o TikTok">`)}</div>
           ${r ? html`${r.owners?.length || r.tags?.length ? html`<div class="mut sm" style="margin:10px 0 6px">Se buscó en: ${r.owners.map((h) => '@' + h).join(', ')}${r.tags.length ? ' · #' + r.tags.join(' #') : ''}</div>` : ''}
             ${r.similar.length ? html`<div class="lbl" style="margin-top:6px">Similares que funcionaron</div><div class="grid homevids">${r.similar.map(videoCard)}</div>` : html`<div class="mut sm">No salieron similares todavía.</div>`}` : ''}
@@ -138,8 +139,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (inbox === null) { mount(b, html`<p class="loading">Leyendo la bandeja…</p>`); api(`community/inbox?profile=${encodeURIComponent(slug)}`).then((r) => { inbox = r; }).catch((e) => { inbox = { error: e.message }; }).then(() => alive() && tab === 'bandeja' && b.isConnected && bandeja(b)); return; }
     if (inbox.error) return mount(b, html`<div class="warnbox">${inbox.error}</div>`);
     if (!inbox.connected) return mount(b, html`<div class="warnbox">Para ver la bandeja falta conectar Zernio: agrega <b>ZERNIO_API_KEY</b> (con el grupo «messages» activo) en las variables de Vercel (Sensitive) y vuelve a publicar.</div>`);
-    if (inbox.noAccounts) return mount(b, html`<div class="empty"><b>Este perfil no tiene cuentas propias</b>Agrégalas en <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a>.</div>`);
-    if (!inbox.accounts) return mount(b, html`<div class="empty"><b>Zernio no tiene conectadas las cuentas de ${data.profile.name}</b>${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.</div>`);
+    if (inbox.noAccounts) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Este perfil no tiene cuentas propias', linea: html`Agrégalas en <a href="#/ws/strategy/${slug}/research/customer-bullseye" style="color:inherit">Customer Bullseye</a>.` })}`);
+    if (!inbox.accounts) return mount(b, html`${vacio({ icono: 'inbox', titulo: `Zernio no tiene conectadas las cuentas de ${data.profile.name}`, linea: `${inbox.handles.map((h) => '@' + h).join(', ')} · conéctalas en Zernio y recarga.` })}`);
     const ago = (d) => (d ? fdate(String(d).slice(0, 10)) : '');
     mount(b, html`<div class="row" style="margin-bottom:12px;gap:10px;flex-wrap:wrap"><span class="mut sm">Se contesta en Zernio (o con ⑧ Community). Lo nuevo puede tardar hasta 10 minutos en aparecer.</span><div class="sp"></div><a class="btn" href="https://zernio.com/dashboard" target="_blank" rel="noopener noreferrer">Contestar en Zernio ↗</a></div>
       <div class="grid g21" style="align-items:start">
@@ -174,10 +175,10 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     if (gfiles.error) return mount(b, html`${bar}<div class="warnbox">${gfiles.error}</div>`);
     const docs = gfiles.filter((f) => !isDir(f)), dirs = gfiles.filter(isDir);
     const cur = docs.find((f) => f.id === gcur) || docs[0];
-    mount(b, html`${bar}${!gfiles.length ? html`<div class="empty"><b>La carpeta está vacía</b>Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.</div>` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
+    mount(b, html`${bar}${!gfiles.length ? html`${vacio({ icono: 'inbox', titulo: 'La carpeta está vacía', linea: 'Crea el primer guion con «+ Guion» o súbelo a la carpeta en Drive.' })}` : html`<div class="grid gsplit" style="grid-template-columns:260px 1fr;gap:16px;align-items:start">
       <div class="card" style="padding:12px">${dirs.map((f) => html`<button class="artifact" data-act="gdir" data-id="${f.id}" data-n="${f.name}" style="width:100%;margin:4px 0"><span class="fi">${ico('folder')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b></div></button>`)}
         ${docs.map((f) => html`<button class="artifact" data-act="gfile" data-id="${f.id}" style="width:100%;margin:4px 0;${cur && f.id === cur.id ? 'outline:2px solid var(--ink)' : ''}"><span class="fi">${ico('edit')}</span><div style="text-align:left;min-width:0"><b style="font-weight:500;overflow-wrap:anywhere">${f.name}</b><div class="mut" style="font-size:11px">${f.modified ? fdate(f.modified.slice(0, 10)) : ''}${f.owner ? ' · ' + f.owner : ''}</div></div></button>`)}</div>
-      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost xs" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:var(--surface)" loading="lazy"></iframe></div>` : html`<div class="empty"><b>Elige una carpeta</b>Los guiones están adentro.</div>`}</div>`}`);
+      ${cur ? html`<div class="card swap" style="min-width:0;padding:10px"><div class="row" style="margin-bottom:8px"><b style="font-weight:500">${cur.name}</b><div class="sp"></div><a class="btn ghost sm" href="${cur.link}" target="_blank" rel="noopener noreferrer">Abrir en Drive ↗</a></div><iframe src="${preview(cur)}" style="width:100%;height:70vh;border:0;border-radius:12px;background:var(--surface)" loading="lazy"></iframe></div>` : html`${vacio({ icono: 'inbox', titulo: 'Elige una carpeta', linea: 'Los guiones están adentro.' })}`}</div>`}`);
   }
 
   // ---------- Planner: calendario semana / mes, con pilares y si cada pieza ya está en Drive ----------
@@ -206,13 +207,13 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const y = a.getFullYear(), m = a.getMonth(), n = new Date(y, m + 1, 0).getDate(), T = today();
     const name = a.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' }).replace(/^./, (c) => c.toUpperCase());
     return html`<section class="sp-panel ct-month"><div class="sp-panel-h row"><h3>${name}</h3><span class="mut sm">Toca un día para ver su semana</span><div class="sp"></div>
-        <button class="arrow light" data-act="pmonth" data-d="-1" aria-label="Mes anterior">‹</button><button class="btn ghost xs" data-act="ptoday">Hoy</button><button class="arrow light" data-act="pmonth" data-d="1" aria-label="Mes siguiente">›</button></div>
+        <button class="btn-icon end" data-act="pmonth" data-d="-1" aria-label="Mes anterior">‹</button><button class="btn ghost sm" data-act="ptoday">Hoy</button><button class="btn-icon end" data-act="pmonth" data-d="1" aria-label="Mes siguiente">›</button></div>
       <div class="sp-strip ct-strip" style="grid-template-columns:repeat(${n},minmax(30px,1fr))">${Array.from({ length: n }, (_, i) => { const k = iso(new Date(y, m, i + 1, 12)), l = dots(k), wd = (new Date(y, m, i + 1, 12).getDay() + 6) % 7;
         return html`<button class="cd ${k === T ? 'today' : ''} ${k >= from && k <= to ? 'wk' : ''} ${wd > 4 ? 'we' : ''}" data-act="pday" data-d="${k}" aria-label="${fdate(k)}${l.length ? ` · ${l.length}` : ''}"><span class="w">${DOW[wd]}</span><span class="n">${i + 1}</span><span class="dots">${l.slice(0, 4).map((c) => html`<i style="background:${c}"></i>`)}</span></button>`; })}</div></section>`;
   }
   function calWeekPanel({ days, from, to }, of, chip, act, label, btn) {
     const T = today();
-    return html`<section class="sp-panel ct-week"><div class="sp-panel-h row"><button class="arrow light" data-act="pnav" data-d="-1" aria-label="Semana anterior">‹</button><div style="min-width:0"><h3>${fdate(from)} – ${fdate(to)}</h3><span class="mut sm">${label}</span></div><button class="arrow light" data-act="pnav" data-d="1" aria-label="Semana siguiente">›</button><div class="sp"></div>${btn}</div>
+    return html`<section class="sp-panel ct-week"><div class="sp-panel-h row"><button class="btn-icon end" data-act="pnav" data-d="-1" aria-label="Semana anterior">‹</button><div style="min-width:0"><h3>${fdate(from)} – ${fdate(to)}</h3><span class="mut sm">${label}</span></div><button class="btn-icon end" data-act="pnav" data-d="1" aria-label="Semana siguiente">›</button><div class="sp"></div>${btn}</div>
       <div class="ct-days">${days.map((d, i) => { const k = iso(d), l = of(k); return html`<div class="ct-day ${k === T ? 'today' : ''} ${i > 4 ? 'we' : ''}" data-act="${act}" data-d="${k}"><div class="ct-dh"><span>${DOWL[i]}</span><b>${d.getDate()}</b></div><div class="ct-dl">${l.map(chip)}<span class="ct-add" aria-hidden="true">${ico('plus', 14)}</span></div></div>`; })}</div></section>`;
   }
   const stripTo = (b) => { const st = $('.ct-strip', b), w = st?.querySelector('.cd.wk'); if (st && w && st.scrollWidth > st.clientWidth) st.scrollLeft = Math.max(0, w.offsetLeft - 12); };
@@ -241,8 +242,8 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const chip = (p) => { const [i, l] = driveState(p), e = estadoDe(p); return html`<button class="ppost st-${ESTADO_CLS[e] || 'idea'}" data-act="pedit" data-id="${p.id}" style="border-left-color:${colorOf(p.pillar)}" title="${nombreDe(p, brand)} · ${e} · ${l} · ${tituloPieza(p, crefs)}"><span class="pi">${i}</span><span class="pt">${p.title}</span>${marcasPieza(p)}${p.format ? html`<span class="pf">${p.format}</span>` : ''}</button>`; };
     const undated = vis.filter((p) => !p.date && estadoDe(p) !== 'Publicado');
     mount(b, html`
-      ${(() => { const k = cerrado(M + '-01'); return k.cerrado ? html`<div class="cc-lock" role="status">${ico('lock', 16)}<div><b>Sin brief del ciclo de ${mesNombre(M)}</b><span class="mut sm">No se crean piezas con fecha de este mes hasta que ④ Creatividad deje el brief en 04-contenido/${M}/brief-del-ciclo.md. Las ideas sin fecha sí se pueden crear.</span></div>${me.role === 'ceo' ? html`<button class="btn ghost xs" data-act="briefOpen" data-m="${M}">Abrir el mes sin brief</button>` : ''}</div>` : k.por === 'ceo' ? html`<div class="cc-lock open mut sm">${ico('lock', 13)} ${mesNombre(M)} está abierto sin brief: lo abrió ${String(k.abierto.por || '').split('@')[0]}.</div>` : ''; })()}
-      <div class="cc-top">${mezclaHtml(mezclaDelMes(vivos, M, pillars, cavs), ccf, mesL)}<button class="btn ghost xs" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div>
+      ${(() => { const k = cerrado(M + '-01'); return k.cerrado ? html`<div class="cc-lock" role="status">${ico('lock', 16)}<div><b>Sin brief del ciclo de ${mesNombre(M)}</b><span class="mut sm">No se crean piezas con fecha de este mes hasta que ④ Creatividad deje el brief en 04-contenido/${M}/brief-del-ciclo.md. Las ideas sin fecha sí se pueden crear.</span></div>${me.role === 'ceo' ? html`<button class="btn ghost sm" data-act="briefOpen" data-m="${M}">Abrir el mes sin brief</button>` : ''}</div>` : k.por === 'ceo' ? html`<div class="cc-lock open mut sm">${ico('lock', 13)} ${mesNombre(M)} está abierto sin brief: lo abrió ${String(k.abierto.por || '').split('@')[0]}.</div>` : ''; })()}
+      <div class="cc-top">${mezclaHtml(mezclaDelMes(vivos, M, pillars, cavs), ccf, mesL)}<button class="btn ghost sm" data-act="pillars">${pillars.length ? 'Editar pilares' : '+ Pilares'}</button></div>
       ${filtrosHtml(ccf, ejes(vivos, pillars, ccamps), crefs.length)}
       ${calStrip(wk, (k) => vis.filter((p) => p.date === k).map((p) => colorOf(p.pillar)))}
       ${calWeekPanel(wk, (k) => vis.filter((p) => p.date === k), chip, 'pnew', raw(`${ico('folder', 13).toString()} en Drive · ⬆ por subir · ${ico('edit', 13).toString()} por grabar · ↻ replica`), html`<button class="btn" data-act="pnew" data-d="">+ Pieza</button>`)}
@@ -273,7 +274,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
     const eventos = eventosMarca({ posts: separar(posts).vivos, shoots, tasks: ops.tasks, projects: ops.projects, slug, from: R.from, to: R.to, hoy });
     cdia = porDia(eventos.filter((e) => !coff.has(e.tipo)));
     mount(b, html`<div class="cm-cal">${calendarioHtml({ vista: cvista, fecha: pdate, eventos, off: coff, tipos: TIPOS_MARCA.map(([k]) => k), lista: TIPOS_MARCA, hoy,
-      botones: html`<button class="btn ghost xs" data-act="snew" data-d="">+ Grabación</button><button class="btn xs" data-act="pnew" data-d="">+ Pieza</button>`,
+      botones: html`<button class="btn ghost sm" data-act="snew" data-d="">+ Grabación</button><button class="btn sm" data-act="pnew" data-d="">+ Pieza</button>`,
       pie: html`<div class="wc-foot"><span class="mut sm"><b>Operativo:</b> grabaciones, tareas y reuniones de sus proyectos, y los días 1, 11 y 20 · <b>Planificación:</b> piezas en Idea o En proceso · <b>Programado:</b> lo listo, con hora y red. Lo atrasado sale en rojo.</span></div>` })}
       ${archivoHtml(separar(posts).archivo)}</div>`);
     mejorarCalendario(b);
@@ -281,7 +282,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // El Archivo: lo publicado hace más de 30 días (o marcado «Archivado») sale del calendario solo. Se ve aquí y se puede recuperar.
   function archivoHtml(archivo) {
     return html`<div class="row el-archbar"><button class="chip ${parch ? 'dark' : ''}" data-act="parch" aria-pressed="${parch ? 'true' : 'false'}">${ico('folder', 13)} Archivo · ${archivo.length}</button><span class="mut sm">Lo publicado hace más de 30 días o marcado «Archivado» sale del calendario solo. Recuperar lo vuelve a poner como Listo.</span></div>
-      ${parch ? (archivo.length ? html`<div class="el-arch">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map((p) => html`<div class="el-arch-i"><button type="button" class="el-arch-t" data-act="pedit" data-id="${p.id}"><b>${p.title}</b><span class="mut sm">${p.format || 'Pieza'}${p.date ? ` · ${fdate(p.date)}` : ''}${(p.assets || []).length ? ` · ${p.assets.length} archivo${p.assets.length === 1 ? '' : 's'}` : ''}</span></button><button type="button" class="btn ghost xs" data-act="prec" data-id="${p.id}">${ico('repeat', 12)} Recuperar</button></div>`)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía: aquí llega lo que ya salió y cumplió su mes.</div>`) : ''}`;
+      ${parch ? (archivo.length ? html`<div class="el-arch">${archivo.sort((a, z) => String(z.date || '').localeCompare(String(a.date || ''))).map((p) => html`<div class="el-arch-i"><button type="button" class="el-arch-t" data-act="pedit" data-id="${p.id}"><b>${p.title}</b><span class="mut sm">${p.format || 'Pieza'}${p.date ? ` · ${fdate(p.date)}` : ''}${(p.assets || []).length ? ` · ${p.assets.length} archivo${p.assets.length === 1 ? '' : 's'}` : ''}</span></button><button type="button" class="btn ghost sm" data-act="prec" data-id="${p.id}">${ico('repeat', 12)} Recuperar</button></div>`)}</div>` : html`<div class="mut sm" style="margin-top:8px">Nada archivado todavía: aquí llega lo que ya salió y cumplió su mes.</div>`) : ''}`;
   }
   // ---------- Calendario · Marketing (Fase 3b): arrastrar a otro día, bandas de campaña, badge de slot y métricas ----------
   // Se agrega sobre el calendario de siempre (calendarioHtml no cambia): cada pieza es un .wc-ev con data-act="pedit" y cada día un
@@ -370,7 +371,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
   // En el cel: la ficha de la pieza con «Mover a…» (una fecha), sus métricas si ya salió y «Editar».
   function fichaPieza(p) {
     const e = estadoDe(p), sl = slotDe(p), ms = metricasDe(p), motivo = motivoNoMover(p);
-    drawer(html`<div class="row"><span class="chip ${ESTADO_CLS[e] || ''}">${e}</span>${p.format ? html`<span class="chip">${p.format}</span>` : ''}${sl ? html`<span class="chip cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span>` : ''}<div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip ${ESTADO_CLS[e] || ''}">${e}</span>${p.format ? html`<span class="chip">${p.format}</span>` : ''}${sl ? html`<span class="chip cc-slot ${sl.fuera ? 'fuera' : ''}" title="${tituloSlot(sl)}">${sl.id}</span>` : ''}<div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${p.title || 'Sin título'}</h2><div class="mut">${p.date ? `${e === 'Publicado' ? 'Salió' : 'Sale'} el ${fdate(p.date)}` : 'Sin fecha'}${redDe(p) ? ` · ${redDe(p)}` : ''}</div>
       ${ms.length ? html`<b class="sm" style="display:block;margin-top:18px">Cómo le fue</b><div class="sp-kpis" style="margin-top:8px">${ms.map((m) => html`<div><span class="lbl">${m.l}</span><b>${m.t}</b></div>`)}</div>` : ''}
       ${motivo ? html`<p class="mut sm" style="margin-top:18px">${motivo}.</p>` : html`<b class="sm" style="display:block;margin-top:18px">Mover a…</b>
@@ -476,7 +477,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         </div>
       </div>
       <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 class="ttl">${ICON.radar}Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
-        <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
+        <label class="sw-row"><input type="checkbox" class="switch" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
         <div class="grid g2" style="margin-top:12px;align-items:start"><div>
           <b class="sm" style="font-weight:500">Temas del nicho (hashtags, máx. 10)</b>
           <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">${ico('x', 16)}</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin temas.</span>`}</div>
@@ -593,9 +594,9 @@ Contesta SOLO con este JSON, sin texto antes ni después:
 export async function bullseyeTool(host, { slug, me, alive }) {
   mount(host, html`<p class="loading">Leyendo el repo…</p>`);
   let data;
-  try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(host, html`<div class="empty"><b>No pude leer el repo</b>${e.message}</div>`); }
+  try { data = await api(`repo/content?profile=${encodeURIComponent(slug)}`); } catch (e) { return mount(host, html`${fallo({ titulo: 'No pude leer el repo', linea: e.message })}`); }
   if (!alive() || !host.isConnected) return;
-  if (data.profile?.slug !== slug) return mount(host, slug === 'personal' ? html`<div class="empty"><b>La marca personal es solo del CEO</b>Tu perfil no la ve.</div>` : html`<div class="empty"><b>Este cliente no tiene perfil de contenido</b>Se crea con su folder en clients/.</div>`);
+  if (data.profile?.slug !== slug) return mount(host, slug === 'personal' ? html`${vacio({ icono: 'lock', titulo: 'La marca personal es solo del CEO', linea: 'Tu perfil no la ve.' })}` : html`${vacio({ icono: 'inbox', titulo: 'Este cliente no tiene perfil de contenido', linea: 'Se crea con su folder en clients/.' })}`);
   const p = data.profile;
   // Los últimos posts propios (de la semana leída) solo enriquecen el prompt: sin semana, se omiten.
   let own = [];

@@ -71,7 +71,7 @@ export function taskKanban(box, o) {
     }
     const open = filtered().filter((t) => st(t) !== 'Hecha').length;
     const pr = fp && fp !== '_' && o.openProject ? proj(fp) : null;
-    return html`<div class="kb-bar">${chips}<div class="kb-tools">${sel}<span class="kb-count">${open} ${open === 1 ? 'abierta' : 'abiertas'}</span>${pr ? html`<button class="btn ghost xs" data-kact="openp">Abrir ${pr.name} ${ico('right', 13)}</button>` : ''}</div></div>`;
+    return html`<div class="kb-bar">${chips}<div class="kb-tools">${sel}<span class="kb-count">${open} ${open === 1 ? 'abierta' : 'abiertas'}</span>${pr ? html`<button class="btn ghost sm" data-kact="openp">Abrir ${pr.name} ${ico('right', 13)}</button>` : ''}</div></div>`;
   }
 
   function paint() {

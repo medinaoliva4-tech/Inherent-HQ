@@ -149,9 +149,9 @@ export const vista = {
           <td>${campo(`cartera.${i}.participacion`, l.participacion, { et: `Participación relativa de ${l.linea || `la línea ${i + 1}`}`, num: true, ph: '1 = el líder' })}</td>
           <td data-celda-q="${i}">${celdaCuadrante(l)}</td>
           <td>${ed ? html`<select class="in esc-in" data-ruta="cartera.${i}.accion" aria-label="Acción para ${l.linea || `la línea ${i + 1}`}">${opciones(ACCIONES.map((a) => [a, ACCION_TXT[a]]), l.accion, 'Sin decidir')}</select>` : html`<span class="esc-ro">${ACCION_TXT[l.accion] || 'Sin decidir'}</span>`}</td>
-          ${ed ? html`<td><button type="button" class="btn ghost xs" data-acc="quitar-linea" data-i="${i}" aria-label="Quitar la línea ${i + 1}">${ico('x', 14)}</button></td>` : ''}</tr>`)}</tbody></table></div>
+          ${ed ? html`<td><button type="button" class="btn ghost sm" data-acc="quitar-linea" data-i="${i}" aria-label="Quitar la línea ${i + 1}">${ico('x', 14)}</button></td>` : ''}</tr>`)}</tbody></table></div>
       ${!c.cartera.length ? html`<p class="esc-sin esc-fuente">${SIN_DATOS}: las líneas de producto y sus ventas salen de 07-oferta-y-ventas/numeros.md del cliente (solo lo ve quien ve costos) o de lo que pegue el cliente.</p>` : ''}
-      ${ed ? html`<div class="esc-barra"><button type="button" class="btn ghost sm" data-acc="agregar-linea" ${c.cartera.length >= MAX_LINEAS ? raw('disabled') : ''}>${ico('plus', 14)} Agregar línea</button><span class="mut sm">Hasta ${MAX_LINEAS}. Margen de 0 a 100; participación relativa: 1 = igual que el líder.</span></div>` : ''}
+      ${ed ? html`<div class="esc-barra"><button type="button" class="btn ghost" data-acc="agregar-linea" ${c.cartera.length >= MAX_LINEAS ? raw('disabled') : ''}>${ico('plus', 14)} Agregar línea</button><span class="mut sm">Hasta ${MAX_LINEAS}. Margen de 0 a 100; participación relativa: 1 = igual que el líder.</span></div>` : ''}
       <div class="esc-cartera-vis"><div class="esc-matriz" data-vivo="matriz">${matriz(limpiar(c).cartera)}</div><div data-vivo="tablero"><h3 class="esc-h">Empujar · sostener · revisar · retirar</h3>${tablero()}</div></div>`;
 
     // ---------- 3 · Modelo de dinero ----------
@@ -187,7 +187,7 @@ export const vista = {
       <h3 class="esc-h">Los escenarios <span class="mut sm">de 2 a 4: en cada uno solo el valor nuevo de lo que cambia; vacío = igual que hoy</span></h3>
       <div class="esc-cols">${c.escenarios.map((e, i) => html`<section class="esc-col" data-esc="${i}">
           <header>${campo(`escenarios.${i}.nombre`, e.nombre, { et: `Nombre del escenario ${i + 1}`, ph: `Escenario ${i + 1}`, max: 80 })}
-            ${ed ? html`<button type="button" class="btn ghost xs" data-acc="quitar-esc" data-i="${i}" aria-label="Quitar el escenario ${i + 1}">${ico('x', 14)}</button>` : ''}</header>
+            ${ed ? html`<button type="button" class="btn ghost sm" data-acc="quitar-esc" data-i="${i}" aria-label="Quitar el escenario ${i + 1}">${ico('x', 14)}</button>` : ''}</header>
           ${CAMBIOS.map((k) => html`<label class="esc-f"><span class="lbl">${CAMBIO_NOMBRE[k]}</span>${ed ? html`<input class="in esc-in" type="text" data-ruta="escenarios.${i}.cambios.${k}" data-tipo="num" data-cambio="${k}" inputmode="decimal" autocomplete="off" aria-label="${CAMBIO_NOMBRE[k]} nuevo en ${e.nombre}" placeholder="${c.base[k] ?? 'igual que hoy'}" value="${e.cambios[k] ?? ''}">`
             : html`<span class="esc-ro">${k in e.cambios ? (k === 'retencion' ? `${redondeo(e.cambios[k] * 100)}%` : miles(e.cambios[k])) : 'Igual que hoy'}</span>`}</label>`)}</section>`)}
         ${ed && c.escenarios.length < MAX_ESCENARIOS ? html`<button type="button" class="esc-agregar" data-acc="agregar-esc">${ico('plus', 14)} Agregar escenario</button>` : ''}</div>

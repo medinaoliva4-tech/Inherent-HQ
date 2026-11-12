@@ -3,6 +3,7 @@ import { html, mount, api, col, ico, toast } from './core.js';
 import { cargarContexto, contextoLista, contextoActual, ponerContexto } from './contexto.js';
 import { limpiarEstrategia, analizarMeta, resumenVoces, TIPOS_VOZ } from './estrategia-datos.js';
 import { limpiarEmbudo, analizarEmbudo, idEmbudo } from './embudo-datos.js';
+import { fallo, vacio } from './visual.js';
 
 const C = col('strategy_meta');
 const q = (n) => `Q${Math.round(Number(n) || 0).toLocaleString('es-GT')}`;
@@ -39,7 +40,7 @@ export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
       <div class="mm-dist"><div class="mm-num"><span>Falta para la meta</span><b>${d.meta ? q(a.falta) : '—'}</b></div><div class="mm-bar" role="img" aria-label="Avance ${pct(a.avance)}"><i style="width:${(a.avance * 100).toFixed(1)}%"></i></div><div class="mm-pie"><span>${q(d.actual)} al mes</span><span>${pct(a.avance)}</span><span>${q(d.meta)}${d.fecha ? ` · ${d.fecha}` : ''}</span></div></div>
       ${fuga ? html`<div class="em-av mal"><b>Cuello de botella: ${fuga.de} → ${fuga.a} (${pct(fuga.tasa)})</b><p>Sale del Embudo de este mes. Arreglarlo primero rinde más que traer más leads a un embudo roto.</p></div>` : ''}
       ${a.palancas.length ? html`<div class="mm-pal">${a.palancas.map((p) => html`<article class="${p.posible ? '' : 'no'}"><span>${p.nombre}</span><b>${valor(p.a, p.unidad)}</b><small>${p.posible ? `Hoy: ${valor(p.de, p.unidad)}` : 'No alcanza sola'}</small></article>`)}</div><p class="em-nota" style="margin:8px 0 14px">Cada una dice qué haría falta moviendo solo esa palanca. Lo normal es mover un poco de varias.</p>` : ''}
-      <div class="em"><div class="mk-c mm-pasos"><div class="mm-w"><h3>Los tres pasos de estos 90 días</h3>${d.pasos.map((p, i) => html`<div class="mm-paso"><input type="checkbox" data-p="${i}" data-c="hecho" ${p.hecho ? 'checked' : ''} aria-label="Hecho"><input class="in" data-p="${i}" data-c="texto" value="${p.texto}" aria-label="Paso ${i + 1}"><button class="lat-ib" type="button" data-d="p-quitar" data-i="${i}" aria-label="Quitar paso">${ico('x', 15)}</button></div>`)}${d.pasos.length < 3 ? html`<button class="btn ghost" type="button" data-d="paso">${ico('plus', 14)} Agregar paso</button>` : ''}</div></div>
+      <div class="em"><div class="mk-c mm-pasos"><div class="mm-w"><h3>Los tres pasos de estos 90 días</h3>${d.pasos.map((p, i) => html`<div class="mm-paso"><input type="checkbox" data-p="${i}" data-c="hecho" ${p.hecho ? 'checked' : ''} aria-label="Hecho"><input class="in" data-p="${i}" data-c="texto" value="${p.texto}" aria-label="Paso ${i + 1}"><button class="btn-icon" type="button" data-d="p-quitar" data-i="${i}" aria-label="Quitar paso">${ico('x', 15)}</button></div>`)}${d.pasos.length < 3 ? html`<button class="btn ghost" type="button" data-d="paso">${ico('plus', 14)} Agregar paso</button>` : ''}</div></div>
       <div class="em-lado"><div class="em-f-g">${campo('meta', 'Meta al mes (Q)')}${campo('actual', 'Ingreso actual al mes (Q)')}${campo('ticket', 'Ticket promedio (Q)')}${campo('leads', 'Leads al mes')}${campo('cierre_pct', 'Cierre %')}${campo('fecha', 'Fecha de la meta', 'date')}</div><div class="em-acc"><button class="btn" type="button" data-d="guardar">Guardar</button></div></div></div>`);
   }
   function voz() {
@@ -48,8 +49,8 @@ export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
       <div class="ren-k">${TIPOS_VOZ.map((t) => html`<div><span>${t}</span><b>${r.porTipo[t]}</b></div>`)}</div>
       ${r.temas.length ? html`<div class="vz-temas">${r.temas.map((t) => html`<span>${t.tema} · ${t.n}</span>`)}</div>` : ''}
       <div class="mk-c vz-nueva"><div class="em-f-g mm-w"><label class="mk-w"><span>Lo que dijo, tal cual</span><textarea class="in" rows="2" data-n="frase">${nueva.frase}</textarea></label><label><span>Tipo</span><select class="in" data-n="tipo">${TIPOS_VOZ.map((t) => html`<option ${t === nueva.tipo ? 'selected' : ''}>${t}</option>`)}</select></label><label><span>Tema</span><input class="in" data-n="tema" value="${nueva.tema}" placeholder="Precio, confianza…"></label><label class="mk-w"><span>De dónde salió</span><input class="in" data-n="fuente" value="${nueva.fuente}" placeholder="Entrevista, DM, llamada"></label></div><div class="em-acc mm-w"><button class="btn" type="button" data-d="voz">Agregar</button></div></div>
-      <div class="vz-lista">${d.voces.map((v, i) => html`<article><blockquote>«${v.frase}»</blockquote><footer><span class="mk-v">${v.tipo}</span>${v.tema ? html`<span>${v.tema}</span>` : ''}${v.fuente ? html`<span>${v.fuente}</span>` : ''}<button class="lat-ib" type="button" data-d="v-quitar" data-i="${i}" aria-label="Quitar frase">${ico('x', 15)}</button></footer></article>`)}</div>
-      ${d.voces.length ? '' : html`<div class="empty"><b>Agrega la primera frase</b>Escríbela como la dijo, sin arreglarla. Esas palabras son las que venden.</div>`}`);
+      <div class="vz-lista">${d.voces.map((v, i) => html`<article><blockquote>«${v.frase}»</blockquote><footer><span class="mk-v">${v.tipo}</span>${v.tema ? html`<span>${v.tema}</span>` : ''}${v.fuente ? html`<span>${v.fuente}</span>` : ''}<button class="btn-icon" type="button" data-d="v-quitar" data-i="${i}" aria-label="Quitar frase">${ico('x', 15)}</button></footer></article>`)}</div>
+      ${d.voces.length ? '' : html`${vacio({ icono: 'inbox', titulo: 'Agrega la primera frase', linea: 'Escríbela como la dijo, sin arreglarla. Esas palabras son las que venden.' })}`}`);
   }
   const pintar = () => { if (alive()) (vista === 'voz' ? voz : meta)(); };
   const leer = () => {
@@ -73,5 +74,5 @@ export async function pintarEstrategia(el, { me, area, tabs, vista, alive }) {
       d.voces.unshift({ ...nueva }); nueva = { frase: '', tipo: nueva.tipo, tema: '', fuente: nueva.fuente }; return guardar();
     }
   };
-  try { await cargar(); } catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir esta mesa</b>${e.message}</div>`); }
+  try { await cargar(); } catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir esta mesa', linea: e.message })}`); }
 }

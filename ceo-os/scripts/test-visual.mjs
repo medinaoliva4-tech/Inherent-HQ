@@ -4,7 +4,7 @@
 // npm run test:visual
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { anillo, barra, proporcion, leyenda, sparkline, cuenta, cuentaChip, GRUPOS, GRUPO_ETIQUETA, semanaDe, grupoRelativo, agruparPorFecha,
+import { fallo, anillo, barra, proporcion, leyenda, sparkline, cuenta, cuentaChip, GRUPOS, GRUPO_ETIQUETA, semanaDe, grupoRelativo, agruparPorFecha,
   resumenEventos, TONOS, iniciales, tonoDe, monograma, monogramas, punto, estado, cuadrito, vacio, formatear, numero, contarNumeros, recuerda, recordar } from '../public/js/visual.js';
 import { tieneIco } from '../public/js/iconos.js';
 
@@ -229,6 +229,13 @@ t('cuadrito: ícono en cuadro tintado con su color; un ícono que no existe cae 
   assert.match(S(cuadrito('no-existe-xyz')), /<svg/); assert.match(S(cuadrito('link')), /aria-hidden="true"/);
   assert.match(S(cuadrito('link', { tam: 'sm' })), /vz-tipo--sm/); assert.match(S(cuadrito('link', { tam: 'lg' })), /vz-tipo--lg/);
   assert.match(S(cuadrito('link', { color: 'x;y' })), /--tipo-c:var\(--ui-acc\)/);
+});
+t('vacío con «Armarlo en el Chat» y fallo: el error no se pinta como vacío', () => {
+  const c = S(vacio({ titulo: 'Aún no hay patrones', boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos <los> patrones' } } }));
+  assert.match(c, /<button type="button" class="btn ghost vz-vacio-b" data-vac-chat="marketing" data-vac-borrador="Armemos &lt;los&gt; patrones">Armarlo en el Chat<\/button>/);
+  const f = S(fallo({ titulo: 'No pude abrir esta mesa', linea: 'Sin conexión', detalle: '<details class="tech">x</details>' }));
+  assert.match(f, /role="alert" class="vz-vacio vz-vacio--err"/); assert.match(f, /No pude abrir esta mesa/); assert.match(f, /<details class="tech">x<\/details>/);
+  assert.ok(!/vz-vacio--err/.test(S(vacio({ titulo: 'x' }))));
 });
 t('vacío: círculo discontinuo + ícono, título, de dónde saldría y una sola acción (botón o link); nada raro en el link', () => {
   const s = S(vacio({ icono: 'calendar', titulo: 'Aún no hay notas aquí', linea: 'Se llena cuando agregues la primera', boton: { texto: 'Agregar', act: 'nueva', data: { estado: 'Por hacer', 'x y': 'z' } }, animar: true }));

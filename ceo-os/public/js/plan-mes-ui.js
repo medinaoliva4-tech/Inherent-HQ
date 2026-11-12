@@ -13,6 +13,7 @@ import { armarCtx, correrIA } from './ia-herramienta.js';
 import { docHtml } from './artifact.js';
 import { abrirEnChat } from './areas.js';
 import { rutaModulo, rutaHerramienta, herramientaDe, veEstrategia } from './herramientas.js';
+import { vacio as vacioOS, fallo } from './visual.js';
 
 const PILAR_C = ['#2a1f17', '#8a6a50', '#c9b39b', '#5d7a46', '#3f6ea8', '#b4472f'];
 export const mesDe = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -38,11 +39,11 @@ export function planPanel(o) {
       <section class="ev-sec ${fr('slots')}"><p class="ad-lb">Las piezas del mes${p.slots?.length ? ` · ${p.slots.length}` : ''}${avisos.length ? html` <span class="pm-warn">${avisos.length} por revisar</span>` : ''}</p>
         ${p.slots?.length ? html`<div class="pm-tbl"><table><thead><tr><th>Sem.</th><th>Canal</th><th>Formato</th><th>Función</th><th>A quién</th><th>Consciencia</th><th>Para qué</th><th>Traza a</th></tr></thead><tbody>${p.slots.map((s) => html`<tr class="${aviso(s.id).length ? 'mal' : ''}"><td>${s.semana}</td><td>${s.canal}</td><td>${s.formato}</td><td>${s.funcion ? html`<span class="pm-tag">${s.funcion}</span>` : ''}</td><td>${s.temperatura}</td><td>${s.consciencia}</td><td>${s.objetivo}${aviso(s.id).map((a) => html`<small class="pm-warn">${a}</small>`)}</td><td>${s.traza}</td></tr>`)}</tbody></table></div>` : vacio('Una fila por pieza: semana, canal, formato y el trabajo que hace. El día exacto lo pone Creatividad.')}</section>`;
   return docHtml({ ic: 'target', titulo: `Plan de ${Mes} · ③ Marketing`, sub: o.b.name, estado, ok: Boolean(o.piezas), cerrar: o.cerrar,
-    acciones: o.abrir ? html`<a class="btn ghost xs" href="${o.abrir[0]}" ${o.abrir[2] ? raw(`data-etapa="${o.abrir[2]}"`) : ''}>${ico(o.abrir[2] ? 'spark' : 'link', 12)} ${o.abrir[1]}</a>` : '',
+    acciones: o.abrir ? html`<a class="btn ghost sm" href="${o.abrir[0]}" ${o.abrir[2] ? raw(`data-etapa="${o.abrir[2]}"`) : ''}>${ico(o.abrir[2] ? 'spark' : 'link', 12)} ${o.abrir[1]}</a>` : '',
     prog: SECCIONES_P.map((k) => [NOMBRE_P[k].replace(/^(La|El|Los|Las) /, '').replace(/^./, (c) => c.toUpperCase()), Boolean(k === 'campana' ? p.campana?.nombre : p[k]?.length)]),
     cuerpo,
     pie: { texto: o.piezas ? `${o.piezas} pieza${o.piezas === 1 ? '' : 's'} de este plan ya están en Ideas.` : 'Marketing decide qué se dice, dónde y cuándo. Las piezas las escribe Creatividad.',
-      accion: html`${o.piezas ? html`<a class="btn ghost xs" href="${rutaModulo(o.b.slug, 'ideas')}">Ver en Ideas</a>` : ''}${p.slots?.length && o.edit ? html`<button class="btn" data-act="pasar" ${o.pasando ? raw('disabled') : ''}>${o.pasando ? 'Pasando…' : `${o.piezas ? 'Poner al día' : 'Pasar'} ${p.slots.length} piezas a Ideas`} ${ico('right', 13)}</button>` : ''}` } });
+      accion: html`${o.piezas ? html`<a class="btn ghost sm" href="${rutaModulo(o.b.slug, 'ideas')}">Ver en Ideas</a>` : ''}${p.slots?.length && o.edit ? html`<button class="btn" data-act="pasar" ${o.pasando ? raw('disabled') : ''}>${o.pasando ? 'Pasando…' : `${o.piezas ? 'Poner al día' : 'Pasar'} ${p.slots.length} piezas a Ideas`} ${ico('right', 13)}</button>` : ''}` } });
 }
 // «Pasar a Creatividad»: cada slot queda como pieza del calendario. Devuelve cuántas quedaron, o null.
 // opts.techo (leerTecho): con él, lo que pasa el techo se marca FUERA DEL ALCANCE y se pide confirmar (el chat de Diseño no lo pasa: no cambia).
@@ -74,12 +75,12 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
   el.dataset.island = '1';
   const slug = b.slug, enc = encodeURIComponent, meses = mesesPlan();
   const r0 = (resto ?? rest)[0], mes = mesOk(r0) ? r0 : meses[1];
-  if (b.personal) return mount(el, html`<div class="empty"><b>El plan del mes es de las marcas de clientes</b>La marca personal no lleva plan.</div>`);
+  if (b.personal) return mount(el, html`${vacioOS({ icono: 'inbox', titulo: 'El plan del mes es de las marcas de clientes', linea: 'La marca personal no lleva plan.' })}`);
   mount(el, skel('pagina'));
   const url = `plan/${enc(slug)}/${mes}`;
   let d, est = null;
   try { [d, est] = await Promise.all([api(url), api(`estrategia/${enc(slug)}`).catch(() => null)]); } // la ficha vive en Estrategia: sin ese permiso queda «SIN DATOS»
-  catch (e) { if (!alive()) return; return mount(el, html`<div class="empty"><b>No pude abrir el plan</b>${e.message}${techDetail(e)}</div>`); }
+  catch (e) { if (!alive()) return; return mount(el, html`${fallo({ titulo: 'No pude abrir el plan', linea: e.message, detalle: techDetail(e) })}`); }
   if (!alive()) return;
 
   // saved: lo que hay en el servidor (con su v) · borr: las secciones que la persona tocó (copias, sin guardar) · mn: las filas del mensaje por nivel
@@ -160,12 +161,12 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
     const motivos = !S.aprobada ? ['La estrategia no está aprobada'] : ks.length ? ['Guarda tus cambios primero'] : rev.bloquea;
     const dn = (x) => (x ? raw('disabled') : '');
     mount($('#pcs-acts', root), html`
-      <div class="pcs-grp">${S.puede ? html`<button type="button" class="btn sm" data-act="pcs-generar" ${dn(!ed || corriendo || busy)}>${ico('sparkles', 14)} Generar con IA</button>
-        <button type="button" class="btn ghost sm" data-act="pcs-guardar" ${dn(!ed || !ks.length || busy)}>${ico('check', 14)} Guardar${ks.length ? ` (${ks.length})` : ''}</button>
-        <button type="button" class="btn ghost sm" data-act="pcs-descartar" ${dn(!ed || !Object.keys(S.borr).length || busy)}>Descartar cambios</button>` : ''}</div>
-      <div class="pcs-grp"><button type="button" class="btn ghost sm" data-act="pcs-chat">${ico('chat-ia', 14)} Trabajarlo en el Chat</button></div>
+      <div class="pcs-grp">${S.puede ? html`<button type="button" class="btn" data-act="pcs-generar" ${dn(!ed || corriendo || busy)}>${ico('sparkles', 14)} Generar con IA</button>
+        <button type="button" class="btn ghost" data-act="pcs-guardar" ${dn(!ed || !ks.length || busy)}>${ico('check', 14)} Guardar${ks.length ? ` (${ks.length})` : ''}</button>
+        <button type="button" class="btn ghost" data-act="pcs-descartar" ${dn(!ed || !Object.keys(S.borr).length || busy)}>Descartar cambios</button>` : ''}</div>
+      <div class="pcs-grp"><button type="button" class="btn ghost" data-act="pcs-chat">${ico('chat-ia', 14)} Trabajarlo en el Chat</button></div>
       <span class="sp"></span>
-      <div class="pcs-grp">${S.puede && n ? html`<button type="button" class="btn sm" data-act="pcs-pasar" ${dn(!ed || motivos.length || busy)}>${S.pasando ? 'Pasando…' : html`${S.piezas ? 'Poner al día' : 'Pasar'} ${n} pieza${n === 1 ? '' : 's'} a Ideas ${ico('right', 13)}`}</button>` : ''}</div>`);
+      <div class="pcs-grp">${S.puede && n ? html`<button type="button" class="btn" data-act="pcs-pasar" ${dn(!ed || motivos.length || busy)}>${S.pasando ? 'Pasando…' : html`${S.piezas ? 'Poner al día' : 'Pasar'} ${n} pieza${n === 1 ? '' : 's'} a Ideas ${ico('right', 13)}`}</button>` : ''}</div>`);
     mount($('#pcs-why', root), S.puede && n && ed && motivos.length ? html`<p class="pcs-why" role="status">${ico('triangle-alert', 13)} No se puede pasar a Ideas todavía: ${motivos.join(' · ')}.</p>` : '');
   }
   // El techo de la ficha: las piezas del plan contra las contratadas. Lo que falta dice de dónde sale; nunca un 0.
@@ -202,7 +203,7 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
           <input class="in pcs-in" data-s="mensaje" data-n="s${i}" data-f="titulo" value="${x.titulo}" maxlength="120" aria-label="Mensaje sin nivel ${i + 1}" ${dis()}>
           <input class="in pcs-in" data-s="mensaje" data-n="s${i}" data-f="para" value="${x.para}" maxlength="160" aria-label="Para qué, mensaje sin nivel ${i + 1}" ${dis()}>
           ${e ? html`<select class="in pcs-in" data-s="mensaje" data-n="s${i}" data-f="nivel" aria-label="Asignar un nivel"><option value="">Asignar nivel</option>${libres.map((l) => html`<option value="${l}">${l}</option>`)}</select>
-            <button type="button" class="btn ghost xs" data-act="pcs-mn-quitar" data-n="${i}" aria-label="Quitar este mensaje">${ico('x', 12)}</button>` : ''}</div>`)}</div>
+            <button type="button" class="btn ghost sm" data-act="pcs-mn-quitar" data-n="${i}" aria-label="Quitar este mensaje">${ico('x', 12)}</button>` : ''}</div>`)}</div>
       ${!hay && !m.sinNivel.length ? vacio('El mensaje madre no se dice igual a quien no sabe que tiene el problema que a quien ya te conoce. Escribe una versión por nivel.') : ''}`);
   }
   // Los pilares con nombre (los que se guardan), con su lugar en la lista para el color.
@@ -221,18 +222,18 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
         <input type="range" class="pcs-rng" min="0" max="100" step="1" value="${Math.max(0, Math.min(100, +x.peso || 0))}" data-s="pilares" data-i="${i}" data-f="peso" aria-label="Peso de ${x.nombre || `el pilar ${i + 1}`}" ${dis()}>
         <output class="pcs-pct" data-peso="${i}">${Math.max(0, Math.min(100, +x.peso || 0))}%</output>
         <input class="in pcs-in" data-s="pilares" data-i="${i}" data-f="para" value="${x.para || ''}" maxlength="160" placeholder="Para qué sirve" aria-label="Para qué sirve el pilar ${i + 1}" ${dis()}>
-        ${e ? html`<button type="button" class="btn ghost xs" data-act="pcs-pil-menos" data-i="${i}" aria-label="Quitar el pilar ${x.nombre || i + 1}">${ico('x', 12)}</button>` : ''}</li>`)}</ul>` : vacio('De qué se habla y cuánto pesa cada tema en el mes. Los pesos suman 100.')}
-      ${e ? html`<div class="pcs-bt"><button type="button" class="btn ghost xs" data-act="pcs-pil-mas" ${ps.length >= MAX_LISTA.pilares ? raw('disabled') : ''}>${ico('plus', 12)} Agregar pilar</button>
-        <button type="button" class="btn ghost xs" data-act="pcs-pil-100" ${ps.length ? '' : raw('disabled')}>Ajustar a 100</button></div>` : ''}`);
+        ${e ? html`<button type="button" class="btn ghost sm" data-act="pcs-pil-menos" data-i="${i}" aria-label="Quitar el pilar ${x.nombre || i + 1}">${ico('x', 12)}</button>` : ''}</li>`)}</ul>` : vacio('De qué se habla y cuánto pesa cada tema en el mes. Los pesos suman 100.')}
+      ${e ? html`<div class="pcs-bt"><button type="button" class="btn ghost sm" data-act="pcs-pil-mas" ${ps.length >= MAX_LISTA.pilares ? raw('disabled') : ''}>${ico('plus', 12)} Agregar pilar</button>
+        <button type="button" class="btn ghost sm" data-act="pcs-pil-100" ${ps.length ? '' : raw('disabled')}>Ajustar a 100</button></div>` : ''}`);
   }
   function pintarCanales() {
     const cs = valor('canales'), e = editable(), rep = funcionesRepetidas(norm('canales', cs));
     mount($('#pcs-canales', root), html`${cab('canales', 'Cada canal, su función', rep.length ? html`<span class="pm-warn">${rep.map(([a, z]) => `${a} y ${z} hacen lo mismo: sobra uno`).join(' · ')}</span>` : '')}
       ${cs.length ? html`<div class="pm-tbl"><table class="pcs-can"><thead><tr><th>Canal</th><th>Su función</th><th>Frecuencia</th><th>Formatos</th><th>No se hace</th><th><span class="sr-only">Quitar</span></th></tr></thead>
         <tbody>${cs.map((c, i) => html`<tr>${['canal', 'funcion', 'frecuencia', 'formatos', 'no'].map((f) => html`<td><input class="in pcs-in" data-s="canales" data-i="${i}" data-f="${f}" value="${c[f] || ''}" maxlength="${MAX_CAN[f]}" aria-label="${ETQ[f]} del canal ${i + 1}" ${dis()}></td>`)}
-          <td>${e ? html`<button type="button" class="btn ghost xs" data-act="pcs-can-menos" data-i="${i}" aria-label="Quitar el canal ${c.canal || i + 1}">${ico('x', 12)}</button>` : ''}</td></tr>`)}</tbody></table></div>`
+          <td>${e ? html`<button type="button" class="btn ghost sm" data-act="pcs-can-menos" data-i="${i}" aria-label="Quitar el canal ${c.canal || i + 1}">${ico('x', 12)}</button>` : ''}</td></tr>`)}</tbody></table></div>`
         : vacio('Para qué sirve cada canal y qué no se hace ahí. Dos canales con la misma función: sobra uno.')}
-      ${e ? html`<div class="pcs-bt"><button type="button" class="btn ghost xs" data-act="pcs-can-mas" ${cs.length >= MAX_LISTA.canales ? raw('disabled') : ''}>${ico('plus', 12)} Agregar canal</button></div>` : ''}`);
+      ${e ? html`<div class="pcs-bt"><button type="button" class="btn ghost sm" data-act="pcs-can-mas" ${cs.length >= MAX_LISTA.canales ? raw('disabled') : ''}>${ico('plus', 12)} Agregar canal</button></div>` : ''}`);
   }
 
   // ---------- Las piezas: semana × canal ----------
@@ -258,12 +259,12 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
     const e = editable(), pilares = pilaresN().map((x) => x.nombre);
     const sel = (f, etiqueta, ops, act, ninguno = '—') => { const a = act == null ? '' : String(act); return html`<label class="pcs-f"><span class="lbl">${etiqueta}</span><select class="in pcs-in" data-s="slots" data-id="${s.id}" data-f="${f}" ${dis()}>${ninguno === null ? '' : html`<option value="">${ninguno}</option>`}${ops.map((o) => html`<option value="${o}" ${String(o) === a ? raw('selected') : ''}>${o}</option>`)}${a && !ops.map(String).includes(a) ? html`<option value="${a}" selected>${a}</option>` : ''}</select></label>`; };
     const txt = (f, etiqueta, max) => html`<label class="pcs-f"><span class="lbl">${etiqueta}</span><input class="in pcs-in" data-s="slots" data-id="${s.id}" data-f="${f}" value="${s[f] || ''}" maxlength="${max}" ${dis()}></label>`;
-    mount(host, html`<div class="pcs-ed"><header><b>${s.id}</b><span class="mut sm">${s.canal} · Semana ${s.semana}</span><span class="sp"></span><button type="button" class="btn ghost xs" data-act="pcs-slot-cerrar">${ico('check', 12)} Listo</button></header>
+    mount(host, html`<div class="pcs-ed"><header><b>${s.id}</b><span class="mut sm">${s.canal} · Semana ${s.semana}</span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="pcs-slot-cerrar">${ico('check', 12)} Listo</button></header>
       <div class="pcs-g3">${sel('semana', 'Semana', [1, 2, 3, 4, 5], s.semana, null)}${sel('canal', 'Canal', filasCanal(), s.canal, null)}${sel('formato', 'Formato', FORMATOS, s.formato)}
         ${sel('pilar', 'Pilar', pilares, s.pilar)}${sel('funcion', 'Función', FUNCIONES, s.funcion)}${sel('temperatura', 'A quién (temperatura)', TEMPERATURAS, s.temperatura)}
         ${sel('consciencia', 'Consciencia', CONSCIENCIAS, s.consciencia)}${sel('balance', 'Balance', BALANCES, s.balance)}${txt('traza', 'Traza a (MUST BE TRUE)', 40)}</div>
       ${txt('objetivo', 'Para qué sirve esta pieza', 200)}
-      ${e ? (yaPaso(s.id) ? html`<p class="mut sm">Esta pieza ya pasó a Ideas: no se quita del plan. Si ya no va, se archiva en el calendario.</p>` : html`<button type="button" class="btn ghost xs" data-act="pcs-slot-quitar" data-id="${s.id}">${ico('trash', 12)} Quitar del plan</button>`) : ''}</div>`);
+      ${e ? (yaPaso(s.id) ? html`<p class="mut sm">Esta pieza ya pasó a Ideas: no se quita del plan. Si ya no va, se archiva en el calendario.</p>` : html`<button type="button" class="btn ghost sm" data-act="pcs-slot-quitar" data-id="${s.id}">${ico('trash', 12)} Quitar del plan</button>`) : ''}</div>`);
   }
 
   // ---------- La IA: corriendo · propuesta (un diff por sección) · sin bloque · error ----------
@@ -286,15 +287,15 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
           ${todo > MAX_FILAS_DIF ? html`<li class="mut sm">…y ${todo - MAX_FILAS_DIF} más (se guardan todas al aceptar)</li>` : ''}</ul>`;
     return html`<section class="pcs-dif ${hecho || ''}" data-s="${k}"><header><b>${NOMBRE_P[k]}</b><span class="chip sm2">${resumenDif(k, dd)}</span>${avisos.map((a) => html`<span class="pm-warn">${a}</span>`)}<span class="sp"></span>
         ${hecho ? html`<span class="chip sm2 pcs-hecho">${hecho === 'aceptada' ? '✓ Aceptada y guardada' : 'Descartada'}</span>`
-          : html`<button type="button" class="btn sm" data-act="pcs-aceptar" data-k="${k}" ${editable() && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Aceptar esta sección</button><button type="button" class="btn ghost sm" data-act="pcs-descartar-s" data-k="${k}">Descartar</button>`}</header>
+          : html`<button type="button" class="btn" data-act="pcs-aceptar" data-k="${k}" ${editable() && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Aceptar esta sección</button><button type="button" class="btn ghost" data-act="pcs-descartar-s" data-k="${k}">Descartar</button>`}</header>
       ${hecho === 'aceptada' || hecho === 'descartada' ? '' : html`<div class="pcs-dif-b">${cuerpo}</div>`}</section>`;
   }
   function pintarGen() {
     const g = S.gen, el = $('#pcs-gen', root); if (!el) return;
     if (!g) return mount(el, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-act="pcs-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-act="pcs-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="pcs-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-act="pcs-gen-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-act="pcs-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="pcs-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el, html`<section class="pcs-gen" data-fase="corriendo"><header><span class="pcs-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm pcs-paso"></span><button type="button" class="btn ghost sm" data-act="pcs-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="pcs-stream" aria-live="polite"></pre></section>`);
+      mount(el, html`<section class="pcs-gen" data-fase="corriendo"><header><span class="pcs-gen-t">${ico('loader-circle', 14)} Generando con IA…</span><span class="mut sm pcs-paso"></span><button type="button" class="btn ghost" data-act="pcs-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="pcs-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -308,12 +309,12 @@ export async function planMesUI(el, { me, b, alive, rest = [], resto } = {}) {
         ${cambian.length ? html`<div class="pcs-difs">${cambian.map((k) => difCard(k, g, dif))}</div>` : html`<p>La IA no propone cambios al plan de hoy.</p>`}
         ${sin.length && cambian.length ? html`<p class="mut sm">Sin cambios: ${sin.join(' · ')}.</p>` : ''}
         ${cambian.length && !pend.length ? html`<p class="pcs-fin">${ico('check', 14)} Ya no queda nada por revisar.</p>` : ''}
-        <div class="pcs-bt"><button type="button" class="btn ghost sm" data-act="pcs-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost sm" data-act="pcs-cerrar-gen">${pend.length ? 'Descartar todo' : 'Cerrar'}</button></div></section>`);
+        <div class="pcs-bt"><button type="button" class="btn ghost" data-act="pcs-generar">${ico('refresh-cw', 14)} Reintentar</button><button type="button" class="btn ghost" data-act="pcs-cerrar-gen">${pend.length ? 'Descartar todo' : 'Cerrar'}</button></div></section>`);
       return;
     }
     mount(el, html`<section class="pcs-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : html`No vino el plan en su bloque. Reintenta o pega la respuesta.`}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="pcs-stream">${g.texto}</pre></details>` : ''}
-      <div class="pcs-bt"><button type="button" class="btn sm" data-act="pcs-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
+      <div class="pcs-bt"><button type="button" class="btn" data-act="pcs-generar">${ico('refresh-cw', 14)} Reintentar</button>${otros}</div></section>`);
   }
   function leerRespuesta(txt, { via, modelo }) {
     const r = leerPlan(txt), criterios = leerTarjetas(txt).criterios || { cumple: [], falta: [] };

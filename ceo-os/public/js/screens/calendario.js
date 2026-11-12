@@ -10,7 +10,7 @@ import { juntarEventos, filtrarPorRol, tiposVisibles, rango, porDia, calendarioH
 import { loadBrands, brandAccess, modulesFor } from '../brandlist.js';
 import { areaInfo, leerNota } from '../areas-notas.js';
 import { puedeWs } from '../herramientas.js';
-import { proporcion, leyenda, resumenEventos, semanaDe } from '../visual.js';
+import { proporcion, leyenda, resumenEventos, semanaDe, vacio } from '../visual.js';
 
 // La forma de Calendario mientras carga: título, pestañas, el resumen y el calendario (cero salto de layout).
 export const esqueleto = () => html`<div class="skel skel-cal" aria-busy="true"><span class="sr-only">Cargando…</span><i class="sk-t"></i><i class="sk-s"></i><i class="sk-bar"></i><i class="sk-res"></i><i class="sk-gran"></i></div>`;
@@ -109,7 +109,7 @@ export async function render(el, { me, sub, alive }) {
       : sem && sem.from >= R.from && sem.to <= R.to ? { ...sem, t: 'Esta semana' } : { from: R.from, to: R.to, t: mes(R.from) };
     const r = resumenEventos(evs, { from: alc.from, to: alc.to });
     const aviso = evErr ? html`<p class="cal-res-aviso">${ico('triangle-alert', 13)} Faltan las reuniones: Google Calendar no respondió.</p>` : '';
-    if (!r.total) return html`<section class="cal-res cal-res--vacio" aria-label="Resumen"><p class="cal-res-n"><b>${alc.t}</b>: nada con fecha</p><button class="btn ghost xs" type="button" data-act="newEvent">+ Evento</button>${aviso}</section>`;
+    if (!r.total) return html`<section class="cal-res cal-res--vacio" aria-label="Resumen"><p class="cal-res-n"><b>${alc.t}</b>: nada con fecha</p><button class="btn ghost sm" type="button" data-act="newEvent">+ Evento</button>${aviso}</section>`;
     const tipos = ORDEN_RES.filter((k) => r.porTipo[k]), texto = tipos.map((k) => { const n = r.porTipo[k], [uno, varios] = UNO[k]; return html`<b>${n}</b> ${n === 1 ? uno : varios}`; });
     const areas = Object.entries(r.porArea).sort((a, z) => z[1] - a[1]).map(([id, n]) => { const a = areaInfo(id); return { valor: n, label: a.nombre, color: `var(${a.color})` }; });
     const items = tipos.map((k) => ({ valor: r.porTipo[k], label: NOMBRE[k], clase: `t-${k}${calOff.has(k) ? ' is-off' : ''}`, attrs: { 'data-act': 'ctipo', 'data-t': k, 'aria-pressed': calOff.has(k) ? 'false' : 'true' }, partes: k === TIPO_AREAS[0] ? areas : undefined }));
@@ -136,12 +136,12 @@ export async function render(el, { me, sub, alive }) {
     if (!e) return;
     const when = e.allDay ? fdate(String(e.start).slice(0, 10)) + (String(e.end).slice(0, 10) > addDays(String(e.start).slice(0, 10), 1) ? ' – ' + fdate(addDays(String(e.end).slice(0, 10), -1)) : ' · todo el día')
       : `${fdate(String(e.start).slice(0, 10))} · ${String(e.start).slice(11, 16)} – ${String(e.end).slice(11, 16)}`;
-    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="gbadge">${IC.cal} ${e.calName || 'Google Calendar'}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${e.summary}</h2><div class="mut">${when}</div>
       ${e.location ? html`<div style="margin-top:12px">${ico('pin')} ${e.location}</div>` : ''}
       ${e.description ? html`<p class="sm" style="margin-top:12px;white-space:pre-wrap">${e.description}</p>` : ''}
-      <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Entrar a Meet</a>` : ''}
-        ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Abrir en Google ↗</a>` : ''}
+      <div class="row" style="margin-top:20px;gap:8px">${e.meet && /^https:\/\//.test(e.meet) ? html`<a class="btn" href="${e.meet}" target="_blank" rel="noopener noreferrer" >Entrar a Meet</a>` : ''}
+        ${/^https:\/\//.test(e.link || '') ? html`<a class="btn ghost" href="${e.link}" target="_blank" rel="noopener noreferrer" >Abrir en Google ↗</a>` : ''}
         <div class="sp"></div>${e.editable ? html`<button class="btn ghost" data-act="evdel">${ico('trash')}</button>` : ''}</div>`,
     { evdel: async () => { if (!(await confirmAsk(`¿Borrar «${e.summary}» de tu Google Calendar?`))) return; try { await api(`google/calendar/${encodeURIComponent(e.id)}`, { method: 'DELETE' }); closeDrawer(); toast('Evento borrado'); events = null; repintar(); } catch (err) { toast(err.message, true); } } });
   }
@@ -153,15 +153,15 @@ export async function render(el, { me, sub, alive }) {
   function openTask(t) {
     if (!t) return;
     const st = t.status || 'Por empezar', quien = person(t.assignee)?.name || 'Sin responsable', enOps = (me.areas || []).includes('operations') && t.project_id;
-    drawer(html`<div class="row"><span class="chip ${TSTATUS[st] || ''}">${st}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip ${TSTATUS[st] || ''}">${st}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${t.title}</h2><div class="mut">${pname(t.project_id)}${t.due ? ` · vence ${fdate(t.due)}` : ''} · ${quien}</div>
       ${t.description ? html`<p class="sm" style="margin-top:12px;white-space:pre-wrap">${t.description}</p>` : ''}
-      <div class="row" style="margin-top:20px;gap:8px"><a class="btn" href="${enOps ? `#/operations/p/${encodeURIComponent(t.project_id)}` : '#/work'}" style="text-decoration:none">${enOps ? 'Abrir el proyecto' : 'Abrir en Tareas'}</a></div>`);
+      <div class="row" style="margin-top:20px;gap:8px"><a class="btn" href="${enOps ? `#/operations/p/${encodeURIComponent(t.project_id)}` : '#/work'}" >${enOps ? 'Abrir el proyecto' : 'Abrir en Tareas'}</a></div>`);
   }
   // Un hito del ciclo: qué pasa ese día y los proyectos de ciclo mensual a los que aplica.
   function openHito(d) {
     const cyc = (datos?.projects || []).filter((p) => p.kind === 'Ciclo mensual');
-    drawer(html`<div class="row"><span class="chip">Ciclo de contenido</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>${hitoHtml(d)}
+    drawer(html`<div class="row"><span class="chip">Ciclo de contenido</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>${hitoHtml(d)}
       <div class="sec-title" style="margin-top:18px"><h2 style="font-size:17px">Proyectos del ciclo</h2><span class="mut sm">${cyc.length}</span></div>
       ${cyc.length ? cyc.map((p) => html`<a class="wkrow" href="#/operations/p/${encodeURIComponent(p.id)}"><span class="grow">${p.name}</span><span class="mut sm">${p.client || ''}</span></a>`) : html`<div class="mut sm">Ningún proyecto de ciclo mensual todavía.</div>`}
       <p class="mut sm" style="margin-top:14px">Las fechas se ajustan cada mes al calendario real; los límites del 11 y el 20 se respetan.</p>`);
@@ -176,13 +176,13 @@ export async function render(el, { me, sub, alive }) {
 
   // ---------- Contenido: el calendario de una marca (el embed de content.js) ----------
   async function contenido(b) {
-    if (!brandAccess(me).contentFull) return mount(b, html`<div class="empty"><b>Tu perfil no ve el contenido de las marcas</b></div>`);
+    if (!brandAccess(me).contentFull) return mount(b, html`${vacio({ icono: 'lock', titulo: 'Tu perfil no ve el contenido de las marcas' })}`);
     if (brands === null) {
       mount(b, html`<p class="loading">Cargando las marcas…</p>`);
       brands = (await loadBrands(me).catch(() => [])).filter((x) => x.content && modulesFor(me, x).includes('calendario'));
       if (!alive() || tab !== 'contenido' || !b.isConnected) return;
     }
-    if (!brands.length) return mount(b, html`<div class="empty"><b>Todavía no hay marcas con contenido</b>Cuando una marca tenga su perfil de contenido, su calendario sale aquí.</div>`);
+    if (!brands.length) return mount(b, html`${vacio({ icono: 'inbox', titulo: 'Aún no hay marcas con contenido', linea: 'Cuando una marca tenga su perfil de contenido, su calendario sale aquí.' })}`);
     try { marca = decodeURIComponent(marca || ''); } catch { marca = ''; }
     const slug = [marca, lsGet(lsMarca, '')].find((s) => s && brands.some((x) => x.slug === s)) || brands[0].slug;
     mount(b, html`<div class="row cal-marcas"><label class="cal-marca-l" for="cal-marca">Marca</label>
@@ -223,7 +223,7 @@ export async function render(el, { me, sub, alive }) {
     day: (t) => newEvent(t.dataset.date),
     ev: (t, e) => { e.stopPropagation(); openEvent(events?.[+t.dataset.i]); },
     task: (t) => openTask(datos?.tasks.find((x) => x.id === t.dataset.id)),
-    dayall: (t) => { const d = t.dataset.date; drawer(html`<div class="row"><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(d)}</h2><div style="margin-top:14px">${diaHtml(dayMap[d] || [])}</div>`,
+    dayall: (t) => { const d = t.dataset.date; drawer(html`<div class="row"><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div><h2>${fdate(d)}</h2><div style="margin-top:14px">${diaHtml(dayMap[d] || [])}</div>`,
       { ev: (x) => openEvent(events?.[+x.dataset.i]), task: (x) => openTask(datos?.tasks.find((y) => y.id === x.dataset.id)), hito: (x) => openHito(x.dataset.d) }); },
   }));
   acts(el, island({ cmarca: (t) => { if (t.value && t.value !== marca) elegir(t.value); } }), 'change');

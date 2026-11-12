@@ -36,4 +36,4 @@ http.createServer(async (req, res) => {
   let p = path.join(root, 'public', u.pathname === '/' ? 'index.html' : u.pathname === '/diagnostico' ? 'diagnostico.html' : u.pathname);
   if (!p.startsWith(path.join(root, 'public')) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) p = path.join(root, 'public', 'index.html');
   res.setHeader('Content-Type', MIME[path.extname(p)] || 'application/octet-stream'); res.end(fs.readFileSync(p));
-}).listen(3000, () => console.log('CEO OS dev → http://localhost:3000'));
+}).listen(Number(process.env.PORT) || 3000, () => console.log(`CEO OS dev → http://localhost:${Number(process.env.PORT) || 3000}`));

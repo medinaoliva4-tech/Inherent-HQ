@@ -22,6 +22,7 @@ import { menuMotor, faltaMotor, faltaHtml, cuerpoMotor, claveMotor, modeloBtn, m
 import { NIVELES_FICHA, CAMPOS_FICHA } from '../ficha.js';
 import { rutaBloque, rutaChat } from '../herramientas.js';
 import { abrirEnChat } from '../areas.js';
+import { fallo as falloOS, vacio } from '../visual.js';
 
 const sync = () => events.dispatchEvent(new Event('navsync'));
 const ESTADO_CLS = { vacio: '', trabajo: 'work', aprobado: 'ok' };
@@ -69,10 +70,10 @@ export async function render(el, { me, sub = [], alive }) {
   async function cliente(slug, b0) {
     el.onclick = null;
     // El chat corre en la compu de cada quien (el puente de Laya): en el teléfono no hay dónde.
-    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty es-solo-compu"><span class="es-hint-i">${ico('spark', 22)}</span><b>Disponible solo en tu compu</b>La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.</div>`);
+    if (/iPhone|iPod|Android.+Mobile/i.test(navigator.userAgent || '')) return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a>${vacio({ icono: 'spark', titulo: 'Disponible solo en tu compu', linea: 'La Estrategia trabaja con el Claude de tu computadora. Ábrela desde ahí.' })}`);
     let data;
     try { data = await api(`estrategia/${encodeURIComponent(slug)}`); }
-    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a><div class="empty" style="margin-top:16px"><b>No pude abrir este cliente</b>${e.message}</div>`); }
+    catch (e) { if (!alive()) return; return mount(el, html`<a class="btn ghost" href="#/ws/strategy">${ico('arrow-left', 14)} Todos los clientes</a>${falloOS({ titulo: 'No pude abrir este cliente', linea: e.message })}`); }
     if (!alive()) return;
     const bid = BLOQUES.some((b) => b.id === b0) ? b0 : BLOQUES[0].id;
     if (bid !== b0) { history.replaceState(null, '', rutaChat(slug, bid)); sync(); }
@@ -92,7 +93,7 @@ export async function render(el, { me, sub = [], alive }) {
     // El cuerpo de la pantalla: cabecera con el estado del bloque, el chat al centro y el contexto en un panel lateral que se abre con «Contexto».
     mount(el, html`<div class="es" id="es">
       <div class="es-split es2" id="es-split" data-panel="${S.panel ? 'on' : 'off'}"><section class="es-col es-chat" id="es-chat" aria-label="Chat con Strategy"></section>
-        <section class="es-col es-viva" id="es-viva" aria-label="Estrategia en vivo"><header class="ad-h es-viva-bar"><span class="ad-i">${ico('doc', 15)}</span><div class="ad-t" id="es-head"></div><span class="ad-st" id="es-live"></span><span class="sp"></span><button type="button" class="btn ghost xs" data-act="roadmap">✦ Agregar roadmap</button><button type="button" class="ad-x" data-act="panel" aria-label="Cerrar el panel" title="Cerrar el panel">${ico('x', 14)}</button></header>
+        <section class="es-col es-viva" id="es-viva" aria-label="Estrategia en vivo"><header class="ad-h es-viva-bar"><span class="ad-i">${ico('doc', 15)}</span><div class="ad-t" id="es-head"></div><span class="ad-st" id="es-live"></span><span class="sp"></span><button type="button" class="btn ghost sm" data-act="roadmap">✦ Agregar roadmap</button><button type="button" class="ad-x" data-act="panel" aria-label="Cerrar el panel" title="Cerrar el panel">${ico('x', 14)}</button></header>
           <div class="es-viva-body"><div id="es-viva-in"></div><details class="es-det" id="es-det"><summary>Hormozi · ${M.nombre}: detalle del bloque, fuentes y aprobación</summary><div class="es-ctx" id="es-ctx"></div></details></div><footer class="ad-f" id="es-aplan"></footer></section></div></div>`);
     const root = $('#es', el), ctx = $('#es-ctx', el), chatEl = $('#es-chat', el), vivaEl = $('#es-viva-in', el);
     const editable = () => data.puede.editar && !data.vivaAprobada;
@@ -149,9 +150,9 @@ export async function render(el, { me, sub = [], alive }) {
     }
     function aprobarBtn(b) {
       if (!esCeo()) return '';
-      if (b.estado === 'aprobado') return html`<button class="btn ghost xs" data-act="reabrir">Reabrir</button>`;
+      if (b.estado === 'aprobado') return html`<button class="btn ghost sm" data-act="reabrir">Reabrir</button>`;
       const listo = b.borrador || b.hayRepo || (bid === 'diagnostico' && data.etapa?.confirmada);
-      return html`<button class="btn xs" data-act="aprobar" ${listo ? '' : raw('disabled title="No hay nada que aprobar todavía"')}>${ico('check', 13)} Aprobar</button>`;
+      return html`<button class="btn sm" data-act="aprobar" ${listo ? '' : raw('disabled title="No hay nada que aprobar todavía"')}>${ico('check', 13)} Aprobar</button>`;
     }
     // Los datos clave: nivel, etapa y el avatar.
     function claveCard() {
@@ -164,8 +165,8 @@ export async function render(el, { me, sub = [], alive }) {
     // Sin ficha: el CEO la crea aquí (queda en el repo). Si existe pero no dice el nivel, la edita.
     const FICHA = '00-onboarding/plan-contratado.md';
     const fichaBtn = () => !esCeo() ? html`<p class="mut sm">La crea el CEO, desde esta pantalla.</p>`
-      : data.ficha.hay ? html`<p class="mut sm">La ficha existe, pero no dice el nivel contratado.</p><button type="button" class="btn xs" data-act="editar" data-ruta="${FICHA}" data-titulo="Ficha de oferta">Editar la ficha</button>`
-      : html`<button type="button" class="btn xs" data-act="ficha">${ico('plus', 13)} Crear la ficha aquí</button>`;
+      : data.ficha.hay ? html`<p class="mut sm">La ficha existe, pero no dice el nivel contratado.</p><button type="button" class="btn sm" data-act="editar" data-ruta="${FICHA}" data-titulo="Ficha de oferta">Editar la ficha</button>`
+      : html`<button type="button" class="btn sm" data-act="ficha">${ico('plus', 13)} Crear la ficha aquí</button>`;
     // El límite del nivel: lo que este bloque puede y no puede incluir.
     function limiteCard(b) {
       const L = b.limite, med = data.nivel?.id === 'medida';
@@ -179,12 +180,12 @@ export async function render(el, { me, sub = [], alive }) {
       const p = data.propuesta, e = data.etapa, sel = S.sel ?? e?.n ?? p?.n ?? null, ed = puede();
       const prob = Number.isFinite(p?.prob) ? ` · ${Math.round(p.prob * 100)}%` : '';
       return html`<section class="es-card es-etapa-c"><div class="es-row"><div><span class="lbl">La etapa</span><b class="es-h">${e ? etapaTxt() : 'Todavía sin etapa'}</b></div>
-          ${ed ? html`<button class="btn ghost xs" data-act="laya" ${S.laya ? raw('disabled') : ''}>${S.laya ? 'Laya está pensando…' : p?.estado === 'listo' ? 'Pedir otra vez a Laya' : 'Que Laya la proponga'}</button>` : ''}</div>
+          ${ed ? html`<button class="btn ghost sm" data-act="laya" ${S.laya ? raw('disabled') : ''}>${S.laya ? 'Laya está pensando…' : p?.estado === 'listo' ? 'Pedir otra vez a Laya' : 'Que Laya la proponga'}</button>` : ''}</div>
         ${p?.estado === 'listo' && p.n != null ? html`<div class="es-prop"><span class="chip ly-chip listo">Laya propone${prob}</span><b>${etapaLabel(etapaDe(p.n))}</b>${p.why ? html`<span class="mut sm">${p.why}</span>` : ''}</div>`
           : p?.estado === 'pendiente' ? html`<p class="mut sm">Laya quedó pendiente: sin el puente encendido, lo resuelve Claude Code (juicios_pendientes).</p>` : html`<p class="mut sm">Laya la propone con lo que hay en el repo del cliente. Tú la confirmas.</p>`}
         <div class="es-stages" role="radiogroup" aria-label="Etapas del roadmap">${ETAPAS.map((s) => html`<button type="button" role="radio" aria-checked="${sel === s.n}" class="es-stage ${sel === s.n ? 'on' : ''} ${e?.n === s.n ? 'cur' : ''} ${p?.n === s.n ? 'prop' : ''}" data-act="sel" data-n="${s.n}" ${ed ? '' : raw('disabled')}>
           <span class="es-sn">${s.n}</span><span class="es-st-b"><b>${s.nombre}</b><span class="mut sm">${s.rol} · ${s.gente}</span>${sel === s.n ? html`<span class="es-st-d"><i>«${s.traba}»</i> ${s.es}</span>` : ''}</span></button>`)}</div>
-        ${sel != null && ed && !(e && e.n === sel && e.confirmada) ? html`<div class="es-row" style="margin-top:12px">${esCeo() ? html`<button class="btn xs" data-act="confirmar" data-n="${sel}">${ico('check', 13)} Confirmar ${etapaLabel(etapaDe(sel))}</button>` : html`<button class="btn xs" data-act="proponer" data-n="${sel}">Proponer ${etapaLabel(etapaDe(sel))}</button>`}<span class="mut sm">${esCeo() ? 'Solo tú la confirmas.' : 'El CEO la confirma.'}</span></div>` : ''}
+        ${sel != null && ed && !(e && e.n === sel && e.confirmada) ? html`<div class="es-row" style="margin-top:12px">${esCeo() ? html`<button class="btn sm" data-act="confirmar" data-n="${sel}">${ico('check', 13)} Confirmar ${etapaLabel(etapaDe(sel))}</button>` : html`<button class="btn sm" data-act="proponer" data-n="${sel}">Proponer ${etapaLabel(etapaDe(sel))}</button>`}<span class="mut sm">${esCeo() ? 'Solo tú la confirmas.' : 'El CEO la confirma.'}</span></div>` : ''}
       </section>`;
     }
     // Roadmap: lo que dice Hormozi de la etapa del negocio.
@@ -197,12 +198,12 @@ export async function render(el, { me, sub = [], alive }) {
     }
     function borradorCard(b) {
       const d = b.borrador; if (!d) return '';
-      return html`<section class="es-card es-doc-c"><div class="es-row"><div><span class="lbl">Borrador del chat</span><span class="chip dark">Borrador</span></div>${puede() ? html`<button class="btn ghost xs" data-act="quitar">Quitar</button>` : ''}</div>
+      return html`<section class="es-card es-doc-c"><div class="es-row"><div><span class="lbl">Borrador del chat</span><span class="chip dark">Borrador</span></div>${puede() ? html`<button class="btn ghost sm" data-act="quitar">Quitar</button>` : ''}</div>
         <p class="mut sm">Guardado por ${nombreDe(d.por)} · ${fd(d.en)}. No está en el repo: pasarlo al repo es después, con tu OK.</p><div class="es-md">${md(unirParrafos(d.texto))}</div></section>`;
     }
     function repoCards(b) {
       const items = b.entregables;
-      return html`${items.map((it, i) => html`<details class="es-card es-doc-c" ${i === 0 && !b.borrador ? raw('open') : ''}><summary><span class="es-sum"><b>${it.titulo}</b><span class="mut sm">${it.sec ? it.sec.label : it.sirve}</span></span><span class="es-sum-r">${it.apoyo ? html`<span class="chip sm2">Apoyo</span>` : ''}<span class="chip sm2 dark">Del repo</span>${it.fecha ? html`<span class="mut sm">${fd(it.fecha)}</span>` : ''}${esCeo() && it.ruta ? html`<button type="button" class="btn ghost xs" data-act="editar" data-ruta="${it.ruta}" data-titulo="${it.titulo}">Editar</button>` : ''}</span></summary>
+      return html`${items.map((it, i) => html`<details class="es-card es-doc-c" ${i === 0 && !b.borrador ? raw('open') : ''}><summary><span class="es-sum"><b>${it.titulo}</b><span class="mut sm">${it.sec ? it.sec.label : it.sirve}</span></span><span class="es-sum-r">${it.apoyo ? html`<span class="chip sm2">Apoyo</span>` : ''}<span class="chip sm2 dark">Del repo</span>${it.fecha ? html`<span class="mut sm">${fd(it.fecha)}</span>` : ''}${esCeo() && it.ruta ? html`<button type="button" class="btn ghost sm" data-act="editar" data-ruta="${it.ruta}" data-titulo="${it.titulo}">Editar</button>` : ''}</span></summary>
           ${it.sec && !it.sec.hay ? html`<p class="mut sm">No encontré «${it.sec.label}» en este documento: se muestra completo.</p>` : ''}
           <div class="es-md">${it.contenido?.trim() ? md(it.fmt === 'csv' ? it.contenido : unirParrafos(it.contenido)) : html`<p class="mut">Este documento está vacío.</p>`}</div></details>`)}
         ${!b.hayRepo ? html`<section class="es-card es-empty"><b>Todavía no hay entregable de este bloque en el repo</b><span class="mut sm">${b.faltan.filter((f) => !f.apoyo).map((f) => f.titulo).join(' · ') || 'Aparece cuando Strategy lo escribe en la carpeta del cliente.'}</span></section>` : ''}`;
@@ -243,25 +244,25 @@ export async function render(el, { me, sub = [], alive }) {
     }
     const so = () => sistemaDe(navigator.userAgent || '');
     const copiar = async (t) => { try { await navigator.clipboard.writeText(t); toast('Copiado'); } catch { toast('Selecciona el texto y cópialo', true); } };
-    const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost xs" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
+    const cmd = (c) => html`<div class="es-cmd"><code>${c}</code><button type="button" class="btn ghost sm" data-act="copiar" data-t="${c}">${ico('copy', 13)} Copiar</button></div>`;
     function setup(f) {
       const win = so() === 'win';
       if (f === 'sin-ficha') return html`<div class="es-setup"><b>Sin ficha de oferta, el chat está bloqueado</b><p>El alcance contratado es el techo de todos los agentes.</p>${fichaBtn()}</div>`;
       if (f === 'cargando') return html`<div class="es-setup"><p class="mut">Buscando el puente en tu compu…</p></div>`;
-      if (f === 'servidor-off') return html`<div class="es-setup"><b>El servidor no está en línea ahora</b><p>Intenta en un momento. Mientras, puedes usar Claude por el puente de tu compu.</p><div class="row" style="gap:8px"><button class="btn xs" data-act="reintentar">Revisar otra vez</button><button class="btn ghost xs" data-act="motor">Cambiar de modelo</button></div></div>`;
-      if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
-      if (f === 'apagado' && !win) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn xs" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(INSTALAR_MAC)}<button class="btn ghost xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
-      if (f === 'sin_github') return html`<div class="es-setup"><b>Inicia sesión en GitHub (una sola vez)</b><p>El repo es privado: el puente necesita tu permiso para leerlo. Corre otra vez el comando de instalar y sigue lo que te pide en el navegador:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
-      if (f === 'repo_error') return html`<div class="es-setup"><b>No pude bajar el repo</b><p>${S.salud?.chat?.error_repo || 'Revisa tu internet.'} Se reintenta solo en un minuto; si sigue, corre otra vez el comando de instalar.</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Revisar otra vez</button></div>`;
-      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Actualiza el puente' : 'Esa ruta no es el repo de Inherent'}</b><p>${f === 'sin_repo' ? 'El puente nuevo baja solo una copia del repo y la pone al día antes de cada chat. Corre otra vez el comando:' : 'Quita la línea INHERENT_REPO de ~/.inherent/laya/config para que el puente use su copia automática, y corre otra vez el comando:'}</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'servidor-off') return html`<div class="es-setup"><b>El servidor no está en línea ahora</b><p>Intenta en un momento. Mientras, puedes usar Claude por el puente de tu compu.</p><div class="row" style="gap:8px"><button class="btn sm" data-act="reintentar">Revisar otra vez</button><button class="btn ghost sm" data-act="motor">Cambiar de modelo</button></div></div>`;
+      if (f === 'apagado' && chromeBloquea()) return html`<div class="es-setup"><b>Chrome está bloqueando a tu compu</b><p>${PASOS_COPIA_VIEJA}</p><button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'apagado' && enApp()) return html`<div class="es-setup"><b>El puente de la app no respondió</b><p>En el menú de arriba: Puente › Reiniciar el puente. Si sigue igual, cierra la app y ábrela otra vez.</p><button class="btn sm" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'apagado' && !win) return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Baja la app de Mac: trae el puente adentro y se prende sola, sin comandos.</p><a class="btn sm" href="${APP_MAC}" target="_blank" rel="noopener">Bajar Inherent OS para Mac</a><p class="mut sm" style="margin-top:12px">O, sin la app, un comando en la Terminal:</p>${cmd(INSTALAR_MAC)}<button class="btn ghost sm" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'apagado') return html`<div class="es-setup"><b>El chat corre en tu compu</b><p>Enciende el puente de Laya. Un comando, y queda corriendo siempre:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'viejo') return html`<div class="es-setup"><b>Falta actualizar el puente</b><p>Tu puente todavía no trae el chat. Corre otra vez el comando y actualiza solo:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'bajando_repo') return html`<div class="es-setup"><b>Preparando la copia del repo</b><p>El puente baja el repo de Inherent la primera vez (un minuto). Después se pone al día solo antes de cada chat.</p><button class="btn sm" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_github') return html`<div class="es-setup"><b>Inicia sesión en GitHub (una sola vez)</b><p>El repo es privado: el puente necesita tu permiso para leerlo. Corre otra vez el comando de instalar y sigue lo que te pide en el navegador:</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'repo_error') return html`<div class="es-setup"><b>No pude bajar el repo</b><p>${S.salud?.chat?.error_repo || 'Revisa tu internet.'} Se reintenta solo en un minuto; si sigue, corre otra vez el comando de instalar.</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn sm" data-act="reintentar">Revisar otra vez</button></div>`;
+      if (f === 'sin_repo' || f === 'repo_invalido') return html`<div class="es-setup"><b>${f === 'sin_repo' ? 'Actualiza el puente' : 'Esa ruta no es el repo de Inherent'}</b><p>${f === 'sin_repo' ? 'El puente nuevo baja solo una copia del repo y la pone al día antes de cada chat. Corre otra vez el comando:' : 'Quita la línea INHERENT_REPO de ~/.inherent/laya/config para que el puente use su copia automática, y corre otra vez el comando:'}</p>${cmd(win ? INSTALAR_WIN : INSTALAR_MAC)}<button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
       if (f === 'motor') return faltaHtml(faltaMotor(me, S.salud?.chat), cmd);
-      if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p><button class="btn xs" data-act="reintentar">Ya lo hice</button></div>`;
+      if (f === 'sin_claude') return html`<div class="es-setup"><b>No encuentro Claude Code</b><p>Instálalo e inicia sesión con tu cuenta (comando <code>claude</code>). Luego vuelve aquí.</p><button class="btn sm" data-act="reintentar">Ya lo hice</button></div>`;
       return html`<div class="es-setup"><b>Empareja tu compu (una sola vez)</b><p>Pega el token que imprimió el puente. Para verlo:</p>${cmd(win ? 'Get-Content "$HOME\\.inherent\\laya\\chat-token"' : 'cat ~/.inherent/laya/chat-token')}
-        <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn xs" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
+        <form class="es-pair" data-act="pair"><input class="in" name="t" type="password" autocomplete="off" spellcheck="false" placeholder="Pega el token" aria-label="Token del puente"><button class="btn sm" type="submit">Emparejar</button></form>${S.pareo ? html`<p class="es-err">${S.pareo}</p>` : ''}</div>`;
     }
     const RAPIDOS = { diagnostico: ['¿En qué etapa está y por qué?', '¿Qué dato falta para estar seguros?'], oferta: ['Arma la ecuación de valor', 'Propón la Grand Slam Offer', '¿Qué haría la oferta más difícil de rechazar?'], modelo: ['Propón atracción, upsell, downsell y continuidad', '¿Qué upsell va primero?'], leads: ['¿Dónde consigue clientes con esta oferta?', 'Core Four: ¿cuál va primero?'], roadmap: ['Arma el plan de 90 días para su etapa', '¿Qué es lo primero que hacemos esta semana?'] };
     const modeloHtml = () => modeloBtn(me, fase() === 'listo');
@@ -325,7 +326,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (!$('#es-lib-q', p)) mount(p, html`<header class="es-lib-h"><div><b>Agregar contexto</b><span class="mut sm">Documentos de texto de la Library</span></div><button type="button" class="es-lib-x" data-act="lib-cerrar" aria-label="Cerrar">×</button></header>
         <label class="es-lib-s">${ico('search', 15)}<input id="es-lib-q" type="search" placeholder="Buscar por título o carpeta" autocomplete="off" aria-label="Buscar en la Library"></label>
         <div class="es-lib-list" id="es-lib-list" role="listbox" aria-multiselectable="true"></div>
-        <footer class="es-lib-f"><span class="mut sm" id="es-lib-n"></span><button type="button" class="btn xs" data-act="lib-ok" id="es-lib-ok">Usar como contexto</button></footer>`);
+        <footer class="es-lib-f"><span class="mut sm" id="es-lib-n"></span><button type="button" class="btn sm" data-act="lib-ok" id="es-lib-ok">Usar como contexto</button></footer>`);
       const list = $('#es-lib-list', p);
       $('#es-lib-n', p).textContent = `${S.libSel.size} de ${max}`;
       if (!L) return mount(list, html`<p class="es-lib-e mut">Cargando la Library…</p>`);
@@ -345,7 +346,7 @@ export async function render(el, { me, sub = [], alive }) {
       if (!d) return toast('Ese documento ya no está en la Library', true);
       drawer(html`<article class="es-doc"><span class="lbl">${d.tipo}${d.carpeta ? ` · ${d.carpeta}` : ''}</span><h1>${d.titulo}</h1>
           <p class="mut sm">Así lo recibe el chat${d.recortado ? ' (recortado: es más largo de lo que cabe en un mensaje)' : ''}.</p>
-          <a class="btn ghost xs" href="#/library/${d.folder}/${d.id}">${ico('folder', 13)} Abrir en la Library</a><div class="es-md" style="margin-top:16px">${md(unirParrafos(d.contenido))}</div></article>`, {}, { section: 'Estrategia', title: d.titulo });
+          <a class="btn ghost sm" href="#/library/${d.folder}/${d.id}">${ico('folder', 13)} Abrir en la Library</a><div class="es-md" style="margin-top:16px">${md(unirParrafos(d.contenido))}</div></article>`, {}, { section: 'Estrategia', title: d.titulo });
     }
 
     // ---------- Escribir en el repo desde el OS (solo el CEO): la ficha que falta y los documentos del cliente ----------
@@ -645,7 +646,7 @@ async function abrirFuente(f, completo = false) {
   }).join('');
   drawer(html`<article class="es-doc"><span class="lbl">${d.tipo}</span><h1>${d.titulo}</h1>
       <p class="mut sm">${f.t ? `En ${f.t}. ` : f.p ? `En la pág. PDF ${f.p}. ` : ''}Texto literal de la biblioteca de Hormozi${d.recortado ? ` · mostrando las líneas ${d.desde + 1}–${d.hasta} de ${d.total}` : ''}.</p>
-      ${d.recortado ? html`<button class="btn ghost xs" data-act="completo">Ver el archivo completo</button>` : ''}
+      ${d.recortado ? html`<button class="btn ghost sm" data-act="completo">Ver el archivo completo</button>` : ''}
       <div class="es-srcbody">${raw(body)}</div></article>`,
   { completo: () => abrirFuente(f, true) }, { section: 'Estrategia', title: f.titulo || d.titulo });
   setTimeout(() => document.getElementById('es-hit')?.scrollIntoView({ block: 'center' }), 80);

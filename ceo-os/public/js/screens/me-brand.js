@@ -4,6 +4,7 @@
 import { html, raw, mount, col, acts, ask, confirmAsk, toast, ico, fdate, today, $, swap } from '../core.js';
 import { render as content } from './content.js';
 import { brandBoard } from '../brand-board.js';
+import { fallo, vacio } from '../visual.js';
 
 const TABS = [['roadmap', 'Roadmap'], ['asociaciones', 'Asociaciones'], ['inspo', 'Inspo'], ['contenido', 'Contenido']];
 const RTYPES = [['grabar', 'Grabar', 'video'], ['publicar', 'Publicar', 'play'], ['evento', 'Evento', 'cal'], ['aprender', 'Aprender', 'book'], ['otro', 'Otro', 'dot']];
@@ -16,7 +17,7 @@ const isMine = (t, me) => t.tipo === 'Personal' && t.profile === 'personal' && (
 // embed: montada dentro de Marcas → Mi marca → Marca ({ base, only }): sin título y solo con las pestañas de `only`.
 export async function render(el, opts) {
   const { me, sub, alive, embed = null } = opts;
-  if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Mi marca es solo del CEO</b>Tu perfil no la ve.</div>`);
+  if (me.role !== 'ceo') return mount(el, html`${vacio({ icono: 'lock', titulo: 'Mi marca es solo del CEO', linea: 'Tu perfil no la ve.' })}`);
   const T = col('tasks');
   const tabs = embed?.only ? TABS.filter(([k]) => embed.only.includes(k)) : TABS;
   let tab = tabs.some(([k]) => k === sub[0]) ? sub[0] : tabs[0][0];
@@ -36,7 +37,7 @@ export async function render(el, opts) {
 
   // ---------- Roadmap: actividades de la marca personal, como tareas Personal (solo las ve quien las creó) ----------
   async function roadmap(b) {
-    if (!tasks) { mount(b, html`<p class="loading">Cargando…</p>`); try { tasks = (await T.list()).filter((t) => isMine(t, me)); } catch (e) { return mount(b, html`<div class="empty"><b>No pude leer el roadmap</b>${e.message}</div>`); } if (!alive() || !b.isConnected) return; }
+    if (!tasks) { mount(b, html`<p class="loading">Cargando…</p>`); try { tasks = (await T.list()).filter((t) => isMine(t, me)); } catch (e) { return mount(b, html`${fallo({ titulo: 'No pude leer el roadmap', linea: e.message })}`); } if (!alive() || !b.isConnected) return; }
     const open = (t) => (t.status || 'Por empezar') !== 'Hecha';
     const M0 = addM(today().slice(0, 7), -1), months = Array.from({ length: 6 }, (_, i) => addM(M0, i));
     const ofM = (ym) => tasks.filter((t) => String(t.due || '').slice(0, 7) === ym);
@@ -46,7 +47,7 @@ export async function render(el, opts) {
       <div class="rmmonths sp-strip">${months.map((ym) => { const l = ofM(ym); return html`<button class="rmm ${mfilter === ym ? 'on' : ''} ${ym === today().slice(0, 7) ? 'now' : ''}" data-act="mf" data-m="${ym}"><span class="lbl">${mlabel(ym)}</span><b>${l.length}</b><span class="dots">${l.map((t) => html`<i class="${rtype(t.rtype)[0]}" title="${t.title}"></i>`)}</span></button>`; })}</div>
       <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="chip ${mfilter === 'todas' ? 'dark' : ''}" data-act="mf" data-m="todas">Todas</button>${RTYPES.map(([k, l, i]) => html`<span class="chip">${ico(i, 13)} ${l} · ${tasks.filter((t) => rtype(t.rtype)[0] === k).length}</span>`)}</div>
       <div class="sp-panel" style="padding:4px 20px">${list.length ? list.map((t) => html`<div class="rmrow ${open(t) ? '' : 'done'}"><input type="checkbox" data-act="done" data-id="${t.id}" ${open(t) ? '' : raw('checked')}><span class="d">${t.due ? fdate(t.due) : 'sin fecha'}</span><span class="chip">${ico(rtype(t.rtype)[2], 13)} ${rtype(t.rtype)[1]}</span><span class="t"><b style="font-weight:500">${t.title}</b>${t.description ? html`<small>${t.description}</small>` : ''}</span><button class="sm mut" data-act="edit" data-id="${t.id}">${ico('edit')}</button><button class="sm mut" data-act="del" data-id="${t.id}">${ico('x', 16)}</button></div>`)
-        : html`<div class="empty" style="margin:10px 0"><b>${mfilter === 'todas' ? 'Sin actividades todavía' : `Nada en ${mlabel(mfilter)}`}</b>Programa una grabación, una publicación, un evento o algo que quieras aprender.</div>`}</div>`);
+        : html`${vacio({ icono: 'inbox', titulo: mfilter === 'todas' ? 'Aún no hay actividades' : `Nada en ${mlabel(mfilter)}`, linea: 'Programa una grabación, una publicación, un evento o algo que quieras aprender.' })}`}</div>`);
   }
   const rform = async (t) => ask(t ? 'Editar actividad' : 'Programar actividad', [{ k: 'title', l: 'Qué', v: t?.title, req: true }, { k: 'due', l: 'Fecha', t: 'date', v: t?.due || today(), req: true, half: true }, { k: 'rtype', l: 'Tipo', t: 'select', opts: RTYPES.map(([k, l]) => [k, l]), v: t?.rtype || 'grabar', half: true }, { k: 'status', l: 'Estado', t: 'select', opts: ['Por empezar', 'En curso', 'Hecha'], v: t?.status || 'Por empezar' }, { k: 'description', l: 'Nota', t: 'textarea', v: t?.description }], t ? 'Guardar' : 'Programar');
   const upd = async (t, patch) => { try { const r = await T.save({ ...t, ...patch }); tasks = tasks.map((x) => (x.id === r.id ? r : x)); return r; } catch (e) { toast(e.message, true); return null; } };

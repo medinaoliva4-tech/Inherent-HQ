@@ -71,9 +71,9 @@ function buscar({ c, i }) {
 function acciones({ c, editable, slug }) {
   const centro = lleno(c.center) || lleno(c.rings[0].label);
   const enlace = (id, texto) => (centro
-    ? html`<a class="btn ghost xs dn-envia" href="${rutaHerramienta('strategy', slug, id)}">${ico('arrow-right', 13)} ${texto}</a>`
-    : html`<span class="btn ghost xs dn-envia" aria-disabled="true" title="Primero define el centro">${ico('arrow-right', 13)} ${texto}</span>`);
-  return html`<div class="dn-envios">${enlace('customer-avatar-studio', 'Enviar el centro a Avatar Studio')}${enlace('offer-architect', 'Enviar a Offer Architect')}${editable && !centro ? html`<button type="button" class="btn ghost xs dn-traer" data-act="dn-traer">${ico('download', 13)} Traer la diana de Contenido</button>` : ''}</div>`;
+    ? html`<a class="btn ghost sm dn-envia" href="${rutaHerramienta('strategy', slug, id)}">${ico('arrow-right', 13)} ${texto}</a>`
+    : html`<span class="btn ghost sm dn-envia" aria-disabled="true" title="Primero define el centro">${ico('arrow-right', 13)} ${texto}</span>`);
+  return html`<div class="dn-envios">${enlace('customer-avatar-studio', 'Enviar el centro a Avatar Studio')}${enlace('offer-architect', 'Enviar a Offer Architect')}${editable && !centro ? html`<button type="button" class="btn ghost sm dn-traer" data-act="dn-traer">${ico('download', 13)} Traer la diana de Contenido</button>` : ''}</div>`;
 }
 const REGIONES = { svg: diana, est: estado, bus: buscar, acc: acciones };
 

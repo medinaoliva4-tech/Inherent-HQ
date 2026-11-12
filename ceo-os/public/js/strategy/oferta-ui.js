@@ -57,20 +57,20 @@ function lista({ c, ed }, [k, nombre]) {
   const xs = c.stack[k];
   if (!ed) return xs.length ? html`<ul class="ofa-ul">${xs.map((x) => html`<li>${x}</li>`)}</ul>` : html`<p class="ofa-sd">${SIN_DATOS}: sale de ${SD[k]}</p>`;
   const filas = xs.length ? xs : [''];
-  return html`${filas.map((x, i) => html`<div class="ofa-it"><input class="in" type="text" data-l="${k}" data-i="${i}" value="${x}" maxlength="200" placeholder="${SIN_DATOS}: sale de ${SD[k]}" aria-label="${nombre}, número ${i + 1}" autocomplete="off">${xs.length ? html`<button type="button" class="btn ghost xs ofa-x" data-of="quitar" data-k="${k}" data-i="${i}" aria-label="Quitar ${nombre} ${i + 1}">${ico('x', 14)}</button>` : ''}</div>`)}
-    ${xs.length < MAX_LISTA ? html`<button type="button" class="btn ghost xs ofa-mas" data-of="agregar" data-k="${k}">${ico('plus', 14)} Agregar</button>` : ''}`;
+  return html`${filas.map((x, i) => html`<div class="ofa-it"><input class="in" type="text" data-l="${k}" data-i="${i}" value="${x}" maxlength="200" placeholder="${SIN_DATOS}: sale de ${SD[k]}" aria-label="${nombre}, número ${i + 1}" autocomplete="off">${xs.length ? html`<button type="button" class="btn ghost sm ofa-x" data-of="quitar" data-k="${k}" data-i="${i}" aria-label="Quitar ${nombre} ${i + 1}">${ico('x', 14)}</button>` : ''}</div>`)}
+    ${xs.length < MAX_LISTA ? html`<button type="button" class="btn ghost sm ofa-mas" data-of="agregar" data-k="${k}">${ico('plus', 14)} Agregar</button>` : ''}`;
 }
 function variaciones({ c, ed }, f) {
   const vs = ed ? c.variaciones : c.variaciones.filter((v) => Object.values(v).some(Boolean));
   if (!vs.length) return html`<p class="ofa-sd">${SIN_DATOS}: sale de ${SD.variaciones}</p>`;
   return html`<div class="ofa-cols">${vs.map((v, i) => html`<article class="ofa-var" data-i="${i}">
-    <header class="ofa-var-h"><b>Variación ${i + 1}</b>${ed && c.variaciones.length > 2 ? html`<button type="button" class="btn ghost xs ofa-x" data-of="var-quitar" data-i="${i}" aria-label="Quitar la variación ${i + 1}">${ico('x', 14)}</button>` : ''}</header>
+    <header class="ofa-var-h"><b>Variación ${i + 1}</b>${ed && c.variaciones.length > 2 ? html`<button type="button" class="btn ghost sm ofa-x" data-of="var-quitar" data-i="${i}" aria-label="Quitar la variación ${i + 1}">${ico('x', 14)}</button>` : ''}</header>
     <label class="ofa-f"><span class="lbl">Nombre</span>${f.txt(`variaciones.${i}.nombre`, v.nombre, { max: 80, label: `Variación ${i + 1}: nombre`, sd: SD.var_nombre })}</label>
     <label class="ofa-f"><span class="lbl">Precio <span class="mut sm">(propuesta)</span></span>${f.txt(`variaciones.${i}.precio`, v.precio, { max: 60, label: `Variación ${i + 1}: precio`, sd: SD.var_precio })}</label>
     <label class="ofa-f"><span class="lbl">Para quién</span>${f.area(`variaciones.${i}.para_quien`, v.para_quien, { max: 160, label: `Variación ${i + 1}: para quién`, sd: SD.var_para })}</label>
     <label class="ofa-f"><span class="lbl">Qué la diferencia</span>${f.area(`variaciones.${i}.diferencia`, v.diferencia, { max: 240, label: `Variación ${i + 1}: qué la diferencia`, sd: SD.var_dif })}</label>
   </article>`)}</div>
-  ${ed && c.variaciones.length < MAX_VARIACIONES ? html`<button type="button" class="btn ghost xs ofa-mas" data-of="var-agregar">${ico('plus', 14)} Agregar una variación</button>` : ''}`;
+  ${ed && c.variaciones.length < MAX_VARIACIONES ? html`<button type="button" class="btn ghost sm ofa-mas" data-of="var-agregar">${ico('plus', 14)} Agregar una variación</button>` : ''}`;
 }
 
 // ---------- Regiones derivadas: se recalculan solas y nunca contienen un campo editable ----------
@@ -114,7 +114,7 @@ function plantilla(E, f) {
       <div class="ofa-facs">${FACTORES.map((fa) => html`<article class="ofa-fac" data-f="${fa.id}" data-lado="${fa.lado}">
         <header class="ofa-fac-h"><b>${fa.nombre}</b><span class="ofa-lado mut sm">${fa.lado === 'arriba' ? 'Suma valor' : 'Resta valor'}</span></header>
         <p class="mut sm ofa-fac-ayuda">${fa.ayuda}</p>
-        ${ed && !bq.ecuacion ? html`<div class="ofa-rango"><input type="range" min="1" max="10" step="1" value="${c.ecuacion[fa.id].valor ?? 5}" data-c="ecuacion.${fa.id}.valor" data-tipo="num" data-vacio="${c.ecuacion[fa.id].valor === null ? 1 : 0}" aria-label="${fa.nombre}, de 1 a 10"><button type="button" class="btn ghost xs" data-of="sin-dato" data-f="${fa.id}">Sin dato</button></div>` : ''}
+        ${ed && !bq.ecuacion ? html`<div class="ofa-rango"><input type="range" min="1" max="10" step="1" value="${c.ecuacion[fa.id].valor ?? 5}" data-c="ecuacion.${fa.id}.valor" data-tipo="num" data-vacio="${c.ecuacion[fa.id].valor === null ? 1 : 0}" aria-label="${fa.nombre}, de 1 a 10"><button type="button" class="btn ghost sm" data-of="sin-dato" data-f="${fa.id}">Sin dato</button></div>` : ''}
         <div class="ofa-num" data-r="fac" data-f="${fa.id}" aria-live="polite"></div>
         <label class="ofa-f"><span class="lbl">Evidencia</span>${fEc.area(`ecuacion.${fa.id}.evidencia`, c.ecuacion[fa.id].evidencia, { max: 300, label: `Evidencia de ${fa.nombre}`, ph: 'De dónde sale este número', sd: SD[fa.id] })}</label>
       </article>`)}</div>

@@ -15,6 +15,7 @@ import { abrirEnChat } from '../areas.js';
 import { herramientaDe, rutaHerramienta } from '../herramientas.js';
 import { ETAPAS_HORMOZI, SIN_DATOS } from '../consulting/marcos.js';
 import { CAPACIDAD, limpiar as limpiarDiagnostico } from '../consulting/salud.js';
+import { vacio } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
 const ALCANCE = { si: ['Growth Partnership', 'ok'], 'sin-finanzas': ['Growth Partnership · sin Finanzas', 'ok'], ficha: ['A la medida', ''], fuera: ['Fuera del alcance', 'fuera'], 'sin-ficha': ['Sin ficha', 'fuera'] };
@@ -35,7 +36,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!alive()) return;
     return lista(el, me, tareas);
   }
-  mount(el, html`<div class="cs"><a class="btn ghost sm" href="#/ws/consulting">${ico('arrow-left', 14)} Todos los clientes</a><div id="cs-det"></div></div>`);
+  mount(el, html`<div class="cs"><a class="btn ghost" href="#/ws/consulting">${ico('arrow-left', 14)} Todos los clientes</a><div id="cs-det"></div></div>`);
   return consultingOverview($('#cs-det', el), { me, slug, alive });
 }
 
@@ -67,7 +68,7 @@ function heroHtml({ slug, data, alc, abierto, items, falloEntregables }) {
     cuerpo = html`<p class="cs-sd">${SIN_DATOS}: sale del Diagnóstico de crecimiento</p>
       <p class="cs-hero-por">${pendiente ? `Hay un Diagnóstico ${pendiente.estado === 'En revisión' ? 'en revisión' : 'en borrador'}: se lee aquí cuando se apruebe.` : 'Todavía no hay uno. Con él salen la etapa, la restricción y la capacidad.'}</p>
       ${etapaStrategy ? html`<p class="cs-hero-ref">Strategy ubicó la etapa: ${etapaLabel(etapaStrategy)}${data.etapa?.confirmada ? '' : ' · propuesta'}.</p>` : ''}
-      <a class="btn sm" href="${ruta(pendiente?.id)}">${ico('chart-pie', 14)} ${pendiente ? 'Abrir el Diagnóstico' : 'Empezar el Diagnóstico'}</a>`;
+      <a class="btn" href="${ruta(pendiente?.id)}">${ico('chart-pie', 14)} ${pendiente ? 'Abrir el Diagnóstico' : 'Empezar el Diagnóstico'}</a>`;
   } else {
     const { doc, c } = ap, e = c.etapa, r = c.restriccion;
     const et = e.n != null ? ETAPAS_HORMOZI.find((x) => x.n === e.n) : null;
@@ -104,7 +105,7 @@ export async function consultingOverview(el, { me, slug, alive, cabecera = true,
   const [, tareas] = await Promise.all([loadEstrategia(), verTareas(me) ? col('tasks').list().catch(() => []) : []]);
   if (!alive() || !el.isConnected) return;
   const c = clientes().find((x) => x.slug === slug);
-  if (!c) return mount(el, html`<div class="cs"><div class="empty"><b>No encontré ese cliente en Estrategia</b>${slug === 'inherent' ? 'Inherent no es cliente de Consulting: su operación y sus finanzas viven en Organización.' : 'Puede que no esté en tu alcance o que todavía no tenga estrategia.'}</div></div>`);
+  if (!c) return mount(el, html`<div class="cs">${vacio({ icono: 'inbox', titulo: 'No encontré ese cliente en Estrategia', linea: `${slug === 'inherent' ? 'Inherent no es cliente de Consulting: su operación y sus finanzas viven en Organización.' : 'Puede que no esté en tu alcance o que todavía no tenga estrategia.'}` })}</div>`);
   // La estrategia y los entregables se leen a la vez; sin los entregables el hero dice SIN DATOS, no 0.
   const [data, ents] = await Promise.all([
     datosEstrategia(slug).catch(() => ({ nombre: c.nombre, nivel: c.nivel })),
@@ -118,10 +119,10 @@ export async function consultingOverview(el, { me, slug, alive, cabecera = true,
 
   const encargoHtml = (t) => html`<div class="cs-enc ${t.status === 'Hecha' ? 'hecho' : ''}"><span class="cs-enc-i">${ico(t.status === 'Hecha' ? 'check' : 'send', 14)}</span>
     <div class="cs-enc-t"><b>${t.title}</b><small>${t.status || 'Por empezar'}${t.due ? ` · vence ${fdate(t.due)}` : ''}${t.description ? ` · ${String(t.description).split('\n\n')[0]}` : ''}</small></div>
-    ${t.status === 'Hecha' ? '' : !abierto ? html`<span class="cs-alc fuera">Fuera del alcance · escálalo al CEO</span>` : html`<button type="button" class="btn sm" data-c="hacer" data-id="${t.id}">${ico('chat-ia', 14)} Hacerlo en el Chat</button><button type="button" class="btn ghost sm" data-c="hecha" data-id="${t.id}">Hecha</button>`}</div>`;
+    ${t.status === 'Hecha' ? '' : !abierto ? html`<span class="cs-alc fuera">Fuera del alcance · escálalo al CEO</span>` : html`<button type="button" class="btn" data-c="hacer" data-id="${t.id}">${ico('chat-ia', 14)} Hacerlo en el Chat</button><button type="button" class="btn ghost" data-c="hecha" data-id="${t.id}">Hecha</button>`}</div>`;
   const pintar = () => mount(el, html`<div class="cs">
     ${cabecera ? html`<header class="cs-head"><span class="cs-mono">${initials(data.nombre || c.nombre)}</span><div><h1>${data.nombre || c.nombre}</h1><p>${data.nivel?.nombre || 'Sin ficha de oferta'} · operaciones, finanzas y equipo</p></div>
-      <a class="btn ghost sm" href="#/ws/strategy/${esc(slug)}/overview">${ico('target', 14)} Su estrategia</a></header>` : ''}
+      <a class="btn ghost" href="#/ws/strategy/${esc(slug)}/overview">${ico('target', 14)} Su estrategia</a></header>` : ''}
     ${avisoConsulting(data.nivel, data.ficha)}
     ${heroHtml({ slug, data, alc, abierto, items, falloEntregables })}
     <section class="cs-sec"><div class="cs-sec-h"><h2>Encargos de Estrategia</h2><span class="mut sm">Lo que la estrategia pide que se haga aquí</span></div>
@@ -149,6 +150,6 @@ function lista(el, me, tareas) {
     ${cs.length ? html`<div class="cs-clientes">${cs.map((c) => {
       const [l, cls] = ALCANCE[alcanceConsulting(c.nivel)], n = encargosDe(tareas, 'consulting', c.slug).filter((t) => t.status !== 'Hecha').length;
       return html`<a class="cs-cliente" href="#/ws/consulting/${esc(c.slug)}/overview"><span class="cs-mono">${initials(c.nombre)}</span><span class="cs-cliente-t"><b>${c.nombre}</b><small class="cs-alc ${cls}">${l}</small></span>${n ? html`<span class="cs-n" title="Encargos de Estrategia abiertos">${n}</span>` : ''}${ico('right', 15)}</a>`;
-    })}</div>` : html`<div class="empty">Todavía no hay clientes que veas en Estrategia.</div>`}
+    })}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay clientes que veas en Estrategia', linea: 'Cuando un cliente tenga su estrategia y tu perfil la vea, aparece aquí.' })}`}
     <p class="mut sm cs-pie">Operations OS y Money OS son de Growth Partnership. Las finanzas de Inherent están en Organización → Finanzas.</p></div>`);
 }

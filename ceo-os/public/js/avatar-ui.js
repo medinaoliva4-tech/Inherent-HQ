@@ -12,6 +12,7 @@ import { SECCIONES, CAMPOS, ANGULOS, ANGULO_AYUDA, MERCADO, REGLA_X, JOURNEY, FI
 import { CONSCIENCIA } from './calendario-contenido.js';
 import { correrIA, armarCtx } from './ia-herramienta.js';
 import { herramientaDe, rutaHerramienta } from './herramientas.js';
+import { fallo } from './visual.js';
 
 const TONOS = ['#49494a', '#818182', '#ababac', '#7d8b5a', '#8e8e8f', '#6f5a7a'];
 const q = (n) => (n == null || n === '' ? '' : 'Q ' + Number(n).toLocaleString('es-GT'));
@@ -33,7 +34,7 @@ export async function avatarUI(el, { me, b, alive }) {
   const carpeta = b.slug === 'inherent' ? 'inherent/inherent-social-media' : b.slug === 'personal' ? 'inherent/personal' : `clients/${b.slug}`;
   mount(el, html`<p class="loading">Cargando…</p>`);
   try { const r = await api(`avatares?profile=${enc(b.slug)}`); S.lista = r.avatares; S.puede = r.puede; }
-  catch (e) { if (alive()) mount(el, html`<div class="empty"><b>No pude abrir el cliente ideal</b>${e.message}</div>`); return; }
+  catch (e) { if (alive()) mount(el, html`${fallo({ titulo: 'No pude abrir el cliente ideal', linea: e.message })}`); return; }
   if (!alive()) return;
   S.sel = S.lista[0]?.id || null;
   const cur = () => S.lista.find((a) => a.id === S.sel) || null;
@@ -55,7 +56,7 @@ export async function avatarUI(el, { me, b, alive }) {
     const l = vivos(S.lista), suma = sumaPesos(S.lista);
     return html`<header class="av-top"><div class="av-chips" role="tablist" aria-label="Avatares">${l.map((a, i) => html`<button role="tab" type="button" class="av-chip ${a.id === S.sel ? 'on' : ''}" aria-selected="${a.id === S.sel ? 'true' : 'false'}" data-av="sel" data-id="${a.id}">
         <i style="background:${TONOS[i % TONOS.length]}"></i><b>${a.nombre}</b><span>${a.peso || 0}%</span>${a.estado === 'aprobado' ? html`<span class="av-ok" title="Aprobado por el CEO">${ico('check', 12)}</span>` : ''}</button>`)}
-        ${edita() ? (S.nuevo ? html`<form class="av-new" data-av="crear"><input class="in" name="n" placeholder="Nombre del avatar (ej. Dueña de restaurante)" maxlength="80" autocomplete="off" required><button class="btn xs" type="submit">Crear</button><button class="btn ghost xs" type="button" data-av="cancelar">Cancelar</button></form>` : html`<button type="button" class="btn ghost xs av-add" data-av="nuevo">${ico('plus', 13)} Avatar</button>`) : ''}</div>
+        ${edita() ? (S.nuevo ? html`<form class="av-new" data-av="crear"><input class="in" name="n" placeholder="Nombre del avatar (ej. Dueña de restaurante)" maxlength="80" autocomplete="off" required><button class="btn sm" type="submit">Crear</button><button class="btn ghost sm" type="button" data-av="cancelar">Cancelar</button></form>` : html`<button type="button" class="btn ghost sm av-add" data-av="nuevo">${ico('plus', 13)} Avatar</button>`) : ''}</div>
       ${l.length ? html`<div class="av-pesos"><div class="av-bar" role="img" aria-label="Pesos: ${l.map((a) => `${a.nombre} ${a.peso || 0}%`).join(', ')}">${l.map((a, i) => (a.peso ? html`<i style="flex:${a.peso};background:${TONOS[i % TONOS.length]}" title="${a.nombre} · ${a.peso}%"></i>` : ''))}${suma < 100 ? html`<i class="libre" style="flex:${100 - suma}"></i>` : ''}</div>
         <span class="av-suma ${suma === 100 ? 'ok' : 'warn'}">${suma === 100 ? html`${ico('check', 12)} Suman 100%` : suma < 100 ? `Suman ${suma}%: falta repartir ${100 - suma}%` : `Suman ${suma}%: sobran ${suma - 100}%`}</span>
         <span class="mut sm">El principal recibe más contenido y más pauta (regla práctica: 50 a 70%).</span></div>` : ''}</header>`;
@@ -70,7 +71,7 @@ export async function avatarUI(el, { me, b, alive }) {
   function flip(a) {
     const lado = ladoDe(a);
     return html`<div class="av-flip-bar"><span class="lbl">${lado === 'resumen' ? 'Resumen' : 'Ficha'}</span>
-        <button type="button" class="btn ghost xs av-voltear" data-av="voltear" aria-controls="av-flipw">${ico('repeat', 13)} ${lado === 'resumen' ? 'Ver ficha' : 'Ver resumen'}</button></div>
+        <button type="button" class="btn ghost sm av-voltear" data-av="voltear" aria-controls="av-flipw">${ico('repeat', 13)} ${lado === 'resumen' ? 'Ver ficha' : 'Ver resumen'}</button></div>
       ${lado === 'resumen' ? html`<article class="av-cara av-res" id="av-res" aria-label="Resumen de ${a.nombre}">${resumen(a)}</article>` : html`<div class="av-cara av-ficha" id="av-ficha">${ficha(a)}</div>`}`;
   }
   function voltear() {
@@ -127,7 +128,7 @@ export async function avatarUI(el, { me, b, alive }) {
     return html`${SECCIONES.map(([id, nombre, ayuda, campos], i) => html`<section class="av-sec" id="av-${id}"><header><span class="av-n">${i + 1}</span><div><h3>${nombre}</h3><p>${ayuda}</p></div></header><div class="av-fields">${campos.map((c) => campo(a, c))}</div></section>`)}
       <section class="av-sec" id="av-angulos"><header><span class="av-n">${SECCIONES.length + 1}</span><div><h3>Ángulos de contenido</h3><p>Distintas formas de presentar la misma oferta a este avatar. Cada pieza del calendario puede llevar su ángulo.</p></div></header>
         <div class="av-angs">${(a.angulos || []).map((g, i) => html`<div class="av-ang"><select class="in" data-ang="tipo" data-i="${i}" ${edita() ? '' : raw('disabled')} title="${ANGULO_AYUDA[g.tipo] || ''}">${ANGULOS.map((t) => html`<option ${t === g.tipo ? raw('selected') : ''}>${t}</option>`)}</select><input class="in" data-ang="texto" data-i="${i}" value="${g.texto}" ${edita() ? '' : raw('disabled')}>${edita() ? html`<button type="button" class="av-x" data-av="ang-quitar" data-i="${i}" aria-label="Quitar ángulo">×</button>` : ''}</div>`)}
-          ${edita() ? html`<button type="button" class="btn ghost xs" data-av="ang-mas">${ico('plus', 13)} Ángulo</button>` : ''}${!(a.angulos || []).length ? html`<p class="mut sm">${ANGULOS.map((t) => `${t}: ${ANGULO_AYUDA[t]}`).join(' · ')}</p>` : ''}</div></section>`;
+          ${edita() ? html`<button type="button" class="btn ghost sm" data-av="ang-mas">${ico('plus', 13)} Ángulo</button>` : ''}${!(a.angulos || []).length ? html`<p class="mut sm">${ANGULOS.map((t) => `${t}: ${ANGULO_AYUDA[t]}`).join(' · ')}</p>` : ''}</div></section>`;
   }
 
   // ---------- El Buyer Journey: 5 etapas × 6 filas ----------
@@ -162,7 +163,7 @@ export async function avatarUI(el, { me, b, alive }) {
         <label class="av-f"><span class="av-l">Nombre</span><input class="in" data-top="nombre" value="${a.nombre}" ${edita() ? '' : raw('disabled')}></label>
         <label class="av-f"><span class="av-l">Peso</span><div class="av-peso"><input type="range" min="0" max="100" step="5" data-top="peso" value="${a.peso || 0}" ${edita() ? '' : raw('disabled')} aria-label="Peso del avatar"><b>${a.peso || 0}%</b></div></label>
         <div class="av-av"><span class="mut sm">Ficha completa al ${pct}%</span><div class="av-av-b"><i style="width:${pct}%"></i></div></div>
-        ${S.puede.aprobar ? (a.estado === 'aprobado' ? html`<button class="btn ghost xs" data-av="reabrir">Reabrir</button>` : html`<button class="btn xs" data-av="aprobar" ${pct < 30 ? raw('disabled title="Completa más la ficha antes de aprobar"') : ''}>${ico('check', 13)} Aprobar</button>`) : html`<p class="mut sm">El CEO lo aprueba.</p>`}`;
+        ${S.puede.aprobar ? (a.estado === 'aprobado' ? html`<button class="btn ghost sm" data-av="reabrir">Reabrir</button>` : html`<button class="btn sm" data-av="aprobar" ${pct < 30 ? raw('disabled title="Completa más la ficha antes de aprobar"') : ''}>${ico('check', 13)} Aprobar</button>`) : html`<p class="mut sm">El CEO lo aprueba.</p>`}`;
   }
   function cardChequeos(a) {
     const c = a.campos || {}, rx = reglaX(c), m = mercado(c), jr = avanceJourney(a.journey), senales = (c.decir?.length || 0) + (c.mostrar?.length || 0);
@@ -175,9 +176,9 @@ export async function avatarUI(el, { me, b, alive }) {
   }
   function cardSiguiente(a) {
     return html`<span class="lbl">Siguiente paso</span>
-        <a class="btn xs av-envia" href="${rutaHerramienta('strategy', b.slug, 'offer-architect')}">Enviar a Offer Architect ${ico('arrow-right', 13)}</a>
+        <a class="btn sm av-envia" href="${rutaHerramienta('strategy', b.slug, 'offer-architect')}">Enviar a Offer Architect ${ico('arrow-right', 13)}</a>
         ${a.estado !== 'aprobado' ? html`<p class="mut sm">Es borrador: Laya solo lee los avatares que aprueba el CEO.</p>` : ''}
-        <button type="button" class="btn ghost xs" data-av="exportar">${ico('download', 13)} Exportar</button>`;
+        <button type="button" class="btn ghost sm" data-av="exportar">${ico('download', 13)} Exportar</button>`;
   }
   // La IA: propone, la persona revisa y confirma. Nada se guarda hasta que elige «Usar todo» o «Solo lo vacío».
   function cardIA() {
@@ -187,10 +188,10 @@ export async function avatarUI(el, { me, b, alive }) {
     return html`<span class="lbl">IA</span>
         ${!C ? html`<p class="mut sm">Lee la carpeta del cliente y propone la ficha, los ángulos y el Buyer Journey con tu método. Tú revisas y confirmas antes de que se guarde.</p>
           <textarea class="in" rows="2" data-av-pedido placeholder="Opcional: qué quieres que mire (ej. «enfócate en dueños de restaurante en zona 10»)">${S.pedido}</textarea>
-          <button class="btn xs" data-av="ia">${ico('spark', 13)} Proponer con IA</button>` : ''}
-        ${C?.fase === 'pensando' ? html`<p class="av-think"><span class="es-dots-t"><i></i><i></i><i></i></span> ${C.tool || 'Pensando…'}</p><button class="btn ghost xs" data-av="ia-parar">Detener</button>` : ''}
+          <button class="btn sm" data-av="ia">${ico('spark', 13)} Proponer con IA</button>` : ''}
+        ${C?.fase === 'pensando' ? html`<p class="av-think"><span class="es-dots-t"><i></i><i></i><i></i></span> ${C.tool || 'Pensando…'}</p><button class="btn ghost sm" data-av="ia-parar">Detener</button>` : ''}
         ${C?.fase === 'propuesta' ? propuesta(a, C) : ''}
-        ${C?.fase === 'error' ? html`<p class="es-err">${C.error}</p><button class="btn ghost xs" data-av="descartar">Entendido</button>` : ''}
+        ${C?.fase === 'error' ? html`<p class="es-err">${C.error}</p><button class="btn ghost sm" data-av="descartar">Entendido</button>` : ''}
         ${resp ? html`<details class="av-resp"><summary>Lo que respondió</summary><div class="sm">${resp.slice(0, 1500)}</div></details>` : ''}`;
   }
   function propuesta(a, C) {
@@ -207,7 +208,7 @@ export async function avatarUI(el, { me, b, alive }) {
           ${Object.entries(P.campos).map(([k, v]) => html`<li><b>${NOMBRE_CAMPO[k] || k}</b> ${corta(ver(v), 160)}${lleno(c[k]) && !mismo(c[k], v) ? html` <span class="av-pisa">cambia lo que hay</span>` : ''}</li>`)}
           ${P.angulos.length ? html`<li><b>Ángulos</b> ${P.angulos.map((g) => `${g.tipo}: ${corta(g.texto, 70)}`).join(' · ')}</li>` : ''}
           ${JOURNEY.map((e) => (P.journey[e.id] ? html`<li><b>Journey · ${e.nombre}</b> ${FILAS_JOURNEY.filter((f) => P.journey[e.id][f.id]).map((f) => `${f.nombre}: ${corta(P.journey[e.id][f.id], 60)}`).join(' · ')}</li>` : ''))}</ul></details>
-        <div class="av-row"><button class="btn xs" data-av="usar-todo">Usar todo</button><button class="btn ghost xs" data-av="usar-vacio">Solo lo vacío</button><button class="btn ghost xs" data-av="descartar">Descartar</button></div>`;
+        <div class="av-row"><button class="btn sm" data-av="usar-todo">Usar todo</button><button class="btn ghost sm" data-av="usar-vacio">Solo lo vacío</button><button class="btn ghost sm" data-av="descartar">Descartar</button></div>`;
   }
 
   // ---------- Pintar solo lo que cambió (el campo con el foco no se pierde) ----------

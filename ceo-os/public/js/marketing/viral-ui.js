@@ -11,6 +11,7 @@ import { herramientaDe, rutaHerramienta } from '../herramientas.js';
 import { armarCtx, correrIA } from '../ia-herramienta.js';
 import { render as content } from '../screens/content.js';
 import { SIN_DATOS } from '../consulting/marcos.js';
+import { fallo, vacio } from '../visual.js';
 import {
   BLOQUE, MIN_ITEMS, NIVELES, FORMATOS, CUADRANTES, formatoNombre, nivelNombre, redNombre, fmtDe, redDe, hookDe, resonanciaDe, indiceDe, claveDe,
   limpiarPatron, recalcular, registrarSemana, senales, faltas, agrupar, trendRadar, semanasDe, semanaIso, oportunidades, ordenPatrones, prompt, leer, limpiar, aMd,
@@ -101,7 +102,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
     const box = $('#vil-lib', root); if (!box || S.libMontada) return;
     S.libMontada = true; box.dataset.island = '1';
     Promise.resolve(content(box, { me, alive, fixed: b.slug, sub: ['research'], embed: { base: `${base}/library`, only: ['research'], brand: b.name, inspo: Boolean(b.personal), plat: resto[1] } }))
-      .catch((e) => { console.error(e); if (alive() && box.isConnected) mount(box, html`<div class="empty"><b>No pude abrir la Library</b>Recarga la página; si sigue igual, la Investigación está en el Chat de Marketing.</div>`); });
+      .catch((e) => { console.error(e); if (alive() && box.isConnected) mount(box, html`${fallo({ titulo: 'No pude abrir la Library', linea: 'Recarga la página; si sigue igual, la Investigación está en el Chat de Marketing.' })}`); });
   }
   function verTab() {
     for (const [k] of TABS) { const p = $(`#vil-p-${k}`, root); if (p) p.hidden = S.tab !== k; }
@@ -137,9 +138,9 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
     const ok = escribe() && !S.ocupado && !S.cargandoDocs, hay = itemsLib().length >= MIN_ITEMS, corriendo = S.gen?.fase === 'corriendo';
     const sin = !hay ? 'La Investigación todavía no tiene posts: se llena con la primera actualización (Library).' : '';
     mount(el, html`<div class="vil-barra" role="toolbar" aria-label="Patrones">
-      <button type="button" class="btn sm" data-act="vil-ia" title="${sin}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('sparkles', 14)} Agrupar con IA</button>
-      <button type="button" class="btn ghost sm" data-act="vil-sugerir" title="${sin || 'Agrupa por formato y tipo de gancho, sin IA'}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('layers', 14)} Sugerir sin IA</button>
-      <button type="button" class="btn ghost sm" data-act="vil-nuevo" ${ok && hay ? '' : raw('disabled')}>${ico('plus', 14)} Nuevo patrón</button>
+      <button type="button" class="btn" data-act="vil-ia" title="${sin}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('sparkles', 14)} Agrupar con IA</button>
+      <button type="button" class="btn ghost" data-act="vil-sugerir" title="${sin || 'Agrupa por formato y tipo de gancho, sin IA'}" ${ok && hay && !corriendo ? '' : raw('disabled')}>${ico('layers', 14)} Sugerir sin IA</button>
+      <button type="button" class="btn ghost" data-act="vil-nuevo" ${ok && hay ? '' : raw('disabled')}>${ico('plus', 14)} Nuevo patrón</button>
       <span class="sp"></span><span class="mut sm">${S.inv ? `${plural(itemsLib().length, 'post', 'posts')} en la Biblioteca` : S.cargandoInv ? 'Leyendo la Biblioteca…' : `⚠️ SIN DATOS: no pude leer la Biblioteca${S.errInv ? ` (${S.errInv})` : ''}`}</span></div>`);
   }
   function tarjeta({ d, p }) {
@@ -155,21 +156,21 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
       <p class="vil-t vil-niv"><span class="lbl">Lectura de hoy</span> ${niv}${sen.posts ? html` <span class="mut sm">· ${plural(sen.cuentas || 0, 'cuenta', 'cuentas')}${sen.recientes !== null ? ` · ${sen.recientes} de ${sen.conFecha} posts con fecha son de las últimas 4 semanas` : ''}</span>` : ''}</p>
       <details class="vil-ejs" open><summary>Ejemplos · ${plural(p.items.length, 'post', 'posts')}</summary><ul>${p.items.map(ejemplo)}</ul></details>
       <footer class="vil-acts">
-        ${ed ? html`<button type="button" class="btn ghost sm" data-act="vil-editar" data-id="${d.id}" ${off}>${ico('pencil', 14)} Editar</button>` : ''}
-        ${ed && est === 'Borrador' ? html`<button type="button" class="btn ghost sm" data-act="vil-estado" data-id="${d.id}" data-a="En revisión" ${off}>Mandar a revisión</button>` : ''}
-        ${ed && est === 'En revisión' ? html`<button type="button" class="btn ghost sm" data-act="vil-estado" data-id="${d.id}" data-a="Borrador" ${off}>Devolver a borrador</button>` : ''}
-        ${S.puede.aprobar && S.alcance.abierto && est === 'En revisión' ? html`<button type="button" class="btn sm" data-act="vil-estado" data-id="${d.id}" data-a="Aprobado" ${off}>${ico('badge-check', 14)} Aprobar</button>` : ''}
-        <button type="button" class="btn ghost sm" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar</button>
-        ${ed ? html`<button type="button" class="btn ghost sm" data-act="vil-archivar" data-id="${d.id}" ${off}>${ico('trash-2', 14)} Archivar</button>` : ''}
+        ${ed ? html`<button type="button" class="btn ghost" data-act="vil-editar" data-id="${d.id}" ${off}>${ico('pencil', 14)} Editar</button>` : ''}
+        ${ed && est === 'Borrador' ? html`<button type="button" class="btn ghost" data-act="vil-estado" data-id="${d.id}" data-a="En revisión" ${off}>Mandar a revisión</button>` : ''}
+        ${ed && est === 'En revisión' ? html`<button type="button" class="btn ghost" data-act="vil-estado" data-id="${d.id}" data-a="Borrador" ${off}>Devolver a borrador</button>` : ''}
+        ${S.puede.aprobar && S.alcance.abierto && est === 'En revisión' ? html`<button type="button" class="btn" data-act="vil-estado" data-id="${d.id}" data-a="Aprobado" ${off}>${ico('badge-check', 14)} Aprobar</button>` : ''}
+        <button type="button" class="btn ghost" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar</button>
+        ${ed ? html`<button type="button" class="btn ghost" data-act="vil-archivar" data-id="${d.id}" ${off}>${ico('trash-2', 14)} Archivar</button>` : ''}
       </footer></article>`;
   }
   function pintarLista() {
     const el = $('#vil-lista', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando los patrones…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const xs = lista();
     mount(el, xs.length ? html`<div class="vil-pats">${xs.map(tarjeta)}</div>`
-      : html`<div class="empty vil-vacio"><b>Todavía no hay patrones</b>${escribe() ? 'Agrúpalos con IA, sugiérelos por formato y gancho, o crea uno con posts de la Biblioteca. Cada patrón liga al menos 2 posts reales.' : 'Cuando alguien los cree, salen aquí.'}</div>`);
+      : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay patrones', linea: escribe() ? 'Agrúpalos con IA, sugiérelos por formato y gancho, o crea uno con posts de la Biblioteca. Cada patrón liga al menos 2 posts reales.' : 'Cuando alguien los cree, salen aquí.' , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos los patrones de esta marca.' } }})}`);
   }
 
   // El editor: un patrón nuevo o uno que ya existe. Escribir no repinta los campos (se perdería el foco).
@@ -199,7 +200,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         <label class="vil-q">${ico('search', 14)}<input class="in" type="search" data-ef="buscar" value="${e.buscar}" placeholder="Buscar cuenta, tema o hook" aria-label="Buscar en la Biblioteca" autocomplete="off"></label>
         <ul class="vil-pick-l" id="vil-ed-pick"></ul></div>
       <ul class="vil-fl" id="vil-ed-faltas" aria-live="polite"></ul>
-      <div class="vil-ed-bt"><button type="button" class="btn sm" id="vil-ed-ok" data-act="vil-ed-guardar">${ico('check', 14)} Guardar</button><button type="button" class="btn ghost sm" data-act="vil-ed-cerrar">Cancelar</button></div></section>`);
+      <div class="vil-ed-bt"><button type="button" class="btn" id="vil-ed-ok" data-act="vil-ed-guardar">${ico('check', 14)} Guardar</button><button type="button" class="btn ghost" data-act="vil-ed-cerrar">Cancelar</button></div></section>`);
     pintarPick(); pintarEdFaltas();
   }
   // La lista de posts del editor: los elegidos arriba y luego los de más resonancia que coincidan con la búsqueda.
@@ -361,9 +362,9 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarGen() {
     const el = $('#vil-gen', root); if (!el) return;
     const g = S.gen; if (!g) return mount(el, '');
-    const otros = html`<button type="button" class="btn ghost sm" data-act="vil-ia-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost sm" data-act="vil-pegar">Pegar la respuesta</button><button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
+    const otros = html`<button type="button" class="btn ghost" data-act="vil-ia-claude">${ico('refresh-cw', 14)} Probar con claude.ai</button><button type="button" class="btn ghost" data-act="vil-pegar">Pegar la respuesta</button><button type="button" class="btn ghost" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>`;
     if (g.fase === 'corriendo') {
-      mount(el, html`<section class="vil-gen" data-fase="corriendo"><header><span class="vil-gen-t">${ico('loader-circle', 14)} Agrupando con IA…</span><span class="mut sm vil-paso"></span><button type="button" class="btn ghost sm" data-act="vil-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="vil-stream" aria-live="polite"></pre></section>`);
+      mount(el, html`<section class="vil-gen" data-fase="corriendo"><header><span class="vil-gen-t">${ico('loader-circle', 14)} Agrupando con IA…</span><span class="mut sm vil-paso"></span><button type="button" class="btn ghost" data-act="vil-parar">${ico('stop-lleno', 12)} Parar</button></header><pre class="vil-stream" aria-live="polite"></pre></section>`);
       verStream(); verPaso(); return;
     }
     if (g.fase === 'propuesta') {
@@ -380,13 +381,13 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         })}</ul>
         ${(cr.cumple || []).length + (cr.falta || []).length ? html`<ul class="vil-crit">${(cr.cumple || []).map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${(cr.falta || []).map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>` : ''}
         <p class="mut sm">Nada se guarda hasta que presiones Guardar. Los que ya existen se actualizan con una versión nueva.</p>
-        <div class="vil-prop-bt"><button type="button" class="btn sm" id="vil-prop-ok" data-act="vil-guardar-prop" ${g.sel.size && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Guardar <span id="vil-prop-n">${g.sel.size}</span></button>
-          ${g.via === 'manual' && g.modelo ? html`<button type="button" class="btn ghost sm" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button>` : html`<button type="button" class="btn ghost sm" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>`}<button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">Descartar</button></div></section>`);
+        <div class="vil-prop-bt"><button type="button" class="btn" id="vil-prop-ok" data-act="vil-guardar-prop" ${g.sel.size && !S.ocupado ? '' : raw('disabled')}>${ico('check', 14)} Guardar <span id="vil-prop-n">${g.sel.size}</span></button>
+          ${g.via === 'manual' && g.modelo ? html`<button type="button" class="btn ghost" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button>` : html`<button type="button" class="btn ghost" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>`}<button type="button" class="btn ghost" data-act="vil-cerrar-gen">Descartar</button></div></section>`);
       return;
     }
     mount(el, html`<section class="vil-gen" data-fase="${g.fase}" role="alert"><p>${g.fase === 'error' ? g.error : 'No vino ningún patrón con posts reales de la lista. Reintenta o pega la respuesta.'}</p>
       ${g.fase === 'sin-bloque' && g.texto ? html`<details><summary>Ver lo que respondió</summary><pre class="vil-stream">${g.texto}</pre></details>` : ''}
-      <div class="vil-prop-bt">${g.soloCerrar ? html`<button type="button" class="btn sm" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button><button type="button" class="btn ghost sm" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>` : html`<button type="button" class="btn sm" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>${otros}`}</div></section>`);
+      <div class="vil-prop-bt">${g.soloCerrar ? html`<button type="button" class="btn" data-act="vil-ia">${ico('sparkles', 14)} Agrupar con IA</button><button type="button" class="btn ghost" data-act="vil-cerrar-gen">${ico('x', 14)} Cerrar</button>` : html`<button type="button" class="btn" data-act="vil-ia">${ico('refresh-cw', 14)} Reintentar</button>${otros}`}</div></section>`);
   }
 
   // ---------- Trend Radar ----------
@@ -427,12 +428,12 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarRadarVista() {
     const el = $('#vil-radar-vista', root); if (!el) return;
     const W = semanasRadar(), i = S.semHoy ? W.length : Math.min(S.semIdx, W.length), r = trendRadar(S.docs.map((d) => d.contenido), i >= W.length ? '' : W[i]);
-    mount(el, html`${r.puntos.length ? svgRadar(r) : html`<div class="empty vil-vacio"><b>${S.docs.length ? 'Nada que dibujar en esta semana' : 'Todavía no hay patrones'}</b>${S.docs.length ? `${SIN_DATOS}: ningún patrón tiene momentum y saturación${i < W.length ? ' en esa semana' : ''}. Se califican al editarlos en Pattern Report.` : 'Se crean en Pattern Report: agrúpalos con IA o créalos con posts de la Biblioteca.'}</div>`}${listaRadar(r)}`);
+    mount(el, html`${r.puntos.length ? svgRadar(r) : html`${vacio({ icono: 'inbox', titulo: `${S.docs.length ? 'Nada que dibujar en esta semana' : 'Todavía no hay patrones'}`, linea: html`${S.docs.length ? `${SIN_DATOS}: ningún patrón tiene momentum y saturación${i < W.length ? ' en esa semana' : ''}. Se califican al editarlos en Pattern Report.` : 'Se crean en Pattern Report: agrúpalos con IA o créalos con posts de la Biblioteca.'}` })}`}${listaRadar(r)}`);
   }
   function pintarRadar() {
     const el = $('#vil-radar', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando el radar…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const W = semanasRadar(), i = S.semHoy ? W.length : Math.min(S.semIdx, W.length);
     mount(el, html`<div class="vil-radar-h"><p class="mut sm">Momentum contra saturación de cada patrón. Cada vez que guardas un patrón con su momentum y su saturación queda la lectura de esa semana.</p></div>
       ${W.length ? html`<div class="vil-sem"><label class="lbl" for="vil-sem-r">Semana</label><input id="vil-sem-r" class="vil-sem-r" type="range" min="0" max="${W.length}" step="1" value="${i}" aria-describedby="vil-sem-o"><output id="vil-sem-o" class="vil-sem-o" for="vil-sem-r">${semTxt(i >= W.length ? '' : W[i])}${i < W.length ? ' · la última lectura hasta esa semana' : ' · lo que dicen hoy'}</output></div>`
@@ -445,7 +446,7 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
   function pintarOp() {
     const el = $('#vil-op', root); if (!el) return;
     if (S.cargandoDocs) return mount(el, html`<p class="loading">Cargando las oportunidades…</p>`);
-    if (S.errDocs) return mount(el, html`<div class="empty"><b>No pude abrir los patrones</b>${S.errDocs}</div>`);
+    if (S.errDocs) return mount(el, html`${fallo({ titulo: 'No pude abrir los patrones', linea: S.errDocs })}`);
     const ops = lista().filter(({ p }) => p.oportunidad), estudio = herramientaDe('content-strategy-studio'), abre = !estudio || typeof estudio.puede !== 'function' || Boolean(estudio.puede(me, b));
     mount(el, html`<p class="mut sm vil-op-s">Momentum alto y saturación baja: sube y casi nadie lo usa.</p>
       ${ops.length ? html`<div class="vil-pats">${ops.map(({ d, p }) => html`<article class="vil-pat op" data-pid="${p.id}" data-estado="${d.estado || 'Borrador'}">
@@ -453,10 +454,10 @@ export async function viralTool(host, { me, slug, b, alive, resto = [] } = {}) {
         <p class="vil-t"><span class="lbl">Hook</span> ${p.hook || html`<span class="vil-sd">${SIN_DATOS}</span>`}</p>
         <p class="vil-t"><span class="lbl">Por qué funciona</span> ${p.por_que || html`<span class="vil-sd">${SIN_DATOS}</span>`}</p>
         <p class="mut sm">${plural(p.items.length, 'post de ejemplo', 'posts de ejemplo')} · <button type="button" class="vil-link" data-act="vil-ver" data-pid="${p.id}">Ver los ejemplos</button></p>
-        <footer class="vil-acts">${abre ? html`<a class="btn sm" href="${rutaHerramienta('marketing', slug, 'content-strategy-studio')}">Mandar a Content Strategy Studio ${ico('arrow-right', 14)}</a>` : html`<span class="mut sm">Tu perfil no abre Content Strategy Studio.</span>`}
+        <footer class="vil-acts">${abre ? html`<a class="btn" href="${rutaHerramienta('marketing', slug, 'content-strategy-studio')}">Mandar a Content Strategy Studio ${ico('arrow-right', 14)}</a>` : html`<span class="mut sm">Tu perfil no abre Content Strategy Studio.</span>`}
           <span class="chip sm2 vil-pronto" title="El Hook Laboratory llega en la Fase 3e">Hook Lab: llega en la Fase 3e</span>
-          <button type="button" class="btn ghost sm" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar el patrón</button></footer></article>`)}</div>`
-        : html`<div class="empty vil-vacio"><b>Todavía no hay oportunidades</b>${S.docs.length ? 'Un patrón es oportunidad con momentum alto y saturación baja. Califícalos en Pattern Report o mira el Trend Radar.' : 'Primero se crean los patrones en Pattern Report.'}</div>`}`);
+          <button type="button" class="btn ghost" data-act="vil-copiar" data-id="${d.id}">${ico('copy', 14)} Copiar el patrón</button></footer></article>`)}</div>`
+        : html`${vacio({ icono: 'inbox', titulo: 'Aún no hay oportunidades', linea: S.docs.length ? 'Un patrón es oportunidad con momentum alto y saturación baja. Califícalos en Pattern Report o mira el Trend Radar.' : 'Primero se crean los patrones en Pattern Report.' , boton: { texto: 'Armarlo en el Chat', chat: { modo: 'marketing', borrador: 'Armemos las oportunidades de esta marca.' } }})}`}`);
   }
 
   // ---------- Pintar ----------

@@ -79,7 +79,7 @@ function levels(list, rates) {
         <input type="range" min="3" max="10" step="1" value="${l}" data-lv="${sv.id}" style="width:100%;margin:8px 0">
         <div class="row sm mut"><span>${svcHours(sv, l)} h${daysAt(sv, l) ? ` · ${daysAt(sv, l)} días` : ''} · ${(sv.tasks || []).map((t) => `${t.role} ${hoursAt(t, l)} h`).join(' · ')}</span><div class="sp"></div>${c ? html`<span>Costo ${c.miss.length ? ico('alert') : Q(c.cost)}</span>` : ''}${pr ? html`<span style="margin-left:10px">Precio ${Q(pr)}</span>` : ''}</div></div>`; };
     const draw = () => {
-      drawer(html`<div class="row"><span class="chip">Proyecto custom</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+      drawer(html`<div class="row"><span class="chip">Proyecto custom</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
         <h2>¿Qué tan fuerte va cada servicio?</h2><div class="mut sm">5 = entrega sencilla · 10 = entrega fuerte. Las horas de cada rol salen del catálogo.</div>
         <div style="margin-top:14px">${list.map(row)}</div>
         <div class="card glass" style="margin-top:14px;padding:14px"><div class="row"><span class="mut sm">Total</span><div class="sp"></div><b style="font-weight:500">${list.reduce((x, sv) => x + svcHours(sv, lv[sv.id]), 0)} h${rates ? ' · costo ' + Q(list.reduce((x, sv) => x + (svcCost(sv, rates, lv[sv.id])?.cost || 0), 0)) : ''}${list.some((sv) => sv.price) ? ' · precio ' + Q(list.reduce((x, sv) => x + (svcPrice(sv, lv[sv.id]) || 0), 0)) : ''}</b></div></div>

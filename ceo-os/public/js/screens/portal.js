@@ -4,6 +4,7 @@
 import { html, raw, mount, api, toast, fdate, fdateLong, K, $, $$, ico, initials, ask, confirmAsk, embedUrl } from '../core.js';
 import { reloj } from '../video.js';
 import { estadoDe } from '../element.js';
+import { fallo } from '../visual.js';
 
 const ST = { 'Entregado': 'green', 'En revisión': 'amber', 'En curso': 'lime', 'Por empezar': '' };
 const lvName = (lv) => (!lv ? '' : lv <= 4 ? 'Entrega básica' : lv <= 6 ? 'Entrega sencilla' : lv >= 9 ? 'Entrega fuerte' : 'Entrega media');
@@ -37,7 +38,7 @@ export async function render(el, { me, sub, alive }) {
   const slug = me.role === 'client' ? '' : sub[0] || '';
   const q0 = slug ? `?slug=${encodeURIComponent(slug)}` : '';
   let d;
-  try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`<div class="empty"><b>No pude abrir el portal</b>${e.message}</div>`); }
+  try { d = await api('portal' + (slug ? `?slug=${encodeURIComponent(slug)}` : '')); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir el portal', linea: e.message })}`); }
   if (!alive()) return;
   // Videos que el equipo mandó a revisión (solo los de esta marca; sin nada interno). Si falla, el portal sigue sin ellos.
   let vids = [];
@@ -103,11 +104,11 @@ export async function render(el, { me, sub, alive }) {
     return html`<article class="pd-box pd-vid" data-vid="${v.id}">
       <h4>${v.titulo} <span class="pd-c">v${v.version}</span></h4>
       ${emb ? html`<div class="pd-vp"><iframe src="${emb}" title="${v.titulo}" allow="autoplay; fullscreen" allowfullscreen loading="lazy" style="width:100%;aspect-ratio:${v.formato === '9:16' ? '9/16;max-height:520px' : v.formato === '4:5' ? '4/5;max-height:520px' : v.formato === '1:1' ? '1/1' : '16/9'};border:0;border-radius:12px"></iframe></div>`
-        : vig?.link ? html`<a class="btn ghost sm" href="${vig.link}" target="_blank" rel="noopener noreferrer">Ver el video ↗</a>` : html`<div class="mut sm">Todavía no hay link de este video.</div>`}
+        : vig?.link ? html`<a class="btn ghost" href="${vig.link}" target="_blank" rel="noopener noreferrer">Ver el video ↗</a>` : html`<div class="mut sm">Todavía no hay link de este video.</div>`}
       ${vig?.nota ? html`<p class="mut sm">${vig.nota}</p>` : ''}
       ${v.caption ? html`<div class="pd-pn"><b class="sm">Caption</b><div class="sm" style="white-space:pre-wrap">${v.caption}</div></div>` : ''}
       ${v.comentarios.length ? html`<div class="pd-list">${v.comentarios.map((c) => html`<div class="pd-li"><span class="pd-st s-idea">${c.seg != null ? reloj(c.seg) : 'General'}</span><span>${c.texto}<small>${c.por === 'cliente' ? 'Tú' : 'Equipo'} · v${c.version}</small></span></div>`)}</div>` : ''}
-      ${isClient ? html`<div class="pd-act"><button class="btn xs ghost" data-vc="${v.id}">Comentar</button><button class="btn xs" data-vr="aprobar" data-id="${v.id}">Aprobar</button><button class="btn xs ghost" data-vr="cambios" data-id="${v.id}">Pedir cambios</button></div>` : ''}
+      ${isClient ? html`<div class="pd-act"><button class="btn sm ghost" data-vc="${v.id}">Comentar</button><button class="btn sm" data-vr="aprobar" data-id="${v.id}">Aprobar</button><button class="btn sm ghost" data-vr="cambios" data-id="${v.id}">Pedir cambios</button></div>` : ''}
     </article>`;
   };
   const contenido = html`
@@ -118,7 +119,7 @@ export async function render(el, { me, sub, alive }) {
         <div class="pd-im ${cardCls[i % 4]}"><span>${x.title}</span></div>
         <div class="pd-m"><span>${x.format} · ${fdate(x.date)}</span><span class="pd-st ${cls}">${lab}</span></div>
         ${x.url || (x.cliente === 'cambios' && !porAprobar(x) && x.nota) ? html`<div class="pd-pn">${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer">Ver pieza ↗</a>` : ''}${x.cliente === 'cambios' && !porAprobar(x) && x.nota ? html`<span class="mut sm">Pediste: «${x.nota}»</span>` : ''}</div>` : ''}
-        ${isClient && porAprobar(x) ? html`<div class="pd-act"><button class="btn xs" data-pa="aprobar" data-id="${x.id}">Aprobar</button><button class="btn xs ghost" data-pa="cambios" data-id="${x.id}">Pedir cambios</button></div>` : ''}
+        ${isClient && porAprobar(x) ? html`<div class="pd-act"><button class="btn sm" data-pa="aprobar" data-id="${x.id}">Aprobar</button><button class="btn sm ghost" data-pa="cambios" data-id="${x.id}">Pedir cambios</button></div>` : ''}
       </article>`; })}</div>`
       : html`<div class="pd-empty"><b>Todavía no hay piezas</b>Aquí verás cada pieza con su fecha y su estado.</div>`}
     <p class="pd-note">Aquí apruebas cada pieza antes de que salga. Nada se publica sin tu OK.</p>`;

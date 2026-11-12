@@ -1,4 +1,5 @@
 import { html, mount, col, acts, ask, confirmAsk, toast, ico, Q, USD, fdate, fdateLong, today, drawer, closeDrawer, docView, docHead } from './core.js';
+import { fallo, vacio } from './visual.js';
 
 // Presupuestos de un cliente (Clientes → Presupuestos): photo shoots, pauta, eventos u otros. Cada uno trae sus renglones
 // (concepto · cantidad · costo unitario · quién paga), su total y su estado. Los costos los ven el CEO, el COO y quien edita
@@ -27,7 +28,7 @@ export async function budgetsTab({ el, me, slug, name, edit, entries = null }) {
   el.dataset.island = '1';
   mount(el, html`<p class="loading">Cargando…</p>`);
   let list = [];
-  try { list = (await B.list()).filter((b) => b.client_slug === slug); } catch (e) { return mount(el, html`<div class="empty"><b>No pude leer los presupuestos</b>${e.message}</div>`); }
+  try { list = (await B.list()).filter((b) => b.client_slug === slug); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude leer los presupuestos', linea: e.message })}`); }
   const sort = () => list.sort((a, z) => String(z.date || '').localeCompare(String(a.date || '')));
 
   const save = async (b) => { try { const r = b.v ? await B.save(b) : await B.create(b); list = [...list.filter((x) => x.id !== r.id), r]; return r; } catch (e) { toast(e.message, true); return null; } };
@@ -60,21 +61,21 @@ export async function budgetsTab({ el, me, slug, name, edit, entries = null }) {
     sort();
     mount(el, html`<div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:8px"><span class="mut sm">Photo shoots, pauta y eventos de ${name}: qué cuesta, quién lo paga y en qué estado va.</span><div class="sp"></div>${edit ? html`<button class="btn" data-act="new">${ico('plus')} Crear presupuesto</button>` : ''}</div>
       ${chart()}
-      ${list.length ? html`<div class="grid g3">${list.map(card)}</div>` : html`<div class="empty"><b>Sin presupuestos todavía</b>${edit ? 'Crea el primero: un photo shoot, la pauta del mes o un evento.' : 'Cuando haya uno, aparece aquí.'}</div>`}`);
+      ${list.length ? html`<div class="grid g3">${list.map(card)}</div>` : html`${vacio({ icono: 'inbox', titulo: 'Sin presupuestos todavía', linea: `${edit ? 'Crea el primero: un photo shoot, la pauta del mes o un evento.' : 'Cuando haya uno, aparece aquí.'}` })}`}`);
   }
 
   function open(id) {
     const b = list.find((x) => x.id === id); if (!b) return;
     const [sl, sc] = STATUS[b.status] || STATUS.borrador, hid = Boolean(b.costs_hidden);
-    drawer(html`<div class="row"><span class="chip">${ticon(b.type)} ${b.type}</span><span class="chip ${sc}">${sl}</span><div class="sp"></div><button class="arrow light" data-act="close">${ico('x', 16)}</button></div>
+    drawer(html`<div class="row"><span class="chip">${ticon(b.type)} ${b.type}</span><span class="chip ${sc}">${sl}</span><div class="sp"></div><button class="btn-icon end" data-act="close">${ico('x', 16)}</button></div>
       <h2>${b.name}</h2><div class="mut sm">${[fdateLong(b.date || today()), b.type === 'Ads' && b.platform, b.type === 'Ads' && b.month && 'mes ' + b.month, b.type === 'Ads' && b.daily != null && !hid && money(b, b.daily) + ' / día'].filter(Boolean).join(' · ')}</div>
       ${hid ? '' : html`<div class="split" style="margin-top:14px"><div><span class="lbl">Total</span><b>${money(b, b.total)}</b></div><div><span class="lbl">Paga el cliente</span><b>${money(b, sum(b, 'cliente'))}</b></div><div><span class="lbl">Paga Inherent</span><b>${money(b, sum(b, 'inherent'))}</b></div></div>`}
-      <div class="row" style="margin-top:16px"><b style="font-weight:500">Renglones</b><div class="sp"></div>${edit ? html`<button class="btn ghost xs" data-act="ladd" data-id="${b.id}">+ Renglón</button>` : ''}</div>
+      <div class="row" style="margin-top:16px"><b style="font-weight:500">Renglones</b><div class="sp"></div>${edit ? html`<button class="btn ghost sm" data-act="ladd" data-id="${b.id}">+ Renglón</button>` : ''}</div>
       ${(b.lines || []).length ? html`<table class="bdlines"><thead><tr><th>Concepto</th><th>Cant.</th>${hid ? '' : html`<th style="text-align:right">Unitario</th><th style="text-align:right">Subtotal</th>`}<th>Paga</th>${edit ? html`<th></th>` : ''}</tr></thead><tbody>
         ${(b.lines || []).map((l, i) => html`<tr><td>${l.concept}</td><td class="n">${l.qty}</td>${hid ? '' : html`<td class="n">${money(b, l.cost)}</td><td class="n">${money(b, l.subtotal ?? l.qty * l.cost)}</td>`}<td>${(l.payer || 'cliente') === 'inherent' ? 'Inherent' : 'Cliente'}</td>${edit ? html`<td class="n"><button class="sm mut" data-act="ledit" data-id="${b.id}" data-i="${i}">${ico('edit')}</button> <button class="sm mut" data-act="ldel" data-id="${b.id}" data-i="${i}">${ico('x', 16)}</button></td>` : ''}</tr>`)}</tbody></table>`
       : html`<div class="mut sm" style="margin-top:8px">Sin renglones. ${edit ? 'Agrega el primero: concepto, cantidad, costo unitario y quién paga.' : ''}</div>`}
       ${b.note ? html`<div class="mut sm" style="margin-top:14px;white-space:pre-wrap">${b.note}</div>` : ''}
-      <div class="row" style="margin-top:18px;flex-wrap:wrap;gap:8px">${hid ? '' : html`<button class="btn ghost xs" data-act="pdf" data-id="${b.id}">↓ PDF</button>`}${edit ? html`<button class="btn ghost xs" data-act="edit" data-id="${b.id}">Editar</button><button class="btn xs" data-act="status" data-id="${b.id}">${NEXT[b.status || 'borrador'][1]}</button><button class="btn ghost xs" data-act="del" data-id="${b.id}">${ico('trash')}</button>` : ''}</div>`, map);
+      <div class="row" style="margin-top:18px;flex-wrap:wrap;gap:8px">${hid ? '' : html`<button class="btn ghost sm" data-act="pdf" data-id="${b.id}">↓ PDF</button>`}${edit ? html`<button class="btn ghost sm" data-act="edit" data-id="${b.id}">Editar</button><button class="btn sm" data-act="status" data-id="${b.id}">${NEXT[b.status || 'borrador'][1]}</button><button class="btn ghost sm" data-act="del" data-id="${b.id}">${ico('trash')}</button>` : ''}</div>`, map);
   }
   const lineForm = async (l) => { const v = await ask(l ? 'Editar renglón' : 'Nuevo renglón', [{ k: 'concept', l: 'Concepto', v: l?.concept, req: true }, { k: 'qty', l: 'Cantidad', t: 'number', v: l?.qty ?? 1, req: true, half: true }, { k: 'cost', l: 'Costo unitario', t: 'number', v: l?.cost ?? '', req: true, half: true }, { k: 'payer', l: 'Quién paga', t: 'select', opts: [['cliente', 'El cliente'], ['inherent', 'Inherent']], v: l?.payer || 'cliente' }]); return v; };
   const withLines = async (id, fn) => { const b = list.find((x) => x.id === id); if (!b) return; const lines = await fn([...(b.lines || [])]); if (!lines) return; const r = await save({ ...b, lines }); if (r) { toast('Guardado'); paint(); open(r.id); } };

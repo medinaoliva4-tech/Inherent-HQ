@@ -53,7 +53,7 @@ export function investigacion(b, ctx) {
       .then(() => alive() && b.isConnected && investigacion(b, ctx));
     return;
   }
-  if (st.d.fail) return mount(b, html`<div class="warnbox">No pude abrir la investigación: ${st.d.fail}</div><button class="btn ghost xs" style="margin-top:10px" data-iv="reload">Reintentar</button>`), (b.onclick = (e) => { if (e.target.closest('[data-iv="reload"]')) { st.d = null; investigacion(b, ctx); } });
+  if (st.d.fail) return mount(b, html`<div class="warnbox">No pude abrir la investigación: ${st.d.fail}</div><button class="btn ghost sm" style="margin-top:10px" data-iv="reload">Reintentar</button>`), (b.onclick = (e) => { if (e.target.closest('[data-iv="reload"]')) { st.d = null; investigacion(b, ctx); } });
   paint(b, ctx);
   if (st.d.estado?.status === 'running') st.timer = setTimeout(() => recoger(b, ctx), st.polled ? 20000 : 1500);
   layaLote(b, ctx).then(() => ver(b, ctx));
@@ -79,7 +79,7 @@ function paint(b, ctx) {
   mount(b, html`<div class="inv">
     <div id="inv-status"></div>
     <section class="inv-sec" aria-labelledby="inv-top-h"><div class="inv-h"><h2 id="inv-top-h">Lo que funciona</h2><span class="mut sm">Rinde más que su propio promedio y Laya dice que sirve</span></div><div id="inv-top"></div></section>
-    <section class="inv-sec" aria-labelledby="inv-lib-h"><div class="inv-h"><h2 id="inv-lib-h">Biblioteca</h2><span class="mut sm" id="inv-n"></span><span class="sp"></span>${D.puede?.editar ? html`<button class="btn xs" data-iv="manual">${ico('plus', 13)} Inspo</button>` : ''}</div>
+    <section class="inv-sec" aria-labelledby="inv-lib-h"><div class="inv-h"><h2 id="inv-lib-h">Biblioteca</h2><span class="mut sm" id="inv-n"></span><span class="sp"></span>${D.puede?.editar ? html`<button class="btn sm" data-iv="manual">${ico('plus', 13)} Inspo</button>` : ''}</div>
       <div id="inv-filters"></div><div id="inv-lib"></div></section>
     <div id="inv-refs"></div>
     <div class="inv-mcp mut sm">Claude también sube posts con guardar_research · <button class="inv-link" data-iv="prompt">Copiar instrucción</button>${D.puede?.editar && itemsOf(st).length ? html` · <button class="inv-link" data-iv="clear">Vaciar</button>` : ''}</div>
@@ -109,7 +109,7 @@ function renderStatus(b, { st }) {
   mount(box, html`<div class="inv-status ${running ? 'running' : ''}" role="status">
       <span class="inv-dot ${running ? 'on' : E.error ? 'warn' : L ? 'ok' : ''}" aria-hidden="true"></span>
       <div class="inv-st-txt"><b>${line}</b>${sub ? html`<span class="mut sm">${sub}</span>` : ''}</div>
-      ${D.puede?.actualizar && D.apify && D.ficha?.activa !== false && (hayRefs(D) || E.last) ? html`<button class="btn xs inv-upd" data-iv="update" ${running ? raw('disabled') : ''}>${ico('repeat', 14)} ${running ? 'Buscando…' : 'Actualizar ahora'}</button>` : ''}
+      ${D.puede?.actualizar && D.apify && D.ficha?.activa !== false && (hayRefs(D) || E.last) ? html`<button class="btn sm inv-upd" data-iv="update" ${running ? raw('disabled') : ''}>${ico('repeat', 14)} ${running ? 'Buscando…' : 'Actualizar ahora'}</button>` : ''}
     </div>
     ${E.error ? html`<div class="inv-alert" role="alert">${ico('alert', 16)}<span>${E.error.msg}</span></div>` : ''}
     ${E.laya_error ? html`<div class="inv-note mut sm" role="status">Laya no pudo dejar ${plural(E.laya_error.n || 0, 'post', 'posts')} pendiente${E.laya_error.n === 1 ? '' : 's'} de juicio (${E.laya_error.msg}). Se reintenta sola cada día.</div>` : ''}
@@ -137,7 +137,7 @@ function bigCard(it, puerta) {
     <div class="inv-cb">
       <div class="inv-who"><b>@${it.handle || '—'}</b><span class="mut">${[redNombre(redOf(it)), FMTL[f]].filter(Boolean).join(' · ')}</span></div>
       ${why ? html`<p class="inv-why">${why}</p>` : ''}
-      <div class="inv-foot">${layaChip(it)}<span data-ojoid="${it.id}">${ojoChip(it.ojo)}</span><button class="btn xs ${it.replicar ? '' : 'ghost'} inv-use" data-iv="use" data-id="${it.id}" aria-pressed="${it.replicar ? 'true' : 'false'}">${it.replicar ? html`${ico('repeat', 13)} Formato a replicar` : 'Usar como formato'}</button></div>
+      <div class="inv-foot">${layaChip(it)}<span data-ojoid="${it.id}">${ojoChip(it.ojo)}</span><button class="btn sm ${it.replicar ? '' : 'ghost'} inv-use" data-iv="use" data-id="${it.id}" aria-pressed="${it.replicar ? 'true' : 'false'}">${it.replicar ? html`${ico('repeat', 13)} Formato a replicar` : 'Usar como formato'}</button></div>
     </div></article>`;
 }
 function renderTop(b, { st }) {
@@ -182,7 +182,7 @@ function renderLib(b, { st }) {
   const catOk = (x) => !f.cat || (f.cat === 'replicar' ? x.replicar === true : f.cat === 'analisis' ? Boolean(x.why) : f.cat === 'semana' ? x.week === W : (x.tipo || 'agregado') === f.cat);
   const list = all.filter((x) => (f.fmt === 'todo' || fmtOf(x) === f.fmt) && catOk(x) && (!f.red || redOf(x) === f.red) && searchOk(x, q)).sort(SORT[f.sort] || SORT.res);
   const n = $('#inv-n', b); if (n) n.textContent = all.length ? (list.length === all.length ? String(all.length) : `${list.length} de ${all.length}`) : '';
-  mount(box, list.length ? html`<div class="rs-grid">${list.slice(0, st.more ? 400 : 60).map(tile)}</div>${list.length > 60 && !st.more ? html`<button class="btn ghost xs inv-more" data-iv="more">Ver los ${list.length}</button>` : ''}`
+  mount(box, list.length ? html`<div class="rs-grid">${list.slice(0, st.more ? 400 : 60).map(tile)}</div>${list.length > 60 && !st.more ? html`<button class="btn ghost sm inv-more" data-iv="more">Ver los ${list.length}</button>` : ''}`
     : html`<p class="inv-empty mut">${all.length ? 'Nada con esos filtros.' : hayRefs(st.d) ? 'Vacía por ahora. Se llena sola cada lunes.' : 'Vacía. Agrega referentes abajo y se llena sola cada lunes.'}</p>`);
 }
 
@@ -354,12 +354,12 @@ function ropen(id, b, ctx) {
   document.querySelector('.rsheet')?.remove();
   const v = document.createElement('div'); v.className = 'rsheet';
   mount(v, html`<aside class="sp-sheet rv-sheet" role="dialog" aria-modal="true" aria-label="${rtitle(it)}">
-    <div class="row rv-head"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div style="min-width:0"><b>@${it.handle || '—'}</b><div class="sm mut">${[redNombre(redOf(it)), FMTL[f], catCorto(it.tipo)].filter(Boolean).join(' · ')}</div></div></div><div class="sp"></div><button class="arrow light" data-v="close" title="Cerrar" aria-label="Cerrar">${ico('x', 16)}</button></div>
+    <div class="row rv-head"><div class="rv-acc"><span class="rv-av">${(it.handle || '?')[0].toUpperCase()}</span><div style="min-width:0"><b>@${it.handle || '—'}</b><div class="sm mut">${[redNombre(redOf(it)), FMTL[f], catCorto(it.tipo)].filter(Boolean).join(' · ')}</div></div></div><div class="sp"></div><button class="btn-icon end" data-v="close" title="Cerrar" aria-label="Cerrar">${ico('x', 16)}</button></div>
     <div class="rv-media" id="rvmedia">${f === 'reel' && em ? html`<div class="rv-poster">${t ? html`<img src="${t}" alt="">` : ''}<span class="rv-load">Cargando video…</span></div>`
         : slides.length ? html`<div class="rv-slides">${slides.map((u) => html`<div style="background-image:url('${u}')"></div>`)}</div>`
         : html`<div class="rv-poster" ${t ? raw(`style="background-image:url('${t}')"`) : ''}>${t ? '' : html`<span class="rnothumb">${ico(f === 'reel' ? 'play' : f === 'carrusel' ? 'layers' : 'image', 26)}</span>`}</div>`}</div>
     <div class="rv-actions">${edit ? html`<button class="btn ${it.replicar ? '' : 'ghost'} rv-rep" data-v="rep" aria-pressed="${it.replicar ? 'true' : 'false'}">${ico('repeat', 15)} ${it.replicar ? 'Formato a replicar' : 'Usar como formato'}</button>` : ''}${edit ? html`<a class="btn ghost rv-guion" href="${rutaModulo(slug, 'creacion', ['nuevo', `inspo:${it.id}`])}">${ico('edit', 15)} Convertir en guion</a>` : ''}${edit ? html`<button class="btn ghost rv-voz" data-v="voz">${ico('edit', 15)} Escribir en mi voz</button>` : ''}<button class="btn rv-use" data-v="use">${ICON.sparkle} Usar plantilla</button>${edit ? html`<button class="btn ghost" data-v="plan" title="Agendar en el calendario de publicación">${ico('plus', 16)} Agendar</button>` : ''}
-      ${/^https:\/\//.test(it.url) ? html`<a class="arrow light" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}${edit ? html`<button class="arrow light" data-v="del" title="Quitar de la investigación" aria-label="Quitar de la investigación">${ico('trash', 17)}</button>` : ''}</div>
+      ${/^https:\/\//.test(it.url) ? html`<a class="btn-icon end" href="${it.url}" target="_blank" rel="noopener noreferrer" title="Abrir el original" aria-label="Abrir el original">${ico('globe', 17)}</a>` : ''}${edit ? html`<button class="btn-icon end" data-v="del" title="Quitar de la investigación" aria-label="Quitar de la investigación">${ico('trash', 17)}</button>` : ''}</div>
     <div class="rv-info">
       <div class="rfc-head"><h2>${rtitle(it)}</h2>${it.x ? html`<span class="rfc-res ${it.x >= 2 ? 'alta' : it.x >= 1 ? 'media' : 'baja'}">×${it.x}</span>` : it.resonance ? html`<span class="rfc-res ${it.resonance}">${it.resonance}</span>` : ''}</div>
       ${stats.length ? html`<div class="rfc-stats">${stats.map(([v2, l]) => html`<div><b>${v2}</b><span>${l}</span></div>`)}</div>` : ''}
@@ -367,7 +367,7 @@ function ropen(id, b, ctx) {
       <div id="laya-ref"></div>
       ${w.hook ? html`<div class="rfc-sec"><span class="lbl">Hook</span><p>${w.hook}</p></div>` : ''}
       ${mine ? html`<div class="rfc-sec"><span class="lbl">Tu versión</span><div class="rfc-md">${md(mine)}</div></div>` : ''}
-      ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn xs" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
+      ${!it.why ? html`<div class="rfc-sec"><p class="mut">Todavía sin análisis. Claude lo desglosa y lo sube aquí.</p><button class="btn sm" data-v="ask">Pedir el análisis a Claude</button></div>` : ''}
       ${receta.length || clips.length ? html`<details class="rfc-more" open><summary>Cómo se hace</summary>
         ${receta.length ? html`<div class="rfc-sec"><span class="lbl">Receta</span><ol>${receta.map((x) => html`<li>${x}</li>`)}</ol></div>` : ''}
         ${clips.length ? html`<div class="rfc-sec"><span class="lbl">Clips</span><ul class="rfc-clips">${clips.map((c) => html`<li>${c.t ? html`<b>${c.t}</b>` : ''}<span>${c.que}</span></li>`)}</ul></div>` : ''}

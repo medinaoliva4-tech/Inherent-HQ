@@ -12,6 +12,7 @@ import { RECIPE_ROLES } from './recipes.js';
 import { holders } from './cycle.js';
 import { levelName, LEVEL_NAMES } from './levels.js';
 import { intelView } from './intel-ui.js';
+import { vacio } from './visual.js';
 
 const PR = col('projects'), TK = col('tasks');
 export const PSTATES = ['En curso', 'En riesgo', 'Pausado', 'Hecho'];
@@ -119,7 +120,7 @@ export function myProjects(box, { me, projects, tasks, team, clients = [], open 
             <span class="pp-mpbarw" data-l="Avance"><span class="pp-meter"><i style="width:${pct}%"></i></span><b class="sm">${pct}%</b></span>
             <span data-l="Fin" class="${late ? 'pp-late' : ''}">${end ? fdate(end) : '—'}</span>
             <span class="pp-mpo" data-l="Dueño">${av(o.who, 22)}<span class="sm"><span class="mut">${o.label} →</span> ${o.who?.name?.split(' ')[0] || '—'}</span></span></a>`; })
-          : html`<div class="empty sm" style="padding:22px">Ningún proyecto con ese filtro.</div>`}</div>`);
+          : html`${vacio({ icono: 'inbox', titulo: 'Ningún proyecto con ese filtro', compacto: true })}`}</div>`);
   };
   box.onclick = (e) => { const t = e.target.closest('[data-mp]'); if (!t) return;
     if (t.dataset.mp === 'f') { f = t.dataset.v; lsSet('pp.f', f); paint(); }
@@ -136,7 +137,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
   let { projects, tasks, team, docs, clients } = data;
   let p = projects.find((x) => x.id === id);
   if (!p) { try { p = await PR.get(id); projects.push(p); } catch {} }
-  if (!p) return mount(el, html`<div class="empty"><b>Ese proyecto no existe</b>O no está entre los tuyos.<div><button class="btn" data-x="back">← Proyectos</button></div></div>`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
+  if (!p) return mount(el, html`${vacio({ icono: 'inbox', titulo: 'Ese proyecto no existe', linea: 'O no está entre los tuyos.', boton: { texto: '← Proyectos', act: '', data: { x: 'back' } } })}`), (el.onclick = (e) => e.target.closest('[data-x=back]') && back());
   // Abre en el Kanban de sus tareas (las vistas viejas Lista y Tablero caen ahí).
   // «Entregables» (Intel) solo existe en un proyecto de un cliente: lee la carpeta de ese cliente.
   const views = () => VIEWS.filter(([k]) => k !== 'entregables' || p.client_slug);
@@ -219,7 +220,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const goals = p.goals || [], links = p.links || [];
     mount(b, html`<div class="pp-sum">
       <div class="pp-main">
-        <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Brief</h3><div class="sp"></div>${edit && !briefEdit ? html`<button class="btn ghost xs" data-x="briefedit">${ico('edit', 13)} Editar</button>` : ''}</div>
+        <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Brief</h3><div class="sp"></div>${edit && !briefEdit ? html`<button class="btn ghost sm" data-x="briefedit">${ico('edit', 13)} Editar</button>` : ''}</div>
           ${briefEdit ? html`<div class="pp-tool" role="toolbar" aria-label="Formato">${[['b', 'B', 'Negrita'], ['i', 'I', 'Cursiva'], ['h', 'H', 'Título'], ['ul', '•', 'Lista'], ['ok', '☐', 'Pendiente'], ['a', '↗', 'Link']].map(([k, l, t]) => html`<button data-x="fmt" data-f="${k}" title="${t}" aria-label="${t}">${l}</button>`)}<span class="mut sm">Markdown simple</span></div>
               <textarea class="in pp-brief-in" id="ppbrief" rows="10" placeholder="Qué es este proyecto, para qué, qué incluye y qué queda fuera…">${p.brief || ''}</textarea>
               <div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-x="briefsave">Guardar brief</button><button class="btn ghost" data-x="briefcancel">Cancelar</button></div>`
@@ -228,11 +229,11 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
         <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Objetivos</h3><span class="mut sm">${goals.filter((g) => g.done).length}/${goals.length}</span></div>
           ${goals.map((g, i) => html`<div class="pp-goal"><label class="check"><input type="checkbox" data-x="goal" data-i="${i}" ${g.done ? raw('checked') : ''} ${edit ? '' : raw('disabled')}> <span class="${g.done ? 'mut' : ''}">${g.t}</span></label>${edit ? html`<button class="pp-mini" data-x="goaldel" data-i="${i}" aria-label="Quitar objetivo">${ico('x', 12)}</button>` : ''}</div>`)}
           ${!goals.length && !edit ? html`<div class="pp-empty">Sin objetivos escritos.</div>` : ''}
-          ${edit ? html`<div class="row pp-add"><input class="in" id="ppgoal" placeholder="+ Objetivo (ej. 40 leads al mes)"><button class="btn ghost xs" data-x="goaladd">Agregar</button></div>` : ''}</section>
+          ${edit ? html`<div class="row pp-add"><input class="in" id="ppgoal" placeholder="+ Objetivo (ej. 40 leads al mes)"><button class="btn ghost sm" data-x="goaladd">Agregar</button></div>` : ''}</section>
         <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Enlaces clave</h3></div>
           ${links.map((l, i) => html`<div class="pp-lk"><a class="wkrow" href="${okUrl(l.url) ? l.url : '#'}" target="_blank" rel="noopener noreferrer"><span class="fi">${/drive\.google|docs\.google/.test(l.url) ? IC.drive : ico('link', 14)}</span><span class="grow">${l.label || l.url}</span><span class="mut sm">${String(l.url).replace(/^https:\/\/(www\.)?/, '').slice(0, 32)}</span></a>${edit ? html`<button class="pp-mini" data-x="linkdel" data-i="${i}" aria-label="Quitar enlace">${ico('x', 12)}</button>` : ''}</div>`)}
           ${!links.length && !edit ? html`<div class="pp-empty">Sin enlaces.</div>` : ''}
-          ${edit ? html`<div class="row pp-add"><input class="in" id="pplkn" placeholder="Nombre (ej. Carpeta en Drive)" style="flex:1"><input class="in" id="pplku" placeholder="https://…" style="flex:1.4"><button class="btn ghost xs" data-x="linkadd">Agregar</button></div>` : ''}</section>
+          ${edit ? html`<div class="row pp-add"><input class="in" id="pplkn" placeholder="Nombre (ej. Carpeta en Drive)" style="flex:1"><input class="in" id="pplku" placeholder="https://…" style="flex:1.4"><button class="btn ghost sm" data-x="linkadd">Agregar</button></div>` : ''}</section>
       </div>
       <aside class="pp-side">
         <section class="sp-panel pp-block pp-upd"><div class="sp-panel-h row"><h3>Status update</h3>${last ? html`<span class="mut sm">${fdate(String(last.at).slice(0, 10))}</span>` : ''}</div>
@@ -243,7 +244,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
           ${ups.length > 1 ? html`<details class="pp-uhist"><summary>Historial · ${ups.length - 1}</summary>${ups.slice(1).map((u) => html`<div class="pp-uitem"><span class="pp-udot ${u.color}"></span><div><span class="mut sm">${fdate(String(u.at).slice(0, 10))} · ${u.who}</span><p>${u.note}</p></div></div>`)}</details>` : ''}</section>
         <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Números</h3></div>
           <div class="pp-nums"><div><b>${ts.length}</b><span>Tareas</span></div><div><b>${done}</b><span>Hechas</span></div><div><b class="${late.length ? 'pp-late' : ''}">${late.length}</b><span>Atrasadas</span></div><div><b>${rev.length}</b><span>En revisión</span></div></div></section>
-        <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Fases</h3>${edit ? html`<button class="btn ghost xs" data-x="view" data-v="timeline" style="margin-left:auto">Timeline</button>` : ''}</div>
+        <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Fases</h3>${edit ? html`<button class="btn ghost sm" data-x="view" data-v="timeline" style="margin-left:auto">Timeline</button>` : ''}</div>
           ${phases().length ? phases().map((x) => { const st2 = sections().find((s) => s.k === x.k)?.tasks || [], d2 = st2.filter((t) => t.status === 'Hecha').length;
             return html`<div class="pp-phr"><span class="pp-phdot ${PHCLS[x.status] || 'todo'}"></span><div class="grow"><b>${x.name}</b><span class="mut sm">${x.start ? fdate(x.start) : '—'} → ${x.end ? fdate(x.end) : '—'}${st2.length ? ` · ${d2}/${st2.length}` : ''}</span></div></div>`; }) : html`<div class="pp-empty">Sin fases.</div>`}</section>
         <section class="sp-panel pp-block"><div class="sp-panel-h row"><h3>Lo que viene</h3></div>
@@ -280,7 +281,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
         arrows += `<path d="M${x1} ${y1} H${mx} V${y2} H${x2 - 2}" class="${pre.status === 'Hecha' ? 'ok' : ''}" marker-end="url(#pparr)"/>`; } }
     const tl = X(T) + dw / 2;
     mount(b, html`<div class="sp-panel pp-tl">
-      <div class="pp-tlbar"><div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${zoom === k ? 'on' : ''}" data-x="zoom" data-z="${k}">${l}</button>`)}</div><button class="btn ghost xs" data-x="tltoday">Hoy</button><span class="mut sm pp-tlhint">${edit ? 'Arrastra una barra para mover sus fechas; el borde derecho cambia el fin.' : 'Solo lectura.'}</span>${edit ? html`<div class="sp"></div><button class="btn ghost xs" data-x="phadd">${ico('plus', 13)} Fase</button>` : ''}</div>
+      <div class="pp-tlbar"><div class="tabs" style="margin:0">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => html`<button class="${zoom === k ? 'on' : ''}" data-x="zoom" data-z="${k}">${l}</button>`)}</div><button class="btn ghost sm" data-x="tltoday">Hoy</button><span class="mut sm pp-tlhint">${edit ? 'Arrastra una barra para mover sus fechas; el borde derecho cambia el fin.' : 'Solo lectura.'}</span>${edit ? html`<div class="sp"></div><button class="btn ghost sm" data-x="phadd">${ico('plus', 13)} Fase</button>` : ''}</div>
       <div class="pp-gwrap" style="--dw:${dw}px;--rh:${RH}px">
         <div class="pp-gantt" style="width:calc(var(--lw) + ${W}px)">
           <div class="pp-ghead"><div class="pp-glab pp-gcorner">Fase / tarea</div><div class="pp-gscale" style="width:${W}px">
@@ -307,7 +308,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const by = {}; mine().filter((t) => t.due && t.due.slice(0, 7) === calMonth).forEach((t) => (by[+t.due.slice(8)] ||= []).push(t));
     phases().forEach((x) => { if (x.start?.slice(0, 7) === calMonth) (by[+x.start.slice(8)] ||= []).push({ ph: x }); });
     const cells = []; for (let i = 0; i < 42; i++) { const d = i - lead + 1; if (i >= 35 && d > nd) break; cells.push(d); }
-    mount(b, html`<div class="sp-panel pp-cal"><div class="pp-tlbar"><h3 style="text-transform:capitalize">${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3><div class="sp"></div><button class="btn ghost xs" data-x="cmon" data-d="0">Hoy</button><button class="btn ghost xs" data-x="cmon" data-d="-1" aria-label="Mes anterior">‹</button><button class="btn ghost xs" data-x="cmon" data-d="1" aria-label="Mes siguiente">›</button></div>
+    mount(b, html`<div class="sp-panel pp-cal"><div class="pp-tlbar"><h3 style="text-transform:capitalize">${first.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })}</h3><div class="sp"></div><button class="btn ghost sm" data-x="cmon" data-d="0">Hoy</button><button class="btn ghost sm" data-x="cmon" data-d="-1" aria-label="Mes anterior">‹</button><button class="btn ghost sm" data-x="cmon" data-d="1" aria-label="Mes siguiente">›</button></div>
       <div class="cal pp-calg">${['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((d) => html`<div class="dh">${d}</div>`)}
         ${cells.map((d) => { const out = d < 1 || d > nd, ds = `${calMonth}-${String(d).padStart(2, '0')}`;
           return html`<div class="d ${out ? 'o' : ''} ${!out && ds === today() ? 'today' : ''}"><span class="n">${out ? '' : d}</span>${out ? '' : (by[d] || []).slice(0, 4).map((it) => (it.ph ? html`<div class="ev e2" title="Empieza la fase ${it.ph.name}">▸ ${it.ph.name}</div>` : html`<div class="ev pp-ev ${TCLS[it.status || 'Por empezar']}" data-x="task" data-id="${it.id}" title="${it.title}">${it.title}</div>`))}${!out && (by[d] || []).length > 4 ? html`<span class="mut sm">+${by[d].length - 4}</span>` : ''}</div>`; })}</div></div>`);
@@ -343,7 +344,7 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const k = btn.dataset.k, x = phases().find((y) => y.k === k); if (!x) return;
     pop(btn, html`<div class="pp-pform"><label class="f">Nombre</label><input class="in" id="pphn" value="${x.name}"><div class="two" style="margin-top:8px"><div><label class="f">Inicio</label><input class="in" type="date" id="pphs" value="${x.start || ''}"></div><div><label class="f">Fin</label><input class="in" type="date" id="pphe" value="${x.end || ''}"></div></div>
       <label class="f" style="margin-top:8px">Estado</label><select class="in" id="pphst">${PHST.map(([v, l]) => html`<option value="${v}" ${v === (x.status || 'todo') ? raw('selected') : ''}>${l}</option>`)}</select>
-      <div class="row" style="gap:6px;margin-top:10px"><button class="btn xs" data-pop="ok">Guardar</button><div class="sp"></div><button class="btn ghost xs" data-pop="up" title="Subir">↑</button><button class="btn ghost xs" data-pop="dn" title="Bajar">↓</button><button class="btn ghost xs" data-pop="del" aria-label="Eliminar fase">${ico('trash', 13)}</button></div></div>`, {
+      <div class="row" style="gap:6px;margin-top:10px"><button class="btn sm" data-pop="ok">Guardar</button><div class="sp"></div><button class="btn ghost sm" data-pop="up" title="Subir">↑</button><button class="btn ghost sm" data-pop="dn" title="Bajar">↓</button><button class="btn ghost sm" data-pop="del" aria-label="Eliminar fase">${ico('trash', 13)}</button></div></div>`, {
       ok: () => { const s = $('#pphs').value, e = $('#pphe').value; if (s && e && e < s) return toast('El fin no puede ser antes del inicio', true); closePop(); patchPhase(k, { name: $('#pphn').value.trim() || x.name, start: s, end: e, status: $('#pphst').value }); },
       up: () => movePhase(k, -1), dn: () => movePhase(k, 1),
       del: async () => { closePop(); const n = sections().find((s) => s.k === k)?.tasks.length || 0; if (!(await confirmAsk(`¿Eliminar la fase «${x.name}»?${n ? ` Sus ${n} tareas quedan sin fase (no se borran).` : ''}`))) return;
@@ -360,14 +361,14 @@ export async function projectPage(el, { me, id, view, edit, data, back, alive })
     const k = btn.dataset.prop, done = async (patch) => { closePop(); if (await saveP(patch)) paint(); };
     if (k === 'status') pop(btn, html`<div class="pp-plist">${PSTATES.map((s) => html`<button data-pop="v" data-v="${s}">${pChip(s)}</button>`)}<button data-pop="v" data-v="" class="mut sm">Automático (por avance)</button></div>`, { v: (b2) => done({ status: b2.dataset.v }) });
     if (k === 'level') pop(btn, html`<div class="pp-plist">${[...LEVEL_NAMES, 'Ciclo mensual', 'Proyecto', 'Growth'].map((l) => html`<button data-pop="v" data-v="${l}">${l}</button>`)}<button data-pop="v" data-v="" class="mut sm">Del plan del cliente</button></div>`, { v: (b2) => done({ level: b2.dataset.v }) });
-    if (k === 'dates') pop(btn, html`<div class="pp-pform"><div class="two"><div><label class="f">Inicio</label><input class="in" type="date" id="ppds" value="${projStart(p)}"></div><div><label class="f">Fin</label><input class="in" type="date" id="ppde" value="${projEnd(p)}"></div></div><div class="mut sm" style="margin-top:6px">Vacío = lo que digan las fases.</div><button class="btn xs" data-pop="ok" style="margin-top:8px">Guardar</button></div>`,
+    if (k === 'dates') pop(btn, html`<div class="pp-pform"><div class="two"><div><label class="f">Inicio</label><input class="in" type="date" id="ppds" value="${projStart(p)}"></div><div><label class="f">Fin</label><input class="in" type="date" id="ppde" value="${projEnd(p)}"></div></div><div class="mut sm" style="margin-top:6px">Vacío = lo que digan las fases.</div><button class="btn sm" data-pop="ok" style="margin-top:8px">Guardar</button></div>`,
       { ok: () => { const s = $('#ppds').value, e = $('#ppde').value; if (s && e && e < s) return toast('El fin no puede ser antes del inicio', true); done({ start: s, end: e }); } });
     if (k === 'owner') pop(btn, html`<div class="pp-plist">${RECIPE_ROLES.map(([r, l]) => { const e = holders(team, '', p.roles_map)(r), w = person(e); return html`<button data-pop="v" data-v="${r}" class="${projOwner(p, team).role === r ? 'on' : ''}"><b style="font-weight:500;min-width:84px">${l}</b><span class="mut sm">→ ${w?.name || 'sin asignar'}</span></button>`; })}</div>`, { v: (b2) => done({ owner_role: b2.dataset.v }) });
     if (k === 'client') pop(btn, html`<div class="pp-plist">${clients.filter((c) => c.hasPlan !== false).map((c) => html`<button data-pop="v" data-v="${c.slug}" class="${c.slug === p.client_slug ? 'on' : ''}">${c.slug.toUpperCase()}<span class="mut sm">${c.plan ? levelName(c.plan) : ''}</span></button>`)}<button data-pop="v" data-v="" class="mut sm">Sin cliente / interno</button></div>`, { v: (b2) => done({ client_slug: b2.dataset.v, client: b2.dataset.v ? b2.dataset.v.toUpperCase() : '' }) });
-    if (k === 'icon') pop(btn, html`<div class="pp-pform"><label class="f">Icono (una o dos letras, o un emoji)</label><div class="row" style="gap:6px"><input class="in" id="ppic" maxlength="4" value="${p.icon || ''}" placeholder="${initials(p.name)}"><button class="btn xs" data-pop="ok">OK</button></div><button class="btn ghost xs" data-pop="clr" style="margin-top:6px">Usar las iniciales</button></div>`,
+    if (k === 'icon') pop(btn, html`<div class="pp-pform"><label class="f">Icono (una o dos letras, o un emoji)</label><div class="row" style="gap:6px"><input class="in" id="ppic" maxlength="4" value="${p.icon || ''}" placeholder="${initials(p.name)}"><button class="btn sm" data-pop="ok">OK</button></div><button class="btn ghost sm" data-pop="clr" style="margin-top:6px">Usar las iniciales</button></div>`,
       { ok: () => done({ icon: [...$('#ppic').value.trim()].slice(0, 2).join('') }), clr: () => done({ icon: '' }) });
     if (k === 'cover') pop(btn, html`<div class="pp-pform"><label class="f">Portada</label><div class="pp-covers">${COVERS.map(([c, l]) => html`<button class="pp-cv c-${c}" data-pop="c" data-v="${c}" title="${l}" aria-label="${l}"></button>`)}</div>
-      <label class="f" style="margin-top:8px">o una imagen (Drive o Pinterest)</label><div class="row" style="gap:6px"><input class="in" id="ppcov" placeholder="https://drive.google.com/…" value="${p.cover_img || ''}"><button class="btn xs" data-pop="img">OK</button></div></div>`,
+      <label class="f" style="margin-top:8px">o una imagen (Drive o Pinterest)</label><div class="row" style="gap:6px"><input class="in" id="ppcov" placeholder="https://drive.google.com/…" value="${p.cover_img || ''}"><button class="btn sm" data-pop="img">OK</button></div></div>`,
       { c: (b2) => done({ cover: b2.dataset.v, cover_img: '' }), img: () => { const v = $('#ppcov').value.trim(); if (v && !okUrl(v)) return toast('El link debe empezar con https://', true); done({ cover_img: v ? driveImg(v) : '' }); } });
   }
 

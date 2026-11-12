@@ -49,7 +49,7 @@ function paint() {
     main.innerHTML = `<section class="step"><span class="eyebrow">Diagnóstico · 2 minutos</span>
       <h1>¿Dónde está trabado <em>tu negocio?</em></h1>
       <p class="lead">Siete preguntas. Al final te contamos qué nivel de trabajo encaja hoy con tu empresa, sin venderte volumen: <em>lo que necesita, no lo que la industria dice.</em> Es una orientación, no una promesa de resultados.</p>
-      <button class="btn cream" id="start" type="button">Empezar <span class="arr">→</span></button>
+      <button class="btn ghost" id="start" type="button">Empezar <span class="arr">→</span></button>
       <p class="tiny" style="margin-top:18px">Nada de esto se comparte. Lo usa Inherent para prepararse antes de hablar contigo.</p></section>`;
     $('#start').onclick = () => go(0);
     return;

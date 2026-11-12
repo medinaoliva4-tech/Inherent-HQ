@@ -1,6 +1,7 @@
 // Gráficas simples en SVG, con los colores de la marca. Sin librerías: barras, números y una línea de tiempo del mes.
 // Nunca inventan datos: si todo está en cero, lo dicen.
 import { html, raw, esc, fdate } from './core.js';
+import { vacio } from './visual.js';
 
 // Colores como variables de la marca: así las gráficas se ven bien de día y de noche.
 export const PAL = { ink: 'var(--ink)', brown: 'var(--ch-brown, #795c45)', sand: 'var(--ch-sand, #a18770)', light: 'var(--ch-light, #d9cbbb)', red: 'var(--warn)', lime: 'var(--lime)' };
@@ -15,7 +16,7 @@ export const kpis = (list, { always = false } = {}) => (!always && list.every(([
 export function bars(groups, series, { h = 150, stack = false, empty = 'Sin datos todavía' } = {}) {
   const tot = (g) => (stack ? g.values.reduce((a, v) => a + (+v || 0), 0) : Math.max(...g.values.map((v) => +v || 0)));
   const max = Math.max(1, ...groups.map(tot));
-  if (!groups.some((g) => g.values.some((v) => +v > 0))) return html`<div class="empty sm" style="padding:16px">${empty}</div>`;
+  if (!groups.some((g) => g.values.some((v) => +v > 0))) return html`${vacio({ icono: 'inbox', titulo: empty, compacto: true })}`;
   const W = 100 * Math.max(1, groups.length), P = { t: 10, b: 4 }, H = h;
   const gw = W / groups.length, bw = stack ? gw * 0.5 : (gw * 0.6) / series.length;
   let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:${H}px;display:block">`;
@@ -37,7 +38,7 @@ export function bars(groups, series, { h = 150, stack = false, empty = 'Sin dato
 }
 
 // Barras horizontales con porcentaje: rows = [{ label, pct, text, c }]. pct null = sin dato (se dice por qué en text).
-export const hbars = (rows, { empty = 'Sin datos todavía' } = {}) => (!rows.length ? html`<div class="empty sm" style="padding:16px">${empty}</div>`
+export const hbars = (rows, { empty = 'Sin datos todavía' } = {}) => (!rows.length ? html`${vacio({ icono: 'inbox', titulo: empty, compacto: true })}`
   : html`<div class="hbars">${rows.map((r) => html`<div class="hbar"><span class="hl">${r.label}</span><div class="gbar">${r.pct == null ? '' : html`<i style="width:${Math.max(0, Math.min(100, r.pct))}%;background:${r.c || PAL.brown}"></i>`}</div><span class="ht ${r.pct == null ? 'mut' : ''}">${r.text}</span></div>`)}</div>`);
 
 // La línea de tiempo del mes: los días 1..N con marcas. marks = [{ day, label, c, done }]; hoy se marca solo.

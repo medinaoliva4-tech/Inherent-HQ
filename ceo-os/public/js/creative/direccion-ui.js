@@ -67,7 +67,7 @@ function tarjeta(k, i, c, ed) {
       <label class="dl-f"><span class="lbl">Imágenes del moodboard <span class="mut sm">(números, máx. 3)</span></span><input class="in" type="text" data-c="@img.${i}" value="${imgsTxt(k.imagenes)}" maxlength="20" aria-label="Imágenes del moodboard" autocomplete="off"></label>
       <label class="dl-f"><span class="lbl">Laya</span>${campo(`conceptos.${i}.laya`, k.laya, { max: 300, label: 'Lo que mide Laya' })}</label>`
     : html`<p>${ro(k.idea, 'la idea del concepto')}</p><dl class="dl-dl"><dt>Hook</dt><dd>${ro(k.hook, 'el hook')}</dd><dt>Técnica</dt><dd>${ro(k.tecnica, 'la técnica')}</dd><dt>Formato</dt><dd>${ro(k.formato, 'el formato')}</dd><dt>Imágenes</dt><dd>${k.imagenes.length ? `#${imgsTxt(k.imagenes).replace(/, /g, ', #')}` : `${SIN_DATOS}: sale del Moodboard Studio`}</dd><dt>Laya</dt><dd>${ro(k.laya, 'lo que Laya mide')}</dd></dl>`}
-    ${ed ? html`<footer class="dl-con-a"><button type="button" class="btn ghost xs" data-act="elegir" data-i="${i}" ${k.descartado ? 'disabled' : ''}>${elegido ? 'Quitar elección' : 'Elegir'}</button><button type="button" class="btn ghost xs" data-act="descartar" data-i="${i}">${k.descartado ? 'Recuperar' : 'Descartar'}</button>${elegido ? html`<button type="button" class="btn xs" data-act="convertir">Convertir en piezas ${ico('right', 12)}</button>` : ''}</footer>` : ''}
+    ${ed ? html`<footer class="dl-con-a"><button type="button" class="btn ghost sm" data-act="elegir" data-i="${i}" ${k.descartado ? 'disabled' : ''}>${elegido ? 'Quitar elección' : 'Elegir'}</button><button type="button" class="btn ghost sm" data-act="descartar" data-i="${i}">${k.descartado ? 'Recuperar' : 'Descartar'}</button>${elegido ? html`<button type="button" class="btn sm" data-act="convertir">Convertir en piezas ${ico('right', 12)}</button>` : ''}</footer>` : ''}
   </article>`;
 }
 
@@ -94,12 +94,12 @@ export const vista = {
           </section>
           <section class="dl-sec"><h3 class="dl-t">${ico('lightbulb', 15)} Conceptos <span class="mut sm">${activos} de ${MIN_CONCEPTOS} a ${MAX_CONCEPTOS}</span></h3>
             ${c.conceptos.length ? html`<div class="dl-cons">${c.conceptos.map((k, i) => tarjeta(k, i, c, ed))}</div>` : html`<p class="dl-ro" data-vacio="1">${SIN_DATOS}: ${SD.conceptos}</p>`}
-            ${ed && c.conceptos.length < MAX_CONCEPTOS ? html`<button type="button" class="btn ghost sm" data-act="nuevo">${ico('plus', 13)} Concepto</button>` : ''}
+            ${ed && c.conceptos.length < MAX_CONCEPTOS ? html`<button type="button" class="btn ghost" data-act="nuevo">${ico('plus', 13)} Concepto</button>` : ''}
             <datalist id="dl-tec">${TECNICAS.map((t) => html`<option value="${t}"></option>`)}</datalist></section>
           <section class="dl-sec dl-panel" id="dl-panel" ${S.panel ? '' : 'hidden'}></section>
-          <footer class="dl-pie"><button type="button" class="btn ghost sm" data-act="deck" ${activos ? '' : 'disabled'}>${ico('download', 13)} Deck 16:9 (PDF)</button>
-            <a class="btn ghost sm" href="${rutaHerramienta('creative', slug, 'design-studio')}">Enviar a Design Studio ${ico('right', 12)}</a>
-            <a class="btn ghost sm" href="${rutaHerramienta('production', slug, 'production-brief')}">Enviar a Production Brief ${ico('right', 12)}</a></footer>
+          <footer class="dl-pie"><button type="button" class="btn ghost" data-act="deck" ${activos ? '' : 'disabled'}>${ico('download', 13)} Deck 16:9 (PDF)</button>
+            <a class="btn ghost" href="${rutaHerramienta('creative', slug, 'design-studio')}">Enviar a Design Studio ${ico('right', 12)}</a>
+            <a class="btn ghost" href="${rutaHerramienta('production', slug, 'production-brief')}">Enviar a Production Brief ${ico('right', 12)}</a></footer>
         </div></div>`);
       const b = el.querySelector('#dl-brief');
       if (b && slug) brandBrief(b, { me, b: { slug, name: nombreMarca }, alive: () => b.isConnected }).catch(() => mount(b, html`<p class="mut sm">${SIN_DATOS}: no pude leer el brief del ciclo</p>`));
@@ -114,7 +114,7 @@ export const vista = {
         ${error ? html`<p class="dl-ro" data-vacio="1">${error}</p>` : slots.length ? html`<p class="mut sm">Elige los slots del plan que cuentan este concepto. Los que ya tienen una idea no se tocan. Sin brief del ciclo el servidor no crea piezas con fecha (423).</p>
           <ul class="dl-slots">${slots.map((s) => html`<li><label><input type="checkbox" data-slot="${s.id}" ${conIdea.has(s.id) ? 'disabled' : ''}> <b>${s.id}</b> · semana ${s.semana} · ${s.canal} ${s.formato ? `· ${s.formato}` : ''} <span class="mut sm">${conIdea.has(s.id) ? 'ya tiene idea' : corta(s.objetivo, 80)}</span></label></li>`)}</ul>`
           : html`<p class="dl-ro" data-vacio="1">${SIN_DATOS}: el plan de ${mes} no tiene slots; sale de Content Strategy Studio</p>`}
-        <div class="row" style="gap:8px"><button type="button" class="btn sm" data-act="convertir-ok" ${S.ocupado || !slots.length ? 'disabled' : ''}>${S.ocupado ? 'Enviando…' : 'Enviar a Ideas'}</button><button type="button" class="btn ghost sm" data-act="convertir-no">Cerrar</button></div>`);
+        <div class="row" style="gap:8px"><button type="button" class="btn" data-act="convertir-ok" ${S.ocupado || !slots.length ? 'disabled' : ''}>${S.ocupado ? 'Enviando…' : 'Enviar a Ideas'}</button><button type="button" class="btn ghost" data-act="convertir-no">Cerrar</button></div>`);
     }
     async function convertir() {
       const k = c.conceptos.find((x) => x.id === c.elegido && !x.descartado), mes = mesDe(c);

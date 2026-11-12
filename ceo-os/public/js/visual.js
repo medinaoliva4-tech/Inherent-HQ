@@ -183,18 +183,27 @@ export function cuadrito(icono, { color: c, tam = 'md', titulo = '' } = {}) {
 }
 
 // ---------- Estado vacío: un círculo discontinuo, un ícono, lo que falta, de dónde saldría y una sola acción ----------
-// boton: { texto, act, data?, href? }. Sin acción posible, sin botón (y la línea lo dice). animar: aparece con fundido y sube 6 px (solo la primera vez).
-function sVacio({ icono = 'circle', titulo = '', linea = '', boton = null, animar = false, compacto = false } = {}) {
+// Tres piezas fijas: qué es (titulo) + por qué está vacío (linea) + una acción (boton). Texto guía: «Aún no hay X. ¿Lo armamos en el Chat?».
+// boton: { texto, act, data?, href? } o { texto, chat: { modo, borrador?, slug? } } (abre el Chat en ese modo: lo atiende app.js › [data-vac-chat]).
+// Sin acción posible, sin botón (y la línea lo dice). animar: aparece con fundido y sube 6 px (solo la primera vez).
+// linea puede ser html`…` (con un link); detalle: el html de un «Detalle técnico» (core.js › techDetail), solo en fallos.
+// tono: 'error' pinta el fallo (ámbar/rojo, role=alert): un error nunca se pinta como vacío (usa fallo()).
+function sVacio({ icono = 'circle', titulo = '', linea = '', boton = null, animar = false, compacto = false, tono = '', detalle = '' } = {}) {
   let b = '';
-  if (boton?.texto) {
+  const ch = boton?.chat && typeof boton.chat === 'object' ? boton.chat : null;
+  if (boton?.texto && ch) {
+    b = `<button type="button" class="btn ghost vz-vacio-b" data-vac-chat="${esc(ch.modo || '')}"${ch.slug ? ` data-vac-slug="${esc(ch.slug)}"` : ''}${ch.borrador ? ` data-vac-borrador="${esc(ch.borrador)}"` : ''}>${esc(boton.texto)}</button>`;
+  } else if (boton?.texto) {
     const href = typeof boton.href === 'string' && /^(?:#\/|https:\/\/)/.test(boton.href) ? boton.href : '';
     const data = Object.entries(boton.data && typeof boton.data === 'object' ? boton.data : {}).filter(([k]) => /^[a-z][a-z0-9-]*$/.test(k)).map(([k, v]) => ` data-${k}="${esc(v)}"`).join('');
     b = href ? `<a class="btn ghost vz-vacio-b" href="${esc(href)}">${esc(boton.texto)}</a>` : `<button type="button" class="btn ghost vz-vacio-b" data-act="${esc(boton.act || '')}"${data}>${esc(boton.texto)}</button>`;
   }
-  return `<div class="vz-vacio${compacto ? ' vz-vacio--c' : ''}${animar ? ' vz-vacio--entra' : ''}"><span class="vz-vacio-ic"><svg class="vz-vacio-ring" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="22.25" fill="none" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/></svg>${svgIco(tieneIco(icono) ? icono : 'circle', 20)}</span>`
-    + `<b class="vz-vacio-t">${esc(titulo)}</b>${linea ? `<span class="vz-vacio-l">${esc(linea)}</span>` : ''}${b}</div>`;
+  return `<div${tono === 'error' ? ' role="alert"' : ''} class="vz-vacio${compacto ? ' vz-vacio--c' : ''}${tono === 'error' ? ' vz-vacio--err' : ''}${animar ? ' vz-vacio--entra' : ''}"><span class="vz-vacio-ic"><svg class="vz-vacio-ring" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true"><circle cx="24" cy="24" r="22.25" fill="none" stroke-width="1.5" stroke-dasharray="3 5" stroke-linecap="round"/></svg>${svgIco(tieneIco(icono) ? icono : 'circle', 20)}</span>`
+    + `<b class="vz-vacio-t">${esc(titulo)}</b>${linea ? `<span class="vz-vacio-l">${linea && typeof linea === 'object' && typeof linea.s === 'string' ? linea.s : esc(linea)}</span>` : ''}${detalle ? String(detalle) : ''}${b}</div>`;
 }
 export const vacio = (o) => out(sVacio(o));
+// El fallo de una carga: qué no se pudo abrir y por qué (el mensaje del servidor), con botón de reintento si quien llama lo da.
+export const fallo = (o) => out(sVacio({ icono: 'triangle-alert', tono: 'error', ...o }));
 
 // ---------- Un número que cuenta (KPI) ----------
 // El HTML ya trae el valor final (data-n lo repite): sin JS, con «reducir movimiento» o repintado, se ve igual. contarNumeros lo anima

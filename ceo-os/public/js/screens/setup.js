@@ -2,13 +2,14 @@ import { CYCLE, DEPTS, addDays, tasksFor, phasesFor, deptsOfPlan, createLinked }
 import { loadRecipes } from '../recetas.js';
 import { html, raw, mount, col, api, acts, toast, today, teamList, teamDoc, WORK_ROLES, roleName, $, $$, confirmAsk, ask, ico } from '../core.js';
 import { SOPS, filasEquipo, hechosArranque } from '../arranque.js';
+import { vacio } from '../visual.js';
 
 // Arranque: deja la app lista en 5 pasos, con lo que ya dice el repo.
 // 1 Equipo (de la tabla de slots del manual) · 2 Clientes y ciclo · 3 Tareas del ciclo · 4 Library base · 5 Carpeta de entregas.
 // Los pasos, los SOPs base y cuál ya está viven en arranque.js (puro): el aviso pla-arranque usa el mismo cálculo.
 
 export async function render(el, { me, alive }) {
-  if (me.role !== 'ceo') return mount(el, html`<div class="empty"><b>Solo el CEO</b>El arranque lo hace el CEO.</div>`);
+  if (me.role !== 'ceo') return mount(el, html`${vacio({ icono: 'lock', titulo: 'Solo el CEO', linea: 'El arranque lo hace el CEO.' })}`);
   const T = col('team'), PR = col('projects'), TK = col('tasks'), F = col('folders'), D = col('docs');
   let [team, eco, repo, projects, tasks, folders, docs, driveCfg, R] = await Promise.all([teamList(), api('repo/economia').catch(() => ({ slots: [] })), api('repo/clients').catch(() => ({ clients: [] })), PR.list(), TK.list(), F.list(), D.list(), col('settings').get('drive').catch(() => null), loadRecipes()]);
   // Personas del manual, juntando los roles de cada una (arranque.js, el mismo cálculo del aviso pla-arranque).
@@ -27,19 +28,19 @@ export async function render(el, { me, alive }) {
         ${rows.map((r, i) => html`<tr data-row="${i}"><td><b style="font-weight:500">${r.name}</b>${r.ia ? html`<span class="chip sm2" style="margin-left:6px">Agente IA</span>` : ''}</td><td class="mut sm">${r.title || '—'}</td>
           <td>${r.ia ? html`<span class="mut sm">No entra a la app</span>` : html`<input class="in sm" data-f="email" value="${r.email}" placeholder="nombre@inherentglobal.com" ${r.k === 'ceo' ? raw('disabled') : ''}>`}</td>
           <td>${r.ia ? '' : WORK_ROLES.map(([k, l]) => html`<label class="chip sm2" style="cursor:pointer;margin:2px"><input type="checkbox" data-f="role" value="${k}" ${r.roles.includes(k) ? raw('checked') : ''} style="margin-right:3px">${l.split(' · ')[0]}</label>`)}</td></tr>`)}</tbody></table>`,
-        html`<button class="btn ghost xs" data-act="addRow">+ Persona</button><button class="btn xs" data-act="doTeam">${done.team ? 'Actualizar' : 'Guardar equipo'}</button>`)}
+        html`<button class="btn ghost sm" data-act="addRow">+ Persona</button><button class="btn sm" data-act="doTeam">${done.team ? 'Actualizar' : 'Guardar equipo'}</button>`)}
       ${step(2, 'ciclo', 'Clientes y ciclo del mes', `Crea el proyecto del ciclo ${mes} de cada cliente, con sus fases del día 1 al 20 y solo los departamentos de su plan.`, html`
         <div class="row" style="gap:10px;margin:6px 0"><span class="sm">Día 1 del ciclo:</span><input class="in sm" type="date" id="start" value="${start}" style="max-width:170px"></div>
         ${clients.map((c) => { const has = projects.some((p) => p.client_slug === c.slug && p.cycle === mes); return html`<label class="wkcheck"><input type="checkbox" data-client="${c.slug}" ${has ? raw('checked disabled') : raw('checked')}><span><b style="font-weight:500">${c.slug.toUpperCase()}</b><span class="mut sm"> · ${String(c.plan || '').replace(/^[⬜🔷🟨]\uFE0F?\s*/u, '')}${has ? ' · ya creado' : ''}</span></span></label>`; })}`,
-        html`<button class="btn xs" data-act="doCycle">Crear ciclos</button>`)}
+        html`<button class="btn sm" data-act="doCycle">Crear ciclos</button>`)}
       ${step(3, 'tareas', 'Tareas del ciclo', 'Una tarea por departamento de cada cliente, con responsable según su perfil, quién rinde cuentas y fecha según el calendario del ciclo.', html`<div class="mut sm" id="prev3">${preview()}</div>`,
-        html`<button class="btn xs" data-act="doTasks">Crear tareas</button>`)}
+        html`<button class="btn sm" data-act="doTasks">Crear tareas</button>`)}
       ${step(4, 'lib', 'Library base', 'Carpetas y SOPs de arranque, cada uno marcado para su perfil (salen en el Workspace de quien lo usa).', html`<div class="wksops">${SOPS.map(([f, k, t]) => html`<span class="wksop"><span class="ftype" style="background:${k === 'SOP' ? 'var(--ui-ink2)' : 'var(--ui-ink2)'}">${k.slice(0, 3).toUpperCase()}</span>${t}<span class="mut sm"> · ${f}</span></span>`)}</div>`,
-        html`<button class="btn xs" data-act="doLib">Crear Library base</button>`)}
+        html`<button class="btn sm" data-act="doLib">Crear Library base</button>`)}
       ${step(5, 'drive', 'Carpeta de entregas en Drive', 'Todo lo que el equipo suba (entregas y videos grabados) cae aquí, ordenado por cliente y mes. Nada se guarda en la web: solo el link.', html`
         <ol class="sm" style="margin:6px 0 10px 18px;line-height:1.7"><li>En Google Drive crea una carpeta (ej. «Inherent · Entregas»), mejor en una unidad compartida.</li><li>Compártela como <b>Editor</b> con todo el equipo.</li><li>Pega aquí su link.</li></ol>
         <input class="in" id="droot" value="${driveCfg?.root || ''}" placeholder="https://drive.google.com/drive/folders/…">`,
-        html`<button class="btn xs" data-act="doDrive">Guardar carpeta</button>`)}
+        html`<button class="btn sm" data-act="doDrive">Guardar carpeta</button>`)}
       <div class="mut sm" style="margin-top:12px">Todo se puede editar después. Nada de esto toca el repo.</div>`);
   }
   const holder = (role) => { const p = team.find((x) => x.active !== false && (x.roles || []).includes(role)); return p ? p.email || p.id : null; };

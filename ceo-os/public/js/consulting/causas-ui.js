@@ -75,8 +75,8 @@ function nodo(n, E) {
       ${editable ? '' : html`<span class="chip cau-estado" data-estado="${n.estado}">${ETIQUETA_ESTADO[n.estado]}</span>`}
       ${editable ? html`<label class="cau-nodo-l"><span class="sr-only">Causa</span>${f.txt({ n: n.id, k: 'texto' }, n.texto, { max: 200, label: 'Causa', ph: 'Qué causa esta parte de la brecha' })}</label>` : html`<b class="cau-nodo-t">${n.texto}</b>`}
       ${editable ? html`<label class="cau-nodo-e"><span class="sr-only">Estado</span>${f.sel({ n: n.id, k: 'estado' }, ESTADOS.map((e) => [e, ETIQUETA_ESTADO[e]]), n.estado, { label: 'Estado de la causa' })}</label>
-        <button type="button" class="btn ghost sm cau-btn" data-act="cau-add" data-padre="${n.id}" ${c.nodos.length >= MAX_NODOS ? 'disabled' : ''}>${ico('plus', 14)} Subcausa</button>
-        <button type="button" class="btn ghost sm cau-btn" data-act="cau-del" data-id="${n.id}" aria-label="Quitar esta causa" title="Quitar esta causa">${ico('x', 14)} Quitar</button>` : ''}
+        <button type="button" class="btn ghost sm" data-act="cau-add" data-padre="${n.id}" ${c.nodos.length >= MAX_NODOS ? 'disabled' : ''}>${ico('plus', 14)} Subcausa</button>
+        <button type="button" class="btn ghost sm" data-act="cau-del" data-id="${n.id}" aria-label="Quitar esta causa" title="Quitar esta causa">${ico('x', 14)} Quitar</button>` : ''}
     </div>
     <p class="cau-alerta" data-r="alerta" data-id="${n.id}"></p>
     <details class="cau-panel" ${abiertos.has(n.id) || (!editable && dato) ? 'open' : ''}><summary>Evidencia, dato que falta, prueba y sistema</summary>
@@ -92,7 +92,7 @@ function nodo(n, E) {
 function ramas(padre, E) {
   const hs = E.c.nodos.filter((n) => n.padre === padre);
   return html`${hs.length ? html`<ul class="cau-hijos">${hs.map((n) => nodo(n, E))}</ul>` : html`<p class="cau-vacio cau-sd">${SIN_DATOS}: las causas salen del Diagnóstico aprobado y de lo que cuenta el cliente</p>`}
-    ${E.editable ? html`<button type="button" class="btn ghost sm cau-btn" data-act="cau-add" data-padre="${padre}" ${E.c.nodos.length >= MAX_NODOS ? 'disabled' : ''}>${ico('plus', 14)} Agregar causa</button>` : ''}`;
+    ${E.editable ? html`<button type="button" class="btn ghost sm" data-act="cau-add" data-padre="${padre}" ${E.c.nodos.length >= MAX_NODOS ? 'disabled' : ''}>${ico('plus', 14)} Agregar causa</button>` : ''}`;
 }
 
 function plantilla({ c, ctx, editable }, f) {

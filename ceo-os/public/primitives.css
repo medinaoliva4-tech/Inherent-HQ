@@ -1,0 +1,201 @@
+/* =====================================================================================
+   PRIMITIVES · la capa única de tokens del OS
+   Aquí viven los tokens (color, tema noche/día, movimiento, radios, tipografía, espacio y los de cada área).
+   Se carga ANTES de app.css: lo que app.css redefine después (media queries de accesibilidad, zonas de papel,
+   escalas por pantalla) sigue ganando como siempre. Dentro de este archivo, lo más antiguo va primero.
+   Regla de la casa (scripts/lint-css.mjs): ningún hex, radio ni font-size nuevo fuera de estos tokens.
+   Familia vigente: --ui-*. Alias de transición (no usar en código nuevo): --bg --ink --ink2 --mut --tone --line --hair
+   --surface --fill --cream … (se resuelven a --ui-*). --l-* es el alias propio del Chat (.llm), pendiente de migrar.
+   ===================================================================================== */
+/* app.css:4 */
+:root{
+  --bg:#f1eadf; --ink:#2c1f16; --ink2:#4a3628; --mut:#9f846d; --line:rgba(44,31,22,.09);
+  --cream:#f4eee5; --cream2:#f1ebe0; --espresso:#36271b; --brown:#423022;
+  --glass:rgba(252,249,241,.62); --glass2:rgba(252,249,241,.88); --stroke:rgba(253,250,243,.85);
+  --lime:#efe7dc; --lime-ink:#594231;
+  --r:30px; --shadow:0 30px 70px -30px rgba(66,48,34,.28), 0 2px 8px rgba(66,48,34,.05);
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  --sans:'Inter',Helvetica,system-ui,sans-serif; --serif:'Inter',Helvetica,system-ui,sans-serif;
+}
+/* app.css:754 */
+:root{--r:24px}
+/* app.css:1068 */
+:root{
+  --bg:#f1eadf; --ink:#2c1f16; --ink2:#4a3628; --mut:#7d624b; --tone:#6a503c; --warn:#7a4632;
+  --ink-rgb:44 31 22; --surface:#fcf9f2; --surface-rgb:253 250 243; --fill:#f3ede3; --fill-2:#ebe3d6;
+  --line:rgb(var(--ink-rgb) / .1); --hair:rgb(var(--ink-rgb) / .08); --hair-strong:rgb(var(--ink-rgb) / .14);
+  --glass:rgb(var(--surface-rgb) / .62); --glass2:rgb(var(--surface-rgb) / .9); --stroke:rgb(255 255 255 / .6);
+  --bar:rgb(var(--surface-rgb) / .72);
+  --sh-1:0 1px 2px rgb(var(--ink-rgb) / .05); --sh-2:0 12px 32px -12px rgb(var(--ink-rgb) / .24), 0 2px 6px rgb(var(--ink-rgb) / .04);
+  --sh-3:0 30px 80px -24px rgb(var(--ink-rgb) / .35);
+  --shadow:var(--sh-1); --r:20px; --r-s:12px; --r-l:24px;
+  --ease:cubic-bezier(.2,.8,.2,1); --t:200ms;
+  --fs-d1:44px; --fs-d2:36px; --fs-t1:28px; --fs-t2:22px; --fs-b:15px; --fs-c:12.5px; --fs-e:11px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --pad:24px;
+  --cover-a:#49494a; --cover-b:#222223; --cover-c:#777778;
+  color-scheme:light;
+}
+/* app.css:1083 */
+:root[data-theme="dark"]{
+  --bg:#131314; --ink:#f1e8dc; --ink2:#cacacb; --mut:#969697; --tone:#c7c7c8; --warn:#bbbbbc;
+  --ink-rgb:241 232 220; --surface:#19191a; --surface-rgb:24 24 25; --fill:#212122; --fill-2:#29292a;
+  --cream:#1a1a1b; --cream2:#1f1f20; --espresso:#fbf4ea; --brown:#e6d6c3;
+  --glass:rgb(30 30 31 / .62); --glass2:rgb(27 27 28 / .92); --stroke:rgb(255 255 255 / .07);
+  --bar:rgb(24 24 25 / .72); --lime:#29292a; --lime-ink:#d6d6d7;
+  --sh-1:0 1px 0 rgb(0 0 0 / .35); --sh-2:0 16px 40px -14px rgb(0 0 0 / .65), 0 1px 0 rgb(255 255 255 / .04) inset;
+  --sh-3:0 30px 90px -20px rgb(0 0 0 / .8);
+  --cover-a:#2e2e2f; --cover-b:#19191a; --cover-c:#5b5b5c;
+  color-scheme:dark;
+}
+/* app.css:1447 */
+:root{--ch-brown:#626263;--ch-sand:#8c8c8d;--ch-light:#cdcdce}
+/* app.css:1448 */
+:root[data-theme="dark"]{--ch-brown:#aaaaab;--ch-sand:#7b7b7c;--ch-light:#4a3e33}
+/* app.css:1718 */
+:root{
+  --st-todo:#e8dfd2; --st-todo-i:#4b4b4c; --st-now:#d5d5d6; --st-now-i:#5a3d10; --st-rev:#cfd9e2; --st-rev-i:#2c3d4d;
+  --st-done:#c6d3ad; --st-done-i:#2f3f1b; --st-risk:#cbcbcc; --st-risk-i:#5e2614; --st-pause:#d6d3e6; --st-pause-i:#38345a;
+  --u-green:#6f8f4e; --u-yellow:#c9952f; --u-red:#b4553a; --u-blue:#5f7d9c;
+}
+/* app.css:1723 */
+:root[data-theme="dark"]{
+  --st-todo:#2f2f30; --st-todo-i:#cdcdce; --st-now:#5a4423; --st-now-i:#f5dcab; --st-rev:#2c3a47; --st-rev-i:#cfdeec;
+  --st-done:#34422a; --st-done-i:#d6e5bd; --st-risk:#5b3123; --st-risk-i:#f3c6b1; --st-pause:#38354e; --st-pause-i:#dcd8f2;
+  --u-green:#93b46f; --u-yellow:#e2b456; --u-red:#9c9c9d; --u-blue:#8fb0d1;
+}
+/* app.css:1997 */
+:root{--ui-dgf-papel:#fcf9f2;--ui-dgf-crema:#f3ede3;--ui-dgf-arena:#dededf;--ui-dgf-lino:#cdcdce;--ui-dgf-salvia:#dcdcc6;--ui-dgf-barro:#d8d8d9;--ui-dgf-tierra:#8c8c8d;--ui-dgf-cafe:#626263;--ui-dgf-espresso:#2a2a2b;--ui-dg-edge:#777778;--ui-dg-stroke:rgb(44 31 22 / .2);--ui-dg-canvas:#f6f1e8;--ui-dg-dot:rgb(44 31 22 / .14);--ui-dg-accent:#222223;--ui-dg-sel:#565657;--ui-dg-ink:#222223;--ui-dg-ink-on:#fdfaf3}
+/* app.css:1998 */
+:root[data-theme="dark"]{--ui-dgf-papel:#242425;--ui-dgf-crema:#2a2a2b;--ui-dgf-arena:#333334;--ui-dgf-lino:#463b31;--ui-dgf-salvia:#363829;--ui-dgf-barro:#373738;--ui-dgf-tierra:#7b7b7c;--ui-dgf-cafe:#8f8f90;--ui-dgf-espresso:#d9d9da;--ui-dg-edge:#969697;--ui-dg-stroke:rgb(255 255 255 / .13);--ui-dg-canvas:#151516;--ui-dg-dot:rgb(255 255 255 / .09);--ui-dg-accent:#f1e8dc;--ui-dg-sel:#c7c7c8;--ui-dg-ink:#f1e8dc;--ui-dg-ink-on:#19191a}
+/* app.css:2464 */
+:root{--kb-red:#a0452e;--kb-red-bg:rgb(120 120 128 / .07);--kb-red-line:rgb(120 120 128 / .24)}
+/* app.css:2465 */
+:root[data-theme="dark"]{--kb-red:#b3b3b4;--kb-red-bg:rgb(226 120 95 / .10);--kb-red-line:rgb(226 120 95 / .30)}
+/* app.css:2573 */
+:root{
+  --wt-reuniones:#e2e8ef; --wt-reuniones-ink:#34495e; --wt-produccion:#f2dfd2; --wt-produccion-ink:#7a432a;
+  --wt-entregas:#ece4d6; --wt-entregas-ink:#4a4a4b; --wt-ventas:#e1ead8; --wt-ventas-ink:#3f5a2d;
+  --wt-facturas:#f3e7c7; --wt-facturas-ink:#6c5317; --wt-ciclo:#e8e0ec; --wt-ciclo-ink:#54405f;
+}
+/* app.css:2578 */
+:root[data-theme="dark"]{
+  --wt-reuniones:#26303a; --wt-reuniones-ink:#c6d4e3; --wt-produccion:#2e2e2f; --wt-produccion-ink:#f0c9b0;
+  --wt-entregas:#29292a; --wt-entregas-ink:#d6d6d7; --wt-ventas:#26301f; --wt-ventas-ink:#c9dcb6;
+  --wt-facturas:#2d2d2e; --wt-facturas-ink:#d8d8d9; --wt-ciclo:#2f2735; --wt-ciclo-ink:#dccbe6;
+}
+/* app.css:4379 */
+:root{
+  --ui-bg:#faf9f6; --ui-side:#f2f0eb; --ui-surf:#ffffff; --ui-surf2:#f0ede7; --ui-fill:#f5f3ef; --ui-fill2:#ebe7e0;
+  --ui-line:rgb(30 25 20 / .09); --ui-line2:rgb(30 25 20 / .16);
+  --ui-ink:#1f1d1a; --ui-ink2:#4a463f; --ui-mut:#736d64; --ui-mut2:#8a847a; --ui-acc:#8a5a36; --ui-acc-ink:#fffaf3; --ui-user:#efebe4;
+  --ui-ok:#3f7a46; --ui-warn:#a4532f; --ui-bad:#b3402e;
+  --ui-glass:rgb(255 255 255 / .8); --ui-ink-rgb:31 29 26; --ui-surf-rgb:255 255 255;
+  --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 2px rgb(40 30 20 / .05);
+  --ui-sh-2:0 0 0 1px var(--ui-line),0 12px 32px -14px rgb(40 30 20 / .28);
+  --ui-sh-3:0 18px 50px -22px rgb(40 30 20 / .28),0 1px 2px rgb(40 30 20 / .05);
+  --ui-m-estrategia:#b07a45; --ui-m-organizacion:#4f8a62; --ui-m-diseno:#7563b5;
+  --ui-focus:var(--ui-acc);
+  --d-1:100ms; --d-2:150ms; --d-3:200ms; --d-4:300ms; --d-5:500ms;
+  --e-out:cubic-bezier(.23,1,.32,1); --e-move:cubic-bezier(.77,0,.175,1); --e-std:cubic-bezier(.2,0,0,1); --e-sheet:cubic-bezier(.32,.72,0,1);
+  --r-1:6px; --r-2:10px; --r-3:12px; --r-4:16px;
+}
+/* app.css:4394 */
+:root[data-theme="dark"]{
+  --ui-bg:#0d0d0e; --ui-side:#111112; --ui-surf:#141415; --ui-surf2:#1b1b1d; --ui-fill:#18181a; --ui-fill2:#232325;
+  --ui-line:rgb(235 235 240 / .09); --ui-line2:rgb(235 235 240 / .16);
+  --ui-ink:#efebe4; --ui-ink2:#bdb9b2; --ui-mut:#a39f9a; --ui-mut2:#8f8b86; --ui-acc:#f5f5f7; --ui-acc-ink:#000000; --ui-user:#252527;
+  --ui-ok:#a7f3d0; --ui-warn:#e8c98f; --ui-bad:#f4b3a6;
+  --ui-glass:rgb(30 30 32 / .52); --ui-ink-rgb:239 235 228; --ui-surf-rgb:20 20 21;
+  --ui-sh-1:0 0 0 1px var(--ui-line);
+  --ui-sh-2:0 0 0 1px var(--ui-line),0 14px 30px rgb(0 0 0 / .36);
+  --ui-sh-3:inset 0 1px 0 rgb(255 255 255 / .13),inset 0 0 0 1px rgb(255 255 255 / .055),0 18px 44px rgb(0 0 0 / .5);
+  --ui-m-estrategia:#e3d8c5; --ui-m-organizacion:#bdb9b2; --ui-m-diseno:#efebe4;
+}
+/* app.css:4406 */
+:root,:root[data-theme="dark"]{
+  --bg:var(--ui-bg); --ink:var(--ui-ink); --ink2:var(--ui-ink2); --mut:var(--ui-mut); --tone:var(--ui-acc); --warn:var(--ui-warn);
+  --ink-rgb:var(--ui-ink-rgb); --surface:var(--ui-surf); --surface-rgb:var(--ui-surf-rgb); --fill:var(--ui-fill); --fill-2:var(--ui-fill2);
+  --line:var(--ui-line); --hair:var(--ui-line); --hair-strong:var(--ui-line2);
+  --glass:var(--ui-glass); --glass2:var(--ui-surf); --bar:var(--ui-glass);
+  --cream:var(--ui-bg); --cream2:var(--ui-side); --espresso:var(--ui-ink); --brown:var(--ui-ink2); --lime:var(--ui-surf2); --lime-ink:var(--ui-ink2);
+  --sh-1:var(--ui-sh-1); --sh-2:var(--ui-sh-2); --sh-3:var(--ui-sh-3); --shadow:var(--ui-sh-1);
+  --r:16px; --r-s:10px; --r-l:18px; --ease:var(--e-out); --t:var(--d-3);
+  /* usados sin existir hasta hoy */
+  --font:var(--sans); --soft:var(--ui-fill); --fill2:var(--ui-fill2); --accent:var(--ui-acc);
+}
+/* app.css:4417 */
+:root{--stroke:rgb(255 255 255 / .7)}
+/* app.css:4418 */
+:root[data-theme="dark"]{--stroke:var(--ui-line)}
+/* app.css:4568 */
+:root{--ui-m-marketing:#b0553f;--ui-m-consulting:#3f6c9a;--ui-m-produccion:#2a7570;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion);--ia-claude:#d97757;--ia-chatgpt:var(--ui-ink);--ia-gemini:#4b7bec;--ia-local:var(--ui-ok);--ia-otras:var(--ui-acc);--lat-w:256px}
+/* app.css:4569 */
+:root[data-theme="dark"]{--ui-m-marketing:#cfc6b8;--ui-m-consulting:#a39f9a;--ui-m-produccion:#8f8b86;--ui-m-strategy:var(--ui-m-estrategia);--ui-m-creative:var(--ui-m-diseno);--ui-m-production:var(--ui-m-produccion);--ui-m-organization:var(--ui-m-organizacion)}
+/* app.css:5050 */
+:root{--ui-amb:#8a5d00;--ui-amb-f:#b8820a;--ui-info:#2f6491}
+/* app.css:5051 */
+:root[data-theme="dark"]{--ui-amb:#e8c98f;--ui-amb-f:#e8c98f;--ui-info:#c5cbd0}
+/* app.css:5052 */
+:root,:root[data-theme="dark"]{
+  --ui-ok-t:color-mix(in srgb,var(--ui-ok) 80%,var(--ui-ink)); --ui-bad-t:color-mix(in srgb,var(--ui-bad) 80%,var(--ui-ink));
+  --ui-amb-t:color-mix(in srgb,var(--ui-amb) 85%,var(--ui-ink)); --ui-info-t:color-mix(in srgb,var(--ui-info) 80%,var(--ui-ink));
+  --ui-ok-bg:color-mix(in srgb,var(--ui-ok) 14%,transparent); --ui-bad-bg:color-mix(in srgb,var(--ui-bad) 12%,transparent);
+  --ui-amb-bg:color-mix(in srgb,var(--ui-amb-f) 18%,transparent); --ui-info-bg:color-mix(in srgb,var(--ui-info) 14%,transparent);
+}
+/* app.css:5867 */
+:root{--ui-dn-0:#8a5a36;--ui-dn-1:#9f9fa0;--ui-dn-2:#cececf;--ui-dn-3:#efe4d8}
+/* app.css:5868 */
+:root[data-theme="dark"]{--ui-dn-0:#a6a6a7;--ui-dn-1:#616162;--ui-dn-2:#484849;--ui-dn-3:#3a3a3b}
+/* app.css:5870 */
+:root,:root[data-theme="dark"]{--ui-ok-f:var(--ui-ok)}
+/* app.css:8073 */
+:root{
+  --e-ent:cubic-bezier(.2,.8,.2,1);   /* entrada: arranca rápido y se asienta, sin rebote */
+  --e-spring:cubic-bezier(.2,.8,.2,1);/* resorte sin rebote (amortiguamiento 1): se reemplaza abajo donde hay linear() */
+  --e-pop:cubic-bezier(.3,1.35,.5,1); /* resorte corto con un rebote mínimo (~4%): toast, diálogos, menús */
+  --mv-y:6px;                         /* cuánto suben las entradas */
+  --mv-paso:35ms;                     /* diferencia entre un bloque y el siguiente en .entra */
+}
+/* app.css:8082 */
+@supports (transition-timing-function:linear(0,1)){
+  :root{
+    --e-spring:linear(0,.057,.18,.32,.454,.572,.67,.749,.812,.86,.896,.924,.944,.959,.971,.979,.985,.989,.992,.994,1);
+    --e-pop:linear(0,.039,.135,.26,.395,.526,.646,.75,.835,.903,.953,.99,1.014,1.029,1.036,1.038,1.037,1.033,1.029,1.023,1.018,1.014,1.01,1.006,1);
+  }
+}
+/* app.css:8210 */
+:root{--vz-ease:cubic-bezier(.22,1,.36,1)}
+/* app.css:8850 */
+:root{--kf-inv:#3f6c9a;--kf-ana:#7a5bc4;--kf-dec:#2a7570;--kf-ent:#b0703a;--kf-val:#5f7f3a;--kf-canvas:#f3ede3;--kf-dot:rgb(44 31 22 / .13);--kf-panel:#fcf9f2}
+/* app.css:8851 */
+:root[data-theme="dark"]{--kf-inv:#8fb0dc;--kf-ana:#b39cff;--kf-dec:#86c7c0;--kf-ent:#bbbbbc;--kf-val:#a9c48e;--kf-canvas:#16120f;--kf-dot:rgb(241 232 220 / .09);--kf-panel:#1b1b1c}
+/* app.css:9208 */
+:root{
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,"Segoe UI",sans-serif; --serif:var(--sans);
+  --ui-blur:blur(28px) saturate(150%); --ui-edge:inset 0 1px 0 rgb(var(--ui-tint) / .13),inset 0 0 0 1px rgb(var(--ui-tint) / .055);
+  --e-out:cubic-bezier(.22,1,.36,1); --d-mueve:.42s;
+}
+/* app.css:9213 */
+@supports (transition-timing-function:linear(0,1)){:root{--e-out:linear(0.0,0.0593,0.1889,0.3397,0.4851,0.6124,0.7171,0.7993,0.8617,0.9075,0.9402,0.9628,0.9781,0.988,0.9943,0.998,1.0,1.0011,1.0015,1.0015,1.0014,1.0012,1.0009,1.0007,1.0005,1.0004,1.0003,1.0002,1);--d-mueve:.62s}}
+/* app.css:9214 */
+:root,:root[data-theme="dark"]{--r:14px;--r-s:10px;--r-l:20px;--r-1:7px;--r-2:10px;--r-3:12px;--r-4:14px}
+/* app.css:9417 */
+:root{--suave:cubic-bezier(.22,.8,.2,1);--e-ent:var(--suave);--e-spring:var(--suave);--e-pop:var(--suave);--e-std:ease-out;--e-sheet:var(--suave);--mv-paso:22ms}
+/* app.css:9717 */
+:root{--ui-azul:#4a86e8;--ui-rojo:#ff6b5e}
+/* app.css:10033 */
+:root{--ui-tint:255 255 255}
+/* app.css:10034 */
+:root[data-theme="light"]{--ui-tint:24 24 27;color-scheme:light;
+  --ui-bg:#fafafa;--ui-side:#f4f4f5;--ui-surf:#ffffff;--ui-surf2:#f2f2f3;--ui-fill:#f5f5f6;--ui-fill2:#e9e9eb;
+  --ui-line:rgb(24 24 27 / .09);--ui-line2:rgb(24 24 27 / .16);
+  --ui-ink:#18181b;--ui-ink2:#46464c;--ui-mut:#68686f;--ui-mut2:#7c7c84;--ui-acc:#18181b;--ui-acc-ink:#ffffff;--ui-user:#ececee;
+  --ui-azul:#2f6fdb;--ui-rojo:#d6392a;--ui-glass:rgb(255 255 255 / .82);--ui-ink-rgb:24 24 27;--ui-surf-rgb:255 255 255;
+  --ui-edge:inset 0 1px 0 rgb(255 255 255 / .9),inset 0 0 0 1px rgb(24 24 27 / .07);
+  --ui-sh-1:0 0 0 1px var(--ui-line),0 1px 2px rgb(24 24 27 / .04);--ui-sh-2:0 0 0 1px var(--ui-line),0 12px 32px -14px rgb(24 24 27 / .18);--ui-sh-3:0 18px 50px -22px rgb(24 24 27 / .2),0 1px 2px rgb(24 24 27 / .04)}
+/* Escala corta de tipografía y radios (docs/escala-ui.md). Todo font-size y border-radius nuevo usa estos tokens.
+   Letra: 10 11 12 13 14 15 16 18 22 28 36 44 56. Radios: 4 · 7 · 10 · 12 · 14 · 20 · 28 · pill · círculo (50%). */
+:root{
+  --fs-1:10px; --fs-2:11px; --fs-3:12px; --fs-4:13px; --fs-5:14px; --fs-6:15px; --fs-7:16px; --fs-8:18px; --fs-9:22px; --fs-10:28px; --fs-11:36px; --fs-12:44px; --fs-13:56px;
+  --r-0:4px; --r-5:20px; --r-6:28px; --r-pill:999px;
+}
