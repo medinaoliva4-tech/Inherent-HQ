@@ -72,6 +72,7 @@ const VISTAS = {
   rendimientoCreativo: () => import('../creative/rendimiento-creativo-ui.js'),
   repurposing: () => import('../production/repurposing-ui.js'),
 };
+export const cargarVistaHerramienta = (id) => VISTAS[id]?.() || Promise.resolve(null);
 const reciente = (d) => String(d._meta?.updated_at || d._meta?.created_at || '');
 
 const EST = { lista: 'Lista', parcial: 'Parcial', pronto: 'Pronto' };

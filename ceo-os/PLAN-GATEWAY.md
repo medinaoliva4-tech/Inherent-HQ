@@ -533,6 +533,7 @@ Sale de comparar lo construido con Mastra. **El principio (del CEO):** todo debe
 - Un mismo lenguaje de títulos y etiquetas en páginas y subpáginas, sin mayúsculas forzadas.
 
 ### Entrega 6 · vidrio, luz y subpáginas
+> Decisión del CEO, 2026-11-12: quitar por completo la luz que sigue al mouse. Las menciones a esa luz en las entregas 6 y 11 describen la versión anterior.
 - **Vidrio de fondo:** las tarjetas y superficies del contenido son transparentes y dejan ver el degradado. Menús, tablas fijas y encabezados siguen sólidos.
 - **Luz del mouse:** una luz suave sigue al cursor detrás del vidrio y un brillo marca el borde de la superficie. No se instala sin mouse ni con reducir movimiento.
 - **Subpáginas:** cada título se llama como en la barra, los datos de Hoy van en español y los títulos tienen un solo tamaño.

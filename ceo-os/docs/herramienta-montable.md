@@ -36,21 +36,14 @@ const quitar = await montar(el, MI_HERRAMIENTA, { modo: 'area' | 'artefacto', sl
   `window.dispatchEvent(new CustomEvent('os:dato', { detail: { herramienta, slug } }))`.
 - `montar` escucha ese evento y vuelve a llamar `leer(slug)`. Las dos vistas abiertas se repintan solas.
 
-## Las de departamentos (code-os/ui)
+## Las ocho vistas de departamentos
 
-Viven en `code-os/ui` (`PanelLateral.tsx · HERRAMIENTA`: `icp`, `adquisicion`, `dolores`, `pilares`, `radar`, `campanas`, `pre`,
-`video`) y su dato es el hilo del cliente en el puente. Con `origen: 'code-os'`, las dos vistas son el mismo iframe:
+`public/js/llm/mapa-trabajo.js` ubica `icp`, `adquisicion`, `dolores`, `pilares`, `radar`, `campanas`, `pre` y `video` en las
+herramientas del OS. La pestaña Herramientas del Chat lee los mismos entregables, versiones y permisos que el área y monta
+el Tool Shell junto a la conversación cuando la herramienta lo admite. Una vista sin equivalente se marca pendiente.
 
-```
-https://code.inherentglobal.com/?embed=1&herramienta=<id>&cliente=<slug>
-```
-
-El pase, el contexto y los mensajes siguen `code-os/ui/docs/embebido.md` (`codeos:pase`, `codeos:contexto`, `codeos:al-chat`).
-Desde el Chat, `Tool(id)` / `Artifact(ref)` con un id de Code OS dispara `os:herramienta { id, slug, embed: true }`.
-
-**Pendiente:** `Embebido.tsx` todavía no lee `herramienta=` ni `cliente=` (abre la primera herramienta del rol), el panel de
-Herramientas del Chat (PR #306) debe escuchar `os:herramienta`, y los pasos de una herramienta de Code OS saldrían de su
-nodo del hilo (API del puente).
+La opción `origen: 'code-os'` y su iframe quedan solo como compatibilidad del contrato anterior; ya no son la pantalla de
+Herramientas del Chat. Una acción `Tool(id)` abre la herramienta equivalente del OS o avisa que todavía falta conectarla.
 
 ## Lo platicado vuelve a la herramienta
 

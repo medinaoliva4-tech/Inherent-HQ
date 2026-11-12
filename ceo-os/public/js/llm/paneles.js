@@ -10,7 +10,8 @@ import { panelViva } from '../estrategia-viva-ui.js';
 import { avance, PASOS } from '../estrategia-viva.js';
 import { isWaiting } from '../ventas-flujo.js';
 import { HARNESS, modoDe, textoAlcanceConsulting, encargosDe, alcanceConsulting, consultingAbierto } from './modos.js';
-import { deWorkspace, rutaHerramienta } from '../herramientas.js';
+import { deWorkspace, herramientaDe, rutaHerramienta, WORKSPACES } from '../herramientas.js';
+import { vistasDeArea } from './mapa-trabajo.js';
 import { avancePlan, nombreMes } from '../plan-mes.js';
 import { tipoDe, proximaFecha, revisarCampana } from '../campanas.js';
 
@@ -39,6 +40,32 @@ export async function panelDe({ me, modo, slug, nombre, mes }) {
     if (modo === 'marketing') return html`${harnessHtml(modo)}${await panelMarketing(me, slug, nombre, mes)}`;
     return html`${harnessHtml(modo)}${await panelOrganizacion(me)}`;
   } catch (e) { return html`${harnessHtml(modo)}<div class="lp-err">No pude leer el panel: ${e.message}</div>`; }
+}
+
+// Las herramientas son las del OS: mismo entregable, versión, permisos y aprobación en área y Chat.
+export async function panelHerramientas({ me, modo, slug, nombre }) {
+  const area = WORKSPACES.find((w) => w.modo === modo);
+  if (!area) return vacio('Herramientas del equipo', 'Elige un departamento para ver sus herramientas.');
+  if (!slug) return vacio('Elige un cliente', 'Las herramientas y sus entregables se muestran para el cliente activo.');
+  const disponibles = deWorkspace(area.id).filter((t) => t.puede(me, { slug, personal: slug === 'personal' }));
+  const visibles = new Set(disponibles.map((t) => t.id));
+  const docs = await api(`entregables?ws=${encodeURIComponent(area.id)}&slug=${encodeURIComponent(slug)}`).catch(() => null);
+  const ultimos = new Map();
+  for (const d of docs?.items || []) {
+    if (d.archivado || !visibles.has(d.tool)) continue;
+    const previo = ultimos.get(d.tool);
+    if (!previo || String(d._meta?.updated_at || d._meta?.created_at || '') > String(previo._meta?.updated_at || previo._meta?.created_at || '')) ultimos.set(d.tool, d);
+  }
+  const enlace = (id) => {
+    const t = herramientaDe(id), d = ultimos.get(id);
+    if (!t || !visibles.has(id)) return '';
+    const ruta = rutaHerramienta(area.id, slug, id), estado = d ? `${d.estado || 'Borrador'} · v${d.version || 1}` : t.estado === 'pronto' ? 'Próximamente' : 'Abrir';
+    return html`<div class="lp-tool-entry">${t.monta === 'shell' ? html`<button type="button" class="lp-tool-link" data-a="tool-inline" data-tool="${id}"><span>${t.nombre}</span><small>${estado}</small></button>` : html`<a class="lp-tool-link" href="${ruta}"><span>${t.nombre}</span><small>${estado}</small></a>`}<a class="lp-tool-area" href="${ruta}" title="Abrir ${t.nombre} en su área" aria-label="Abrir ${t.nombre} en su área">↗</a></div>`;
+  };
+  const pasos = vistasDeArea(area.id), relacionados = new Set(pasos.flatMap((v) => v.herramientas));
+  return html`<div class="lp-tools"><header class="lp-head"><div><span class="lp-k">${area.nombre} · ${nombre || slug}</span><h3>Herramientas</h3><span class="lp-mut">El mismo trabajo y las mismas aprobaciones del área.</span></div><a class="lp-btn" href="#/ws/${area.id}/${esc(slug)}/overview">Abrir área ↗</a></header>
+    ${pasos.length ? html`<section class="lp-tool-flow" aria-label="Recorrido principal"><span class="lp-k">Recorrido principal</span>${pasos.map((v, i) => html`<div class="lp-tool-step"><span class="lp-tool-n">${i + 1}</span><div><b>${v.nombre}</b><p>${v.nota}</p>${v.herramientas.map(enlace)}${v.pendiente ? html`<span class="lp-tool-pending">Por conectar al OS</span>` : ''}</div></div>`)}</section>` : ''}
+    <details class="lp-tool-all"><summary>Todas las herramientas de ${area.nombre} <span>${disponibles.length}</span></summary><div>${disponibles.filter((t) => !relacionados.has(t.id)).map((t) => enlace(t.id))}</div></details></div>`;
 }
 
 // Lo primero que se lee: en qué paso va la estrategia y qué hacer ahora. Los demás pasos quedan plegados.

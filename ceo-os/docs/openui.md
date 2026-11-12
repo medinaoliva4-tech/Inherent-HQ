@@ -90,10 +90,8 @@ pestaña muestra el vacío (`screens/content.js`, 3 líneas). Destino `referenci
 
 ## 6 · Pendiente (fuera de este PR)
 
-- Panel de Herramientas del Chat (PR #306): escuchar `os:herramienta` `{ id, slug, embed }` para abrir las de `code-os/ui`
-  (`icp`, `adquisicion`, `dolores`, `pilares`, `radar`, `campanas`, `pre`, `video`) en su iframe `?embed=1`.
-- `code-os/ui` (`Embebido.tsx`): leer `herramienta=` y `cliente=` de la URL o un campo `herramienta` en `codeos:contexto`; y un
-  mensaje `codeos:imprimir` para imprimir la hoja de preproducción de Code OS desde el OS.
+- Las ocho vistas de Code se resuelven con `llm/mapa-trabajo.js` hacia herramientas nativas del OS. Donde todavía no hay
+  equivalente (`adquisicion`, `dolores`), `Tool(id)` avisa que falta conectarlo; no abre un iframe vacío.
 - Puente: `PROMPT_GENUI_MIN` en las sesiones de Code; la API de herramientas (nodos del hilo) como destino de `Guardar` para
   las herramientas de departamentos (`DESTINOS` en `vacio-chat.js`).
 - `screens/content.js`: repintar Referencias al recibir `os:dato` (hoy se ve al volver a la pestaña).

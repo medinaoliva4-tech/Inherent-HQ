@@ -91,7 +91,7 @@ export function vivoHtml(run) {
 }
 
 // Las pestañas del panel: el modo y una por trabajo ligado a la conversación.
-// herramientas: la pestaña «Herramientas» (Code OS embebido, llm/herramientas-code.js), para el equipo (no para el cliente).
+// herramientas: la pestaña «Herramientas» del OS, para el equipo (no para el cliente).
 export const pestanasHtml = (modo, runs, tab, { herramientas = false } = {}) => html`<nav class="lpt" aria-label="Panel"><button type="button" class="${tab === 'modo' ? 'on' : ''}" data-a="ag-tab" data-run="modo">${modo.nombre}</button>
   ${herramientas ? html`<button type="button" class="${tab === 'herramientas' ? 'on' : ''}" data-a="ag-tab" data-run="herramientas">${ico('tool', 12)} Herramientas</button>` : ''}
   ${runs.map((r) => html`<span class="lpt-t ${tab === r.id ? 'on' : ''}" style="${raw(color(r))}"><button type="button" data-a="ag-tab" data-run="${r.id}"><i class="lpt-d ${completo(r) ? 'ok' : r.etapas[activa(r)]?.estado}"></i>${r.flujo.nombre}</button><button type="button" class="lpt-x" data-a="ag-cerrar" data-run="${r.id}" aria-label="Cerrar la pestaña de ${r.flujo.nombre}">${ico('x', 11)}</button></span>`)}</nav>`;

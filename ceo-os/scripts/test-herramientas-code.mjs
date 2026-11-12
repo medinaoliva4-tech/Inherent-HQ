@@ -1,18 +1,27 @@
-// La pestaña «Herramientas» del Chat: Code OS embebido (public/js/llm/herramientas-code.js) con el contrato de
-// code-os/ui/docs/embebido.md (PR #298): pase por URL solo la primera vez y después por postMessage, origen exacto, contexto,
-// «codeos:al-chat» y el CSP del OS (frame-src y connect-src). npm run test:herramientas-code
+// El puente de compatibilidad Code OS conserva su contrato; el Chat monta las herramientas nativas del OS.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { origenDe, urlEmbebida, mensajeValido, rolCodeOS, contextoCodeOS, leerAlChat, acciones, montarHerramientas, VERSION_CONTRATO } from '../public/js/llm/herramientas-code.js';
 import { urlUi, urlCode } from '../api/_lib/code.js';
+import { MAPA_TRABAJO } from '../public/js/llm/mapa-trabajo.js';
+import { herramientaDe } from '../public/js/herramientas.js';
 
 let ok = 0; const t = async (n, f) => { await f(); ok++; console.log('✓', n); };
 const AQUI = path.dirname(fileURLToPath(import.meta.url));
 const VERCEL = JSON.parse(fs.readFileSync(path.join(AQUI, '..', 'vercel.json'), 'utf8'));
 const LLM = fs.readFileSync(path.join(AQUI, '..', 'public/js/screens/llm.js'), 'utf8');
 const CODE = 'https://code.inherentglobal.com';
+
+await t('las ocho vistas se mapean a herramientas reales o declaran pendiente', () => {
+  assert.equal(MAPA_TRABAJO.length, 8);
+  assert.equal(new Set(MAPA_TRABAJO.map((x) => x.id)).size, 8);
+  for (const vista of MAPA_TRABAJO) {
+    assert.ok(vista.herramientas.length || vista.pendiente, vista.id);
+    for (const id of vista.herramientas) assert.equal(herramientaDe(id)?.ws, vista.area, `${vista.id} → ${id}`);
+  }
+});
 
 await t('origen y URL: solo https (o localhost), modo embebido y el pase de la primera carga', () => {
   assert.equal(origenDe(CODE + '/'), CODE); assert.equal(origenDe('http://localhost:5173'), 'http://localhost:5173');
@@ -83,11 +92,12 @@ await t('la URL de la interfaz: CODEOS_UI_URL si es https o localhost; si no, la
   assert.equal(urlUi({ CODEOS_UI_URL: 'http://evil.example' }), urlCode({}));
   assert.equal(urlUi({ CODEOS_UI_URL: 'https://x.example/ruta' }), urlCode({}), 'sin rutas: solo el origen');
 });
-await t('la pantalla: pestaña Herramientas para el equipo, pase de /api/code/pase y «al-chat» con el nivel que venga', () => {
+await t('la pantalla: pestaña Herramientas usa las herramientas y entregables nativos del OS', () => {
   assert.match(LLM, /pestanasHtml\(/); assert.match(LLM, /\{ herramientas: conHerramientas\(\) \}/);
   assert.match(LLM, /const conHerramientas = \(\) => me\.role !== 'client'/);
-  assert.match(LLM, /pase: \(forzar\) => paseCode\(forzar\)/);
-  assert.match(LLM, /enviar\(texto, \{ nivelForzado: modelo \}\)/);
+  assert.match(LLM, /panelHerramientas\(/);
+  assert.match(LLM, /toolShell\(host, \{[^}]*embebido: true/);
+  assert.doesNotMatch(LLM, /montarHerramientas\(/);
 });
 
 await t('lo que ve la persona no dice «Code OS» ni nombres de variables (eso queda en la consola y en el PR)', () => {
@@ -95,7 +105,7 @@ await t('lo que ve la persona no dice «Code OS» ni nombres de variables (eso q
   const visibles = (src) => [...src.matchAll(/(?:alError\?\.\(|toast\(|title: |msg\.err = )[^;]*/g)].map((m) => m[0]);
   for (const v of [...visibles(H), ...visibles(LLM)]) { assert.ok(!/Code OS/.test(v), v.slice(0, 120)); assert.ok(!/CODEOS_[A-Z_]+\)?['`]/.test(v.replace(/console\.warn\([^)]*\)/g, '')), v.slice(0, 120)); }
   assert.match(H, /title: 'Herramientas'/); assert.match(H, /No se pudo abrir las herramientas\. Revisa la dirección configurada\./);
-  assert.match(LLM, /Code no está configurado todavía\. Avísale al CEO\./); assert.ok(!LLM.includes('Abriendo Code OS'));
+  assert.ok(!LLM.includes('Abriendo Code OS'));
 });
 
-console.log(`\n${ok} pruebas de Herramientas (Code OS embebido) OK`);
+console.log(`\n${ok} pruebas de Herramientas OK`);

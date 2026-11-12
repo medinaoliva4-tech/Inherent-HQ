@@ -11,7 +11,7 @@ const SLUG = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const MODOS = ['estrategia', 'organizacion', 'marketing', 'diseno', 'consulting', 'produccion', 'libre', 'code'];
 // Las herramientas de departamentos que viven en code-os/ui (PanelLateral.tsx · HERRAMIENTA) y se montan con iframe ?embed=1.
-export const HERRAMIENTAS_CODE = { icp: 'Perfil ICP', adquisicion: 'Calculadora de adquisición', dolores: 'Dolores', pilares: 'Pilares', radar: 'Radar', campanas: 'Campañas', pre: 'Hoja de preproducción', video: 'Editor de video' };
+export const HERRAMIENTAS_CODE = { icp: 'Perfil ICP', adquisicion: 'Calculadora de adquisición', dolores: 'Dolores', pilares: 'Pilares', radar: 'Radar', campanas: 'Campañas', pre: 'Hoja de preproducción', video: 'Posproducción' };
 const texto = (v, n) => (typeof v === 'string' || typeof v === 'number' ? String(v).replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, n) : '');
 // Lo que va a la caja no puede arrancar un comando (/nuevo) ni llamar a un agente (@Strategy).
 export const sinComando = (t) => String(t ?? '').trim().replace(/^[/@\s]+/, '');
@@ -66,9 +66,13 @@ export async function ejecutarAccion(nombre, args, { el = null } = {}) {
   switch (v.nombre) {
     case 'abrirHerramienta': {
       if (HERRAMIENTAS_CODE[a.id]) {
-        // Vive en code-os/ui: la abre el panel de Herramientas del Chat (iframe ?embed=1). Quien monte ese panel escucha este evento.
-        const ev = new CustomEvent('os:herramienta', { detail: { id: a.id, slug: a.slug, embed: true }, cancelable: true });
-        if (window.dispatchEvent(ev)) avisar(`${HERRAMIENTAS_CODE[a.id]} se abre en el panel de Herramientas del Chat (Code OS)`);
+        const { MAPA_TRABAJO } = await import('./mapa-trabajo.js');
+        const vista = MAPA_TRABAJO.find((x) => x.id === a.id);
+        const id = vista?.herramientas?.[0];
+        if (!id) return avisar(`${HERRAMIENTAS_CODE[a.id]} todavía no tiene una herramienta equivalente en el OS`, true);
+        if (!a.slug) return avisar('Elige un cliente para abrir esta herramienta', true);
+        const { rutaHerramienta } = await import('../herramientas.js');
+        location.hash = rutaHerramienta(vista.area, a.slug, id).slice(1);
         return;
       }
       const { rutaHerramienta, herramientaDe } = await import('../herramientas.js');
