@@ -476,7 +476,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
         </div>
       </div>
       <div class="card" style="margin-top:16px"><div class="row" style="flex-wrap:wrap;gap:12px"><div><h3 class="ttl">${ICON.radar}Scrape semanal</h3><div class="mut sm">Cada lunes, 10 posts por fuente, de Reels y TikTok: tus cuentas, referentes, competencia y los temas del nicho.</div></div><div class="sp"></div>
-        <label class="check" style="padding:0"><input type="checkbox" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
+        <label class="sw-row"><input type="checkbox" class="switch" data-act="auto" ${c.auto ? raw('checked') : ''}> Activado</label></div>
         <div class="grid g2" style="margin-top:12px;align-items:start"><div>
           <b class="sm" style="font-weight:500">Temas del nicho (hashtags, máx. 10)</b>
           <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:6px">${c.hashtags.map((h, i) => html`<span class="chip">#${h} <button class="sm mut" data-act="rmTag" data-i="${i}" style="margin-left:4px">${ico('x', 16)}</button></span>`)}${c.hashtags.length ? '' : html`<span class="mut sm">Sin temas.</span>`}</div>

@@ -1,7 +1,7 @@
 // Inherent AI → MCPs · el directorio de conectores, al estilo de un catálogo de apps: todos con su logo, filtros por tipo
 // de trabajo, buscador y un botón para conectar de verdad desde aquí. El OS hace de puente (api/_lib/conectores.js): abre
 // el login del servicio, guarda el permiso cifrado y los agentes usan sus herramientas desde el servidor.
-import { html, raw, mount, ico, toast, api, drawer, closeDrawer } from './core.js';
+import { html, raw, mount, ico, toast, api, drawer, closeDrawer, confirmAsk } from './core.js';
 import { CONECTORES, CATEGORIAS, TIPO_TEXTO, conectorDe, logoConector } from './conectores.js';
 
 export async function pintarDirectorio(box, me) {
@@ -59,7 +59,7 @@ export async function pintarDirectorio(box, me) {
       oauth: async (b) => { b.disabled = true; b.innerHTML = '<span class="aj-spin"></span> Abriendo…'; try { const { url } = await api('conectores/conectar', { method: 'POST', body: { id } }); location.href = url; } catch (e) { toast(e.message, true); drawer(vista(html`<p class="aj-err sm">${ico('triangle-alert', 13)} ${e.message}</p>`), accs, { title: c.nombre }); } },
       token: async (b) => { const token = document.getElementById('mcd-token')?.value || ''; b.disabled = true; b.innerHTML = '<span class="aj-spin"></span> Probando…'; try { await api('conectores/conectar', { method: 'POST', body: { id, token } }); await cargar(); pinta(); celebrar(c); } catch (e) { drawer(vista(html`<p class="aj-err sm">${ico('triangle-alert', 13)} ${e.message}</p>`), accs, { title: c.nombre }); } },
       probar: async () => { const box2 = document.getElementById('mcd-tools'); if (box2) box2.innerHTML = '<p class="mut sm">Preguntándole…</p>'; try { const { tools } = await api('conectores/probar', { method: 'POST', body: { id } }); if (box2) mount(box2, html`<p class="sm"><b>${tools.length} herramientas</b></p><ul class="mcd-tools">${tools.slice(0, 40).map((t) => html`<li><code>${t.name}</code><span class="mut xs">${t.description}</span></li>`)}</ul>`); } catch (e) { if (box2) mount(box2, html`<p class="aj-err sm">${e.message}</p>`); } },
-      quitar: async () => { if (!confirm(`¿Desconectar ${c.nombre}? Se borra tu permiso.`)) return; await api('conectores/desconectar', { method: 'POST', body: { id } }).catch(() => {}); await cargar(); pinta(); closeDrawer(); toast(`${c.nombre} desconectado`); },
+      quitar: async () => { if (!(await confirmAsk(`¿Desconectar ${c.nombre}? Se borra tu permiso.`))) return; await api('conectores/desconectar', { method: 'POST', body: { id } }).catch(() => {}); await cargar(); pinta(); closeDrawer(); toast(`${c.nombre} desconectado`); },
     };
     drawer(vista(), accs, { title: c.nombre });
   }

@@ -3,6 +3,8 @@
 // diagramView(host, data, opts)   → el mismo motor en solo lectura (la vista del documento en la Library).
 // El modelo, la geometría y Mermaid viven en diagram-model.js (puro, se prueba en Node).
 import * as M from './diagram-model.js';
+// Sin confirmación propia, la del OS (core.js se carga al usarla: este módulo sigue puro para las pruebas).
+const confirmar = (m) => import('./core.js').then((c) => c.confirmAsk(m));
 export { toMermaid, fromMermaid, fromDoc, template, templateMermaid, TEMPLATES, normalize, empty } from './diagram-model.js';
 
 // Medir texto con la tipografía real (canvas); si el navegador no deja, la aproximación del modelo.
@@ -249,7 +251,7 @@ export function diagramEditor(host, data, opts = {}) {
   }
   function layout(dir) { commit(() => { const r = M.autoLayout(d, dir); d.nodes = r.nodes; d.edges = r.edges; d.dir = dir; }); fit(); }
   async function loadTemplate(k) {
-    if (d.nodes.length && !(await (opts.confirm || ((m) => Promise.resolve(window.confirm(m))))('¿Reemplazar el diagrama por la plantilla?'))) return;
+    if (d.nodes.length && !(await (opts.confirm || confirmar)('¿Reemplazar el diagrama por la plantilla?'))) return;
     const t = M.template(k, measure); commit(() => { d.nodes = t.nodes; d.edges = t.edges; d.dir = t.dir; sel.clear(); selEdge = null; }); closeMenu(); fit();
   }
   function setData(nd) { d = M.normalize(nd); sel.clear(); selEdge = null; undo.length = redo.length = 0; draw(); renderProps(); fit(); }
@@ -296,7 +298,7 @@ export function diagramEditor(host, data, opts = {}) {
     doimport: async () => {
       const src = pop.querySelector('textarea')?.value || ''; const r = M.fromMermaid(src, { measure });
       if (!r) return opts.toast?.('No entendí ese Mermaid: tiene que empezar con «flowchart TD» o «graph LR»', true);
-      if (d.nodes.length && !(await (opts.confirm || ((m) => Promise.resolve(window.confirm(m))))('¿Reemplazar el diagrama por lo importado?'))) return;
+      if (d.nodes.length && !(await (opts.confirm || confirmar)('¿Reemplazar el diagrama por lo importado?'))) return;
       commit(() => { d.nodes = r.nodes; d.edges = r.edges; d.dir = r.dir; sel.clear(); selEdge = null; }); closeMenu(); fit();
     },
     reverse: () => commit(() => { const e = d.edges.find((x) => x.id === selEdge); if (e) { [e.from, e.to] = [e.to, e.from]; [e.fromPort, e.toPort] = [e.toPort, e.fromPort]; } }),

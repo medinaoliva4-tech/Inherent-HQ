@@ -57,7 +57,7 @@ export const vista = {
 
     const tarjeta = (f, i) => html`<article class="bp-fila" data-fila="${f.id}" data-fuera="${f.fuera_alcance ? '1' : '0'}" data-tipo="${f.tipo}" data-capacidad="0">
       <header><span class="bp-n">Fila ${i + 1}</span>
-        ${ed ? html`<label class="check bp-fuera"><input type="checkbox" data-f="fuera_alcance" data-id="${f.id}" ${f.fuera_alcance ? raw('checked') : ''}> Fuera del alcance</label><button type="button" class="btn ghost xs" data-acc="quitar" data-id="${f.id}" aria-label="Quitar la fila ${i + 1}">${ico('x', 14)}</button>`
+        ${ed ? html`<label class="sw-row"><input type="checkbox" class="switch" data-f="fuera_alcance" data-id="${f.id}" ${f.fuera_alcance ? raw('checked') : ''}> Fuera del alcance</label><button type="button" class="btn ghost xs" data-acc="quitar" data-id="${f.id}" aria-label="Quitar la fila ${i + 1}">${ico('x', 14)}</button>`
           : f.fuera_alcance ? html`<span class="chip bp-fuera-chip">Fuera del alcance</span>` : ''}</header>
       <label class="bp-c bp-c-obj"><span class="lbl">Objetivo</span>${texto(f, 'objetivo', { et: `Objetivo de la fila ${i + 1}`, ph: 'Ej. Aumentar las ventas de $1M a $1.5M para el 31/12/2027', max: 240, area: true, sin: `${SIN_DATOS}: falta el objetivo` })}</label>
       <ul class="bp-motivos" data-d="objetivo"></ul>

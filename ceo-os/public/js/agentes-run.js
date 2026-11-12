@@ -1,7 +1,7 @@
 // Agent Area · la vista por etapas (#/ai/agentes/<agente>/trabajos/<run>/etapas): historial y detalle de un trabajo, SOLO LECTURA.
 //   Se trabaja en el Chat (PLAN-GATEWAY §20): ahí se llama al agente, se lee el documento y se aprueba. Aquí queda lo que pasó:
 //   la línea de etapas · Inputs y evidencia · Actividad del agente · Resultado. Se puede pausar, archivar o restaurar.
-import { html, raw, mount, ico, skel, toast, api, md, drawer, closeDrawer } from './core.js';
+import { html, raw, mount, ico, skel, toast, api, md, drawer, closeDrawer, confirmAsk } from './core.js';
 import { activa, completo, progreso, leerOutput, CONEXIONES, enServidor } from './agentes-flujos.js';
 import { rutaAgente, rutaTrabajo } from './agentes-ui.js';
 
@@ -127,7 +127,7 @@ export async function pintarRun(el, me, id, alive) {
     mas: () => drawer(html`<div class="ag-rev"><h1>Trabajo</h1><p class="sm mut">Creado por ${quien(run.creado_por)} · workflow «${run.flujo.nombre}»</p>
         <div class="ag-rev-a"><a class="btn ghost" href="${rutaAgente(run.flujo.id, 'workflow')}" data-act="close">${ico('pencil', 14)} Ver el workflow del agente</a><button class="btn ghost" data-act="archivar">Archivar trabajo</button></div>
         <h2 class="sm">Historial</h2><ol class="ag-hist">${[...(run.historial || [])].reverse().slice(0, 80).map((h) => html`<li><b>${quien(h.quien)}</b> ${ACC[h.accion] || h.accion}${h.etapa != null && run.etapas[h.etapa] ? html` <span class="mut">· ${run.etapas[h.etapa].nombre}</span>` : ''}<span class="mut xs">${cuando(h.at)}</span>${h.nota ? html`<span class="ag-nota xs">${h.nota}</span>` : ''}</li>`)}</ol></div>`,
-      { archivar: async () => { if (!confirm('¿Archivar este trabajo? Nada se borra.')) return; closeDrawer(); await guardar('archivar', { archivado: true }, 'Trabajo archivado'); } }, { title: 'Trabajo' }),
+      { archivar: async () => { if (!(await confirmAsk('¿Archivar este trabajo? Nada se borra.'))) return; closeDrawer(); await guardar('archivar', { archivado: true }, 'Trabajo archivado'); } }, { title: 'Trabajo' }),
     restaurar: () => guardar('archivar', { archivado: false }, 'Trabajo restaurado'),
   };
   el.addEventListener('click', (ev) => { const t = ev.target.closest('[data-act]'); if (t && el.contains(t)) mapa[t.dataset.act]?.(t, ev); });

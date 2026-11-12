@@ -71,7 +71,7 @@ export async function recetasPanel(el, { solo = ['proyecto', 'servicio', 'intern
     const freq = rc.repeat?.freq;
     mount(el, html`<div class="card" style="padding:22px">
       <div class="row" style="gap:10px;flex-wrap:wrap"><button class="btn ghost xs" data-rc="back">← Recetas</button><span class="chip">${TYPE_NAME[own]}${rc.kind ? ' · ' + rc.kind : ''}</span><div class="sp"></div>
-        <label class="chip rdep"><input type="checkbox" data-p="active" ${rc.active !== false ? raw('checked') : ''}> ${own === 'interna' ? 'Encendida' : 'Activa'}</label></div>
+        <label class="sw-row"><input type="checkbox" class="switch" data-p="active" ${rc.active !== false ? raw('checked') : ''}> ${own === 'interna' ? 'Encendida' : 'Activa'}</label></div>
       <div class="form" style="margin-top:14px">
         <div><label class="f">Nombre</label><input class="in" data-p="name" value="${rc.name || ''}" placeholder="${own === 'interna' ? 'Ej. Revisar gastos sin comprobante' : 'Nombre de la receta'}"></div>
         ${own === 'servicio' ? html`<div><label class="f">Servicio del catálogo</label><select class="in" data-p="service_id" data-svc="1"><option value="">Elige un servicio…</option>${services.filter((s) => s.id === rc.service_id || !R.some((r) => r.type === 'servicio' && r.service_id === s.id)).map((s) => html`<option value="${s.id}" ${s.id === rc.service_id ? raw('selected') : ''}>${s.name}</option>`)}</select><div class="mut sm" style="margin-top:4px">«Día» cuenta días hábiles desde que arranca el proyecto.</div></div>` : ''}

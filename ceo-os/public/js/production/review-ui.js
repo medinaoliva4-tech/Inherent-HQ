@@ -75,7 +75,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
     mount(host, html`<div id="rv" class="stack" style="gap:14px">
       <div class="row" style="gap:10px;flex-wrap:wrap;align-items:center">
         <select class="in" id="rv-f" aria-label="Video" style="max-width:340px">${(ls.length ? ls : S.fichas).map((x) => html`<option value="${x.id}" ${x.id === S.sel ? 'selected' : ''}>${x.titulo}${x.revision ? ` · ${REV_TXT[x.revision] || x.revision}` : ''}</option>`)}</select>
-        <label class="check sm"><input type="checkbox" id="rv-t" ${S.todas ? 'checked' : ''}> <span>Ver todos los videos</span></label>
+        <label class="sw-row"><input type="checkbox" class="switch" id="rv-t" ${S.todas ? 'checked' : ''}> <span>Ver todos los videos</span></label>
         ${f ? html`<span class="chip ${f.revision === 'Aprobado' ? 'lime' : f.revision === 'Cambios' ? 'amber' : ''}">${f.revision ? REV_TXT[f.revision] || f.revision : 'Sin enviar a revisión'}</span><span class="chip">${f.formato} · v${vigente(f)}${vs.length > 1 ? ` · ${vs.length - 1} ${vs.length === 2 ? 'ronda' : 'rondas'}` : ''}</span>` : ''}
       </div>
       ${f ? html`
@@ -92,7 +92,7 @@ export async function reviewTool(host, { me, slug, b, alive, resto = [] } = {}) 
         ${mia ? html`<form id="rv-form" class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px;align-items:flex-end">
           <input class="in sm" name="seg" placeholder="Segundo (ej. 0:12)" style="max-width:150px" aria-label="Segundo">
           <input class="in" name="texto" placeholder="Comentario" style="flex:1;min-width:200px" aria-label="Comentario" required>
-          ${veInterno ? html`<label class="check sm"><input type="checkbox" name="interno"> <span>Nota interna</span></label>` : ''}
+          ${veInterno ? html`<label class="sw-row"><input type="checkbox" class="switch" name="interno"> <span>Nota interna</span></label>` : ''}
           <button class="btn sm" type="submit">${ico('send', 14)} Comentar</button></form>` : ''}</section>
       <section class="sp-panel"><div class="sp-panel-h row"><h3>Caption</h3></div>${f.caption_pieza ? html`<div style="white-space:pre-wrap">${f.caption_pieza}</div>` : html`<div class="mut sm" id="rv-cap">⚠️ SIN DATOS: sale de la pieza ligada a este video (Calendario).</div>`}</section>
       ${mia ? html`<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-a="aprobar" ${!ENREV(f) || S.ver !== vigente(f) ? 'disabled' : ''}>${ico('check', 14)} Aprobar v${S.ver}</button><button class="btn ghost" data-a="cambios" ${!ENREV(f) ? 'disabled' : ''}>Pedir cambios</button>${!ENREV(f) ? html`<span class="mut sm" style="align-self:center">Solo se revisa lo que está «En revisión».</span>` : S.ver !== vigente(f) ? html`<span class="mut sm" style="align-self:center">Aprobar solo vale sobre la versión vigente (v${vigente(f)}).</span>` : ''}</div>` : html`<div class="mut sm">Solo lectura: tu perfil no edita videos.</div>`}` : ''}

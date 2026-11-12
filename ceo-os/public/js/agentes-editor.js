@@ -5,7 +5,7 @@
 //   · el inspector flota a la derecha solo cuando eliges una etapa: Construir · Reglas · Conexiones, y abajo «Siguiente etapa».
 // El flujo es lineal: el orden de las etapas es el orden en que corre cada trabajo. Es del OS: guardar no toca el repo.
 // Editan el CEO y el COO; el resto lo ve.
-import { html, raw, mount, ico, toast, api } from './core.js';
+import { html, raw, mount, ico, toast, api, confirmAsk } from './core.js';
 import { TIPOS, CONEXIONES, tipoDe, normalizarEtapa } from './agentes-flujos.js';
 import { CONECTORES, logoConector } from './conectores.js';
 import { proveedorDe } from './ia-proveedores.js';
@@ -115,7 +115,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
       : panel === 'reglas' ? html`
         ${campo('criterios', 'Criterios de éxito', lineas(e.criterios), 'textarea', 'Uno por línea')}
         <label class="kf-f"><span>Fuentes externas mínimas</span><input class="in" type="number" min="0" max="10" data-k="fuentes_min" value="${e.fuentes_min || 0}" ${dis}><small>Si no las alcanza, el resultado queda como «Falta evidencia».</small></label>
-        <label class="kf-sw"><input type="checkbox" data-k="gate" ${e.gate ? raw('checked') : ''} ${dis}><span><b>Solo la aprueba el CEO</b><small>Sin esto, la aprueba el CEO o el COO.</small></span></label>
+        <label class="sw-row sw-card"><input type="checkbox" class="switch" data-k="gate" ${e.gate ? raw('checked') : ''} ${dis}><span><b>Solo la aprueba el CEO</b><small>Sin esto, la aprueba el CEO o el COO.</small></span></label>
         ${e.gate ? campo('nota_gate', 'Por qué', e.nota_gate || '') : ''}
         ${campo('aporte', 'Tu aporte en esta etapa', e.aporte?.pregunta || '', 'textarea', 'Ej.: ¿Cuál es tu punto de vista sobre este mercado?', 'Si escribes una pregunta, el agente no arranca esta etapa hasta que la persona responda en el Chat.')}
         <p class="kf-hint">Toda etapa se aprueba antes de seguir. Nada se publica ni se manda al cliente desde aquí.</p>`
@@ -236,7 +236,7 @@ export async function pintarEditor(el, me, wf, editor, onGuardado = () => {}, al
     subir: () => { const i = sel; if (!i) return; [etapas[i - 1], etapas[i]] = [etapas[i], etapas[i - 1]]; sel = i - 1; marcar(); },
     bajar: () => { const i = sel; if (i >= etapas.length - 1) return; [etapas[i + 1], etapas[i]] = [etapas[i], etapas[i + 1]]; sel = i + 1; marcar(); },
     duplicar: () => { const i = sel; etapas.splice(i + 1, 0, normalizarEtapa({ ...etapas[i], id: '', nombre: `${etapas[i].nombre} (copia)` })); sel = i + 1; marcar(); enfocar(sel); },
-    quitar: () => { const i = sel; if (etapas.length < 2 || !confirm(`¿Quitar «${etapas[i].nombre}» del flujo?`)) return; etapas.splice(i, 1); sel = Math.min(i, etapas.length - 1); marcar(); },
+    quitar: async () => { const i = sel; if (etapas.length < 2 || !(await confirmAsk(`¿Quitar «${etapas[i].nombre}» del flujo?`))) return; etapas.splice(i, 1); sel = Math.min(i, etapas.length - 1); marcar(); },
     'zoom-in': () => { const r = lienzo().getBoundingClientRect(); zoomEn(1.2, r.width / 2, r.height / 2); },
     'zoom-out': () => { const r = lienzo().getBoundingClientRect(); zoomEn(1 / 1.2, r.width / 2, r.height / 2); },
     ajustar: () => ajustar(),

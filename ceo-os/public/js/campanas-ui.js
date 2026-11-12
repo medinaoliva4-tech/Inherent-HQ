@@ -278,7 +278,7 @@ export async function campanasUI(el, { me, b, alive, resto = [] } = {}) {
     const k = celdaDe(f, ca), ed = editable(), sel = S.sel?.fase === f && S.sel?.canal === ca, listo = tieneBrief(f, ca), at = `data-f="${f}" data-ca="${ca}"`;
     const nombre = `${NOMBRE_CANAL_C[ca]}, ${NOMBRE_FASE_C[f]}`;
     return html`<td class="cma-celda" data-activo="${k.activo ? 1 : 0}" data-sel="${sel ? 1 : 0}">
-      <label class="cma-on"><input type="checkbox" data-k="activo" ${raw(at)} ${k.activo ? raw('checked') : ''} ${ed ? '' : raw('disabled')} aria-label="Activar ${nombre}"> <span>${k.activo ? 'Activo' : 'Activar'}</span></label>
+      <label class="sw-row"><input type="checkbox" class="switch" data-k="activo" ${raw(at)} ${k.activo ? raw('checked') : ''} ${ed ? '' : raw('disabled')} aria-label="Activar ${nombre}"> <span>${k.activo ? 'Activo' : 'Activar'}</span></label>
       ${k.activo ? html`<div class="cma-celda-in">
         ${ed ? html`<input class="in" type="date" data-k="fecha" ${raw(at)} value="${k.fecha}" aria-label="Fecha de ${nombre}">` : html`<span class="cma-ro" data-vacio="${k.fecha ? 0 : 1}">${k.fecha ? fdate(k.fecha) : 'Sin fecha'}</span>`}
         ${ed ? html`<input class="in" type="text" data-k="pieza" ${raw(at)} value="${k.pieza}" maxlength="160" placeholder="Pieza o acción" aria-label="Pieza de ${nombre}" autocomplete="off">` : html`<span class="cma-ro" data-vacio="${k.pieza ? 0 : 1}">${k.pieza || 'Sin pieza'}</span>`}

@@ -228,7 +228,7 @@ async function editorUI(host, { me, b, alive }) {
       ${inp(`tipo.escala.${i}.size`, e.size, { t: 'number', n: 1, label: 'Tamaño en px', max: 4, step: 1 })}
       <input class="in" type="number" step="5" data-p="tipo.escala.${i}.lh" data-n="1" data-k="100" value="${Math.round((Number(e.lh) || 0) * 100)}" aria-label="Interlineado en %" ${dis}>
       <input class="in" type="number" step="0.5" data-p="tipo.escala.${i}.tracking" data-n="1" data-k="100" value="${+((Number(e.tracking) || 0) * 100).toFixed(2)}" aria-label="Espaciado entre letras en %" ${dis}>
-      <label class="dse-chk"><input type="checkbox" data-p="tipo.escala.${i}.mayus" ${e.mayus ? raw('checked') : ''} ${dis}> MAYÚS</label>
+      <label class="sw-row"><input type="checkbox" class="switch" data-p="tipo.escala.${i}.mayus" ${e.mayus ? raw('checked') : ''} ${dis}> MAYÚS</label>
       <select class="in" data-p="tipo.escala.${i}.color" aria-label="Color" ${dis}><option value="">Color: el de la pieza</option>${sis.colores.filter((c) => hexOk(c.hex)).map((c) => html`<option value="${c.hex}" ${c.hex === e.color ? raw('selected') : ''}>${c.nombre}</option>`)}</select>
       ${puede && !bloq ? html`<button type="button" class="btn ghost xs" data-act="esc-x" data-i="${i}" title="Quitar">${ico('x', 12)}</button>` : ''}
       <div class="dse-smp" data-i="${i}" style="${estiloE(e)}">${e.size >= 30 ? b.name : 'Así se lee el texto de la marca en una pieza.'}</div></div>`; })}

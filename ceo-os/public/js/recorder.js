@@ -16,7 +16,7 @@ export function recorder({ onDone }) {
     mount(v, html`<div class="recbox"><div class="row"><b style="font-size:18px;font-weight:500">${ico('dot', 14)} Grabar video</b><div class="sp"></div><button class="arrow light" data-r="x">${ico('x', 16)}</button></div>
       <div class="mut sm" style="margin:4px 0 14px">Como Loom: se graba tu pantalla con tu voz y tu cámara en una burbuja. Se guarda en tu Drive y en la Library.</div>
       <div class="recopts">${[['screen+cam', html`${ico('monitor', 16)} + ${ico('smile', 16)}`, 'Pantalla y cámara'], ['screen', ico('monitor'), 'Solo pantalla'], ['cam', ico('smile'), 'Solo cámara']].map(([k, i, l]) => html`<button class="${k === mode ? 'on' : ''}" data-r="mode" data-m="${k}"><span style="font-size:20px">${i}</span>${l}</button>`)}</div>
-      <label class="check" style="margin-top:10px"><input type="checkbox" id="recMic" ${mic ? raw('checked') : ''}> Grabar mi micrófono</label>
+      <label class="sw-row" style="margin-top:10px"><input type="checkbox" class="switch" id="recMic" ${mic ? raw('checked') : ''}> Grabar mi micrófono</label>
       ${mode !== 'cam' ? html`<div class="mut sm">Tip: elige «Pantalla completa» para que la burbuja de tu cámara salga en el video.</div>` : ''}
       <button class="btn" data-r="start" style="width:100%;margin-top:14px;justify-content:center">Empezar a grabar</button></div>`);
   }

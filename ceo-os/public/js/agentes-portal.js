@@ -6,7 +6,7 @@
 //   · Trabajos: todos sus trabajos, filtrables, con el avance de cada uno.
 //   · Configuración: secciones con su explicación a la izquierda y los campos a la derecha. Se guarda sola (con su v: si
 //     alguien lo cambió, el 409 avisa).
-import { html, raw, mount, ico, skel, toast, api } from './core.js';
+import { html, raw, mount, ico, skel, toast, api, confirmAsk } from './core.js';
 import { AREAS_AGENTE, ESTADOS_AGENTE, CONEXIONES, tipoDe, ESTADOS } from './agentes-flujos.js';
 import { areaNombre, colorArea, chipEstado, rutaAgente, rutaTrabajo, nuevoTrabajo } from './agentes-ui.js';
 import { pintarEditor } from './agentes-editor.js';
@@ -165,7 +165,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
       return;
     }
     if (a === 'duplicar') { try { const { workflow } = await api('agentes/workflows', { method: 'POST', body: { desde: wf.id } }); location.hash = rutaAgente(workflow.id, 'settings'); } catch (e) { toast(e.message, true); } return; }
-    if (a === 'archivar') { if (!confirm('¿Archivar este agente? Nada se borra y sus trabajos siguen.')) return; try { await api(`agentes/workflows/${wf.id}/archivar`, { method: 'POST', body: { archivado: true } }); location.hash = '#/ai/agentes'; } catch (e) { toast(e.message, true); } }
+    if (a === 'archivar') { if (!(await confirmAsk('¿Archivar este agente? Nada se borra y sus trabajos siguen.'))) return; try { await api(`agentes/workflows/${wf.id}/archivar`, { method: 'POST', body: { archivado: true } }); location.hash = '#/ai/agentes'; } catch (e) { toast(e.message, true); } }
   });
   el.addEventListener('input', (ev) => {
     const k = ev.target.dataset.s; if (!k || !editor) return;

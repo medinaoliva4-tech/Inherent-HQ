@@ -430,7 +430,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Dirección</label><select class="in" name="direction"><option value="in" ${cur.direction !== 'out' ? raw('selected') : ''}>Entrante (ellos llegan)</option><option value="out" ${cur.direction === 'out' ? raw('selected') : ''}>Saliente (nosotros buscamos)</option></select></div></div>
         <div class="two"><div><label class="f">Etapa de entrada</label><select class="in" name="stage_in">${STAGES.filter((x) => !['Ganado', 'Perdido'].includes(x)).map((x) => html`<option value="${x}" ${x === cur.stage_in ? raw('selected') : ''}>${stageLabel(x)}</option>`)}</select></div>
           <div><label class="f">Rol asignado</label><select class="in" name="role">${[...new Set([...WORK_ROLES.map(([k]) => k), cur.role])].map((k) => html`<option value="${k}" ${k === cur.role ? raw('selected') : ''}>${roleLabel(k)}</option>`)}</select></div></div>
-        <label class="check"><input type="checkbox" name="main" ${cur.main ? raw('checked') : ''}> Es la fuente principal del quiz público (/diagnostico sin clave la usa)</label>
+        <label class="sw-row"><input type="checkbox" class="switch" name="main" ${cur.main ? raw('checked') : ''}> Es la fuente principal del quiz público (/diagnostico sin clave la usa)</label>
         <div><label class="f">Notas</label><input class="in" name="notes" value="${cur.notes || ''}"></div>
       </form>
       <div class="sm mut" style="margin:18px 0 8px">Mapeo de campos · cómo se llama cada dato en lo que llega. Vacío = se llama igual que aquí (ej. <code>phone</code>).</div>

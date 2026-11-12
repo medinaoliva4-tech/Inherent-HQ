@@ -2,7 +2,7 @@
 // Arriba los tres pasos (se van marcando solos), después «Para qué se usa» (IA para Agents, para investigar y para el Chat:
 // cada uso elige proveedor y modelo de los conectados) y abajo todos los proveedores con su logo. Las llaves se guardan
 // cifradas en el servidor y nunca vuelven aquí (solo sus últimos 4). Conectan el CEO y el COO; el resto ve el estado.
-import { html, raw, mount, ico, skel, toast, api, drawer, closeDrawer } from '../core.js';
+import { html, raw, mount, ico, skel, toast, api, drawer, closeDrawer, confirmAsk } from '../core.js';
 import { PROVEEDORES, USOS, proveedorDe, logoDe } from '../ia-proveedores.js';
 
 export const esqueleto = () => skel('pagina');
@@ -88,7 +88,7 @@ export async function render(el, { me, alive }) {
         } catch (e) { drawer(cuerpo('', e.message), accs, { title: p.nombre }); }
       },
       modelos: async () => { try { est = await api('ia/modelos', { method: 'POST', body: { proveedor: id } }); toast('Modelos actualizados'); drawer(cuerpo(), accs, { title: p.nombre }); pinta(); } catch (e) { toast(e.message, true); } },
-      quitar: async () => { if (!confirm(`¿Desconectar ${p.nombre}? Se borra su llave.`)) return; try { est = await api('ia/desconectar', { method: 'POST', body: { proveedor: id } }); closeDrawer(); toast(`${p.nombre} desconectada`); pinta(); } catch (e) { toast(e.message, true); } },
+      quitar: async () => { if (!(await confirmAsk(`¿Desconectar ${p.nombre}? Se borra su llave.`))) return; try { est = await api('ia/desconectar', { method: 'POST', body: { proveedor: id } }); closeDrawer(); toast(`${p.nombre} desconectada`); pinta(); } catch (e) { toast(e.message, true); } },
     };
     drawer(cuerpo(), accs, { title: p.nombre });
     setTimeout(() => document.getElementById(p.forma === 'url' ? 'aj-base' : 'aj-llave')?.focus(), 80);

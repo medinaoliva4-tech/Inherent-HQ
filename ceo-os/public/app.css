@@ -1156,6 +1156,12 @@ input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:rgb
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-8px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgb(0 0 0 / .25), 0 0 0 .5px rgb(0 0 0 / .08)}
 input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:0;box-shadow:0 1px 4px rgb(0 0 0 / .25)}
 input[type=checkbox]:not(.switch):not([role=switch]){accent-color:var(--ink)}
+/* Fila de interruptor: el único on/off del OS (input.switch + su texto). El checkbox queda solo para elegir ítems de una lista. */
+.sw-row{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:var(--fs-b);color:var(--ui-ink);user-select:none}
+.sw-row>span{display:flex;flex-direction:column;gap:2px;min-width:0}.sw-row small{font-size:12px;color:var(--ui-mut);line-height:1.4}
+.sw-row:has(input:disabled){cursor:default;opacity:.55}
+.sw-card{display:flex;padding:10px 12px;border-radius:var(--r-2);background:var(--ui-fill)}
+.dz-o>.switch{pointer-events:none}
 
 /* ---------- tablas ---------- */
 table{font-variant-numeric:tabular-nums}
@@ -3687,7 +3693,6 @@ body.arrastrando{cursor:col-resize;user-select:none}
 .cx-model{border:0;background:none;font:inherit;font-size:13px;color:var(--ink);cursor:pointer;padding:4px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:2px}.cx-model:hover{background:var(--fill)}
 .cx-model small{font-size:11px;color:var(--mut);margin-left:8px}.cx-model small.on{color:#2f7a4d}
 .dz-chip.fijo{padding-right:11px;background:transparent;border:1px solid var(--hair);color:var(--mut)}
-.dz-sw{width:32px;height:18px;border-radius:9px;background:var(--hair-strong);position:relative;flex:none;transition:background .15s}.dz-sw::after{content:'';position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s}.dz-sw.on{background:#2f7a4d}.dz-sw.on::after{left:16px}
 .dz.sin-area{grid-template-columns:minmax(0,1fr) !important}.dz.sin-area>.dz-pane,.dz.sin-area>.pm-pane,.dz.sin-area>.divisor{display:none}.dz.sin-area>.dz-chat{max-width:880px;width:100%;margin:0 auto}
 .dg-pane{min-height:0}
 .dg-ideas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
@@ -6297,8 +6302,6 @@ table.cma-tabla{width:100%;min-width:760px;border-collapse:separate;border-spaci
 .cma-celda{padding:8px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--ui-line)}
 .cma-celda[data-activo="1"]{background:color-mix(in srgb,var(--ui-m-marketing) 9%,var(--ui-surf));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ui-m-marketing) 28%,transparent)}
 .cma-celda[data-sel="1"]{box-shadow:inset 0 0 0 2px var(--ui-m-marketing)}
-.cma-on{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ui-ink2);cursor:pointer}
-.cma-celda[data-activo="0"] .cma-on{font-weight:400;color:var(--ui-mut)}
 .cma-celda-in{display:grid;gap:6px;margin-top:8px}
 .cma-celda-in .in{width:100%;height:30px;padding:0 8px;font-size:12.5px}
 .cma-celda-in .cma-ro{font-size:12.5px}
@@ -8820,14 +8823,12 @@ a.agx-tr:hover{background:var(--ui-surf2)}
 .kf-insp-b{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:12px 16px 16px;border-top:1px solid var(--hair)}
 .kf-f{display:flex;flex-direction:column;gap:5px;min-width:0}
 .kf-f>span{font-size:12.5px;font-weight:600;color:var(--ink2)}
-.kf-f small,.kf-sw small,.kf-con small{font-size:12px;color:var(--mut);line-height:1.4}
+.kf-f small,.kf-con small{font-size:12px;color:var(--mut);line-height:1.4}
 .kf-f .in{width:100%;box-sizing:border-box}
 .kf-f textarea.in{resize:vertical;min-height:64px}
 .kf-f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .kf-sep{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
 .kf-sep::after{content:"";flex:1;height:1px;background:var(--hair)}
-.kf-sw{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:var(--fill);cursor:pointer}
-.kf-sw span{display:flex;flex-direction:column;gap:2px;font-size:13.5px}
 .kf-cons{display:flex;flex-direction:column;gap:4px}
 .kf-con{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer}
 .kf-con:hover{background:var(--fill)}
