@@ -5,7 +5,7 @@
    escalas por pantalla) sigue ganando como siempre. Dentro de este archivo, lo más antiguo va primero.
    Regla de la casa (scripts/lint-css.mjs): ningún hex, radio ni font-size nuevo fuera de estos tokens.
    Familia vigente: --ui-*. Alias de transición (no usar en código nuevo): --bg --ink --ink2 --mut --tone --line --hair
-   --surface --fill --cream … (se resuelven a --ui-*). --l-* es el alias propio del Chat (.llm), pendiente de migrar.
+   --surface --fill --cream … (se resuelven a --ui-*). El Chat (.llm) ya no tiene familia propia: usa --ui-* y, donde difiere del OS (fondo de vidrio, gris del chat), --ui-ch-*.
    ===================================================================================== */
 /* app.css:4 */
 :root{
@@ -201,3 +201,7 @@
   --fs-1:10px; --fs-2:11px; --fs-3:12px; --fs-4:13px; --fs-5:14px; --fs-6:15px; --fs-7:16px; --fs-8:18px; --fs-9:22px; --fs-10:28px; --fs-11:36px; --fs-12:44px; --fs-13:56px;
   --r-0:4px; --r-5:20px; --r-6:28px; --r-pill:999px;
 }
+/* El Chat (.llm): lo único que difiere del OS. Fondo transparente (se ve el vidrio de atrás), superficies y gris de texto del chat.
+   Todo lo demás del Chat lee --ui-* directo. Antes era la familia --l-* (ya no existe). El carbón de noche (--ui-carbon-*, #311) alimenta --ui-ch-side/surf/surf2. */
+.llm{--ui-ch-bg:transparent;--ui-ch-side:var(--ui-carbon-side);--ui-ch-surf:var(--ui-carbon-surf);--ui-ch-surf2:var(--ui-carbon-surf2);--ui-ch-mut:var(--ui-mut2);--ui-ch-glass:var(--ui-glass)}
+.llm[data-tema="dia"]{--ui-ch-side:transparent;--ui-ch-surf:var(--ui-surf);--ui-ch-surf2:#f4f4f5;--ui-ch-mut:var(--ui-mut);--ui-ch-glass:rgb(255 255 255 / .88)}
