@@ -5,6 +5,7 @@
 import { plano, corta, numeroONull, leerHerramienta, contextoPrompt, celda, sinAcentos, SIN_DATOS } from '../consulting/marcos.js';
 import { metricasDe, etapaFunnel, formatoDe } from '../calendario-contenido.js';
 import { mesOk, nombreMes } from '../plan-mes.js';
+import { limpiarComparaciones, clasificar } from './criterio-elo.js';
 
 export const BLOQUE = 'rendimientoCreativo';
 export const MIN_BASE = 3;          // piezas con métricas para que haya línea base
@@ -84,7 +85,7 @@ export function fatigaDe({ conectado = null, ctr7 = null, ctr30 = null, imp7 = n
 
 // ---------- El contenido ----------
 const FATIGA0 = { estado: 'sin-datos', ctr7: null, ctr30: null, caida_pct: null, fuente: SIN_PAUTA, nota: '' };
-export const vacio = (mes = '') => ({ mes: mesOk(mes) ? mes : '', base: null, piezas: [], patrones: [], fatiga: { ...FATIGA0 }, aprendizaje: '' });
+export const vacio = (mes = '') => ({ mes: mesOk(mes) ? mes : '', base: null, piezas: [], patrones: [], comparaciones: [], fatiga: { ...FATIGA0 }, aprendizaje: '' });
 const fechaMes = (s) => { const m = /^(\d{4}-(?:0[1-9]|1[0-2]))/.exec(String(s ?? '')); return m ? m[1] : ''; };
 
 // Solo lo conocido. El nivel y el veredicto de cada pieza se recalculan de su ER y la línea base (nunca se confía en lo que traiga); los patrones solo citan piezas
@@ -108,7 +109,7 @@ export function limpiar(c) {
   const f = plano(o.fatiga) ? o.fatiga : {}, estado = ['sin-datos', 'sin-senal', 'senal'].includes(f.estado) ? f.estado : 'sin-datos', fuente = corta(f.fuente, 200);
   const fatiga = estado === 'sin-datos' || !fuente ? { ...FATIGA0, fuente: fuente && estado === 'sin-datos' ? fuente : SIN_PAUTA, nota: corta(f.nota, 300) }
     : { estado, ctr7: numeroONull(f.ctr7, { min: 0 }), ctr30: numeroONull(f.ctr30, { min: 0 }), caida_pct: numeroONull(f.caida_pct), fuente, nota: corta(f.nota, 300) };
-  return { mes: mesOk(fechaMes(o.mes)) ? fechaMes(o.mes) : '', base, piezas, patrones: pats, fatiga, aprendizaje: corta(o.aprendizaje, 800) };
+  return { mes: mesOk(fechaMes(o.mes)) ? fechaMes(o.mes) : '', base, piezas, patrones: pats, comparaciones: limpiarComparaciones(piezas, o.comparaciones), fatiga, aprendizaje: corta(o.aprendizaje, 800) };
 }
 
 // Arma el contenido con lo que midió el OS: piezas (de normalizar) del mes y las de la marca para la línea base (todas las publicadas con métricas).
@@ -194,6 +195,10 @@ export function aMd(contenido) {
   else L.push(CONECTA_WINDSOR);
   L.push('', '## Patrones ganadores', '');
   L.push(...(c.patrones.length ? c.patrones.map((p, i) => `${i + 1}. **${nom(p.dimension, DIMENSIONES)}: ${p.valor}** (${p.n} piezas, ${p.ratio === null ? SIN_DATOS : `${p.ratio}x la base`}) — ${p.leccion || SIN_DATOS}`) : [`${SIN_DATOS}: faltan los patrones (necesitan 2 o más piezas por encima de la base).`]));
+  if (c.comparaciones.length) {
+    L.push('', '## Criterio humano entre piezas', '', `${c.comparaciones.length} comparaciones de este entregable. Ranking Elo provisional de preferencia humana; no demuestra rendimiento ni causalidad.`, '');
+    L.push(...clasificar(c.piezas, c.comparaciones).map((p, i) => `${i + 1}. ${p.titulo} · Elo ${p.rating} · ${p.n} comparaciones${p.provisional ? ' · provisional' : ''}`));
+  }
   L.push('', '## Fatiga', '', c.fatiga.estado === 'sin-datos' ? c.fatiga.fuente : `${c.fatiga.estado === 'senal' ? `Señal de fatiga: el CTR de 7 días (${c.fatiga.ctr7}%) cayó ${c.fatiga.caida_pct}% contra el de 30 (${c.fatiga.ctr30}%).` : 'Sin señal de fatiga.'} Fuente: ${c.fatiga.fuente}`);
   if (c.aprendizaje) L.push('', '## Qué aprendimos', '', c.aprendizaje);
   return L.join('\n');

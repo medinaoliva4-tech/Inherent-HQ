@@ -39,7 +39,7 @@
 | 12 | **Cerantola: crear su perfil de Google Maps** | No existe, y al buscar «Cerantola» aparece Cerantola S.p.A. de Italia. Con su nombre, fotos de proyectos y reseñas de clientes. Ver `clients/cerantola/99-referencias/investigacion/referentes-por-canal.md` § Google |
 | 13 | **Sistema de referidos: la plataforma** | Los referidos están en `st-adquisicion` §4. Falta la recompensa *(Decisiones #8)* y elegir la plataforma externa que ocupa el slot, probada en una cuenta real antes de anotarla en `inherent/05-OPERACION.md` |
 | 14 | **Revisar las skills a conciencia** | Se aplican como están en los agentes del servidor: tienen método, pero solo algunas dicen qué decide la persona. Hay que revisarlas en una parte del proceso y sumar «Lo que decide la persona» |
-| 15 | **Estudiar un sistema de aprendizaje por comparación para Inherent OS** | Partir de la probabilidad Elo de la imagen (`E_A = 1 / (1 + 10^((R_B-R_A)/400))`). Comparar Elo/Bradley-Terry, incertidumbre bayesiana (Glicko/TrueSkill), experimentos causales y bandits con ejemplos de campañas, ideas y entregables. Definir primero qué se compara, qué resultado real mide calidad, cómo evitar sesgos y cómo interviene el criterio humano. Evaluar su utilidad antes de diseñar herramienta o agente; no implementar todavía. |
+| 15 | **Validar el criterio por comparación y avanzar a experimentos** | La auditoría y la primera función Elo/Bayes viven en `ceo-os/docs/auditoria-criterio-comparacion.md` y en Creative Performance Analyzer. Falta probarla con una marca real, instrumentar objetivos y exposición, hacer A/B aleatorio y solo entonces evaluar bandits/Glicko. No atribuir impacto causal al ranking de preferencias. |
 
 ---
 

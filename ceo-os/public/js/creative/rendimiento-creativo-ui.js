@@ -8,6 +8,7 @@ import { nombreMes, mesOk } from '../plan-mes.js';
 import { estadoDe } from '../element.js';
 import { mesDe } from '../marketing/kpis.js';
 import { DIMENSIONES, NIVELES, VEREDICTOS, LAYA_VS, MAX_PATRONES, CONECTA_WINDSOR, SIN_METRICAS, vacio, limpiar, armar, normalizar, patrones, fatigaDe, resultadoDePieza, recordarRendimiento } from './rendimiento-creativo.js';
+import { clasificar, siguientePar, evidenciaPar } from './criterio-elo.js';
 import { fallo } from '../visual.js';
 
 const enc = encodeURIComponent;
@@ -45,6 +46,19 @@ function fatigaHtml(f) {
   return html`<div class="rcr-fat" data-estado="${f.estado}"><b>${f.estado === 'senal' ? 'Señal de fatiga' : f.estado === 'sin-senal' ? 'Sin señal de fatiga' : 'Fatiga sin datos'}</b>
     ${f.estado === 'sin-datos' ? html`<p class="rcr-sd">${f.fuente}</p>` : html`<p class="sm">CTR de 7 días ${f.ctr7}% contra ${f.ctr30}% de 30 días${f.caida_pct > 0 ? `: cayó ${f.caida_pct}%` : ''}. <span class="mut">Fuente: ${f.fuente}</span></p>`}</div>`;
 }
+function criterioHtml(c, ed) {
+  const lista = clasificar(c.piezas, c.comparaciones), par = siguientePar(c.piezas, c.comparaciones);
+  const evidencia = par ? evidenciaPar(par.a.id, par.b.id, c.comparaciones) : null;
+  return html`<h3 class="rcr-t">${ico('chart-no-axes-column-increasing', 16)} Criterio entre piezas</h3>
+    <p class="mut sm">Compara qué conviene repetir para esta marca. Elo ordena tus preferencias; las métricas de arriba muestran lo observado. Esto no prueba qué pieza causó más resultados.</p>
+    ${par ? html`<div class="rcr-duelo" aria-label="Comparación sugerida">
+      <div class="rcr-duelo-p"><span class="mut sm">Opción A</span><b>${par.a.titulo}</b></div><span class="mut">vs.</span><div class="rcr-duelo-p"><span class="mut sm">Opción B</span><b>${par.b.titulo}</b></div></div>
+      <p class="mut sm">Este par: ${evidencia.n} ${evidencia.n === 1 ? 'comparación' : 'comparaciones'}${evidencia.n >= 3 ? ` · preferencia estimada por A: ${Math.round(evidencia.media * 100)}% (Bayes, todavía revisable)` : ' · evidencia escasa'}.</p>
+      ${ed ? html`<label class="lbl" for="rcr-criterio-nota">Por qué eliges (opcional)</label><input class="in rcr-criterio-nota" id="rcr-criterio-nota" type="text" maxlength="240" placeholder="Ej.: comunica mejor la propuesta">
+        <div class="rcr-acc"><button type="button" class="btn" data-a="elegir-a">Prefiero A</button><button type="button" class="btn" data-a="elegir-b">Prefiero B</button><button type="button" class="btn ghost" data-a="elegir-empate">Empate</button>${c.comparaciones.length ? html`<button type="button" class="btn ghost" data-a="deshacer-comparacion">Deshacer última</button>` : ''}</div>` : ''}`
+      : html`<p class="rcr-sd">Se necesitan dos piezas publicadas del mismo mes para comparar.</p>`}
+    ${lista.length && c.comparaciones.length ? html`<ol class="rcr-ranking">${lista.map((p) => html`<li><b>${p.titulo}</b><span class="mut sm">Elo ${p.rating} · ${p.n} comparaciones${p.provisional ? ' · provisional' : ''}</span></li>`)}</ol>` : ''}`;
+}
 
 export const vista = {
   nuevo(ctx) { return vacio(mesDe(hoyDe(ctx))); },
@@ -56,6 +70,7 @@ export const vista = {
         <div data-r="aviso"></div><div data-r="base"></div><div data-r="piezas"></div>
         ${ed ? html`<div class="rcr-acc"><button type="button" class="btn ghost" data-a="leer">${ico('refresh-cw', 14)} Volver a leer el mes</button><button type="button" class="btn ghost" data-a="resultado" ${c.piezas.length ? '' : 'disabled'}>${ico('check', 14)} Guardar el resultado en cada pieza</button></div>` : ''}</section>
       <section class="rcr-sec" aria-label="Patrones y fatiga"><div data-r="patrones"></div><div class="rcr-bloque" data-r="fatiga"></div></section>
+      <section class="rcr-sec" aria-label="Criterio entre piezas"><div data-r="criterio"></div></section>
       <section class="rcr-sec" aria-label="Lo que aprendimos"><label class="lbl" for="rcr-apr">Lo que aprendimos este mes</label>${ed
         ? html`<textarea class="in" id="rcr-apr" data-c="aprendizaje" rows="3" maxlength="800" placeholder="Una o dos frases: qué se repite y qué se ajusta">${c.aprendizaje}</textarea>`
         : c.aprendizaje ? html`<p class="rcr-ro">${c.aprendizaje}</p>` : html`<p class="rcr-sd">${SIN_DATOS}: falta lo que aprendimos del mes</p>`}
@@ -72,13 +87,13 @@ export const vista = {
       mount(region('aviso'), aviso());
       const b = c.base; mount(region('base'), html`<p class="rcr-base" data-estado="${b?.er != null ? 'ok' : 'sin-datos'}">${b?.er != null ? html`<b>Línea base de la marca:</b> ER ${b.er}% <span class="mut sm">· ${b.fuente}</span>` : b ? b.fuente : (S.live ? SIN_METRICAS : 'Leyendo las piezas del mes…')}</p>`);
       mount(region('piezas'), c.piezas.length ? html`<div class="rcr-grid">${c.piezas.map((p, i) => tarjeta(p, ed, i))}</div>` : html`<p class="rcr-sd">${S.live ? (S.windsor === false ? CONECTA_WINDSOR : SIN_METRICAS) : 'Leyendo las piezas del mes…'}</p>`);
-      mount(region('patrones'), patronesHtml(c, ed)); mount(region('fatiga'), fatigaHtml(c.fatiga));
+      mount(region('patrones'), patronesHtml(c, ed)); mount(region('fatiga'), fatigaHtml(c.fatiga)); mount(region('criterio'), criterioHtml(c, ed));
       const r = root.querySelector('[data-a="resultado"]'); if (r) r.disabled = !c.piezas.length;
     };
     // Lo medido pasa al entregable conservando lo escrito (notas, lecciones, aprendizaje).
     const aplicar = (live) => {
       const notas = new Map(c.piezas.map((p) => [p.id, p.nota])), lec = new Map(c.patrones.map((x) => [`${x.dimension}|${x.valor}`, x.leccion]));
-      const n = limpiar({ ...live, piezas: live.piezas.map((p) => ({ ...p, nota: notas.get(p.id) || '' })), patrones: live.patrones.map((x) => ({ ...x, leccion: lec.get(`${x.dimension}|${x.valor}`) || '' })), aprendizaje: c.aprendizaje });
+      const n = limpiar({ ...live, piezas: live.piezas.map((p) => ({ ...p, nota: notas.get(p.id) || '' })), patrones: live.patrones.map((x) => ({ ...x, leccion: lec.get(`${x.dimension}|${x.valor}`) || '' })), comparaciones: c.comparaciones, aprendizaje: c.aprendizaje });
       Object.assign(c, n, { mes: c.mes || n.mes }); emitir(); pintar();
     };
     async function cargar({ aplicarYa = false } = {}) {
@@ -108,6 +123,13 @@ export const vista = {
     root.addEventListener('click', async (e) => {
       const b = e.target.closest('[data-a]'); if (!b || !root.contains(b) || !ed) return;
       const a = b.dataset.a;
+      if (a === 'elegir-a' || a === 'elegir-b' || a === 'elegir-empate') {
+        const par = siguientePar(c.piezas, c.comparaciones); if (!par) return;
+        c.comparaciones.push({ id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`, a: par.a.id, b: par.b.id,
+          resultado: a === 'elegir-a' ? 'a' : a === 'elegir-b' ? 'b' : 'empate', fecha: new Date().toISOString(), nota: root.querySelector('#rcr-criterio-nota')?.value || '' });
+        c.comparaciones = limpiar(c).comparaciones; emitir(); pintar(); return;
+      }
+      if (a === 'deshacer-comparacion') { c.comparaciones.pop(); emitir(); pintar(); return; }
       if (a === 'leer') { cargar({ aplicarYa: true }).catch(() => {}); return; }
       if (a === 'patrones') { const n = patrones(c.piezas, c.base).map((x) => ({ ...x, leccion: c.patrones.find((y) => y.dimension === x.dimension && y.valor === x.valor)?.leccion || '' })); c.patrones = limpiar({ ...c, patrones: n }).patrones; emitir(); pintar(); return; }
       if (a === 'resultado') {
@@ -123,7 +145,7 @@ export const vista = {
   // Para comparar versiones y para la propuesta de la IA: el mes, las piezas con su nivel y los patrones.
   resumen(contenido) {
     const c = limpiar(structuredClone(contenido && typeof contenido === 'object' ? contenido : {}));
-    return html`<div class="rcr-res"><span class="chip">${c.mes ? nombreMes(c.mes) : `Mes: ${SIN_DATOS}`}</span> <span class="chip">${c.piezas.length} ${c.piezas.length === 1 ? 'pieza' : 'piezas'}</span> <span class="chip">${c.patrones.length} de ${MAX_PATRONES} patrones</span>
+    return html`<div class="rcr-res"><span class="chip">${c.mes ? nombreMes(c.mes) : `Mes: ${SIN_DATOS}`}</span> <span class="chip">${c.piezas.length} ${c.piezas.length === 1 ? 'pieza' : 'piezas'}</span> <span class="chip">${c.patrones.length} de ${MAX_PATRONES} patrones</span> <span class="chip">${c.comparaciones.length} comparaciones humanas</span>
       ${c.patrones.length ? html`<ul>${c.patrones.map((p) => html`<li>${nom(p.dimension, DIMENSIONES)}: ${p.valor}<span class="mut sm"> · ${p.leccion || SIN_DATOS}</span></li>`)}</ul>` : ''}
       ${c.aprendizaje ? html`<p>${c.aprendizaje}</p>` : html`<p class="mut sm">${SIN_DATOS}: falta lo que aprendimos</p>`}</div>`;
   },
