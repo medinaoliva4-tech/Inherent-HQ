@@ -19,7 +19,7 @@ export async function modelosServidor() {
   return { actual: { provider: PROVEEDOR, model: xs[0] || '' }, proveedores: [{ slug: PROVEEDOR, nombre: 'Servidor', listo: Boolean(j.en_linea && xs.length), actual: true, modelos: xs }] };
 }
 export async function sesionesServidor() { return (await api('chat/sesiones')).sessions || []; }
-export const crearSesionServidor = ({ id, titulo, oculto = false }) => api('chat/sesiones', { method: 'POST', body: { id, titulo, oculto } });
+export const crearSesionServidor = ({ id, titulo, oculto = false, proyecto_id = '' }) => api('chat/sesiones', { method: 'POST', body: { id, titulo, oculto, proyecto_id } });
 // Los pasos que usó el servidor (buscar en la web, leer una página, un MCP) salen como tool_calls, igual que en Hermes.
 export async function mensajesServidor(id) { return ((await api('chat/sesiones/' + enc(id))).messages || []).filter((m) => m.content).map((m) => ({ ...m, tool_calls: (m.pasos || []).map((p) => ({ name: p.nombre })) })); }
 export const borrarSesionServidor = (id) => api('chat/sesiones/' + enc(id), { method: 'DELETE' });

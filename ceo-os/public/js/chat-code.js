@@ -2,7 +2,7 @@
 // Mismo contrato que chat-gateway.js (turno con on.delta / on.tool / on.nota), para que la pantalla del Chat no cambie.
 //   · Entrada: el OS (tu sesión de Google) emite un pase corto en POST /api/code/pase; el puente lo acepta como login.
 //   · Cada cliente del selector es un PROYECTO de Code (una carpeta en el servidor): projectId = slug del cliente.
-//   · Una conversación del Chat ↔ una sesión del puente (se recuerda en este navegador por correo).
+//   · Una conversación del Chat ↔ una sesión del puente (vínculo guardado también en la base del OS).
 import { api } from './core.js';
 import { traducir, proyectoDe } from './chat-code-puro.js';
 export { traducir, proyectoDe };
@@ -10,6 +10,25 @@ export { traducir, proyectoDe };
 const LLAVE = (email) => `os.code.sesiones.${email}`;
 const leer = (email) => { try { return JSON.parse(localStorage.getItem(LLAVE(email)) || '{}') || {}; } catch { return {}; } };
 const guardar = (email, m) => { try { localStorage.setItem(LLAVE(email), JSON.stringify(m)); } catch { /* sin almacenamiento */ } };
+const sincronizadas = new Set();
+export function recordarSesiones(email, sesiones) {
+  const m = leer(email);
+  for (const s of sesiones || []) if (s.code_session_id) { m[s.id] = s.code_session_id; sincronizadas.add(`${email}:${s.id}`); }
+  guardar(email, m);
+}
+async function vincular(email, idOs, sid) {
+  try {
+    const r = await api(`chat/sesiones/${encodeURIComponent(idOs)}/code`, { method: 'POST', body: { code_session_id: sid } });
+    sincronizadas.add(`${email}:${idOs}`);
+    return r.code_session_id;
+  } catch (e) {
+    if (e.status !== 409) throw e;
+    const s = await api(`chat/sesiones/${encodeURIComponent(idOs)}`);
+    if (!s.code_session_id) throw e;
+    sincronizadas.add(`${email}:${idOs}`);
+    return s.code_session_id;
+  }
+}
 
 // ---- El pase (10 min): se pide al OS y se renueva un minuto antes de caducar ----
 let cache = null;
@@ -30,9 +49,14 @@ const pedir = async (ruta, init = {}) => {
 // máx. 8000), por eso cada departamento tiene su propia sesión dentro de la conversación: idOs = «<conversación>::<departamento>».
 async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo, sistema = '' }) {
   const m = leer(email);
-  if (m[idOs]) return m[idOs];
+  if (m[idOs]) {
+    if (!idOs.includes('::') && !sincronizadas.has(`${email}:${idOs}`)) { m[idOs] = await vincular(email, idOs, m[idOs]); guardar(email, m); }
+    return m[idOs];
+  }
   const res = await pedir('/sessions', { method: 'POST', body: JSON.stringify({ projectId: proyectoDe(proyecto), model: modelo || 'nivel-medio', mode: modo, title: titulo, ...(sistema ? { systemPrompt: String(sistema).slice(0, 8000) } : {}) }) });
-  const s = await res.json(); m[idOs] = s.id; guardar(email, m); return s.id;
+  const s = await res.json();
+  m[idOs] = idOs.includes('::') ? s.id : await vincular(email, idOs, s.id);
+  guardar(email, m); return m[idOs];
 }
 
 /**
