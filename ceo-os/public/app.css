@@ -10157,3 +10157,73 @@ button,a,.lc{touch-action:manipulation}
 .lm-caida{display:flex;gap:6px;align-items:flex-start;padding:8px 11px;border-radius:var(--r-3);background:var(--ui-amb-bg);color:var(--ui-amb-t)}
 /* El degradado sobre la caja del Chat sigue al tema (en claro era oscuro y lavaba la caja). */
 :root[data-theme="light"] .llm-compw::before{background:linear-gradient(transparent,color-mix(in srgb,var(--ui-bg) 88%,transparent))}
+/* Chat/Code: workspace de tres columnas como Code OS. La barra del OS se recupera al salir. */
+.llm{background:var(--ui-surf)}
+.llm-side{background:var(--ui-side);border-right:1px solid var(--ui-line);-webkit-backdrop-filter:none;backdrop-filter:none}
+.llm-panel{background:var(--ui-surf2);-webkit-backdrop-filter:none;backdrop-filter:none}
+.llm-panel .lpt{background:var(--ui-surf2)}
+.llm-head{background:var(--ui-surf);border-bottom:1px solid var(--ui-line)}
+.ch-volver-os{margin-bottom:8px;color:var(--ui-ink2);font-size:var(--fs-4)}
+.ch-volver-os span{font-weight:550}
+.ch-k{padding-top:16px}
+.ch-k-proyectos{display:flex;align-items:center;justify-content:space-between}
+.ch-k-proyectos button{display:grid;place-items:center;width:24px;height:24px;border:0;border-radius:var(--r-1);background:transparent;color:var(--ui-ink2);cursor:pointer}
+.ch-k-proyectos button:hover{background:var(--ui-fill2);color:var(--ui-ink)}
+.ch-k-proyectos button:focus-visible,.ch-proyecto-acciones button:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+.ch-dialog-label{display:grid;gap:6px;margin:0 0 14px;color:var(--ui-ink2);font-size:var(--fs-4)}
+.ch-dialog-label input,.ch-dialog-label select{width:100%;min-height:38px;padding:7px 10px;border:1px solid var(--ui-line2);border-radius:var(--r-2);background:var(--ui-surf);color:var(--ui-ink);font:inherit}
+.ch-proyecto-acciones{display:flex;gap:10px;margin:0 0 24px}
+.ch-proyecto-acciones button{padding:4px 0;border:0;background:transparent;color:var(--ui-ink2);font:var(--fs-4) var(--sans);cursor:pointer}
+.ch-proyecto-acciones button:hover{color:var(--ui-ink);text-decoration:underline}
+.ch-proyecto-guardar{min-height:34px;padding:0 12px;border:1px solid var(--ui-line2);border-radius:var(--r-2);background:var(--ui-surf2);color:var(--ui-ink);font:500 var(--fs-4) var(--sans);cursor:pointer}
+.ch-proyecto-guardar:hover{background:var(--ui-fill2)}
+.ch-proyecto-guardar:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+.cp{min-height:100%;background:var(--ui-surf2)}
+.cp-head{align-items:center;min-height:52px;box-sizing:border-box;border-bottom:1px solid var(--ui-line)}
+.cp-head b{font-weight:550}
+.cp-empty{min-height:260px;align-content:start;gap:5px;padding:28px 22px}
+.cp-empty b{font-family:var(--chat-display);font-size:var(--fs-8);font-weight:300;letter-spacing:-.025em}
+.cp-empty p{margin:0;color:var(--ui-ink2)}
+.cp-tareas{display:grid;gap:3px;padding:18px 14px}
+.cp-tareas>p{margin:0 0 10px;color:var(--ui-mut);font-size:var(--fs-4)}
+.cp-tareas>button{display:flex;align-items:flex-start;gap:10px;width:100%;padding:8px;border:0;border-radius:var(--r-2);background:transparent;color:var(--ui-ink);font:var(--fs-4) var(--sans);text-align:left;cursor:pointer}
+.cp-tareas>button:hover{background:var(--ui-fill2)}
+.cp-tareas>button:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+.cp-tareas>button[aria-pressed="true"]{color:var(--ui-mut)}
+.cp-tareas>button>span:first-child{display:grid;place-items:center;flex:none;width:17px;height:17px;border:1px solid var(--ui-line2);border-radius:var(--r-1);font-size:var(--fs-2)}
+.cp-terminal,.cp-editor{background:var(--ui-surf2)}
+.llm .ch-proy-c{background:var(--ui-surf2)}
+.llm .ch-proy-thumb{background:var(--ui-fill2)}
+.llm .ch-proy-c.en-curso .ch-proy-thumb{background:var(--ui-surf2);color:var(--ui-ink)}
+.llm .ch-proy-c.en-curso .ch-proy-kind{background:var(--ui-fill2);color:var(--ui-ink2)}
+.llm .ch-proy-c.en-curso .ch-proy-excerpt{color:var(--ui-ink2)}
+@media (min-width:761px){
+  .llm-main.entrada[data-workspace="code"] .llm-conv{display:flex;flex:1;min-height:0;align-items:center;overflow:auto;padding:0}
+  .llm-main.entrada[data-workspace="code"] .llm-col{width:100%;max-width:700px;padding:24px}
+  .llm-main.entrada[data-workspace="code"] .ch-nuevo{max-width:620px;margin:0 auto;text-align:center}
+  .llm-main.entrada[data-workspace="code"] .ch-nuevo h1{font-size:var(--fs-11)}
+  .llm-main.entrada[data-workspace="code"] .llm-compw{position:relative;flex:none;margin:0;padding:0 24px 18px}
+  .llm-main.entrada[data-workspace="code"] .lc-w{max-width:700px;margin:0 auto}
+  .llm-main.entrada[data-workspace="code"] .lc textarea{min-height:56px;font-size:var(--fs-6)}
+}
+@media (min-width:761px){
+  html[data-pantalla="chat"] body,html[data-barra="lateral"][data-pantalla="chat"] body{padding-left:0}
+  html[data-pantalla="chat"] .lat{display:none}
+  .llm,.llm[data-panel="on"]{grid-template-columns:272px minmax(0,1fr)}
+  .llm-side{display:flex}
+  .llm-head{height:58px;padding:0 22px}
+  .llm-main,.llm[data-panel="on"] .llm-main{margin-right:0}
+  .llm[data-panel="off"] .llm-panel{display:none}
+  .llm[data-panel="on"] .llm-panel{display:flex;position:absolute;z-index:6;top:0;right:0;bottom:0;width:min(var(--pn-w,420px),60vw);border:0;border-left:1px solid var(--ui-line);border-radius:0;box-shadow:var(--ui-sh-3);transform:none;opacity:1}
+  .llm[data-panel="on"] .llm-div{right:calc(min(var(--pn-w,420px),60vw) - 10px)}
+}
+@media (min-width:1200px){
+  .llm[data-panel="on"]{grid-template-columns:272px minmax(0,1fr) minmax(320px,var(--pn-w,420px))}
+  .llm[data-panel="on"] .llm-panel{position:relative;grid-column:3;width:auto;box-shadow:none}
+  .llm[data-panel="on"] .llm-div{right:calc(var(--pn-w,420px) - 10px)}
+}
+@media (max-width:760px){
+  .llm,.llm[data-panel="on"]{grid-template-columns:minmax(0,1fr)}
+  .llm-side{background:var(--ui-side)}
+  .llm-panel{background:var(--ui-surf2)}
+}
