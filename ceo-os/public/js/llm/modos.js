@@ -327,7 +327,7 @@ export function idSesion(modo, slug, ahora = Date.now(), azar = Math.random()) {
 }
 // → { modo, slug } de un id de sesión del LLM (o null si no es nuestra).
 // Los modos salen de MODOS: cuando entra un área nueva, sus conversaciones se leen solas.
-const RE_SESION = new RegExp(`^inh-(${[...MODOS, MODO_LIBRE].map((m) => m.id).join('|')})-([a-z0-9_-]+)-[a-z0-9]+$`);
+const RE_SESION = new RegExp(`^inh-(${[...MODOS, MODO_LIBRE, MODO_CODE].map((m) => m.id).join('|')})-([a-z0-9_-]+)-[a-z0-9]+$`);
 export function leerIdSesion(id) {
   const m = RE_SESION.exec(String(id || ''));
   return m ? { modo: m[1], slug: m[2] === 'general' ? '' : m[2] } : null;

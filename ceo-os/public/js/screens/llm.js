@@ -26,7 +26,7 @@ import { PROMPT_VOZ } from '../conversacion.js';
 import { svgIco } from '../iconos.js';
 import { saludServidor, modelosServidor, sesionesServidor, crearSesionServidor, mensajesServidor, borrarSesionServidor, ramificarServidor, turnoServidor, decidirPropuesta } from '../chat-gateway.js';
 import { areaDe, areaDeModo, areaGuardada, guardarArea } from '../areas.js';
-import { turnoCode, capacidadesPuente, catalogoPuente, sesionCode } from '../chat-code.js';
+import { turnoCode, capacidadesPuente, catalogoPuente, sesionCode, recordarSesiones } from '../chat-code.js';
 // Un solo chat, un solo motor por conversación: las capacidades se prenden por turno (llm/capacidades.js).
 import { CAPACIDADES, capDe, ESTADOS, vacias, normal as capsNormal, alternar as alternarCap, chips as chipsDe, activas, porIntencion, reglaSinCapacidad, modoMotor, agrupar, nombreModelo as nombreDeModelo, disponibleO, planDePreset, lineaPlan, dinero, plegar, contextoPuente } from '../llm/capacidades.js';
 import { COCINA } from '../llm/modelos-tabla.js';
@@ -93,8 +93,9 @@ export async function render(el, { me, sub = [], alive }) {
     panelW: +pref.panelW || 0, cliente: '', proyecto: null, abiertas: pref.abiertas || {}, decidir: false, // las carpetas por cliente y la vista «Por decidir»
     // Un solo motor: lo que el puente sabe hacer (GET /capacidades), su catálogo (GET /models), lo prendido en esta
     // conversación y el equipo elegido ('auto' = el router de cocina · id de preset · 'm:<modelo>' fijo).
-    caps: modoGuardado === 'code' ? { ...vacias(), on: ['codigo'] } : vacias(), puente: null, catalogo: null, preset: pref.preset || 'auto', sugeridas: [],
+    caps: modoGuardado === 'code' ? { ...vacias(), on: ['codigo'] } : vacias(), puente: null, catalogo: null, preset: pref.preset || 'auto', sugeridas: [], proyectoId: '', proyectos: [],
   };
+  if (S.modo === 'code' && !angosto()) S.tab = 'codigo';
   // Lo que una pantalla dejó para escribir («Pregúntale al Chat», un tema de Consulting): se usa una vez y se borra, pero
   // solo cuando llega a la caja (si el servidor no está listo, espera: no se pierde).
   let borrador = String(pref.borrador || '');
@@ -109,9 +110,14 @@ export async function render(el, { me, sub = [], alive }) {
     return p ? { provider: p.slug, model: p.modelos[0] } : null;
   };
   const modeloTurno = () => (S.privado ? modeloLocal() || {} : S.modelo || {});
-  const slugAhora = () => S.cliente || (modoDe(S.modo).pide ? S.slugs[S.modo] : '') || '';
+  const slugAhora = () => S.modo === 'code' ? (S.proyectos.find((p) => p.id === S.proyectoId)?.cliente || S.cliente || 'inherent') : S.cliente || (modoDe(S.modo).pide ? S.slugs[S.modo] : '') || '';
   const clientesChat = () => { const m = new Map(); for (const c of estrategiaNow()) if (c.slug !== 'inherent') m.set(c.slug, c.nombre); for (const b of brandsNow()) if (b.slug && !m.has(b.slug) && b.slug !== 'inherent' && b.slug !== 'personal') m.set(b.slug, b.nombre || b.name || b.slug); return [...m].map(([slug, nombre]) => ({ slug, nombre })); };
-  const carpetasChat = (xs = S.sesiones) => carpetas(xs, clientesChat(), { personal: me.role === 'ceo' });
+  const carpetasChat = (xs = S.sesiones) => {
+    const propias = S.proyectos.map((p) => ({ ...p, id: `p:${p.id}`, proyectoId: p.id, conv: xs.filter((s) => s.proyecto_id === p.id), pendientes: xs.filter((s) => s.proyecto_id === p.id && s.agente?.estado === 'decidir').length }));
+    const generales = carpetas(xs.filter((s) => !s.proyecto_id || !S.proyectos.some((p) => p.id === s.proyecto_id)), clientesChat(), { personal: me.role === 'ceo' });
+    return [...propias, ...generales];
+  };
+  const carpetaSesion = (s) => s?.proyecto_id && S.proyectos.some((p) => p.id === s.proyecto_id) ? `p:${s.proyecto_id}` : carpetaDe(s);
   const nombreCliente = (id) => carpetasChat().find((c) => c.id === id)?.nombre || '';
   const opciones = () => (S.modo === 'estrategia' || S.modo === 'consulting' ? estrategiaNow().filter((c) => S.modo === 'estrategia' || c.slug !== 'inherent').map((c) => [c.slug, c.nombre]) : modoDe(S.modo).pide === 'marca' ? brandsNow().filter((b) => S.modo !== 'marketing' || !b.personal).map((b) => [b.slug, b.name]) : []);
   // Qué IA responde ahora: la del modelo elegido o la del servidor por defecto. '' si no se sabe.
@@ -161,19 +167,11 @@ export async function render(el, { me, sub = [], alive }) {
     <div class="llm-velo" data-a="side"></div>
   </div>`);
   const R = $('.llm', el), C = (id) => $('#' + id, el);
-  // Barra única (PLAN-GATEWAY §22): en la compu, la lista vive dentro de la barra lateral del shell; en el cel, en su cajón.
+  // El workspace conserva su propia columna de proyectos, igual que Code OS.
+  // La barra general del OS no debe absorber el historial ni cambiar su jerarquía.
   const escuchas = {}, escucha = (tipo, fn) => { el.addEventListener(tipo, fn); (escuchas[tipo] ||= []).push(fn); };
-  const compu = matchMedia('(min-width:761px)');
-  let enBarra = null;
-  const dentro = (n) => el.contains(n) || Boolean(enBarra?.contains(n));
-  const lado = () => {
-    const ranura = compu.matches ? document.getElementById('lat-ctx') : null;
-    if (!ranura) return C('llm-side');
-    if (!enBarra) { enBarra = document.createElement('div'); enBarra.className = 'lat-chat-lista'; for (const [t, fns] of Object.entries(escuchas)) for (const f of fns) enBarra.addEventListener(t, f); }
-    if (enBarra.parentElement !== ranura) ranura.replaceChildren(enBarra);
-    return enBarra;
-  };
-  compu.addEventListener('change', () => { if (R.isConnected) pintarSide(); });
+  const dentro = (n) => el.contains(n);
+  const lado = () => C('llm-side');
   // El día y la noche son los del OS (tema.js): si cambia (aquí, en otra pantalla o en la compu), el Chat lo sigue.
   llmVivo = R;
   // El ancho del panel: se arrastra el divisor o se mueve con las flechas, y queda guardado.
@@ -195,20 +193,23 @@ export async function render(el, { me, sub = [], alive }) {
   function pintarSide() {
     const q = S.busca.trim().toLowerCase(), dest = lado();
     // Solo las de los modos que este perfil abre. Al buscar se abren las carpetas que tienen resultados.
-    const validas = S.sesiones.filter((s) => modos.some((m) => m.id === leerIdSesion(s.id)?.modo));
+    const validas = S.sesiones.filter((s) => {
+      const modo = leerIdSesion(s.id)?.modo;
+      return modos.some((m) => m.id === modo) && (modo === 'code') === (S.modo === 'code');
+    });
     const lista = q ? validas.filter((s) => String(s.title || s.preview || '').toLowerCase().includes(q)) : validas;
     const cars = carpetasChat(lista).filter((c) => !q || c.conv.length);
-    const n = validas.filter((s) => s.agente?.estado === 'decidir').length, cur = S.sesion ? carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) : '';
+    const n = validas.filter((s) => s.agente?.estado === 'decidir').length, cur = S.sesion ? carpetaSesion(S.sesiones.find((x) => x.id === S.sesion)) : '';
     const abierta = (c) => Boolean(q) || c.id === cur || (S.abiertas[c.id] ?? c.conv.length > 0);
     const fila = (s) => { const e = s.agente && ESTADO_FILA[s.agente.estado]; return html`<div class="ch-conv ${s.id === S.sesion ? 'on' : ''}"><a href="#/chat/${esc(s.id)}" title="${s.title || s.preview || ''}"${s.id === S.sesion ? raw(' aria-current="page"') : ''}><span class="ch-t">${s.title || s.preview || 'Conversación'}</span>${e ? html`<span class="ch-est ${s.agente.estado}">${ico(e[1], 12)}<span>${s.agente.nombre} · ${e[0]}</span></span>` : ''}</a><button type="button" class="ch-x" data-a="borrar" data-id="${s.id}" aria-label="Borrar conversación">${ico('x', 12)}</button></div>`; };
     mount(dest, html`<div class="ch-sup">
-        <a class="ch-f ch-solo-cel" href="#/${rutaDeVuelta(localStorage.getItem(`os.os.ruta.${me.email}`) || '', 'home')}">${ico('chevron-left', 16)}<span>Volver a Inherent OS</span></a>
+        <a class="ch-f ch-volver-os" href="#/${rutaDeVuelta(localStorage.getItem(`os.os.ruta.${me.email}`) || '', 'home')}">${ico('chevron-left', 16)}<span>Inherent OS</span></a>
         <button type="button" class="ch-f" data-a="nuevo">${ICO_NUEVO}<span>Nueva conversación</span></button>
         <label class="ch-f ch-busca">${ico('search', 16)}<input id="ls-q" placeholder="Buscar" value="${S.busca}" aria-label="Buscar conversaciones"></label>
         <button type="button" class="ch-f ${S.decidir ? 'on' : ''}" data-a="por-decidir">${ico('alert', 16)}<span>Por decidir</span>${n ? html`<b class="ch-n">${n}</b>` : ''}</button>
       </div>
-      <div class="ch-k">Clientes</div>
-      <div class="ch-lista">${!listo() ? html`<p class="ls-mut">${S.salud ? 'El servidor no está en línea ahora.' : 'Conectando…'}</p>` : !cars.length ? html`<p class="ls-mut">Nada con ese nombre.</p>` : cars.map((c) => html`<div class="ch-car ${abierta(c) ? 'abierta' : ''}">
+      <div class="ch-k ch-k-proyectos"><span>Proyectos</span><button type="button" data-a="nueva-carpeta" aria-label="Crear proyecto" title="Crear proyecto">${ico('plus', 14)}</button></div>
+      <div class="ch-lista">${!cars.length ? html`<p class="ls-mut">Nada con ese nombre.</p>` : cars.map((c) => html`<div class="ch-car ${abierta(c) ? 'abierta' : ''}">
         <div class="ch-car-f ${S.proyecto?.id === c.id ? 'on' : ''}"><button type="button" class="ch-tg" data-a="carpeta" data-c="${c.id}" aria-expanded="${abierta(c) ? 'true' : 'false'}" aria-label="${abierta(c) ? 'Cerrar' : 'Abrir'} ${c.nombre}">${ico('chevron-right', 13)}</button><button type="button" class="ch-d" data-a="proyecto" data-c="${c.id}">${ico('folder-open', 16)}<span>${c.nombre}</span>${!abierta(c) && c.pendientes ? html`<i class="ch-pend" title="Tiene decisiones pendientes"></i>` : ''}</button><button type="button" class="ch-mas" data-a="nuevo-en" data-c="${c.id}" aria-label="Nueva conversación en ${c.nombre}" title="Nueva conversación">${ico('plus', 14)}</button></div>
         <div class="ch-cuerpo"><div>${c.conv.length ? c.conv.map(fila) : html`<p class="ch-vacio">Sin conversaciones</p>`}</div></div></div>`)}</div>`);
     const qi = $('#ls-q', dest); if (qi) qi.oninput = () => { S.busca = qi.value; const pos = qi.selectionStart; pintarSide(); const n2 = $('#ls-q', lado()); n2.focus(); n2.setSelectionRange(pos, pos); };
@@ -221,12 +222,13 @@ export async function render(el, { me, sub = [], alive }) {
     const rama = C('llm-rama'); if (rama) rama.hidden = !S.sesion || vacio();
     if (S.decidir) return mount(C('llm-titulo'), html`<span class="lt-t">Por decidir</span>`);
     if (S.proyecto) return mount(C('llm-titulo'), html`<span class="lt-t">${nombreCliente(S.proyecto.id)}</span>`);
-    const cli = S.sesion ? carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) : S.cliente || 'inherent';
+    const cli = S.sesion ? carpetaSesion(S.sesiones.find((x) => x.id === S.sesion)) : S.proyectoId ? `p:${S.proyectoId}` : S.cliente || 'inherent';
     mount(C('llm-titulo'), html`<span class="lt-t">${vacio() ? 'Nueva conversación' : S.titulo || 'Conversación'}</span>${S.sesion ? html`<button type="button" class="ch-chip" data-a="mover" aria-haspopup="listbox" title="Mover a otro cliente">${nombreCliente(cli)}${ico('down', 12)}</button>` : ''}`);
   }
   function pintarCentro() {
     C('llm-main').classList.toggle('vacio', vacio());
     C('llm-main').classList.toggle('entrada', vacio() && !S.proyecto && listo());
+    C('llm-main').dataset.workspace = S.modo === 'code' ? 'code' : 'chat';
     pintarTitulo(); pintarCaja(); pintarHilo();
   }
   // Abajo de la caja: vistas del trabajo real que se puede retomar.
@@ -236,7 +238,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (!xs.length) return '';
     return html`<section class="ch-proys" aria-label="Trabajo reciente"><div class="ch-proys-head"><h2>Continúa donde lo dejaste</h2></div><div class="ch-proys-grid">${xs.map((s) => {
       const titulo = s.title || 'Conversación', extracto = s.preview || 'Abre esta conversación para continuar.',
-        cliente = nombreCliente(carpetaDe(s)) || 'Inherent', fecha = s.last_active || s.started_at,
+        cliente = nombreCliente(carpetaSesion(s)) || 'Inherent', fecha = s.last_active || s.started_at,
         dia = fecha && !Number.isNaN(Date.parse(fecha)) ? new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short' }).format(new Date(fecha)) : '';
       return html`<a class="ch-proy-c ${s.en_curso ? 'en-curso' : ''}" href="#/chat/${esc(s.id)}" aria-label="Continuar ${titulo}"><span class="ch-proy-thumb"><span class="ch-proy-kind">${s.en_curso ? 'EN CURSO' : cliente}</span><strong>${titulo}</strong><span class="ch-proy-excerpt">${extracto}</span></span><span class="ch-proy-foot"><b>${titulo}</b><span>${dia}</span></span></a>`;
     })}</div></section>`;
@@ -318,18 +320,18 @@ export async function render(el, { me, sub = [], alive }) {
       <form class="lc" id="llm-form"><div class="lc-cmds" id="lc-cmds" hidden></div>
         ${S.adjuntos.length ? html`<div class="lc-adj">${S.adjuntos.map((a, i) => html`<span>${a.data ? html`<img class="lc-adj-img" src="${a.data}" alt="${a.nombre}">` : ''}${a.nombre}<button type="button" data-a="quitar-adj" data-i="${i}" aria-label="Quitar ${a.nombre}">×</button></span>`)}</div>` : ''}
         ${capsBarHtml()}
-        <textarea id="llm-in" rows="1" placeholder="${m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : vacio() ? '¿Cómo puedo ayudarte hoy?' : 'Escribe un mensaje o usa @ para un agente'}" aria-label="Mensaje"></textarea>
+        <textarea id="llm-in" rows="1" placeholder="${conCode() ? 'Describe qué quieres construir o revisar…' : m.pide && !sl ? `Primero elige ${m.pide === 'marca' ? 'una marca' : 'un cliente'} abajo…` : vacio() ? '¿Cómo puedo ayudarte hoy?' : 'Escribe un mensaje o usa @ para un agente'}" aria-label="Mensaje"></textarea>
         <div class="lc-row">
           <button type="button" class="lc-mas" data-a="adjuntar" aria-label="Adjuntar archivo" title="Adjuntar archivo">${ico('plus', 16)}</button>
           <button type="button" class="lc-chip lc-modo" data-a="menu-modo" aria-haspopup="listbox">${m.nombre}<span class="lc-car">▾</span></button>
-          ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(m.pide === 'marca' ? 'grid' : 'users', 13)}${sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
-          ${S.modo === MODO_LIBRE.id ? '' : html`<button type="button" class="lc-chip lc-lente" data-a="lente" aria-pressed="${lenteOn() ? 'true' : 'false'}" title="Razona la oferta con la lente de Hormozi">Hormozi</button>`}
+          ${m.pide ? html`<button type="button" class="lc-chip ${sl ? '' : 'falta'}" data-a="menu-slug" aria-haspopup="listbox">${ico(S.modo === 'code' ? 'folder-open' : m.pide === 'marca' ? 'grid' : 'users', 13)}${S.modo === 'code' ? S.proyectos.find((p) => p.id === S.proyectoId)?.nombre || nombreCliente(S.cliente || 'inherent') || 'Inherent' : sl ? nombreSlug() : m.pide === 'marca' ? 'Elige una marca' : 'Elige un cliente'}<span class="lc-car">▾</span></button>` : ''}
+          ${S.modo === MODO_LIBRE.id || S.modo === 'code' ? '' : html`<button type="button" class="lc-chip lc-lente" data-a="lente" aria-pressed="${lenteOn() ? 'true' : 'false'}" title="Razona la oferta con la lente de Hormozi">Hormozi</button>`}
           <span class="sp"></span>
           ${iasHtml() || ''}${'' && html`<button type="button" class="lc-chip lc-priv ${S.privado ? 'on' : ''}" data-a="privado" aria-pressed="${S.privado ? 'true' : 'false'}" title="${S.privado ? 'Modo privado: responde un modelo en tu compu; nada sale de ella' : 'Prender el modo privado: para datos de clientes, finanzas o lo que no debe salir de tu compu'}">${ico('lock', 13)}<span>Privado</span></button>`}
-          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="Qué modelo del servidor responde">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
+          <button type="button" class="lc-chip lc-model" data-a="menu-modelo" aria-haspopup="listbox" title="${S.modo === 'code' ? 'Nivel del motor Code' : 'Qué modelo del servidor responde'}">${S.privado ? ico('lock', 12) : html`<i class="lc-dot on"></i>`}${nombreModelo()}${S.modo !== 'code' && S.esfuerzo ? html`<span class="lc-esf">· ${nombreEsfuerzo(S.esfuerzo)}</span>` : ''}<span class="lc-car">▾</span></button>
           ${botonVoz()}
           ${S.enVuelo ? html`<button type="button" class="lc-send stop" data-a="detener" aria-label="Detener">${ICO_STOP}</button>` : html`<button type="submit" class="lc-send" aria-label="Enviar">${ICO_ARRIBA}</button>`}
-        </div></form>${vacio() && !S.proyecto ? proyectosHtml() : ''}</div>`);
+        </div></form>${vacio() && !S.proyecto && S.modo !== 'code' ? proyectosHtml() : ''}</div>`);
     const ta = $('#llm-in', el); ta.value = prev;
     if (borrador && !prev) { ta.value = borrador; borrador = ''; persistir(); }
     crecer(ta);
@@ -476,6 +478,10 @@ export async function render(el, { me, sub = [], alive }) {
     }
     if (S.proyecto) {
       const p = S.proyecto, cs = carpetasChat().find((c) => c.id === p.id)?.conv || [];
+      if (p.proyectoId) {
+        mount(col, html`<div class="ch-cli"><p class="ch-cli-sub">Proyecto · ${nombreCliente(p.cliente)}</p><div class="ch-proyecto-acciones"><button type="button" data-a="renombrar-carpeta" data-c="${p.proyectoId}">Renombrar</button><button type="button" data-a="borrar-carpeta" data-c="${p.proyectoId}">Eliminar carpeta</button></div><div class="ch-proy"><section><h2>Conversaciones</h2><p class="ch-nota">${cs.length} conversaciones en esta carpeta.</p>${cs.length ? html`<div class="ch-pl">${cs.map((s) => html`<a href="#/chat/${esc(s.id)}">${s.title || s.preview || 'Conversación'}</a>`)}</div>` : html`<div class="ch-vacio-g">Escribe abajo para empezar.</div>`}</section><section><h2>Instrucciones del proyecto</h2><p class="ch-nota">El Chat y Code las reciben al trabajar en esta carpeta.</p><textarea id="ch-proyecto-inst" class="ch-inst" maxlength="4000" data-c="${p.proyectoId}" placeholder="Contexto y reglas de este proyecto">${p.instrucciones || ''}</textarea><button type="button" class="ch-proyecto-guardar" data-a="guardar-carpeta" data-c="${p.proyectoId}">Guardar instrucciones</button></section></div></div>`);
+        flecha(); return;
+      }
       const r = p.resumen || {}, dato = (n, l) => html`<div><b>${n ?? '—'}</b><span>${l}</span></div>`;
       mount(col, html`<div class="ch-cli">
         <p class="ch-cli-sub">Aquí vive el contexto de este cliente. Todo lo que escribas aquí abajo empieza una conversación nueva con ese contexto.</p>
@@ -604,11 +610,13 @@ export async function render(el, { me, sub = [], alive }) {
     const cab = tabs.length || conHerramientas() || conCode() ? pestanasHtml(modoDe(S.modo), tabs, run ? run.id : herr ? 'herramientas' : tabCode ? 'codigo' : S.tab === 'agentes' ? 'agentes' : 'modo', { herramientas: conHerramientas(), codigo: conCode() }) : '';
     if (herr) return pintarHerramientas(box, cab);
     if (tabCode) {
+      S.code.tareas = S.brujula?.tareas || [];
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}<div class="lp-code-host"></div>`);
       const host = $('.lp-code-host', box), sigue = () => gen === panelGen && alive() && host.isConnected && S.tab === 'codigo';
       const { pintarCodePanel } = await import('../llm/code-panel.js'); if (!sigue()) return;
       return pintarCodePanel(host, { email: me.email, idOs: S.sesion, estado: S.code, alive: sigue, aislada: false,
-        alChat: (texto) => { const ta = $('#llm-in', el); if (ta) { ta.value = texto; crecer(ta); ta.focus(); } } });
+        alChat: (texto) => { const ta = $('#llm-in', el); if (ta) { ta.value = texto; crecer(ta); ta.focus(); } },
+        onTarea: (i) => { const x = S.brujula?.tareas[i]; if (!x) return; ponerBrujula(marcar(S.brujula, i, !x.hecha)); pintarHilo(); pintarPanel(); } });
     }
     if (S.tab === 'agentes') {
       mount(box, html`${angosto() ? html`<button type="button" class="lp-cerrar" data-a="panel">${ico('x', 14)} Cerrar</button>` : ''}${cab}
@@ -677,7 +685,9 @@ export async function render(el, { me, sub = [], alive }) {
     return h;
   }
   const menuModo = (a) => menu(a, 'Modo', modos.map((m) => ({ v: m.id, label: m.nombre, sub: m.sub, on: m.id === S.modo, ico: html`<i class="lmn-m" data-m="${m.id}">${m.letra}</i>` })), (v) => cambiarModo(v));
-  const menuSlug = (a) => menu(a, modoDe(S.modo).pide === 'marca' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
+  const menuSlug = (a) => S.modo === 'code'
+    ? menu(a, 'Proyecto', carpetasChat().map((c) => ({ v: c.id, label: c.nombre, on: c.id === (S.proyectoId ? `p:${S.proyectoId}` : S.cliente || 'inherent') })), (v) => { const p = v.startsWith('p:') ? S.proyectos.find((x) => x.id === v.slice(2)) : null; S.proyectoId = p?.id || ''; S.cliente = (p?.cliente || v) === 'inherent' ? '' : p?.cliente || v; persistir(); nuevo(); }, { buscar: true })
+    : menu(a, modoDe(S.modo).pide === 'marca' ? 'Marca' : 'Cliente', opciones().map(([s, n]) => ({ v: s, label: n, on: s === slugAhora() })), (v) => { S.slugs[S.modo] = v; persistir(); nuevo(); }, { buscar: true });
   // Los íconos de las áreas donde el modelo rinde mejor (llm/ias.js · FUERTES).
   const fuertesHtml = (x) => { const as = fuertesDe(x).map(areaDe).filter(Boolean); return as.length ? html`<span class="lmn-fu" title="${'Rinde mejor en ' + as.map((a) => a.nombre).join(' y ')}">${as.map((a) => html`<i style="color:var(--ui-m-${a.id})">${ico(a.icono, 13)}</i>`)}</span>` : ''; };
   async function menuModelo(a) {
@@ -727,8 +737,7 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Cambiar de modo, de conversación, empezar una nueva ----------
   function cambiarModo(id) {
-    // El mismo modo no hace nada (para empezar de cero está «Nueva conversación»). Con una respuesta en camino no se cambia:
-    // cambiar abre una conversación nueva y cortaría la respuesta.
+    // El mismo modo no hace nada (para empezar de cero está «Nueva conversación»). Con una respuesta en camino no se cambia.
     if (!modos.some((m) => m.id === id) || id === S.modo) return;
     if (S.enVuelo) return toast('Espera a que termine la respuesta, o detenla, para cambiar de modo', true);
     if (id === 'code' && S.modo !== 'code') { S.ultimoChatModo = S.modo; if (!angosto()) ponerAncho(Math.max(S.panelW || 372, 600)); }
@@ -736,8 +745,9 @@ export async function render(el, { me, sub = [], alive }) {
     if (id === 'code') S.caps = alternarCap(S.caps, 'codigo', true);
     if (!angosto()) { S.tab = id === 'code' ? 'codigo' : 'modo'; S.panel = true; R.dataset.panel = 'on'; }
     persistir(); guardarArea(me.email, areaDeModo(id)?.id || '');
-    if (!vacio() || S.sesion) return nuevo();
-    pintarSide(); pintarCentro(); pintarPanel();
+    const reciente = S.sesiones.find((s) => leerIdSesion(s.id)?.modo === id);
+    if (reciente) return abrirSesion(reciente.id);
+    return nuevo();
   }
   function nuevo() {
     if (S.enVuelo) S.enVuelo.abort();
@@ -749,7 +759,9 @@ export async function render(el, { me, sub = [], alive }) {
   async function abrirSesion(id) {
     const info = leerIdSesion(id); if (!info) { toast('Esa conversación no es del Inherent LLM', true); return nuevo(); }
     if (!modos.some((m) => m.id === info.modo)) { toast('Esa conversación es de un modo que tu perfil no abre', true); return nuevo(); }
-    S.decidir = false; S.proyecto = null; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
+    S.decidir = false; S.proyecto = null; S.sesion = id; S.modo = modos.some((m) => m.id === info.modo) ? info.modo : S.modo; S.proyectoId = S.sesiones.find((x) => x.id === id)?.proyecto_id || ''; S.cliente = carpetaDe({ id, cliente: S.sesiones.find((x) => x.id === id)?.cliente }); if (S.cliente === 'inherent') S.cliente = ''; if (info.slug) S.slugs[S.modo] = S.cliente || info.slug; guardarArea(me.email, areaDeModo(S.modo)?.id || '');
+    if (!angosto()) { S.tab = S.modo === 'code' ? 'codigo' : 'modo'; S.panel = true; R.dataset.panel = 'on'; }
+    persistir();
     S.cargando = true; S.titulo = S.sesiones.find((s) => s.id === id)?.title || S.titulo; S.brujula = brujulas(me)[id] || null; pintarBrujula();
     S.caps = capsNormal(capsGuardadas(me)[id] || (S.modo === 'code' ? { on: ['codigo'] } : vacias()));
     const turno = ++abrirGen;
@@ -896,7 +908,7 @@ export async function render(el, { me, sub = [], alive }) {
     try {
       if (!S.sesion) {
         const id = idSesion(S.modo, slugAhora());
-        await B.crear({ id, titulo: tituloDe(texto) });
+        await B.crear({ id, titulo: tituloDe(texto), proyecto_id: S.proyectoId });
         S.sesion = id; history.replaceState(null, '', '#/chat/' + id); guardarCapsDe(me, id, S.caps);
         for (const r of S.agentes) api(`chat/sesiones/${encodeURIComponent(id)}/agentes`, { method: 'POST', body: { run: r.id } }).catch(() => {}); // un trabajo abierto aquí queda ligado
       }
@@ -911,7 +923,9 @@ export async function render(el, { me, sub = [], alive }) {
       const esCode = S.modo === 'code';
       const sistemaCode = `${PROMPT_GENUI}\n\nEn Code, usa la interfaz para resumir un plan, una comparación o una revisión con datos reales. Las ediciones de archivos y comandos siguen pasando por los permisos del motor; nunca los representes como ya hechos si no ocurrieron.`;
       const sistemaChat = libre ? `${sistemaDe(S.modo)}${hablado ? `\n\n${PROMPT_VOZ}` : ''}` : await contexto().then((c) => `${conLente(sistemaDe(S.modo, c), lenteOn())}\n\n${hablado ? PROMPT_VOZ : PROMPT_GENUI}`);
-      const sistema = esCode ? sistemaCode : sistemaChat;
+      const sistemaBase = esCode ? sistemaCode : sistemaChat;
+      const instruccionesProyecto = S.proyectos.find((p) => p.id === S.proyectoId)?.instrucciones;
+      const sistema = instruccionesProyecto ? `${sistemaBase}\n\nInstrucciones de este proyecto:\n${instruccionesProyecto}` : sistemaBase;
       // El equipo (Auto = el router de cocina por tarea; o el preset o el modelo que fijaste). Fijar un nivel desde Code OS gana.
       const ruta = viaPuente && !nivelForzado ? rutear(texto, { ultimo: S.ultimoNivelCode }) : null;
       const cat = S.catalogo;
@@ -987,7 +1001,7 @@ export async function render(el, { me, sub = [], alive }) {
     delete msg.raw;
     if (!alive()) return;
     pintarCentro(); pintarPanel();
-    B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    B.sesiones().then((xs) => { S.sesiones = xs; recordarSesiones(me.email, xs); if (alive()) pintarSide(); }).catch(() => {});
     return msg.err ? null : msg.t;
   }
   // ---------- Los departamentos en el Chat (llm/departamentos.js) ----------
@@ -1014,7 +1028,7 @@ export async function render(el, { me, sub = [], alive }) {
     S.msgs.push(msg); if (!S.titulo) S.titulo = tituloDe(texto); pintarCentro();
     let crudo = '';
     try {
-      if (!S.sesion) { const id = idSesion(S.modo, slug); await B.crear({ id, titulo: tituloDe(texto) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+      if (!S.sesion) { const id = idSesion(S.modo, slug); await B.crear({ id, titulo: tituloDe(texto), proyecto_id: S.proyectoId }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
       const r = await turnoCode(`${S.sesion}::${dep.id}`, {
         email: me.email, proyecto: slug, modelo: n.nivel, modo: 'code', titulo: `${dep.depto} · ${tituloDe(texto)}`,
         sistema: sistemaDepartamento(dep, { cliente: slug }), mensaje: mensajeConContexto(pedido, contextoPara(previo, dep.id)), signal: ctrl.signal,
@@ -1034,7 +1048,7 @@ export async function render(el, { me, sub = [], alive }) {
     } finally { S.enVuelo = null; msg.stream = false; msg.at = ahoraIso(); }
     if (!alive()) return;
     pintarCentro(); pintarPanel();
-    B.sesiones().then((xs) => { S.sesiones = xs; if (alive()) pintarSide(); }).catch(() => {});
+    B.sesiones().then((xs) => { S.sesiones = xs; recordarSesiones(me.email, xs); if (alive()) pintarSide(); }).catch(() => {});
   }
   // «Abrir y leer»: el resultado completo en una hoja. Recién entonces se puede pasar (puedePasar).
   function leerResultado(i) {
@@ -1140,7 +1154,7 @@ export async function render(el, { me, sub = [], alive }) {
       let run;
       if (p.run) ({ run } = await api(`agentes/runs/${enc(p.run)}/plan`, { method: 'POST', body: { hasta: p.hasta } }));
       else {
-        if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: tituloDe(`@${p.agente.nombre} ${p.resto}`) }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
+        if (!S.sesion) { const id = idSesion(S.modo, slugAhora()); await B.crear({ id, titulo: tituloDe(`@${p.agente.nombre} ${p.resto}`), proyecto_id: S.proyectoId }); S.sesion = id; history.replaceState(null, '', '#/chat/' + id); }
         ({ run } = await api('agentes/runs', { method: 'POST', body: { workflow: p.agente.id, titulo: (p.resto || p.agente.nombre).slice(0, 140), objetivo: p.resto, cliente: cl.cliente, cliente_nombre: cl.nombre, chat: { sesion: S.sesion }, plan_ok: { hasta: p.hasta }, contexto: contextoChat(S.msgs), cadena: p.modo === 'secuencia' && p.equipo?.length ? { siguientes: p.equipo } : null } }));
         p.run = run.id;
         // En orden (cada escritura usa la versión de la conversación): primero el mensaje, después el lazo.
@@ -1259,17 +1273,44 @@ export async function render(el, { me, sub = [], alive }) {
       if (p.costo != null && t.dataset.d === 'allow_all') return; // lo que cuesta se aprueba cada vez
       p.estado = t.dataset.d === 'deny' ? 'no' : 'si'; p.responder?.(t.dataset.d, p.costo != null && t.dataset.d === 'allow' ? { aprobado_usd: p.costo } : {}); return pintarUltimo();
     }
-    if (a === 'nuevo') return nuevo();
-    if (a === 'nuevo-en') { S.cliente = t.dataset.c === 'inherent' ? '' : t.dataset.c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[t.dataset.c] = true; persistir(); return nuevo(); }
+    if (a === 'nuevo') { S.proyectoId = ''; S.cliente = ''; return nuevo(); }
+    if (a === 'nueva-carpeta') {
+      const opcionesCliente = carpetas([], clientesChat(), { personal: me.role === 'ceo' });
+      const d = dialog({ titulo: 'Nuevo proyecto', cuerpo: html`<label class="ch-dialog-label">Nombre<input name="nombre" maxlength="80" required placeholder="Nombre del proyecto"></label><label class="ch-dialog-label">Cliente<select name="cliente">${opcionesCliente.map((c) => html`<option value="${c.id}" ${c.id === (S.cliente || 'inherent') ? 'selected' : ''}>${c.nombre}</option>`)}</select></label>`, acciones: [{ label: 'Crear proyecto', value: 'crear', tipo: 'primario' }, { label: 'Cancelar', value: '', tipo: 'ghost' }] });
+      if (await d.cerrado !== 'crear') return;
+      const nombre = d.form.elements.nombre.value.trim(), cliente = d.form.elements.cliente.value;
+      if (!nombre) return;
+      try { const p = await api('chat/proyectos', { method: 'POST', body: { nombre, cliente } }); S.proyectos.push(p); S.proyectoId = p.id; S.cliente = cliente === 'inherent' ? '' : cliente; S.abiertas[`p:${p.id}`] = true; nuevo(); pintarSide(); toast('Proyecto creado'); } catch (er) { toast(er.message, true); }
+      return;
+    }
+    if (a === 'renombrar-carpeta') {
+      const p = S.proyectos.find((x) => x.id === t.dataset.c); if (!p) return;
+      const d = dialog({ titulo: 'Renombrar proyecto', cuerpo: html`<label class="ch-dialog-label">Nombre<input name="nombre" maxlength="80" required value="${p.nombre}"></label>`, acciones: [{ label: 'Guardar', value: 'guardar', tipo: 'primario' }, { label: 'Cancelar', value: '', tipo: 'ghost' }] });
+      if (await d.cerrado !== 'guardar') return;
+      try { const r = await api(`chat/proyectos/${encodeURIComponent(p.id)}`, { method: 'PATCH', body: { nombre: d.form.elements.nombre.value.trim() } }); Object.assign(p, r); if (S.proyecto?.proyectoId === p.id) S.proyecto.nombre = r.nombre; pintarSide(); pintarTitulo(); toast('Proyecto renombrado'); } catch (er) { toast(er.message, true); }
+      return;
+    }
+    if (a === 'guardar-carpeta') {
+      const campo = C('llm-col')?.querySelector('#ch-proyecto-inst'); if (!campo) return;
+      try { const p = await api(`chat/proyectos/${encodeURIComponent(t.dataset.c)}`, { method: 'PATCH', body: { instrucciones: campo.value } }); const i = S.proyectos.findIndex((x) => x.id === p.id); if (i >= 0) S.proyectos[i] = p; if (S.proyecto?.proyectoId === p.id) S.proyecto.instrucciones = p.instrucciones; toast('Instrucciones guardadas'); } catch (er) { toast(er.message, true); }
+      return;
+    }
+    if (a === 'borrar-carpeta') {
+      const p = S.proyectos.find((x) => x.id === t.dataset.c); if (!p) return;
+      if (!(await confirmAsk(`¿Eliminar la carpeta «${p.nombre}»? Las conversaciones volverán a la carpeta de ${nombreCliente(p.cliente)}.`))) return;
+      try { await api(`chat/proyectos/${encodeURIComponent(p.id)}`, { method: 'DELETE' }); S.proyectos = S.proyectos.filter((x) => x.id !== p.id); for (const s of S.sesiones) if (s.proyecto_id === p.id) s.proyecto_id = ''; S.proyectoId = ''; S.cliente = p.cliente === 'inherent' ? '' : p.cliente; nuevo(); pintarSide(); toast('Carpeta eliminada; conversaciones conservadas'); } catch (er) { toast(er.message, true); }
+      return;
+    }
+    if (a === 'nuevo-en') { const c = t.dataset.c, p = c.startsWith('p:') ? S.proyectos.find((x) => x.id === c.slice(2)) : null; S.proyectoId = p?.id || ''; S.cliente = (p?.cliente || c) === 'inherent' ? '' : p?.cliente || c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[c] = true; persistir(); return nuevo(); }
     if (a === 'carpeta') { const c = t.closest('.ch-car'), ab = !c.classList.contains('abierta'); c.classList.toggle('abierta', ab); t.setAttribute('aria-expanded', ab ? 'true' : 'false'); S.abiertas[t.dataset.c] = ab; persistir(); return; }
     if (a === 'proyecto') {
-      const c = t.dataset.c; S.decidir = false; S.sesion = null; S.msgs = []; S.titulo = ''; S.cliente = c === 'inherent' ? '' : c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[c] = true; S.side = false; R.classList.remove('side-on');
+      const c = t.dataset.c, p = c.startsWith('p:') ? S.proyectos.find((x) => x.id === c.slice(2)) : null; S.decidir = false; S.sesion = null; S.msgs = []; S.titulo = ''; S.proyectoId = p?.id || ''; S.cliente = (p?.cliente || c) === 'inherent' ? '' : p?.cliente || c; if (modoDe(S.modo).pide && S.cliente) S.slugs[S.modo] = S.cliente; S.abiertas[c] = true; S.side = false; R.classList.remove('side-on');
       if (location.hash !== '#/chat') history.replaceState(null, '', '#/chat');
-      try { const d = await api(`chat/clientes/${encodeURIComponent(c)}`); S.proyecto = { id: c, ...d }; } catch (e) { return toast(e.message, true); }
+      try { S.proyecto = p ? { ...p, id: c, proyectoId: p.id } : { id: c, ...await api(`chat/clientes/${encodeURIComponent(c)}`) }; } catch (e) { return toast(e.message, true); }
       persistir(); pintarSide(); pintarCentro(); return;
     }
-    if (a === 'por-decidir') { S.proyecto = null; S.decidir = !S.decidir; S.side = false; R.classList.remove('side-on'); pintarSide(); pintarCentro(); return; }
-    if (a === 'mover') return menu(t, 'Mover a', carpetasChat().map((c) => ({ v: c.id, label: c.nombre, on: c.id === carpetaDe({ id: S.sesion, cliente: S.sesiones.find((x) => x.id === S.sesion)?.cliente }) })), async (v) => { try { await api(`chat/sesiones/${encodeURIComponent(S.sesion)}/mover`, { method: 'POST', body: { cliente: v } }); const f = S.sesiones.find((x) => x.id === S.sesion); if (f) f.cliente = v; S.cliente = v === 'inherent' ? '' : v; S.abiertas[v] = true; persistir(); pintarSide(); pintarTitulo(); toast(`Movida a ${nombreCliente(v)}`); } catch (e) { toast(e.message, true); } });
+    if (a === 'por-decidir') { S.proyecto = null; S.proyectoId = ''; S.decidir = !S.decidir; S.side = false; R.classList.remove('side-on'); pintarSide(); pintarCentro(); return; }
+    if (a === 'mover') return menu(t, 'Mover a', carpetasChat().map((c) => ({ v: c.id, label: c.nombre, on: c.id === carpetaSesion(S.sesiones.find((x) => x.id === S.sesion)) })), async (v) => { try { const p = v.startsWith('p:') ? S.proyectos.find((x) => x.id === v.slice(2)) : null; await api(`chat/sesiones/${encodeURIComponent(S.sesion)}/${p ? 'proyecto' : 'mover'}`, { method: 'POST', body: p ? { proyecto_id: p.id } : { cliente: v } }); const f = S.sesiones.find((x) => x.id === S.sesion); if (f) { f.cliente = p?.cliente || v; f.proyecto_id = p?.id || ''; } S.proyectoId = p?.id || ''; S.cliente = (p?.cliente || v) === 'inherent' ? '' : p?.cliente || v; S.abiertas[v] = true; persistir(); pintarSide(); pintarTitulo(); toast(`Movida a ${nombreCliente(v)}`); } catch (e) { toast(e.message, true); } });
     if (a === 'arroba') return elegirArroba(t.dataset.n);
     if (a === 'plan-empezar') return empezarPlan(+t.dataset.i);
     if (a === 'plan-cancelar') { const p = S.msgs[+t.dataset.i]?.p; if (p) { p.estado = 'cancelado'; pintarHilo(); } return; }
@@ -1386,8 +1427,9 @@ export async function render(el, { me, sub = [], alive }) {
     S.salud = salud; S.puente = puente; S.catalogo = catalogo;
     if (!alive()) return;
     if (listo()) {
+      S.proyectos = (await api('chat/proyectos').catch(() => ({ proyectos: [] }))).proyectos || [];
       const [xs, mods] = await Promise.all([B.sesiones().catch(() => []), gatewayOn() ? B.modelos().catch(() => null) : null]);
-      S.sesiones = xs; S.modelos = mods; ajustarModelo();
+      S.sesiones = xs; recordarSesiones(me.email, xs); S.modelos = mods; ajustarModelo();
     }
     if (!alive()) return;
     pintarSide(); pintarCentro(); pintarPanel(); // el panel también: «Continuar» depende de los modelos del servidor

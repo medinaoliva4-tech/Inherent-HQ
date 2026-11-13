@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { firmarPase, urlCode, rutas } from '../api/_lib/code.js';
 import { traducir, proyectoDe } from '../public/js/chat-code-puro.js';
 import { rutear, COCINEROS } from '../public/js/llm/router-code.js';
-import { modosDe, modoDe, MODO_CODE, HARNESS } from '../public/js/llm/modos.js';
+import { modosDe, modoDe, MODO_CODE, HARNESS, idSesion, leerIdSesion } from '../public/js/llm/modos.js';
 
 const SECRET = 'secreto-compartido-con-el-puente-0123456789abcdef';
 // Verificador equivalente al del puente (HS256, aud, typ, exp, vida ≤ 15 min).
@@ -64,6 +64,7 @@ assert.equal(ck('Renombra la variable cliente a cuenta'), 'prep'); assert.equal(
 assert.equal(ck('Agrega un botón de exportar'), 'linea', 'lo demás es construir');
 assert.equal(nv('Revisa este código', { ultimo: 'nivel-medio' }), 'nivel-alto'); assert.equal(nv('Haz un code review', { ultimo: 'nivel-alto' }), 'nivel-medio', 'otro cocinero revisa');
 assert.ok(Object.values(COCINEROS).every((x) => x.nivel.startsWith('nivel-')));
+assert.equal(leerIdSesion(idSesion('code', 'inherent'))?.modo, 'code', 'Code debe poder crear y retomar conversaciones en el OS');
 // Los departamentos: el puente solo acepta los lineamientos al CREAR la sesión (systemPrompt ≤ 8000); /api/code/pase dice dónde está la interfaz.
 {
   const fs = await import('node:fs');

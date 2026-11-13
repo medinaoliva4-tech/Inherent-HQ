@@ -4,7 +4,7 @@ import { html, mount, toast } from '../core.js';
 import { lineasDiff, mensajeComentarios } from './code-panel-puro.js';
 import { sesionCode, cambios, archivos, leerArchivo, guardarArchivo, fusionarCode, terminalCode } from '../chat-code.js';
 
-const VISTAS = [['cambios', 'Cambios'], ['archivos', 'Archivos'], ['terminal', 'Terminal'], ['vista', 'Vista previa']];
+const VISTAS = [['tareas', 'Tareas'], ['cambios', 'Cambios'], ['archivos', 'Archivos'], ['terminal', 'Terminal'], ['vista', 'Vista previa']];
 const fecha = (s) => String(s || '').slice(0, 120);
 const hoja = (s) => String(s || '').slice(0, 100_000);
 const codigo = (s) => String(s || '').replace(/\x1b\[[0-9;?]*[ -/]*[@-~]/g, '').slice(-100_000);
@@ -13,8 +13,9 @@ const codigo = (s) => String(s || '').replace(/\x1b\[[0-9;?]*[ -/]*[@-~]/g, '').
 const listaArchivos = (ns) => html`<ul class="cp-files">${(Array.isArray(ns) ? ns : []).map((n) => html`<li>${n.tipo === 'carpeta' ? html`<details open><summary>${n.nombre || n.ruta}</summary>${listaArchivos(n.hijos)}</details>` : html`<button type="button" data-cp="abrir" data-ruta="${n.ruta}">${n.nombre || n.ruta}</button>`}</li>`)}</ul>`;
 const nav = (actual) => html`<nav class="tabs mini" aria-label="Vistas de Código">${VISTAS.map(([id, nombre]) => html`<button type="button" data-cp="tab" data-v="${id}" aria-current="${actual === id ? 'page' : 'false'}">${nombre}</button>`)}</nav>`;
 const vacio = (titulo, nota) => html`<div class="cp-empty"><b>${titulo}</b><p>${nota}</p></div>`;
+const tareasHtml = (xs = []) => xs.length ? html`<div class="cp-tareas"><p>${xs.filter((x) => x.hecha).length} de ${xs.length} tareas completas</p>${xs.map((x, i) => html`<button type="button" data-cp="tarea" data-i="${i}" aria-pressed="${x.hecha ? 'true' : 'false'}"><span aria-hidden="true">${x.hecha ? '✓' : ''}</span><span>${x.t}</span></button>`)}</div>` : vacio('Sin tareas todavía', 'Cuando el trabajo tenga pasos, podrás seguirlos aquí.');
 
-export async function pintarCodePanel(box, { email, idOs, estado, alChat, alive, aislada = false }) {
+export async function pintarCodePanel(box, { email, idOs, estado, alChat, alive, aislada = false, onTarea = () => {} }) {
   const s = estado, gen = (s.gen = (s.gen || 0) + 1);
   if (s.ws) { s.ws.close(); s.ws = null; }
   const vivo = () => gen === s.gen && alive() && box.isConnected;
@@ -24,26 +25,28 @@ export async function pintarCodePanel(box, { email, idOs, estado, alChat, alive,
   box.onclick = async (e) => {
     const b = e.target.closest('[data-cp]'); if (!b || !box.contains(b)) return;
     const a = b.dataset.cp;
-    if (a === 'tab') { s.vista = b.dataset.v; s.ruta = ''; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
-    if (a === 'recargar') return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada });
-    if (a === 'abrir') { s.ruta = b.dataset.ruta; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
-    if (a === 'volver') { s.ruta = ''; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
+    if (a === 'tab') { s.vista = b.dataset.v; s.ruta = ''; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
+    if (a === 'tarea') return onTarea(Number(b.dataset.i));
+    if (a === 'recargar') return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea });
+    if (a === 'abrir') { s.ruta = b.dataset.ruta; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
+    if (a === 'volver') { s.ruta = ''; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
     if (a === 'mencionar') return alChat(`@${s.ruta} `);
     if (a === 'guardar') { const t = box.querySelector('.cp-editor')?.value; if (t === undefined || t === s.original) return; try { await guardarArchivo(email, idOs, s.ruta, t); s.original = t; toast('Archivo guardado'); } catch (err) { toast(err.message, true); } return; }
     if (a === 'comentar') { if (!b.dataset.linea || b.disabled) return; s.comentando = { ruta:b.dataset.ruta, linea:Number(b.dataset.linea), lado:b.dataset.lado }; const form = document.createElement('form'); form.className = 'cp-comment-form'; form.innerHTML = '<textarea aria-label="Comentario de línea" maxlength="1000" placeholder="¿Qué debería cambiar aquí?"></textarea><div><button type="button" data-cp="cancelar">Cancelar</button><button type="submit">Agregar</button></div>'; box.querySelector('.cp-comment-form')?.remove(); b.after(form); form.querySelector('textarea').focus(); return; }
     if (a === 'cancelar') { box.querySelector('.cp-comment-form')?.remove(); return; }
-    if (a === 'quitar') { s.comentarios.splice(Number(b.dataset.i), 1); return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
-    if (a === 'enviar-comentarios') { alChat(mensajeComentarios(s.comentarios)); s.comentarios = []; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
+    if (a === 'quitar') { s.comentarios.splice(Number(b.dataset.i), 1); return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
+    if (a === 'enviar-comentarios') { alChat(mensajeComentarios(s.comentarios)); s.comentarios = []; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
     if (a === 'revisar') return alChat('Revisa los cambios de esta sesión: busca errores, riesgos y lo que falte probar. No edites nada; dame la lista.');
-    if (a === 'fusionar') { if (!aislada) return; b.disabled = true; try { await fusionarCode(email, idOs); toast('Cambios fusionados'); return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); } catch (err) { toast(err.message, true); b.disabled = false; } }
+    if (a === 'fusionar') { if (!aislada) return; b.disabled = true; try { await fusionarCode(email, idOs); toast('Cambios fusionados'); return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); } catch (err) { toast(err.message, true); b.disabled = false; } }
   };
   box.onsubmit = (e) => {
     const f = e.target; if (!box.contains(f)) return; e.preventDefault();
-    if (f.classList.contains('cp-comment-form')) { const texto = f.querySelector('textarea')?.value.trim(); if (!texto || !s.comentando) return; (s.comentarios ||= []).push({ ...s.comentando, texto }); s.comentando = null; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
+    if (f.classList.contains('cp-comment-form')) { const texto = f.querySelector('textarea')?.value.trim(); if (!texto || !s.comentando) return; (s.comentarios ||= []).push({ ...s.comentando, texto }); s.comentando = null; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
     if (f.dataset.cpForm === 'terminal') { const input = f.querySelector('input'), c = input?.value; if (c && s.ws?.readyState === WebSocket.OPEN) { s.ws.send(c + '\n'); input.value = ''; } return; }
-    if (f.dataset.cpForm === 'vista') { const valor = f.querySelector('input')?.value.trim(); if (!/^https?:\/\//i.test(valor)) return toast('Usa una URL http o https', true); s.preview = valor; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada }); }
+    if (f.dataset.cpForm === 'vista') { const valor = f.querySelector('input')?.value.trim(); if (!/^https?:\/\//i.test(valor)) return toast('Usa una URL http o https', true); s.preview = valor; return pintarCodePanel(box, { email, idOs, estado:s, alChat, alive, aislada, onTarea }); }
   };
-  if (!sesion) pintar(vacio('Primero habla con Code', 'Envía un mensaje en modo Code para crear la sesión. Aquí aparecerán sus cambios, archivos y terminal.'));
+  if (s.vista === 'tareas') pintar(tareasHtml(s.tareas));
+  else if (!sesion) pintar(vacio('Tu espacio de trabajo', 'Elige un proyecto a la izquierda y pide un cambio en el Chat. Aquí revisarás tareas, archivos, diferencias y vista previa.'));
   else if (s.vista === 'archivos') {
     pintar(vacio('Leyendo archivos…', 'El árbol viene de la sesión del servidor.'));
     try { const xs = await archivos(email, idOs); if (vivo()) pintar(s.ruta ? html`<div class="cp-filebar"><button type="button" data-cp="volver">← Archivos</button><code>${s.ruta}</code><button type="button" data-cp="mencionar">@</button><button type="button" data-cp="guardar">Guardar</button></div><div class="cp-loading">Abriendo archivo…</div>` : html`<div class="cp-toolbar"><span>Carpeta del proyecto</span><button type="button" data-cp="recargar">Actualizar</button></div>${xs?.length ? listaArchivos(xs) : vacio('Carpeta vacía', 'Esta sesión todavía no tiene archivos visibles.')}`);

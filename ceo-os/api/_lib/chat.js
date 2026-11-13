@@ -24,6 +24,7 @@ import { conversacionLigada } from '../../public/js/chat-agentes.js';
 import { departamentoDe } from '../../public/js/llm/departamentos.js';
 
 export const COLL = 'chat_sesiones';
+export const PROYECTOS = 'chat_proyectos';
 const GW = 'gateway_estado';
 const lc = (x) => String(x || '').toLowerCase();
 const txt = (s, n) => String(s ?? '').slice(0, n);
@@ -33,7 +34,7 @@ const enLinea = (g) => Boolean(g?.at && Date.now() - Date.parse(g.at) < 90 * 100
 
 const resumenSesion = (s, runs = []) => {
   const ult = [...(s.mensajes || [])].reverse().find((m) => m.role === 'user');
-  return { id: s.id, title: s.title || '', preview: txt(ult?.content, 120), model: s.turno?.modelo || '', last_active: s._meta?.updated_at, started_at: s._meta?.created_at, message_count: (s.mensajes || []).length, en_curso: ['en_cola', 'trabajando'].includes(s.turno?.estado), cliente: s.cliente || '', agente: agenteDeSesion(s.agentes, runs) };
+  return { id: s.id, title: s.title || '', preview: txt(ult?.content, 120), model: s.turno?.modelo || '', last_active: s._meta?.updated_at, started_at: s._meta?.created_at, message_count: (s.mensajes || []).length, en_curso: ['en_cola', 'trabajando'].includes(s.turno?.estado), cliente: s.cliente || '', proyecto_id: s.proyecto_id || '', code_session_id: s.code_session_id || '', agente: agenteDeSesion(s.agentes, runs) };
 };
 async function mia(req, res, u) {
   const s = await db.get(COLL, txt(req.params.id, 120));
@@ -72,7 +73,10 @@ export function rutas(on) {
     if (!leerIdSesion(id)) return res.status(400).json({ error: 'Id de conversación inválido' });
     if (await db.get(COLL, id)) return res.status(409).json({ error: 'Ya existe' });
     // oculto: las conversaciones que usan otras pantallas por debajo (Strategy, Diseño, las herramientas): no salen en la lista del Chat.
-    const d = await db.create(COLL, { owner: lc(u.email), title: txt(b.titulo, 120), modo: leerIdSesion(id).modo, mensajes: [], turno: null, archivado: false, oculto: Boolean(b.oculto) }, u.email, id);
+    const proyectoId = txt(b.proyecto_id, 80);
+    const proyecto = proyectoId ? await db.get(PROYECTOS, proyectoId) : null;
+    if (proyectoId && (!proyecto || lc(proyecto.owner) !== lc(u.email))) return res.status(404).json({ error: 'Esa carpeta no existe' });
+    const d = await db.create(COLL, { owner: lc(u.email), title: txt(b.titulo, 120), modo: leerIdSesion(id).modo, mensajes: [], turno: null, archivado: false, oculto: Boolean(b.oculto), ...(proyecto ? { proyecto_id: proyecto.id, cliente: proyecto.cliente } : {}) }, u.email, id);
     res.json(resumenSesion(d));
   });
 
@@ -90,7 +94,18 @@ export function rutas(on) {
     const u = await guard(req, res); if (!u) return;
     const s = await mia(req, res, u); if (!s) return;
     const desde = Math.max(0, Number(req.query.desde) || 0);
-    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at, avance: s.turno.trabajo ? { ventana: s.turno.trabajo.ventana, tarea: pendiente(s.turno.trabajo.plan)?.titulo || '', bloqueo: s.turno.trabajo.plan?.bloqueo || '' } : null } : null });
+    res.json({ id: s.id, title: s.title, total: (s.mensajes || []).length, messages: (s.mensajes || []).slice(desde), code_session_id: s.code_session_id || '', agentes: s.agentes || [], turno: s.turno ? { estado: s.turno.estado, modelo: s.turno.modelo, error: s.turno.error || '', at: s.turno.at, avance: s.turno.trabajo ? { ventana: s.turno.trabajo.ventana, tarea: pendiente(s.turno.trabajo.plan)?.titulo || '', bloqueo: s.turno.trabajo.plan?.bloqueo || '' } : null } : null });
+  });
+
+  on('POST', 'chat/sesiones/:id/code', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    if (s.modo !== 'code') return res.status(400).json({ error: 'Esta conversación no es de Code' });
+    const sid = txt(body(req).code_session_id, 80);
+    if (!/^[0-9a-f-]{36}$/.test(sid)) return res.status(400).json({ error: 'Sesión de Code inválida' });
+    if (s.code_session_id && s.code_session_id !== sid) return res.status(409).json({ error: 'Esta conversación ya tiene una sesión de Code' });
+    const d = s.code_session_id ? s : await guardar(res, u, s, { code_session_id: sid });
+    if (d) res.json({ code_session_id: sid });
   });
 
   // F4.5 · un mensaje que no pide respuesta del servidor (el «@agente …» que arrancó un trabajo): queda en la conversación.
@@ -101,6 +116,53 @@ export function rutas(on) {
     if (slug === 'inherent') return true;
     const sc = await scoper(u); return !sc || sc.client(slug);
   };
+  on('GET', 'chat/proyectos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    const xs = (await db.list(PROYECTOS)).filter((p) => lc(p.owner) === lc(u.email));
+    res.json({ proyectos: xs.map((p) => ({ id: p.id, nombre: p.nombre, cliente: p.cliente, instrucciones: p.instrucciones || '' })) });
+  });
+  on('POST', 'chat/proyectos', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    const b = body(req), nombre = txt(b.nombre, 80).trim(), cliente = lc(txt(b.cliente || 'inherent', 40));
+    if (!nombre) return res.status(400).json({ error: 'Escribe un nombre para la carpeta' });
+    if (!(await veCliente(u, cliente))) return res.status(403).json({ error: 'No tienes acceso a ese cliente' });
+    const p = await db.create(PROYECTOS, { owner: lc(u.email), nombre, cliente, instrucciones: '' }, u.email);
+    res.json({ id: p.id, nombre, cliente, instrucciones: '' });
+  });
+  on('PATCH', 'chat/proyectos/:id', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const p = await db.get(PROYECTOS, txt(req.params.id, 80));
+    if (!p || lc(p.owner) !== lc(u.email)) return res.status(404).json({ error: 'Esa carpeta no existe' });
+    const b = body(req), nombre = b.nombre === undefined ? p.nombre : txt(b.nombre, 80).trim();
+    if (!nombre) return res.status(400).json({ error: 'Escribe un nombre para la carpeta' });
+    const instrucciones = b.instrucciones === undefined ? p.instrucciones : txt(b.instrucciones, MAX_INSTRUCCIONES);
+    const actualizado = await db.update(PROYECTOS, p.id, { owner: p.owner, cliente: p.cliente, nombre, instrucciones }, p.v, u.email);
+    if (!actualizado) return res.status(409).json({ error: 'La carpeta cambió; recarga e inténtalo de nuevo' });
+    res.json({ id: p.id, nombre, cliente: p.cliente, instrucciones });
+  });
+  on('DELETE', 'chat/proyectos/:id', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const p = await db.get(PROYECTOS, txt(req.params.id, 80));
+    if (!p || lc(p.owner) !== lc(u.email)) return res.status(404).json({ error: 'Esa carpeta no existe' });
+    const xs = (await db.list(COLL)).filter((s) => lc(s.owner) === lc(u.email) && s.proyecto_id === p.id);
+    for (const s of xs) {
+      const { id, v, _meta, ...datos } = s;
+      const movida = await db.update(COLL, id, { ...datos, proyecto_id: '' }, v, u.email);
+      if (!movida) return res.status(409).json({ error: 'Una conversación cambió; vuelve a intentar' });
+    }
+    await db.remove(PROYECTOS, p.id, u.email);
+    res.json({ ok: true, conversaciones: xs.length });
+  });
+  on('POST', 'chat/sesiones/:id/proyecto', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    const s = await mia(req, res, u); if (!s) return;
+    const id = txt(body(req).proyecto_id, 80), p = id ? await db.get(PROYECTOS, id) : null;
+    if (id && (!p || lc(p.owner) !== lc(u.email))) return res.status(404).json({ error: 'Esa carpeta no existe' });
+    const d = await guardar(res, u, s, { proyecto_id: p?.id || '', ...(p ? { cliente: p.cliente } : {}) });
+    if (d) res.json({ ok: true, proyecto_id: p?.id || '' });
+  });
   on('GET', 'chat/clientes/:slug', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     const slug = lc(req.params.slug); if (!(await veCliente(u, slug))) return res.status(404).json({ error: 'Ese cliente no existe' });
@@ -122,7 +184,7 @@ export function rutas(on) {
     const s = await mia(req, res, u); if (!s) return;
     const cliente = txt(body(req).cliente, 40).toLowerCase();
     if (!/^[a-z0-9_-]{2,40}$/.test(cliente)) return res.status(400).json({ error: 'Elige un cliente' });
-    const d = await guardar(res, u, s, { cliente });
+    const d = await guardar(res, u, s, { cliente, proyecto_id: '' });
     if (d) res.json({ ok: true, cliente });
   });
 

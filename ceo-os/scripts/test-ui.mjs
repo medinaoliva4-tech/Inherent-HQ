@@ -147,11 +147,12 @@ t('barra única: máximo dos niveles y nada repite al Chat', () => {
   for (const n of ['Hoy', 'Chat', 'Agentes', 'Calendario', 'Organización', 'Empresa', 'Áreas', 'Biblioteca']) assert.ok(NAV_SRC.includes(`'${n}'`), n);
   for (const n of ['Home', 'Organization', 'Library', 'Projects', 'Tasks']) assert.ok(!NAV_SRC.includes(`'${n}'`), `${n} sigue en inglés`);
 });
-t('barra única: en la compu la lista del Chat vive en la barra del shell', () => {
-  assert.match(APP, /id="lat-ctx"/);
+t('Chat y Code conservan su propia columna de carpetas', () => {
   const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
-  assert.match(llm, /getElementById\('lat-ctx'\)/);
-  assert.ok(!/ el\.addEventListener\('(click|change|keydown|submit)', async/.test(llm.replace("el.addEventListener(tipo, fn)", '')), 'los clics también deben llegar a la lista movida');
+  assert.match(llm, /const lado = \(\) => C\('llm-side'\)/);
+  assert.match(llm, /ch-volver-os/);
+  assert.doesNotMatch(llm, /getElementById\('lat-ctx'\)/);
+  assert.match(CSS, /html\[data-pantalla="chat"\] \.lat\{display:none\}/);
 });
 t('el fondo no instala luz que siga el cursor', () => {
   assert.doesNotMatch(APP, /instalarLuz\(\)/);
