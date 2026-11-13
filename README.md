@@ -57,28 +57,27 @@ LÓGICA      CÓMO hace esas cosas. Son las skills.
 
 ## El pipeline
 
-**Doce etapas, de la información cruda a la pieza publicada.** Cada agente es una etapa —
+**Nueve áreas, de la información cruda a la pieza publicada.** Cada agente es una etapa —
 el detalle está en `inherent/05-OPERACION.md`, y el roster con lo que cada uno puede hacer en
 `agents/README.md`.
 
-| # | Agente | Qué produce | Estado |
+| # | Agente | Qué produce | Orquestador |
 |---|---|---|---|
-| **00** | [**Account Manager**](agents/00-account/) | La relación con el cliente. **El único que le habla** | ✅ |
-| **01** | [**Strategy**](agents/01-strategy/) | La estrategia y un brief por área | ✅ |
-| **01.2** | [Branding](agents/01.2-branding/) | Identidad, voz y sistema visual | ✅ |
-| **02** | [Growth](agents/02-growth/) | La oferta, los canales grandes y los upsells | ✅ |
-| **03** | [Marketing](agents/03-marketing/) | El plan del ciclo y el calendario de slots | ✅ |
-| **04** | [Creative](agents/04-creative/) | Los ángulos y las ideas | ✅ |
-| **05** | [Production](agents/05-production/) | La grabación | ✅ |
-| **06** | [Graphic Design](agents/06-graphic-design/) | Estáticos, carruseles y stories | ✅ |
-| **07** | [Video Editing](agents/07-video-editing/) | Reels y sus derivadas | ✅ |
-| **08** | [Community](agents/08-community-management/) | Respuesta, seguimiento y comunidad | ✅ |
-| **09** | [Posting](agents/09-posting/) | Lo aprobado, publicado | ✅ |
-| **10** | [Ads Management](agents/10-ads-management/) | La pauta corriendo | ✅ |
-| ↻ | [Strategy](agents/01-strategy/) | La revisión del 20 | ✅ |
+| **00** | [**Account**](agents/00-account/) | La relación con el cliente. **El único que le habla** | — *(vive en WhatsApp)* |
+| **01** | [**Strategy**](agents/01-strategy/) | Producto → cliente ideal (ICP) → dolores, deseos e historia → adquisición → brief | `/strategy` |
+| **02** | [Branding](agents/02-branding/) | Territorio, voz y sistema visual; valida piezas y claims | `/branding` |
+| **03** | [Marketing y Creative](agents/03-marketing-creative/) | Radar, pilares × ángulos, campañas con su copy, ideas y piezas | `/marketing-creative` |
+| **04** | [Producción](agents/04-production/) | Pre: jornada, guiones, shot list, permisos, compras · Post: primer corte y derivadas | `/produccion` |
+| **05** | [Diseño gráfico](agents/05-graphic-design/) | Borradores de carruseles, posts y stories en Figma, y sus assets | `/graphic-design` |
+| **06** | [Community](agents/06-community/) | Comentarios y mensajes atendidos | `/community` |
+| **07** | [Posting](agents/07-posting/) | Lo aprobado, programado y publicado | `/posting` |
+| **08** | [Ads](agents/08-ads/) | La pauta corriendo y medida | `/ads` |
+| ↻ | [Resultados](agents/_comun/skills/resultados/) | El cierre del mes que vuelve a Strategy y al ICP | `/resultados` |
+
+🧭 **La puerta de entrada es `/inherent`** (`agents/_router/`): lee el pedido y lo pasa al orquestador que toca.
 
 🔑 **El QA no es un agente aparte:** cada departamento se auto-revisa antes de su gate, y
-**②B Branding valida con `br-guardian`** antes de que nada se publique.
+**② Branding valida con `br-guardian`** antes de que nada se publique.
 
 ---
 

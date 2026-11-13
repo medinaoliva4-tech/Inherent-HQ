@@ -178,7 +178,6 @@
 |---|---|---|
 | 1 | **Migrar las referencias de `ceo-os/` a los agentes nuevos** | Rutas a `agents/02-growth`, `04-creative`, `07-video-editing`, `10-ads-management`, a skills borradas (`cr-hook-copy`, `mk-campana`, `mk-loop`, `ad-optimizacion`, `cr-fuentes`) y a `hormozi-brain/references` *(las citas de Estrategia y sus pruebas)*. Lista completa en el PR de la reestructura |
 | 2 | **Migrar las referencias de `clients/`** | Los `CLAUDE.md` y `CONTEXTO.md` de cada cliente y de `_plantilla` nombran las áreas y números viejos, `plan-de-contenido.csv` y los `aprendizaje-*.md` |
-| 3 | **Actualizar `README.md` e `INSTALAR.md` de la raíz** | Nombran los agentes viejos y la ruta vieja del motor de video y de `leer-video.py` |
 | 4 | **El hilo en Inherent OS** | Nodos con id, estado, fuente y `viene_de`, avisos cuando cambia un nodo, índice de grafo (graphify) y la tarjeta de decisión en chat, herramienta y portal |
 | 5 | **Las herramientas como artefactos** | Perfil del cliente ideal · calculadora de adquisición *(outbound e inbound, calibrada con Zernio)* · dolores, deseos e historia · radar · tablero pilares × ángulos · campañas · hoja de jornada imprimible · editor de video simple |
 | 6 | **Probar la corrida programada de ⑥ Community con los nombres nuevos** | `cm-ficha`, `cm-escalado` y `cm-envio` se juntaron en `community`, `cm-triage` y `cm-respuesta`; el cron del VPS llama `/community` |
