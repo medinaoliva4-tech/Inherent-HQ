@@ -1,5 +1,9 @@
 # Inherent OS · la versión ideal para Mac y iPhone
 
+> **Dos partes.** **Parte I (§ 0–9):** cómo se vive el OS en Mac y iPhone, área por área.
+> **Parte II (§ 10–18):** la visión de producto del CEO: cómo piensa la IA, con qué librerías se
+> construye, las 4 capas, los 8 departamentos con sus 34 herramientas y cómo debe sentirse.
+
 > **Para Fable.** Esto no describe lo que el OS es hoy. Describe **cómo debería verse, sentirse
 > y funcionar si lo diseñáramos desde cero** para un Mac y un iPhone. Si algo de lo que ya existe
 > estorba, se cambia. Botones, subpáginas, pantallas, nombres: todo se puede mover.
@@ -15,6 +19,9 @@
 3. **§ 5 recorre cada área**, con su versión Mac, su versión iPhone, sus botones y su toque mágico.
 4. **§ 6** son los rituales: los momentos del mes en los que el OS tiene que brillar.
 5. **§ 8** es el orden para construirlo. **§ 9** son las pocas decisiones que sí son del CEO.
+6. **Parte II (§ 10–18)** es **la visión del CEO** sobre qué es el OS y cómo piensa. **Léela antes
+   de construir nada:** manda sobre la **forma** *(interfaz, librerías, herramientas)*.
+7. **§ 3.4** dice cómo instalarlo en Apple **gratis o casi**, sin pasar por el App Store.
 
 **Cómo está escrito cada área:** *Para qué existe · En Mac · En iPhone · Botones y subpáginas ·
 Lo mágico.* Donde dice «agente», es uno de los nueve del roster (`agents/README.md`).
@@ -146,6 +153,37 @@ sueltas + icono en la barra de menú.
 | Ver tablas grandes y el calendario completo | Ver «qué me toca» con un vistazo en bloqueo |
 | Arrastrar archivos del Finder | Llamar o abrir WhatsApp de un lead con un toque |
 | Preparar la presentación del día 20 | **Presentar** el día 20 desde una pantalla o AirPlay |
+
+### 3.4 · Cómo llevarlo a Apple, barato (sin App Store)
+
+Lo que describes —conectar el iPhone a la compu y que se instale— **existe y es gratis o casi**.
+Tres peldaños. Se sube solo cuando el de abajo se queda corto.
+
+| Peldaño | Cómo se instala | Costo | Qué da | Límites |
+|---|---|---|---|---|
+| **0 · Instalable desde Safari** *(PWA)* | iPhone: Safari → Compartir → **«Añadir a pantalla de inicio»**. Mac: Safari → Archivo → **«Añadir al Dock»** | **$0**, sin compu | Icono, pantalla completa, **notificaciones push web** *(iOS 16.4 o más)*, **Face ID vía passkeys** *(WebAuthn)*, cámara y micrófono | Sin widgets, Live Activities, Siri/Atajos ni «Mandar a Inherent» desde la hoja de compartir. Sin botones de acción dentro de la notificación |
+| **1 · Cápsula nativa por cable** | En el Mac con **Xcode**: abres el proyecto, conectas el iPhone, activas **«Modo desarrollador»**, eliges tu **Apple ID gratis** *(«Personal Team»)* y das **Run** | **$0** | App real en la pantalla de inicio que **carga el OS desde Vercel** *(cada deploy la actualiza sin reinstalar)* y puentes nativos: **Face ID, haptics, cámara, voz, notificaciones locales** | La firma gratis **caduca a los 7 días** *(se renueva conectando el cable, o con AltStore/SideStore por WiFi)*, pocas apps por dispositivo, **sin push remoto de Apple**, y widgets/Live Activities limitados. *Verifica en Xcode qué capacidades deja la cuenta gratis* |
+| **2 · Programa de desarrollador** | El mismo proyecto de Xcode, subido a **TestFlight**; cada persona instala con un enlace | **US$99 al año** *(cuenta a nombre de Inherent)* | Sin caducar a los 7 días *(los builds de TestFlight duran 90)*, **push remoto con botones de acción**, **widgets, Live Activities, Siri/Atajos, hoja de compartir**, hasta 100 probadores internos | Un pago anual |
+
+**Recomendación:** **peldaño 0 desde hoy** *(no cuesta nada y ya casi funciona)*. **Peldaño 1** para
+sentir lo nativo y probar Face ID y haptics. **Peldaño 2** cuando el equipo lo use a diario o
+cuando hagan falta las **notificaciones con «Aprobar» sin abrir la app** *(Ola 1)*, los widgets y la
+Dynamic Island *(Ola 3)*.
+
+**Cómo debe armarlo Fable, para que quede barato y no se rompa:**
+- Una **cápsula delgada** *(Capacitor u otra)* en una carpeta `ios/` del repo, con el OS cargado por
+  URL. **El OS sigue siendo una sola web:** nada se escribe dos veces.
+- Los **puentes nativos** se piden solo cuando una ola los necesita *(Face ID, haptics, cámara,
+  notificaciones, dictado, hoja de compartir)*. **Verifica la versión vigente de cada plugin y su
+  licencia antes de adoptarlo.**
+- ⚠️ **Google no deja iniciar sesión dentro de una web embebida** *(bloquea el «user agent»)*. El
+  login con Google debe abrirse en el **navegador del sistema** *(ASWebAuthenticationSession)* o
+  sustituirse por **passkeys**. Si esto no se resuelve primero, la app no abre.
+- Un script `npm run ios:instalar` y una **guía de 6 pasos para el CEO** *(Xcode, Apple ID, cable,
+  Modo desarrollador, Run, «Confiar» en Ajustes → General → Gestión de dispositivos)*.
+- **Mac:** ya existe la app de escritorio *(`escritorio/`)* y sale por release de GitHub. Se
+  mantiene. Si no está firmada y notarizada, el Mac avisa de «desarrollador no identificado» *(clic
+  derecho → Abrir)*; firmarla requiere la **misma cuenta de US$99**, que cubre Mac y iPhone.
 
 ---
 
@@ -821,6 +859,32 @@ tres cosas** de la semana. **Tres. No diez.**
 | **7** | **Finanzas, capacidad y «cuántas cuentas aguanto»** | Para decidir crecer sin romper el margen |
 | **8** | **Modo «mensajes mínimos», Spotlight, Atajos, modo concentración** | El OS **se adapta a cómo piensa el CEO** |
 
+**Ola 0, antes de todas y gratis:** dejar la **web instalable en el iPhone y el Mac** *(§ 3.4,
+peldaño 0)* y resolver el **login con Google fuera de la web embebida**. Con eso ya se puede vivir
+en el OS desde el teléfono mientras se construye lo demás.
+
+### Las herramientas: qué se construye primero *(las olas de arriba son la plataforma; esto, el producto)*
+
+**No se implementan las 34 a la vez.** Se prioriza lo que **permite completar un ciclo comercial
+real**, de principio a fin:
+
+| Prioridad | Herramienta | Razón |
+|---|---|---|
+| **P0** | **Business Blueprint** | Contexto fundamental |
+| **P0** | **ICP Builder** | Define a quién vender |
+| **P0** | **Acquisition Simulator** | Valida si es viable |
+| **P0** | **Offer & Pricing Builder** | Define qué vender |
+| **P0** | **Creative Brief Builder** | Conecta estrategia con creación |
+| **P0** | **Campaign Builder** | Convierte estrategia en acciones |
+| **P0** | **Production Planner** | Organiza la ejecución |
+| **P0** | **Sales Pipeline** | Registra oportunidades |
+| **P0** | **Marketing Performance Dashboard** | Mide resultados |
+| **P0** | **Workflow Engine** *(Workflow Builder)* | **Conecta el proceso** |
+
+**Las demás entran poco a poco, reutilizando los mismos componentes *(§ 15)*, el mismo modelo de dato
+y los mismos agentes.** **La meta no es tener 34 herramientas: es que el OS opere un proceso
+completo sin perder contexto, duplicar trabajo ni depender de que alguien pase información a mano.**
+
 **Lo que NO se hace:**
 - **No** replicar todo el Mac en el iPhone. **El iPhone decide y captura; no edita.**
 - **No** mostrar costos, márgenes u horas en nada que vea el cliente, ni siquiera «sin querer» en un
@@ -837,17 +901,474 @@ tres cosas** de la semana. **Tres. No diez.**
 *(Una a la vez, cuando toque. Se anotan aquí para que Fable no las invente.)*
 
 1. **La métrica de crecimiento** que se reporta por marca en Brand Growth.
-2. **¿App nativa de Apple, o web instalable muy pulida?** Cambia el costo y qué tan lejos llegan
-   Live Activities, Siri y widgets.
+2. **¿Hasta qué peldaño de Apple?** *(§ 3.4)* **Web instalable ($0)** · **cápsula por cable con
+   Apple ID gratis ($0, caduca cada 7 días)** · **cuenta de desarrollador (US$99/año)**. Decide si
+   hay notificaciones con «Aprobar», widgets y Live Activities.
 3. **¿El cliente tiene portal con acceso, o solo enlaces de aprobación?**
 4. **La recompensa de referidos** *(se activa el módulo de referidos del CRM)*.
 5. **Costos por hora de cada rol** *(hoy solo Producción tiene tarifa; sin las demás, no hay costo
    ni precio sugerido en el catálogo)*.
 6. **¿Hasta dónde llega Siri?** *(solo lectura, o también aprobar con Face ID)*.
+7. **¿Los 8 departamentos del OS se llaman así y se mapean a los 9 agentes como en § 14?** *(Strategy,
+   Creative, Marketing, Production, Sales, Intelligence, Operations, Finance)*.
+8. **¿Islas de React o todo en el sistema actual?** *(§ 12)* Fable propone con una prueba; **solo se
+   migra todo con tu OK.**
+9. **¿Dónde sí va Liquid Glass?** *(propuesta en § 17.3: barra inferior, hojas, paleta y controles
+   flotantes; nunca texto ni tablas)*.
 
 ---
 
-## 10 · En una frase
+# PARTE II · La visión de producto del CEO
+
+> **Esto lo escribió el CEO.** Va con el mismo peso que la Parte I y, donde choquen, **la Parte II
+> manda sobre la forma** *(cómo se construye la interfaz y las herramientas)* y **la Parte I sobre
+> los cimientos** *(§ 1)*. La Parte I dice **cómo se vive** el OS; esta dice **qué es y cómo
+> piensa**.
+>
+> **Dos avisos de lectura:**
+> 1. El CEO pide **«no rediseñes desde cero»**; la Parte I imagina el OS ideal sin mirar lo que
+>    existe. **No se contradicen:** la Parte I es el **norte**; la Parte II dice cómo llegar
+>    **conservando la identidad y lo que ya funciona** *(§ 17)*.
+> 2. El CEO a veces dice **«Code OS»** para la interfaz. En el repo, `code-os/` es el motor del VPS y
+>    la interfaz visible no usa ese nombre. **Aquí todo es el mismo producto: el OS.**
+
+---
+
+## 10 · La regla de oro de la interfaz: de «mostrar» a «lograr»
+
+**Sencillo no es «menos información».** Es **volver lo que podría ser solo información en algo
+útil:** una herramienta, algo visual, algo con lo que se pueda hacer algo.
+
+| En vez de… | El OS hace… |
+|---|---|
+| Un párrafo con 5 escenarios de adquisición | Un **simulador** con sliders; mueves el ticket y ves los clientes que necesitas |
+| Una lista de 12 competidores | Un **mapa** donde se ve quién ocupa qué posición, con filtros |
+| «Tu cliente ideal es…» en texto | Una **tarjeta editable** con sus dolores, su puntaje y la evidencia al lado |
+| Una tabla de 40 filas | **Pocas cifras con contexto** y, debajo, la tabla *(resumen arriba, detalle abajo)* |
+| «Te recomiendo subir presupuesto» | Una **tarjeta de decisión** con la evidencia, la alternativa y los botones |
+| Un proceso explicado en pasos | Un **flujo de nodos** con estados, que se puede mover y ejecutar |
+
+**La prueba:** ante cualquier pantalla, pregunta *«¿qué puede hacer la persona aquí que antes tenía
+que hacer en otra parte, a mano o en su cabeza?»*. Si la respuesta es «nada, solo leer», **falta
+convertirla en herramienta.**
+
+**No se trata de mostrar menos, sino de hacerlo más fácil de entender y de usar.**
+
+---
+
+## 11 · El razonamiento de la IA: Intent-to-Interface
+
+**Aquí está lo más importante del documento.**
+
+La IA **no** debe pensar:
+
+> ❌ *«¿Cómo presento esta información de una forma bonita?»*
+
+Debe pensar:
+
+> ✅ *«¿Qué intenta conseguir la persona y cuál es la interacción más sencilla que le permite
+> conseguirlo?»*
+
+A ese sistema de razonamiento lo llamamos **Intent-to-Interface**.
+
+```
+INTENCIÓN DEL USUARIO        ¿qué quiere lograr?
+        │
+        ▼
+MOTOR DE RAZONAMIENTO        entender  ·  elegir  ·  simplificar
+        │
+        ▼
+INTERFAZ ELEGIDA             simular · ejecutar · decidir
+                             analizar · planificar · dar seguimiento
+```
+
+**Cómo se aplica, en la práctica:**
+
+1. **Entender** — qué quiere lograr *(no solo qué palabras usó)*: ¿explorar, decidir, producir,
+   revisar, aprobar, medir?
+2. **Elegir** — el **tipo de interfaz** que lo logra con menos trabajo: simulador, canvas, tarjeta de
+   decisión, tablero, editor, flujo, comparador, formulario mínimo, o simplemente una frase.
+3. **Simplificar** — quitar todo lo que no ayuda a ese objetivo **sin esconder lo que hace falta
+   para decidir.** *(Simplificar ≠ ocultar.)*
+4. **Cerrar con una acción** — **toda interfaz termina en algo que se puede hacer:** aprobar,
+   corregir, ejecutar, enviar al siguiente departamento. **Nunca una pantalla muerta.**
+
+**Reglas del razonamiento:**
+- **La IA elige del catálogo, no inventa componentes.** Solo puede construir interfaces con las
+  piezas, acciones y datos que el OS ha definido *(§ 12)*. Esto es lo que la hace confiable y
+  controlable.
+- **Primero investiga, después pregunta.** Si algo se puede verificar *(el sitio del cliente, su
+  industria, sus precios)*, **lo averigua y lo propone**; **solo pregunta lo que únicamente la
+  persona sabe.** *Strategy no pide llenar 30 campos del cliente ideal: investiga, completa lo
+  verificable, marca sus suposiciones y presenta una propuesta editable.*
+- **Cada propuesta lleva su evidencia y su nivel de confianza.** Lo que no tiene fuente se marca.
+- **El objetivo es reducir el trabajo necesario para obtener un resultado**, no solo reducir
+  clics. Un flujo de 3 clics que obliga a pensar 20 minutos es peor que uno de 8 que piensa por ti.
+
+---
+
+## 12 · Las librerías: no basarse en algo sin fundamento
+
+El CEO pide **no inventar la base**: usar estándares y librerías que ya existen, probadas.
+
+| Librería | Para qué | Cómo entra en el OS |
+|---|---|---|
+| **OpenUI** | Que la IA **genere interfaces interactivas** *(dashboards, formularios, visualizaciones)* con **componentes definidos por nosotros** | **Ya adoptado:** el Chat escribe un bloque ` ```ui ` en *OpenUI Lang* y el OS lo pinta con sus tokens `--ui-*` *(ver `docs/openui.md`)*. **Se extiende:** más componentes y las herramientas de § 14 |
+| **json-render** *(Vercel)* | La IA genera **una estructura JSON restringida a nuestro catálogo** de componentes, acciones y datos. Ideal para **controlar qué puede construir** | Evaluar como **contrato** del catálogo. **No tener dos lenguajes:** si se adopta, se decide si **reemplaza o convive** con OpenUI Lang, y por qué |
+| **React Flow** | Convertir **procesos y estrategias en mapas interactivos** con nodos, conexiones y estados | **El hilo del cliente** *(§ 4.3)*, el **Workflow Builder** y el mapa de oportunidades |
+| **shadcn/ui** | **La base visual:** formularios, sliders, tarjetas, tablas y controles reutilizables. *No decide por sí sola qué interfaz hace falta* | Referencia de **anatomía y accesibilidad** de cada control. La decisión de qué interfaz usar sigue siendo del razonamiento de § 11 |
+| **assistant-ui** | Una conversación donde las respuestas **incluyen herramientas interactivas y acciones**, no solo texto | El **Chat**: respuestas con herramientas dentro, aprobaciones en línea y estados de ejecución |
+
+### ⚠️ La tensión técnica que Fable tiene que resolver primero
+
+**React Flow, shadcn/ui y assistant-ui son de React** *(shadcn además asume Tailwind y Radix)*. **El
+OS de hoy es JavaScript con módulos ES, sin build**, con un sistema de tokens propio `--ui-*`,
+menús y diálogos sobre **Zag.js + Floating UI**, y **OpenUI ya adoptado** replicando sus
+componentes. **No se migra todo a React por entusiasmo.** Opciones, en orden de lo que conviene
+explorar:
+
+1. **Tomar el patrón, no la dependencia** *(lo que ya se hizo con OpenUI)*: replicar la anatomía y la
+   accesibilidad de shadcn/ui y la estructura de assistant-ui sobre los tokens del OS. **Cero build
+   nuevo.**
+2. **«Islas» de React** montadas **solo donde no hay equivalente a la altura:** el canvas de nodos
+   *(React Flow)* y, si hace falta, el hilo del Chat *(assistant-ui)*. Las islas **leen los tokens
+   `--ui-*`** y no traen su propio tema.
+3. **Migración completa.** Solo si 1 y 2 demuestran que no alcanzan. **Se pregunta al CEO antes.**
+
+**Regla:** **verifica versión, licencia y estado de mantenimiento actuales de cada librería** *(no
+te fíes de lo que recuerdas de ellas)* y **prueba el resultado en el navegador** antes de adoptarla.
+
+---
+
+## 13 · Cuatro capas por departamento
+
+**Cada departamento tiene las mismas cuatro capas**, y **por encima de ellas, un workflow.**
+
+| Capa | Qué es |
+|---|---|
+| **Portal** | Objetivos, progreso, prioridades y próximos pasos. **Acceso rápido a los SOPs del rol** de quien entra *(solo los de su rol)* |
+| **Tools** | Calculadoras, editores, simuladores, canvases y herramientas operativas |
+| **Agents** | Investigan, preparan, analizan y ejecutan **tareas autorizadas** |
+| **Decisions** | Propuestas con **evidencia, alternativas y botones de aprobación** — y **las entregas** |
+
+```
+        ┌───────────── WORKFLOW ─────────────┐
+        │  qué pasa primero · qué información │
+        │  hace falta · qué resultado habilita │
+        │  el siguiente paso                   │
+        └────────────────────────────────────┘
+   Portal ── Tools ── Agents ── Decisions
+```
+
+**El workflow decide el orden**, no el menú. Los departamentos **no siempre corren en el mismo
+orden:** sus dependencias se definen según el caso.
+
+**El flujo típico, con Strategy como ejemplo:**
+1. **El agente investiga** el negocio, completa lo que puede verificar, **identifica sus
+   suposiciones** y **presenta una propuesta editable.**
+2. **La persona corrige o aprueba.**
+3. **Esa decisión alimenta sola** a Creative, Marketing, Production y Sales *(el hilo, § 4.3)*.
+
+**Cada herramienta responde cuatro preguntas** *(y la pantalla las hace visibles)*:
+
+| ¿Qué sabemos? | ¿Qué podemos hacer? | ¿Qué debemos decidir? | ¿Qué sucede después? |
+|---|---|---|---|
+| Lo verificado, con fuente y confianza | Las acciones disponibles ahora | Lo que solo la persona resuelve | A qué departamento y paso pasa lo aprobado |
+
+---
+
+## 14 · Arquitectura funcional: 8 departamentos y 34 herramientas
+
+**Cada herramienta es un pequeño software especializado**, **no una página con información ni un
+formulario que Claude llena.** Cada una tiene **módulos funcionales, cálculos, visualizaciones,
+investigación con IA, decisiones y conexión con otros departamentos.**
+
+**Los 8:** los cuatro iniciales *(Strategy, Creative, Marketing, Production)*, más **Sales** e
+**Intelligence**, y dos **transversales**: **Operations** y **Finance.**
+
+> **Cada herramienta tiene el mismo patrón de módulos**, que termina siempre igual:
+> `… · AI Research *(investigar con fuentes y confianza)* · Execution *(pasar lo aprobado al siguiente
+> paso)*`. Abajo, cada herramienta lista **sus módulos propios.**
+
+### 01 · Strategy
+*Objetivo: entender el negocio, identificar oportunidades y diseñar una estrategia de crecimiento rentable.*
+
+1. **Business Blueprint** — Business Discovery *(modelo, productos, mercados, estructura)* · Business
+   Economics *(facturación, costos, márgenes, ticket, recurrencia)* · Growth Objectives · Gap
+   Analysis · Opportunity Mapping *(impacto, dificultad, recursos)* · Strategic Roadmap · AI Research.
+   **Execution:** distribuir objetivos aprobados entre departamentos.
+2. **Ideal Customer Profile Builder** — Customer Economics · Firmographics & Demographics · Buying
+   Behavior · Pain & Desire Mapping · Decision-Maker Mapping · Market Segmentation · **ICP Scoring**
+   *(rentabilidad, accesibilidad, probabilidad de compra)* · AI Research. **Execution:** compartir
+   segmentos aprobados con Marketing, Creative y Sales.
+3. **Market Explorer** — Market Sizing *(TAM, SAM, SOM con supuestos explícitos)* · Demand Research ·
+   Competitor Intelligence · Pricing Intelligence · Market Trends · Opportunity Gaps · Market
+   Attractiveness · AI Research *(con fuentes y confianza)*. **Execution:** oportunidades →
+   hipótesis estratégicas.
+4. **Acquisition Simulator** — Revenue Planning · Funnel Modeling *(leads → respuestas → citas →
+   asistencia → cierre → ventas)* · Channel Comparison *(outbound, inbound, anuncios, referidos)* ·
+   Unit Economics *(CAC, margen, contribución, payback, LTV)* · Capacity Planning · **Scenario
+   Analysis** *(conservador, base, optimista)* · AI Research. **Execution:** escenarios aprobados →
+   campañas y tareas.
+5. **Offer & Pricing Builder** — Offer Architecture · Value Proposition · Pricing Models *(retainer,
+   proyecto, suscripción, comisión, híbridos)* · Profitability Simulator · Competitive Comparison ·
+   Value Stack · Offer Testing · AI Research. **Execution:** materiales comerciales y pruebas de mercado.
+6. **Positioning & Messaging Canvas** — Brand Positioning · **Villain–Hero Narrative** *(problema,
+   antagonista, transformación, solución; **se reutiliza en Creative**)* · Messaging Architecture ·
+   Customer Language · Objection Mapping · Competitor Differentiation · Message Testing · AI Research.
+   **Execution:** mensajes → Creative, Marketing y Sales.
+
+### 02 · Creative
+*Objetivo: convertir la estrategia en conceptos, mensajes y materiales que generen resultados.*
+
+7. **Creative Brief Builder** — Strategic Context *(ICP, oferta, posicionamiento, objetivos)* ·
+   Creative Objectives · Audience Insights · Key Messages · Creative Constraints · Reference Library ·
+   AI Research. **Execution:** tareas y briefs para producción.
+8. **Angle & Concept Matrix** — Content Pillars · Audience Angles · Hook Generator · Concept
+   Development · **Creative Scoring** *(relevancia, originalidad, viabilidad, potencial)* · Winner
+   Adaptation · Experiment Planning · AI Research. **Execution:** conceptos aprobados → producción.
+9. **Script & Storyboard Studio** — Script Generator · Hook Testing · Narrative Structure · Scene
+   Builder · Visual Storyboard · Shot Requirements · Version Comparison · AI Assistance.
+   **Execution:** shot lists y planes de rodaje.
+10. **Design Studio** — Figma Integration *(según capacidades realmente conectadas)* · Brand System ·
+    Canvas Editor · Asset Generation · Template System · Responsive Adaptation · Version Review ·
+    AI Design Assistant. **Execution:** materiales aprobados → publicación.
+11. **Creative Approval Board** — Concept Review · Visual Review · **Feedback & Annotations**
+    *(comentarios sobre elementos específicos)* · Version History · Approval Workflow *(aprobar,
+    pedir cambios, rechazar)* · Priority Management · Decision History. **Execution:** liberar
+    materiales a producción o Marketing.
+
+> **El diseño gráfico es una capacidad compartida por Creative y Marketing**, no un departamento
+> separado por defecto.
+
+### 03 · Marketing
+*Objetivo: generar demanda, atraer prospectos y optimizar los canales de adquisición.*
+
+12. **Audience & Attention Radar** — Audience Discovery · Channel Mapping · Influence Mapping ·
+    Competitor Monitoring · Trend Detection · Demand Signals · Opportunity Scoring · AI Research
+    continua. **Execution:** oportunidades para campañas.
+13. **Campaign Builder** — Campaign Objectives · Audience Targeting · Channel Selection · Budget
+    Allocation · Content Mapping · Funnel Design · Forecasting · Experiment Design. **Execution:**
+    campañas y tareas de implementación.
+14. **Content Calendar** — Content Planning · Pillar Distribution · Channel Scheduling · Asset Linking ·
+    Approval Tracking · Publishing Integration · Performance Feedback · AI Recommendations.
+    **Execution:** publicar o programar contenido **autorizado.**
+15. **Paid Media Planner** — Campaign Structure · Audience & Placement · Budget Simulator · Creative
+    Testing · Conversion Tracking · Performance Monitoring *(CPC, CPL, CAC, ROAS)* · Optimization
+    Recommendations · AI Research. **Execution:** preparar cambios **para aprobación** y publicación.
+16. **Marketing Performance Dashboard** — Acquisition Metrics · Channel Performance · Content Analytics ·
+    Campaign Attribution *(con sus limitaciones)* · Budget Tracking · Conversion Analysis · Anomaly
+    Detection · AI Insights. **Execution:** experimentos y ajustes.
+
+### 04 · Production
+*Objetivo: transformar conceptos aprobados en materiales terminados, de forma eficiente y ordenada.*
+
+17. **Production Planner** — Production Brief · Shoot Scheduling · Location Management · Equipment
+    Planning · Talent & Crew · Budget Planning · Logistics Checklist · Printable Documents.
+    **Execution:** asignar tareas y supervisar.
+18. **Shot List & Storyboard** — Scene Breakdown · Shot Planning · Visual References · Equipment
+    Requirements · Production Order *(orden optimizado de grabación)* · Progress Tracking · On-Set
+    Notes · AI Assistance. **Execution:** registrar el material capturado.
+19. **Video Editing Studio** — Media Library · Timeline Editor · Trim & Cut · Audio Editing · Captions ·
+    Graphics & Effects · Format Adaptation *(vertical, horizontal, cuadrado)* · AI Editing · Export &
+    Rendering · Review Workflow.
+20. **Content Repurposing Studio** — Source Analysis · Highlight Detection · Clip Generation · Format
+    Conversion · Hook Variations · Caption & Copy · Variant Comparison · AI Recommendations.
+    **Execution:** materiales → Marketing.
+21. **Asset & Delivery Manager** — Asset Library · Metadata & Tagging · Version Control · Review &
+    Approval · Usage Rights · Export Presets · Delivery Tracking · AI Search *(semántica)*.
+    **Execution:** entregar archivos y actualizar estados.
+
+### 05 · Sales
+*Objetivo: transformar oportunidades en ingresos y mejorar la eficiencia del proceso de ventas.*
+
+22. **Lead Intelligence & Qualification** — Lead Enrichment · ICP Matching · Intent Signals · Lead
+    Scoring · Buying Committee · Pain Mapping · AI Research. **Execution:** leads calificados → pipeline.
+23. **Outreach Studio** — Prospect Segmentation · Personalization Engine · Sequence Builder · Channel
+    Planning · Response Classification · Follow-Up Planning · Performance Tracking · AI Assistance.
+    **Execution:** preparar y enviar comunicaciones **autorizadas.**
+24. **Sales Pipeline** — Opportunity Management · Deal Tracking · Activity Timeline · **Next Best
+    Action** · Follow-Up Automation · Pipeline Forecasting · Bottleneck Analysis · AI Insights.
+    **Execution:** actualizar CRM y workflows.
+25. **Sales Playbook** — Sales Process · Discovery Framework · Objection Handling · Pitch Builder ·
+    Proposal Generator · Negotiation Support · Call Review *(llamadas autorizadas)* · AI Coaching.
+    **Execution:** actualizar materiales y procesos.
+26. **Revenue Forecast** — Pipeline Forecast · Conversion Modeling · Sales Cycle Analysis · Quota
+    Planning · Rep Performance · Scenario Analysis · Forecast Accuracy · AI Recommendations.
+    **Execution:** actualizar planes comerciales.
+
+### 06 · Intelligence
+*Objetivo: conectar datos, detectar patrones y convertir resultados en mejores decisiones.*
+
+27. **Business Intelligence Dashboard** — KPI Architecture · Data Integration · Metric Definitions ·
+    Performance Visualization · Goal Tracking · Cross-Department Analysis · Anomaly Detection · AI
+    Insights. **Execution:** acciones correctivas.
+28. **Experiment Lab** — Hypothesis Builder · Experiment Design · Control & Variants · Sample Planning ·
+    Results Analysis *(efectos e incertidumbre)* · Experiment Library · Learning Repository · AI
+    Recommendations. **Execution:** lanzar pruebas **autorizadas.**
+29. **Growth Insights Engine** — Performance Diagnosis · Opportunity Detection · Pattern Recognition ·
+    Bottleneck Analysis · Predictive Modeling *(con incertidumbre)* · Recommendation Ranking *(impacto
+    y confianza)* · Decision Tracking · AI Research. **Execution:** iniciativas de optimización.
+
+### 07 · Operations *(transversal)*
+*Objetivo: coordinar personas, recursos, procesos y entregables para ejecutar de forma consistente.*
+
+30. **Workflow Builder** — Process Mapping · Trigger Configuration · Task Orchestration · Agent
+    Assignment · **Human Approval** *(puntos de autorización)* · Error Handling *(reintentos y
+    recuperación)* · Execution Monitoring · Workflow Versioning. **Execution:** automatizaciones persistentes.
+31. **Project & Delivery Manager** — Project Planning · Task Management · Dependencies · Milestone
+    Tracking · Resource Allocation · Client Approvals · Delivery Tracking · AI Coordination.
+    **Execution:** actualizar proyectos y tareas.
+32. **Resource & Capacity Planner** — Team Capacity · Workload Analysis · Project Demand · Utilization
+    Tracking · Bottleneck Detection · Scenario Planning · Hiring Forecast · AI Recommendations.
+    **Execution:** ajustar asignaciones.
+
+### 08 · Finance *(transversal)*
+*Objetivo: comprender y controlar la rentabilidad, el flujo de caja y la sostenibilidad económica.*
+
+33. **Financial Planning Studio** — Revenue Planning · Cost Structure · Budgeting · Cash Flow Forecast ·
+    Profitability Analysis · Scenario Planning · Variance Analysis · AI Insights. **Execution:**
+    actualizar presupuestos y planes.
+34. **Client Profitability Analyzer** — Revenue per Client · Delivery Costs · Resource Consumption ·
+    Contribution Margin · Client Lifetime Value · Retention Analysis · Profitability Ranking · AI
+    Recommendations. **Execution:** decisiones de pricing y recursos.
+
+### Cómo encaja esto con lo que ya manda en el repo *(para que Fable no lo pise)*
+
+- **Los 8 departamentos del OS no son los 9 agentes** de `agents/`. Los agentes son **quién hace el
+  trabajo**; los departamentos del OS son **dónde se ve, se decide y se trabaja con herramientas.**
+  Mapa sugerido: **Strategy** ← ① · **Creative** ← ② y ③ *(más el diseño, ⑤)* · **Marketing** ← ③, ⑥,
+  ⑦ y ⑧ · **Production** ← ④ · **Sales** ← la adquisición de ① y el CRM · **Intelligence** ← «Resultados»
+  ↻ · **Operations** y **Finance** ← el OS de administración. **Esto se confirma con el CEO** *(§ 9)*.
+- **Las 34 herramientas no son skills.** Una skill es lógica de un agente *(máximo 4 por área)*; una
+  herramienta es **software del OS** con la que el agente y la persona trabajan. Cada herramienta
+  **invoca** agentes y skills; no los reemplaza.
+- **El alcance contratado es el techo** *(cuando una herramienta propone más de lo contratado, se
+  muestra como **«fuera de ficha»** y se bloquea)*. En **Offer & Pricing Builder**: **la oferta se
+  trabaja en Foundation y Partnership; en Growth solo el mensaje.** **El precio nunca va solo:
+  el alcance va primero.**
+- **Finance es solo CEO** y **nada de Finance, ni de costos ni de márgenes, se ve en lo que ve el
+  cliente.** El COO **no** ve Finance.
+- **Experiment Lab y Growth Insights:** **no se atribuye causalidad** a un ranking de preferencias
+  ni a una correlación; **primero A/B con asignación aleatoria**, después —solo si hace falta—
+  bandits. Lo que no está medido, se dice.
+- **Revenue Forecast, Attribution y Unit Economics** **declaran sus supuestos** y muestran **rangos**,
+  no una cifra única disfrazada de certeza. **El múltiplo es modelo, no evidencia.**
+- **Execution que envía, publica o gasta** pasa **siempre** por una persona *(precio, alcance y
+  fechas → CEO; pauta → gates de ⑧ Ads)*. **El OS no gasta dinero ni publica solo.**
+
+---
+
+## 15 · Los componentes compartidos *(se construyen una vez)*
+
+**No se construyen 34 herramientas. Se construye una biblioteca de capacidades reutilizables** y
+las herramientas **se arman con ella.**
+
+| Componente | Qué hace | Lo usan, por ejemplo |
+|---|---|---|
+| **Simulator** | Sliders + resultado vivo + escenarios | Acquisition Simulator, Budget Simulator, Revenue Forecast |
+| **Research Panel** | Investigación de IA **con fuentes y confianza** | *Todas* *(el módulo «AI Research»)* |
+| **Decision Card** | Propuesta + evidencia + alternativa + botones | *Todas* *(la capa Decisions)* |
+| **Workflow View** | Pasos, dependencias y estados | Workflow Builder, Project Manager, el hilo |
+| **Scenario Compare** | Dos o tres escenarios lado a lado | Strategy, Finance, Sales |
+| **Approval** | Aprobar · Pedir cambios · Rechazar, con historial | Approval Board, Strategy, Ads |
+| **Timeline** | Línea de tiempo con hitos | El ciclo 1→20, producción, pipeline |
+| **Visual Canvas** | Lienzo con nodos, conexiones y estados *(React Flow)* | El hilo, Positioning, Workflow Builder |
+| **Data Explorer** | Tablas, filtros, gráficas honestas | Dashboards, Radar, Library |
+| **AI Assistant** | El chat contextual de cada pantalla | *Todas* *(§ 4.6)* |
+| **Version History** | Versiones, diferencias y recuperación | Design, Scripts, Offers |
+| **Execution Panel** | Qué se está ejecutando, qué espera aprobación, qué falló | *Todas* |
+
+**Un solo modelo de dato para todo:** cada resultado es un **nodo** con `id`, `estado`
+*(hipótesis · aprobado)*, `fuente`, `confianza` y `viene_de`. **Así el hilo del cliente *(§ 4.3)*
+conecta a todos los departamentos sin tablas puente.**
+
+---
+
+## 16 · Cómo funciona todo junto
+
+```
+Strategy        ICP, oferta y modelo de adquisición
+   ▼
+Creative        conceptos, mensajes y diseños
+   ▼
+Marketing       campañas, canales y generación de leads
+   ▼
+Production      materiales terminados
+   ▼
+Sales           oportunidades y ventas
+   ▼
+Intelligence    resultados y aprendizaje
+   ▲──── feedback continuo hacia Strategy ────┘
+
+Operations coordina la ejecución transversal.
+Finance evalúa los resultados económicos.
+```
+
+**El orden no es fijo:** lo decide el **workflow** *(qué se necesita y qué se habilita)*. **El
+objetivo final:** que el OS pueda **operar un proceso empresarial completo sin perder contexto, sin
+duplicar trabajo y sin que una persona pase información a mano entre departamentos.**
+
+---
+
+## 17 · Cómo debe sentirse la interfaz *(y cómo se mejora sin romperla)*
+
+### 17.1 · El método: conservar la esencia y potenciarla
+
+1. **Comprender primero** la identidad, la arquitectura y el funcionamiento actuales. **No
+   rediseñar desde cero ni imponer reglas estéticas arbitrarias.**
+2. **Auditar** lo existente con las skills de diseño *(ver abajo)* y **dejar la auditoría escrita.**
+3. **Construir un design system coherente**, con principios sólidos de UX/UI, que **extienda los
+   tokens `--ui-*` y el `ui.js` actuales** *(no los reemplace)*. Explorar soluciones originales y
+   **componentes interactivos que conviertan información en herramientas** *(§ 10)*.
+4. **Validar cada cambio visual y funcionalmente antes de implementarlo de forma definitiva:**
+   capturas en el navegador *(claro y oscuro, escritorio y teléfono)*, **la prueba real del
+   flujo** y las pruebas del repo. **Lo que no se probó, se dice.**
+5. **Prioridad:** simplicidad de uso · funcionalidad · consistencia · calidad visual.
+6. **Las cards y la interfaz del chat tienen que ser funcionales y *smooth*:** que se sienta rápido,
+   sin saltos, sin parpadeos, con el scroll y el streaming fluidos.
+
+### 17.2 · Skills de diseño a usar
+
+| Skill | Para qué |
+|---|---|
+| **Impeccable** *(Paul Bakaus)* | Sistema para que los agentes **revisen, rediseñen y perfeccionen** interfaces **existentes** |
+| **UI Craft** | **Auditar y mejorar** el diseño actual |
+| **Frontend Design** *(Anthropic)* | Dirección estética deliberada y componentes funcionales, **evitando lo genérico** |
+| **Liquid Glass Frontend** | Superficies translúcidas, profundidad y movimiento. **Capacidad estética opcional, no regla universal** |
+
+*(Verifica que cada skill esté instalada o disponible antes de prometer usarla; si no lo está, dilo.)*
+
+### 17.3 · La inspiración *(sin copiar)*
+
+| De dónde | Qué se toma |
+|---|---|
+| **Claude** | **Conversación, artefactos y contexto** |
+| **Linear** | **Densidad, navegación y organización** |
+| **Liquid Glass** | **Capas, materiales y controles flotantes** |
+| **Cursor** | **Ejecución, archivos, diffs y herramientas** |
+
+**Liquid Glass solo donde aporte valor:** la **barra inferior del iPhone**, las **hojas que suben**,
+la **paleta `⌘K`** y los **controles flotantes** del panel. **No en el texto ni en las tablas.** Con
+**«reducir transparencia» y «reducir movimiento»** activados, **cae a superficies sólidas** con el
+mismo contraste. **El contraste AA no se negocia por un efecto.**
+
+### 17.4 · Microinteracciones: cómo responde, no solo cómo se ve
+
+| Principio | Cómo se siente |
+|---|---|
+| **Hover inteligente** | Los controles secundarios **aparecen cuando son relevantes** *(en Mac; en iPhone, al mantener presionado)* |
+| **Transiciones espaciales** | Un artefacto **se expande desde su tarjeta** hacia el workspace; al cerrar, **vuelve a ella** |
+| **Estados de ejecución** | Se distingue **a simple vista** cuándo el agente **está investigando, ejecutando o esperando aprobación** *(tres estados, tres señales; nunca solo color)* |
+| **Keyboard-first** | **Paleta de comandos, atajos y navegación rápida** sin depender del mouse |
+| **Reversibilidad** | **Deshacer, historial, versiones y recuperación ante errores** en todo lo que se edita |
+| **Adaptive Space** | **Paneles flexibles** y **herramientas que aparecen en contexto**, no menús que obligan a ir a buscarlas |
+
+**Movimiento corto y con propósito** *(menos de 300 ms)*; con «reducir movimiento», **ninguno.**
+
+---
+
+## 18 · En una frase
 
 > **Un OS que sabe en qué día del ciclo estás, te dice qué toca, te deja decidir en diez
 > segundos desde donde estés, y deja trabajar a los agentes sin que nadie los vigile.**
