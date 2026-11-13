@@ -12,6 +12,8 @@ import { listSkills } from './skills.js';
 import type { SessionManager } from './manager.js';
 import type { ModelCatalog } from './models.js';
 import { HttpError } from './types.js';
+import { catalogoModelos, presets } from './catalogo-modelos.js';
+import { modelAllowed } from './auth.js';
 import { esRutaHerramientas, manejarHerramientas } from 'code-os-herramientas';
 
 const MAX_BODY = 1_000_000;
@@ -28,7 +30,7 @@ function send(res: ServerResponse, status: number, body: unknown) {
   res.end(s);
 }
 
-const API = /^\/(sessions|models|me|cuotas|health|mcp|skills|entrar|salir|clientes|calc)(\/|$)/;
+const API = /^\/(sessions|models|me|cuotas|health|mcp|skills|capacidades|entrar|salir|clientes|calc)(\/|$)/;
 const PAGE = (body: string) => `<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Code OS · Entrar</title><body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0b;color:#eee;font:16px system-ui">${body}`;
 const LOGIN = (err = '') => PAGE(`<form method=post action=/entrar style="width:min(360px,90vw);display:grid;gap:12px"><h1 style="font-size:20px;margin:0">Code OS</h1><input name=token type=password autocomplete=current-password placeholder="Tu token" autofocus required style="padding:12px;border-radius:8px;border:1px solid #444;background:#151515;color:#eee"><button style="padding:12px;border-radius:8px;border:0;background:#eee;color:#111;font-weight:600">Entrar</button>${err ? `<p style="color:#f88;margin:0">${err}</p>` : '<p style="color:#888;margin:0;font-size:13px">Solo hace falta una vez en este navegador.</p>'}</form>`);
 
@@ -110,7 +112,13 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
         const r = await manejarHerramientas(svc.herramientas, { method, path, query: url.searchParams, body, usuario: user.id });
         if (r) return send(res, r.status, r.body);
       }
-      if (method === 'GET' && path === '/models') return send(res, 200, { default: cfg.defaultModel, models: await models.list(user).catch((e) => { throw new HttpError(502, e.message); }) });
+      if (method === 'GET' && path === '/models') {
+        const lista = await models.list(user).catch((e) => { throw new HttpError(502, e.message); });
+        const claude = await svc.claude.status(user).catch(() => ({ installed: false, active: false }));
+        const modelos = catalogoModelos(lista, claude, (id) => modelAllowed(user, id));
+        return send(res, 200, { default: cfg.defaultModel, models: lista, modelos, presets: presets(modelos, claude.active) });
+      }
+      if (method === 'GET' && path === '/capacidades') return send(res, 200, { capacidades: await mgr.sondeo(user, url.searchParams.get('refresh') === '1') });
       if (method === 'POST' && path === '/sessions') { const s = await mgr.create(user, await readJson(req)); return send(res, 201, s.summary()); }
       if (method === 'GET' && path === '/sessions') return send(res, 200, { sessions: mgr.list(user, url.searchParams.get('projectId') ?? undefined) });
 
@@ -149,7 +157,8 @@ export function createApp(cfg: Config, mgr: SessionManager, models: ModelCatalog
       if (sub === 'permissions' && method === 'POST' && sub2) {
         const b = await readJson(req);
         if (!['allow', 'deny', 'allow_all'].includes(b.decision)) throw new HttpError(400, 'decision debe ser allow, deny o allow_all');
-        mgr.get(user, id).answer(sub2, { decision: b.decision, message: typeof b.message === 'string' ? b.message : undefined, updatedInput: b.updatedInput && typeof b.updatedInput === 'object' ? b.updatedInput : undefined });
+        if (b.aprobado_usd !== undefined && (typeof b.aprobado_usd !== 'number' || !(b.aprobado_usd > 0) || b.aprobado_usd > 1000)) throw new HttpError(400, 'aprobado_usd debe ser un número mayor que 0');
+        mgr.get(user, id).answer(sub2, { decision: b.decision, message: typeof b.message === 'string' ? b.message : undefined, updatedInput: b.updatedInput && typeof b.updatedInput === 'object' ? b.updatedInput : undefined, aprobadoUsd: b.aprobado_usd });
         return send(res, 200, { ok: true });
       }
       if (sub === 'events' && method === 'GET') {

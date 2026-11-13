@@ -24,6 +24,9 @@ export interface Config {
   defaultModel: string;
   /** Alias de Claude que se usa con la sesión de suscripción de la persona. */
   subscriptionModel: string;
+  /** Ejecutor por defecto de «planifica fuerte, ejecuta barato»: con login de Claude y por LiteLLM. */
+  ejecutorClaude?: string;
+  ejecutorLitellm?: string;
   dataDir: string;
   workspacesDir: string;
   maxConcurrentTurns: number;
@@ -95,6 +98,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env, readJson: (p: s
     litellmUrl: (env.LITELLM_URL ?? 'http://127.0.0.1:4000').replace(/\/$/, ''),
     defaultModel: env.PUENTE_DEFAULT_MODEL ?? 'nivel-medio',
     subscriptionModel: env.PUENTE_CLAUDE_MODEL ?? 'opus',
+    ejecutorClaude: env.PUENTE_EJECUTOR_CLAUDE ?? 'haiku', ejecutorLitellm: env.PUENTE_EJECUTOR_LITELLM ?? 'nivel-medio',
     dataDir, workspacesDir: resolve(env.PUENTE_WORKSPACES_DIR ?? `${dataDir}/workspaces`),
     maxConcurrentTurns: Number(env.PUENTE_MAX_CONCURRENT ?? 3), maxTurns: Number(env.PUENTE_MAX_TURNS ?? 30),
     turnTimeoutMs: Number(env.PUENTE_TURN_TIMEOUT_MS ?? 10 * 60_000), permissionTimeoutMs: Number(env.PUENTE_PERMISSION_TIMEOUT_MS ?? 5 * 60_000),

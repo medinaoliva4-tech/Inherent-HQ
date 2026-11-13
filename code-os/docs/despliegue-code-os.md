@@ -65,3 +65,14 @@ Cada persona usa **su** cuenta de Claude, en su HOME del servidor (`~/code-os-da
 ## Estado al 2026-11-10
 
 Ver el informe del PR: qué quedó probado de punta a punta y qué espera una aprobación del CEO (perfil de AppArmor y cambio de LiteLLM en producción).
+
+## Figma (Figwright) e imágenes en el chat
+
+Diseño: el **líder** de Figwright corre en la Mac (Figma + plugin, `127.0.0.1:3055`). Un LaunchAgent de la Mac abre el túnel inverso `ssh -R 127.0.0.1:3055:127.0.0.1:3055 inherent-gw` (solo expone ese puerto, solo en el loopback del VPS). En el VPS no hay demonio: el puente lanza un Figwright **seguidor** por sesión dentro de bubblewrap (versión fijada en `/opt/code-os-mcp/figwright`) y lo cierra al terminar el turno. Si el túnel no responde, el puente no lo lanza (el VPS nunca toma el puerto y no le bloquea el túnel a la Mac) y la capacidad sale `sin_conexion` con el motivo.
+
+1. Mac: `bash code-os/despliegue/sincronizar.sh` (ahora también copia `code-os/imagen`).
+2. VPS: `ssh -t inherent-gw 'bash ~/code-os/despliegue/figwright-seguidor.sh --dry-run'` y, si se ve bien, sin `--dry-run` y con `--reiniciar`.
+3. Mac del diseñador: `bash code-os/despliegue/figwright-tunel-mac.sh --dry-run`, luego sin `--dry-run`. Estado: `--estado`. Quitar: `--desinstalar`.
+4. Verificar: `GET /capacidades` → `figwright: lista`; en una sesión con `capacidades:["figwright"]`, el agente llama `list_files` y `use_file` antes de escribir.
+
+Actualizar Figwright: primero la Mac, después el VPS con `--version` igual a la de la Mac (un seguidor más nuevo que el líder le pide abdicar). Volver atrás: `figwright-seguidor.sh --revertir <respaldo>`.
