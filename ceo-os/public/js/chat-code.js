@@ -5,6 +5,7 @@
 //   · Una conversación del Chat ↔ una sesión del puente (se recuerda en este navegador por correo).
 import { api } from './core.js';
 import { traducir, proyectoDe } from './chat-code-puro.js';
+import { normalizarCapacidades, CAPACIDADES_RESPALDO, normalizarModelos, parcheTurno } from './llm/capacidades.js';
 export { traducir, proyectoDe };
 
 const LLAVE = (email) => `os.code.sesiones.${email}`;
@@ -28,21 +29,52 @@ const pedir = async (ruta, init = {}) => {
 // ---- Sesiones ----
 // `sistema`: los lineamientos de un departamento (llm/departamentos.js). El puente solo los acepta al CREAR la sesión (systemPrompt,
 // máx. 8000), por eso cada departamento tiene su propia sesión dentro de la conversación: idOs = «<conversación>::<departamento>».
-async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo, sistema = '' }) {
+async function sesionDe(email, idOs, { proyecto, modelo, modo = 'code', titulo, sistema = '', capacidades, planEjecucion }) {
   const m = leer(email);
-  if (m[idOs]) return m[idOs];
-  const res = await pedir('/sessions', { method: 'POST', body: JSON.stringify({ projectId: proyectoDe(proyecto), model: modelo || 'nivel-medio', mode: modo, title: titulo, ...(sistema ? { systemPrompt: String(sistema).slice(0, 8000) } : {}) }) });
-  const s = await res.json(); m[idOs] = s.id; guardar(email, m); return s.id;
+  if (m[idOs]) return { sid: m[idOs], nueva: false };
+  const res = await pedir('/sessions', { method: 'POST', body: JSON.stringify({ projectId: proyectoDe(proyecto), model: modelo || 'nivel-medio', mode: modo, title: titulo, ...(sistema ? { systemPrompt: String(sistema).slice(0, 8000) } : {}), ...(capacidades ? { capacidades } : {}), ...(planEjecucion !== undefined ? { plan_ejecucion: planEjecucion } : {}) }) });
+  const s = await res.json(); m[idOs] = s.id; guardar(email, m); return { sid: s.id, nueva: true };
 }
 
+// ---- Lo que el puente sabe hacer (GET /capacidades) y su catálogo (GET /models) ----
+// Tolerante: si el puente aún no publica el contrato (404, red, sin pase), se responde con el respaldo marcado `mock`.
+// → { capacidades, mock, motivo } · real: el puente respondió el contrato (la conversación entera va por él).
+let capCache = null;
+export async function capacidadesPuente({ fresco = false } = {}) {
+  if (!fresco && capCache && Date.now() - capCache.at < 60_000) return capCache.v;
+  let v;
+  try { const j = await (await pedir('/capacidades')).json(); v = { capacidades: normalizarCapacidades(j), mock: false, real: true, motivo: '' }; }
+  catch (e) {
+    // Sin pase (503) o sin red: el puente no está. 404: el puente está, pero aún sin el contrato (Code sigue como hoy).
+    const sinPuente = !e.status || e.status === 503 || e.status === 401 || e.status === 403;
+    v = { capacidades: sinPuente ? CAPACIDADES_RESPALDO.map((c) => ({ ...c, estado: 'sin_conexion', motivo: e.status === 503 ? 'Code aún no está configurado en el OS.' : 'El puente de Code no responde ahora.' })) : CAPACIDADES_RESPALDO, mock: true, real: false, puente: !sinPuente, motivo: e.message || '' };
+  }
+  capCache = { at: Date.now(), v }; return v;
+}
+let catCache = null;
+export async function catalogoPuente({ fresco = false } = {}) {
+  if (!fresco && catCache && Date.now() - catCache.at < 60_000) return catCache.v;
+  let v; try { v = normalizarModelos(await (await pedir('/models')).json()); } catch { v = normalizarModelos(null); }
+  catCache = { at: Date.now(), v }; return v;
+}
+
+// Lo último que se mandó a cada sesión (para que el PATCH entre turnos lleve solo lo que cambió).
+const enviado = new Map();
+
 /**
- * Un turno de Code. on = { delta, tool, nota, permiso(p, responder) }. Resuelve al terminar el turno.
- * `responder(decision)` envía allow | deny | allow_all al puente para la tarjeta de permiso.
+ * Un turno por el puente. on = { delta, tool, nota, plan, permiso(p, responder) }. Resuelve al terminar el turno.
+ * `responder(decision, extra)` envía allow | deny | allow_all (y aprobado_usd cuando hay costo) al puente.
+ * capacidades / planEjecucion: el contrato nuevo (una sola sesión que cambia por turno). Sin ellos (undefined), como antes.
+ * conContrato=false: el puente aún no lo implementa; solo viajan model y mode.
  */
-export async function turnoCode(idOs, { email, mensaje, proyecto, modelo, modo, titulo, sistema, signal, on = {} }) {
-  const sid = await sesionDe(email, idOs, { proyecto, modelo, modo, titulo, sistema });
+export async function turnoCode(idOs, { email, mensaje, proyecto, modelo, modo, titulo, sistema, capacidades, planEjecucion, conContrato = capacidades !== undefined, signal, on = {} }) {
+  const { sid, nueva } = await sesionDe(email, idOs, { proyecto, modelo, modo, titulo, sistema, ...(conContrato ? { capacidades, planEjecucion } : {}) });
   const ctrl = new AbortController(); signal?.addEventListener('abort', () => { pedir(`/sessions/${sid}/interrupt`, { method: 'POST' }).catch(() => {}); }, { once: true });
-  await pedir(`/sessions/${sid}`, { method: 'PATCH', body: JSON.stringify({ ...(modelo ? { model: modelo } : {}), ...(modo ? { mode: modo } : {}) }) }).catch(() => {});
+  const sig = { model: modelo, mode: modo, capacidades: capacidades || [], plan_ejecucion: planEjecucion ?? false };
+  const prev = nueva ? { ...sig } : enviado.get(sid) || null;
+  const cuerpo = conContrato ? parcheTurno(prev, sig) : parcheTurno(null, sig, { conContrato: false });
+  if (Object.keys(cuerpo).length) await pedir(`/sessions/${sid}`, { method: 'PATCH', body: JSON.stringify(cuerpo) }).catch(() => {});
+  enviado.set(sid, sig);
   const { turnId } = await (await pedir(`/sessions/${sid}/messages`, { method: 'POST', body: JSON.stringify({ text: mensaje, queue: false }) })).json();
   const res = await pedir(`/sessions/${sid}/events`, { signal: ctrl.signal });
   const est = { texto: '' }; let buf = '', fin = null;

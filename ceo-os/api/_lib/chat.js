@@ -166,6 +166,23 @@ export function rutas(on) {
     if (d) res.json({ ok: true });
   });
 
+  // Un turno que respondió el puente (un solo motor por conversación, con capacidades por turno): queda en la conversación
+  // del OS con qué capacidades y qué modelos (planifica · ejecuta), para retomarla desde cualquier compu y como contexto.
+  on('POST', 'chat/sesiones/:id/motor', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    const s = await mia(req, res, u); if (!s) return;
+    const b = body(req), pedido = txt(b.pedido, MAX_MSG).trim(), respuesta = txt(b.respuesta, MAX_MSG).trim();
+    if (!pedido || !respuesta) return res.status(400).json({ error: 'Nada que guardar' });
+    const IDS = ['codigo', 'figwright', 'imagen', 'radar', 'video', 'herramientas'];
+    const capacidades = (Array.isArray(b.capacidades) ? b.capacidades : []).filter((x) => IDS.includes(x)).slice(0, 6);
+    const corto = (v) => txt(v, 60).trim();
+    const plan = b.plan && corto(b.plan.planner) && corto(b.plan.executor) ? { planner: corto(b.plan.planner), executor: corto(b.plan.executor) } : null;
+    const at = ahora();
+    const d = await guardar(res, u, s, { mensajes: [...(s.mensajes || []), { role: 'user', content: pedido, at, capacidades }, { role: 'assistant', content: respuesta, at, motor: 'puente', capacidades, modelo: corto(b.modelo), ...(plan ? { plan } : {}) }].slice(-MAX_MSGS) });
+    if (d) res.json({ ok: true });
+  });
+
   // F4.5 · los trabajos que nacieron (o se abrieron) en esta conversación: su pestaña y sus eventos en el hilo.
   on('POST', 'chat/sesiones/:id/agentes', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
