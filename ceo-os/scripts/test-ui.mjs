@@ -53,7 +53,7 @@ t('los íconos salen sin estilos sueltos y con su tamaño', () => {
 });
 
 // Los tokens --ui-* del bloque «SISTEMA v2»: el primer :root{…} es el día y el primer :root[data-theme="dark"]{…} la noche.
-const v2 = CSS.slice(CSS.indexOf('Las zonas de papel: la cotización'));
+const v2 = CSS.slice(CSS.indexOf('/* ===================== SISTEMA v2'));
 // El bloque de tokens --ui-* de un selector (el primero que trae --ui-bg).
 const bloque = (sel) => { let i = -1; do { i = PRIM.indexOf(sel + '{', i + 1); } while (i >= 0 && !PRIM.slice(i, PRIM.indexOf('\n}', i)).includes('--ui-bg:')); const j = PRIM.indexOf('\n}', i); return PRIM.slice(i, j); };
 const tokens = (b) => Object.fromEntries([...b.matchAll(/--(ui-[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]));
@@ -71,15 +71,17 @@ t('el texto se lee: contraste AA (4.5) en los dos temas', () => {
   for (const [tema, T] of [['día', DIA], ['noche', NOCHE]]) for (const tx of ['ui-ink', 'ui-ink2', 'ui-mut', 'ui-acc']) for (const fondo of ['ui-bg', 'ui-surf']) {
     const c = contraste(T[tx], T[fondo]); if (c < 4.5) malos.push(`${tema}: ${tx} sobre ${fondo} = ${c}`);
   }
-  // El texto del botón café y los estados sobre su fondo.
-  for (const [tema, T] of [['día', DIA], ['noche', NOCHE]]) { const c = contraste(T['ui-acc-ink'], T['ui-acc']); if (c < 4.5) malos.push(`${tema}: texto del botón café = ${c}`); }
+  // El texto de la acción principal se lee en ambos temas.
+  for (const [tema, T] of [['día', DIA], ['noche', NOCHE]]) { const c = contraste(T['ui-acc-ink'], T['ui-acc']); if (c < 4.5) malos.push(`${tema}: texto de acción = ${c}`); }
   assert.deepEqual(malos, []);
 });
 
-t('las zonas de papel (cotización, portadas) conservan su paleta', () => {
+t('las zonas de papel (cotización, portadas) usan grises neutros', () => {
   const papel = v2.match(/:is\(\.qdoc,\.feat,\.bx,\.rview,\.recbar,\.inbox,\.sp-cover\)\{([^}]*)\}/);
   assert.ok(papel, 'falta la regla de papel');
-  for (const k of ['--bg:#f1eadf', '--ink:#2c1f16', '--surface:#fcf9f2', '--ui-ink:#2c1f16']) assert.ok(papel[1].includes(k), k);
+  for (const k of ['--bg:var(--ui-paper-bg)', '--ink:var(--ui-paper-ink)', '--surface:var(--ui-paper-surf)', '--ui-ink:var(--ui-paper-ink)']) assert.ok(papel[1].includes(k), k);
+  const tokens = fs.readFileSync(path.join(RAIZ, 'primitives.css'), 'utf8');
+  for (const k of ['--ui-paper-bg:#f4f4f5', '--ui-paper-ink:#18181b', '--ui-paper-surf:#ffffff']) assert.ok(tokens.includes(k), k);
 });
 
 t('el tema arranca antes de pintar y sin destellos', () => {

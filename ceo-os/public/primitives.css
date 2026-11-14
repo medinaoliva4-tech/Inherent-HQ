@@ -185,6 +185,8 @@
 :root{--ui-azul:#4a86e8;--ui-rojo:#ff6b5e}
 /* El gris carbón del chat en noche (la barra de escritura sobre el fondo): una sola fuente para InherentChat */
 :root{--ui-carbon-bg:#1c1c1e;--ui-carbon-side:#18181a;--ui-carbon-surf:#242426;--ui-carbon-surf2:#2c2c2e}
+/* Documentos y portadas permanecen claros, con grises neutros en vez de sepia. */
+:root{--ui-paper-bg:#f4f4f5;--ui-paper-surf:#ffffff;--ui-paper-surf2:#f0f0f2;--ui-paper-fill2:#e7e7e9;--ui-paper-ink:#18181b;--ui-paper-ink2:#46464c;--ui-paper-mut:#68686f;--ui-paper-white:#f5f5f7;--ui-paper-rgb:24 24 27;--ui-paper-line:rgb(24 24 27 / .1)}
 /* app.css:10033 */
 :root{--ui-tint:255 255 255}
 /* app.css:10034 */
