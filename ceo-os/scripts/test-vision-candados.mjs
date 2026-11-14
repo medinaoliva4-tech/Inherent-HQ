@@ -87,6 +87,13 @@ await test('respuesta perdida queda resultado_desconocido y no permite reintento
   const r = await ejecutarAccion(ceo, a.id, { hash: a.hash, expected_version: a.version }, { ...adapters, ejecutar: async () => { externalCalls++; throw new Error('respuesta perdida'); } }); assert.equal(r.estado, 'resultado_desconocido');
   const cur = await db.get('external_actions', a.id); const second = await ejecutarAccion(ceo, a.id, { hash: a.hash, expected_version: cur.v }, adapters); assert.equal(second.estado, 'resultado_desconocido'); assert.equal(externalCalls, 2);
 });
+await test('inherent no concede alcance implícito a un usuario asignado', async () => {
+  const assigned = { email: 'limited@inherentglobal.com', role: 'team', roles: [], scope: 'asignados', areas: ['content'], views: { content: 'edita' } };
+  await assert.rejects(proponerAccion(assigned, tool, { text: 'A' }, { scope: 'inherent' }), { code: 'ALCANCE' });
+  assert.equal((await validarContenido(assigned, { ...post, profile: 'inherent' })).code, 'FUERA_DEL_ALCANCE');
+  await db.create('projects', { client_slug: 'inherent', people: [assigned.email] }, 'fixture', 'project-inherent-explicit');
+  const allowed = await proponerAccion(assigned, tool, { text: 'A' }, { scope: 'inherent', key: 'explicit' }); assert.equal(allowed.scope, 'inherent');
+});
 await test('catálogo cambiado, tool desconocida y parámetros extra nunca se ejecutan', async () => {
   await assert.rejects(proponerAccion(ceo, null, {}), { code: 'TOOL_DESCONOCIDA' });
   await assert.rejects(proponerAccion(ceo, tool, { text: 'A', extra: true }), { code: 'PARAMETROS' });

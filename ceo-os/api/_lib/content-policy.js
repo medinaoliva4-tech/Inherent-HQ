@@ -17,7 +17,7 @@ export function trazaICP(d, all, slug, seen = new Set()) {
 }
 export async function origenesContenido(u, slug) {
   if (!/^[\w-]{2,60}$/.test(String(slug || '')) || !personalOk(u, slug)) return [];
-  const sc = await scoper(u); if (sc && slug !== 'inherent' && !sc.client(slug)) return [];
+  const sc = await scoper(u); if (sc && !sc.client(slug)) return [];
   const all = await db.list('deliverables');
   return all.filter((d) => trazaICP(d, all, slug)).map((d) => ({ id: d.id, version: d.version, titulo: d.titulo || d.tool, tool: d.tool }));
 }
@@ -25,7 +25,7 @@ export async function validarContenido(u, b, cur = null, { pending = [] } = {}) 
   if (!['post', 'shoot'].includes(b?.kind)) return evaluarContenido(u, b, cur);
   const slug = String(b.profile || '');
   const sc = await scoper(u);
-  if (!/^[\w-]{2,60}$/.test(slug) || !personalOk(u, slug) || (sc && slug !== 'inherent' && !sc.client(slug))) return { status: 403, code: 'FUERA_DEL_ALCANCE', error: 'Esa marca no está entre las tuyas' };
+  if (!/^[\w-]{2,60}$/.test(slug) || !personalOk(u, slug) || (sc && !sc.client(slug))) return { status: 403, code: 'FUERA_DEL_ALCANCE', error: 'Esa marca no está entre las tuyas' };
   const root = rootOf(slug), f = await readFile(`${root}/00-onboarding/plan-contratado.md`);
   const c = { ficha: Boolean(f), origen: false, brief: false, techo: null, total: 0 };
   if (f && necesitaOrigen(b)) {

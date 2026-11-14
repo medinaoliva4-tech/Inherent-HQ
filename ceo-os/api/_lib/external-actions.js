@@ -13,7 +13,7 @@ const payload = (d) => JSON.parse(open(d.payload));
 async function scopeOK(u, slug) {
   if (!slug) return u.role === 'ceo' || u.role === 'coo';
   if (!/^[\w-]{2,60}$/.test(slug) || (slug === 'personal' && u.role !== 'ceo')) return false;
-  const sc = await scoper(u); return !sc || slug === 'inherent' || sc.client(slug);
+  const sc = await scoper(u); return !sc || sc.client(slug);
 }
 export function validArgs(value, schema = {}, depth = 0) {
   if (depth > 12 || value === undefined) return false;

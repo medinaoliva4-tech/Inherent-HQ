@@ -111,10 +111,10 @@ export async function guard(req, res, area, opts = {}) {
 }
 
 // Para rutas que sirven a más de un área (ej. la ficha del cliente: Clients y el Workspace).
+export const permiteArea = (u, area, { write = false } = {}) => (area !== 'finanzas' || u.role === 'ceo') && u.areas.includes(area) && (!write || edits(u, area));
 export async function guardAny(req, res, areas, opts = {}) {
   const u = await guard(req, res); if (!u) return null;
-  if (!areas.some((a) => (a !== 'finanzas' || u.role === 'ceo') && u.areas.includes(a))) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
-  if (opts.write && !areas.some((a) => u.areas.includes(a) && edits(u, a))) { res.status(403).json({ error: 'Tu perfil solo puede ver esto, no cambiarlo' }); return null; }
+  if (!areas.some((a) => permiteArea(u, a, opts))) { res.status(403).json({ error: opts.write ? 'Tu perfil no puede cambiar esta área' : 'Sin acceso a esta área' }); return null; }
   return u;
 }
 

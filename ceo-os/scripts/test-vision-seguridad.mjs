@@ -9,7 +9,7 @@ process.env.LOCAL_DB = path.join(tmp, 'db'); process.env.LOCAL_REPO = path.join(
 process.env.SESSION_SECRET = 'vision-test-only-secret-01234567890123456789'; process.env.ADMIN_EMAILS = 'ceo@inherentglobal.com';
 globalThis.fetch = async () => { throw new Error('S0 no permite red'); };
 const db = await import('../api/_lib/db.js'), session = await import('../api/_lib/session.js');
-const { forgetViews, effective } = await import('../api/_lib/access.js');
+const { forgetViews, effective, permiteArea } = await import('../api/_lib/access.js');
 const { leer } = await import('../api/_lib/leer.js');
 const api = (await import('../api/index.js')).default;
 const email = (role) => `${role}@inherentglobal.com`;
@@ -37,6 +37,12 @@ await test('COO/team/client denegados en todas las rutas Finance aun con matriz 
     for (const coll of financeColls) for (const [method, route] of [['GET', `db/${coll}`], ['GET', `db/${coll}/row-${coll}`], ['POST', `db/${coll}`], ['PUT', `db/${coll}/row-${coll}`], ['DELETE', `db/${coll}/row-${coll}`]]) assert.equal((await request(role, route, method, { v: 1 })).status, 403, `${role} ${method} ${route}`);
     for (const [method, route] of [['GET', 'finance/sheet'], ['PUT', 'finance/sheet'], ['POST', 'finance/sheet'], ['POST', 'finance/cobros'], ['POST', 'finance/pagada/x'], ['POST', 'finance/banco'], ['POST', 'finance/cruce'], ['GET', 'repo/economia']]) assert.equal((await request(role, route, method)).status, 403, `${role} ${method} ${route}`);
   }
+});
+await test('una lectura Clients no toma prestada la escritura Finance heredada', () => {
+  const legacy = { role: 'coo', areas: ['clients', 'finanzas'], views: { clients: 'completo', finanzas: 'edita' } };
+  assert.equal(['clients', 'finanzas'].some((a) => permiteArea(legacy, a)), true);
+  assert.equal(['clients', 'finanzas'].some((a) => permiteArea(legacy, a, { write: true })), false);
+  assert.equal(permiteArea({ ...legacy, role: 'ceo' }, 'finanzas', { write: true }), true);
 });
 await test('settings oculta links y márgenes Finance', async () => {
   for (const role of ['coo', 'team']) { const r = await request(role, 'db/settings'); assert.equal(r.status, 200); assert.equal(r.data.items.some((d) => ['finance_sheet', 'pricing'].includes(d.id)), false); assert.equal((await request(role, 'db/settings/finance_sheet')).status, 404); }
