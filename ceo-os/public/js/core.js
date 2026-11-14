@@ -104,8 +104,8 @@ export function squareImage(file, size = 256) {
 export const col = (name) => ({
   list: async () => (await api('db/' + name)).items,
   get: (id) => api(`db/${name}/${encodeURIComponent(id)}`),
-  create: (data) => api('db/' + name, { method: 'POST', body: data }),
-  save: (doc) => api(`db/${name}/${encodeURIComponent(doc.id)}`, { method: 'PUT', body: doc }),
+  create: async (data) => api('db/' + name, { method: 'POST', body: name === 'content' ? await (await import('./content-policy-ui.js')).prepararContenido(data) : data }),
+  save: async (doc) => api(`db/${name}/${encodeURIComponent(doc.id)}`, { method: 'PUT', body: name === 'content' ? await (await import('./content-policy-ui.js')).prepararContenido(doc) : doc }),
   remove: (id) => api(`db/${name}/${encodeURIComponent(id)}`, { method: 'DELETE' }),
 });
 
@@ -445,7 +445,7 @@ export function wizard(title, steps, doneLabel = 'Crear') {
     const month1 = () => { const d = new Date(); d.setMonth(d.getMonth() + 1, 1); return d.toISOString().slice(0, 10); };
     const WHEN = [['Hoy', () => today()], ['Mañana', () => plus(1)], ['Viernes', () => nextDay(5)], ['En una semana', () => plus(7)], ['Día 1 del próximo mes', month1]];
     const close = (out) => { v.remove(); document.removeEventListener('keydown', key); resolve(out); };
-    const key = (e) => { if (e.key === 'Escape') close(null); if (e.key === 'Enter' && !e.shiftKey && e.target.tagName !== 'TEXTAREA') { e.preventDefault(); next(); } };
+    const key = (e) => { if (e.key === 'Escape') close(null); if (e.key === 'Enter' && !e.shiftKey && e.target.matches('input:not([type=checkbox]):not([type=file])')) { e.preventDefault(); next(); } };
     function next() {
       const L = live(), s = L[i];
       if (s && ['text', 'textarea', 'date'].includes(s.type)) a[s.k] = (v.querySelector('[data-in]')?.value || '').trim();

@@ -2,6 +2,7 @@
 // (id = <marca>--<AAAA-MM>, área content). «Pasar a Creatividad» vuelve cada slot una pieza del calendario (estado Idea)
 // con su slot adentro; el id es fijo, así que volver a pasarlo pone al día y no duplica (lo que ya avanzó no se toca).
 import * as db from './db.js';
+import { validarContenido } from './content-policy.js';
 import { guard, scoper, edits } from './access.js';
 import { body } from './http.js';
 import { COLL_P, idPlan, mesOk, aplicarPlan, slotsAPiezas } from '../../public/js/plan-mes.js';
@@ -71,12 +72,15 @@ export function rutas(on) {
     if (!(await estrategiaAprobada(slug))) return res.status(409).json(SIN_ESTRATEGIA);
     const plan = await db.get(COLL_P, idPlan(slug, mes));
     if (!plan?.slots?.length) return res.status(400).json({ error: 'El plan todavía no tiene slots' });
+    const items = slotsAPiezas(plan, slug, mes), refs = body(req).viene_de || [];
+    const pending = await Promise.all(items.map(async ({ id, data }) => { const cur = await db.get('content', id); return { ...(cur || data), id, viene_de: cur?.viene_de?.length ? cur.viene_de : refs, status: cur?.status || 'Idea' }; }));
+    for (const b of pending) { const bad = await validarContenido(u, b, await db.get('content', b.id), { pending }); if (bad) return res.status(bad.status).json({ error: bad.error, code: bad.code }); }
     let nuevas = 0, puestas = 0;
-    for (const { id, data } of slotsAPiezas(plan, slug, mes)) {
+    for (const { id, data } of items) {
       const cur = await db.get('content', id);
-      if (!cur) { await db.create('content', { ...data, status: 'Idea' }, u.email, id); nuevas++; continue; }
+      if (!cur) { await db.create('content', { ...data, viene_de: refs, status: 'Idea' }, u.email, id); nuevas++; continue; }
       // Ya existe: solo se pone al día el slot (lo que escribió Creatividad, su estado y su día no se tocan).
-      await db.upsert('content', id, { slot: data.slot, pillar: data.pillar, campana: data.campana, consciencia: data.consciencia }, u.email); puestas++;
+      await db.upsert('content', id, { viene_de: cur.viene_de?.length ? cur.viene_de : refs, slot: data.slot, pillar: data.pillar, campana: data.campana, consciencia: data.consciencia }, u.email); puestas++;
     }
     await db.upsert(COLL_P, idPlan(slug, mes), { a_creatividad: new Date().toISOString() }, u.email);
     res.json({ nuevas, puestas });

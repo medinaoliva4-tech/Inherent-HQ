@@ -6,6 +6,7 @@ import * as google from './_lib/google.js';
 import { dineroDeInherent, seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
 import * as content from './_lib/content.js';
+import { validarContenido, rutasContenido } from './_lib/content-policy.js';
 import * as zernio from './_lib/zernio.js';
 import * as mcp from './_lib/mcp.js';
 import * as oauth from './_lib/oauth.js';
@@ -48,7 +49,7 @@ import { limpiarFactura, limpiarReceta } from '../public/js/facturas.js';
 import { blockersOf } from '../public/js/cycle.js';
 import { parentError } from '../public/js/library-tree.js';
 import { levelName } from '../public/js/levels.js';
-import { reglaDia11, reglaHistorial, veMontos, sinMontos, conMontos } from '../public/js/production/planner.js';
+import { veMontos, sinMontos, conMontos } from '../public/js/production/planner.js';
 // Los montos de los recursos de una jornada (content kind:'shoot') solo salen para el CEO y el COO.
 const shapeC = (u, coll, d, ...r) => { const o = shape(u, coll, d, ...r); return coll === 'content' && o?.kind === 'shoot' && !veMontos(u.role) ? sinMontos(o) : o; };
 import { estadoDe, archivado, nombreAuto, marcaDe } from '../public/js/element.js';
@@ -58,6 +59,8 @@ import { body, fail } from './_lib/http.js';
 
 const routes = [];
 const on = (method, pattern, fn) => routes.push({ method, re: new RegExp('^' + pattern.replace(/:(\w+)/g, '(?<$1>[^/]+)') + '$'), fn });
+
+rutasContenido(on, { guard });
 
 // ---------- auth ----------
 on('GET', 'auth/google', async (req, res) => {
@@ -152,30 +155,7 @@ async function collGuard(req, res, write) {
   if (write && !canWrite(u.role, coll)) { res.status(403).json({ error: 'Solo el CEO puede cambiar esto' }); return null; }
   return u;
 }
-// Las reglas de las piezas, también en el servidor (antes solo las cuidaba la pantalla):
-// · El candado del brief: una pieza con fecha de un mes sin brief del ciclo no entra, salvo que el CEO haya abierto ese mes.
-//   Solo cuando la fecha es nueva o cambia de mes (lo ya agendado no se toca) y solo en marcas con ficha de oferta.
-// · La secuencia del chat de Diseño: una pieza del plan no queda diseñada sin su idea. La pieza suelta (sin slot) sí entra.
-async function reglasPieza(b, cur) {
-  if (b?.kind !== 'post') return null;
-  if (b.diseno && b.slot?.plan && !b.idea_chat && !cur?.diseno) return 'Esta pieza del plan todavía no tiene idea: primero la etapa Ideas, después el diseño.';
-  const mes = String(b.date || '').slice(0, 7);
-  if (!b.profile || !/^\d{4}-\d{2}$/.test(mes) || String(cur?.date || '').slice(0, 7) === mes) return null;
-  const root = b.profile === 'inherent' ? 'inherent/inherent-social-media' : `clients/${b.profile}`;
-  if (!/^[\w-]+$/.test(b.profile) || !(await readFile(`${root}/00-onboarding/plan-contratado.md`))) return null;
-  // El brief del ciclo vale en las dos rutas: la de siempre y la del manual (04-contenido/<mes>/ideas/, agents/03-marketing-creative).
-  if ((await readFile(`${root}/04-contenido/${mes}/brief-del-ciclo.md`)) || (await readFile(`${root}/04-contenido/${mes}/ideas/brief-del-ciclo.md`))) return null;
-  const bo = await db.get('settings', 'brief_open').catch(() => null);
-  if ((bo?.marcas?.[b.profile] || []).some((x) => x.mes === mes)) return null;
-  return `Sin brief del ciclo de ${mes}: guárdala como idea sin fecha, pide el brief a ④ Creatividad o que el CEO abra el mes.`;
-}
-// Production Planner: una jornada (kind:'shoot') con fecha después del día 11 del ciclo da 423 salvo el CEO (los shoots se escriben por
-// /api/db/content, así que la regla va aquí y no solo en la pantalla); el historial de cumplimiento de una pieza solo se agrega (400).
-function reglasShoot(u, b, cur) {
-  const h = reglaHistorial(b, cur); if (h) return { status: 400, error: h, code: 'HISTORIAL' };
-  const d = reglaDia11(b, cur, u.role); if (d) return { status: 423, error: d, code: 'DIA_11' };
-  return null;
-}
+// Las reglas de contenido viven en content-policy.js y content-reglas.js: ficha, origen, brief, techo y día 11.
 // El tipo de una tarea es uno de cuatro; el SOP es el id de un doc de la Library o un link https.
 const TASK_TIPOS = ['Delivery', 'Comercial', 'Interna', 'Personal'];
 const cleanTask = (b) => {
@@ -266,8 +246,7 @@ on('POST', 'db/:coll', async (req, res) => {
   if (req.params.coll === 'folders') { const why = parentError(await db.list('folders'), null, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   { const why = await outOfScope(u, req.params.coll, b, null); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, null);
-  if (req.params.coll === 'content') { const why = await reglasPieza(b, null); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
-  if (req.params.coll === 'content') { const r = reglasShoot(u, b, null); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = sinMontos(b); }
+  if (req.params.coll === 'content') { const r = await validarContenido(u, b, null); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = sinMontos(b); }
   if (req.params.coll === 'tasks') b = results.stampDone(null, cleanTask(b));
   if (req.params.coll === 'budgets') { if (!b.client_slug) return res.status(400).json({ error: 'Falta el cliente del presupuesto' }); b = cleanBudget(b); }
   if (req.params.coll === 'brand_boards' && !slugOk(String(b.id || ''))) return res.status(400).json({ error: 'El tablero lleva el slug del cliente como id' });
@@ -295,8 +274,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   if (req.params.coll === 'folders') { const all = await db.list('folders'); if (!('parent_id' in b)) b.parent_id = all.find((x) => x.id === req.params.id)?.parent_id || null; const why = parentError(all, req.params.id, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
   if (['tasks', 'quotes', 'budgets', 'content', 'sources', 'area_notes'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
-  if (req.params.coll === 'content') { const why = await reglasPieza(b, await db.get('content', req.params.id)); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
-  if (req.params.coll === 'content') { const cur = await db.get('content', req.params.id), r = reglasShoot(u, b, cur); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = conMontos(cur, b); }
+  if (req.params.coll === 'content') { const cur = await db.get('content', req.params.id), r = await validarContenido(u, b, cur); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = conMontos(cur, b); }
   // El PUT reemplaza el doc: el cliente de un presupuesto no cambia y, si la persona no ve los costos, se conservan los guardados.
   if (req.params.coll === 'budgets') { const cur = await db.get('budgets', req.params.id); if (cur) { b.client_slug = cur.client_slug; if (b.costs_hidden || b.lines === undefined) b.lines = cur.lines; } delete b.costs_hidden; b = cleanBudget(b); }
   if (req.params.coll === 'leads') {

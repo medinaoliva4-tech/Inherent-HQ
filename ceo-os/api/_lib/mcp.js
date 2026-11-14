@@ -10,6 +10,7 @@ import { levelName as nivelName } from '../../public/js/levels.js';
 import { estadoDe, archivado, conEstado } from '../../public/js/element.js';
 import { consciencia as concienciaDe, CONSCIENCIA } from '../../public/js/calendario-contenido.js';
 import * as content from './content.js';
+import { exigirContenido, origenesContenido } from './content-policy.js';
 import * as flow from './flow.js';
 import * as google from './google.js';
 import * as leads from './leads.js';
@@ -142,6 +143,7 @@ const TOOLS = [
   ['guardar_research', 'content', 'Guarda reels, carruseles y posts estáticos en Research de un perfil (Contenido → Research). Manda una lista en «posts» (hasta 40 por llamada). Si el url ya está, lo actualiza. El servidor descarga y guarda la miniatura y las láminas (las del CDN caducan). Los filtros de Research se arman solos con los tags que mandes.', { perfil: { type: 'string', description: 'slug del perfil; ver perfiles()' }, posts: { type: 'array', items: { type: 'object', properties: { url: { type: 'string' }, formato: { type: 'string', enum: ['reel', 'carrusel', 'estatico'] }, creador: { type: 'string', description: '@cuenta' }, red: { type: 'string', enum: ['instagram', 'tiktok', 'linkedin', 'youtube', 'otra'] }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, titulo: { type: 'string', description: 'nombre corto del formato' }, tipo: { type: 'string', enum: RESEARCH_TIPOS, description: 'nivel de la investigación: competencia (local) · referente-similar (mercados parecidos al del cliente) · referente-aspiracional · referente-crecimiento (crecimiento/engagement) · propia' }, metricas: { type: 'object', properties: { vistas: { type: 'number' }, likes: { type: 'number' }, comentarios: { type: 'number' }, compartidos: { type: 'number' }, duracion_s: { type: 'number' }, multiplicador: { type: 'number', description: 'veces su mediana' }, engagement_pct: { type: 'number' } } }, miniatura: { type: 'string', description: 'url https; el servidor la descarga y la guarda' }, slides: { type: 'array', items: { type: 'string' }, description: 'carruseles: urls https de cada lámina, en orden; se guardan' }, caption: { type: 'string' }, por_que_funciono: { type: 'object', properties: { hook: { type: 'string' }, retencion: { type: 'string' }, estructura: { description: 'texto o lista de beats' }, por_que: { type: 'string' }, adaptacion: { type: 'string', description: 'Tu versión para la marca. Markdown: el primer párrafo es «Tu versión»; lo demás (texto en pantalla, clips, receta) va a Análisis' }, inferido: { type: 'boolean' } } }, tags: { type: 'array', items: { type: 'string' }, description: 'pilar, tipo de formato, «resonancia alta|media|baja», «sin hablar|voz en off|hablando a cámara» y lo que sirva para filtrar' }, dificultad: { type: 'number', description: '1 a 5' }, tiempo_grabacion: { type: 'string', description: 'ej. «15 min»' }, receta: { type: 'array', items: { type: 'string' } }, clips: { type: 'array', items: { type: 'object', properties: { tiempo: { type: 'string' }, que: { type: 'string' } } } }, plantilla: { type: 'string', description: 'plantilla terminada para la marca, en Markdown' }, probado: { type: 'boolean' } }, required: ['url'] } } }, ['perfil', 'posts']],
   ['borrar_research', 'content', 'Quita posts de Research de un perfil: los urls que digas, o todo con todo=true.', { perfil: { type: 'string' }, urls: { type: 'array', items: { type: 'string' } }, todo: { type: 'boolean' } }, ['perfil']],
   ['calendario', 'content', 'Los calendarios de un perfil en un mes: publicación (qué sale y cuándo) y grabación (qué se graba cada día).', { perfil: { type: 'string' }, mes: { type: 'string', description: 'AAAA-MM; por defecto el actual' } }, ['perfil']],
+  ['origenes_contenido', 'content', 'Versiones aprobadas de esta marca que trazan hasta el cliente ideal. Usa id/version en viene_de al agendar o producir.', { perfil: { type: 'string' } }, ['perfil']],
   ['agendar', 'content', 'Agenda en el calendario de un perfil: una grabación (qué se graba, cuándo y dónde) o una publicación (una pieza con su fecha).', { perfil: { type: 'string' }, calendario: { type: 'string', enum: ['grabacion', 'publicacion'] }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD' }, hora: { type: 'string', description: 'HH:MM, solo grabación' }, lugar: { type: 'string' }, quien: { type: 'string' }, piezas: { type: 'string', description: 'solo grabación: piezas y tomas, una por línea' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'], description: 'solo publicación' }, pilar: { type: 'string' }, campana: { type: 'string', description: 'solo publicación: la campaña, si la pieza es de una' }, consciencia: { type: 'string', enum: CONSCIENCIA, description: 'solo publicación: el nivel de consciencia al que le habla' }, replica_de: { type: 'string', description: 'solo publicación: el id del post de Research que replica' }, notas: { type: 'string' } }, ['perfil', 'calendario', 'titulo', 'fecha']],
   ['actualizar_idea', 'content', 'Cambia una idea o pieza del planner: título, fecha, formato, pilar, texto, estado o hasta de perfil (para moverla al correcto). Los ids salen de planner.', { id: { type: 'string' }, perfil: { type: 'string', description: 'muévela a este perfil' }, titulo: { type: 'string' }, fecha: { type: 'string', description: 'AAAA-MM-DD, o vacío para quitarla' }, formato: { type: 'string', enum: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'] }, pilar: { type: 'string' }, texto: { type: 'string' }, estado: { type: 'string', description: 'Idea · En proceso · Listo · Publicado · Archivado (los viejos Grabado, Editado y Programado se leen como En proceso y Listo)' } }, ['id']],
   ['borrar_idea', 'content', 'Borra ideas o piezas del planner por id (los ids salen de planner). Acepta varias.', { ids: { type: 'array', items: { type: 'string' } } }, ['ids']],
@@ -164,6 +166,8 @@ const TOOLS = [
   ...layaLib.TOOLS, // Fase 3 · Laya: juicios_pendientes y guardar_juicio
 ];
 // Las herramientas que cambian algo: hace falta nivel «edita» en su área (la matriz del CEO). Las demás, con ver basta.
+const ORIGEN_SCHEMA = { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, version: { type: 'integer', minimum: 1 } }, required: ['id', 'version'] }, maxItems: 10 };
+for (const t of TOOLS) if (['agendar', 'crear_idea', 'actualizar_idea'].includes(t[0])) t[3].viene_de = ORIGEN_SCHEMA;
 const WRITE = new Set(['guardar_juicio', 'crear_tarea', 'actualizar_tarea', 'crear_cotizacion', 'crear_lead', 'actualizar_lead', 'registrar_actividad', 'importar_prospectos', 'crear_proyecto', 'subir_documento', 'subir_archivo', 'actualizar_perfil', 'guardar_research', 'borrar_research', 'agendar', 'actualizar_idea', 'borrar_idea', 'crear_idea', 'guardar_receta', 'activar_paquete', 'asignar_rol', 'generar_recurrentes', 'registrar_factura', 'marcar_pagada']);
 // Las que escriben: el servidor (Gateway) solo usa las que no están aquí, hasta que haya confirmación humana.
 export const esEscritura = (name) => WRITE.has(name);
@@ -521,15 +525,16 @@ async function call(u, name, a = {}) {
     return { mes, publicacion: all.filter((x) => x.kind === 'post').map((x) => ({ fecha: x.date, titulo: x.title, formato: x.format || '', pilar: x.pillar || '', campana: x.campana || '', consciencia: concienciaDe(x), replica_de: x.replica_de || '', estado: estadoDe(x) })),
       grabacion: all.filter((x) => x.kind === 'shoot').map((x) => ({ fecha: x.date, hora: x.time || '', titulo: x.title, lugar: x.place || '', quien: x.crew || '', piezas: x.pieces || '', estado: x.status || 'Por grabar' })) };
   }
+  if (name === 'origenes_contenido') return { origenes: await origenesContenido(u, await perfilOk(a.perfil, u)) };
   if (name === 'agendar') {
     const slug = await perfilOk(a.perfil, u);
     const title = String(a.titulo || '').trim().slice(0, 200), date = /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : null;
     if (!title || !date) throw new Error('Faltan el título o la fecha (AAAA-MM-DD)');
     if (a.calendario === 'grabacion') {
-      const r = await db.create('content', { kind: 'shoot', profile: slug, title, date, time: /^\d{1,2}:\d{2}$/.test(a.hora || '') ? a.hora.padStart(5, '0') : '', place: String(a.lugar || '').slice(0, 200), crew: String(a.quien || '').slice(0, 200), pieces: String(a.piezas || '').slice(0, 4000), notes: String(a.notas || '').slice(0, 4000), status: 'Por grabar' }, u.email);
+      const r = await db.create('content', await exigirContenido(u, { viene_de: a.viene_de || [], kind: 'shoot', profile: slug, title, date, time: /^\d{1,2}:\d{2}$/.test(a.hora || '') ? a.hora.padStart(5, '0') : '', place: String(a.lugar || '').slice(0, 200), crew: String(a.quien || '').slice(0, 200), pieces: String(a.piezas || '').slice(0, 4000), notes: String(a.notas || '').slice(0, 4000), status: 'Por grabar' }), u.email);
       return { ok: true, id: r.id, calendario: 'grabación', fecha: date, titulo: title, abrir: `/#/marcas/${slug}/calendario` };
     }
-    const r = await db.create('content', { kind: 'post', profile: slug, title, format: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato) ? a.formato : 'Reel', pillar: String(a.pilar || ''), ...(a.campana ? { campana: String(a.campana).slice(0, 80) } : {}), ...(concienciaDe(a.consciencia) ? { consciencia: concienciaDe(a.consciencia) } : {}), ...(a.replica_de ? { replica_de: String(a.replica_de).slice(0, 80) } : {}), caption: String(a.notas || '').slice(0, 4000), date, status: 'Idea' }, u.email);
+    const r = await db.create('content', await exigirContenido(u, { viene_de: a.viene_de || [], kind: 'post', profile: slug, title, format: ['Reel', 'Carrusel', 'TikTok', 'Story', 'Estático', 'YouTube'].includes(a.formato) ? a.formato : 'Reel', pillar: String(a.pilar || ''), ...(a.campana ? { campana: String(a.campana).slice(0, 80) } : {}), ...(concienciaDe(a.consciencia) ? { consciencia: concienciaDe(a.consciencia) } : {}), ...(a.replica_de ? { replica_de: String(a.replica_de).slice(0, 80) } : {}), caption: String(a.notas || '').slice(0, 4000), date, status: 'Idea' }), u.email);
     return { ok: true, id: r.id, calendario: 'publicación', fecha: date, titulo: title, abrir: `/#/marcas/${slug}/calendario` };
   }
   if (name === 'actualizar_idea' || name === 'borrar_idea') {
@@ -546,6 +551,8 @@ async function call(u, name, a = {}) {
       if ('pilar' in a) patch.pillar = String(a.pilar || '').slice(0, 80);
       if ('texto' in a) patch.caption = String(a.texto || '').slice(0, 4000);
       if (a.estado) patch = conEstado(patch, String(a.estado).slice(0, 40));
+      if (a.viene_de) patch.viene_de = a.viene_de;
+      await exigirContenido(u, patch, p);
       const r = await db.update('content', id, patch, p.v, u.email); if (!r) throw new Error('Alguien la cambió justo ahora; intenta de nuevo');
       return { ok: true, id, titulo: r.title, perfil: r.profile, fecha: r.date || '', estado: estadoDe(r) };
     }
@@ -554,7 +561,7 @@ async function call(u, name, a = {}) {
   }
   if (name === 'crear_idea') {
     const slug = await perfilOk(a.perfil, u); if (!String(a.titulo || '').trim()) throw new Error('Falta el título');
-    const p = await db.create('content', { kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }, u.email);
+    const p = await db.create('content', await exigirContenido(u, { viene_de: a.viene_de || [], kind: 'post', profile: slug, title: String(a.titulo).slice(0, 200), format: a.formato || 'Reel', pillar: a.pilar || '', caption: String(a.texto || '').slice(0, 4000), date: /^\d{4}-\d{2}-\d{2}$/.test(a.fecha || '') ? a.fecha : '', status: 'Idea' }), u.email);
     return { ok: true, id: p.id, titulo: p.title };
   }
   if (name === 'facturas') {

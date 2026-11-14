@@ -5,11 +5,13 @@
 //   · ia/completar responde en streaming (SSE): {delta} mientras escribe y al final {fin, texto, citas, modelo}.
 // Las IAs locales (el puente de Claude) no pasan por aquí: corren en la compu de cada persona.
 import * as db from './db.js';
+import crypto from 'node:crypto';
 import { guard } from './access.js';
 import { body } from './http.js';
 import { seal, open } from './vault.js';
 import { PROVEEDORES, USOS, proveedorDe, baseValida, ultimos4, modelosChat, contextoDe, tokensDe } from '../../public/js/ia-proveedores.js';
 import { toolsDe, llamarTool } from './conectores.js';
+import { proponerAccion, ejecutarAccion } from './external-actions.js';
 import { conectorDe } from '../../public/js/conectores.js';
 
 const COLL = 'ia_config', ID = 'org';
@@ -102,6 +104,12 @@ export async function completarUso(uso, { sistema, mensaje, signal }) {
 }
 
 export function rutas(on) {
+  on('POST', 'ia/acciones/:id/aprobar', async (req, res) => {
+    const u = await guard(req, res); if (!u) return;
+    try { res.json(await ejecutarAccion(u, req.params.id, body(req), { catalogo: toolsDe, ejecutar: llamarTool })); }
+    catch (e) { res.status(e.status || 500).json({ error: e.status ? e.message : 'No se pudo completar la acción', code: e.code }); }
+  });
+
   on('GET', 'ia/estado', async (req, res) => {
     const u = await guard(req, res); if (!u) return;
     if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
@@ -194,10 +202,10 @@ export function rutas(on) {
     const enviar = (o) => res.write(`data: ${JSON.stringify(o)}\n\n`);
     try {
       const disponibles = await toolsDe(u.email, (Array.isArray(b.conectores) ? b.conectores : []).map(String));
-      const mapa = new Map(), tools = disponibles.map((t, k) => { const n = `${t.conector}__${t.tool.name}`.replace(/[^\w-]/g, '_').slice(0, 60) + (k > 99 ? '' : ''); mapa.set(n, t); return { type: 'function', function: { name: n, description: `[${conectorDe(t.conector)?.nombre || t.conector}] ${String(t.tool.description || '').slice(0, 500)}`, parameters: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } } }; });
+      const mapa = new Map(), tools = disponibles.map((t, k) => { const n = `${t.conector}__${t.tool.name}`.replace(/[^\w-]/g, '_').slice(0, 60) + `_${k}`; mapa.set(n, t); return { type: 'function', function: { name: n, description: `[${conectorDe(t.conector)?.nombre || t.conector}] ${String(t.tool.description || '').slice(0, 500)}`, parameters: t.tool.inputSchema && typeof t.tool.inputSchema === 'object' ? t.tool.inputSchema : { type: 'object', properties: {} } } }; });
       if (disponibles.length) enviar({ paso: `${new Set(disponibles.map((t) => t.conector)).size} conector(es) listos · ${tools.length} herramientas` });
       const messages = [...(b.sistema ? [{ role: 'system', content: txt(b.sistema, 40000) }] : []), { role: 'user', content: txt(b.mensaje, 120000) }];
-      const usadas = [];
+      const usadas = [], runKey = crypto.randomUUID();
       for (let vuelta = 0; vuelta < 8; vuelta++) {
         const r = await fetch(`${c.base}/chat/completions`, { method: 'POST', headers: cabeceras(c), body: JSON.stringify({ model: modelo, messages, ...(tools.length ? { tools, tool_choice: 'auto' } : {}) }) });
         if (!r.ok) { const t = await r.text().catch(() => ''); throw new Error(`${c.p.nombre} respondió ${r.status}${t ? `: ${t.slice(0, 200)}` : ''}`); }
@@ -206,12 +214,14 @@ export function rutas(on) {
         messages.push({ role: 'assistant', content: m.content || null, tool_calls: m.tool_calls });
         for (const call of m.tool_calls.slice(0, 5)) {
           const t = mapa.get(call.function?.name);
+          if (!t) throw new Error('Herramienta desconocida: no se ejecutó ninguna acción');
           let salida = 'Herramienta desconocida';
           if (t) {
             const nombre = `${conectorDe(t.conector)?.nombre || t.conector} · ${t.tool.name}`;
-            enviar({ paso: nombre }); usadas.push(nombre);
-            let args = {}; try { args = JSON.parse(call.function.arguments || '{}'); } catch {}
-            try { const o = await llamarTool(t.cx, t.sesion, t.tool.name, args); salida = (o.error ? 'ERROR: ' : '') + o.texto; } catch (e) { salida = `ERROR: ${e.message}`; }
+            let args; try { args = JSON.parse(call.function.arguments || '{}'); } catch { throw new Error('La herramienta recibió parámetros inválidos'); }
+            const accion = await proponerAccion(u, t, args, { scope: txt(b.client_slug, 60), key: `${runKey}:${call.id}` });
+            enviar({ fin: true, texto: `Revisa y aprueba «${nombre}» para ejecutarla.`, modelo: `${c.p.nombre} · ${modelo}`, usadas, aprobaciones: [accion] });
+            return res.end();
           }
           messages.push({ role: 'tool', tool_call_id: call.id, content: salida.slice(0, 12000) });
         }

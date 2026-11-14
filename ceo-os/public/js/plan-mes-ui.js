@@ -50,7 +50,7 @@ export function planPanel(o) {
 export async function pasarPlan(b, mes, plan, { techo = null } = {}) {
   const avisos = avisosPlan(plan, techo), fuera = avisos.filter((a) => a.fuera).length;
   if (avisos.length && !(await confirmAsk(`${avisos.length} slot${avisos.length === 1 ? '' : 's'} tienen algo por revisar (se marcan en rojo)${fuera ? `; ${fuera} pasa${fuera === 1 ? '' : 'n'} el techo del alcance: FUERA DEL ALCANCE, escálalo al CEO` : ''}. ¿Los paso así a Creatividad?`))) return null;
-  try { const r = await api(`plan/${encodeURIComponent(b.slug)}/${mes}/a-creatividad`, { method: 'POST', body: {} }); toast(r.nuevas ? `${r.nuevas} piezas nuevas en el calendario${r.puestas ? ` · ${r.puestas} puestas al día` : ''}` : `${r.puestas} piezas puestas al día`); return r.nuevas + r.puestas; }
+  try { const { prepararContenido } = await import('./content-policy-ui.js'); const source = await prepararContenido({ kind: 'post', profile: b.slug, date: `${mes}-01`, status: 'Idea' }); const r = await api(`plan/${encodeURIComponent(b.slug)}/${mes}/a-creatividad`, { method: 'POST', body: { viene_de: source.viene_de } }); toast(r.nuevas ? `${r.nuevas} piezas nuevas en el calendario${r.puestas ? ` · ${r.puestas} puestas al día` : ''}` : `${r.puestas} piezas puestas al día`); return r.nuevas + r.puestas; }
   catch (e) { toast(e.message, true); return null; }
 }
 

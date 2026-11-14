@@ -323,7 +323,7 @@ t('limpiarEntregable quita lo que pone el servidor y acota lo demás', () => {
 
 t('estáticas · collGuard bloquea deliverables y deliverable_versions; COLLS y scoper los tienen', () => {
   const index = fs.readFileSync(new URL('../api/index.js', import.meta.url), 'utf8'), access = fs.readFileSync(new URL('../api/_lib/access.js', import.meta.url), 'utf8');
-  const guard = index.slice(index.indexOf('async function collGuard'), index.indexOf('async function reglasPieza'));
+  const guard = index.slice(index.indexOf('async function collGuard'), index.indexOf('// El tipo de una tarea'));
   assert.match(guard, /coll === 'deliverables' \|\| coll === 'deliverable_versions'\) \{ res\.status\(404\)\.json\(\{ error: 'Los entregables están en \/api\/entregables' \}\)/, 'collGuard: 404 con el aviso');
   assert.match(access, /deliverables: 'content'/); assert.match(access, /deliverable_versions: 'content'/);
   const scoper = access.slice(access.indexOf('export async function scoper'), access.indexOf('export const inScope'));

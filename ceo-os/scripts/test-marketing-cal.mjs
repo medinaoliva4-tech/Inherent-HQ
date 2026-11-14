@@ -71,13 +71,13 @@ await t('409 (alguien la cambió): revierte, muestra el mensaje del servidor y p
   assert.deepEqual(r.lista, lista); assert.ok(r.mal); assert.equal(r.recargar, true); assert.match(r.msg, /Alguien más cambió esto/);
   assert.equal(falloAlMover(new Error()).mensaje, 'No se pudo mover la pieza'); assert.equal(falloAlMover(null).recargar, false);
 });
-await t('contrato con el servidor: el PUT de /api/db/content aplica reglasPieza (423) y la v (409); el mismo mes no se bloquea', () => {
-  const src = readFileSync(new URL('../api/index.js', import.meta.url), 'utf8');
-  assert.match(src, /on\('PUT', 'db\/:coll\/:id'[\s\S]*?reglasPieza\(b, await db\.get\('content', req\.params\.id\)\)[\s\S]*?status\(423\)/);
-  assert.match(src, /String\(cur\?\.date \|\| ''\)\.slice\(0, 7\) === mes\) return null/, 'solo cuando la fecha cambia de mes');
-  assert.match(src, /db\.update\(req\.params\.coll, req\.params\.id, b, Number\(b\.v\)[\s\S]*?status\(409\)/);
-  // y el candado de la pantalla sigue siendo el de siempre
-  assert.equal(candado('2026-11', ['2026-10']).cerrado, true); assert.equal(candado('2026-11', ['2026-10'], [{ mes: '2026-11' }]).cerrado, false);
+await t('la política común revalida el brief incluso al mover dentro del mismo mes', async () => {
+  const { evaluarContenido } = await import('../public/js/content-reglas.js');
+  const p = { kind: 'post', profile: 'demo', date: '2026-11-10', status: 'Idea' };
+  assert.equal(evaluarContenido({ role: 'coo' }, p, { ...p, date: '2026-11-09' }, { ficha: true, origen: true, brief: false }).code, 'SIN_BRIEF');
+  assert.equal(evaluarContenido({ role: 'coo' }, p, { ...p, date: '2026-11-09' }, { ficha: true, origen: true, brief: true }), null);
+  assert.equal(candado('2026-11', ['2026-10']).cerrado, true);
+  assert.equal(candado('2026-11', ['2026-10'], [{ mes: '2026-11' }]).cerrado, false);
 });
 
 // ---------- Bandas de campaña ----------
