@@ -10237,3 +10237,6 @@ button,a,.lc{touch-action:manipulation}
 :root[data-theme="light"] .llm-panel{background:var(--ui-surf2)}
 .ch-f:active,.llm .lc-send:active,.llm .ch-code-acciones button:active{transform:none}
 .ch-f:active,.ch-car-f:active,.llm .lc-chip:active{background:var(--ui-fill2)}
+/* Presionar conserva la posición del control: sin encogimientos ni saltos. */
+:is(.btn,.chip,.btn-icon,.lat-it,.lat-subs a,.lat-chat,.lat-yo-b,.lat-ib,.hoja-it,.nc-b,.gbtn,.ls-new,.lsg-c):active{transform:none;filter:none}
+:is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva):is(:hover,:active){transform:none}
