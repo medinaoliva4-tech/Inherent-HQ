@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Prueba local · Isla React</title>
+  </head>
+  <body>
+    <main class="probe-shell">
+      <header class="probe-header">
+        <div><p class="eyebrow">INHERENT OS · PRUEBA AISLADA</p><h1>Mapa del hilo</h1></div>
+        <span class="status">Datos sintéticos</span>
+      </header>
+      <section class="probe-grid" aria-label="Prueba de React Flow y gráfico">
+        <section class="panel flow-panel" aria-labelledby="flow-title">
+          <div class="panel-heading"><div><p class="eyebrow">REACT FLOW</p><h2 id="flow-title">Ruta de una oportunidad</h2></div><span class="panel-note">Selecciona un nodo</span></div>
+          <div id="react-island" class="island"></div>
+        </section>
+        <section class="panel chart-panel" aria-labelledby="chart-title">
+          <div class="panel-heading"><div><p class="eyebrow">RECHARTS</p><h2 id="chart-title">Avance por semana</h2></div><span class="panel-note">0–100 puntos</span></div>
+          <div id="chart-island" class="chart-island"></div>
+        </section>
+      </section>
+      <section class="panel event-panel" aria-live="polite">
+        <div><p class="eyebrow">VANILLA · EVENTO RECIBIDO</p><p id="event-value">Selecciona un nodo para emitir <code>inherent:vision-node-selected</code>.</p></div>
+        <span id="event-count" class="event-count">0 eventos</span>
+      </section>
+      <footer>Solo contenido local · sin API · sin login · sin escritura al OS</footer>
+    </main>
+    <script type="module" src="/src/legacy.js"></script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

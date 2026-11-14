@@ -1,0 +1,1521 @@
+{
+  "version": 1,
+  "date": "2026-11-13",
+  "base": "bb8188e",
+  "brief": "docs/OS-IDEAL-MAC-IPHONE.md",
+  "method": "Matriz derivada de la auditoría estática existente; ningún check heredado equivale a prueba de aceptación. Actualizar evidencia/estado tras revisar cada paquete.",
+  "requirements": [
+    {
+      "id": "PLAT-001",
+      "section": "§ 2 · El OS late con el ciclo",
+      "title": "Franja del ciclo 1→20 arriba en Hoy y en cada marca",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 22
+      },
+      "evidence": "El dato existe: `cycle.js` → `CYCLE` (8 fases con día inicio/fin). Solo se pinta en dos lugares sueltos: `production/planner-ui.js` (tira 1-20 con línea roja del 11) y `screens/workspace.js:89` (`diaCiclo`, un chip de texto solo en Production)",
+      "gap": "Un componente único `franjaCiclo()` (lógico en `visual.js`) montado en `screens/home.js` y en la cabecera de marca. Punto «hoy», hitos 11 y 20 gruesos",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Franja del ciclo 1→20 arriba en Hoy y en cada marca» en el flujo real y con el rol correcto. Resolver: Un componente único franjaCiclo() (lógico en visual.js) montado en screens/home.js y en la cabecera de marca. Punto «hoy», hitos 11 y 20 gruesos. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-002",
+      "section": "§ 2 · El OS late con el ciclo",
+      "title": "La franja cambia a ámbar y dice qué y de quién",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 23
+      },
+      "evidence": "Las reglas ya existen como avisos: `avisos-reglas/clientes-marcas.js` y `clientes-estrategia.js` (día 11, día 20, ficha)",
+      "gap": "Conectar la franja a `GET /api/avisos` filtrando las reglas del ciclo; hoy solo salen en `#/avisos`",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «La franja cambia a ámbar y dice qué y de quién» en el flujo real y con el rol correcto. Resolver: Conectar la franja a GET /api/avisos filtrando las reglas del ciclo; hoy solo salen en #/avisos. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-003",
+      "section": "§ 2 · El OS late con el ciclo",
+      "title": "El OS se reordena según el día",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 24
+      },
+      "evidence": "`screens/home.js` ordena «Necesita atención» por peso fijo `w` (`atencion()`, línea 244), no por día del ciclo",
+      "gap": "Una función pura `prioridadPorDia(dia)` que suba producción (6-11), montaje (12-15), programación (16-19), presentación (20)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «El OS se reordena según el día» en el flujo real y con el rol correcto. Resolver: Una función pura prioridadPorDia(dia) que suba producción (6-11), montaje (12-15), programación (16-19), presentación (20). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-004",
+      "section": "§ 2 · El OS late con el ciclo",
+      "title": "Tres preguntas en cada pantalla",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 25
+      },
+      "evidence": "Home: `hero()` dice «N cosas necesitan tu decisión hoy» (`home.js:277`). El resto de pantallas no sigue el patrón",
+      "gap": "Patrón de cabecera común (qué pasa · qué sigue · qué decides)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Tres preguntas en cada pantalla» en el flujo real y con el rol correcto. Resolver: Patrón de cabecera común (qué pasa · qué sigue · qué decides). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-005",
+      "section": "§ 2 · El OS late con el ciclo",
+      "title": "Bandeja «Decide»",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 26
+      },
+      "evidence": "Dos mitades sin unir: «Necesita atención» en `home.js:281` (solo CEO/COO; pagos por confirmar, cotizaciones, leads, revisiones, onboarding) y `#/avisos` (`screens/avisos.js`, 62 reglas en `avisos-reglas/`, posponer, un botón por aviso). Los entregables «En revisión» y las etapas de agentes en revisión **no** entran a ninguna de las dos de forma unificada",
+      "gap": "Una sola fuente `GET /api/decide` (o extender `avisos`) que junte: entregables `En revisión` que tu rol aprueba (`entregables.js` → `puedeAprobar`), runs de agentes en `revision`, `accounts.ads.ok` pendiente, estrategia por aprobar. Tarjeta de una frase + 2 botones. Vacío: «Nada espera por ti. Disfruta.»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Bandeja «Decide»» en el flujo real y con el rol correcto. Resolver: Una sola fuente GET /api/decide (o extender avisos) que junte: entregables En revisión que tu rol aprueba (entregables.js → puedeAprobar), runs de agentes en revision, accounts.ads.ok pendiente, estrategia por aprobar. Tarjeta de una frase + 2 botones. Vacío: «Nada espera por ti. Disfruta.». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-006",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Barra lateral colapsable, lo raro abajo",
+      "status": "implementado_sin_verificar",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 34
+      },
+      "evidence": "`app.js:127` `NAV` (con `pie: true` en Conexiones y Ajustes), `⌘B` en `app.js:450`, grupos que se abren y recuerdan",
+      "gap": "—",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Barra lateral colapsable, lo raro abajo» en el flujo real y con el rol correcto. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-007",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Número solo cuando algo te espera",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 35
+      },
+      "evidence": "Solo la campanita (`avisos-ui.js`, `[data-avisos-n]`)",
+      "gap": "Contadores por ítem de la barra (Tareas, CRM, Agentes)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Número solo cuando algo te espera» en el flujo real y con el rol correcto. Resolver: Contadores por ítem de la barra (Tareas, CRM, Agentes). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-008",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Paleta ⌘K",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 36
+      },
+      "evidence": "`search.js` (`openSearch`) + `app.js:516` (`jumpItems`) + `GET /api/search` (`api/index.js:1206`). Navega y busca clientes, proyectos, tareas, leads, cotizaciones, servicios, paquetes, docs, research, ideas",
+      "gap": "**No ejecuta acciones** («aprobar» no lista lo que espera tu OK) y **no entiende lenguaje natural**: es coincidencia de texto. Falta un registro de comandos (hay base en `llm/acciones-os.js`) y un intérprete (`orquestador.js` → `pedidoRuta` ya enruta texto a agente y cliente)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Paleta ⌘K» en el flujo real y con el rol correcto. Resolver: No ejecuta acciones («aprobar» no lista lo que espera tu OK) y no entiende lenguaje natural: es coincidencia de texto. Falta un registro de comandos (hay base en llm/acciones-os.js) y un intérprete (orquestador.js → pedidoRuta ya enruta texto a agente y cliente). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-009",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Panel derecho contextual de chat (⌘⌥I)",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 37
+      },
+      "evidence": "Lo que hay: «Ask InherentOS» **navega** a `#/chat` con borrador (`areas.js` → `abrirEnChat`); `strategy.js` y `diseno-chat.js` tienen chat lateral propio con `divisor.js`",
+      "gap": "Un panel montable sobre cualquier pantalla con el contexto (ruta, marca, pieza, día). El Chat ya recibe contexto por `os.llm.<correo>`",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Panel derecho contextual de chat (⌘⌥I)» en el flujo real y con el rol correcto. Resolver: Un panel montable sobre cualquier pantalla con el contexto (ruta, marca, pieza, día). El Chat ya recibe contexto por os.llm.<correo>. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-010",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Vista rápida con barra espaciadora",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 38
+      },
+      "evidence": "—",
+      "gap": "Todo. El `drawer()` de `core.js` sirve de contenedor",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Vista rápida con barra espaciadora» en el flujo real y con el rol correcto. Resolver: Todo. El drawer() de core.js sirve de contenedor. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-011",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Arrastrar y soltar",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 39
+      },
+      "evidence": "Kanban (`kanban.js`), leads entre etapas (`sales.js:246`), piezas a otro día (`content.js:350`, `posts.js:169`), notas (`areas.js:338`), archivo del Finder a una tarea (`taskcard.js:57`, `work.js:597`), archivos al Chat (`llm.js:393`), Library (`library-ui.js:41`)",
+      "gap": "Cruces entre módulos: tarea → calendario, idea → campaña, correo → lead",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Arrastrar y soltar» en el flujo real y con el rol correcto. Resolver: Cruces entre módulos: tarea → calendario, idea → campaña, correo → lead. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-012",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Atajos A / C / E / J / K / ⌘↩",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 40
+      },
+      "evidence": "Solo hay `⌘K`, `⌘B`, `⌘S` en el Tool Shell, Esc y flechas en menús (`ui.js`)",
+      "gap": "Capa única de atajos + chip visible al pasar el cursor",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Atajos A / C / E / J / K / ⌘↩» en el flujo real y con el rol correcto. Resolver: Capa única de atajos + chip visible al pasar el cursor. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-013",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Icono en la barra de menú + mini-panel",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 41
+      },
+      "evidence": "`escritorio/main.js` (350 líneas): una ventana + ventana de progreso de Laya. No usa `Tray`",
+      "gap": "`Tray` con día del ciclo, punto de pendiente y mini-panel «Decide»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Icono en la barra de menú + mini-panel» en el flujo real y con el rol correcto. Resolver: Tray con día del ciclo, punto de pendiente y mini-panel «Decide». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-014",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Widgets, Spotlight, Atajos de Apple",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 42
+      },
+      "evidence": "—",
+      "gap": "Requiere app nativa firmada (peldaño 2)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Widgets, Spotlight, Atajos de Apple» en el flujo real y con el rol correcto. Resolver: Requiere app nativa firmada (peldaño 2). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-015",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Touch ID en acciones graves",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 43
+      },
+      "evidence": "`systemPreferences` ya se importa en `main.js:9`, solo para el micrófono (línea 83). Cero WebAuthn en todo el repo",
+      "gap": "`systemPreferences.promptTouchID()` expuesto por `preload.js`, o passkeys en web. Ver § 3.4",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Touch ID en acciones graves» en el flujo real y con el rol correcto. Resolver: systemPreferences.promptTouchID() expuesto por preload.js, o passkeys en web. Ver § 3.4. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-016",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Ventanas sueltas que se recuerdan",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 44
+      },
+      "evidence": "Una sola `BrowserWindow` (`main.js:281`); recuerda zoom y tamaño. `agentes-ventana.js` es una pestaña dentro del Chat, no una ventana del sistema",
+      "gap": "`window.open` controlado por `setWindowOpenHandler` (`main.js:287`) + guardar posiciones en `app-ajustes.json`",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Ventanas sueltas que se recuerdan» en el flujo real y con el rol correcto. Resolver: window.open controlado por setWindowOpenHandler (main.js:287) + guardar posiciones en app-ajustes.json. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-017",
+      "section": "§ 3.1 · Mac — el taller",
+      "title": "Modo concentración ⌘⇧F",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 45
+      },
+      "evidence": "—",
+      "gap": "Todo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Modo concentración ⌘⇧F» en el flujo real y con el rol correcto. Resolver: Todo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-018",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Barra inferior de 5 puertas: Hoy · Decide · Chat · Calendario · Más",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 53
+      },
+      "evidence": "`app.js:459` `celHtml()`: hoy es **Hoy · Chat · Agentes · Calendario · Más**",
+      "gap": "Cambiar «Agentes» por «Decide» (cuando exista) y mover Agentes a «Más»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Barra inferior de 5 puertas: Hoy · Decide · Chat · Calendario · Más» en el flujo real y con el rol correcto. Resolver: Cambiar «Agentes» por «Decide» (cuando exista) y mover Agentes a «Más». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-019",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Botones primarios abajo",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 54
+      },
+      "evidence": "Hojas inferiores `.hoja` (`app.js:476`); `pocket.js` saca del cel lo que pide pantalla grande (`SOLO_COMPU`)",
+      "gap": "Auditar pantalla por pantalla; no hay regla en CSS que lo garantice",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Botones primarios abajo» en el flujo real y con el rol correcto. Resolver: Auditar pantalla por pantalla; no hay regla en CSS que lo garantice. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-020",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Gestos: deslizar para aprobar / pedir cambios, mantener, jalar para actualizar",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 55
+      },
+      "evidence": "Solo arrastre táctil del Kanban (`kanban.js:113`)",
+      "gap": "Todo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Gestos: deslizar para aprobar / pedir cambios, mantener, jalar para actualizar» en el flujo real y con el rol correcto. Resolver: Todo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-021",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Dynamic Island, Live Activities, widgets, Siri, botón de Acción, hoja de compartir",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 56
+      },
+      "evidence": "—",
+      "gap": "Solo con app nativa (peldaños 1-2)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Dynamic Island, Live Activities, widgets, Siri, botón de Acción, hoja de compartir» en el flujo real y con el rol correcto. Resolver: Solo con app nativa (peldaños 1-2). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-022",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Notificaciones push",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 57
+      },
+      "evidence": "`sw.js` (push + clic abre la URL), `avisos.js` (cliente), `api/_lib/avisos.js` (`avisos/clave`, `suscribir`, `quitar`, `probar`, `cron/avisos`; `nuevoLead` avisa al entrar un lead). Se activa en Mi perfil (`screens/me.js:21`)",
+      "gap": "**Sin botones de acción**: `showNotification` no manda `actions` y no hay ruta que apruebe desde el aviso. Sin push por entregable listo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Notificaciones push» en el flujo real y con el rol correcto. Resolver: Sin botones de acción: showNotification no manda actions y no hay ruta que apruebe desde el aviso. Sin push por entregable listo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-023",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "PWA instalable",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 58
+      },
+      "evidence": "`manifest.webmanifest` (`standalone`, 192/512/maskable), `index.html:5-14` (`viewport-fit=cover`, `apple-mobile-web-app-capable`, `apple-touch-icon` 180)",
+      "gap": "Sin `apple-touch-startup-image` (splash), sin `shortcuts` ni `id` en el manifest, `theme_color` fijo oscuro en el manifest",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «PWA instalable» en el flujo real y con el rol correcto. Resolver: Sin apple-touch-startup-image (splash), sin shortcuts ni id en el manifest, theme_color fijo oscuro en el manifest. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-024",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Face ID vía passkeys / WebAuthn",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 59
+      },
+      "evidence": "Cero referencias a `PublicKeyCredential` o `navigator.credentials`",
+      "gap": "Rutas `auth/passkey/*`, guardar credenciales por persona (`vault.js`), y un «step-up» antes de aprobar",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Face ID vía passkeys / WebAuthn» en el flujo real y con el rol correcto. Resolver: Rutas auth/passkey/*, guardar credenciales por persona (vault.js), y un «step-up» antes de aprobar. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-025",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Cámara y voz",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 60
+      },
+      "evidence": "Voz: `voz.js`, `voz-viva.js`, `voz-gemini.js`, `recorder.js`, `mic-worklet.js`, dictado en el Chat. Archivos: `<input type=file>` en tareas, moodboard, shot list",
+      "gap": "Captura directa con cámara (`capture`) ligada a una tarea o toma. Nota de voz → tarea o brief",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Cámara y voz» en el flujo real y con el rol correcto. Resolver: Captura directa con cámara (capture) ligada a una tarea o toma. Nota de voz → tarea o brief. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-026",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Sin conexión",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 61
+      },
+      "evidence": "`sw.js:1`: «No guarda páginas en caché». Sin `caches`, sin IndexedDB, sin cola de subida",
+      "gap": "Cachear el cascarón, lo de hoy y la jornada; cola «pendiente de subir»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Sin conexión» en el flujo real y con el rol correcto. Resolver: Cachear el cascarón, lo de hoy y la jornada; cola «pendiente de subir». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-027",
+      "section": "§ 3.2 · iPhone — el bolsillo",
+      "title": "Haptics",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 62
+      },
+      "evidence": "Un solo `navigator.vibrate?.(8)` al arrastrar (`kanban.js:113`); iOS Safari lo ignora",
+      "gap": "Puente nativo (peldaño 1)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Haptics» en el flujo real y con el rol correcto. Resolver: Puente nativo (peldaño 1). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-028",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "Peldaño 0 · web instalable",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 70
+      },
+      "evidence": "Ver PWA arriba. El login es una redirección de página completa, así que funciona en Safari y en la PWA instalada",
+      "gap": "Splash, modo sin conexión mínimo, probarlo en iPhone real y «Añadir al Dock» en Mac",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Peldaño 0 · web instalable» en el flujo real y con el rol correcto. Resolver: Splash, modo sin conexión mínimo, probarlo en iPhone real y «Añadir al Dock» en Mac. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-029",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "Flujo OAuth de hoy",
+      "status": "implementado_sin_verificar",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 71
+      },
+      "evidence": "`api/index.js:63` `GET auth/google` → cookie `ceoos_state` firmada (`Path=/api/auth`, 10 min) → Google → `GET auth/callback` (`:68`) valida `state`, llama `google.finishLogin` y emite la cookie `ceoos` (`session.js:37`: `HttpOnly; Secure; SameSite=Lax`, 30 días, 14 sin uso). `redirect_uri` fijo: `<APP_URL>/api/auth/callback` (`google.js:20`)",
+      "gap": "—",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Flujo OAuth de hoy» en el flujo real y con el rol correcto. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-030",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "Login dentro de una cápsula nativa",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 72
+      },
+      "evidence": "Hoy **todo depende de cookies del mismo navegador**: el `state` y la sesión. Si el login se abre en el navegador del sistema, la cookie queda allá y la cápsula no la ve",
+      "gap": "Ver la lista de abajo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Login dentro de una cápsula nativa» en el flujo real y con el rol correcto. Resolver: Ver la lista de abajo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-031",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "Truco actual en Mac",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 73
+      },
+      "evidence": "`escritorio/main.js:29` quita «Electron» del user agent para que Google deje entrar",
+      "gap": "Es frágil: Google puede bloquearlo. La vía correcta es la misma de la cápsula",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Truco actual en Mac» en el flujo real y con el rol correcto. Resolver: Es frágil: Google puede bloquearlo. La vía correcta es la misma de la cápsula. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-032",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "Carpeta ios/, npm run ios:instalar, guía de 6 pasos",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 74
+      },
+      "evidence": "No existe",
+      "gap": "Todo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «Carpeta ios/, npm run ios:instalar, guía de 6 pasos» en el flujo real y con el rol correcto. Resolver: Todo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-033",
+      "section": "§ 3.4 · Llevarlo a Apple: PWA y login con Google",
+      "title": "App de Mac firmada",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 75
+      },
+      "evidence": "`escritorio/firmar.js` firma «ad hoc»; se publica por GitHub Releases y se actualiza sola (`api/_lib/escritorio.js`)",
+      "gap": "Firma y notarización (cuenta de US$99)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «App de Mac firmada» en el flujo real y con el rol correcto. Resolver: Firma y notarización (cuenta de US$99). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-034",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.1 Tarjeta de entregable: quién y de dónde viene",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 91
+      },
+      "evidence": "`deliverables` con `entradas` (versiones aprobadas de otra herramienta), `ia.via`, historial con autor. `herramientas.js` trae `viene_de` / `va_a` por herramienta",
+      "gap": "«De dónde viene» es la herramienta, no un nodo del hilo. Solo cubre lo que vive en `deliverables`; piezas (`content`), videos, guiones, avatares y plan tienen cada uno su propio modelo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.1 Tarjeta de entregable: quién y de dónde viene» en el flujo real y con el rol correcto. Resolver: «De dónde viene» es la herramienta, no un nodo del hilo. Solo cubre lo que vive en deliverables; piezas (content), videos, guiones, avatares y plan tienen cada uno su propio modelo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-035",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.1 Estados",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 92
+      },
+      "evidence": "`entregables.js:13` `ESTADOS = Borrador · En revisión · Aprobado · Entregado`; `PASOS` (`:82`) es el único camino; el servidor da 409 `PASO`",
+      "gap": "El MD pide `Borrador · Para revisar · Aprobado · Cambios pedidos · Publicado`. Falta «Cambios pedidos» como estado (hoy es volver a Borrador con nota) y «Publicado». Decidir un solo vocabulario",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.1 Estados» en el flujo real y con el rol correcto. Resolver: El MD pide Borrador · Para revisar · Aprobado · Cambios pedidos · Publicado. Falta «Cambios pedidos» como estado (hoy es volver a Borrador con nota) y «Publicado». Decidir un solo vocabulario. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-036",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.1 Criterios como lista de verificación",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 93
+      },
+      "evidence": "`tool-shell.js:59` `faltasAhora()` junta `criterios.falta` + `tool.faltas()`; el botón Aprobar se apaga y dice por qué; el servidor responde 400 `FALTAS`",
+      "gap": "Los criterios **no salen de `inherent/08-CRITERIOS-DE-ACEPTACION.md`**: ese archivo solo se cita en el prompt del Chat (`llm/modos.js:45`). Falta parsearlo (`api/_lib/parse.js`) y ligar cada ficha a su tipo de entregable, con check por criterio",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.1 Criterios como lista de verificación» en el flujo real y con el rol correcto. Resolver: Los criterios no salen de inherent/08-CRITERIOS-DE-ACEPTACION.md: ese archivo solo se cita en el prompt del Chat (llm/modos.js:45). Falta parsearlo (api/_lib/parse.js) y ligar cada ficha a su tipo de entregable, con check por criterio. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-037",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.1 Tres botones: Aprobar · Pedir cambios · Escalar",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 94
+      },
+      "evidence": "Tool Shell: Enviar a revisión, Devolver a borrador, Aprobar, Marcar entregado (`tool-shell.js:196-204`). Videos y portal sí tienen Aprobar / Pedir cambios (`video.js` → `revisar`)",
+      "gap": "**«Escalar» no existe como acción en ninguna parte.** Unificar los tres botones en una sola pieza",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.1 Tres botones: Aprobar · Pedir cambios · Escalar» en el flujo real y con el rol correcto. Resolver: «Escalar» no existe como acción en ninguna parte. Unificar los tres botones en una sola pieza. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-038",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.1 Historial y «ver qué cambió»",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 95
+      },
+      "evidence": "`deliverable_versions` (solo se agregan), «Comparar versiones» lado a lado (`tool-shell.js:204`, `:251`). Plan del mes muestra diff por sección (`plan-mes-ui.js`)",
+      "gap": "Diferencia **visual** resaltada en el shell (hoy son dos columnas)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.1 Historial y «ver qué cambió»» en el flujo real y con el rol correcto. Resolver: Diferencia visual resaltada en el shell (hoy son dos columnas). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-039",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.2 «Decide»",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 96
+      },
+      "evidence": "Ver § 2",
+      "gap": "Ver § 2",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.2 «Decide»» en el flujo real y con el rol correcto. Resolver: Ver § 2. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-040",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.3 Hilo del cliente: nodos con estado y origen",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 97
+      },
+      "evidence": "**No hay modelo de nodos.** Lo más cercano: (a) grafo de herramientas `viene_de`/`va_a` en `herramientas.js`; (b) `strategy` `<slug>--viva` (estrategia en vivo, se aprueba completa); (c) campos de un run de agente con `estado: 'evidencia' | 'hipotesis'` y `fuentes` (`agentes-flujos.js:388`, `:449`); (d) `intel.js` + `intel-mapa.js` leen los entregables del repo del cliente",
+      "gap": "Colección `nodos` (o campo en `strategy`) con `{ id, tipo, estado: hipotesis|aprobado, viene_de[], cliente }`, propagación «a revisar» hacia abajo y el mapa visual. Es el hueco más grande de la Parte I",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.3 Hilo del cliente: nodos con estado y origen» en el flujo real y con el rol correcto. Resolver: Colección nodos (o campo en strategy) con { id, tipo, estado: hipotesis|aprobado, viene_de[], cliente }, propagación «a revisar» hacia abajo y el mapa visual. Es el hueco más grande de la Parte I. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-041",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.3 Trazar una pieza hasta el ICP",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 98
+      },
+      "evidence": "Las piezas llevan `pillar`, slot `MK-xxx` y campaña; no hay enlace a un dolor ni a un avatar",
+      "gap": "Campo de origen en `content` y validación en `reglasPieza` (`api/index.js`)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.3 Trazar una pieza hasta el ICP» en el flujo real y con el rol correcto. Resolver: Campo de origen en content y validación en reglasPieza (api/index.js). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-042",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.4 Estados vacíos que enseñan",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 99
+      },
+      "evidence": "`visual.js:204` `vacio()` y `fallo()`; `vacio-chat.js` («¿Platicamos para crearlo?»); regla «nunca 0» aplicada en Home, Indicadores, KPIs",
+      "gap": "Barrido de textos «No hay…» que queden",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.4 Estados vacíos que enseñan» en el flujo real y con el rol correcto. Resolver: Barrido de textos «No hay…» que queden. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-043",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.5 Selector de marca único",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 100
+      },
+      "evidence": "`contexto.js` (`selectorHtml`, `ponerContexto`, `os.ctx.<correo>`). Ya no está en la barra: vive en el Chat y en las mesas de área (`area-mesas.js`)",
+      "gap": "Volver a ponerlo arriba, global",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.5 Selector de marca único» en el flujo real y con el rol correcto. Resolver: Volver a ponerlo arriba, global. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-044",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.5 Color y monograma por marca",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 101
+      },
+      "evidence": "`visual.js:147-170`: `iniciales`, `tonoDe` (6 tonos derivados del nombre), `monograma`",
+      "gap": "El color es calculado, no de la marca. Guardar color por cliente y usarlo en el selector",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.5 Color y monograma por marca» en el flujo real y con el rol correcto. Resolver: El color es calculado, no de la marca. Guardar color por cliente y usarlo en el selector. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-045",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.5 Atajo ⌘1…9",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 102
+      },
+      "evidence": "—",
+      "gap": "Todo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.5 Atajo ⌘1…9» en el flujo real y con el rol correcto. Resolver: Todo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-046",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.6 Chat de cada pantalla con chips",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 103
+      },
+      "evidence": "«Ask InherentOS» (barra y Home), `SUGERENCIAS` por modo (`llm/modos.js`), `sugerencia-chat.js` (tarjeta sobre la caja, sale de las reglas de Avisos)",
+      "gap": "Panel en sitio (ver § 3.1) y chips por pantalla, no por modo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.6 Chat de cada pantalla con chips» en el flujo real y con el rol correcto. Resolver: Panel en sitio (ver § 3.1) y chips por pantalla, no por modo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-047",
+      "section": "§ 4 · Las piezas que se repiten",
+      "title": "4.7 Semáforo de conexiones",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 104
+      },
+      "evidence": "`mcp-directorio.js` + `GET conectores/estado` (por persona: conectado o no, probar, desconectar); `GET /api/status` (Google, base, repo); capacidades del Chat con `lista · sin_conexion · apagada` y motivo (`llm/capacidades.js`)",
+      "gap": "Tres estados (falta «necesita permiso»), Zernio/Windsor/Apify/Meta en la misma vista, y **qué promesa queda en pausa**. Ojo: `CAPACIDADES_RESPALDO` es un mock marcado mientras el puente no publique `GET /capacidades`",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «4.7 Semáforo de conexiones» en el flujo real y con el rol correcto. Resolver: Tres estados (falta «necesita permiso»), Zernio/Windsor/Apify/Meta en la misma vista, y qué promesa queda en pausa. Ojo: CAPACIDADES_RESPALDO es un mock marcado mientras el puente no publique GET /capacidades. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-048",
+      "section": "§ 5 · Área por área",
+      "title": "5.1 Hoy",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 112
+      },
+      "evidence": "`screens/home.js` (369 líneas): hero, «Ask InherentOS», 4 KPIs con fuente, actividad reciente, Importante, «Necesita atención» (CEO/COO), agenda, contenido del mes",
+      "gap": "Franja, Decide de 3 tarjetas, «lo que se movió solo» por agente, Empezar/Cerrar el día, Posponer en tarjeta (existe solo en Avisos), subpágina Semana, botón «+» de captura, «esto puede esperar»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.1 Hoy» en el flujo real y con el rol correcto. Resolver: Franja, Decide de 3 tarjetas, «lo que se movió solo» por agente, Empezar/Cerrar el día, Posponer en tarjeta (existe solo en Avisos), subpágina Semana, botón «+» de captura, «esto puede esperar». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-049",
+      "section": "§ 5 · Área por área",
+      "title": "5.2 Chat",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 113
+      },
+      "evidence": "`screens/llm.js` (1,452 líneas) + `llm/*` (18 módulos). Hay: modos por área, `@departamento` (`llm/departamentos.js`, 9), barra de capacidades con estado y motivo (`llm/capacidades.js`), equipo planifica/ejecuta y presets (`llm/modelos-tabla.js`), carpetas/proyectos (`llm/carpetas.js`), modo privado, ramificar, Brújula, dictado, tarjeta de gasto de imágenes (`chat-imagenes.js`, `api/_lib/chat-imagenes.js`), avisos en el chat (`chat-avisos*.js`), UI generada (`llm/genui.js`)",
+      "gap": "Capacidades reales dependen del puente (hoy mock salvo Código). Cámara como entrada, mantener para hablar, plegar respuestas largas, «continuar en otro dispositivo» (las conversaciones viven en la compu de cada quien). `Ajustes → IA` guarda el uso `chat` pero `llm.js` no lo consume († MAPA)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.2 Chat» en el flujo real y con el rol correcto. Resolver: Capacidades reales dependen del puente (hoy mock salvo Código). Cámara como entrada, mantener para hablar, plegar respuestas largas, «continuar en otro dispositivo» (las conversaciones viven en la compu de cada quien). Ajustes → IA guarda el uso chat pero llm.js no lo consume († MAPA). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-050",
+      "section": "§ 5 · Área por área",
+      "title": "5.3 Agentes",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 114
+      },
+      "evidence": "`screens/agentes.js`, `agentes-ui.js` (lista + vista tablero con `tablero.js`: Encargo · Diagnóstico · Plan · Producción · Revisión · Entrega), `agentes-portal.js` (Resumen · Flujo · Trabajos · Configuración), `agentes-editor.js`, `agentes-run.js`, `api/_lib/agentes.js`. Estados Borrador · Activo · Pausado; revisión por etapa con CEO/COO",
+      "gap": "La «línea de producción» por las 9 áreas (el tablero es por tipo de etapa). «Bloqueado → ver qué falta» con botón de avisar. Modo borrador/activo de Community y Posting. Voz y cara por agente. Push solo de excepciones",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.3 Agentes» en el flujo real y con el rol correcto. Resolver: La «línea de producción» por las 9 áreas (el tablero es por tipo de etapa). «Bloqueado → ver qué falta» con botón de avisar. Modo borrador/activo de Community y Posting. Voz y cara por agente. Push solo de excepciones. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-051",
+      "section": "§ 5 · Área por área",
+      "title": "5.4 Calendario",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 115
+      },
+      "evidence": "`screens/calendario.js` (Trabajo y Contenido), `calendario-trabajo.js`, `calendario-contenido.js`, `calendario-vistas.js`. Arrastrar pieza a otro día con rechazo 423/409 del servidor; hitos 1, 11 y 20 como eventos; Google Calendar († `api/index.js`)",
+      "gap": "Pestaña «Ciclo» por marca, pestaña Equipo, overlay 1→20 sobre el mes, barra «cuánto cabe» (el medidor existe solo en `plan-mes-ui.js` y solo en interfaz), exportar semana, vista Agenda en cel",
+      "verification": {
+        "code": "requiere_revisar_referencia",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.4 Calendario» en el flujo real y con el rol correcto. Resolver: Pestaña «Ciclo» por marca, pestaña Equipo, overlay 1→20 sobre el mes, barra «cuánto cabe» (el medidor existe solo en plan-mes-ui.js y solo en interfaz), exportar semana, vista Agenda en cel. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-052",
+      "section": "§ 5 · Área por área",
+      "title": "5.5 Proyectos",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 116
+      },
+      "evidence": "`screens/operations.js` (Kanban único, calendario, timeline), `project-page.js`, `flow.js` (`POST flow/activate` activa paquete y crea tareas de las recetas)",
+      "gap": "Tablero por etapas del pipeline × marca, mover solo si cumple criterios, salud por marca en un color con causa, subpágina «Qué falta» (existe `blockersOf` en `cycle.js`, importado por `api/index.js:48`)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.5 Proyectos» en el flujo real y con el rol correcto. Resolver: Tablero por etapas del pipeline × marca, mover solo si cumple criterios, salud por marca en un color con causa, subpágina «Qué falta» (existe blockersOf en cycle.js, importado por api/index.js:48). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-053",
+      "section": "§ 5 · Área por área",
+      "title": "5.6 Tareas",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 117
+      },
+      "evidence": "`screens/work.js` (723 líneas), `taskcard.js`: tipo, dependencias con candado 423, checklist marcable, SOP ligado, adjuntar arrastrando, perfiles de trabajo",
+      "gap": "SOP **embebido** como pasos (hoy es un enlace a la Library o `https`), vistas Hoy/Semana/Por marca, `⌘↩` completa, reasignar con razón, deslizar para completar, cámara con shot list",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.6 Tareas» en el flujo real y con el rol correcto. Resolver: SOP embebido como pasos (hoy es un enlace a la Library o https), vistas Hoy/Semana/Por marca, ⌘↩ completa, reasignar con razón, deslizar para completar, cámara con shot list. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-054",
+      "section": "§ 5 · Área por área",
+      "title": "5.7 CRM / Ventas",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 118
+      },
+      "evidence": "`screens/sales.js` (788 líneas), `ventas-flujo.js`, `ventas-meta.js`, `api/_lib/leads.js`. **El cronómetro de primera respuesta existe:** `first_reply_at`, `waitTone` (verde < 1 min, ámbar < 15, rojo), KPI «Primera respuesta · meta 1 min», bandeja «Sin responder», motivo de pérdida obligatorio, siguiente paso y fecha obligatorios, Fuentes, cotización con PDF, entrada pública `POST /api/intake/<clave>`, push al entrar un lead",
+      "gap": "Anillo de 60 s (hoy es un contador de texto), botones Llamar / WhatsApp / «Responder con el agente», historial unificado con WhatsApp y correo, «caso en tres líneas». Etapas distintas a las del MD (hoy: Prospecto · Nuevo · Contactado · Reunión · Propuesta · Ganado · Perdido)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.7 CRM / Ventas» en el flujo real y con el rol correcto. Resolver: Anillo de 60 s (hoy es un contador de texto), botones Llamar / WhatsApp / «Responder con el agente», historial unificado con WhatsApp y correo, «caso en tres líneas». Etapas distintas a las del MD (hoy: Prospecto · Nuevo · Contactado · Reunión · Propuesta · Ganado · Perdido). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-055",
+      "section": "§ 5 · Área por área",
+      "title": "5.8 Clientes",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 119
+      },
+      "evidence": "`screens/clients.js` (Inicio · Links · Servicio · Presupuestos · Portal y accesos), `client-service.js`, `budgets.js`, onboarding con avance (`flow.js`)",
+      "gap": "El hilo en la ficha, cuentas conectadas, «Mandar recordatorio» por la secretaria",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.8 Clientes» en el flujo real y con el rol correcto. Resolver: El hilo en la ficha, cuentas conectadas, «Mandar recordatorio» por la secretaria. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-056",
+      "section": "§ 5 · Área por área",
+      "title": "5.8 Portal del cliente",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 120
+      },
+      "evidence": "`screens/portal.js` (Resumen · Contenido · Entregas · Metas), `api/_lib/portal.js` (`decidir`, `rutasVideo`), rutas `GET portal`, `POST portal/content/:id`, `PUT portal/onboarding`, `POST portal/invite` (`api/index.js:829-885`). Aprobar o pedir cambios de piezas y videos con nota; costos fuera (`stripCosts`, `intel.limpiar`); entra solo el rol `client` con su `client_slug`",
+      "gap": "**No hay enlace firmado de un solo uso:** el cliente entra con Google (cliente OAuth aparte, `GOOGLE_PORTAL_CLIENT_ID`). **No hay aprobación en 10 s sin cuenta.** **No hay presentación del día 20** (solo una fila «presentación» en Entregas). Sin nota de voz. «Revocar acceso» no tiene botón propio (se desactiva en `team`). El reporte del Performance Center no llega al portal († MAPA § 10)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.8 Portal del cliente» en el flujo real y con el rol correcto. Resolver: No hay enlace firmado de un solo uso: el cliente entra con Google (cliente OAuth aparte, GOOGLE_PORTAL_CLIENT_ID). No hay aprobación en 10 s sin cuenta. No hay presentación del día 20 (solo una fila «presentación» en Entregas). Sin nota de voz. «Revocar acceso» no tiene botón propio (se desactiva en team). El reporte del Performance Center no llega al portal († MAPA § 10). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-057",
+      "section": "§ 5 · Área por área",
+      "title": "5.9 Servicios y ficha",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 121
+      },
+      "evidence": "`screens/services.js` (paquetes · servicios · especialistas · responsabilidades), `catalogo.js`, `servicios-paquetes.js`, `paquetes.js`, `levels.js`, `ficha.js`, `api/_lib/internos.js` (baseline y costos solo CEO), cotizador en `sales.js`",
+      "gap": "Constructor «alcance primero», «guardar como ficha del cliente» (la ficha la escribe el CEO desde Estrategia con `escribirSeguro`), «subir de nivel» con diagnóstico, calculadora de bolsillo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.9 Servicios y ficha» en el flujo real y con el rol correcto. Resolver: Constructor «alcance primero», «guardar como ficha del cliente» (la ficha la escribe el CEO desde Estrategia con escribirSeguro), «subir de nivel» con diagnóstico, calculadora de bolsillo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-058",
+      "section": "§ 5 · Área por área",
+      "title": "5.10 Finanzas 🔒",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 122
+      },
+      "evidence": "`screens/finance.js` (Resumen, Facturas, Movimientos, Costos, Rentabilidad, Precios, Pagos), `facturas.js`, `facturas-ui.js`, `finscope.js`, `movimientos-*.js`, `api/_lib/facturas.js`. **Servidor:** `CEO_READ` / `CEO_WRITE` (`access.js:46-50`), `ceoFin` en cada escritura (`api/index.js:701`), `stripInvoice` (por pagar solo CEO), `CAP = { finanzas: 'resumen' }` para quien no es CEO (`roleviews.js:69`)",
+      "gap": "**El COO por defecto no ve Finanzas** (`ROLE_AREAS.coo` la excluye, `roleviews.js:74`), pero sí ve costos dentro de entregables y jornadas (`seesCosts`, `veMontos`): decide si eso es lo que quieres. Falta: SAT, pronóstico 30/60/90, «cerrar el mes», foto de recibo, «¿cuántas cuentas aguanto?», Face ID. Riesgo: `GET finance/sheet` (`:685`) entrega el CSV completo de la hoja (ingresos **y gastos**) a cualquiera con Finanzas en «resumen»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.10 Finanzas 🔒» en el flujo real y con el rol correcto. Resolver: El COO por defecto no ve Finanzas (ROLE_AREAS.coo la excluye, roleviews.js:74), pero sí ve costos dentro de entregables y jornadas (seesCosts, veMontos): decide si eso es lo que quieres. Falta: SAT, pronóstico 30/60/90, «cerrar el mes», foto de recibo, «¿cuántas cuentas aguanto?», Face ID. Riesgo: GET finance/sheet (:685) entrega el CSV completo de la hoja (ingresos y gastos) a cualquiera con Finanzas en «resumen». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-059",
+      "section": "§ 5 · Área por área",
+      "title": "5.11 Estrategia",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 123
+      },
+      "evidence": "`screens/strategy.js`, `estrategia-viva*.js`, `strategy/*` (9 herramientas), `avatar-ui.js`, `bullseye.js`, `api/_lib/estrategia.js`. Gate del CEO en el servidor (bloques, estrategia en vivo, etapa); `SIN_FILAS`; calculadora en `embudo-datos.js` †",
+      "gap": "Mapa del hilo en el centro, «cada afirmación con su fuente» de forma sistemática, pantalla de aprobación de 1 pantalla para iPhone, nota de voz para devolver",
+      "verification": {
+        "code": "requiere_revisar_referencia",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.11 Estrategia» en el flujo real y con el rol correcto. Resolver: Mapa del hilo en el centro, «cada afirmación con su fuente» de forma sistemática, pantalla de aprobación de 1 pantalla para iPhone, nota de voz para devolver. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-060",
+      "section": "§ 5 · Área por área",
+      "title": "5.12 Marketing",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 124
+      },
+      "evidence": "`marketing/*` (Viral Lab, hooks, copy, funnel, ads, rendimiento), `plan-mes*.js`, `campanas*.js`, `investigacion.js`, `referentes.js`, `mesas.js`",
+      "gap": "Costo de scraping por corrida a la vista, «quemar contenido», feed vertical y deslizar en iPhone, «por qué funciona» con evidencia (parcial en Pattern Report †)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.12 Marketing» en el flujo real y con el rol correcto. Resolver: Costo de scraping por corrida a la vista, «quemar contenido», feed vertical y deslizar en iPhone, «por qué funciona» con evidencia (parcial en Pattern Report †). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-061",
+      "section": "§ 5 · Área por área",
+      "title": "5.13 Branding y diseño",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 125
+      },
+      "evidence": "`creative/*` (DNA, moodboard, dirección, consistencia, rendimiento, `criterio-elo.js`), `design-system-ui.js`, `sistema-visual.js`, `diseno-chat.js`, `ojo.js`, `revisor.js`",
+      "gap": "«Validar claim» como botón, feed de revisión tipo Instagram, **comentar con coordenadas sobre la pieza** (los videos sí comentan al segundo), «Abrir en Figma» exacto",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.13 Branding y diseño» en el flujo real y con el rol correcto. Resolver: «Validar claim» como botón, feed de revisión tipo Instagram, comentar con coordenadas sobre la pieza (los videos sí comentan al segundo), «Abrir en Figma» exacto. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-062",
+      "section": "§ 5 · Área por área",
+      "title": "5.14 Producción",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 126
+      },
+      "evidence": "`production/*` (brief, shot list con «Grabada», planner con tira 1-20 y medidor de horas, repurposing, review), `creacion-ui.js`, `video-ui.js`, candado 423 `DIA_11` (`reglasShoot`, `api/index.js`)",
+      "gap": "**No hay modo rodaje:** sin pantalla de set, sin cronómetro, sin captura directa, sin offline, sin barra «¿llegamos?»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.14 Producción» en el flujo real y con el rol correcto. Resolver: No hay modo rodaje: sin pantalla de set, sin cronómetro, sin captura directa, sin offline, sin barra «¿llegamos?». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-063",
+      "section": "§ 5 · Área por área",
+      "title": "5.15 Community y Posting",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 127
+      },
+      "evidence": "`api/_lib/zernio.js` (un solo `GET`, solo lectura) + `GET community/inbox` (`api/index.js:521`) + una pestaña dentro de `screens/content.js:142` que dice «Se contesta en Zernio». Por marca, no unificada",
+      "gap": "Bandeja única, clasificación, modo borrador/activo, responder, ocultar spam, ficha de respuestas, cola de Posting, reintentar fallidas, publicar/reprogramar. Zernio hoy no escribe nada desde el OS",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.15 Community y Posting» en el flujo real y con el rol correcto. Resolver: Bandeja única, clasificación, modo borrador/activo, responder, ocultar spam, ficha de respuestas, cola de Posting, reintentar fallidas, publicar/reprogramar. Zernio hoy no escribe nada desde el OS. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-064",
+      "section": "§ 5 · Área por área",
+      "title": "5.16 Ads 🔒",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 128
+      },
+      "evidence": "GATE en el servidor: `PUT ads/accounts/:slug` (`api/index.js:893-908`): el OK solo lo da el CEO, vale para ese mes y ese presupuesto, y se cae si cambia el monto. `ads-studio.js` (solo CEO aprueba y «lanza» = crea tarea), `ads.js` (Windsor, solo lectura), `marketing/ads-intel-ui.js`, recomendaciones con evidencia",
+      "gap": "Pantalla de GATE 2 «Subir de $X a $Y» en iPhone con Face ID, reloj de arena del gasto, atribución con modelo declarado, pausar campaña desde el OS (no hay escritura a plataformas)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.16 Ads 🔒» en el flujo real y con el rol correcto. Resolver: Pantalla de GATE 2 «Subir de $X a $Y» en iPhone con Face ID, reloj de arena del gasto, atribución con modelo declarado, pausar campaña desde el OS (no hay escritura a plataformas). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-065",
+      "section": "§ 5 · Área por área",
+      "title": "5.17 Resultados",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 129
+      },
+      "evidence": "`marketing/rendimiento-ui.js` + `reporte.js` (reporte del mes con KPIs y fuente), `creative/criterio-elo.js` (comparación por pares), `api/_lib/results.js` (sin pantalla propia), `marketing-ui.js` (qué escalar y qué parar)",
+      "gap": "«Cerrar el mes», «Generar la presentación del 20», «Mandar al cliente», «Proponer ajuste de estrategia» que entre al ciclo siguiente",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.17 Resultados» en el flujo real y con el rol correcto. Resolver: «Cerrar el mes», «Generar la presentación del 20», «Mandar al cliente», «Proponer ajuste de estrategia» que entre al ciclo siguiente. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-066",
+      "section": "§ 5 · Área por área",
+      "title": "5.18 Consulting",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 130
+      },
+      "evidence": "`consulting/*` (8 herramientas con módulo puro + vista), `screens/consulting.js`, alcance en servidor (`alcanceConsulting`, 403 `FUERA_DEL_ALCANCE`), `mentors.js`",
+      "gap": "Captura de visita (voz y fotos ligadas a un marco), «Pedir mentor» con la regla de $180",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.18 Consulting» en el flujo real y con el rol correcto. Resolver: Captura de visita (voz y fotos ligadas a un marco), «Pedir mentor» con la regla de $180. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-067",
+      "section": "§ 5 · Área por área",
+      "title": "5.19 Equipo",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 131
+      },
+      "evidence": "`screens/team.js` (organigrama, perfiles, roles, Vistas por rol con `oculto · resumen · completo · edita`, hechas cumplir en servidor)",
+      "gap": "Capacidad en horas y «cuántas cuentas aguanta»; directorio con llamar/WhatsApp",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.19 Equipo» en el flujo real y con el rol correcto. Resolver: Capacidad en horas y «cuántas cuentas aguanta»; directorio con llamar/WhatsApp. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-068",
+      "section": "§ 5 · Área por área",
+      "title": "5.19 Visión",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 132
+      },
+      "evidence": "`screens/vision.js` (`settings` `vision`)",
+      "gap": "Recordarla en momentos clave",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.19 Visión» en el flujo real y con el rol correcto. Resolver: Recordarla en momentos clave. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-069",
+      "section": "§ 5 · Área por área",
+      "title": "5.19 Roadmap",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 133
+      },
+      "evidence": "`screens/roadmap.js`: megaproyectos → proyectos → tareas",
+      "gap": "No lee `PENDIENTES.md`; sin botón «Decidir»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.19 Roadmap» en el flujo real y con el rol correcto. Resolver: No lee PENDIENTES.md; sin botón «Decidir». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-070",
+      "section": "§ 5 · Área por área",
+      "title": "5.19 Laya",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 134
+      },
+      "evidence": "`laya.js`, `laya-ui.js`, `api/_lib/laya.js`, `creative/criterio-elo.js`",
+      "gap": "Juego «¿cuál?» deslizable en iPhone",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.19 Laya» en el flujo real y con el rol correcto. Resolver: Juego «¿cuál?» deslizable en iPhone. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-071",
+      "section": "§ 5 · Área por área",
+      "title": "5.19 Configuración",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 135
+      },
+      "evidence": "`screens/setup.js`, `recetas.js`, `recipes.js`, `responsabilidades.js` (solo CEO)",
+      "gap": "«Cada ajuste dice qué cambia antes de guardar»",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.19 Configuración» en el flujo real y con el rol correcto. Resolver: «Cada ajuste dice qué cambia antes de guardar». Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-072",
+      "section": "§ 5 · Área por área",
+      "title": "5.20 Indicadores",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 136
+      },
+      "evidence": "KPIs de Home con fuente y «—» sin dato; `api/_lib/results.js`; `GET marketing/:slug/kpis`; `charts.js`, `cifras.js`",
+      "gap": "Métrica única de crecimiento por marca (decisión § 9.1); tiempo de respuesta en Home",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.20 Indicadores» en el flujo real y con el rol correcto. Resolver: Métrica única de crecimiento por marca (decisión § 9.1); tiempo de respuesta en Home. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-073",
+      "section": "§ 5 · Área por área",
+      "title": "5.21 Biblioteca",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 137
+      },
+      "evidence": "`screens/library.js`, `library-ui.js`, `library-tree.js`, `conocimiento.js`",
+      "gap": "Búsqueda por significado (hoy es por texto en `GET /api/search`)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.21 Biblioteca» en el flujo real y con el rol correcto. Resolver: Búsqueda por significado (hoy es por texto en GET /api/search). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-074",
+      "section": "§ 5 · Área por área",
+      "title": "5.21 Conexiones",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 138
+      },
+      "evidence": "`#/ai/mcps` → `mcp-directorio.js`, `conectores.js`, `api/_lib/conectores.js` (OAuth + PKCE + tokens cifrados)",
+      "gap": "Ver § 4.7",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.21 Conexiones» en el flujo real y con el rol correcto. Resolver: Ver § 4.7. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-075",
+      "section": "§ 5 · Área por área",
+      "title": "5.21 Ajustes",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 139
+      },
+      "evidence": "`screens/ajustes.js` (solo IA: proveedores y usos). Día/noche manual (`tema-boot.js`: `os.modo`, **oscuro por defecto, no sigue al sistema**). `prefers-reduced-motion` respetado en CSS (69 reglas)",
+      "gap": "Automático día/noche, notificaciones por tipo, no molestar, atajos",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.21 Ajustes» en el flujo real y con el rol correcto. Resolver: Automático día/noche, notificaciones por tipo, no molestar, atajos. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-076",
+      "section": "§ 5 · Área por área",
+      "title": "5.21 Avisos",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 140
+      },
+      "evidence": "`screens/avisos.js`, `avisos-ui.js`, `avisos-reglas/*` (62 reglas, cada una citando el manual), `api/_lib/avisos.js`, `avisos-datos.js`. Un botón por aviso, posponer con límites",
+      "gap": "Agrupar por marca; separar lo informativo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.21 Avisos» en el flujo real y con el rol correcto. Resolver: Agrupar por marca; separar lo informativo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-077",
+      "section": "§ 5 · Área por área",
+      "title": "5.21 Mi perfil",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 141
+      },
+      "evidence": "`screens/me.js`: foto, contacto, conexiones, avisos del dispositivo, primer día, videos vistos",
+      "gap": "**El modo «Mensajes mínimos» no existe.** Tampoco capacidad ni modo de trabajo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «5.21 Mi perfil» en el flujo real y con el rol correcto. Resolver: El modo «Mensajes mínimos» no existe. Tampoco capacidad ni modo de trabajo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-078",
+      "section": "§ 6 · Rituales",
+      "title": "6.1 Día 1 · la sala de la reunión",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 149
+      },
+      "evidence": "`meetings.js`, `library-entrevista.js`, `recorder.js` (grabación), onboarding en `flow.js`",
+      "gap": "Sala armada sola (ficha + hilo + guion), transcripción en vivo, proponer nodos como hipótesis",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.1 Día 1 · la sala de la reunión» en el flujo real y con el rol correcto. Resolver: Sala armada sola (ficha + hilo + guion), transcripción en vivo, proponer nodos como hipótesis. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-079",
+      "section": "§ 6 · Rituales",
+      "title": "6.2 Aprobar la estrategia y que el ciclo arranque solo",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 150
+      },
+      "evidence": "Aprobación: `POST estrategia/:slug/viva/aprobar`. Tareas del ciclo: `cycle.js` → `tasksFor` + `flow.js`",
+      "gap": "Encadenar una cosa con la otra: hoy aprobar no crea tareas ni avisa a los roles",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.2 Aprobar la estrategia y que el ciclo arranque solo» en el flujo real y con el rol correcto. Resolver: Encadenar una cosa con la otra: hoy aprobar no crea tareas ni avisa a los roles. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-080",
+      "section": "§ 6 · Rituales",
+      "title": "6.3 Día 6-11 · producir",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 151
+      },
+      "evidence": "Candado `DIA_11` y avisos del día 11",
+      "gap": "Modo rodaje; la franja que pregunta desde el día 9",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.3 Día 6-11 · producir» en el flujo real y con el rol correcto. Resolver: Modo rodaje; la franja que pregunta desde el día 9. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-081",
+      "section": "§ 6 · Rituales",
+      "title": "6.4 Día 12-19 · feed de revisión y programar con un botón",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 152
+      },
+      "evidence": "Review de video existe; no hay feed ni cola de Posting",
+      "gap": "Feed de revisión; `POST` a Zernio para programar (no existe escritura)",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.4 Día 12-19 · feed de revisión y programar con un botón» en el flujo real y con el rol correcto. Resolver: Feed de revisión; POST a Zernio para programar (no existe escritura). Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-082",
+      "section": "§ 6 · Rituales",
+      "title": "6.5 Día 20 · «Presentar»",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 153
+      },
+      "evidence": "Solo el evento en el calendario y la fila en Entregas del portal",
+      "gap": "Armado de la presentación con piezas reales + modo presentar",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.5 Día 20 · «Presentar»» en el flujo real y con el rol correcto. Resolver: Armado de la presentación con piezas reales + modo presentar. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-083",
+      "section": "§ 6 · Rituales",
+      "title": "6.6 Lunes · resumen",
+      "status": "parcial",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 154
+      },
+      "evidence": "`cron/avisos` manda cada mañana lo urgente por push (`api/_lib/avisos.js:125`)",
+      "gap": "Resumen semanal de «tres cosas» a la hora elegida",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.6 Lunes · resumen» en el flujo real y con el rol correcto. Resolver: Resumen semanal de «tres cosas» a la hora elegida. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    },
+    {
+      "id": "PLAT-084",
+      "section": "§ 6 · Rituales",
+      "title": "6.7 «Cerrar por hoy»",
+      "status": "falta",
+      "source": {
+        "file": "docs/auditoria-vision/01-plataforma.md",
+        "line": 155
+      },
+      "evidence": "—",
+      "gap": "Todo",
+      "verification": {
+        "code": "inspeccion_inicial",
+        "browser": "pendiente",
+        "api_tests": "pendiente"
+      },
+      "acceptance": "Demostrar «6.7 «Cerrar por hoy»» en el flujo real y con el rol correcto. Resolver: Todo. Si hay UI, revisar claro/oscuro en 1440/390 px a escala 2 y teclado; si hay efectos, probar servidor, aislamiento, conflicto de versión y aprobación aplicables. No aceptar mock como conexión real."
+    }
+  ]
+}

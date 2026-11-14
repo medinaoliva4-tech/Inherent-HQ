@@ -1,0 +1,23 @@
+# Decisiones de implementación de la visión
+
+Fecha: 2026-11-13. Fuente: `OS-IDEAL-MAC-IPHONE.md` §9 y misión del CEO: decidir sin detener la sesión. Estas decisiones no cambian el manual ni autorizan publicar, enviar, gastar o desplegar.
+
+| ID | Decisión | Motivo | Cómo revertirla |
+|---|---|---|---|
+| D01 · métrica por marca | Leer la meta aprobada de la marca; si falta, mostrar `⚠️ SIN DATOS · falta definir la métrica de crecimiento`. Proponer una métrica según el cuello, sin guardarla como aprobada. | No existe una métrica universal recomendada en §9. Inventar una confundiría hipótesis con acuerdo comercial. | El CEO elige otra métrica en la meta de la marca; se conserva la anterior en historial. |
+| D02 · Apple | PWA + cápsula por cable con Personal Team. Preparar contratos para capacidades de cuenta pagada, desactivadas con razón visible. No contratar ni simular disponibilidad de APNs, widgets o Live Activities. | Es el peldaño recomendado y no genera gastos. La firma y capacidades reales dependen de Xcode y el dispositivo. | Cambiar el equipo de firma y activar capacidades documentadas cuando exista cuenta; la web y sus datos permanecen. |
+| D03 · portal | Conservar el portal autenticado para seguimiento; añadir enlaces revocables de un uso para aprobar una versión concreta. | Una aprobación sencilla no necesita crear cuenta; el portal conserva contexto e historial. | Deshabilitar emisión y revocar tokens activos; usar solo acceso autenticado. |
+| D04 · referidos | Mantener seguimiento; recompensa desactivada hasta existir un importe/condición aprobados. | El brief no recomienda un valor. No inventar precio ni promesa. | Activar una regla aprobada y versionada; nunca modificar retroactivamente condiciones comprometidas. |
+| D05 · costos por hora | Conservar tarifas existentes del servidor; cualquier tarifa ausente queda `null` y bloquea un precio sugerido fiable. Mostrar qué rol falta. | `0` representaría gratuidad y falsearía el margen. No escribir tarifas en código público ni ejemplos. | Registrar una tarifa aprobada con vigencia; recalcular hipótesis, conservando versiones aprobadas. |
+| D06 · Siri | Solo lectura y captura de borradores en el primer peldaño; las decisiones sensibles abren el OS para autenticación y revisión. | El usuario pidió una cápsula delgada y gates humanos; no se delega una aprobación a una interpretación de voz. | Habilitar App Intents específicos con autenticación y revisión cuando las capacidades estén probadas. |
+| D07 · departamentos | Adoptar Strategy, Creative, Marketing, Production, Sales, Intelligence, Operations y Finance como espacios del producto, sin renombrar los nueve agentes. | §14 distingue dónde se trabaja de quién ejecuta. Finance se oculta y rechaza en servidor salvo CEO. | El catálogo central controla nombres y mapeo; los identificadores y datos conservan compatibilidad. |
+| D08 · librerías | Conservar módulos ES, OpenUI Lang, tokens y Zag/Floating UI. Evaluar una isla React Flow aislada con prueba real antes de incorporarla. shadcn/ui y assistant-ui sirven de referencia; json-render se evalúa como contrato, sin introducir segundo lenguaje de generación. | §12 recomienda patrones y después islas. Una migración total no está autorizada ni demostrada necesaria. | La isla se monta tras un adaptador y recibe datos/eventos; quitarla vuelve a la vista accesible de lista sin cambiar datos. Resultado de la prueba: `auditoria-vision/02-bibliotecas.md`. |
+| D09 · vidrio | Limitar translucidez a barra inferior, paleta, hojas/controles flotantes cuando aporte; diálogos de decisión sólidos, sin resplandor. Conservar fondo e identidad y sidebar flotante redondeada. | §17.3 y pedido posterior explícito del CEO de quitar blur neón y corregir feedback de clic. | Ajustar tokens de superficies; reducción de transparencia siempre fuerza sólidos. |
+
+## Reglas técnicas derivadas
+
+- Los permisos vienen del servidor. Un campo `role`, `approved`, `costs` o `allowed` del navegador no concede permiso.
+- Las acciones que cambian precio, alcance, fechas o pauta requieren aprobación del rol correcto, sobre versión y contenido exactos. Enviar/publicar/gastar exige una autorización humana independiente; jamás se ejecuta en estas pruebas.
+- Un fallo externo se expresa como `sin conexión`, con fuente y siguiente paso. Un adaptador simulado lleva `mock` y no cuenta como integración en vivo.
+- Una capacidad todavía no implementada se registra como pendiente, no como bloqueo externo. Las pruebas de navegador no equivalen a una prueba en iPhone.
+- Las capturas y fixtures usan marcas sintéticas sin tarifas ni costos reales. La base local es PGlite aislada; no se lee `.env` de producción para ejecutar pruebas.

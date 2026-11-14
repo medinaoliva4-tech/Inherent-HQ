@@ -1,0 +1,1719 @@
+{
+  "requirements": [
+    {
+      "id": "T01",
+      "section": "14",
+      "title": "Business Blueprint",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 156,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Business X-Ray y Strategy/Consulting aportan contexto y scorecards; no hay un blueprint único con business discovery/economics/gap analysis/opportunity map integrados.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T02",
+      "section": "14",
+      "title": "Ideal Customer Profile Builder",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 156,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        },
+        {
+          "file": "ceo-os/public/js/strategy/diana.js",
+          "line": 73,
+          "note": "Cálculos/validación del ICP que sí existen."
+        }
+      ],
+      "gap": "Diana/ICP, segmentos y avatares editables existen; faltan economics, firmographics/demographics, buying committee y score de rentabilidad/accesibilidad/compra.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T03",
+      "section": "14",
+      "title": "Market Explorer",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 163,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Radar y scraping/investigación muestran competidores con evidencia; TAM/SAM/SOM, pricing intelligence y attractiveness no están como módulo integrado.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T04",
+      "section": "14",
+      "title": "Acquisition Simulator",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 213,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Funnel dibuja caídas y diagnóstico calcula embudo; no modela canales, unit economics, capacidad y tres escenarios en una simulación integrada.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T05",
+      "section": "14",
+      "title": "Offer & Pricing Builder",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 179,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        },
+        {
+          "file": "ceo-os/public/js/strategy/precios.js",
+          "line": 75,
+          "note": "Simulador de precio/margen real; incluye resultados derivados."
+        }
+      ],
+      "gap": "Offer Architect trabaja ecuación/stack; Pricing & Packages simula margen. Falta arquitectura completa de pricing model, competitive comparison y offer testing como un solo flujo.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T06",
+      "section": "14",
+      "title": "Positioning & Messaging Canvas",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 179,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Hay mensaje de la diana, oferta y Creative Direction; no se encontró herramienta Strategy de positioning canvas con villano-héroe, objections, differentiation y message testing.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T07",
+      "section": "14",
+      "title": "Creative Brief Builder",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 297,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Production Brief Builder existe con requisitos de ciclo y techo; no equivale a brief creativo estratégico que documente ICP, oferta, constraints y referencias.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T08",
+      "section": "14",
+      "title": "Angle & Concept Matrix",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 235,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Creative Direction produce ideas y conceptos comparables; Hook Lab tiene matriz de pruebas. No hay scoring integral de relevancia/originalidad/viabilidad/potencial ni winner adaptation.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T09",
+      "section": "14",
+      "title": "Script & Storyboard Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 301,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Editor de guiones, frames, versiones y QA existe; Hook Testing y comparación no aparecen como módulos completos.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T10",
+      "section": "14",
+      "title": "Design Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 242,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "La hoja Design Studio monta variaciones A/B/C y chat/Figma; generación de assets, template system y responsive adaptation no constituyen sistema integrado verificable.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T11",
+      "section": "14",
+      "title": "Creative Approval Board",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 318,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Review & Approval permite revisión/versiones/aprobar; Brand Consistency produce reporte. Comentarios visuales coordenados y prioridad/decision history unificados no se verifican.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T12",
+      "section": "14",
+      "title": "Audience & Attention Radar",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 192,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Viral Intelligence tiene radar, patrones y oportunidades; influence mapping, demand signals y scoring continuo no están completos.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T13",
+      "section": "14",
+      "title": "Campaign Builder",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Campaign Architect tiene blueprint, canales y briefs y protege por estrategia aprobada; budget allocation, forecasting y experiment design no están completos.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T14",
+      "section": "14",
+      "title": "Content Calendar",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 207,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Calendario funcional con slots, mover piezas, campañas y métricas; aprobación/publicación integrada y recomendaciones no cubren los módulos declarados.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T15",
+      "section": "14",
+      "title": "Paid Media Planner",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 217,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Ads Intelligence da recomendaciones y variaciones; explícitamente no publica ni cambia campañas; faltan simulator/estructura, pacing/attribution integral.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T16",
+      "section": "14",
+      "title": "Marketing Performance Dashboard",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 221,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Performance Center calcula reporte mensual con fuente/tabla; no es arquitectura BI completa y attribution queda limitada por datos/fuentes.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T17",
+      "section": "14",
+      "title": "Production Planner",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 308,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Jornadas/call sheet/orden y regla servidor día 11 existen; no verifica equipo, talento, presupuesto y printable docs integrado al brief.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T18",
+      "section": "14",
+      "title": "Shot List & Storyboard",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 304,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Shot list agrupa escenas por locación/talento/setup y exporta CSV; progreso en set, notas y orden optimizado completos no verificados.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T19",
+      "section": "14",
+      "title": "Video Editing Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 315,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Post Production tiene capas, versiones y QA; es kit de producción, no timeline editor de medios/trim/audio/captions/render.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T20",
+      "section": "14",
+      "title": "Content Repurposing Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 321,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Repurposing modela maestro→derivadas y medidor 1:2; no genera clips/formatos/variantes automáticamente.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T21",
+      "section": "14",
+      "title": "Asset & Delivery Manager",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 318,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Drive/Library y Review existen por separado; falta catálogo unificado con derechos, metadatos, versiones, export presets y seguimiento.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T22",
+      "section": "14",
+      "title": "Lead Intelligence & Qualification",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "CRM/leads existen y Strategy alimenta ICP; enriquecimiento, intent signals y scoring ICP no aparecen como software de lead qualification.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T23",
+      "section": "14",
+      "title": "Outreach Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "El CRM ofrece seguimiento y el Chat redacta/propuesta; no existe sequence builder/personalización multicanal y envío autorizado integrado.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T24",
+      "section": "14",
+      "title": "Sales Pipeline",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        },
+        {
+          "file": "ceo-os/public/js/screens/sales.js",
+          "line": 1,
+          "note": "CRM es una pantalla existente; no implementa toda la familia Sales tools."
+        }
+      ],
+      "gap": "CRM real con pipeline, leads y cotizaciones existe; faltan next-best-action, forecast y análisis de cuellos integrados.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T25",
+      "section": "14",
+      "title": "Sales Playbook",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Hay guiones/agent prompts en otras áreas, no software de playbook de ventas con discovery, objeciones, pitch, negociación y call review.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T26",
+      "section": "14",
+      "title": "Revenue Forecast",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 221,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "No se encontró forecast de ventas ni modelo de ciclo/quota/accuracy con rangos y supuestos; los reportes actuales son históricos.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T27",
+      "section": "14",
+      "title": "Business Intelligence Dashboard",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 221,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Gráficas, KPIs y reporte mensual existen en distintas pantallas; faltan capa de integración de datos/definiciones KPI cross-department/anomalías.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T28",
+      "section": "14",
+      "title": "Experiment Lab",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 225,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Growth Experiment Lab aparece P3 sin montaje; calibración y ranking no sustituyen asignación aleatoria, muestras, control y análisis de incertidumbre.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T29",
+      "section": "14",
+      "title": "Growth Insights Engine",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 171,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Commercial Diagnosis calcula score/embudo/cuello; no hay patrones cross-department ni predicción/decision tracking con incertidumbre.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T30",
+      "section": "14",
+      "title": "Workflow Builder",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        },
+        {
+          "file": "ceo-os/public/js/screens/operations.js",
+          "line": 1,
+          "note": "Operación real separada (tareas/proyectos/calendario), no un Workflow Builder configurable."
+        }
+      ],
+      "gap": "El flujo de 7 pasos es navegación y el workflow JSON se limita a estrategia-contexto; no hay editor de triggers/approval/error recovery/versioning persistente.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T31",
+      "section": "14",
+      "title": "Project & Delivery Manager",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 210,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        },
+        {
+          "file": "ceo-os/public/js/screens/operations.js",
+          "line": 1,
+          "note": "Operación real separada (tareas/proyectos/calendario), no un Workflow Builder configurable."
+        }
+      ],
+      "gap": "Projects/Kanban/tareas/calendario y entregables existen separados; falta manager unificado con resource allocation, approvals de cliente y delivery tracking.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T32",
+      "section": "14",
+      "title": "Resource & Capacity Planner",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 280,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Organization Architect compara organigrama/RACI; diagnosis ve capacidad vs demanda. Falta workload/utilization/scenario/hiring forecast operativo.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T33",
+      "section": "14",
+      "title": "Financial Planning Studio",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 183,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Pantalla Finance resume movimientos/caja y calcula rentabilidad/precios; no se encontró modelo financiero unido de presupuestos, cash-flow forecast, escenarios y variances.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "T34",
+      "section": "14",
+      "title": "Client Profitability Analyzer",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 183,
+          "note": "Registro real más cercano: herramienta/workspace/montaje; el rótulo de catálogo se considera solo evidencia de entrada."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Vistas que realmente se montan; el resto usa hojas antiguas o no tiene módulo, según registro."
+        }
+      ],
+      "gap": "Finanzas calcula margen/costos por cliente y alcance; falta CLV/retención, ranking completo y recomendaciones integradas con consumo de recursos.",
+      "acceptance": "Cada módulo listado debe operar con datos propios, validación, evidencia/confianza cuando aplica, contratos de entrada/salida, autorización por servidor y acción de ejecución/decisión registrada. La suite solo pasa cuando los módulos de §14 se demuestran de extremo a extremo."
+    },
+    {
+      "id": "C01",
+      "section": "15",
+      "title": "Simulator",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Hay simuladores localizados (pricing/capacity) sin componente común de sliders, resultado y escenarios.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C02",
+      "section": "15",
+      "title": "Research Panel",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Research y fuentes existen en módulos específicos; no hay panel único reusable en todas las herramientas, con confianza y acciones fuente.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C03",
+      "section": "15",
+      "title": "Decision Card",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "OpenUI tiene Decision y Tool Shell tiene aprobaciones; no existe un contrato visual común que exija evidencia, alternativas y gate en cada departamento.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C04",
+      "section": "15",
+      "title": "Workflow View",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Hay timeline/tableros/diagrama de árbol y FLUJO estático; no una vista común editable de dependencias/estados.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C05",
+      "section": "15",
+      "title": "Scenario Compare",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Compare genérico y algunas hojas comparan opciones; no se comparte cálculo/rango entre Strategy, Finance y Sales.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C06",
+      "section": "15",
+      "title": "Approval",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "API de entregables valida permisos/estados; otros artefactos usan rutas propias y no comparten historial/estados universales.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C07",
+      "section": "15",
+      "title": "Timeline",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Ciclo, calendario y roadmap tienen timelines distintos; sin componente de hitos reutilizado por módulos.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C08",
+      "section": "15",
+      "title": "Visual Canvas",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Opportunity Map dibuja matriz y consulting diagram usa SVG/modelo propio; React Flow no está instalado y no hay canvas compartido.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C09",
+      "section": "15",
+      "title": "Data Explorer",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Charts/tablas son helpers comunes; filtros/definiciones/anomalías por fuente siguen en cada pantalla.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C10",
+      "section": "15",
+      "title": "AI Assistant",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Chat Inherent es contextual en ciertos modos/pantallas, no está montado en las 34 vistas ni comparte contexto universal.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C11",
+      "section": "15",
+      "title": "Version History",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Entregables tienen versiones; Design, scripts, video y legacy persisten historial distinto.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "C12",
+      "section": "15",
+      "title": "Execution Panel",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/docs/OS-IDEAL-MAC-IPHONE.md",
+          "line": 1262,
+          "note": "Catálogo normativo de 12 capacidades compartidas."
+        },
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "GenUI es un catálogo de componentes de conversación; no evidencia componente compartido de producto entre 34 herramientas."
+        }
+      ],
+      "gap": "Chat enseña pasos de tools y Tool Shell estado de entregable; falta panel por departamento que muestre correr/espera/error y recuperación.",
+      "acceptance": "Una implementación común, consumida por al menos dos herramientas y alineada en accesibilidad, datos y estados; demostrar reutilización sin duplicar reglas."
+    },
+    {
+      "id": "D0101",
+      "section": "13",
+      "title": "Strategy / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/strategy.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0102",
+      "section": "13",
+      "title": "Strategy / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0103",
+      "section": "13",
+      "title": "Strategy / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0104",
+      "section": "13",
+      "title": "Strategy / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0201",
+      "section": "13",
+      "title": "Creative / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/content.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0202",
+      "section": "13",
+      "title": "Creative / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0203",
+      "section": "13",
+      "title": "Creative / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0204",
+      "section": "13",
+      "title": "Creative / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0301",
+      "section": "13",
+      "title": "Marketing / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/content.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0302",
+      "section": "13",
+      "title": "Marketing / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0303",
+      "section": "13",
+      "title": "Marketing / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0304",
+      "section": "13",
+      "title": "Marketing / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0401",
+      "section": "13",
+      "title": "Production / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/content.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0402",
+      "section": "13",
+      "title": "Production / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0403",
+      "section": "13",
+      "title": "Production / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0404",
+      "section": "13",
+      "title": "Production / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0501",
+      "section": "13",
+      "title": "Sales / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/sales.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0502",
+      "section": "13",
+      "title": "Sales / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0503",
+      "section": "13",
+      "title": "Sales / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0504",
+      "section": "13",
+      "title": "Sales / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0601",
+      "section": "13",
+      "title": "Intelligence / Portal",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/content.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0602",
+      "section": "13",
+      "title": "Intelligence / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0603",
+      "section": "13",
+      "title": "Intelligence / Agents",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0604",
+      "section": "13",
+      "title": "Intelligence / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0701",
+      "section": "13",
+      "title": "Operations / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/operations.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0702",
+      "section": "13",
+      "title": "Operations / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0703",
+      "section": "13",
+      "title": "Operations / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0704",
+      "section": "13",
+      "title": "Operations / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0801",
+      "section": "13",
+      "title": "Finance / Portal",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 65,
+          "note": "Hay 5 workspaces; portal por departamento solo existe para algunos."
+        },
+        {
+          "file": "ceo-os/public/js/screens/finance.js",
+          "line": 1,
+          "note": "Pantalla más cercana; no equivale a contrato de Portal de departamento."
+        }
+      ],
+      "gap": "Overview/resumen y SOP de rol visibles en una puerta propia. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0802",
+      "section": "13",
+      "title": "Finance / Tools",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/herramientas.js",
+          "line": 154,
+          "note": "Registro con herramientas del OS por 5 workspaces."
+        },
+        {
+          "file": "ceo-os/public/js/screens/workspace.js",
+          "line": 49,
+          "note": "Montajes actuales; las pantallas legacy también persisten."
+        }
+      ],
+      "gap": "Herramientas específicas, funcionales y con módulo de cálculo/visualización/acción. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0803",
+      "section": "13",
+      "title": "Finance / Agents",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/modos.js",
+          "line": 8,
+          "note": "Modos de Chat describen áreas; no son workflow agent-runtime independiente por departamento."
+        },
+        {
+          "file": "ceo-os/public/js/llm/ia-herramienta.js",
+          "line": 20,
+          "note": "Adaptador de IA para ejecutar pedidos de herramienta."
+        }
+      ],
+      "gap": "Investigación/preparación/ejecución con tareas autorizadas y contexto de este depto. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "D0804",
+      "section": "13",
+      "title": "Finance / Decisions",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 34,
+          "note": "Aprobaciones/entregables reutilizadas por algunas herramientas."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "El servidor sí centraliza permisos en rutas de entregable; otras entidades usan rutas propias."
+        }
+      ],
+      "gap": "Propuesta, evidencia, alternativas, persona autorizadora y entrega/historial. La app tiene pantallas y capacidades parciales, pero no el contrato uniforme de 4 capas sobre workflow por departamento; hoy los 8 se comprimen en cinco workspaces más pantallas legacy.",
+      "acceptance": "La capa debe estar navegable en el departamento, usar permisos servidor y entrar en workflow explícito con dato/fuente/estado y siguiente paso verificable."
+    },
+    {
+      "id": "I01",
+      "section": "11",
+      "title": "Intent-to-Interface · entender/elegir interfaz",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 49,
+          "note": "El prompt invita al modelo a generar OpenUI si cifras/procesos/decisiones se entienden mejor; no hay clasificación de intención → tipo de interfaz."
+        },
+        {
+          "file": "ceo-os/public/js/screens/llm.js",
+          "line": 422,
+          "note": "El Chat pinta bloques UI generados por el modelo."
+        }
+      ],
+      "gap": "La selección depende del prompt generativo, no de un motor que clasifique objetivo, consulte capacidad y elija interfaz aprobada.",
+      "acceptance": "Dado un objetivo, el sistema identifica explorar/decidir/producir/revisar/medir y determina una interfaz reproducible según contexto y permisos."
+    },
+    {
+      "id": "I02",
+      "section": "11-12",
+      "title": "Intent-to-Interface · catálogo y contrato restringido",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 13,
+          "note": "ESQUEMA_UI define un catálogo OpenUI; 28+ nodos genéricos, no los 12 componentes de producto."
+        },
+        {
+          "file": "ceo-os/public/js/llm/acciones-os.js",
+          "line": 14,
+          "note": "Registro de acciones UI limita acciones permitidas."
+        }
+      ],
+      "gap": "Hay formato/catálogo de render para Chat, pero JSON contract con catálogo de herramientas/datos/acciones del OS no aplica a las 34 herramientas; no usa json-render.",
+      "acceptance": "Un contrato versionado valida componente, datos, acción, permisos y destino; rechazo seguro ante campo/acción desconocida."
+    },
+    {
+      "id": "I03",
+      "section": "11",
+      "title": "Intent-to-Interface · evidencia y seguridad",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 3,
+          "note": "Escapa contenido no confiable y ningún botón ejecuta solo."
+        },
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 99,
+          "note": "Servidor controla alcance, rol, estrategia aprobada y escritura."
+        }
+      ],
+      "gap": "La seguridad es real en las rutas que la implementan; evidencia/confianza no son invariantes del catálogo ni de todas las pantallas. Un widget de Chat puede mostrar una conclusión sin evidencia estructurada.",
+      "acceptance": "Cada afirmación investigada conserva fuente/confianza; el backend valida rol, scope, ficha, aprobación y acción al ejecutar, no solo al renderizar."
+    },
+    {
+      "id": "I04",
+      "section": "10-11,13",
+      "title": "Intent-to-Interface · cerrar en acción útil",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/public/js/llm/genui.js",
+          "line": 34,
+          "note": "Decision/Actions son componentes permitidos."
+        },
+        {
+          "file": "ceo-os/public/js/tool-shell.js",
+          "line": 194,
+          "note": "Tool Shell ofrece guardar/estados/revisión para herramientas con shell."
+        }
+      ],
+      "gap": "Parte del producto termina en formularios, chat o fichas; no toda pantalla tiene acción, y los botones UI principalmente abren, proponen o crean tarea; no equivalen a Execution autorizado.",
+      "acceptance": "Cada interfaz ofrece acción siguiente válida o razón explícita de bloqueo; efecto solo tras confirmación humana y resultado auditable."
+    },
+    {
+      "id": "F01",
+      "section": "1, 14.8",
+      "title": "Finance: GET expone movimientos y hoja conectada a cualquier perfil con finanzas",
+      "status": "falta",
+      "evidence": [
+        {
+          "file": "ceo-os/api/_lib/access.js",
+          "line": 38,
+          "note": "finance está bajo área finanzas."
+        },
+        {
+          "file": "ceo-os/api/_lib/access.js",
+          "line": 50,
+          "note": "CEO_READ protege rates/packages/bank_moves/etc., pero omite finance."
+        },
+        {
+          "file": "ceo-os/api/index.js",
+          "line": 685,
+          "note": "GET finance/sheet solo exige guard de área; responde CSV completo (monto/categoría/cliente)."
+        },
+        {
+          "file": "ceo-os/public/js/roleviews.js",
+          "line": 55,
+          "note": "El perfil de finanzas/cobros está diseñado para recibir resumen de movimientos."
+        }
+      ],
+      "gap": "La política dice Finance solo CEO, pero el backend permite leer finance y descarga el CSV completo a cualquier identidad con área finanzas; la vista resumen no es una barrera. Perfil de cobros es un camino concreto para habilitarlo. Alinear permiso a CEO en API/colección y reducir datos si se decide mantener cobros.",
+      "acceptance": "Con perfil COO/cobros, GET /api/db/finance y /api/finance/sheet devuelven 403 o solo el subset permitido; solo CEO puede leer ledger completo, CSV, cuentas, costos y márgenes."
+    },
+    {
+      "id": "F02",
+      "section": "14.8",
+      "title": "Excepción de scope para slug inherent",
+      "status": "parcial",
+      "evidence": [
+        {
+          "file": "ceo-os/api/_lib/entregables.js",
+          "line": 107,
+          "note": "scoper se omite deliberadamente cuando slug === inherent."
+        },
+        {
+          "file": "ceo-os/api/_lib/access.js",
+          "line": 57,
+          "note": "Las colecciones de datos sensibles se scopian por dueño/asignación."
+        }
+      ],
+      "gap": "Todo usuario con permiso del workspace puede consultar entregables del slug inherent aun si su scoper no incluye ese cliente. Puede ser intencional para la marca interna; el contrato de acceso debe declararlo y auditarlo, pues no sigue el mismo scope que otros slugs.",
+      "acceptance": "Definir explícitamente qué perfiles acceden al slug inherent y aplicar lista allowlist en servidor; confirmar endpoints de lista/detalle/escritura y eventos/auditoría."
+    }
+  ]
+}

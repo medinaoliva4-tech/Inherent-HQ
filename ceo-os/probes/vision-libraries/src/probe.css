@@ -1,0 +1,33 @@
+:root { color-scheme: light; --ui-bg: #f4f5f2; --ui-surface: #fff; --ui-ink: #202820; --ui-muted: #65706a; --ui-border: #d9ddd8; --ui-accent: #416b53; --ui-soft: #e8eee8; font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; color: var(--ui-ink); background: var(--ui-bg); }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; background: var(--ui-bg); }
+.probe-shell { max-width: 1440px; margin: 0 auto; padding: 40px clamp(20px, 4vw, 64px); }
+.probe-header, .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.probe-header { margin-bottom: 24px; }
+.eyebrow { margin: 0 0 7px; color: var(--ui-muted); font-size: 10px; font-weight: 750; letter-spacing: .13em; }
+h1, h2, p { margin-top: 0; }
+h1 { margin-bottom: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -.04em; }
+h2 { margin-bottom: 0; font-size: 18px; letter-spacing: -.02em; }
+.status, .panel-note { color: var(--ui-muted); font-size: 12px; }
+.status { background: var(--ui-soft); color: var(--ui-accent); padding: 8px 12px; border-radius: 999px; font-weight: 650; }
+.probe-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, .8fr); gap: 18px; align-items: stretch; }
+.panel { border: 1px solid var(--ui-border); background: var(--ui-surface); border-radius: 16px; box-shadow: 0 8px 28px rgb(32 40 32 / 4%); }
+.flow-panel, .chart-panel { padding: 20px; min-width: 0; }
+.panel-heading { min-height: 44px; margin-bottom: 16px; }
+.island { height: 410px; border: 1px solid var(--ui-border); border-radius: 12px; overflow: hidden; background-color: #fafbf9; }
+.chart-island { height: 410px; width: 100%; }
+.opportunity-node { width: 196px; padding: 14px; display: grid; gap: 10px; border: 1px solid var(--ui-border); border-left: 3px solid var(--ui-accent); border-radius: 12px; color: var(--ui-ink); background: var(--ui-surface); box-shadow: 0 5px 15px rgb(32 40 32 / 8%); }
+.opportunity-node.amber { border-left-color: #b7852f; } .opportunity-node.blue { border-left-color: #59789c; }
+.opportunity-node strong { font-size: 13px; }
+.node-status { display: flex; align-items: center; gap: 7px; color: var(--ui-muted); font-size: 11px; }
+.node-status i { width: 7px; height: 7px; border-radius: 50%; background: #537c5e; }
+.amber .node-status i { background: #b7852f; } .blue .node-status i { background: #59789c; }
+.opportunity-node button { border: 0; border-radius: 7px; padding: 7px 8px; text-align: left; font: inherit; font-size: 10px; color: var(--ui-accent); background: var(--ui-soft); cursor: pointer; }
+.event-panel { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; padding: 16px 20px; }
+.event-panel .eyebrow { margin-bottom: 5px; } .event-panel p:last-child { margin-bottom: 0; font-size: 13px; }
+code { color: var(--ui-accent); font-size: 12px; }
+.event-count { flex: 0 0 auto; color: var(--ui-muted); font-size: 12px; }
+footer { margin-top: 16px; color: var(--ui-muted); font-size: 11px; text-align: right; }
+.react-flow__controls { border: 1px solid var(--ui-border); box-shadow: none; }
+.react-flow__controls-button { border-bottom-color: var(--ui-border); background: var(--ui-surface); }
+@media (max-width: 820px) { .probe-shell { padding: 24px 16px; } .probe-grid { grid-template-columns: 1fr; } .island, .chart-island { height: 360px; } }

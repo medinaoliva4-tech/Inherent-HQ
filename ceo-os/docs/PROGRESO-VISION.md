@@ -31,9 +31,11 @@ Estado: ⬜ pendiente · 🟡 en curso · ✅ hecho y verificado · 🔶 hecho, 
 
 | # | Paquete | Depende de | Estado | Nota |
 |---|---|---|---|---|
-| A | Auditoría (plataforma, herramientas, librerías + iOS, diseño) | — | 🟡 | 01 listo; 02 y 03 en curso |
-| B | Este plan + decisiones §9 | A | 🟡 | |
-| 1 | Kit: los 12 componentes compartidos (`public/js/kit/`) + página de ejemplos + pruebas | A | ⬜ | |
+| A | Auditoría A1/A2/A3 (plataforma, producto, librerías + iOS) | — | ✅ | Matrices 01/03 y prueba React Flow A2 conservadas; V1 tiene revisión visual separada |
+| B | Este plan + decisiones §9 | A | ✅ | PAQUETES-VISION.md y DECISIONES-FABLE.md |
+| S0 | Finance solo CEO y aislamiento de marcas | A | ✅ | 8 escenarios API/PGlite; revisión de servidor completada |
+| S1 | Política común y aprobación exacta de tools externas | S0 | ✅ | 10 escenarios API/PGlite + UI; concurrencia de capacidad se valida en B2/T3 |
+| 1 | Kit: los 12 componentes compartidos (`public/js/kit/`) + página de ejemplos + pruebas | A | 🟡 | Módulos y demo local; DecisionCard usada en aprobación S1; prueba/capturas en revisión |
 | 2 | Modelo de nodo y hilo del cliente (API + canvas) | 1 | ⬜ | |
 | 3 | Motor backend: cola, workflows durables, aprobaciones, bus de eventos, bitácora, reintentos, idempotencia, límites, cumplimiento | A | ⬜ | |
 | 4 | Laya como criterio del motor + panel «lo que dice Laya» | 3 | ⬜ | |
