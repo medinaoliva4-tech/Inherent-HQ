@@ -103,13 +103,13 @@
 :root[data-theme="dark"]{
   --ui-bg:#0d0d0e; --ui-side:#111112; --ui-surf:#141415; --ui-surf2:#1b1b1d; --ui-fill:#18181a; --ui-fill2:#232325;
   --ui-line:rgb(235 235 240 / .09); --ui-line2:rgb(235 235 240 / .16);
-  --ui-ink:#efebe4; --ui-ink2:#bdb9b2; --ui-mut:#a39f9a; --ui-mut2:#8f8b86; --ui-acc:#f5f5f7; --ui-acc-ink:#000000; --ui-user:#252527;
+  --ui-ink:#f5f5f7; --ui-ink2:#c9c9ce; --ui-mut:#a6a6ad; --ui-mut2:#929299; --ui-acc:#f5f5f7; --ui-acc-ink:#000000; --ui-user:#252527;
   --ui-ok:#a7f3d0; --ui-warn:#e8c98f; --ui-bad:#f4b3a6;
-  --ui-glass:rgb(30 30 32 / .52); --ui-ink-rgb:239 235 228; --ui-surf-rgb:20 20 21;
+  --ui-glass:rgb(30 30 32 / .52); --ui-ink-rgb:245 245 247; --ui-surf-rgb:20 20 21;
   --ui-sh-1:0 0 0 1px var(--ui-line);
   --ui-sh-2:0 0 0 1px var(--ui-line),0 14px 30px rgb(0 0 0 / .36);
   --ui-sh-3:inset 0 1px 0 rgb(255 255 255 / .13),inset 0 0 0 1px rgb(255 255 255 / .055),0 18px 44px rgb(0 0 0 / .5);
-  --ui-m-estrategia:#e3d8c5; --ui-m-organizacion:#bdb9b2; --ui-m-diseno:#efebe4;
+  --ui-m-estrategia:#c7c7cc; --ui-m-organizacion:#b8b8be; --ui-m-diseno:#d8d8de;
 }
 /* app.css:4406 */
 :root,:root[data-theme="dark"]{

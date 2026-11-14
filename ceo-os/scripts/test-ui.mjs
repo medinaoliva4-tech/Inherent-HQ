@@ -116,7 +116,7 @@ t('el tema arranca antes de pintar y sin destellos', () => {
 
 const v3 = CSS.slice(CSS.indexOf('SISTEMA v3 (PLAN-GATEWAY')) + '\n' + PRIM; // los tokens viven en primitives.css
 t('sistema v3: la paleta es la aprobada y solo los estados llevan color', () => {
-  assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#efebe4', '#a39f9a', '#f5f5f7', '#a7f3d0']);
+  assert.deepEqual([NOCHE['ui-ink'], NOCHE['ui-mut'], NOCHE['ui-acc'], NOCHE['ui-ok']], ['#f5f5f7', '#a6a6ad', '#f5f5f7', '#a7f3d0']);
   for (const k of ['ui-m-estrategia', 'ui-m-organizacion', 'ui-m-diseno']) {
     const [r, g, b] = NOCHE[k].slice(1).match(/../g).map((x) => parseInt(x, 16));
     assert.ok(Math.max(r, g, b) - Math.min(r, g, b) < 36, `${k} debe ser neutro`);
