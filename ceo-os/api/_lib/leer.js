@@ -1,7 +1,7 @@
 // Qué puede leer cada persona de una colección: las mismas reglas para GET db/:coll, el conector, los indicadores y los
 // Avisos (una sola definición: si cambia aquí, cambia en todos). Antes vivían repetidas en index.js, mcp.js y results.js.
 import * as db from './db.js';
-import { dineroDeInherent, COLLS, READ_ALSO, SCOPED, canRead, sees, scoper, inScope, summaryOf, stripAccesos, stripCosts, seesCosts } from './access.js';
+import { dineroDeInherent, COLLS, READ_ALSO, SCOPED, canRead, sees, scoper, inScope, summaryOf, stripAccesos, stripCosts } from './access.js';
 
 const lc = (x) => String(x || '').toLowerCase();
 // Tareas: «solo yo» la ven quien la creó y a quien se asignó; «ciertas personas» suma a las elegidas.
@@ -14,16 +14,17 @@ export const seesTask = (u, t) => {
 // La marca personal del CEO es privada: su contenido (Research, planner, calendario, conexiones) solo lo ve él.
 export const personalOk = (u, slug) => slug !== 'personal' || u.role === 'ceo';
 // Los docs de «sources» (scrape-, refs-, ads-, ideas-…<perfil>) no siempre traen el campo profile: el perfil sale también del id.
-export const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '') : d?.profile);
+export const profOf = (coll, d) => (coll === 'sources' ? d?.profile || String(d?.id || '').replace(/^(cfg|scrape|analytics|ideas|refs|ads)-/, '').replace(/-tabla$/, '') : d?.profile);
 // El link de la hoja de Finanzas solo lo lee quien ve Finanzas.
 // El margen objetivo de las propuestas (settings «pricing», Finanzas → Precios) es costo/margen: solo el CEO.
-// El caché de la tabla de pauta (sources «ads-<cliente>-tabla», api/_lib/ads.js) lleva gasto y CPA: solo quien ve costos.
-const esCacheTablaPauta = (coll, d) => coll === 'sources' && /^ads-.+-tabla$/.test(String(d?.id || '')) && d?.por_dias != null;
-export const visible = (u, coll, d) => (u.role === 'ceo' || !dineroDeInherent(coll, d)) && (coll !== 'tasks' || seesTask(u, d)) && (!esCacheTablaPauta(coll, d) || seesCosts(u)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.areas.includes('finanzas')) && (d?.id !== 'pricing' || u.role === 'ceo')));
+// El caché de la tabla de pauta (sources «ads-<cliente>-tabla», api/_lib/ads.js) lleva gasto y CPA: solo el CEO, incluso si la matriz concede otras áreas.
+const esCacheTablaPauta = (coll, d) => coll === 'sources' && /^ads-.+-tabla$/.test(String(d?.id || ''));
+const notaVisible = (u, d) => personalOk(u, lc(d?.cliente || d?.client_slug)) && (!['finance', 'finanzas'].includes(lc(d?.area)) || u.role === 'ceo');
+export const visible = (u, coll, d) => (u.role === 'ceo' || !dineroDeInherent(coll, d)) && (coll !== 'tasks' || seesTask(u, d)) && (!esCacheTablaPauta(coll, d) || u.role === 'ceo') && (coll !== 'area_notes' || notaVisible(u, d)) && (!['content', 'sources'].includes(coll) || personalOk(u, profOf(coll, d))) && (coll !== 'brand_boards' || personalOk(u, String(d?.id || ''))) && (coll !== 'settings' || ((d?.id !== 'finance_sheet' || u.role === 'ceo') && (d?.id !== 'pricing' || u.role === 'ceo')));
 // El alcance (todos · asignados · propio) filtra proyectos, tareas, cuentas de clientes y leads.
 export const scopeOf = (u, coll) => (SCOPED.includes(coll) || ['content', 'sources'].includes(coll) ? scoper(u) : null);
 // Content y sources llevan el perfil (un cliente, inherent o personal): con alcance «asignados» o «propio» solo entran los de sus clientes.
-export const profInScope = (sc, coll, d) => { if (!sc || !['content', 'sources'].includes(coll)) return true; const p = profOf(coll, d); return !p || p === 'inherent' || sc.client(p); };
+export const profInScope = (sc, coll, d) => { if (!sc || !['content', 'sources'].includes(coll)) return true; const p = profOf(coll, d); return Boolean(p) && (p === 'inherent' || sc.client(p)); };
 // Los niveles editables (settings «levels»): los lee todo el equipo, pero el baseline (el piso interno de precio) solo el CEO.
 export const levelsFor = (u, d) => (u.role === 'ceo' ? d : { ...d, levels: Object.fromEntries(Object.entries(d.levels || {}).map(([k, l]) => { const { usd, gtq, ...rest } = l || {}; return [k, rest]; })) });
 // Lo que sale de un doc según quién lo pide: «resumen» recorta o no entrega (summaryOf) y los accesos de un cliente

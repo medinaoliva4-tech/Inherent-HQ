@@ -47,14 +47,14 @@ const CEO_WRITE = new Set(['team', 'settings', 'rates', 'packages', 'bundles', '
 // Costos, márgenes, tarifas y pagos: solo el CEO los lee, siempre, diga lo que diga la matriz.
 // lead_sources lleva las claves de las puertas de intake: también solo el CEO. El estado de cuenta del banco (bank_moves), igual.
 // La receta de costos de cada cliente (cost_recipes), igual.
-export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'payroll', 'lead_sources', 'bank_moves', 'cost_recipes', 'costos_produccion']);
+export const CEO_READ = new Set(['rates', 'packages', 'bundles', 'finance', 'invoices', 'payroll', 'lead_sources', 'bank_moves', 'cost_recipes', 'costos_produccion']);
 // Las mesas de dinero de un cliente las ve su equipo; las de Inherent mismo son márgenes propios: solo el CEO.
 const DINERO_POR_CLIENTE = new Set(['embudos', 'marketing_mes', 'strategy_meta']);
 export const dineroDeInherent = (coll, d) => DINERO_POR_CLIENTE.has(coll) && String(d?.client_slug || '').toLowerCase() === 'inherent';
 export const canWrite = (role, coll) => coll !== 'chat_imagenes' && (!CEO_WRITE.has(coll) || role === 'ceo');
 export const canRead = (role, coll) => coll !== 'chat_imagenes' && (!CEO_READ.has(coll) || role === 'ceo');
 // Las colecciones que filtra el alcance (todos · asignados · propio).
-export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns', 'movimientos', 'embudos', 'marketing_mes', 'strategy_meta'];
+export const SCOPED = ['projects', 'tasks', 'accounts', 'leads', 'quotes', 'brand_boards', 'budgets', 'campaigns', 'movimientos', 'embudos', 'marketing_mes', 'strategy_meta', 'area_notes'];
 
 export const domain = () => (process.env.ALLOWED_DOMAIN || 'inherentglobal.com').toLowerCase();
 const admins = () => String(process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
@@ -103,6 +103,7 @@ export async function guard(req, res, area, opts = {}) {
   const u = effective(await userFor(s.email), await viewsDoc());
   if (!u.active || !(u.email.endsWith('@' + domain()) || u.external)) { session.clear(res); res.status(401).json({ error: 'Cuenta sin acceso' }); return null; }
   if (u.role === 'client' && !opts.client) { res.status(403).json({ error: 'Sin acceso' }); return null; }
+  if (area === 'finanzas' && u.role !== 'ceo') { res.status(403).json({ error: 'Solo el CEO ve Finanzas' }); return null; }
   if (area && !u.areas.includes(area)) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   if (area && opts.write && !edits(u, area)) { res.status(403).json({ error: 'Tu perfil solo puede ver esto, no cambiarlo' }); return null; }
   session.issue(req, res, s); // sesión deslizante
@@ -112,7 +113,7 @@ export async function guard(req, res, area, opts = {}) {
 // Para rutas que sirven a más de un área (ej. la ficha del cliente: Clients y el Workspace).
 export async function guardAny(req, res, areas, opts = {}) {
   const u = await guard(req, res); if (!u) return null;
-  if (!areas.some((a) => u.areas.includes(a))) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
+  if (!areas.some((a) => (a !== 'finanzas' || u.role === 'ceo') && u.areas.includes(a))) { res.status(403).json({ error: 'Sin acceso a esta área' }); return null; }
   if (opts.write && !areas.some((a) => u.areas.includes(a) && edits(u, a))) { res.status(403).json({ error: 'Tu perfil solo puede ver esto, no cambiarlo' }); return null; }
   return u;
 }
@@ -151,6 +152,7 @@ export async function scoper(u, pre = {}) {
     embudos: (d) => slugs.has(lc(d.client_slug)),
     marketing_mes: (d) => slugs.has(lc(d.client_slug)),
     strategy_meta: (d) => slugs.has(lc(d.client_slug)),
+    area_notes: (d) => !(d.cliente || d.client_slug) || slugs.has(lc(d.cliente || d.client_slug)),
     strategy: (d) => lc(d.slug) === 'inherent' || slugs.has(lc(d.slug)),
     // Un entregable (y cada versión) lleva el cliente en client_slug.
     deliverables: (d) => lc(d.client_slug) === 'inherent' || slugs.has(lc(d.client_slug)),

@@ -224,6 +224,10 @@ async function encargoMal(u, b, cur) {
   return null;
 }
 async function outOfScope(u, coll, b, cur) {
+  if (['content', 'sources', 'area_notes'].includes(coll)) {
+    const sc = await scopeOf(u, coll);
+    if (!visible(u, coll, b) || !inScope(sc, coll, b) || !profInScope(sc, coll, b)) return 'Ese documento no está entre los tuyos';
+  }
   if (coll === 'tasks') { const why = await encargoMal(u, b, cur); if (why) return why; }
   if (coll === 'tasks' && b.project_id && b.project_id !== cur?.project_id) { const p = await db.get('projects', String(b.project_id)); if (p && !inScope(await scoper(u), 'projects', p)) return 'Ese proyecto no está entre los tuyos'; }
   if (coll === 'quotes' && b.lead_id && b.lead_id !== cur?.lead_id) { const l = await db.get('leads', String(b.lead_id)); if (l && !inScope(await scoper(u), 'leads', l)) return 'Ese lead no está entre los tuyos'; }
@@ -284,12 +288,12 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
   try { b = markExternal(req.params.coll, b, req.params.id); } catch (e) { return res.status(400).json({ error: e.message }); }
   if (JSON.stringify(b).length > 400_000) return res.status(413).json({ error: 'Demasiado grande' });
   // Fuera del alcance de la persona (o de la marca personal) no se cambia: para ella no existe.
-  if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
+  if (SCOPED.includes(req.params.coll) || ['content', 'sources'].includes(req.params.coll)) { const cur = await db.get(req.params.coll, req.params.id); if (cur && (!inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !visible(u, req.params.coll, cur) || !profInScope(await scopeOf(u, req.params.coll), req.params.coll, cur))) return res.status(404).json({ error: 'No existe' }); if (!personalOk(u, b.profile)) return res.status(403).json({ error: 'La marca personal es solo del CEO' }); }
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
   if (req.params.coll === 'settings' && req.params.id === 'levels') b = { ...cleanLevels(b), v: b.v };
   // Library: mover una carpeta nunca la mete dentro de sí misma; si el cambio no trae parent_id, se queda donde estaba.
   if (req.params.coll === 'folders') { const all = await db.list('folders'); if (!('parent_id' in b)) b.parent_id = all.find((x) => x.id === req.params.id)?.parent_id || null; const why = parentError(all, req.params.id, b.parent_id || null); if (why) return res.status(400).json({ error: why }); b.parent_id = b.parent_id || null; }
-  if (['tasks', 'quotes', 'budgets'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
+  if (['tasks', 'quotes', 'budgets', 'content', 'sources', 'area_notes'].includes(req.params.coll)) { const why = await outOfScope(u, req.params.coll, b, await db.get(req.params.coll, req.params.id)); if (why) return res.status(403).json({ error: why }); }
   if (req.params.coll === 'accounts') b = keepAccesos(u, b, await db.get('accounts', req.params.id));
   if (req.params.coll === 'content') { const why = await reglasPieza(b, await db.get('content', req.params.id)); if (why) return res.status(423).json({ error: why, code: 'REGLA_PIEZA' }); }
   if (req.params.coll === 'content') { const cur = await db.get('content', req.params.id), r = reglasShoot(u, b, cur); if (r) return res.status(r.status).json({ error: r.error, code: r.code }); if (b.kind === 'shoot' && !veMontos(u.role)) b = conMontos(cur, b); }
@@ -322,7 +326,7 @@ on('PUT', 'db/:coll/:id', async (req, res) => {
 on('DELETE', 'db/:coll/:id', async (req, res) => {
   const u = await collGuard(req, res, true); if (!u) return;
   const cur = await db.get(req.params.coll, req.params.id);
-  if (cur && (!visible(u, req.params.coll, cur) || !inScope(await scopeOf(u, req.params.coll), req.params.coll, cur))) return res.status(404).json({ error: 'No existe' });
+  if (cur && (!visible(u, req.params.coll, cur) || !inScope(await scopeOf(u, req.params.coll), req.params.coll, cur) || !profInScope(await scopeOf(u, req.params.coll), req.params.coll, cur))) return res.status(404).json({ error: 'No existe' });
   if (req.params.coll === 'content' && cur?.cumplimiento?.historial?.length) return res.status(400).json({ error: 'Esta pieza tiene historial de cumplimiento: el historial solo se agrega, no se borra. Archívala.', code: 'HISTORIAL' });
   if (req.params.coll === 'settings' && req.params.id === 'role_views') forgetViews();
   res.json({ ok: await db.remove(req.params.coll, req.params.id, u.email) });

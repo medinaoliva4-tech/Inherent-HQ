@@ -4,6 +4,18 @@
 > Auditoría: `docs/auditoria-vision.md` y `docs/auditoria-vision/`. Decisiones tomadas por el CEO: `docs/DECISIONES-FABLE.md`.
 > Capturas: `node scripts/capturas-vision.mjs <rutas> <prefijo>` (con `npm run dev` corriendo) → `docs/capturas-vision/`.
 
+## Reanudación supervisada · 2026-11-13
+
+- Worktree aislado: `/Users/rodrigomedina/.codex/worktrees/os-vision-integracion/Inherent-HQ`, base `bb8188e`. El checkout principal tiene trabajo ajeno y no se toca.
+- Arquitectura/revisión: Astra. Implementación económica: Luna por paquetes acotados, con revisión antes de integrar. El integrador conserva los archivos compartidos.
+- Plan ejecutable y criterios: `PAQUETES-VISION.md`. Decisiones §9: `DECISIONES-FABLE.md`. Índice de auditoría: `auditoria-vision.md`.
+- Prioridad: cerrar una sola auditoría → Finance/alcance → componentes reutilizados/nodos/Decide → ejecución durable/P0 → resto → nativo/pulido/refactor/video/cierre. No repetir auditorías ni ampliar pruebas sin una razón concreta.
+- `npm ci`, `npm test` y `npm run test:ui` de base pasaron, ejecutados por el integrador. Cada entrega añade evidencia propia; la base no certifica la visión.
+- Reservados por el integrador: `public/app.css`, `public/js/ui.js`, `public/js/app.js`, `public/js/tema-boot.js`, `public/sw.js`, `public/manifest.webmanifest` (pulido de modales/sidebar/clic y Ola 0).
+- Luna A2: `probes/vision-libraries/` + `docs/auditoria-vision/02-*` (librerías y prueba React Flow).
+- Luna A3: `docs/auditoria-vision/03-*` (34 herramientas, módulos, componentes y capas). Después recibe S0, Finance solo CEO.
+- Ninguna función nueva se marca terminada hasta revisar diff, prueba y captura. Las limitaciones de iPhone/Xcode/servicios en vivo quedan separadas de trabajo local pendiente.
+
 ## Pedidos del CEO (en orden de llegada)
 
 1. La misión original: Parte I (Olas 0–8), app nativa `ios/`, Parte II (motor Intent-to-Interface, 12 componentes, 34 herramientas, 4 capas), diseño §17, decisiones §9 sin preguntar, informe final.
@@ -48,3 +60,4 @@ Estado: ⬜ pendiente · 🟡 en curso · ✅ hecho y verificado · 🔶 hecho, 
 
 - 2026-11-13 · Rama creada. Pruebas base (`npm test`) pasan. OS local corre. Script de capturas listo. Auditoría 01 (plataforma) escrita.
 - 2026-11-13 · Dos subagentes se cortaron por el límite de gasto de la cuenta; reanudados cuando el CEO avisó «listo ya».
+- 2026-11-14 · S0 implementado y probado en API: `roleviews` impide habilitar Finance fuera del CEO; `guard`/`guardAny` y `CEO_READ` rechazan rutas Finance y sus colecciones incluso con matriz adulterada. `finance_sheet`/`pricing` privados, caché `sources/ads-*-tabla` solo CEO, `area_notes` y escrituras/traslados de contenido respetan marca y ocultan personal. Evidencia: `node scripts/test-vision-seguridad.mjs` → 7 escenarios con PGlite efímero y API real, CEO/COO/team/client, sin red. Revisión visual de navegación pendiente del integrador; no se considera avance de herramientas ni de Finance funcional.

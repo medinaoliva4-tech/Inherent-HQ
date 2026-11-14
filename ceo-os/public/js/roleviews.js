@@ -52,7 +52,7 @@ export const SUMMARY = {
   operations: 'Los proyectos con su avance y las tareas atrasadas o en revisión; sin pipeline, calendario ni timeline',
   clients: 'La lista de clientes con su nivel, su avance y sus metas; sin accesos, links, precios ni portal',
   sales: 'Los indicadores del CRM y los seguimientos vencidos; sin catálogo, precios ni cotizaciones',
-  finanzas: 'Los movimientos del mes (ingresos y gastos); sin costos, rentabilidad, precios ni pagos',
+  finanzas: 'Solo el CEO ve Finanzas',
   content: 'Solo el rendimiento (Analytics), sin Research ni Calendario',
 };
 // El alcance de los datos: qué proyectos, tareas, clientes y leads entran en las listas.
@@ -64,9 +64,8 @@ export const STARTS = [['work', 'Hoy · sus responsabilidades'], ['home', 'Hoy']
 const DEFAULT_START = { ceo: 'home', coo: 'home' };
 // Control del flujo e Indicadores ya no son pantallas (viven en Hoy): si un perfil viejo abre ahí, abre en Hoy.
 const START_VIEJO = { control: 'home', resultados: 'home' };
-// Lo que nunca cambia la matriz: Finanzas para quien no es CEO se queda en resumen (costos, márgenes,
-// tarifas y pagos son solo del CEO), y Team siempre se ve (quién es quién); cambiarlo ya es solo del CEO.
-const CAP = { finanzas: 'resumen' };
+// La matriz nunca concede Finanzas a otro rol. Team conserva el directorio visible; editarlo es solo del CEO.
+const CAP = { finanzas: 'oculto' };
 const FLOOR = { team: 'completo' };
 
 // Las áreas de siempre de cada rol de acceso (sin configuración, esto es lo que ve cada quien).
@@ -142,8 +141,8 @@ export const PURPOSE = {
     sections: { home: 'Qué cortes vencen hoy y esta semana', work: 'Tu día: cola de producción y kit por cliente', library: 'SOPs de edición y prompts generales', team: 'Quién hace qué' } },
   finance: { name: 'Finance + Business mapping', short: 'Mapeas el negocio del cliente para que gane más y gaste menos.', sees: 'Los proyectos de Business Growth y sus tareas.', why: 'Para que el cliente gane más y gaste menos, con números.', does: 'Mapea el negocio, entrega los análisis y los sube a revisión.',
     sections: { home: 'Tus entregas de hoy', work: 'Tus proyectos de Business Growth y tu checklist', library: 'SOPs de finanzas y mapping', team: 'Quién hace qué' } },
-  cobros: { name: 'Finanzas de Inherent · cobros', short: 'Cobras a tiempo y cuadras la caja.', sees: 'Los movimientos del mes: ingresos y gastos, sin costos ni márgenes.', why: 'Para que se cobre a tiempo y la caja cuadre.', does: 'Registra cobros y pagos y persigue lo vencido.',
-    sections: { home: 'Qué se cobra hoy', work: 'Tu día: tus tareas de cobro y lo pendiente por cobrar', finanzas: 'Los movimientos del mes (resumen)', library: 'SOP de caja y cobros', team: 'Quién hace qué' } },
+  cobros: { name: 'Finanzas de Inherent · cobros', short: 'Cobras a tiempo y cuadras la caja.', sees: 'Sus tareas y seguimientos de cobro, sin acceso a Finanzas.', why: 'Para que se cobre a tiempo y la caja cuadre.', does: 'Registra cobros y pagos y persigue lo vencido.',
+    sections: { home: 'Qué se cobra hoy', work: 'Tu día: tus tareas de cobro y lo pendiente por cobrar', library: 'SOP de caja y cobros', team: 'Quién hace qué' } },
   ads: { name: 'Ads management', short: 'Compras resultado con el dinero del cliente, solo con el OK del CEO.', sees: 'Por cliente con pauta: el encargo, el OK del CEO, sus tareas de ⑩, las campañas y el aprendizaje.', why: 'Para comprar resultado con el dinero del cliente sin lanzar nada que el CEO no aprobó.', does: 'Corre las capas de ⑩ Ads con sus skills ad-*, registra campañas y entrega cada tarea.',
     sections: { home: 'Tus tareas de ⑩ Ads que vencen hoy', work: 'Tu día: encargo, campañas y aprendizaje de cada cliente con pauta', library: 'SOPs de pauta y prompts', team: 'Quién hace qué' } },
   ventas: { name: 'Ventas · CRM y seguimiento', short: 'Que ningún lead se enfríe: das seguimiento a tiempo.', sees: 'Los prospectos y su seguimiento; sin precios internos ni cotizaciones de otros.', why: 'Para que ningún lead se enfríe.', does: 'Mueve leads, anota la actividad y agenda el siguiente paso.',
