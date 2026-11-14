@@ -398,17 +398,14 @@ function menuWs(btn) {
 // El menú de «tú», al pie de la barra: abre hacia arriba.
 function menuYo(btn) {
   for (const p of $$('[data-popover]')) p.remove();
-  const claroAhora = document.documentElement.dataset.theme === 'light';
+  const modo = window.inherentTema?.modo() || 'automatico';
   uiMenu(btn, [
     { label: 'Mi perfil', icon: 'user', href: '#/me' },
     { label: 'Conexiones', icon: 'link', href: '#/ai/mcps' },
     '-',
-    { label: claroAhora ? 'Modo oscuro' : 'Modo claro', icon: 'sparkles', onSelect: () => {
-      const h = document.documentElement, claro = h.dataset.theme !== 'light';
-      h.dataset.theme = claro ? 'light' : 'dark'; h.dataset.llmTema = claro ? 'dia' : 'noche'; document.querySelector('.llm')?.setAttribute('data-tema', claro ? 'dia' : 'noche');
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', claro ? '#f3f3f4' : '#0d0d0e');
-      try { localStorage.setItem('os.modo', claro ? 'claro' : 'oscuro'); } catch { /* dura esta sesión */ }
-    } },
+    { label: 'Apariencia automática', icon: 'sparkles', checked: modo === 'automatico', onSelect: () => window.inherentTema?.elegir('automatico') },
+    { label: 'Modo claro', icon: 'sparkles', checked: modo === 'claro', onSelect: () => window.inherentTema?.elegir('claro') },
+    { label: 'Modo oscuro', icon: 'sparkles', checked: modo === 'oscuro', onSelect: () => window.inherentTema?.elegir('oscuro') },
   ], { etiqueta: 'Tu cuenta', placement: 'top-start', ancho: 240 });
 }
 const ponerMini = (on) => { lsSet('barra.mini', on ? '1' : '0'); document.documentElement.toggleAttribute('data-lat-mini', on); if (me) paintLat(); const b = $('.lat [data-lat="mini"]'); if (b) { b.setAttribute('aria-label', on ? 'Mostrar la barra (⌘B)' : 'Esconder la barra (⌘B)'); b.title = on ? 'Mostrar la barra · ⌘B' : 'Esconder la barra · ⌘B'; } };
@@ -684,8 +681,8 @@ async function start(u) {
   // Avisos: la campanita cuenta lo que pide atención (servidor + tu compu) y se pone al día sola.
   if (me.role !== 'client') import('./avisos-ui.js').then((a) => a.instalarCampana(me)).catch(() => {});
   if (me.role !== 'client') import('./chat-avisos-ui.js').then((a) => a.instalarAvisosChat(me)).catch(() => {});
-  // El service worker de los avisos (web push). Sin él, nada cambia.
-  if (me.role !== 'client') import('./avisos.js').then((a) => a.registrarSW()).catch(() => {});
+  // El cascarón instalable y los avisos usan el mismo service worker en todos los roles.
+  import('./avisos.js').then((a) => a.registrarSW()).catch(() => {});
   // Las responsabilidades recurrentes (recetas internas encendidas) dejan su tarea al abrir la app, una vez al día. El cron diario hace lo mismo.
   if (['ceo', 'coo'].includes(me.role)) { try { const d = new Date().toISOString().slice(0, 10); if (localStorage.getItem('rec.run') !== d) api('recipes/run', { method: 'POST', body: {} }).then(() => { try { localStorage.setItem('rec.run', d); } catch {} }).catch(() => {}); } catch {} }
 }

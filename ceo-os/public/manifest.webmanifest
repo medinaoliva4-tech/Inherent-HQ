@@ -1,6 +1,7 @@
 {
   "name": "Inherent OS",
   "short_name": "Inherent",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

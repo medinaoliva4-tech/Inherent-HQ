@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import vm from 'node:vm';
 import { tieneIco, svgIco, nombreIco } from '../public/js/iconos.js';
 import { contraste } from '../public/js/sistema-visual.js';
 import { workspacesDe, rutaDeVuelta, esApp } from '../public/js/workspaces.js';
@@ -85,8 +86,29 @@ t('el tema arranca antes de pintar y sin destellos', () => {
   const idx = fs.readFileSync(path.join(RAIZ, 'index.html'), 'utf8');
   assert.ok(idx.indexOf('/js/tema-boot.js') > 0 && idx.indexOf('/js/tema-boot.js') < idx.indexOf('/app.css'), 'tema-boot va en el head, antes del CSS');
   const boot = fs.readFileSync(path.join(RAIZ, 'js/tema-boot.js'), 'utf8');
-  assert.ok(boot.includes("'dark'") && boot.includes('#0d0d0e'), 'arranca oscuro y la franja del iPhone usa su fondo');
-  assert.match(boot, /try \{ claro = localStorage/, 'la elección guardada no puede romper el arranque');
+  const iniciar = (guardado, luz) => {
+    const attrs = {}, meta = {}, chat = {}, memoria = {};
+    let alCambiar;
+    const sistema = { matches: luz, addEventListener: (_ev, fn) => { alCambiar = fn; } };
+    const document = {
+      documentElement: { setAttribute: (k, v) => { attrs[k] = v; } },
+      querySelector: (s) => s === '.llm' ? { setAttribute: (k, v) => { chat[k] = v; } } : { setAttribute: (k, v) => { meta[k] = v; } },
+    };
+    const window = { matchMedia: () => sistema };
+    const localStorage = { getItem: () => guardado, setItem: (k, v) => { memoria[k] = v; } };
+    vm.runInNewContext(boot, { document, window, localStorage });
+    return { attrs, meta, chat, memoria, sistema, alCambiar, tema: window.inherentTema };
+  };
+  const automatico = iniciar(null, true);
+  assert.equal(automatico.attrs['data-theme'], 'light');
+  automatico.sistema.matches = false; automatico.alCambiar();
+  assert.equal(automatico.attrs['data-theme'], 'dark');
+  assert.equal(automatico.meta.content, '#0d0d0e');
+  automatico.tema.elegir('claro');
+  assert.equal(automatico.attrs['data-theme'], 'light');
+  assert.equal(automatico.memoria['os.modo'], 'claro');
+  assert.equal(automatico.chat['data-tema'], 'dia');
+  assert.equal(iniciar('oscuro', true).attrs['data-theme'], 'dark');
   assert.equal(NOCHE['ui-bg'], '#0d0d0e');
 });
 

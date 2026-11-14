@@ -21,7 +21,7 @@ const espera = Number(flags.espera) || 2600;
 const combos = [['dia', 'light', 1440, 900, false], ['noche', 'dark', 1440, 900, false], ['dia', 'light', 390, 844, true], ['noche', 'dark', 390, 844, true]]
   .filter(([t, , w]) => !flags.solo || flags.solo.split(',').includes(`${t}-${w}`));
 
-const b = await chromium.launch(); const errs = [];
+const b = await chromium.launch({ channel: process.env.PW_CHANNEL || 'chrome' }).catch(() => chromium.launch()); const errs = [];
 for (const [tema, scheme, w, h, cel] of combos) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, isMobile: cel, hasTouch: cel, deviceScaleFactor: 2,
     reducedMotion: flags.movimiento === 'reducido' ? 'reduce' : 'no-preference' });
