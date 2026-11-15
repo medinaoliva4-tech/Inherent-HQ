@@ -8876,7 +8876,7 @@ h1,h2,h3,.sec-title{letter-spacing:-.012em;text-wrap:balance}
 .lat-ayuda .pdchip:hover{background:var(--ui-fill2);color:var(--ui-ink);opacity:1}
 
 /* ===== El Chat, como el prototipo aprobado (PLAN-GATEWAY §22) ===== */
-.llm{--ink:var(--ui-ink);--ink2:var(--ui-ink2);--mut:var(--ui-mut);--tone:var(--ui-acc);background:transparent;font-size:var(--fs-6)}
+.llm{--ink:#efebe4;--ink2:#bdb9b2;--mut:#a39f9a;--tone:#e3d8c5;background:transparent;font-size:var(--fs-6)}
 .lat-top{display:flex;align-items:center;gap:6px}
 .lat-top .lat-nueva{flex:1;min-width:0}
 .lat-marca{display:none}
@@ -10240,12 +10240,3 @@ button,a,.lc{touch-action:manipulation}
 /* Presionar conserva la posición del control: sin encogimientos ni saltos. */
 :is(.btn,.chip,.btn-icon,.lat-it,.lat-subs a,.lat-chat,.lat-yo-b,.lat-ib,.hoja-it,.nc-b,.gbtn,.ls-new,.lsg-c):active{transform:none;filter:none}
 :is(a.card,.card[data-act],.card[role="button"],.card.click,a.sp-tile,.sp-tile[data-act],a.sp-panel,.sp-panel[data-act],.sp-cover[data-act],.artifact,.folder,.itile,.eleva):is(:hover,:active){transform:none}
-/* La navegación del Chat comparte superficie con la del OS; el panel claro separa sus tarjetas. */
-:root[data-theme="light"] .lat,:root[data-theme="light"] .llm-side{background:var(--ui-paper-surf);border-color:var(--ui-line2)}
-:root[data-theme="light"] .llm{background:var(--ui-bg)}
-:root[data-theme="light"] .llm-panel,:root[data-theme="light"] .llm-panel .lpt{background:var(--ui-paper-surf2)}
-:root[data-theme="light"] .llm-panel{--pn-g:var(--ui-paper-surf)}
-:root[data-theme="light"] .llm-panel :is(.lp-sec,.bru-uso,.lp-grid){border:1px solid var(--ui-line)}
-.lc-offline{margin:0 0 8px;padding:8px 10px;border:1px solid var(--ui-line2);border-radius:var(--r-2);background:var(--ui-fill);color:var(--ui-ink2);font-size:var(--fs-4);line-height:1.35}
-.llm .lc-send:disabled{opacity:.48;cursor:not-allowed}
-@media (max-width:760px){.llm .lc:has(.lc-offline):not(:focus-within){display:block}.llm .lc:has(.lc-offline):not(:focus-within) .lc-row{display:flex;flex-wrap:wrap;margin-top:8px}}
