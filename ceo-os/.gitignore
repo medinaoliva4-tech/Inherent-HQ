@@ -1,4 +1,5 @@
 node_modules
 .devdb
+.vision-demo-db
 api/_data
 .capturas/

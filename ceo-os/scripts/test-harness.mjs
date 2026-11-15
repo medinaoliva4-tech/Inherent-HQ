@@ -49,6 +49,7 @@ await t('harness.js solo conoce la portada y «mcps»; cualquier otra página se
   assert.ok(!/AI Harness/.test(SRC), 'la pantalla ya no dice «AI Harness»');
   for (const v of ['agents', 'skills', 'workflows', 'memory', 'models', 'evals']) assert.ok(!new RegExp(`['"]${v}['"]`).test(SRC), `${v} sigue en el router`);
   assert.match(SRC, /href="#\/chat"/); assert.match(SRC, /href="#\/ai\/mcps"/);
+  assert.ok(!/<nav class="tabs"[^>]*>[\s\S]*?href="#\/chat"[\s\S]*?<\/nav>/.test(SRC), 'Chat no debe ser pestaña de Agentes o Conexiones');
   for (const m of SRC.matchAll(/\bico\(\s*'([\w-]+)'/g)) assert.ok(tieneIco(m[1]), `ícono ${m[1]}`);
 });
 await t('harness.js solo lee: sin escrituras, costos ni Hermes', () => {
@@ -102,7 +103,9 @@ for (const online of [true, false]) for (const [me, quien] of [[ceo, 'CEO'], [ot
     const s = await pagina(me, id, online), c = `${id || 'portada'}/${quien}/${online}`;
     limpio(s, c);
     assert.match(s, /Inherent AI/); assert.ok(!/AI Harness/.test(s), `${c}: dice «AI Harness»`); assert.ok(!/Hermes/.test(s), `${c}: menciona Hermes`);
-    assert.match(s, /href="#\/chat"/); assert.match(s, /href="#\/ai\/mcps"/);
+    if (id === '') assert.match(s, /href="#\/chat"/);
+    else assert.ok(!/href="#\/chat"/.test(s), 'Conexiones no tiene pestaña Chat');
+    assert.match(s, /href="#\/ai\/mcps"/);
     assert.ok(llamadasOS.every((x) => x.method === 'GET'), `${c}: solo lee`);
     if (id === '') {
       assert.match(s, /Abrir el Chat/); assert.match(s, /Ver los agentes/); assert.match(s, /Ver conexiones/); assert.ok(!/aria-current/.test(s), 'en la portada ninguna pestaña está abierta');
