@@ -438,14 +438,16 @@ export async function uploadToDrive(file, name, onProgress = () => {}, where = {
 export function wizard(title, steps, doneLabel = 'Crear') {
   return new Promise((resolve) => {
     const a = {}; steps.forEach((s) => { if (s.v !== undefined && typeof s.v !== 'function') a[s.k] = s.v; });
-    const v = document.createElement('div'); v.className = 'wiz';
+    const opener = document.activeElement, background = [...document.body.children].map((el) => ({ el, inert: el.inert }));
+    const v = document.createElement('div'); v.className = 'wiz'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-modal', 'true'); v.setAttribute('aria-label', title);
+    background.forEach(({ el }) => el.inert = true);
     let i = 0; const live = () => steps.filter((s) => !s.show || s.show(a));
     const nextDay = (dow) => { const d = new Date(); d.setDate(d.getDate() + ((dow + 7 - d.getDay()) % 7 || 7)); return d.toISOString().slice(0, 10); };
     const plus = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     const month1 = () => { const d = new Date(); d.setMonth(d.getMonth() + 1, 1); return d.toISOString().slice(0, 10); };
     const WHEN = [['Hoy', () => today()], ['Mañana', () => plus(1)], ['Viernes', () => nextDay(5)], ['En una semana', () => plus(7)], ['Día 1 del próximo mes', month1]];
-    const close = (out) => { v.remove(); document.removeEventListener('keydown', key); resolve(out); };
-    const key = (e) => { if (e.key === 'Escape') close(null); if (e.key === 'Enter' && !e.shiftKey && e.target.matches('input:not([type=checkbox]):not([type=file])')) { e.preventDefault(); next(); } };
+    const close = (out) => { v.remove(); background.forEach(({ el, inert }) => { if (el.isConnected) el.inert = inert; }); document.removeEventListener('keydown', key); opener?.isConnected && opener.focus({ preventScroll: true }); resolve(out); };
+    const key = (e) => { if (e.key === 'Tab') { const focusable = [...v.querySelectorAll('button:not([disabled]),input:not([disabled]),textarea,select,a[href],[tabindex="0"]')].filter((el) => el.getClientRects().length); const first = focusable[0], last = focusable.at(-1); if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); } } if (e.key === 'Escape') close(null); if (e.key === 'Enter' && !e.shiftKey && e.target.matches('input:not([type=checkbox]):not([type=file])')) { e.preventDefault(); next(); } };
     function next() {
       const L = live(), s = L[i];
       if (s && ['text', 'textarea', 'date'].includes(s.type)) a[s.k] = (v.querySelector('[data-in]')?.value || '').trim();
@@ -457,14 +459,14 @@ export function wizard(title, steps, doneLabel = 'Crear') {
       if (a[s.k] === undefined && typeof s.v === 'function') a[s.k] = s.v(a); // valor por defecto que depende de respuestas anteriores
       const val = a[s.k];
       const opts = (typeof s.opts === 'function' ? s.opts(a) : s.opts) || [];
-      mount(v, html`<div class="wizbox"><div class="row"><span class="mut sm">${title}</span><div class="sp"></div><span class="wizdots">${L.map((_, j) => html`<i class="${j <= i ? 'on' : ''}"></i>`)}</span><button class="btn-icon end" data-w="x" style="margin-left:10px">${ico('x', 16)}</button></div>
+      mount(v, html`<div class="wizbox"><div class="row"><span class="mut sm">${title}</span><div class="sp"></div><span class="wizdots">${L.map((_, j) => html`<i class="${j <= i ? 'on' : ''}"></i>`)}</span><button class="btn-icon end" data-w="x" aria-label="Cerrar" style="margin-left:10px">${ico('x', 16)}</button></div>
         <h2 class="wizq">${typeof s.q === 'function' ? s.q(a) : s.q}</h2>${s.sub ? html`<div class="mut" style="margin:-6px 0 14px">${typeof s.sub === 'function' ? s.sub(a) : s.sub}</div>` : ''}
         ${s.type === 'cards' || s.type === 'multi' ? html`<div class="wizopts ${opts.length > 6 ? 'many' : ''}">${opts.map((o) => { const on = s.type === 'multi' ? (val || []).includes(o.v) : val === o.v; return html`<button class="wizopt ${on ? 'on' : ''}" data-w="opt" data-v="${o.v}">${o.i ? html`<span class="wi">${o.i}</span>` : ''}<b>${o.l}</b>${o.d ? html`<span class="mut sm">${o.d}</span>` : ''}${s.type === 'multi' ? html`<span class="wck">${on ? ico('check', 12) : ''}</span>` : ''}</button>`; })}</div>`
           : s.type === 'when' ? html`<div class="wizopts">${WHEN.map(([l, f]) => html`<button class="wizopt ${val === f() ? 'on' : ''}" data-w="when" data-v="${f()}"><b>${l}</b><span class="mut sm">${fdate(f())}</span></button>`)}<label class="wizopt"><b>Otra fecha</b><input class="in" type="date" data-w="date" value="${val && !WHEN.some(([, f]) => f() === val) ? val : ''}"></label>${s.req ? '' : html`<button class="wizopt ${val === '' ? 'on' : ''}" data-w="when" data-v=""><b>Sin fecha</b></button>`}</div>`
           : s.type === 'textarea' ? html`<textarea class="in" data-in placeholder="${s.ph || ''}" style="min-height:120px">${val || ''}</textarea>`
           : html`<input class="in wizin" data-in type="${s.type === 'date' ? 'date' : 'text'}" placeholder="${s.ph || ''}" value="${val || ''}">${(s.chips || []).length ? html`<div class="row" style="flex-wrap:wrap;gap:6px;margin-top:10px">${(typeof s.chips === 'function' ? s.chips(a) : s.chips).map((c) => html`<button class="chip" data-w="chip" data-v="${c}" style="padding:7px 12px">${c}</button>`)}</div>` : ''}`}
         <div class="row" style="margin-top:20px">${i ? html`<button class="btn ghost" data-w="back">← Atrás</button>` : ''}<div class="sp"></div>${s.type === 'cards' ? (s.req ? '' : html`<button class="btn ghost" data-w="next">${last ? doneLabel : 'Saltar →'}</button>`) : html`<button class="btn" data-w="next">${last ? doneLabel : 'Seguir →'}</button>`}</div></div>`);
-      v.querySelector('[data-in]')?.focus();
+      (v.querySelector('[data-in]') || v.querySelector('.wizopt') || v.querySelector('button'))?.focus();
     }
     v.onclick = (e) => {
       const t = e.target.closest('[data-w]'); if (!t) { if (e.target === v) close(null); return; }

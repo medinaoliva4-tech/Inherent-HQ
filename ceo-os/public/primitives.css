@@ -50,7 +50,15 @@
 /* app.css:1447 */
 :root{--ch-brown:#626263;--ch-sand:#8c8c8d;--ch-light:#cdcdce}
 /* app.css:1448 */
-:root[data-theme="dark"]{--ch-brown:#aaaaab;--ch-sand:#7b7b7c;--ch-light:#4a3e33}
+:root[data-theme="dark"]{--ch-brown:#aaaaab;--ch-sand:#7b7b7c;--ch-light:#4a4a4c}
+/* Superficies oscuras internas y tarjetas de portada; neutras en ambos temas. */
+:root{
+  --ui-feature-a:#30343b;--ui-feature-a-hi:#5d6673;--ui-feature-a-mid:#48515e;--ui-feature-low:#20252c;
+  --ui-feature-b:#34343b;--ui-feature-b-hi:#676773;--ui-feature-b-mid:#565662;--ui-feature-b-low:#25252d;
+  --ui-dark-card:#1f2126;--ui-dark-card-alt:#2b2e35;--ui-dark-card-edge:#555b66;--ui-dark-card-action:#596475;
+  --ui-dark-card-muted:#aeb3bd;--ui-dark-card-text:#eceef1;--ui-dark-card-sub:#dce0e6;--ui-dark-card-strong:#f7f8fa;
+  --ui-dark-card-link:#d7dbe1;--ui-avatar-surf:#e8eaed;
+}
 /* app.css:1718 */
 :root{
   --st-todo:#e8dfd2; --st-todo-i:#4b4b4c; --st-now:#d5d5d6; --st-now-i:#5a3d10; --st-rev:#cfd9e2; --st-rev-i:#2c3d4d;

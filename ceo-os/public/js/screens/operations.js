@@ -143,7 +143,7 @@ export async function render(el, { me, sub, alive }) {
           <div><label class="f">Link (Drive, doc, carpeta)</label><input class="in" id="tlink" value="${t.link || ''}" placeholder="https://drive.google.com/…"></div>
         </div>
         ${sopLink(t, docs)}
-        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#87684e;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
+        ${t.link && /^https?:\/\//.test(t.link) ? html`<a class="artifact" href="${t.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;margin-top:10px"><span class="fi" style="background:#596b84;color:#fdfaf3">${IC.drive}</span><div><b style="font-weight:500">Abrir link</b></div></a>` : ''}
         <b class="sm" style="display:block;margin-top:18px">Checklist</b>
         ${(t.checklist || []).map((c, i) => html`<label class="check"><input type="checkbox" data-act="chk" data-i="${i}" ${c.done ? raw('checked') : ''}> ${c.t}</label>`)}
         <div class="row" style="margin-top:6px"><input class="in" id="newchk" placeholder="Nuevo paso…"><button class="btn ghost" data-act="addchk">+</button></div>

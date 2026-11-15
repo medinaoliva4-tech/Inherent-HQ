@@ -35,6 +35,9 @@ try {
     const result = await page.evaluate(() => window.actionResult); assert.equal(result[0].estado, 'succeeded'); assert.equal(executed, 1);
     // Enter sobre cards deja actuar al botón nativo y avanza exactamente un paso.
     await page.evaluate(async () => { const { wizard } = await import('/js/core.js'); window.wizardResult = wizard('Teclado', [{ k: 'format', q: 'Formato', type: 'cards', opts: [{ v: 'Reel', l: 'Reel' }, { v: 'Story', l: 'Story' }] }, { k: 'title', q: 'Idea', type: 'text', req: true }, { k: 'final', q: 'Confirmación', type: 'cards', opts: [{ v: 'ok', l: 'Finalizar' }] }]); });
+    assert.equal(await page.locator('.wiz[role=dialog][aria-modal=true]').count(), 1);
+    assert.ok(await page.evaluate(() => document.activeElement?.classList.contains('wizopt')));
+    await page.locator('.wiz button').last().focus(); await page.keyboard.press('Tab'); assert.ok(await page.evaluate(() => document.activeElement?.closest('.wiz') !== null));
     await page.getByRole('button', { name: 'Reel', exact: true }).focus(); await page.keyboard.press('Enter');
     await page.locator('.wiz input[type="text"]').waitFor(); assert.equal(await page.getByText('Confirmación', { exact: true }).count(), 0);
     await page.keyboard.press('Escape');

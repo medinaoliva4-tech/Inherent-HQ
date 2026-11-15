@@ -56,7 +56,7 @@ export function createCatalog({ me, getS, setS, getR, setR, paint, alive = () =>
         ${flag(s)}
         <div class="svlv" data-stop><input type="range" min="3" max="10" step="1" value="${lv}" data-cardlv="${s.id}" aria-label="Nivel de entrega"><div class="row mut" style="font-size:11px"><span>3 · básico</span><div class="sp"></div><span>10 · fuerte</span></div></div>
         <div data-cardbody="${s.id}">${cardBody(s, lv)}</div>
-        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#87684e;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 14)}</a>` : ''}
+        ${sopOf(s) ? html`<a class="sm" data-stop href="#/library/${sopOf(s).folder_id || '_'}/${sopOf(s).id}" style="display:inline-block;margin-top:10px;color:#75849b;font-weight:500">${ico('doc', 15)} Ver el SOP de este servicio ${ico('right', 14)}</a>` : ''}
 </div>`; })}</div><div id="svnone" style="display:none">${vacio({ icono: 'inbox', titulo: 'No encontré servicios', linea: 'Prueba con otra palabra.' })}</div>`}`);
     const sq = $('#svq', body); if (sq) { sq.addEventListener('input', () => { svQ = sq.value; filterSv(body); }); filterSv(body); }
   }

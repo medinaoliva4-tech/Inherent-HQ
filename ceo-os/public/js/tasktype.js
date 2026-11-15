@@ -21,7 +21,7 @@ export const sopHref = (t, docs) => {
 export function sopLink(t, docs) {
   const href = sopHref(t, docs); if (!href) return '';
   const ext = isLink(t.sop), name = ext ? t.sop.replace(/^https?:\/\//, '').slice(0, 48) : docOf(docs, t.sop)?.title || 'SOP';
-  return html`<a class="sm" id="sopopen" href="${href}" ${ext ? raw('target="_blank" rel="noopener noreferrer"') : ''} style="display:inline-block;margin-top:12px;color:#87684e;font-weight:500">${ico('doc', 15)} Abrir el SOP · ${name} ${ico('right', 13)}</a>`;
+  return html`<a class="sm" id="sopopen" href="${href}" ${ext ? raw('target="_blank" rel="noopener noreferrer"') : ''} style="display:inline-block;margin-top:12px;color:#75849b;font-weight:500">${ico('doc', 15)} Abrir el SOP · ${name} ${ico('right', 13)}</a>`;
 }
 
 // Los dos campos de la ficha: Tipo y SOP. `pre` es el prefijo de los ids (para no chocar con otros campos).

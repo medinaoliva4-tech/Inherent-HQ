@@ -186,7 +186,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
 
   // ---------- Planner: calendario semana / mes, con pilares y si cada pieza ya está en Drive ----------
   const DOW = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-  const PAL = ['#795c45', '#997d65', '#87684e', '#a68d77', '#80624a', '#82644b', '#654c38', '#2c1f16'];
+  const PAL = ['#5d6b80', '#8591a3', '#66778e', '#9ba6b5', '#6c7a90', '#748298', '#4d5b6f', '#262d38'];
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const monday = (d) => { const x = new Date(d); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
   function needPosts(b, fn) {
@@ -419,19 +419,19 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       const maxAvg = Math.max(1, ...reels.map((x) => x.avg));
       top = html`<div class="row" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">${connectChip('instagram', `${ig.handles.map((h) => '@' + h).join(', ')} · conectado`, 'x', true)}<button class="sm mut" data-act="igchange">Cambiar cuenta</button><span class="mut sm">Últimos ${ig.days || 30} días.ai</span></div>
       <div class="sp-kpis">${[['Seguidores', ig.followers ? K(ig.followers) : '—'], ['Alcance', K(ig.reach)], ['Vistas', K(ig.views)], ['Engagement', ig.er == null ? '—' : ig.er + '%'], ['Watch time promedio', w.avg == null ? '—' : w.avg + ' s']].map(([l, v]) => html`<div><span class="lbl">${l}</span><b>${v}</b></div>`)}</div>
-      ${ig.series.length > 1 ? html`<div class="sp-panel ct-main"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#2c1f16;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #997d65;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
+      ${ig.series.length > 1 ? html`<div class="sp-panel ct-main"><div class="wkhead"><h3>Alcance y vistas por día</h3><span class="sm row" style="gap:14px"><span class="row" style="gap:6px"><i style="width:16px;height:2px;background:#262d38;display:inline-block"></i>Alcance</span><span class="row" style="gap:6px"><i style="width:16px;height:0;border-top:2px dashed #8591a3;display:inline-block"></i>Vistas</span></span></div><div class="chart" id="chIG"></div></div>` : ''}
       <div class="sp-panel" style="margin-top:16px"><div class="wkhead"><div><h3>Reels · ¿hasta dónde los ven?</h3><span class="mut sm">Últimos 90 días · ${w.n || 0} reels con watch time · ${w.hours || 0} h vistas en total${w.hookLost ? html` · <b style="color:var(--warn)">${w.hookLost} se pierden en el hook (&lt;3 s)</b>` : ''}</span></div></div>
         ${reels.length ? html`<div class="tscroll"><table class="wktable"><thead><tr><th>Reel</th><th>Fecha</th><th class="n">Vistas</th><th class="n">Alcance</th><th style="min-width:150px">Watch time promedio</th><th class="n">Total</th><th class="n">${ico('heart')}</th><th class="n">Guardados</th><th class="n">Compartidos</th></tr></thead><tbody>
           ${reels.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit" class="row">${safeImg(x.thumb) ? html`<span class="rthumb" style="background-image:url('${safeImg(x.thumb)}')"></span>` : ''}<span class="sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.caption || 'Ver reel'}</span></a>` : html`<span class="sm">${x.caption || '—'}</span>`}</td>
             <td class="mut">${fdate(x.date)}</td><td class="n"><b style="font-weight:500">${K(x.views)}</b></td><td class="n">${K(x.reach)}</td>
-            <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:var(--fill)"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#997d65' : '#795c45'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
+            <td>${x.avg ? html`<div class="row" style="gap:8px"><div style="flex:1;height:8px;border-radius:99px;background:var(--fill)"><div style="width:${Math.round((x.avg / maxAvg) * 100)}%;height:100%;border-radius:99px;background:${x.avg < 3 ? '#8591a3' : '#5d6b80'}"></div></div><span class="sm" style="width:44px;text-align:right">${x.avg} s</span></div>` : html`<span class="mut sm">—</span>`}</td>
             <td class="n mut">${x.total ? (x.total >= 3600 ? Math.round(x.total / 360) / 10 + ' h' : Math.round(x.total / 60) + ' min') : '—'}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.saves)}</td><td class="n">${K(x.shares)}</td></tr>`)}</tbody></table></div>
           <div class="sp-callout info" style="margin-top:12px"><span class="grow">Instagram no entrega por API el segundo exacto en que la gente deja de ver (esa curva solo está en la app). Lo más cercano es el <b>watch time promedio</b>: si está debajo de 3 s, se fueron en el hook.</span></div>`
         : html`<div class="mut sm" style="padding:6px 0">No hay reels de esta cuenta en los últimos 90 días.</div>`}</div>
       ${ig.top.length ? html`<div class="sp-panel" style="margin-top:16px"><div class="wkhead"><h3>Mejores posts del periodo</h3></div><div class="tscroll"><table class="wktable"><thead><tr><th>Fecha</th><th>Tipo</th><th class="n">Alcance</th><th class="n">Likes</th><th class="n">Comentarios</th><th class="n">Guardados</th><th class="n">Engagement</th></tr></thead><tbody>${ig.top.map((x) => html`<tr><td>${x.url ? html`<a href="${x.url}" target="_blank" rel="noopener noreferrer" style="color:inherit">${fdate(x.date)}</a>` : fdate(x.date)}</td><td>${x.type}</td><td class="n">${K(x.reach)}</td><td class="n">${K(x.likes)}</td><td class="n">${K(x.comments)}</td><td class="n">${K(x.saves)}</td><td class="n"><b style="font-weight:500">${K(x.eng)}</b></td></tr>`)}</tbody></table></div></div>` : ''}`;
     }
     mount(b, html`${top}<div id="anScrape" style="margin-top:24px"></div>`);
-    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#2c1f16', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#997d65', dash: true }]);
+    const ch = $('#chIG', b); if (ch) lineChart(ch, ig.series.map((x) => fdate(x.date)), [{ name: 'Alcance', v: ig.series.map((x) => x.reach), c: '#262d38', fill: true }, { name: 'Vistas', v: ig.series.map((x) => x.views), c: '#8591a3', dash: true }]);
     scrapeAnalytics($('#anScrape', b));
   }
   function scrapeAnalytics(b) {
@@ -445,7 +445,7 @@ Contesta SOLO con este JSON, sin texto antes ni después:
       <div class="sp-kpis ct-delta">${kpi('Vistas promedio', K(last.avgViews), delta('avgViews'))}${kpi('Engagement', last.er == null ? '—' : last.er + '%', delta('er'))}${kpi('Likes', K(last.likes), delta('likes'))}${kpi('Posts leídos', last.posts, null)}</div>
       <div class="sp-panel ct-main"><div class="wkhead"><h3>Vistas promedio por semana</h3></div><div class="chart" id="chA"></div></div>
       ${own.length ? html`<div class="sec-title"><h2>Tus últimos posts</h2></div><div class="grid g5">${own.slice(0, 10).map(videoCard)}</div>` : ''}`);
-    lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#2c1f16', fill: true }]);
+    lineChart($('#chA', b), h.map((x) => x.week.slice(5)), [{ name: 'Vistas', v: h.map((x) => x.avgViews), c: '#262d38', fill: true }]);
   }
 
   // ---------- Fuentes: tus cuentas, tu audiencia (de lo general a lo específico), referentes y competencia ----------

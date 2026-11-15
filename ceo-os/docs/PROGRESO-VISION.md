@@ -7,13 +7,13 @@
 ## Reanudación supervisada · 2026-11-13
 
 - Worktree aislado: `/Users/rodrigomedina/.codex/worktrees/os-vision-integracion/Inherent-HQ`, base `bb8188e`. El checkout principal tiene trabajo ajeno y no se toca.
-- Arquitectura/revisión: Astra. Implementación económica: Luna por paquetes acotados, con revisión antes de integrar. El integrador conserva los archivos compartidos.
+- Arquitectura inicial: Astra. El CEO pidió continuar con Sol alto para ahorrar créditos; ambos encontraron el límite de gasto de la cuenta. La integración sigue en este worktree sin repetir auditorías.
 - Plan ejecutable y criterios: `PAQUETES-VISION.md`. Decisiones §9: `DECISIONES-FABLE.md`. Índice de auditoría: `auditoria-vision.md`.
 - Prioridad: cerrar una sola auditoría → Finance/alcance → componentes reutilizados/nodos/Decide → ejecución durable/P0 → resto → nativo/pulido/refactor/video/cierre. No repetir auditorías ni ampliar pruebas sin una razón concreta.
 - `npm ci`, `npm test` y `npm run test:ui` de base pasaron, ejecutados por el integrador. Cada entrega añade evidencia propia; la base no certifica la visión.
 - Reservados por el integrador: `public/app.css`, `public/js/ui.js`, `public/js/app.js`, `public/js/tema-boot.js`, `public/sw.js`, `public/manifest.webmanifest` (pulido de modales/sidebar/clic y Ola 0).
-- Luna A2: `probes/vision-libraries/` + `docs/auditoria-vision/02-*` (librerías y prueba React Flow).
-- Luna A3: `docs/auditoria-vision/03-*` (34 herramientas, módulos, componentes y capas). Después recibe S0, Finance solo CEO.
+- A2: `probes/vision-libraries/` + `docs/auditoria-vision/02-*` (librerías y prueba React Flow), revisada.
+- A3: `docs/auditoria-vision/03-*` (34 herramientas, módulos, componentes y capas), revisada. S0/S1 cerraron los fallos de seguridad hallados.
 - Ninguna función nueva se marca terminada hasta revisar diff, prueba y captura. Las limitaciones de iPhone/Xcode/servicios en vivo quedan separadas de trabajo local pendiente.
 
 ## Pedidos del CEO (en orden de llegada)
@@ -35,11 +35,11 @@ Estado: ⬜ pendiente · 🟡 en curso · ✅ hecho y verificado · 🔶 hecho, 
 | B | Este plan + decisiones §9 | A | ✅ | PAQUETES-VISION.md y DECISIONES-FABLE.md |
 | S0 | Finance solo CEO y aislamiento de marcas | A | ✅ | 8 escenarios API/PGlite; revisión de servidor completada |
 | S1 | Política común y aprobación exacta de tools externas | S0 | ✅ | 10 escenarios API/PGlite + UI; concurrencia de capacidad se valida en B2/T3 |
-| 1 | Kit: los 12 componentes compartidos (`public/js/kit/`) + página de ejemplos + pruebas | A | 🟡 | Módulos y demo local; DecisionCard usada en aprobación S1; prueba/capturas en revisión |
+| 1 | Kit: los 12 componentes compartidos (`public/js/kit/`) + página de ejemplos + pruebas | A | ✅ | 12 interactivos en demo sintética; DecisionCard en aprobación S1; otras integraciones quedan en T1–T7 |
 | 2 | Modelo de nodo y hilo del cliente (API + canvas) | 1 | ⬜ | |
 | 3 | Motor backend: cola, workflows durables, aprobaciones, bus de eventos, bitácora, reintentos, idempotencia, límites, cumplimiento | A | ⬜ | |
 | 4 | Laya como criterio del motor + panel «lo que dice Laya» | 3 | ⬜ | |
-| 5 | Ola 0: PWA pulida, tema automático, barra inferior de 5 puertas, sin conexión | — | ⬜ | |
+| 5 | Ola 0: PWA pulida, tema automático, barra inferior de 5 puertas, sin conexión | — | 🟡 | tema y caché estático; faltan 5 puertas, snapshots autorizados y cola sin conexión |
 | 6 | Ola 1: «Decide», tarjeta de entregable con Escalar, passkeys (Face ID / Touch ID), push con acción | 1, 3 | ⬜ | |
 | 7 | Ola 2: franja del ciclo 1→20, Hoy reordenado, `⌘K` con acciones | 1 | ⬜ | |
 | 8 | Motor Intent-to-Interface (clasificador + catálogo + cierre con acción) | 1 | ⬜ | |
@@ -53,7 +53,7 @@ Estado: ⬜ pendiente · 🟡 en curso · ✅ hecho y verificado · 🔶 hecho, 
 | 16 | Ola 8: «mensajes mínimos», modo concentración, atajos | 7 | ⬜ | |
 | 17 | Voz con contexto | 8 | ⬜ | |
 | 18 | `ios/`: cápsula nativa + login con Google fuera del WebView + guía de 6 pasos | 6 | ⬜ | |
-| 19 | Diseño §17: auditoría, Liquid Glass acotado, microinteracciones | 5–16 | ⬜ | |
+| 19 | Diseño §17: auditoría, Liquid Glass acotado, microinteracciones | 5–16 | 🟡 | modal/sidebar/clic y paleta neutra verificados; faltan flujos de paquetes restantes |
 | 20 | Refactor para gastar menos (partir `app.css`, mapa al día, código muerto) | al final | ⬜ | se hace al final para no chocar con los paquetes |
 | 21 | Video explicativo | todo | ⬜ | |
 | 22 | Informe final + repaso del MD punto por punto | todo | ⬜ | |
@@ -67,3 +67,5 @@ Estado: ⬜ pendiente · 🟡 en curso · ✅ hecho y verificado · 🔶 hecho, 
 - 2026-11-14 · S1: `ia/agente` prepara una propuesta cifrada, ligada a actor/alcance/catálogo/parámetros/hash/versión y caducidad. Confirmación humana explícita antes de `tools/call`; CAS impide doble ejecución; respuesta perdida = `resultado_desconocido`, sin reintento ciego. Catálogo desconectado/cambiado y tool desconocida se rechazan. No se usaron servicios reales. Evidencia: `node scripts/test-vision-candados.mjs` → 9 escenarios API/PGlite con adaptadores falsos explícitos, incluido recorrido real propuesta→aprobación API→tool falsa y carrera de aprobaciones; S0 sigue 7/7. `npm test`, `test-produccion-p2.mjs` (15), `test-marketing-cal.mjs` (19) y `test-herramientas.mjs` (50) pasan.
 - 2026-11-14 · S1 UI: `node scripts/test-vision-candados-browser.mjs` → selector de origen y revisión de acción funcionan en navegador real con HTTP falso explícito; 8 capturas `s1-{origen,aprobacion}-{dia,noche}-{1440,390}.png`, 2x, movimiento reducido, sin errores de página. No certifica integración en vivo. Enter del wizard ya no salta pasos al enfocar una card; probado en los cuatro casos y por el integrador. La auditoría completa de las herramientas y los paquetes K1/B1/B2 siguen pendientes.
 - 2026-11-14 · Revisión S0/S1: `guardAny` usa el mismo predicado para área y profundidad; leer Clients no presta permiso de escritura de Finance heredado. La política nueva de contenido y las acciones externas ya no exceptúan `inherent`: con alcance asignado hace falta asignación explícita. Pruebas adversarias añadidas: S0 8/8, S1 10/10.
+- 2026-11-14 · K1: 12 componentes separados, lienzo React Flow cargado bajo demanda con lista alternativa, página `/kit.html` con datos sintéticos explícitos. `DecisionCard` reutilizada en la aprobación real de acciones externas con versión/hash exactos. `node scripts/test-kit-browser.mjs`: cuatro combinaciones día/noche y 1440/390, teclado/44 px/nulos/espera/error/CSP, ocho capturas 2x. `node scripts/test-vision-candados-browser.mjs` sigue pasando. Esto no certifica las 34 herramientas.
+- 2026-11-14 · Se eliminaron cafés remanentes de tarjetas de portada, diana de audiencias, visualizaciones de contenido, enlaces/íconos y variables oscuras. Capturas `neutral-final-home-{dia,noche}-{1440,390}.png`; `npm test` y `npm run test:ui` pasan. Se conserva el fondo oscuro y la barra flotante.

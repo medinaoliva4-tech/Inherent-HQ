@@ -218,7 +218,7 @@ export const resumenMetricas = (ms = [], n = 2) => ms.slice(0, n).map((m) => `${
 
 // ---------- Cómo se pinta (solo en el navegador) ----------
 // La línea de la mezcla: tres barras finas (pilar · formato · consciencia). Tocar un tramo filtra por él.
-const TONOS = ['#795c45', '#a68d77', '#5f7a8c', '#8c6f5a', '#7f9a6a', '#b08a5a', '#6e5a7a', '#9f846d'];
+const TONOS = ['#5d6b80', '#9ba6b5', '#5f7a8c', '#687d94', '#7f9a6a', '#9babc2', '#6e5a7a', '#8796aa'];
 export function mezclaHtml(mz, f = {}, titulo = '') {
   const { html, raw } = core;
   const bar = (key, lbl, rows, short) => html`<div class="cc-mix-g"><span class="cc-mix-l">${lbl}</span><span class="cc-bar" role="img" aria-label="${lbl}: ${rows.map((r) => `${r.k} ${r.pct}%`).join(', ') || 'sin piezas'}">${rows.length ? rows.map((r, i) => html`<button class="cc-seg ${f[key] === r.k ? 'on' : ''} ${r.k === SIN ? 'none' : ''}" data-act="ccmix" data-f="${key}" data-v="${r.k}" title="${r.k}: ${r.n} · ${r.pct}%" ${raw(`style="flex:${r.n} 1 0;${r.k === SIN ? '' : `background:${r.color || TONOS[i % TONOS.length]}`}"`)}></button>`) : html`<i class="cc-seg none" style="flex:1"></i>`}</span>

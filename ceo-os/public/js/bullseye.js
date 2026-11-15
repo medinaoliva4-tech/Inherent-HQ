@@ -3,9 +3,9 @@
 // al algoritmo a quién mostrarle el video, y él expande el alcance. Se arma conversando con el Claude de cada quien.
 import { html, raw, mount, toast, drawer, closeDrawer, ask, claudeJSON, ico } from './core.js';
 
-const COL = ['#7f6149', '#a0856e', '#beaa96', '#bda895', '#4c3829'];
+const COL = ['#68788e', '#8190a3', '#9daab9', '#b5beca', '#455266'];
 const NAME = ['Centro', 'Anillo 1', 'Anillo 2', 'Anillo 3', 'Anillo 4'];
-const JOB = [['Conversión', '#7f6149'], ['Alcance con conversión', '#beaa96'], ['Alcance', '#bda895']];
+const JOB = [['Conversión', '#68788e'], ['Alcance con conversión', '#9daab9'], ['Alcance', '#b5beca']];
 const R = [30, 60, 90, 120, 150], C = 170; // radios del centro hacia afuera, en un lienzo de 340
 let MODE = 'diana', SEL = 0;
 
@@ -14,7 +14,7 @@ const short = (s, k = 22) => (s.length > k ? s.slice(0, k - 1) + '…' : s);
 function board(bx, mode) {
   const rings = [...bx.rings.keys()].reverse().map((i) => {
     const dim = mode === 'fuentes' && i > 1, sel = mode === 'diana' && i === SEL;
-    return raw(`<circle class="bx-ring" style="animation-delay:${0.15 + i * 0.12}s" cx="${C}" cy="${C}" r="${R[i]}" fill="${COL[i]}" opacity="${dim ? 0.28 : 1}" stroke="${sel ? '#fdfaf3' : '#2e2017'}" stroke-width="${sel ? 3 : 1.5}" data-act="bxRing" data-i="${i}"/>`);
+    return raw(`<circle class="bx-ring" style="animation-delay:${0.15 + i * 0.12}s" cx="${C}" cy="${C}" r="${R[i]}" fill="${COL[i]}" opacity="${dim ? 0.28 : 1}" stroke="${sel ? '#fdfaf3' : '#1f2126'}" stroke-width="${sel ? 3 : 1.5}" data-act="bxRing" data-i="${i}"/>`);
   });
   const nums = [1, 2, 3, 4].map((i) => raw(`<text x="${C}" y="${C - (R[i] + R[i - 1]) / 2 + 4}" text-anchor="middle" class="bx-n">${i}</text>`));
   let extra = '';
@@ -36,8 +36,8 @@ function panel(bx, mode) {
     return html`<div class="bx-list">${bx.rings.map((x, i) => html`<button class="bx-row ${i === SEL ? 'on' : ''}" data-act="bxRing" data-i="${i}"><i style="background:${COL[i]}"></i><span class="grow"><b>${NAME[i]}</b> ${short(x.label, 70)}</span>${i ? html`<span class="bx-tag">suelta ${x.relaxed || '—'}</span>` : ''}</button>`)}</div>
       <div class="bx-detail"><div class="bx-k">${NAME[SEL]}${SEL ? ' · suelta ' + (r.relaxed || '—') : ''}</div><div class="bx-big">${r.label}</div>
         <div class="bx-facts"><div><span>Tamaño</span>${r.size || '—'}</div><div><span>Cercanía a comprar</span>${r.conversion || '—'}</div><div><span>Competencia</span>${r.competition || '—'}</div></div>
-        <div class="bx-strip"><span>Audiencia</span><em><b style="width:${w[SEL]}%;background:#bda895"></b></em></div>
-        <div class="bx-strip"><span>Conversión</span><em><b style="width:${w[4 - SEL]}%;background:#7f6149"></b></em></div></div>`;
+        <div class="bx-strip"><span>Audiencia</span><em><b style="width:${w[SEL]}%;background:#b5beca"></b></em></div>
+        <div class="bx-strip"><span>Conversión</span><em><b style="width:${w[4 - SEL]}%;background:#68788e"></b></em></div></div>`;
   }
   if (mode === 'mix') {
     const L = bx.calib || [], per = [3, 1, 1], tot = [0, 1, 2].map((i) => L.reduce((s, c) => s + c['c' + i], 0));

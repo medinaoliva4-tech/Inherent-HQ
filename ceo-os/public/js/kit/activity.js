@@ -1,0 +1,21 @@
+import { h, dato, frame, empty, button, status } from './dom.js';
+export function AIAssistant({ title = 'Asistente', context = {}, messages = [], onSend } = {}) {
+  const el = frame(title, `Marca: ${context.client_slug || 'sin elegir'} · Pieza: ${context.piece_id || 'sin elegir'} · Día: ${dato(context.day)}`), log = h('div', { class: 'kit-messages', role: 'log', 'aria-live': 'polite' }), state = status(''), input = h('textarea', { rows: 3, placeholder: 'Una pregunta sobre este contexto', 'aria-label': 'Tu mensaje' }), form = h('form');
+  const add = (m) => log.append(h('article', {}, h('strong', {}, m.role === 'user' ? 'Tú' : 'Asistente'), h('p', {}, m.text)));
+  messages.forEach(add);
+  const send = button('Enviar', () => form.requestSubmit(), !onSend);
+  form.addEventListener('submit', async (e) => { e.preventDefault(); const text = input.value.trim(); if (!text || !onSend || send.disabled) return; send.disabled = true; state.textContent = 'Preparando respuesta…'; try { const result = await onSend({ text, context: { ...context } }); if (!result?.text) throw new Error('La conexión no devolvió una respuesta.'); add({ role: 'user', text }); add({ role: 'assistant', text: result.text }); input.value = ''; state.textContent = ''; } catch (err) { state.textContent = err.message || 'Sin conexión. Tu pregunta sigue aquí.'; } finally { send.disabled = !onSend; input.focus(); } });
+  form.append(input, send); el.append(log, form, state); if (!onSend) el.append(empty('Sin conexión con un asistente.')); return el;
+}
+export function VersionHistory({ title = 'Versiones', versions = [], currentVersion, onRestore } = {}) {
+  const el = frame(title, 'Las versiones aprobadas permanecen intactas.'), state = status(''), detail = h('div'), select = h('select', { 'aria-label': 'Versión para revisar', onChange: paint });
+  versions.forEach((v) => select.append(h('option', { value: String(v.version) }, `Versión ${v.version} · ${v.state || 'hipótesis'}`)));
+  const restore = button('Recuperar como borrador nuevo', async () => { restore.disabled = true; try { const r = await onRestore({ version: Number(select.value), expected_version: currentVersion }); if (!r?.ok) throw new Error(r?.error || 'No se confirmó la recuperación.'); state.textContent = r.message || 'Borrador nuevo creado. La versión aprobada se conserva.'; } catch (e) { state.textContent = e.message; } finally { restore.disabled = !onRestore; } }, !onRestore || !versions.length);
+  function paint() { const v = versions.find((x) => x.version === Number(select.value)); const current = versions.find((x) => x.version === currentVersion); detail.replaceChildren(v ? h('div', { class: 'kit-diff' }, h('div', {}, h('h3', {}, 'Seleccionada'), h('pre', {}, JSON.stringify(v.content, null, 2))), h('div', {}, h('h3', {}, 'Actual'), h('pre', {}, current ? JSON.stringify(current.content, null, 2) : 'Sin versión actual'))) : empty()); }
+  el.append(select, detail, restore, state); paint(); return el;
+}
+const STATES = { queued: 'En cola', running: 'Ejecutando', needs_approval: 'Espera aprobación', succeeded: 'Confirmado', failed: 'Falló', resultado_desconocido: 'Resultado por verificar', cancelled: 'Cancelado', disconnected: 'Sin conexión' };
+export function ExecutionPanel({ title = 'Ejecución', executions = [], onCancel } = {}) {
+  const el = frame(title, 'Preparar un borrador no equivale a enviarlo.');
+  el.append(...(executions.length ? executions.map((x) => { const state = status(''), row = h('article', {}, h('h3', {}, x.label), h('p', {}, STATES[x.state] || 'Estado sin documentar'), h('p', { class: 'kit-muted' }, x.reason || ''), h('ol', {}, (x.logs || []).map((l) => h('li', {}, `${dato(l.at)} · ${l.message}`))), state); if (['queued', 'running', 'needs_approval'].includes(x.state)) { const cancel = button('Cancelar', async () => { cancel.disabled = true; state.textContent = 'Solicitando cancelación…'; try { const r = await onCancel({ id: x.id, expected_version: x.version }); if (!r?.ok) throw new Error(r?.error || 'No se confirmó la cancelación.'); state.textContent = r.message || 'Cancelación solicitada. Esperando estado del servidor.'; } catch (e) { state.textContent = e.message; cancel.disabled = false; } }, !onCancel); row.append(cancel); } return row; }) : [empty('No hay ejecuciones.')])); return el;
+}
