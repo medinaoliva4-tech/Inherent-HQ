@@ -86,7 +86,7 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     const el = $('#cd-head', root); if (!el) return;
     const su = sucio();
     if (!hayCambio('head', [S.data.nivel?.nombre, aprobada(), su])) return;
-    mount(el, html`<header class="cd-head"><div class="cd-head-t"><h2>${ico('chart-no-axes-column', 16)} ${T.nombre}</h2><span class="cd-cli">${b?.name || S.data.nombre || slug}</span></div>
+    mount(el, html`<header class="cd-head"><div class="cd-head-t"><span class="cd-cli">${b?.name || S.data.nombre || slug} · ${T.nombre}</span></div>
       <div class="cd-head-m"><span class="chip" data-aprobada="${aprobada() ? 1 : 0}">${aprobada() ? 'Estrategia aprobada' : 'En construcción'}</span><span class="chip">${S.data.nivel?.nombre || 'Sin ficha de oferta'}</span>${su ? html`<span class="chip cd-sucio">Sin guardar</span>` : ''}</div></header>`);
   }
   function pintarBanner() {
@@ -99,14 +99,15 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     const esc = editable(), su = sucio(), n = S.c.acciones.length, corriendo = S.gen?.fase === 'corriendo', hayCu = todosLosCuellos(vivaLocal(), S.c).length > 0;
     if (!hayCambio('acts', [esc, su, n, S.ocupado, corriendo, hayCu, aprobada()])) return;
     const btn = (act, icono, txt, { primario = false, off = false, tip = '' } = {}) => html`<button type="button" class="btn ${primario ? '' : 'ghost'}" data-act="cd-${act}" title="${tip}" ${off || S.ocupado ? raw('disabled') : ''}>${ico(icono, 14)} ${txt}</button>`;
-    mount(el, html`<div class="cd-grp">${esc ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : ''}${esc ? btn('guardar', 'check', 'Guardar', { off: !su, tip: su ? '' : 'No hay cambios que guardar' }) : ''}${esc && su ? btn('descartar', 'x', 'Descartar cambios') : ''}</div>
-      <div class="cd-grp">${puedeTareas && n ? btn('tareas', 'list-checks', 'Convertir en tareas') : ''}${S.data.puede?.editar && hayCu ? btn('opp', 'arrow-right', 'Cuellos → Opportunity Map') : ''}${btn('exportar', 'download', 'Exportar')}${btn('copiar', 'copy', 'Copiar')}<a class="btn ghost" href="${chatRuta}">${ico('chat-ia', 14)} Chat de Strategy</a></div>`);
+    mount(el, html`<div class="cd-grp">${esc ? btn('generar', 'sparkles', 'Generar con IA', { primario: true, off: corriendo }) : ''}${esc ? btn('guardar', 'check', 'Guardar', { off: !su, tip: su ? '' : 'No hay cambios que guardar' }) : ''}</div>
+      <details class="tsh-more"><summary class="btn ghost sm">${ico('ellipsis', 14)} Más acciones</summary><div class="tsh-more-menu">${esc && su ? btn('descartar', 'x', 'Descartar cambios') : ''}${puedeTareas && n ? btn('tareas', 'list-checks', 'Convertir en tareas') : ''}${S.data.puede?.editar && hayCu ? btn('opp', 'arrow-right', 'Enviar cuellos a Opportunity Map') : ''}${btn('exportar', 'download', 'Exportar')}${btn('copiar', 'copy', 'Copiar')}<a class="btn ghost" href="${chatRuta}">${ico('chat-ia', 14)} Chat de Strategy</a></div></details>`);
   }
   function pintarScore() {
     const el = $('#cd-score', root); if (!el) return;
     const s = score(vivaLocal());
     if (!hayCambio('score', s)) return;
-    mount(el, html`<div class="cd-score" data-sin="${s.score == null ? 1 : 0}"><div class="cd-num" aria-label="Score comercial">${s.score == null ? html`<b class="cd-sd">${SIN_DATOS}</b>` : html`<b>${s.score}</b><span>/100</span>`}</div>
+    if (s.score == null) return mount(el, html`<div class="cd-empty"><h3>Diagnóstico pendiente</h3><p>Completa los supuestos del cliente para calcular el score y detectar cuellos.</p><button type="button" class="btn ghost sm" data-act="cd-ir-sup">Ir a supuestos</button></div>`);
+    mount(el, html`<div class="cd-score" data-sin="0"><div class="cd-num" aria-label="Score comercial"><b>${s.score}</b><span>/100</span></div>
       <div class="cd-partes">${s.partes.map((p) => html`<div class="cd-parte" data-ok="${p.ok ? 1 : 0}"><div class="cd-parte-h"><b>${p.nombre}</b><span>${p.pts}/${p.max}</span></div><div class="cd-barra" role="img" aria-label="${p.nombre}: ${p.pts} de ${p.max}"><i style="width:${Math.round((p.pts / p.max) * 100)}%"></i></div><p class="mut sm">${p.nota}</p></div>`)}</div>
       <p class="mut sm cd-nota">Se calcula con lo que hay en pantalla y no se guarda.</p></div>`);
   }
@@ -115,22 +116,23 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     const v = vivaLocal(), e = embudo(v), cu = todosLosCuellos(v, S.c), porEtapa = new Set(cu.map((x) => x.etapa));
     if (!hayCambio('embudo', [e.pasos.map((p) => [p.valor, p.tasaValor]), e.cubre, cu])) return;
     const max = Math.max(...e.pasos.map((p) => p.valor || 0), 1);
-    mount(el, html`<h3>Embudo de la meta hacia atrás</h3><div class="ev-fun cd-fun">${e.pasos.map((p) => html`<div class="ev-fr cd-fr" data-etapa="${p.id}" data-cuello="${porEtapa.has(p.id) ? 1 : 0}"><b>${p.valor == null ? html`<span class="cd-sd sm">${SIN_DATOS}</span>` : num(Math.round(p.valor))}</b>
-        <div class="ev-bar ${p.valor == null ? '' : 'k'}" style="${p.valor == null ? '' : `min-width:${Math.max(18, Math.round((p.valor / max) * 100))}%`}">${p.nombre} · ${p.tasaNombre.toLowerCase()} ${p.tasaValor == null ? html`<span class="cd-sd">${SIN_DATOS}: sale de ${p.sale_de}</span>` : num(p.tasaValor)}${porEtapa.has(p.id) ? html` <span class="chip sm2 cd-cuello">Cuello</span>` : ''}</div></div>`)}</div>
+    if (e.pasos.every((p) => p.valor == null)) return mount(el, html`<div class="cd-empty"><h3>Embudo</h3><p>Aparecerá aquí cuando indiques la meta de ventas y las tasas de conversión.</p></div>`);
+    mount(el, html`<h3>Embudo de la meta hacia atrás</h3><div class="ev-fun cd-fun">${e.pasos.map((p) => html`<div class="ev-fr cd-fr" data-etapa="${p.id}" data-cuello="${porEtapa.has(p.id) ? 1 : 0}"><b>${p.valor == null ? html`<span class="mut sm">—</span>` : num(Math.round(p.valor))}</b>
+        <div class="ev-bar ${p.valor == null ? '' : 'k'}" style="${p.valor == null ? '' : `min-width:${Math.max(18, Math.round((p.valor / max) * 100))}%`}">${p.nombre} · ${p.tasaNombre.toLowerCase()} ${p.tasaValor == null ? html`<span class="mut sm" title="Sale de ${p.sale_de}">Pendiente</span>` : num(p.tasaValor)}${porEtapa.has(p.id) ? html` <span class="chip sm2 cd-cuello">Cuello</span>` : ''}</div></div>`)}</div>
       ${e.cubre != null ? html`<p class="mut sm">Contenido y pauta cubren ${Math.round(Math.min(e.cubre, 1) * 100)}% del alcance que pide la meta${e.hueco > 0.2 ? html` · <b>hueco de ${Math.round(e.hueco * 100)}%</b>` : ''}.</p>` : ''}`);
   }
   function pintarSup() {
     const el = $('#cd-sup', root); if (!el) return;
     const ed = editable();
     if (!hayCambio('sup', [ed, aprobada()])) return;
-    mount(el, html`<h3>Supuestos</h3><p class="mut sm">Cambia uno y el embudo y el score se recalculan. Solo cifras del cliente, su CRM o Windsor; si no lo sabes, déjalo vacío.</p>
-      <div class="cd-sups">${campos.map((x) => html`<label class="cd-sup"><span>${x.nombre}</span><input class="in" type="text" inputmode="decimal" data-s="${x.k}" value="${S.sup[x.k]}" placeholder="${SIN_DATOS}" ${ed ? '' : raw('disabled')} autocomplete="off"><small class="mut">Sale de ${x.ayuda}</small></label>`)}</div>`);
+    mount(el, html`<h3>Supuestos</h3><p class="mut sm">Escribe cifras del cliente; puedes dejarlas vacías. El embudo y el score se recalculan al editar.</p>
+      <div class="cd-sups">${campos.map((x) => html`<label class="cd-sup"><span>${x.nombre}</span><input class="in" type="text" inputmode="decimal" data-s="${x.k}" value="${S.sup[x.k]}" placeholder="Agregar cifra" ${ed ? '' : raw('disabled')} autocomplete="off"><small class="mut">Fuente: ${x.ayuda}</small></label>`)}</div>`);
   }
   function pintarCuellos() {
     const el = $('#cd-cuellos', root); if (!el) return;
     const v = vivaLocal(), calc = cuellos(v), ed = editable();
     if (!hayCambio('cuellos', [calc, S.c.bottlenecks, ed])) return;
-    mount(el, html`<h3>Cuellos de botella</h3>${calc.length || S.c.bottlenecks.length ? '' : html`<p class="cd-sd">Sin cuellos con los datos de hoy. Un cuello es una tasa que falta o un hueco de alcance de más de 20%.</p>`}
+    mount(el, html`<h3>Cuellos de botella</h3>${calc.length || S.c.bottlenecks.length ? '' : html`<p class="mut sm">Aparecen al completar el embudo; también puedes anotar uno.</p>`}
       <ul class="cd-cu">${calc.map((x) => html`<li class="cd-cu-i" data-tipo="${x.tipo}"><span class="chip sm2">${NOMBRE_ETAPA[x.etapa]}</span> ${x.texto}</li>`)}
       ${S.c.bottlenecks.map((x) => html`<li class="cd-cu-i cd-cu-ed" data-id="${x.id}"><select class="in" data-b="etapa" data-id="${x.id}" aria-label="Etapa del cuello" ${ed ? '' : raw('disabled')}><option value="">Etapa</option>${ETAPAS_EMBUDO.map((e) => html`<option value="${e}" ${e === x.etapa ? raw('selected') : ''}>${NOMBRE_ETAPA[e]}</option>`)}</select>
         <input class="in" type="text" data-b="texto" data-id="${x.id}" maxlength="240" value="${x.texto}" aria-label="Qué pasa" ${ed ? '' : raw('disabled')}>${ed ? html`<button type="button" class="btn ghost sm" data-act="cd-cu-quitar" data-id="${x.id}" aria-label="Quitar este cuello">${ico('x', 14)}</button>` : ''}</li>`)}</ul>
@@ -140,7 +142,7 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     const el = $('#cd-plan', root); if (!el) return;
     const ed = editable(), a = S.c.acciones, cu = todosLosCuellos(vivaLocal(), S.c);
     if (!hayCambio('plan', [ed, a, cu.map((x) => x.id)])) return;
-    mount(el, html`<h3>Plan de ${MIN_ACCIONES} a ${MAX_ACCIONES} acciones</h3>${a.length ? '' : html`<p class="cd-sd">${SIN_DATOS}: el plan todavía no tiene acciones. Salen de «Generar con IA» o de agregarlas aquí.</p>`}
+    mount(el, html`<h3>Plan de ${MIN_ACCIONES} a ${MAX_ACCIONES} acciones</h3>${a.length ? '' : html`<p class="mut sm">Agrega una acción con responsable y fecha, o genera una propuesta con IA.</p>`}
       <ul class="cd-ac">${a.map((x) => html`<li class="cd-ac-i" data-id="${x.id}"><input class="in" type="text" data-a="titulo" data-id="${x.id}" maxlength="160" value="${x.titulo}" placeholder="Un resultado, no una actividad suelta" aria-label="Acción" ${ed ? '' : raw('disabled')}>
         <div class="cd-ac-m"><select class="in" data-a="area" data-id="${x.id}" aria-label="Área" ${ed ? '' : raw('disabled')}><option value="">Área</option>${AREAS_RM_INFO.map((r) => html`<option value="${r.id}" ${r.id === x.area ? raw('selected') : ''}>${r.nombre}</option>`)}</select>
           <input class="in" type="date" data-a="fecha" data-id="${x.id}" value="${x.fecha}" aria-label="Fecha" ${ed ? '' : raw('disabled')}>
@@ -295,6 +297,7 @@ export async function comercialTool(host, { me, slug, b, alive } = {}) {
     <section class="cd-sec cd-top"><div id="cd-score"></div><div id="cd-embudo"></div></section><section class="cd-sec" id="cd-sup"></section><section class="cd-sec" id="cd-cuellos"></section><section class="cd-sec" id="cd-plan"></section><section class="cd-faltas" id="cd-faltas"></section></div>`);
   root = $('#cd', host);
   acts(root, {
+    'cd-ir-sup': () => $('#cd-sup', root)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     'cd-generar': () => generar(), 'cd-guardar': () => haz(guardar), 'cd-descartar': async () => { if (!(await confirmAsk('¿Descartar los cambios sin guardar?')) || !alive()) return; await recargar(); },
     'cd-tareas': tareas, 'cd-opp': aOpp, 'cd-exportar': exportar, 'cd-copiar': copiar, 'cd-pegar': pegar, 'cd-usar': usar,
     'cd-parar': () => { S.gen?.ctrl?.abort(); S.gen = null; pintarGen(); pintarActs(); }, 'cd-cerrar-gen': () => { S.gen = null; pintarGen(); pintarActs(); },

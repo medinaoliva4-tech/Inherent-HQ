@@ -10,6 +10,7 @@ import { modoDeArea } from './agentes-chat-datos.js';
 export const areaNombre = (id) => AREAS_AGENTE.find(([k]) => k === id)?.[1] || 'Strategy';
 const COLOR_AREA = { strategy: '--ui-m-strategy', marketing: '--ui-m-marketing', creative: '--ui-m-creative', consulting: '--ui-m-consulting', production: '--ui-m-production' };
 export const colorArea = (id) => COLOR_AREA[id] || '--ui-m-strategy';
+export const avatarAgente = (a) => html`<span class="agx-av" style="--c:var(${colorArea(a.area)})">${a.avatar && /^data:image\/(?:png|jpeg|webp);base64,/.test(a.avatar) ? html`<img src="${a.avatar}" alt="">` : ico('bot', 17)}</span>`;
 export const chipEstado = (e) => html`<span class="agx-est ${e}">${ESTADOS_AGENTE.find(([k]) => k === e)?.[1] || e}</span>`;
 export const rutaAgente = (id, tab = '') => `#/ai/agentes/${id}${tab ? '/' + tab : ''}`;
 // F4.5: un trabajo se abre en el Chat, en su pestaña de la ventana de agentes. La vista por etapas queda como historial.
@@ -56,7 +57,7 @@ export async function pintarAgentes(el, me, alive, { area = '', titulo = 'Agente
       <div class="agx-tabla" role="table" aria-label="Agentes">
         <div class="agx-tr agx-th" role="row"><span>Agente</span>${area ? '' : html`<span>Área</span>`}<span>Etapas</span><span>Trabajos</span><span>Estado</span><span>Editado</span></div>
         ${xs.map((a) => html`<a class="agx-tr" role="row" href="${rutaAgente(a.id)}">
-          <span class="agx-nom"><span class="agx-av" style="--c:var(${colorArea(a.area)})">${(a.nombre || '?').slice(0, 1)}</span><span><b>${a.nombre}</b><small>${a.objetivo || a.descripcion || 'Sin objetivo todavía'}</small></span></span>
+          <span class="agx-nom">${avatarAgente(a)}<span><b>${a.nombre}</b><small>${a.objetivo || a.descripcion || 'Sin objetivo todavía'}</small></span></span>
           ${area ? '' : html`<span><span class="agx-area" style="--c:var(${colorArea(a.area)})">${areaNombre(a.area)}</span></span>`}
           <span class="agx-et">${cadena(a.etapas)}<small>${a.etapas.length}</small></span>
           <span class="agx-tr-j">${a.trabajos.esperando ? html`<span class="agx-wait" title="Esperan tu aprobación">${a.trabajos.esperando} por aprobar</span>` : a.trabajos.en_curso ? html`<span>${a.trabajos.en_curso} en curso</span>` : html`<span class="mut">${a.trabajos.completos ? `${a.trabajos.completos} hechos` : '—'}</span>`}</span>

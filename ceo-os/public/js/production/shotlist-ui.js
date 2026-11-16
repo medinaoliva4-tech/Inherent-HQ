@@ -51,7 +51,7 @@ const tablero = (c, lista, o) => html`<div class="sl-tablero">${agrupar(lista, '
 
 function plantilla(c, S, o) {
   const p = progreso(c), lista = c.escenas;
-  const cuerpo = !lista.length ? html`<p class="sl-sd">${SIN_DATOS}: aún no hay escenas. Agrega una, importa el CSV o pídele a la IA que las proponga desde el brief.</p>`
+  const cuerpo = !lista.length ? html`<div class="sl-empty"><b>Empieza tu plan de rodaje</b><p>Agrega una escena aquí o importa un CSV editado en Excel. Luego asigna jornada, lugar y talento.</p>${o.ed ? html`<button type="button" class="btn" data-a="nueva">${ico('plus', 14)} Agregar primera escena</button>` : ''}</div>`
     : S.agrupar ? html`${agrupar(lista, S.agrupar, 'Sin dato').map((g) => html`<section class="sl-grupo"><h4>${g.titulo} <span class="mut sm">${g.escenas.length} escenas · ${Math.round(segundos(g.escenas))} s</span></h4>${S.modo === 'tablero' ? tablero(c, g.escenas, o) : tabla(c, g.escenas, o)}</section>`)}`
     : S.modo === 'tablero' ? tablero(c, lista, o) : tabla(c, lista, o);
   return html`<div class="sl" data-modo="${S.modo}">
@@ -61,8 +61,8 @@ function plantilla(c, S, o) {
       <span class="sl-prog mut sm">${p.grabadas} de ${p.total} grabadas · ${Math.round(segundos(lista))} s</span>
     </div>
     <div class="sl-barra">
-      ${o.ed ? html`<button type="button" class="btn" data-a="nueva">${ico('plus', 14)} Escena</button><label class="btn sl-imp">${ico('upload', 14)} Importar CSV<input type="file" accept=".csv,text/csv" data-a="importar" hidden></label>` : ''}
-      <button type="button" class="btn" data-a="exportar" ${lista.length ? '' : 'disabled'}>${ico('download', 14)} Exportar CSV</button>
+      ${o.ed ? html`${lista.length ? html`<button type="button" class="btn" data-a="nueva">${ico('plus', 14)} Escena</button>` : ''}<label class="btn sl-imp">${ico('upload', 14)} Importar de Excel (CSV)<input type="file" accept=".csv,text/csv" data-a="importar" hidden></label>` : ''}
+      <button type="button" class="btn" data-a="exportar" ${lista.length ? '' : 'disabled'}>${ico('download', 14)} Descargar para Excel (CSV)</button>
       ${o.costos ? '' : html`<span class="sl-nota mut sm">El CSV sale sin costo estimado.</span>`}
     </div>
     ${cuerpo}</div>`;

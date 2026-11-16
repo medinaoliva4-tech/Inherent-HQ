@@ -69,7 +69,7 @@ const resumenWf = (w, runs = []) => {
   const mios = runs.filter((r) => r.flujo?.id === w.id && !r.archivado);
   const completos = mios.filter((r) => completo(r)).length;
   const esperando = mios.filter((r) => !completo(r) && r.etapas?.[activa(r)]?.estado === 'revision').length;
-  return { id: w.id, v: w.v, nombre: w.nombre, agente: w.agente, depto: w.depto, area: w.area || 'strategy', objetivo: w.objetivo || '', descripcion: w.descripcion, estado: w.estado, ia: w.ia || null, archivado: Boolean(w.archivado), origen: w.origen || null, etapas: (w.etapas || []).map((e) => ({ id: e.id, tipo: e.tipo, nombre: e.nombre, gate: e.gate, herramientas: e.herramientas || [] })), trabajos: { total: mios.length, en_curso: mios.length - completos, esperando, completos }, actualizado: w._meta?.updated_at };
+  return { id: w.id, v: w.v, nombre: w.nombre, avatar: w.avatar || '', agente: w.agente, depto: w.depto, area: w.area || 'strategy', objetivo: w.objetivo || '', descripcion: w.descripcion, estado: w.estado, ia: w.ia || null, archivado: Boolean(w.archivado), origen: w.origen || null, etapas: (w.etapas || []).map((e) => ({ id: e.id, tipo: e.tipo, nombre: e.nombre, gate: e.gate, herramientas: e.herramientas || [] })), trabajos: { total: mios.length, en_curso: mios.length - completos, esperando, completos }, actualizado: w._meta?.updated_at };
 };
 // La primera vez que el CEO o el COO abren el Agent Area, los agentes del método llegan como agentes del OS (una copia de cada
 // plantilla; después son independientes). Si ya hay alguno —aunque esté archivado—, no se vuelve a sembrar.

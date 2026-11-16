@@ -140,7 +140,7 @@ export async function render(el, { me, sub = [], alive }) {
     if (e.target.closest('[data-ws="chat"]')) return abrirEnChat(me.email, { modo: W.modo, slug });
     // La tarjeta entera lleva a la herramienta; los links de adentro (viene de / va a) siguen siendo links.
     const card = e.target.closest('.tool-card[data-href]');
-    if (card && !e.target.closest('a')) location.hash = card.dataset.href;
+    if (card && !e.target.closest('a,button,summary,details')) location.hash = card.dataset.href;
   });
   // Los entregables del cliente en este workspace: UNA lectura por pintado (la comparten las tarjetas y el Overview de Consulting).
   // null si falla (sin permiso, sin ficha, sin red): quien la usa deja su texto de hoy.
@@ -167,10 +167,8 @@ export async function render(el, { me, sub = [], alive }) {
   }
   function hero() {
     return html`<header class="ws-hero" style="--ws-c:var(${W.color})">
-      <span class="ws-hero-mono ${b.personal ? 'priv' : ''}">${b.personal ? ico('lock', 18) : initials(b.name)}</span>
-      <div class="ws-hero-t"><h1>${b.name}</h1><p>${b.nivel?.nombre || b.sub || ''}<span class="mut"> · ${W.nombre}</span></p><div class="ws-chips">${chips()}</div></div>
-      <div class="sp"></div>
-      <button type="button" class="btn" data-ws="chat">${ico('chat-ia', 14)} Continuar en el Chat</button>
+      <div class="ws-hero-t"><span class="mut sm">${W.nombre} · ${b.personal ? 'Privado' : 'Cliente'}</span><h1>${b.name}</h1><p>${b.sub || b.nivel?.nombre || ''}</p><div class="ws-chips">${chips()}</div></div>
+      <button type="button" class="btn ghost sm" data-ws="chat">${ico('chat-ia', 14)} Abrir en Chat</button>
     </header>`;
   }
 
@@ -184,8 +182,8 @@ export async function render(el, { me, sub = [], alive }) {
       <span class="tool-card-ico">${ico(t.icono || 'target', 18)}</span>
       <div class="tool-card-t"><a href="${rutaHerramienta(ws, slug, t.id)}">${t.nombre}</a><span class="tool-card-est" data-est="${t.estado}">${EST[t.estado] || t.estado}</span></div>
       <p>${t.produce || ''}</p>
-      <div class="tool-card-ult" data-tool="${t.id}"><span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: saldrá de ${t.monta === 'roadmap' ? 'la estrategia en vivo (viva.roadmap)' : 'deliverables (Fase 2)'}</span></div>
-      <div class="tool-card-chips">${chipsDe('viene de', t.viene_de)}${chipsDe('va a', t.va_a)}</div></article>`;
+      <div class="tool-card-ult" data-tool="${t.id}"><span class="mut sm">Sin borrador todavía</span></div>
+      ${(t.viene_de?.length || t.va_a?.length) ? html`<details class="tool-card-flow"><summary>Ver flujo</summary><div class="tool-card-chips">${chipsDe('Recibe de', t.viene_de)}${chipsDe('Alimenta a', t.va_a)}</div></details>` : ''}</article>`;
   }
   // «Último entregable» de cada tarjeta. Si falla o el cliente no tiene entregables, queda el texto de hoy.
   async function ultimos(box) {
@@ -197,7 +195,7 @@ export async function render(el, { me, sub = [], alive }) {
     for (const n of box.querySelectorAll('.tool-card-ult[data-tool]')) {
       const d = por.get(n.dataset.tool);
       // Una herramienta que ya guarda sus entregables (el shell, el Viral Lab, Ads Intelligence: traen su limpiar) no «saldrá» de nada: solo todavía no hay un borrador.
-      if (!d) { if (typeof herramientaDe(n.dataset.tool)?.limpiar === 'function') mount(n, html`<span class="mut sm">Último entregable: —</span><span class="mut sm">⚠️ SIN DATOS: todavía no hay un borrador</span>`); continue; }
+      if (!d) continue;
       const f = reciente(d);
       mount(n, html`<span class="mut sm">Último entregable</span><span class="sm tool-card-ult-d"><span class="chip sm2 tool-card-ult-e" data-estado="${d.estado || 'Borrador'}">${d.estado || 'Borrador'}</span> <span class="mut">v${d.version || 1}${f ? ` · ${fdate(f)}` : ''}</span></span>`);
     }
@@ -267,9 +265,8 @@ export async function render(el, { me, sub = [], alive }) {
 
   // ---------- Una herramienta: su cabecera y el módulo que la monta (o su ficha si es «Pronto») ----------
   function head(t) {
-    const de = (t.viene_de || []).map(nomTool).join(' · '), a = (t.va_a || []).map(nomTool).join(' · ');
     return html`<div class="tool-head" style="--ws-c:var(${W.color})"><a class="btn ghost" href="${rutaPest()}">${ico('arrow-left', 14)} ${pestana.nombre}</a>
-      <div class="tool-head-t"><b>${ico(t.icono || 'target', 16)} ${t.nombre}</b><span class="mut sm">${de ? html`${de} → ` : ''}<strong>${t.nombre}</strong>${a ? html` → ${a}` : ''}</span></div>
+      <div class="tool-head-t"><b>${ico(t.icono || 'target', 16)} ${t.nombre}</b><span class="mut sm">${t.produce || ''}</span></div>
       <span class="tool-card-est" data-est="${t.estado}">${EST[t.estado] || t.estado}</span></div>`;
   }
   function ficha(t) {

@@ -8,7 +8,7 @@
 //     alguien lo cambió, el 409 avisa).
 import { html, raw, mount, ico, skel, toast, api, confirmAsk } from './core.js';
 import { AREAS_AGENTE, ESTADOS_AGENTE, CONEXIONES, tipoDe, ESTADOS } from './agentes-flujos.js';
-import { areaNombre, colorArea, chipEstado, rutaAgente, rutaTrabajo, nuevoTrabajo } from './agentes-ui.js';
+import { areaNombre, colorArea, avatarAgente, chipEstado, rutaAgente, rutaTrabajo, nuevoTrabajo } from './agentes-ui.js';
 import { pintarEditor } from './agentes-editor.js';
 import { pintarMemoria } from './agentes-memoria.js';
 import { iaDeUso, proveedorDe } from './ia-proveedores.js';
@@ -41,7 +41,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
   const cabeza = () => html`<header class="agp-top">
       <div class="agp-id">
         <nav class="agp-crumb" aria-label="Ruta"><a href="#/ai/agentes">Agentes</a>${ico('chevron-right', 12)}<a href="#/areas/${wf.area || 'strategy'}/agents">${areaNombre(wf.area)}</a></nav>
-        <div class="agp-name"><span class="agx-av" style="--c:var(${colorArea(wf.area)})">${(wf.nombre || '?').slice(0, 1)}</span><h1>${wf.nombre}</h1>${chipEstado(wf.estado)}</div>
+        <div class="agp-name">${avatarAgente(wf)}<h1>${wf.nombre}</h1>${chipEstado(wf.estado)}</div>
       </div>
       <button class="btn" data-act="trabajo" ${wf.estado === 'pausado' ? raw('disabled title="El agente está en pausa"') : ''}>${ico('play', 13)} Nuevo trabajo</button></header>
     <nav class="tabs" aria-label="Secciones del agente">${TABS.map(([k, l]) => html`<a href="${rutaAgente(wf.id, k === 'overview' ? '' : k)}" class="${tab === k ? 'on' : ''}" ${tab === k ? raw('aria-current="page"') : ''}>${l}</a>`)}</nav>`;
@@ -112,6 +112,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
     const def = iaDeUso(ia, 'agents');
     return html`<div class="agp-set">
       <div class="agp-set-h"><span class="agp-auto sm"><i></i> ${editor ? 'Los cambios se guardan solos' : 'Solo el CEO o el COO lo editan'}</span></div>
+      ${seccion('Imagen del agente', 'Elige una imagen propia; aparece en la lista y el portal del agente.', html`<div class="agp-avatar-edit">${avatarAgente(wf)}${editor ? html`<label class="btn ghost sm">Subir imagen<input type="file" accept="image/png,image/jpeg,image/webp" data-avatar hidden></label>${wf.avatar ? html`<button type="button" class="btn ghost sm" data-act="quitar-avatar">Quitar</button>` : ''}` : ''}</div>`)}
       ${seccion('General', 'Cómo se llama y qué tiene que lograr. El objetivo es lo primero que ve el equipo.', html`
         <label class="kf-f"><span>Nombre</span><input class="in" data-s="nombre" value="${wf.nombre}" ${dis}></label>
         <label class="kf-f"><span>Objetivo</span><input class="in" data-s="objetivo" value="${wf.objetivo || ''}" placeholder="Ej.: Entregar la estrategia de crecimiento aprobada" ${dis}></label>
@@ -158,6 +159,7 @@ export async function pintarPortal(el, me, id, tab, alive) {
     if (b.dataset.filtro !== undefined) { filtro = b.dataset.filtro; return pinta(); }
     const a = b.dataset.act;
     if (a === 'trabajo') return nuevoTrabajo(me, resumen());
+    if (a === 'quitar-avatar' && editor) { wf.avatar = ''; guardar({ avatar: '' }, true); pinta(); return; }
     if (a === 'estado') {
       wf.estado = b.dataset.e; guardar({ estado: wf.estado }, true);
       el.querySelectorAll('[data-act="estado"]').forEach((x) => x.classList.toggle('on', x === b));
@@ -176,6 +178,22 @@ export async function pintarPortal(el, me, id, tab, alive) {
     if (k === 'area') { wf.area = v; return guardar({ area: v }, true); }
     wf[k] = v; guardar({ [k]: v });
     if (k === 'nombre') { const h = el.querySelector('.agp-name h1'); if (h) h.textContent = v; }
+  });
+  el.addEventListener('change', async (ev) => {
+    if (!ev.target.matches('[data-avatar]') || !editor) return;
+    const file = ev.target.files?.[0];
+    if (!file || !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 3_000_000) return toast('Usa PNG, JPG o WebP de hasta 3 MB', true);
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image(); img.src = url; await img.decode();
+      const canvas = document.createElement('canvas'); canvas.width = canvas.height = 160;
+      const ctx = canvas.getContext('2d'); const side = Math.min(img.naturalWidth, img.naturalHeight);
+      ctx.drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, 160, 160);
+      const avatar = canvas.toDataURL('image/webp', .78);
+      if (avatar.length >= 120000) throw new Error('La imagen comprimida sigue siendo muy grande');
+      wf.avatar = avatar; guardar({ avatar }, true); pinta();
+    } catch (e) { toast(e.message || 'No pude leer la imagen', true); }
+    finally { URL.revokeObjectURL(url); }
   });
   pinta();
 }

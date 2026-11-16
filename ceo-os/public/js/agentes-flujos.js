@@ -204,8 +204,9 @@ export const ESTADOS_AGENTE = [['borrador', 'Borrador'], ['activo', 'Activo'], [
 // Un agente limpio. Su workflow son sus etapas. `ia` vacío = usa la «IA para Agents» de Ajustes.
 export function normalizarWorkflow(w = {}) {
   const ia = w.ia && typeof w.ia === 'object' ? { proveedor: corto(w.ia.proveedor, 40), modelo: corto(w.ia.modelo, 120) } : { proveedor: '', modelo: '' };
+  const avatar = typeof w.avatar === 'string' && /^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(w.avatar) && w.avatar.length < 120000 ? w.avatar : '';
   return {
-    nombre: corto(w.nombre, 100) || 'Agente sin nombre', agente: corto(w.agente, 80), depto: corto(w.depto, 60),
+    nombre: corto(w.nombre, 100) || 'Agente sin nombre', agente: corto(w.agente, 80), depto: corto(w.depto, 60), avatar,
     area: AREAS_AGENTE.some(([k]) => k === w.area) ? w.area : 'strategy',
     objetivo: corto(w.objetivo, 300), descripcion: corto(w.descripcion, 600), limites: lista(w.limites, 10),
     etapas: (Array.isArray(w.etapas) ? w.etapas : []).slice(0, 20).map(normalizarEtapa),

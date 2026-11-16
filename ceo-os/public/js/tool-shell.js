@@ -39,7 +39,8 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
   const puedeIA = typeof tool.prompt === 'function' && typeof tool.leer === 'function';
   const S = { items: [], puede: { editar: false, aprobar: false }, alcance: { abierto: true, code: '', texto: '' }, doc: null, local: null, contenido: {}, sucio: false,
     ctx: null, gen: null, cmp: null, ocupado: false, pintando: false, plegado: false, k: {}, ciclo: '' };
-  try { S.plegado = localStorage.getItem(K_PLEGADO) === '1'; } catch {}
+  S.plegado = true;
+  try { S.plegado = localStorage.getItem(K_PLEGADO) !== '0'; } catch {}
   let root = null;
 
   // ---------- Qué se puede hacer ----------
@@ -162,7 +163,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
       const meses = mesesDeCiclo(today(), 12); if (S.ciclo && !meses.includes(S.ciclo)) meses.push(S.ciclo);
       selMes = html`<select class="in tsh-doc tsh-ciclo" data-act="tsh-ciclo" aria-label="Mes del entregable">${meses.map((m) => html`<option value="${m}" ${m === S.ciclo ? raw('selected') : ''}>${nombreMes(m)}</option>`)}</select>`;
     }
-    mount(el, html`<header class="tsh-head"><div class="tsh-head-t"><h2>${ico(tool.icono || 'target', 16)} ${tool.nombre}</h2><span class="tsh-cli">${b?.name || slug}</span></div>
+    mount(el, html`<header class="tsh-head"><div class="tsh-head-t"><span class="tsh-cli">${b?.name || slug} · ${tool.nombre}</span></div>
       <div class="tsh-head-m"><span class="chip tsh-estado" data-estado="${est}">${est}</span>
         ${d ? html`<span class="tsh-ver">v${d.version}</span>` : ''}
         ${!d || S.sucio ? html`<span class="chip tsh-sucio">Sin guardar</span>` : ''}
@@ -179,7 +180,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     const el = $('#tsh-input', root); if (!el) return;
     const c = S.ctx, ents = S.doc?.entradas || [], de = (tool.viene_de || []).map((id) => herramientaDe(id)?.nombre || id);
     const nivel = b?.nivel?.nombre || c?.cliente?.nivel?.nombre || '', es = c?.estrategia, e = es?.etapa ? etapaDe(es.etapa.n) : null;
-    const sinDatos = (de2) => html`<span class="tsh-sindatos">⚠️ SIN DATOS: sale de ${de2}</span>`;
+    const sinDatos = (de2) => html`<span class="mut sm" title="Origen previsto: ${de2}">Pendiente</span>`;
     mount(el, html`<button type="button" class="tsh-input-bt" data-act="tsh-plegar" aria-expanded="${S.plegado ? 'false' : 'true'}" aria-controls="tsh-input-cuerpo">${ico('panel-left', 16)}<span>Entrada</span></button>
       <div class="tsh-input-cuerpo" id="tsh-input-cuerpo">
         <section class="tsh-in-sec"><h3>Cliente</h3><p class="tsh-in-cli">${b?.name || slug}</p><p class="mut sm">${nivel || sinDatos('la ficha de oferta del cliente')}</p></section>
@@ -218,7 +219,7 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (!embebido && tool.ws === 'strategy' && tool.bloque_hz) salida.push(html`<a class="btn ghost sm tsh-act-chat" href="${rutaHerramienta(tool.ws, slug, tool.id, ['chat'])}" title="El chat de Strategy de este bloque, como siempre">${ico('chat-ia', 14)} Chat de Strategy</a>`);
     if (!embebido) salida.push(btn('chat', 'chat-ia', 'Continuar en el Chat'));
     if (d && esc) salida.push(btn('archivar', 'trash-2', 'Archivar'));
-    mount(el, html`<div class="tsh-grp">${g1}</div>${flujo.length ? html`<div class="tsh-grp">${flujo}</div>` : ''}<div class="tsh-grp">${salida}</div>`);
+    mount(el, html`<div class="tsh-grp">${g1.slice(0, 2)}${flujo}</div>${[...g1.slice(2), ...salida].filter(Boolean).length ? html`<details class="tsh-more"><summary class="btn ghost sm" aria-label="Más acciones">${ico('ellipsis', 14)} Más acciones</summary><div class="tsh-more-menu">${g1.slice(2)}${salida}</div></details>` : ''}`);
   }
   // La generación con IA: corriendo (texto en vivo) · propuesta (a revisar) · sin bloque o error (reintentar).
   function pintarGen() {
@@ -284,19 +285,20 @@ export async function toolShell(host, { me, tool, slug, b, alive, vista, resto =
     if (!hayCambio('crit', [cu, fa])) return;
     mount(el, html`<div class="tsh-crit-h"><h3>Criterios</h3><span class="mut sm">${cu.length} cumple · ${fa.length} falta</span></div>
       ${cu.length + fa.length ? html`<ul class="tsh-crit-ul">${cu.map((x) => html`<li class="ok"><span aria-hidden="true">✓</span><span class="sr-only">Cumple: </span>${x}</li>`)}${fa.map((x) => html`<li class="falta"><span aria-hidden="true">✗</span><span class="sr-only">Falta: </span>${x}</li>`)}</ul>`
-        : html`<p class="tsh-sindatos">⚠️ SIN DATOS: los criterios salen del bloque criterios de la IA y de las reglas de la herramienta</p>`}
+        : html`<p class="mut sm">Los criterios aparecerán al completar la herramienta.</p>`}
       ${fa.length ? html`<p class="tsh-crit-nota">Aprobar queda bloqueado mientras falte algo.</p>` : ''}`);
   }
   function pintarPie() {
     const el = $('#tsh-pie', root); if (!el) return;
     const d = S.doc, res = [...(d?.resultado || [])].sort((a, z) => String(z.en || '').localeCompare(String(a.en || ''))), his = [...(d?.historial || [])].sort((a, z) => String(z.en || '').localeCompare(String(a.en || '')));
+    if (!d && !res.length && !his.length) return mount(el, '');
     mount(el, html`<div class="tsh-pie-col tsh-res"><h3>Resultados</h3>
         ${res.length ? html`<ul class="tsh-pie-ul">${res.map((r) => html`<li><b>${r.metrica}</b>${r.valor !== '' && r.valor != null ? html`: ${r.valor}` : ''} <span class="mut sm">${fdate(r.en)} · ${quien(r.por)}</span>${r.nota ? html`<p>${r.nota}</p>` : ''}</li>`)}</ul>`
-          : html`<p class="tsh-sindatos">⚠️ SIN DATOS: los resultados los registra quien mide el entregable después de entregarlo</p>`}
+          : html`<p class="mut sm">Registra una métrica cuando midas el entregable.</p>`}
         ${d && escribe() ? html`<div class="tsh-r-form"><input class="in tsh-r-in" id="tsh-r-metrica" maxlength="80" placeholder="Métrica" aria-label="Métrica"><input class="in tsh-r-in" id="tsh-r-valor" maxlength="80" placeholder="Valor" aria-label="Valor"><input class="in tsh-r-in" id="tsh-r-nota" maxlength="300" placeholder="Nota (qué aprendimos)" aria-label="Nota"><button type="button" class="btn ghost" data-act="tsh-resultado">Registrar</button></div>` : ''}</div>
       <div class="tsh-pie-col tsh-hist"><h3>Historial</h3>
         ${his.length ? html`<ul class="tsh-pie-ul">${his.map((h) => html`<li><span class="tsh-h-en">${fdate(h.en)}</span> <b>${h.accion}</b> <span class="mut sm">${quien(h.por)}${h.version ? ` · v${h.version}` : ''}</span>${h.nota ? html`<p class="mut sm">${h.nota}</p>` : ''}</li>`)}</ul>`
-          : html`<p class="tsh-sindatos">⚠️ SIN DATOS: el historial empieza cuando se guarda el primer borrador</p>`}</div>`);
+          : html`<p class="mut sm">El historial empieza al guardar el primer borrador.</p>`}</div>`);
   }
   function pintarTodo() {
     S.k = {};
