@@ -143,6 +143,7 @@ const NAV = [
   { id: 'sistemas', nombre: 'Sistemas', ruta: 'sistemas', icono: 'agents', ve: equipo,
     items: [
       ['sistemas', 'Constructor de agentes', 'sistemas', equipo, 'agents'],
+      ['workflows', 'Workflows', 'sistemas/workflows', equipo, 'git-branch'],
       ['agentes', 'Agentes en marcha', 'ai/agentes', equipo, 'agents'],
       ['setup', 'Configuración', 'org/setup', ceo, 'settings'],
     ] },
@@ -270,7 +271,7 @@ function resolve(path) {
   // Agents: #/ai/agentes[/<agente>[/<pestaña>|/trabajos/<trabajo>[/etapas]]] (el trabajo abre su chat; /etapas, la vista por etapas).
   if (a === 'ai' && parts[1] === 'agentes') { const ID = /^[\w-]{4,60}$/, [ag, tab, tr, vista] = parts.slice(2); const rest = !ID.test(ag || '') ? [] : tab === 'trabajos' && ID.test(tr || '') ? [ag, 'trabajos', tr, ...(vista === 'etapas' ? ['etapas'] : [])] : ['workflow', 'trabajos', 'settings'].includes(tab) ? [ag, tab] : [ag]; return sees('agentes') ? { key: 'agentes', rest, url: ['ai', 'agentes', ...rest].join('/') } : fallback(); }
   // Ajustes: #/ajustes[/ia]. Todo el equipo lo abre; conectar lo hacen el CEO y el COO (el servidor lo hace cumplir).
-  if (a === 'ajustes') return sees('ajustes') ? { key: 'ajustes', rest: ['ia'], url: 'ajustes/ia' } : fallback();
+  if (a === 'ajustes') { const t = parts[1] === 'canales' ? 'canales' : 'ia'; return sees('ajustes') ? { key: 'ajustes', rest: [t], url: `ajustes/${t}` } : fallback(); }
   if (a === 'ai') return sees('ai') ? (parts[1] === 'mcps' ? { key: 'ai', rest: ['mcps'], url: 'ai/mcps' } : { key: 'ai', rest: [], url: 'ai' }) : fallback();
   // Áreas: #/areas/<área>. Sin área (o una que no existe) abre la primera que esta persona ve; una que no ve, el fallback de siempre.
   if (a === 'areas') {

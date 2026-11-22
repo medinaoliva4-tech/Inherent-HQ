@@ -98,7 +98,15 @@ const tarjeta = (p, puede, nuevo) => {
       h('dt', {}, 'Necesita'), h('dd', { class: ext ? 'sa-ext' : '', title: p.spec.acciones.map((a) => ACCION[a] || a).join(', ') }, `${ext ? '🔒 ' : ''}${p.spec.acciones.slice(0, 2).map((a) => ACCION[a] || a).join(' · ')} · US$ ${p.spec.presupuesto.por_mes}/mes`)));
   t.addEventListener('click', () => nuevo(p.spec, false)); return t;
 };
-export async function render(el, { me }) {
+// Sistemas tiene dos lienzos: Agentes (quién hace el trabajo) y Workflows (en qué orden, con qué aprobaciones).
+const seg = (on) => h('nav', { class: 'rv-seg sa-seg', role: 'tablist', 'aria-label': 'Sistemas' }, [['sistemas', 'Agentes', 'agentes'], ['sistemas/workflows', 'Workflows', 'workflows']].map(([r, n, k]) => h('a', { href: `#/${r}`, role: 'tab', class: on === k ? 'on' : '', 'aria-selected': String(on === k) }, n)));
+export async function render(el, { me, sub = [] }) {
+  if (sub[0] === 'workflows') {
+    const box = h('div', {});
+    el.replaceChildren(h('div', { class: 'sa wf-pag' }, h('header', { class: 'sa-top' }, h('div', {}, h('h1', {}, 'Workflows'), h('p', { class: 'sa-mut' }, 'En qué orden pasa el trabajo y dónde espera a una persona.')), seg('workflows')), box));
+    const { pintarWorkflows } = await import('../workflows-ui.js');
+    return pintarWorkflows(box, { me });
+  }
   const cuerpo = h('div', { class: 'sa' }); let filtro = 'Todas', q = '', lista = [], costo = null;
   const puede = ['ceo', 'coo'].includes(me.role) || (me.roles || []).includes('ai-engineer');
   const buscar = h('input', { class: 'sa-buscar', type: 'search', placeholder: 'Buscar agentes', 'aria-label': 'Buscar agentes' });
@@ -119,7 +127,7 @@ export async function render(el, { me }) {
     const ia = h('button', { type: 'button', id: 'sa-ia', class: 'sa-cero sa-cero-ia', disabled: !puede }, h('span', { class: 'sa-cero-i', 'aria-hidden': 'true' }, '✦'), h('span', {}, h('b', {}, 'Construir con IA'), h('small', {}, 'Cuéntalo en una frase y armo el borrador')));
     ia.addEventListener('click', () => nuevo(null, true));
     mainBox.replaceChildren(
-      h('header', { class: 'sa-main-h' }, h('div', {}, h('h2', {}, 'Nuevo agente'), h('p', { class: 'sa-mut' }, 'Cada quien arma el suyo; el límite es claro y está siempre a la vista.'))),
+      h('header', { class: 'sa-main-h' }, seg('agentes'), h('div', {}, h('h2', {}, 'Nuevo agente'), h('p', { class: 'sa-mut' }, 'Cada quien arma el suyo; el límite es claro y está siempre a la vista.'))),
       h('div', { class: 'sa-lims', role: 'list', 'aria-label': 'Límites (no se cambian)' }, LIMITES.map(([i, t, s]) => h('div', { class: 'sa-lim-i', role: 'listitem' }, h('i', { 'aria-hidden': 'true' }, i), h('span', {}, h('b', {}, t), h('small', {}, s)))),
         h('div', { class: 'sa-lim-i sa-lim-g' }, h('span', {}, h('b', {}, gasto == null ? 'Gasto: sin datos' : `US$ ${gasto.toFixed(2)} este mes`), h('small', {}, tope ? `de US$ ${tope} de topes · ${costo?.topes_aprobados ? 'tope aprobado' : 'sin tope del CEO aún'}` : costo?.topes_aprobados ? 'con tope aprobado' : 'sin tope del CEO aún')),
           gasto != null && tope ? h('span', { class: 'hz-bb', role: 'img', 'aria-label': `Gastado US$ ${gasto.toFixed(2)} de US$ ${tope}` }, h('i', { style: `--w:${Math.min(100, (gasto / tope) * 100)}%` })) : '')),
