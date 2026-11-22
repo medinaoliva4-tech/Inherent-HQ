@@ -149,9 +149,10 @@ export function analizar(entrada, { pesos = PESOS_BASE, riesgo = RIESGO_BASE, mo
   // caídas: el riesgo de ese segundo supera 1.35× el de los mejores tramos del video, con estímulo bajo
   // El riesgo de ese segundo (no la pérdida absoluta, que se achica sola al irse la gente) contra lo que logra el video en sus MEJORES tramos
   // (cuartil bajo del riesgo después del gancho): así un bache largo no se esconde detrás de sí mismo.
-  const perdidas = S.slice(0, -1).map((x, i) => x - S[i + 1]), ref = cuantil(h.slice(3), 0.25), caidas = [];
+  // «Estímulo bajo» es relativo al propio video (un guion bueno tiene su tramo más flojo) pero nunca por encima de 0.5 de piso.
+  const perdidas = S.slice(0, -1).map((x, i) => x - S[i + 1]), ref = cuantil(h.slice(3), 0.25), techo = Math.max(0.5, cuantil(s.slice(3), 0.5) - 0.08), caidas = [];
   for (let i = 3; i < car.T; i++) {
-    if (!(h[i] > 1.35 * ref && s[i] < 0.5)) continue;
+    if (!(h[i] > 1.35 * ref && s[i] < techo)) continue;
     const peor = CARACTERISTICAS.filter((k) => car.F[k][i] != null).map((k) => ({ k, falta: (pesos[k] || 0) * (1 - car.F[k][i]) })).sort((a, z) => z.falta - a.falta)[0];
     const ult = caidas[caidas.length - 1];
     if (ult && i - ult.t1 <= 1 && ult.causa === peor.k) { ult.t1 = i + 1; ult.perdida = redondea(ult.perdida + perdidas[i]); continue; }
