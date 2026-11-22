@@ -18,7 +18,7 @@ function partirExcluidos(t) {
   return { excl: m.map((x) => x[1]).join(' , '), resto: t.replace(/(?:deja fuera|dejar fuera|sin|quita|quitar|excepto|menos|no incluyas|excluye|excluir|fuera)\s+[^,.;]+/g, ' ') };
 }
 const lugares = (original) => {
-  const out = []; for (const m of original.matchAll(/\b(?:en|de|desde)\s+((?:[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)(?:\s+[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)*(?:\s*(?:,|y)\s*[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+(?:\s+[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)*)*)/g)) out.push(...m[1].split(/\s*(?:,|\by\b)\s*/).map((x) => x.trim()));
+  const out = []; for (const m of original.matchAll(/\b(?:en|de|desde|agrega|suma|incluye|añade|anade)\s+((?:[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)(?:\s+[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)*(?:\s*(?:,|y)\s*[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+(?:\s+[A-ZÁÉÍÓÚÑ][\wáéíóúñ.-]+)*)*)/g)) out.push(...m[1].split(/\s*(?:,|\by\b)\s*/).map((x) => x.trim()));
   return out.filter((x) => x && !/^(Inherent|El|La|Los|Las)$/.test(x));
 };
 function tamano(t) {

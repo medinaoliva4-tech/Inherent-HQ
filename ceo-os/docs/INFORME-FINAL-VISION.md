@@ -1,4 +1,4 @@
-# Informe de la visión del OS · 22 de noviembre
+# Informe de la visión del OS · 22 de noviembre (actualizado)
 
 > **La visión NO está terminada.** Quedó firme la plomería y varias piezas completas y probadas; **ninguna de las 34 herramientas está completa** (la auditoría de Fable las dejó en 75 requisitos «parcial» y 9 «falta», y eso no cambió). Aquí va lo que sí, lo que no y lo que sigue.
 
@@ -9,6 +9,27 @@
 3. **Abrir `#/decide`** (o «Decide» en la barra de abajo del teléfono) con datos reales y aprobar una pieza.
 4. **Revisar la rama** `claude/blissful-ramanujan-hoj78y` (no está en `main`). Si te parece bien, dime «merge» y la subo.
 5. **Codex:** quedó instalado en esta sesión, pero **no inició sesión** (el código del dispositivo vence en 15 min y no se ingresó). No lo necesité para lo que se hizo. Si lo quieres, dímelo y lo conecto.
+
+## Lo nuevo desde el informe anterior (22-nov, tarde)
+
+| Pieza | Qué es | Cómo se verificó |
+|---|---|---|
+| **Hoy · tablero** | 6 fichas con gráficos (ciclo 1→20, decisiones, entregables, Revenue, Agentes, atajos) que **caben en una vista** (900/900 y 844/844) | navegador, claro y oscuro |
+| **Revenue** (`#/revenue`) | Cliente ideal en una frase y se afina chateando («solo Antigua, deja fuera agencias»); embudo, anillo de puntaje y panel de edición; aprobar/enviar solo CEO/COO | 23 + 9 pruebas + navegador |
+| **Agentes** (`#/sistemas`) | Catálogo por área, Operator, «Construir con IA» (borrador por plantillas, sin modelo), límites siempre visibles | 25 pruebas + navegador |
+| **Studio** | Ahora es herramienta dentro de Marketing y Producción (Áreas); curva de retención protagonista con caídas tocables | 17 + 6 + navegador |
+| **Motor de ideas** | De lo que funciona en el nicho al shot list de la temporada (ciclo) | 17 pruebas + navegador |
+| **Contexto vivo, Canales, Lead Engine** | Servidor + pruebas (transcripción → compromisos con cita; Telegram/WhatsApp con firma; lotes con tope y horario) | 28 + 31 + 23 |
+
+**Cómo se trabajó:** un modelo fuerte (Opus) hizo la UI con las referencias de `docs/DISENO-REFERENCIAS.md`; el resto, el servidor.
+
+### Sigue sin hacerse / sin conexión (no se finge)
+- Los agentes **no ejecutan**: no hay modelo conectado al constructor (503 «sin conexión»). «Construir con IA» arma un borrador por parecido, no es IA todavía.
+- **Correo, redactor y scraping** del Lead Engine: adaptadores sin conectar. Se puede calificar y redactar a mano; **no sale ningún correo**.
+- **Canales:** Telegram/WhatsApp listos en servidor; falta crear el bot/Meta Business y conectar la respuesta al Chat. iMessage necesita un puente en tu Mac.
+- Sala del cliente (pegar transcripción), vincular Telegram y Workflow Builder: **servidor listo, falta la pantalla**.
+- `Guardar como ICP` crea un borrador cada vez (máx. 6 por marca): falta decidir si reemplaza el anterior. `btn-s` no tiene estilo propio.
+- Decisión D12 (proxy de suscripción) y Codex (necesita llave `sk-` válida o usarlo en tu Mac con `scripts/codex-delegar.sh`).
 
 ## Hecho y verificado (con prueba)
 

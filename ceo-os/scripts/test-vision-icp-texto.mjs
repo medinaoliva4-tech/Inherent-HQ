@@ -23,4 +23,5 @@ t('filtrarExcluidos saca los excluidos y deja los demás', () => {
   assert.deepEqual(r.leads.map((x) => x.name), ['b']); assert.equal(r.excluidos.length, 2);
 });
 t('no muta lo previo', () => { const a = icpDeTexto('Dueños de cafeterías'), copia = JSON.stringify(a); icpDeTexto('agrega gerentes', a); assert.equal(JSON.stringify(a), copia); });
+t('«agrega Antigua» suma el lugar sin perder el anterior', () => { const a = icpDeTexto('Dueños de cafeterías en Guatemala'), b = icpDeTexto('agrega Antigua', a); assert.deepEqual(b.icp.ubicaciones, ['Guatemala', 'Antigua']); });
 console.log(`${ok} pruebas del ICP por texto`);
