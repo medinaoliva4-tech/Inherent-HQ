@@ -168,7 +168,7 @@ const NAV_SRC = APP.slice(APP.indexOf('const NAV = ['), APP.indexOf('const navDe
 t('barra única: máximo dos niveles y nada repite al Chat', () => {
   assert.ok(!/company:/.test(NAV_SRC), 'Company era un tercer nivel');
   assert.ok(!/lat-chat"|Ask InherentOS.*data-lat/.test(APP), 'Ask InherentOS repetía al Chat');
-  for (const n of ['Hoy', 'Chat', 'Agentes', 'Calendario', 'Organización', 'Empresa', 'Áreas', 'Biblioteca']) assert.ok(NAV_SRC.includes(`'${n}'`), n);
+  for (const n of ['Hoy', 'Chat', 'Agentes', 'Calendario', 'Revenue', 'Clientes', 'Studio', 'Sistemas', 'Operación', 'Empresa', 'Áreas', 'Biblioteca']) assert.ok(NAV_SRC.includes(`'${n}'`), n);
   for (const n of ['Home', 'Organization', 'Library', 'Projects', 'Tasks']) assert.ok(!NAV_SRC.includes(`'${n}'`), `${n} sigue en inglés`);
 });
 t('Chat y Code conservan su propia columna de carpetas', () => {

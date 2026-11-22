@@ -28,6 +28,7 @@ import * as decide from './_lib/decide.js';
 import * as workflowRutas from './_lib/workflow-rutas.js';
 import * as portalAprob from './_lib/portal-aprobaciones.js';
 import * as studio from './_lib/studio.js';
+import * as agentesBanco from './_lib/agentes-banco.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
 import * as campanas from './_lib/campanas.js';
@@ -1184,6 +1185,7 @@ decide.rutas(on);
 workflowRutas.rutas(on);
 portalAprob.rutas(on);
 studio.rutas(on);
+agentesBanco.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);

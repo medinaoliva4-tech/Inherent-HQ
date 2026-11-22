@@ -28,6 +28,7 @@
     "test:vision-clips": "node scripts/test-vision-clips.mjs",
     "test:vision-retencion": "node scripts/test-vision-retencion.mjs",
     "test:vision-studio": "node scripts/test-vision-studio.mjs",
+    "test:vision-agentes-banco": "node scripts/test-vision-agentes-banco.mjs",
     "test:vision-intent": "node scripts/test-vision-intent.mjs",
     "test:vision-decide": "node scripts/test-vision-decide.mjs",
     "test:vision-hilo": "node scripts/test-vision-hilo.mjs",
