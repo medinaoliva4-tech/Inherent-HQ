@@ -65,6 +65,7 @@ const ERR = { conector: 'No se pudo conectar la app.', dominio: 'No pudimos veri
 { const c = new URLSearchParams(location.search).get('connect'); if (c) { try { sessionStorage.setItem('connect', c); } catch {} history.replaceState(null, '', '/'); } }
 const pendingConnect = () => { try { return sessionStorage.getItem('connect'); } catch { return null; } };
 
+import { esNativo, iniciar as loginNativo, escucharRetorno } from './login-nativo.js';
 async function loginView() {
   delete document.documentElement.dataset.pantalla; delete document.documentElement.dataset.capa; delete document.documentElement.dataset.barra;
   let st = { google: false, db: false, domain: 'inherentglobal.com' };
@@ -90,6 +91,11 @@ async function loginView() {
       </div>
     </div></div>`);
   if (err) history.replaceState(null, '', '/');
+  // App nativa: el login con Google sale al navegador del sistema y vuelve con un código de un uso (login-nativo.js).
+  if (esNativo()) {
+    for (const a of root.querySelectorAll('a.gbtn[href^="/api/auth/google"]')) a.addEventListener('click', (e) => { e.preventDefault(); loginNativo({ portal: /portal=1/.test(a.getAttribute('href')) }).catch((x) => toast(x.message, true)); });
+    escucharRetorno({ alEntrar: () => location.replace('/'), alFallar: (m) => toast(m, true) });
+  }
   bootSalir();
 }
 

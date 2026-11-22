@@ -1,0 +1,11 @@
+node_modules/
+# El proyecto de Xcode se genera con `npm run ios:instalar` (cap add ios) y se versiona SIN sus derivados:
+ios/App/Pods/
+ios/App/build/
+ios/App/DerivedData/
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+*.xcuserstate
+xcuserdata/
+.DS_Store

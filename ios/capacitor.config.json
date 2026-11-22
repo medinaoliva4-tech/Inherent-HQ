@@ -1,0 +1,16 @@
+{
+  "appId": "global.inherent.os",
+  "appName": "Inherent",
+  "webDir": "www",
+  "server": {
+    "url": "https://inherent-work.vercel.app",
+    "allowNavigation": ["inherent-work.vercel.app"],
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": true,
+    "backgroundColor": "#0d0d0e",
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}

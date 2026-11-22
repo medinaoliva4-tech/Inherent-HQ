@@ -2,6 +2,7 @@
 import * as db from './_lib/db.js';
 import * as code from './_lib/code.js';
 import * as session from './_lib/session.js';
+import * as authNative from './_lib/auth-native.js';
 import * as google from './_lib/google.js';
 import { dineroDeInherent, seesCosts, guard, guardAny, COLLS, READ_ALSO, WRITE_ALSO, canWrite, canRead, SCOPED, scoper, inScope, forgetViews, userFor, domain, summaryOf, seesAccesos, managesAccesos, stripAccesos, stripCosts } from './_lib/access.js';
 import { readFile, listDir, repoSource } from './_lib/gh.js';
@@ -66,7 +67,9 @@ rutasContenido(on, { guard });
 // ---------- auth ----------
 on('GET', 'auth/google', async (req, res) => {
   const state = google.newState(), portal = req.query.portal === '1';
-  session.addCookie(res, `ceoos_state=${session.sign({ state, portal, exp: Date.now() + 10 * 60_000 })}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=600`);
+  // App nativa: el login sale a este navegador y vuelve a la app con un código de un uso atado al reto PKCE (api/_lib/auth-native.js).
+  const nativo = req.query.native === '1' && authNative.retoOk(req.query.challenge) ? { native: true, challenge: String(req.query.challenge) } : {};
+  session.addCookie(res, `ceoos_state=${session.sign({ state, portal, ...nativo, exp: Date.now() + 10 * 60_000 })}; HttpOnly; Secure; SameSite=Lax; Path=/api/auth; Max-Age=600`);
   res.writeHead(302, { Location: google.authUrl(state, portal) }).end();
 });
 on('GET', 'auth/callback', async (req, res) => {
@@ -85,10 +88,21 @@ on('GET', 'auth/callback', async (req, res) => {
     const u = await userFor(p.email);
     if (!u.active) return back('inactivo');
     await db.upsert('team', p.email, { email: p.email, name: p.name, picture: p.picture, google: { calendar: p.scopes.some((s) => s.includes('calendar')), drive: p.scopes.some((s) => s.includes('drive')), gmail: p.scopes.some((s) => s.includes('gmail.send')) }, last_login: new Date().toISOString() }, p.email);
+    if (st.native) { const code = await authNative.crear({ email: p.email, challenge: st.challenge }); console.log(JSON.stringify({ evt: 'login', via: 'app', email: p.email })); return res.writeHead(302, { Location: `inherent://auth?code=${code}` }).end(); }
     session.issue(req, res, { email: p.email });
   } catch (e) { console.error('login db', e); return back('servidor', e.code === 'NO_DB' ? 'base de datos' : e.message); }
   console.log(JSON.stringify({ evt: 'login', email: p.email }));
   back();
+});
+// El canje del código de la app: pone la sesión DENTRO de la web de la app (misma «huella» de navegador). Exige el encabezado propio para que
+// una página de afuera no pueda meter a alguien en la sesión de otra persona.
+on('POST', 'auth/native/exchange', async (req, res) => {
+  if (req.headers['x-ceoos'] !== '1') return res.status(403).json({ error: 'Pedido no válido' });
+  try {
+    const email = await authNative.canjear({ code: req.body?.code, verifier: req.body?.verifier });
+    const u = await userFor(email); if (!u?.active) return res.status(403).json({ error: 'Tu usuario está inactivo' });
+    session.issue(req, res, { email }); res.json({ ok: true });
+  } catch (e) { res.status(e.status || 500).json({ error: e.status ? e.message : 'No se pudo entrar', code: e.code || 'SERVIDOR' }); }
 });
 on('POST', 'auth/logout', async (req, res) => { session.clear(res); res.json({ ok: true }); });
 // Solo en local: entrar sin Google para probar. Nunca existe en Vercel.

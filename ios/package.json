@@ -1,0 +1,25 @@
+{
+  "name": "inherent-os-ios",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Cápsula nativa de Apple para Inherent OS: la misma web, en una app. Ver LEEME.md",
+  "scripts": {
+    "ios:instalar": "node scripts/instalar.mjs",
+    "sync": "cap sync ios",
+    "abrir": "cap open ios",
+    "test": "node scripts/test-capsula.mjs"
+  },
+  "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/browser": "8.0.5",
+    "@capacitor/camera": "8.2.6",
+    "@capacitor/core": "8.6.2",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.6.2",
+    "@capacitor/local-notifications": "8.3.1",
+    "@capacitor/share": "8.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2"
+  }
+}
