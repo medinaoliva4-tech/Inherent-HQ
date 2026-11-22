@@ -22,6 +22,7 @@
     "test:marca": "node scripts/test-marca.mjs",
     "test:llm": "node scripts/test-llm.mjs",
     "test:areas": "node scripts/test-areas.mjs",
+    "test:vision-hilo": "node scripts/test-vision-hilo.mjs",
     "test:ui": "node scripts/test-ui.mjs",
     "test:tablas": "node scripts/test-tablas.mjs",
     "test:herramientas": "node scripts/test-herramientas.mjs",

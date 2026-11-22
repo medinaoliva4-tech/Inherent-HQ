@@ -9,8 +9,9 @@
 // no se aprueba aquí (se aprueba con el bloque Oferta, solo el CEO: 409 APRUEBA_BLOQUE) y Brand Growth no le cambia el stack (403).
 import * as db from './db.js';
 import * as results from './results.js';
-import { guard, scoper, edits, levelOf, seesCosts } from './access.js';
+import { guard, guardAny, permiteArea, scoper, edits, levelOf, seesCosts } from './access.js';
 import { body } from './http.js';
+import { construirHilo, traza, resumen } from '../../public/js/hilo.js';
 import { ficha, estrategiaCerrada, dianaASuCasa, xrayAViva, ofertaAprobada, nivelDeOferta, limpiarDe } from './estrategia.js';
 import { herramientaDe } from '../../public/js/herramientas.js';
 import { alcanceConsulting, consultingAbierto, textoAlcanceConsulting } from '../../public/js/llm/modos.js';
@@ -190,6 +191,25 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     const { cur, u } = await deDoc(req, res); if (!u) return;
     const n = Number(req.params.n), foto = Number.isInteger(n) && n >= 1 && n <= (cur.version || 1) ? await db.get(COLL_V, idVersion(cur.id, n)) : null;
     foto ? res.json(salida(u, foto)) : res.status(404).json({ error: 'Esa versión no existe' });
+  });
+
+  // ---------- El hilo del cliente ----------
+  // Una VISTA de los entregables de una marca (public/js/hilo.js): nodos, aristas «viene de», qué está en hipótesis y qué hay que
+  // revisar porque algo de arriba cambió. Solo salen los entregables de las áreas que esa persona ve; nunca el contenido ni costos.
+  // ?pieza=<id> agrega el camino de esa pieza hasta el cliente ideal (ICP).
+  on('GET', 'hilo', async (req, res) => {
+    const slug = lc(req.query.slug);
+    const u = await guardAny(req, res, [...new Set(Object.values(AREA_DE))]); if (!u) return;
+    if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
+    if (!slugOk(slug)) return res.status(400).json({ error: 'Falta el cliente' });
+    if (slug === 'personal' && u.role !== 'ceo') return res.status(404).json({ error: 'Esa marca no está entre las tuyas' });
+    const sc = await scoper(u);
+    if (sc && slug !== 'inherent' && !sc.client(slug)) return res.status(404).json({ error: 'Ese cliente no está entre los tuyos' });
+    const visibles = (await db.list(COLL)).filter((d) => lc(d.client_slug) === slug && AREA_DE[d.ws] && permiteArea(u, AREA_DE[d.ws]) && (u.role === 'ceo' || levelOf(u, AREA_DE[d.ws]) !== 'resumen'));
+    // El hilo se arma con TODO lo que esa persona puede ver; lo de áreas ajenas no aparece ni como nodo ni como razón.
+    const hilo = construirHilo(visibles, { slug });
+    const pieza = String(req.query.pieza || '');
+    res.json({ ...hilo, resumen: resumen(hilo), ...(pieza ? { traza: traza(hilo, pieza) } : {}) });
   });
 
   // ---------- Crear ----------
