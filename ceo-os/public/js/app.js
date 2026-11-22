@@ -143,6 +143,7 @@ const NAV = [
   { id: 'sistemas', nombre: 'Sistemas', ruta: 'sistemas', icono: 'agents', ve: equipo,
     items: [
       ['sistemas', 'Constructor de agentes', 'sistemas', equipo, 'agents'],
+      ['workflows', 'Workflows', 'sistemas/workflows', equipo, 'git-branch'],
       ['agentes', 'Agentes en marcha', 'ai/agentes', equipo, 'agents'],
       ['setup', 'Configuración', 'org/setup', ceo, 'settings'],
     ] },
