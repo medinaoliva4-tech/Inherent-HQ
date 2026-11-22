@@ -10,7 +10,7 @@ import { html, raw, mount, col, api, fdate, today, acts, IC, $, $$, Q, calQ, tea
 import { upcoming, people as meetPeople } from '../meetings.js';
 import { openDelivery, dueChip, stChip } from '../taskcard.js';
 import { bdayText } from './me.js';
-import { connectNotice, hookNotice } from '../connectai.js';
+import { connectNotice, hookNotice, dismissed as aiCerrado } from '../connectai.js';
 import { purposeCard } from '../purpose.js';
 import { estadoDe } from '../element.js';
 import { dueAccess, dueSoon, durText, updateWaits } from '../ventas-flujo.js';
@@ -24,7 +24,7 @@ import { abrirEnChat } from '../areas.js';
 import { leerNota, ordenar, TIPO_ICONO, TIPO_NOMBRE } from '../areas-notas.js';
 import { SUGERENCIAS, modoDe } from '../llm/modos.js';
 import { franja } from './decide.js';
-import { pintarTablero } from './tablero.js';
+import { pintarTablero, ajustarTablero } from './tablero.js';
 import { seleccion, VACIO } from '../decide.js';
 import { h as dh } from '../kit/dom.js';
 import { anillo, proporcion, sparkline, cuenta, cuentaChip, monograma, monogramas, cuadrito, vacio, numero, contarNumeros } from '../visual.js';
@@ -133,12 +133,20 @@ export async function render(el, { me, alive }) {
   const hero = (linea) => html`<div class="home-hero sp-hero"><h1>De las oportunidades al trabajo que cuenta</h1><p>${greet()}, <em>${first}</em> · ${fechaLarga}${linea || ''}</p></div>
     ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}
     ${connectNotice(me)}`;
+  // CEO/COO: el hero en una línea y los avisos como una tira fina (lo de arriba no debe empujar el tablero fuera de la vista).
+  const heroFino = (linea) => html`<div class="home-hero sp-hero hz-hero"><h1>Hoy</h1><p>${greet()}, <em>${first}</em> · ${fechaLarga}${linea || ''}</p></div>
+    ${bdays.length ? html`<div class="bday">${bdays.map((p) => { const now = p.birthday === soon[0], mine = (p.email || p.id) === me.email; return html`<span class="bdi ${now ? 'now' : ''}">${now ? (mine ? html`${ico('spark')} <b>¡Feliz cumpleaños, ${first}!</b>` : html`${ico('cake')} <b>Hoy cumple ${p.name.split(' ')[0]}</b>`) : html`${ico('cake')} ${p.name.split(' ')[0]} cumple el ${bdayText(p.birthday)}`}</span>`; })}</div>` : ''}`;
+  const avisosFinos = () => {
+    const vacia = me.role === 'ceo' && !tasks.length && !projects.length, ia = !(me.mcp || aiCerrado() || me.role === 'client');
+    if (!vacia && !ia) return '';
+    return html`<div class="hz-avisos" role="note">${vacia ? html`<a class="hz-aviso hz-aviso-o" href="#/org/setup">${ico('gear', 14)}<span>La app está vacía: <b>haz el Arranque</b></span><i aria-hidden="true">→</i></a>` : ''}${ia ? html`<span class="hz-aviso hz-aviso-ia">${ico('chat-ia', 14)}<span>Habla con Inherent OS desde tu IA</span><button type="button" class="hz-aviso-b" data-ai="open">Conectar</button><button type="button" class="hz-aviso-x" data-ai="off" title="Ahora no" aria-label="Ocultar este aviso">${ico('x', 12)}</button></span>` : ''}</div>`;
+  };
 
   // ---------- «Ask InherentOS anything» ----------
   // Al enviar abre el Chat con el borrador, en el modo del último workspace usado (o Organización) y con el cliente del contexto.
   const ask = () => {
     const modo = modoAsk(), sug = (SUGERENCIAS[modo] || SUGERENCIAS.organizacion || []).slice(0, 3), quien = nombreDe(ctxSlug());
-    return html`<form class="home-ask" data-act="ask" autocomplete="off">
+    return html`<form class="home-ask ${ceoish ? 'hz-ask' : ''}" data-act="ask" autocomplete="off">
       <div class="home-ask-box"><span class="home-ask-ic">${ico('chat-ia', 20)}</span>
         <label class="sr-only" for="home-q">Pregúntale a InherentOS</label>
         <textarea id="home-q" class="home-ask-ta" rows="1" placeholder="Pregúntale a Inherent OS" data-act="askTa"></textarea>
@@ -240,7 +248,9 @@ export async function render(el, { me, alive }) {
       : lista.length ? html`<div class="home-imp-grid">${lista.map(card)}</div>`
       : html`<div class="home-imp-vacio">${vacio({ icono: 'star', titulo: 'Aún no hay nada fijado', linea: 'Fija lo importante desde cada área y sale aquí.', compacto: true })}<div class="home-imp-links">${ws.map((w) => html`<a class="home-imp-ws" href="#/areas/${w.id}" style="--ac:var(${w.color})">${ico(w.icono, 14)}${w.nombre}</a>`)}</div></div>`}</section>`;
   }
-  const comun = () => html`${ask()}${me.role === 'client' ? '' : html`<section class="hoy-tab" id="hoy-tablero" aria-label="Tablero"></section>`}<details class="hoy-mas"><summary>Más detalle</summary><section class="hoy-decide" id="hoy-decide" aria-label="Decide"></section>${kpis()}<div class="home-two">${actividad()}${importante()}</div></details>`;
+  // «Más detalle» recuerda si quedó abierto entre repintados (llegan datos y la pantalla se rearma).
+  let masAbierto = false;
+  const comun = (extra = '') => html`${ask()}${me.role === 'client' ? '' : html`<section class="hoy-tab" id="hoy-tablero" aria-label="Tablero"></section>`}<details class="hoy-mas" ${masAbierto ? raw('open') : ''}><summary>Más detalle</summary><section class="hoy-decide" id="hoy-decide" aria-label="Decide"></section>${extra}${kpis()}<div class="home-two">${actividad()}${importante()}</div></details>`;
 
   // ---------- CEO · COO ----------
   // Lo que se traba si nadie lo mueve, con su botón; a la derecha, la agenda y el contenido del mes. Lo de cobrar y
@@ -278,10 +288,9 @@ export async function render(el, { me, alive }) {
     const meets = [...evs.filter((e) => e.date >= T), ...pm].sort((a, z) => (a.date + (a.time || '99')).localeCompare(z.date + (z.time || '99')));
     const att = atencion(late, review), decide = att.filter((x) => x.btn || x.w <= 2).length;
     const n = decide || att.length;
-    mount(el, html`${hero(n ? html` · <em>${n} cosa${n === 1 ? '' : 's'}</em> necesita${n === 1 ? '' : 'n'} tu decisión hoy.` : ' · Todo en orden.')}
-      ${me.role === 'ceo' && !tasks.length && !projects.length ? html`<a class="asbar" href="#/org/setup" style="display:flex">${ico('gear')} La app todavía está vacía: <b>haz el Arranque</b> y queda lista con lo que ya dice el repo →</a>` : ''}
-      ${comun()}
-      <div class="hy-two">
+    mount(el, html`${heroFino(n ? html` · <em>${n} cosa${n === 1 ? '' : 's'}</em> necesita${n === 1 ? '' : 'n'} tu decisión hoy.` : ' · Todo en orden.')}
+      ${avisosFinos()}
+      ${comun(html`<div class="hy-two">
         <section class="hy-box" id="hoy-att"><div class="hy-bh"><h2>Necesita atención</h2><span>Lo que se traba si nadie lo mueve, con su siguiente paso</span>${att.length ? html`<span class="hy-c">${att.length}</span>` : ''}</div>
           ${att.length ? att.slice(0, 12).map(itemHtml) : html`<div class="mut sm" style="padding:10px 0">Nada trabado ${ico('check', 14)}</div>`}
           ${att.length > 12 ? html`<span class="mut sm" style="padding-top:8px">y ${att.length - 12} más</span>` : ''}</section>
@@ -293,7 +302,7 @@ export async function render(el, { me, alive }) {
             ${agenda !== null && !meets.length ? html`<div class="mut sm" style="padding:6px 0">Sin reuniones por delante.</div>` : ''}</section>
           <section class="hy-box"><div class="hy-bh"><h2>Contenido del mes</h2><span>Publicadas de las planificadas</span></div>${contenido()}</section>
         </div>
-      </div>`);
+      </div>`)}`);
     updateWaits($$('[data-wait]', el), Date.now());
   }
   function contenido() {
@@ -349,7 +358,7 @@ export async function render(el, { me, alive }) {
   };
   // El tablero se pide una vez y se vuelve a pintar (sin pedir de nuevo) cada vez que la pantalla se rearma.
   let tabloHtml = null;
-  const pintaTablero = () => { const tb = $('#hoy-tablero', el); if (!tb) return; if (tabloHtml) { tb.replaceChildren(...tabloHtml); return; } pintarTablero(tb, { me }).then(() => { tabloHtml = [...tb.childNodes]; }).catch(() => {}); };
+  const pintaTablero = () => { const tb = $('#hoy-tablero', el); if (!tb) return; if (tabloHtml) { tb.replaceChildren(...tabloHtml); ajustarTablero(tb); return; } pintarTablero(tb, { me }).then(() => { tabloHtml = [...tb.childNodes]; }).catch(() => {}); };
   pintaTablero();
   api('decide').then((r) => { decideDatos = r; pintaDecide(); }).catch(() => { decideOculto = true; $('#hoy-decide', el)?.remove(); }); // sin permiso o sin red: Hoy sigue como siempre
   // Al repintar (llegan datos) se conserva lo que la persona ya escribió en la caja, y el foco si lo tenía.
@@ -384,5 +393,8 @@ export async function render(el, { me, alive }) {
     addTask: async () => { const { newTask } = await import('../create.js'); const t = await newTask({ team: people, me, projects, pre: { assignee: me.email } }); if (t) { tasks.push(t); paint(); } },
   });
   hookNotice(el, me, () => alive() && paint());
+  // La tira fina de avisos: «Ahora no» la quita al momento (hookNotice ya guardó la decisión).
+  el.addEventListener('click', (e) => { const x = e.target.closest?.('.hz-aviso-x'); if (!x) return; const tira = x.closest('.hz-avisos'); x.closest('.hz-aviso')?.remove(); if (tira && !tira.children.length) tira.remove(); });
+  el.addEventListener('toggle', (e) => { if (e.target.classList?.contains('hoy-mas')) masAbierto = e.target.open; }, true);
   paint();
 }
