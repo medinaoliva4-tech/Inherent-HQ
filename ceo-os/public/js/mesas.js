@@ -14,12 +14,12 @@ export const MESAS = {
   ] },
   production: { para: 'Entregar alta calidad, a tiempo y con margen.', numero: 'Costo y entrega por pieza', mesas: [
     M('jornada', 'Jornada', 'Brief, guion, shot list y calendario.', ['production-brief', 'script-storyboard-studio', 'shot-list-builder', 'production-planner']),
-    M('edicion', 'Edición', 'Avance, comentarios y aprobación.', ['post-production-workspace', 'review-approval-studio'], [['Costo y entrega por pieza', '#/areas/production/costo', 'ceo']]),
-    M('multiplicar', 'Multiplicar', 'Versiones por canal desde una misma pieza.', ['content-repurposing']),
+    M('edicion', 'Edición', 'Avance, comentarios y aprobación.', ['post-production-workspace', 'review-approval-studio'], [['Curva de retención de un video', '#/studio/retencion'], ['Costo y entrega por pieza', '#/areas/production/costo', 'ceo']]),
+    M('multiplicar', 'Multiplicar', 'Versiones por canal desde una misma pieza.', ['content-repurposing'], [['Mejores clips de una grabación', '#/studio/clips']]),
   ] },
   marketing: { para: 'Conseguir demanda rentable.', numero: 'Ventas o leads calificados por quetzal invertido', mesas: [
     M('radar', 'Radar', 'Competidores, anuncios y contenido en alza.', ['competitor-radar', 'viral-intelligence-lab', 'ads-intelligence'], [['Tres oportunidades del mes', '#/areas/marketing/radar']]),
-    M('campana', 'Campaña', 'Meta, canales, copy, pauta y landing.', ['campaign-architect', 'content-strategy-studio', 'content-calendar', 'copywriting-studio', 'hook-laboratory', 'funnel-builder']),
+    M('campana', 'Campaña', 'Meta, canales, copy, pauta y landing.', ['campaign-architect', 'content-strategy-studio', 'content-calendar', 'copywriting-studio', 'hook-laboratory', 'funnel-builder'], [['Ideación de contenido (de lo que funciona en tu nicho al shot list)', '#/studio/ideas']]),
     M('resultados', 'Resultados', 'Qué escalar y qué parar.', ['marketing-performance-center'], [['Qué escalar y qué parar', '#/areas/marketing/resultados']]),
   ] },
   consulting: { para: 'Que el crecimiento se cobre y se pueda sostener.', numero: 'Cierre, velocidad de respuesta y margen', mesas: [
