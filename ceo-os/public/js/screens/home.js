@@ -250,7 +250,7 @@ export async function render(el, { me, alive }) {
   }
   // «Más detalle» recuerda si quedó abierto entre repintados (llegan datos y la pantalla se rearma).
   let masAbierto = false;
-  const comun = (extra = '') => html`${ask()}${me.role === 'client' ? '' : html`<section class="hoy-tab" id="hoy-tablero" aria-label="Tablero"></section>`}<details class="hoy-mas" ${masAbierto ? raw('open') : ''}><summary>Más detalle</summary><section class="hoy-decide" id="hoy-decide" aria-label="Decide"></section>${extra}${kpis()}<div class="home-two">${actividad()}${importante()}</div></details>`;
+  const comun = (extra = '') => html`${ask()}${me.role === 'client' ? '' : html`<section class="hoy-tab" id="hoy-tablero" aria-label="Tablero"></section>`}<details class="hoy-mas" ${masAbierto ? raw('open') : ''}><summary>Más detalle<span class="hoy-salas-n" id="hoy-salas-n"></span></summary><section class="hoy-salas" id="hoy-salas" aria-label="Compromisos por decidir"></section><section class="hoy-decide" id="hoy-decide" aria-label="Decide"></section>${extra}${kpis()}<div class="home-two">${actividad()}${importante()}</div></details>`;
 
   // ---------- CEO · COO ----------
   // Lo que se traba si nadie lo mueve, con su botón; a la derecha, la agenda y el contenido del mes. Lo de cobrar y
@@ -360,13 +360,24 @@ export async function render(el, { me, alive }) {
   let tabloHtml = null;
   const pintaTablero = () => { const tb = $('#hoy-tablero', el); if (!tb) return; if (tabloHtml) { tb.replaceChildren(...tabloHtml); ajustarTablero(tb); return; } pintarTablero(tb, { me }).then(() => { tabloHtml = [...tb.childNodes]; }).catch(() => {}); };
   pintaTablero();
+  // Compromisos por decidir en las Salas de los clientes (lee la memoria de cada marca; sin permiso o sin red, no se muestra nada).
+  let salas = null;
+  const pintaSalas = () => {
+    const n = $('#hoy-salas-n', el), box = $('#hoy-salas', el); if (!n || !box) return;
+    const con = (salas || []).filter((x) => x.n), total = con.reduce((a, x) => a + x.n, 0);
+    n.textContent = total ? ` · ${total} compromiso${total === 1 ? '' : 's'} por decidir` : '';
+    box.replaceChildren(...con.map((x) => dh('a', { class: 'hoy-sala', href: `#/clients/${x.slug}/sala` }, dh('b', {}, String(x.n)), dh('span', {}, `por decidir en la Sala de ${x.nombre}`), dh('i', { 'aria-hidden': 'true' }, '›'))));
+  };
+  if (ceoish) cargarContexto(me).then(() => Promise.all(contextoLista().filter((c) => c.slug && c.slug !== 'personal').slice(0, 12).map((c) => api(`contexto/${encodeURIComponent(c.slug)}/memoria`)
+    .then((m) => ({ slug: c.slug, nombre: c.name || c.slug, n: (m.prometido || []).filter((x) => x.estado === 'hipotesis').length })).catch(() => null))))
+    .then((l) => { salas = l.filter(Boolean); pintaSalas(); }).catch(() => {});
   api('decide').then((r) => { decideDatos = r; pintaDecide(); }).catch(() => { decideOculto = true; $('#hoy-decide', el)?.remove(); }); // sin permiso o sin red: Hoy sigue como siempre
   // Al repintar (llegan datos) se conserva lo que la persona ya escribió en la caja, y el foco si lo tenía.
   const paint = () => {
     if (!alive()) return;
     const ta0 = $('#home-q', el), txt = ta0?.value || '', foco = ta0 && document.activeElement === ta0, pos = foco ? ta0.selectionStart : 0;
     (ceoish ? ceo : team)();
-    pintaDecide(); pintaTablero();
+    pintaDecide(); pintaTablero(); pintaSalas();
     if (!t1) t1 = performance.now();
     // Los números cuentan de 0 al valor la primera vez; lo que llega tarde (las notas fijadas) entra escalonado una vez.
     contarNumeros(el, contados);

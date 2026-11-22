@@ -5,9 +5,15 @@ import { api, toast } from './core.js';
 import { h } from './kit/dom.js';
 
 const INFO = {
-  telegram: { nombre: 'Telegram', ic: '✈', sub: 'El bot del OS: tus decisiones con botones', vincula: true },
-  whatsapp: { nombre: 'WhatsApp', ic: '✆', sub: 'Solo la API oficial de Meta (Cloud API)', vincula: true, nota: 'Solo responde dentro de las 24 h de tu último mensaje.' },
-  imessage: { nombre: 'iMessage', ic: '✉', sub: 'Sin API de servidor: necesita un puente en un Mac', vincula: false },
+  telegram: { nombre: 'Telegram', ic: '✈', sub: 'Tus decisiones, con botones', vincula: true },
+  whatsapp: { nombre: 'WhatsApp', ic: '✆', sub: 'Por la vía oficial de Meta', vincula: true },
+  imessage: { nombre: 'iMessage', ic: '✉', sub: 'Mensajes de Apple', vincula: false },
+};
+// El motivo en palabras de persona; el motivo técnico (variables del servidor) queda en «Detalle técnico», plegado.
+const HUMANO = {
+  telegram: { disconnected: 'Falta conectar el bot de Telegram.', needs_permission: 'El bot ya existe, pero faltan sus claves de seguridad.', ready: 'Listo: vincula tu cuenta y te llegan tus decisiones.' },
+  whatsapp: { disconnected: 'Falta conectar un número de WhatsApp Business (la vía oficial de Meta).', needs_permission: 'El número ya está, pero faltan sus claves de seguridad.', ready: 'Listo: solo contesta dentro de las 24 h de tu último mensaje.' },
+  imessage: { disconnected: 'Apple no tiene una vía oficial: haría falta un Mac encendido como puente.', needs_permission: 'Apple no tiene una vía oficial: haría falta un Mac encendido como puente.', ready: 'Listo.' },
 };
 const ESTADO = { ready: ['Listo', 'ok'], needs_permission: ['Falta un permiso', 'amb'], disconnected: ['Sin conectar', 'off'] };
 const LLEGA = [['si', 'Lo que espera por ti', 'Con «Aprobar» y «Pedir cambios», con las mismas reglas que la web'], ['si', '/hoy · /decide · /ayuda · /baja', 'Tus decisiones, ayuda y desvincular'],
@@ -38,13 +44,14 @@ export async function pintarCanales(box) {
     const i = INFO[c.id] || { nombre: c.id, ic: '•', sub: '' }, [et, tono] = ESTADO[c.estado] || [c.estado, 'off'];
     const acc = [];
     if (i.vincula && c.vinculado) acc.push(accion('Desvincular', async () => { await api('canales/desvincular', { method: 'POST', body: { canal: c.id } }); toast('Desvinculado'); codigo = null; await cargar(); }, 'ghost'));
-    else if (i.vincula) { const b = accion(`Vincular ${i.nombre}`, async () => { const r = await api('canales/vincular', { method: 'POST', body: { canal: c.id } }); codigo = { ...r, canal: c.id }; pintar(); }); if (c.estado === 'disconnected') { b.disabled = true; b.title = c.razon; } acc.push(b); }
+    else if (i.vincula) { const b = accion(`Vincular ${i.nombre}`, async () => { const r = await api('canales/vincular', { method: 'POST', body: { canal: c.id } }); codigo = { ...r, canal: c.id }; pintar(); }); if (c.estado === 'disconnected') { b.disabled = true; b.title = HUMANO[c.id]?.[c.estado] || c.razon; } acc.push(b); }
     return h('article', { class: `cn-c cn-t-${tono}${c.vinculado ? ' cn-vin' : ''}` },
       h('header', {}, h('span', { class: 'cn-ic', 'aria-hidden': 'true' }, i.ic), h('span', {}, h('b', {}, i.nombre), h('small', {}, i.sub)), h('span', { class: `cn-pill cn-pill-${tono}` }, h('i', {}), et)),
-      h('p', { class: 'cn-razon' }, c.estado === 'ready' ? (c.razon || 'Conectado y listo para vincular a personas.') : c.razon || 'Sin conectar.'),
+      h('p', { class: 'cn-razon' }, HUMANO[c.id]?.[c.estado] || (c.estado === 'ready' ? 'Listo.' : 'Sin conectar.')),
+      c.razon && c.estado !== 'ready' ? h('details', { class: 'cn-tec' }, h('summary', {}, 'Detalle técnico'), h('p', {}, c.razon)) : '',
       c.vinculado ? h('p', { class: 'cn-ok' }, '✓ Vinculado', c.desde ? ` desde ${String(c.desde).slice(0, 10)}` : '') : '',
       i.nota && c.estado !== 'disconnected' ? h('p', { class: 'cn-nota' }, i.nota) : '',
-      acc.length ? h('div', { class: 'cn-acc' }, ...acc) : h('p', { class: 'cn-nota' }, 'No se construye: no hay API oficial de servidor.'));
+      acc.length ? h('div', { class: 'cn-acc' }, ...acc) : h('p', { class: 'cn-nota' }, 'Por ahora no se conecta.'));
   }
 
   function pintar() {
