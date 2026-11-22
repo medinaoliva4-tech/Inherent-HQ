@@ -10928,3 +10928,5 @@ a.hz-f:active{transform:scale(.99)}
 .avi-t small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 @media (prefers-reduced-motion:reduce){.avs-t{transition:none}.avs-t:hover{transform:none}}
 @media (max-width:760px){.avs-sum{gap:6px}.avs-t{grid-template-columns:1fr;padding:10px}.avs-t-n{grid-row:auto;font-size:var(--fs-9)}.avs-t-l{font-size:var(--fs-3)}}
+/* Mi perfil: la inicial se lee sobre su fondo oscuro en los dos modos. */
+.profpic>span{color:var(--ui-dark-card-strong)}
