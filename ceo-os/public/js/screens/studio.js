@@ -3,6 +3,7 @@
 // (la curva de «quién sigue viendo», la emoción, y las caídas con su razón y qué hacer). Sin datos, no inventa: lo dice.
 import { api, skel, toast } from '../core.js';
 import { h } from '../kit/dom.js';
+import { cargarContexto, contextoLista, contextoActual } from '../contexto.js';
 
 export const esqueleto = () => skel('pagina');
 const NS = 'http://www.w3.org/2000/svg';
@@ -74,10 +75,57 @@ async function pestanaModelo(cuerpo, me) {
     h('p', { class: 'st-mut' }, `Muestras de retención real guardadas: ${m.muestras}. Hacen falta al menos 5; con más, mejora. ${puede ? '' : 'Solo el CEO o el COO calibran.'}`), btn, out));
 }
 
-const PESTANAS = [['retencion', 'Curva de retención'], ['clips', 'Mejores clips'], ['modelo', 'Modelo']];
+
+// ---- Ideación: lo que mejor funcionó en el nicho → el formato → alineado a ESTA marca → idea lista → «+ al shot list» ----
+const mesActual = () => new Date().toISOString().slice(0, 7);
+function tarjetaIdea(idea, slug, temporada) {
+  const e = JSON.parse(JSON.stringify(idea)), estado = h('p', { class: 'st-mut', role: 'status' });
+  const gancho = h('input', { class: 'st-in', value: e.gancho, 'aria-label': 'Gancho' });
+  gancho.addEventListener('input', () => { e.gancho = gancho.value; });
+  const escenas = e.guion.map((s, i) => {
+    const acc = h('textarea', { rows: 2, class: 'st-in', 'aria-label': `Escena ${i + 1}: acción` }), dia = h('input', { class: 'st-in', placeholder: 'Diálogo o texto en pantalla', 'aria-label': `Escena ${i + 1}: diálogo` });
+    acc.value = s.accion || ''; dia.value = s.dialogo || '';
+    acc.addEventListener('input', () => { e.guion[i].accion = acc.value; }); dia.addEventListener('input', () => { e.guion[i].dialogo = dia.value; });
+    return h('li', {}, h('b', {}, `${i + 1}. ${s.escena}${s.duracion_s ? ` · ${s.duracion_s} s` : ''}`), acc, dia);
+  });
+  const btn = h('button', { type: 'button', class: 'btn' }, `+ Al shot list de ${temporada}`);
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; estado.textContent = 'Agregando…';
+    try { const r = await api(`ideacion/${encodeURIComponent(slug)}/al-shotlist`, { method: 'POST', body: { idea: e, temporada } }); estado.textContent = r.agregadas ? `✓ Agregué ${r.agregadas} escena(s) al shot list de ${temporada}.` : 'Esta idea ya estaba en el shot list.'; toast(r.agregadas ? 'Agregada al shot list' : 'Ya estaba'); }
+    catch (x) { estado.textContent = x.message || 'No se pudo agregar'; btn.disabled = false; return; }
+    btn.disabled = false;
+  });
+  const chips = (xs) => h('div', { class: 'st-chips' }, xs.map((x) => h('span', { class: 'st-chip' }, x)));
+  return h('article', { class: 'st-card st-idea' },
+    h('p', { class: 'st-mut' }, `${e.formato?.nombre || 'Formato'}${e.pilar ? ` · pilar ${e.pilar}` : ''} · encaje ${e.puntos}/100`), gancho, h('p', { class: 'st-evi' }, e.evidencia),
+    e.adaptacion?.length ? h('div', {}, h('b', {}, 'Qué adaptar a tu marca'), h('ul', { class: 'st-ul' }, e.adaptacion.map((x) => h('li', {}, x)))) : '',
+    h('ol', { class: 'st-escenas' }, escenas),
+    e.gente?.length ? h('div', {}, h('b', {}, 'Quién sale'), h('ul', { class: 'st-ul' }, e.gente.map((g) => h('li', {}, `${g.rol}: ${g.perfil}`)))) : '',
+    e.props?.length ? h('div', {}, h('b', {}, 'Qué se necesita'), chips(e.props)) : '',
+    e.fuente?.url ? h('p', { class: 'st-mut' }, 'Fuente: ', h('a', { href: e.fuente.url, target: '_blank', rel: 'noopener noreferrer' }, e.fuente.handle ? `@${e.fuente.handle}` : e.fuente.url), e.fuente.red ? ` · ${e.fuente.red}` : '') : '',
+    h('div', { class: 'st-acciones' }, btn), estado);
+}
+async function pestanaIdeas(cuerpo, me) {
+  await cargarContexto(me).catch(() => null);
+  const marcas = contextoLista().filter((c) => c.slug && c.slug !== 'personal'), actual = contextoActual(me) || marcas[0]?.slug || '';
+  const sel = h('select', { class: 'st-in', 'aria-label': 'Marca' }, marcas.map((c) => h('option', { value: c.slug, selected: c.slug === actual }, c.name || c.slug)));
+  const mes = h('input', { class: 'st-in', value: mesActual(), pattern: '\\d{4}-\\d{2}', 'aria-label': 'Temporada (AAAA-MM)', size: 8 });
+  const salida = h('div', { class: 'st-sal', 'aria-live': 'polite' }), go = h('button', { type: 'button', class: 'btn' }, 'Generar ideas');
+  go.addEventListener('click', async () => {
+    if (!sel.value) { toast('Elige una marca', true); return; } go.disabled = true; salida.replaceChildren(h('p', { class: 'st-mut' }, 'Buscando lo que mejor funcionó en el nicho…'));
+    try {
+      const r = await api(`ideacion/${encodeURIComponent(sel.value)}/generar`, { method: 'POST', body: { temporada: mes.value, max: 6 } });
+      salida.replaceChildren(...(r.ideas.length ? [h('p', { class: 'st-mut' }, `${r.ideas.length} idea(s) de ${r.resumen?.posts ?? '—'} publicaciones del nicho. Edita lo que quieras y agrégalas al shot list.`), ...r.ideas.map((i) => tarjetaIdea(i, sel.value, mes.value))] : [h('p', { class: 'st-vacio' }, r.aviso || '⚠️ SIN DATOS · corre el radar')]));
+    } catch (e) { salida.replaceChildren(h('p', { class: 'st-err', role: 'alert' }, e.message || 'No se pudo generar')); } finally { go.disabled = false; }
+  });
+  cuerpo.replaceChildren(h('div', { class: 'st-form' }, h('p', { class: 'st-mut' }, 'Toma lo que mejor funcionó en el nicho (según el radar), saca su formato, lo alinea a lo que tu marca puede decir y te da la idea lista para grabar.'),
+    h('div', { class: 'st-fila' }, 'Marca ', sel, ' Temporada ', mes, go)), salida);
+}
+
+const PESTANAS = [['ideas', 'Ideación'], ['retencion', 'Curva de retención'], ['clips', 'Mejores clips'], ['modelo', 'Modelo']];
 export async function render(el, { me, rest = [] }) {
-  const cur = PESTANAS.some(([k]) => k === rest[0]) ? rest[0] : 'retencion', cuerpo = h('div', { class: 'st-cuerpo' });
+  const cur = PESTANAS.some(([k]) => k === rest[0]) ? rest[0] : 'ideas', cuerpo = h('div', { class: 'st-cuerpo' });
   el.replaceChildren(h('div', { class: 'st' }, h('header', { class: 'st-h' }, h('h1', {}, 'Studio'), h('p', {}, 'Para saber si un video retiene antes de grabarlo, y sacar los mejores momentos de lo que ya grabaste.')),
     h('nav', { class: 'st-tabs', role: 'tablist' }, PESTANAS.map(([k, n]) => h('a', { href: `#/studio/${k}`, role: 'tab', class: k === cur ? 'on' : '', 'aria-selected': String(k === cur) }, n))), cuerpo));
-  if (cur === 'retencion') pestanaRetencion(cuerpo); else if (cur === 'clips') pestanaClips(cuerpo); else await pestanaModelo(cuerpo, me);
+  if (cur === 'ideas') await pestanaIdeas(cuerpo, me); else if (cur === 'retencion') pestanaRetencion(cuerpo); else if (cur === 'clips') pestanaClips(cuerpo); else await pestanaModelo(cuerpo, me);
 }
