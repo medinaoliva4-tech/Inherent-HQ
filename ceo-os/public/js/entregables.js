@@ -90,9 +90,16 @@ export function faltas(doc, extra = {}) {
   return [...(Array.isArray(doc?.criterios?.falta) ? doc.criterios.falta : []), ...(Array.isArray(propias) ? propias : [])];
 }
 
+// El avance de rodaje (la escena pasa a «grabada») no es contenido: marcar escenas no devuelve a Borrador un shot list aprobado ni crea versión.
+// Solo se ignora `estado` dentro de `escenas`; cualquier otro campo (acción, plano, duración, lugar…) sí cuenta.
+export function sinAvance(c) {
+  if (!c || typeof c !== 'object' || !Array.isArray(c.escenas)) return c;
+  return { ...c, escenas: c.escenas.map((e) => { if (!e || typeof e !== 'object') return e; const { estado, ...resto } = e; return resto; }) };
+}
+
 // Cambiar el contenido: versión + 1; si estaba Aprobado o Entregado, vuelve a Borrador y pierde el OK. Sin cambio, nada.
 export function cambioDeContenido(cur, contenidoNuevo) {
-  if (canon(cur?.contenido) === canon(contenidoNuevo)) return { version: cur.version, estado: cur.estado, aprobado: cur.aprobado ?? null };
+  if (canon(sinAvance(cur?.contenido)) === canon(sinAvance(contenidoNuevo))) return { version: cur.version, estado: cur.estado, aprobado: cur.aprobado ?? null };
   const vuelve = cur.estado === 'Aprobado' || cur.estado === 'Entregado';
   return { version: (cur.version || 1) + 1, estado: vuelve ? 'Borrador' : cur.estado, aprobado: vuelve ? null : cur.aprobado ?? null };
 }

@@ -258,6 +258,16 @@ t('cambioDeContenido: un Aprobado editado sube la versión, vuelve a Borrador y 
   assert.deepEqual(E.cambioDeContenido({ ...cur, estado: 'Borrador', aprobado: null }, { a: 9 }), { version: 4, estado: 'Borrador', aprobado: null });
 });
 
+t('cambioDeContenido: marcar una escena «grabada» es avance, no contenido: un shot list aprobado sigue Aprobado; cualquier otro cambio sí lo devuelve a Borrador', () => {
+  const esc = (o = {}) => ({ id: 'PR-001', id_creativo: 'C-1', accion: 'Barista sirve', plano: 'medio', estado: 'pendiente', ...o });
+  const cur = { ...aprobadoDe(), contenido: { escenas: [esc(), esc({ id: 'PR-002' })] } };
+  const grabada = { escenas: [esc({ estado: 'grabada' }), esc({ id: 'PR-002' })] };
+  assert.deepEqual(E.cambioDeContenido(cur, grabada), { version: 3, estado: 'Aprobado', aprobado: cur.aprobado }, 'grabar no cambia versión ni estado ni el OK');
+  assert.deepEqual(E.cambioDeContenido(cur, { escenas: [esc({ estado: 'grabada', accion: 'Otra acción' }), esc({ id: 'PR-002' })] }), { version: 4, estado: 'Borrador', aprobado: null }, 'grabar + cambiar la acción sí es cambio');
+  assert.equal(E.cambioDeContenido(cur, { escenas: [esc()] }).version, 4, 'quitar una escena sí es cambio');
+  assert.deepEqual(E.sinAvance({ a: 1 }), { a: 1 }); assert.equal(E.sinAvance(null), null);
+});
+
 t('cambioDeContenido: sin cambio no sube la versión (ni con las llaves en otro orden, como las devuelve jsonb)', () => {
   const cur = aprobadoDe();
   assert.deepEqual(E.cambioDeContenido(cur, { a: 1, b: { c: 2 } }), { version: 3, estado: 'Aprobado', aprobado: cur.aprobado });
