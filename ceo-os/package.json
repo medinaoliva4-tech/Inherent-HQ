@@ -23,6 +23,7 @@
     "test:llm": "node scripts/test-llm.mjs",
     "test:areas": "node scripts/test-areas.mjs",
     "test:vision-auth-native": "node scripts/test-vision-auth-native.mjs",
+    "test:vision-workflow": "node scripts/test-vision-workflow.mjs",
     "test:vision-intent": "node scripts/test-vision-intent.mjs",
     "test:vision-decide": "node scripts/test-vision-decide.mjs",
     "test:vision-hilo": "node scripts/test-vision-hilo.mjs",
