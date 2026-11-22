@@ -186,6 +186,10 @@ Un agente = **modelo ideal para su trabajo + harness ideal + contexto de la Bibl
 3. **Probarlo contra un caso real** antes de activarlo, con su costo estimado.
 4. **Harness compartido (multi-jugador):** varias personas y agentes **trabajan en el mismo hilo** (presencia, relevos «te lo paso», quién tiene la pelota). *Ya lo hacemos por cliente; falta la presencia y el relevo.*
 
+### Suscripciones: «token maxx» sin romper las reglas
+- **Sí:** Claude Code y Codex **oficiales, sin cabeza** (`claude -p`, `codex exec`) en la compu de cada persona, con su propia suscripción, **medidos** por `code-os/cuotas/` y repartidos por el planificador al que tenga cupo. Es el uso legítimo de lo que ya pagan.
+- **No (hasta que lo confirmes expresamente):** un servidor que convierta las suscripciones en una API para los productos (CLIProxyAPI y similares): choca con la decisión del CEO del 10-nov y probablemente con los términos de los proveedores. Ver `DECISIONES-FABLE.md` · D12.
+
 ### MCPs usados mejor
 - **Un registro único** de conectores con **permiso por rol** (quién puede llamar qué).
 - **Carga bajo demanda:** el agente ve solo las herramientas del conector que la tarea necesita (menos tokens, menos errores).
