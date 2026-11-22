@@ -137,12 +137,16 @@ async function pestanaIdeas(cuerpo, me) {
     h('div', { class: 'st-fila' }, 'Marca ', sel, ' Temporada ', mes, go)), salida);
 }
 
-const PESTANAS = [['ideas', 'Ideación'], ['retencion', 'Curva de retención'], ['clips', 'Mejores clips'], ['modelo', 'Modelo']];
+const PESTANAS = [['ideas', 'Ideación'], ['retencion', 'Curva de retención'], ['clips', 'Mejores clips'], ['rodaje', 'Rodaje'], ['presentacion', 'Día 20'], ['modelo', 'Modelo']];
 export async function render(el, { me, sub: rest = [] }) {
   const cur = PESTANAS.some(([k]) => k === rest[0]) ? rest[0] : 'ideas', cuerpo = h('div', { class: 'st-cuerpo' });
   // Studio vive dentro de «Áreas» (Marketing y Producción): las migas lo dicen y llevan de vuelta.
   const migas = h('nav', { class: 'st-migas', 'aria-label': 'Migas' }, h('a', { href: '#/areas', class: 'st-migas-v' }, '← Áreas'), h('span', { 'aria-hidden': 'true' }, '/'), h('a', { href: '#/areas/marketing' }, 'Marketing'), h('span', { 'aria-hidden': 'true' }, '·'), h('a', { href: '#/areas/production' }, 'Producción'));
   el.replaceChildren(h('div', { class: `st st-v-${cur}` }, migas, h('header', { class: 'st-h' }, h('h1', {}, 'Studio'), h('p', {}, 'Para saber si un video retiene antes de grabarlo, y sacar los mejores momentos de lo que ya grabaste.')),
     h('nav', { class: 'st-tabs', role: 'tablist' }, PESTANAS.map(([k, n]) => h('a', { href: `#/studio/${k}`, role: 'tab', class: k === cur ? 'on' : '', 'aria-selected': String(k === cur) }, n))), cuerpo));
-  if (cur === 'ideas') await pestanaIdeas(cuerpo, me); else if (cur === 'retencion') pestanaRetencion(cuerpo); else if (cur === 'clips') pestanaClips(cuerpo); else await pestanaModelo(cuerpo, me);
+  el.querySelector('.st-tabs .on')?.scrollIntoView?.({ inline: 'center', block: 'nearest' }); // en el teléfono, la pestaña abierta a la vista
+  if (cur === 'ideas') await pestanaIdeas(cuerpo, me); else if (cur === 'retencion') pestanaRetencion(cuerpo); else if (cur === 'clips') pestanaClips(cuerpo);
+  else if (cur === 'rodaje') await (await import('../rodaje-ui.js')).pintarRodaje(cuerpo, { me });
+  else if (cur === 'presentacion') await (await import('../presentacion-ui.js')).pintarPresentacion(cuerpo, { me });
+  else await pestanaModelo(cuerpo, me);
 }
