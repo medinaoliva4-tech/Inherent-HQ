@@ -1008,3 +1008,21 @@ Prueba de navegador con dictado/audio/proveedor simulados; falta micrófono, son
 - Las rutas de `/api/entregables` no se prueban contra una base: `test:herramientas` y `test:strategy` revisan su código como texto y el resto se prueba a mano con `npm run dev`.
 - `npm test` corre el parser del manual y revisa que las dos copias del puente sean iguales; las demás pruebas se corren una por una.
 - El manual de economía de hoy no trae costos por plan: `parseEconomia` devuelve los rubros, las herramientas, el piso y el tipo de cambio, y `plans` vacío.
+
+## 10 · La visión (Decide, hilo, workflows, aprobación por enlace, app de Apple)
+
+> Lo que se construyó para `docs/OS-IDEAL-MAC-IPHONE.md`. El estado vivo y lo que falta: `docs/PROGRESO-VISION.md`.
+
+| Pieza | Dónde vive | Qué hace | Prueba |
+|---|---|---|---|
+| El ciclo 1→20 | `public/js/ciclo.js` (puro) | Día, fase, foco, próximo hito (11 y 20 firmes), huso de Guatemala | `test:vision-decide` |
+| Decide | `public/js/decide.js` (puro), `api/_lib/decide.js`, `public/js/screens/decide.js`, bloque en `screens/home.js` | Lo que solo tú decides, ordenado por el reloj; aprobar/pedir cambios por `POST /api/entregables/:id/estado` (con versión), escalar por `POST /api/decide/:id/escalar` | `test:vision-decide` |
+| El hilo del cliente | `public/js/hilo.js` (puro), ruta `GET /api/hilo` en `api/_lib/entregables.js` | Vista de los entregables: nodos, aristas «viene de», revisión de descendientes, traza al ICP | `test:vision-hilo` |
+| Intent-to-Interface | `public/js/llm/intent.js` | Entiende la intención, elige del catálogo cerrado (genui + acciones-os), cierra con una acción, valida lo de afuera; `PROMPT_INTENT` en el Chat | `test:vision-intent` |
+| Motor de workflows | `api/_lib/workflow.js` (motor), `api/_lib/workflow-rutas.js` (rutas y adaptadores) | Corridas durables con leases, idempotencia, aprobación sobre hash, cumplimiento, límites, bitácora sin secretos, outbox. **Adaptadores externos: «sin conexión»** | `test:vision-workflow` |
+| Aprobación del cliente | `api/_lib/portal-aprobaciones.js`, `public/aprobar.html`, `public/js/aprobar.js` | Enlace de un solo uso (token solo como hash, en `#t`), lista permitida, caduca/revoca | `test:vision-portal` |
+| Login de la app | `api/_lib/auth-native.js`, `public/js/login-nativo.js`, rutas `auth/google?native=1` y `POST auth/native/exchange` en `api/index.js` | Google fuera de la web embebida: código de un uso + PKCE | `test:vision-auth-native` |
+| La app de Apple | `../ios/` (Capacitor 8) | Cápsula que carga el OS por https; `npm run ios:instalar`; guía `ios/LEEME.md` | `cd ../ios && npm test` |
+| Barra de 5 puertas | `celHtml()` en `public/js/app.js` + bloque `max-width:760px` de `app.css` | Hoy · Decide · Chat · Calendario · Más (D10 en `docs/DECISIONES-FABLE.md`) | `scripts/test-rutas-vision.mjs` (con `npm run dev`) |
+
+Colecciones nuevas (solo por su ruta, nunca por `/api/db`): `wf_defs`, `wf_runs`, `wf_events`, `wf_limits`, `portal_links`, `native_codes`.
