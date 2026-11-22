@@ -85,8 +85,6 @@
 	<string>Inherent guarda en tus fotos lo que captures si así lo pides.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Inherent usa el micrófono para dictar mensajes y grabar audio de rodaje.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Inherent usa Face ID para confirmar decisiones sensibles, como aprobar presupuesto de pauta.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

@@ -15,7 +15,7 @@ t('carga el OS por https y solo navega a su propio dominio (Google NO va dentro 
 t('el identificador y el nombre', () => { assert.equal(cfg.appId, 'global.inherent.os'); assert.equal(cfg.appName, 'Inherent'); assert.match(leer('ios/App/App.xcodeproj/project.pbxproj'), /PRODUCT_BUNDLE_IDENTIFIER = global\.inherent\.os;/); });
 t('el esquema inherent:// está registrado (es por donde vuelve el login)', () => { assert.match(plist, /<key>CFBundleURLSchemes<\/key>\s*<array>\s*<string>inherent<\/string>/); });
 t('cada permiso que usa un plugin dice para qué, en español', () => {
-  for (const k of ['NSCameraUsageDescription', 'NSPhotoLibraryUsageDescription', 'NSMicrophoneUsageDescription', 'NSFaceIDUsageDescription']) assert.match(plist, new RegExp(`<key>${k}</key>\\s*<string>[^<]{30,}</string>`), k);
+  for (const k of ['NSCameraUsageDescription', 'NSPhotoLibraryUsageDescription', 'NSMicrophoneUsageDescription']) assert.match(plist, new RegExp(`<key>${k}</key>\\s*<string>[^<]{30,}</string>`), k);
 });
 t('las dependencias están fijadas (sin ^ ni ~): lo que se probó es lo que se instala', () => {
   for (const [k, v] of Object.entries({ ...pkg.dependencies, ...pkg.devDependencies })) assert.match(v, /^\d+\.\d+\.\d+$/, `${k}@${v}`);

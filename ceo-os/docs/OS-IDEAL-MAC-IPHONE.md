@@ -1,5 +1,7 @@
 # Inherent OS · la versión ideal para Mac y iPhone
 
+> **Decisión del CEO (22-nov): fuera Face ID, Touch ID y passkeys.** Donde este documento diga «con Face ID» o «Touch ID», léase **«con un toque, sobre la versión que leíste»**: así ya funciona Decide. La seguridad sigue en el servidor (sesión, rol, ficha y versión). El login de la app sigue por el navegador del sistema.
+>
 > **Dos partes.** **Parte I (§ 0–9):** cómo se vive el OS en Mac y iPhone, área por área.
 > **Parte II (§ 10–18):** la visión de producto del CEO: cómo piensa la IA, con qué librerías se
 > construye, las 4 capas, los 8 departamentos con sus 34 herramientas y cómo debe sentirse.

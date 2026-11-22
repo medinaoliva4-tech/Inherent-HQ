@@ -38,7 +38,7 @@ Los adaptadores `zernio-publicar` y `meta-pauta` del motor de workflows dicen **
 ## Lo que NO se hizo (sigue pendiente, en este orden de valor)
 
 1. **Las 34 herramientas y los 8 departamentos × 4 capas** (T1–T7, D1). Empezar por la cadena P0 con el kit de 12 componentes. Es el grueso del trabajo que falta.
-2. **Passkeys (Face ID) para aprobar** y **notificaciones con botón «Aprobar»** (estas necesitan la cuenta de US$99).
+2. ~~Passkeys (Face ID) para aprobar~~ **— quitado por decisión del CEO (22-nov).** Queda **notificaciones con botón «Aprobar»** (necesita la cuenta de US$99).
 3. **Workflow Builder** (la pantalla) y agendar el motor (hoy se avanza por ruta; falta un cron).
 4. **`⌘K` con acciones**, lienzo del hilo, presentación del día 20, **modo rodaje**, **bandeja de Community con el anillo de 60 s**, **Finanzas/capacidad**, **mensajes mínimos y modo concentración** (Olas 3, 4, 7, 8).
 5. **Voz con contexto**, **refactor para gastar menos** (`app.css` de 10 mil líneas) y el **video explicativo**.

@@ -35,6 +35,6 @@ Si no vuelve solo: cierra la ventana del navegador y repite.
 
 ## Para quien la mantiene (no hace falta para instalar)
 - `capacitor.config.json` apunta a **https://inherent-work.vercel.app** (`server.url`). Para probar contra otra URL, cámbiala y corre `npx cap sync ios`.
-- Los puentes nativos que ya trae: **Face ID** *(se activa en la Ola 1)*, **haptics, cámara, compartir, notificaciones locales, navegador del sistema**. Se usan desde la web con `Capacitor.Plugins.*` (ver `ceo-os/public/js/login-nativo.js`).
+- Los puentes nativos que ya trae: **haptics, cámara, compartir, notificaciones locales, navegador del sistema**. Se usan desde la web con `Capacitor.Plugins.*` (ver `ceo-os/public/js/login-nativo.js`).
 - **No verificado desde Linux:** la compilación en Xcode, la firma, el login completo en un iPhone y Face ID físico. Todo lo demás (config, permisos, login con código y PKCE) tiene pruebas: `npm test` aquí y `npm run test:vision-auth-native` en `ceo-os/`.
 - Para widgets, Live Activities, push de Apple y TestFlight hace falta la **cuenta de desarrollador (US$99/año)**.
