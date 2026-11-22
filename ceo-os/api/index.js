@@ -1193,6 +1193,8 @@ agentesBanco.rutas(on);
 ideacion.rutas(on);
 contextoVivo.rutas(on);
 canales.rutas(on);
+// El gateway del Chat entra a los canales por inyección. `transcribir` queda sin conectar a propósito: el servidor no tiene voz→texto; sin él el bot lo dice.
+canales.configurar({ responder: (texto, u) => chat.responderPorCanal(texto, u) });
 leadEngine.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);

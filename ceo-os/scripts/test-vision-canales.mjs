@@ -182,6 +182,7 @@ await test('webhook de Telegram: sin secreto o con otro, 401 sin cuerpo; con el 
   assert.equal(sent.length, 0); assert.equal((await hook(tgUpdate(COO, '/ayuda'))).status, 200);
 });
 await test('texto libre y voz: sin gateway ni transcripción responden honesto y lo registran; con ellos, pasan por responder()', async () => {
+  C.configurar({ responder: null, transcribir: null }); // api/index.js ya conectó el Chat real; aquí se prueba el caso «sin conexión»
   await decir(COO, 'hola, ¿cómo vamos?'); assert.equal(aChat(COO)[0].texto, 'El chat aún no está conectado a este canal.'); assert.ok(logs.some((l) => l.evt === 'canal_sin_chat'));
   limpiar(); await hook({ message: { from: { id: COO }, chat: { id: COO, type: 'private' }, voice: { file_id: 'F' } } }); assert.match(aChat(COO)[0].texto, /notas de voz/);
   const vistos = []; C.configurar({ responder: async (t, u) => { vistos.push([t, u.email]); return 'Todo bien *_[x]'; }, transcribir: async () => 'dime el estado' });
