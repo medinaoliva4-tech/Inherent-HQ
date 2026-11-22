@@ -10307,3 +10307,9 @@ html::before,html::after{display:none}
 @media(max-width:760px){.dec{padding:16px 16px 120px}.dec-h h1{font-size:var(--fs-9)}.dec-card .kit-actions .kit-button{flex:1 1 100%;min-height:44px}}
 .dec-faltas{margin:12px 0 0;color:var(--ui-ink2);font-size:var(--fs-4)}.dec-faltas p{margin:0 0 6px}.dec-faltas summary{cursor:pointer;color:var(--ui-mut)}.dec-faltas ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
 .dec-card .kit-status{min-height:0;margin:0}.dec-card .kit-actions{margin:14px 0 0}
+
+/* ---------- Hoy · Decide: la franja del ciclo y hasta 3 decisiones ---------- */
+.hoy-decide{display:grid;gap:12px;margin:0 0 20px}.hoy-decide:empty{display:none}
+.hoy-decide-l{display:grid;gap:8px}.hoy-decide-i{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:10px 14px;border:1px solid var(--ui-line);border-radius:var(--r-3);background:var(--ui-surf);color:var(--ui-ink);text-decoration:none}
+.hoy-decide-i:hover{background:var(--ui-fill)}.hoy-decide-t{display:grid;gap:2px;min-width:0}.hoy-decide-t b{font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hoy-decide-t small{color:var(--ui-mut);font-size:var(--fs-3)}
+.hoy-decide-m{margin:0;color:var(--ui-mut);font-size:var(--fs-4)}

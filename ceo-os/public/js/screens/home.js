@@ -23,6 +23,9 @@ import { cargarContexto, contextoLista, contextoActual } from '../contexto.js';
 import { abrirEnChat } from '../areas.js';
 import { leerNota, ordenar, TIPO_ICONO, TIPO_NOMBRE } from '../areas-notas.js';
 import { SUGERENCIAS, modoDe } from '../llm/modos.js';
+import { franja } from './decide.js';
+import { seleccion, VACIO } from '../decide.js';
+import { h as dh } from '../kit/dom.js';
 import { anillo, proporcion, sparkline, cuenta, cuentaChip, monograma, monogramas, cuadrito, vacio, numero, contarNumeros } from '../visual.js';
 
 // La forma de Home mientras cargan los datos: el mismo hero, la caja de «Ask», 4 tiles y las dos columnas (cero salto de layout).
@@ -236,7 +239,7 @@ export async function render(el, { me, alive }) {
       : lista.length ? html`<div class="home-imp-grid">${lista.map(card)}</div>`
       : html`<div class="home-imp-vacio">${vacio({ icono: 'star', titulo: 'Aún no hay nada fijado', linea: 'Fija lo importante desde cada área y sale aquí.', compacto: true })}<div class="home-imp-links">${ws.map((w) => html`<a class="home-imp-ws" href="#/areas/${w.id}" style="--ac:var(${w.color})">${ico(w.icono, 14)}${w.nombre}</a>`)}</div></div>`}</section>`;
   }
-  const comun = () => html`${ask()}${kpis()}<div class="home-two">${actividad()}${importante()}</div>`;
+  const comun = () => html`${ask()}<section class="hoy-decide" id="hoy-decide" aria-label="Decide"></section>${kpis()}<div class="home-two">${actividad()}${importante()}</div>`;
 
   // ---------- CEO · COO ----------
   // Lo que se traba si nadie lo mueve, con su botón; a la derecha, la agenda y el contenido del mes. Lo de cobrar y
@@ -334,11 +337,22 @@ export async function render(el, { me, alive }) {
 
   // La caja de «Ask» crece con el texto (hasta ~6 líneas).
   const auto = (ta) => { if (!ta) return; ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 180) + 'px'; };
+  // ---------- Decide: la franja del ciclo y hasta 3 decisiones (las toma #/decide; aquí solo se ven y se abre la pantalla) ----------
+  let decideDatos = null, decideOculto = false;
+  const pintaDecide = () => {
+    const box = $('#hoy-decide', el); if (!box || decideOculto) return;
+    const s = decideDatos ? seleccion(decideDatos.items, { movil: false }) : null;
+    box.replaceChildren(...[franja(), ...(!s ? [] : s.visibles.length ? [dh('div', { class: 'hoy-decide-l' }, s.visibles.map((x) => dh('a', { class: 'hoy-decide-i', href: '#/decide' },
+      dh('span', { class: 'hoy-decide-t' }, dh('b', {}, x.titulo), dh('small', {}, [x.client_slug, x.prioridad?.razon].filter(Boolean).join(' · '))), dh('span', { class: 'btn' }, 'Decidir')))),
+      s.resto ? dh('p', { class: 'hoy-decide-m' }, `Y ${s.resto} más en Decide.`) : null] : [dh('p', { class: 'hoy-decide-m' }, VACIO)])].filter(Boolean)); // sin nulos: replaceChildren los escribe como texto
+  };
+  api('decide').then((r) => { decideDatos = r; pintaDecide(); }).catch(() => { decideOculto = true; $('#hoy-decide', el)?.remove(); }); // sin permiso o sin red: Hoy sigue como siempre
   // Al repintar (llegan datos) se conserva lo que la persona ya escribió en la caja, y el foco si lo tenía.
   const paint = () => {
     if (!alive()) return;
     const ta0 = $('#home-q', el), txt = ta0?.value || '', foco = ta0 && document.activeElement === ta0, pos = foco ? ta0.selectionStart : 0;
     (ceoish ? ceo : team)();
+    pintaDecide();
     if (!t1) t1 = performance.now();
     // Los números cuentan de 0 al valor la primera vez; lo que llega tarde (las notas fijadas) entra escalonado una vez.
     contarNumeros(el, contados);
