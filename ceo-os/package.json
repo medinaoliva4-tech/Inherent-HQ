@@ -34,6 +34,7 @@
     "test:vision-canales": "node scripts/test-vision-canales.mjs && node scripts/test-vision-canales-chat.mjs",
     "test:vision-lead-engine": "node scripts/test-vision-lead-engine.mjs",
     "test:vision-intent": "node scripts/test-vision-intent.mjs",
+    "test:vision-tick": "node scripts/test-vision-tick.mjs",
     "test:vision-decide": "node scripts/test-vision-decide.mjs",
     "test:vision-hilo": "node scripts/test-vision-hilo.mjs",
     "test:ui": "node scripts/test-ui.mjs",
