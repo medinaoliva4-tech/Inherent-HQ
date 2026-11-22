@@ -7,9 +7,17 @@ import { PROVEEDORES, USOS, proveedorDe, logoDe } from '../ia-proveedores.js';
 import { fallo } from '../visual.js';
 
 export const esqueleto = () => skel('pagina');
+// Las pestañas de Ajustes: IA del OS · Canales de mensajería · Conexiones (MCP).
+const navAj = (on) => html`<nav class="tabs" data-iai><a href="#/ajustes/ia" ${on === 'ia' ? raw('aria-current="page"') : ''}>${ico('sparkles', 14)} IA</a><a href="#/ajustes/canales" ${on === 'canales' ? raw('aria-current="page"') : ''}>${ico('chat-ia', 14)} Canales</a><a href="#/ai/mcps">${ico('puzzle', 14)} Conexiones (MCP)</a></nav>`;
 const logo = (id, cls = '') => html`<span class="aj-logo ${cls}"><img src="${logoDe(id)}" alt="" loading="lazy"></span>`;
 
-export async function render(el, { me, alive }) {
+export async function render(el, { me, alive, sub = [] }) {
+  // Ajustes › Canales: Telegram, WhatsApp e iMessage (canales-ui.js). Mismo encabezado y pestañas.
+  if (sub[0] === 'canales') {
+    mount(el, html`<div class="aj"><div class="aj-hero"><span class="lbl">Ajustes</span><h1>Canales</h1><p class="mut">Habla con el OS y resuelve tus decisiones desde el teléfono. Aquí ves qué está conectado de verdad.</p></div>${navAj('canales')}<div id="aj-canales"></div></div>`);
+    const { pintarCanales } = await import('../canales-ui.js');
+    return pintarCanales(el.querySelector('#aj-canales'));
+  }
   mount(el, skel('pagina'));
   let est;
   try { est = await api('ia/estado'); } catch (e) { return mount(el, html`${fallo({ titulo: 'No pude abrir Ajustes', linea: e.message })}`); }
@@ -48,7 +56,7 @@ export async function render(el, { me, alive }) {
 
   const pinta = () => mount(el, html`<div class="aj">
     <div class="aj-hero"><span class="lbl">Ajustes</span><h1>IA del OS</h1><p class="mut">Conecta las IAs que usa el equipo. ${ed ? 'Pega una llave y listo: no hay que instalar nada.' : 'Las conectan el CEO o el COO; aquí ves cuáles están listas.'}</p></div>
-    <nav class="tabs" data-iai><a href="#/ajustes/ia" aria-current="page">${ico('sparkles', 14)} IA</a><a href="#/ai/mcps">${ico('puzzle', 14)} Conexiones (MCP)</a></nav>
+    ${navAj('ia')}
     ${pasos()}
     <div class="hy-bh iai-sec"><h2>Para qué se usa</h2><span>Cada parte del OS usa la IA que elijas</span></div>
     <div class="aj-usos">${USOS.map(usoCard)}</div>

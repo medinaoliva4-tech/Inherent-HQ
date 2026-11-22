@@ -10733,3 +10733,46 @@ a.hz-f:active{transform:scale(.99)}
 .sl-esq{height:64px;border-radius:var(--r-4);background:var(--ui-fill);animation:pulse 1.4s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.sl-c,.sl-i{animation:none}.sl-esq{animation:none}.sl-cat,.sl-seg button{transition:none}}
 @media (max-width:860px){.sl{grid-template-columns:minmax(0,1fr)}.sl>*{min-width:0}.sl-m{order:-1}.sl-seg button{padding:6px 4px;font-size:var(--fs-2)}.sl-in-d{width:136px}.sl-p{position:static}.sl-lista{max-height:none}.sl-barra{flex-wrap:wrap}.sl-cat{min-width:calc(33% - 4px)}.sl-kpis{grid-template-columns:1fr 1fr}.sl-kpi:first-child{grid-column:1/3}}
+
+/* ---- Ajustes › Canales (canales-ui.js): estado real por canal, código de un solo uso y qué llega por ahí ---- */
+.cn{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:16px;align-items:start;margin-top:12px}
+.cn-main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cn-cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cn-c{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:var(--r-5);background:var(--ui-surf);box-shadow:var(--ui-edge),var(--ui-sh-1);transition:transform .2s,box-shadow .2s}
+.cn-c:hover{transform:translateY(-2px);box-shadow:var(--ui-edge),var(--ui-sh-2)}
+.cn-c>header{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.cn-c>header>span:nth-child(2){display:flex;flex-direction:column}.cn-c b{font-size:var(--fs-6)}.cn-c small{color:var(--ui-mut);font-size:var(--fs-3)}
+.cn-ic{display:grid;place-items:center;width:44px;height:44px;border-radius:var(--r-4);background:var(--ui-fill2);font-size:var(--fs-9);color:var(--ui-ink2)}
+.cn-t-ok .cn-ic{background:var(--ui-ok-bg);color:var(--ui-ok-t)}
+.cn-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:var(--r-pill);font-size:var(--fs-3);font-weight:600;background:var(--ui-fill2);color:var(--ui-ink2)}.cn-pill i{width:7px;height:7px;border-radius:50%;background:var(--ui-line2)}
+.cn-pill-ok{background:var(--ui-ok-bg);color:var(--ui-ok-t)}.cn-pill-ok i{background:var(--ui-ok)}.cn-pill-amb{background:var(--ui-amb-bg);color:var(--ui-amb-t)}.cn-pill-amb i{background:var(--ui-amb-f)}
+.cn-razon{margin:0;color:var(--ui-ink2);font-size:var(--fs-4);line-height:1.45;flex:1}
+.cn-ok{margin:0;color:var(--ui-ok-t);font-size:var(--fs-4);font-weight:600}
+.cn-nota{margin:0;color:var(--ui-mut);font-size:var(--fs-3)}
+.cn-acc .btn{width:100%}
+.cn-cod{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r-5);background:var(--ui-dark-card);color:var(--ui-dark-card-text);box-shadow:var(--ui-sh-3);animation:rv-panel .25s ease-out}
+.cn-cod>div{flex:1;display:flex;flex-direction:column;gap:2px}.cn-cod small{color:var(--ui-dark-card-muted);font-size:var(--fs-3)}
+.cn-cod-t{font-size:var(--fs-9);font-weight:650;letter-spacing:.04em;color:var(--ui-dark-card-strong);font-variant-numeric:tabular-nums}
+.cn-cod .btn{background:var(--ui-dark-card-alt);color:var(--ui-dark-card-strong)}
+.cn-reloj{width:52px;height:52px;flex:none}.cn-r-f{fill:none;stroke:var(--ui-dark-card-alt);stroke-width:4}.cn-r-v{fill:none;stroke:var(--ui-dark-card-strong);stroke-width:4;stroke-linecap:round;transition:stroke-dasharray 1s linear}
+.cn-reglas{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:var(--r-5);background:var(--ui-surf);box-shadow:var(--ui-edge),var(--ui-sh-1)}
+.cn-reglas>header b{font-size:var(--fs-6)}
+.cn-flujo{display:flex;align-items:center;gap:6px}.cn-paso{flex:1;display:flex;flex-direction:column;padding:8px 10px;border-radius:var(--r-3);background:var(--ui-fill)}.cn-paso b{font-size:var(--fs-4)}.cn-paso small{color:var(--ui-mut);font-size:var(--fs-2)}.cn-fl{font-style:normal;color:var(--ui-mut)}
+.cn-reglas ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.cn-reglas li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:var(--r-3);background:var(--ui-fill)}.cn-reglas li>span{display:flex;flex-direction:column}.cn-reglas li b{font-size:var(--fs-4)}.cn-reglas li small{color:var(--ui-mut);font-size:var(--fs-3)}
+.cn-reglas li>i{display:grid;place-items:center;flex:none;width:22px;height:22px;border-radius:50%;font-style:normal;font-size:var(--fs-3);font-weight:700}
+.cn-r-si>i{background:var(--ui-ok-bg);color:var(--ui-ok-t)}.cn-r-no>i{background:var(--ui-bad-bg);color:var(--ui-bad-t)}
+.cn-vacio{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;border:1px dashed var(--ui-line2);border-radius:var(--r-4)}.cn-vacio p{margin:0;color:var(--ui-mut)}
+.cn-esq{height:220px;border-radius:var(--r-5);background:var(--ui-fill);animation:pulse 1.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.cn-c{transition:none}.cn-c:hover{transform:none}.cn-cod{animation:none}.cn-esq{animation:none}.cn-r-v{transition:none}}
+@media (max-width:980px){.cn{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){.cn-cs{grid-template-columns:1fr}.cn-c>header{flex-direction:row;align-items:center}.cn-c>header>span:nth-child(2){flex:1}.cn-cod-t{font-size:var(--fs-7)}}
+.cn .cn-c .cn-acc .btn:disabled{background:var(--ui-fill2);color:var(--ui-mut);box-shadow:none;cursor:not-allowed;pointer-events:auto}
+@media (max-width:760px){.cn-cod{gap:10px;padding:12px}.cn-cod .cn-cod-t{white-space:nowrap;font-size:var(--fs-6);letter-spacing:.02em}.cn-reloj{width:40px;height:40px}}
+
+/* ---- Pasada de producto: botones coherentes en todo el OS ---- */
+/* Un botón deshabilitado se ve deshabilitado también en claro (la regla de tema lo pintaba negro). */
+:root[data-theme="light"] .btn:not(.ghost):disabled,:root[data-theme="light"] .btn:not(.ghost)[disabled]{background:var(--ui-fill2);color:var(--ui-mut);box-shadow:none;cursor:not-allowed}
+.btn:disabled{cursor:not-allowed}
+/* «btn-s» (secundario) no tenía estilo propio: se veía como el primario. Ahora es el secundario de vidrio, igual en claro y oscuro. */
+.btn.btn-s,:root[data-theme="light"] .btn.btn-s{background:var(--ui-fill2);color:var(--ui-ink);border-color:transparent;box-shadow:none}
+.btn.btn-s:hover,:root[data-theme="light"] .btn.btn-s:hover{background:var(--ui-line2)}
