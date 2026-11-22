@@ -26,7 +26,7 @@ export async function render(el, { me, alive }) {
   };
   const fila = (v) => html`<article class="avi" data-u="${v.urgencia}" data-clave="${v.clave}">
     <span class="avi-dot" title="${URG[v.urgencia]}"></span>
-    <div class="avi-t"><b>${v.titulo}${v.vivo?.desde ? html` <span class="avi-reloj" data-wait="${v.vivo.desde}"></span>` : ''}</b>${v.detalle ? html`<small>${v.detalle}</small>` : ''}${v.cliente ? html`<span class="avi-cli">${v.clienteNombre || v.cliente}</span>` : ''}</div>
+    <div class="avi-t"><b>${v.titulo}${v.vivo?.desde ? html` <span class="avi-reloj" data-wait="${v.vivo.desde}"></span>` : ''}</b>${v.detalle ? html`<small title="${v.detalle}">${v.detalle}</small>` : ''}${v.cliente ? html`<span class="avi-cli">${v.clienteNombre || v.cliente}</span>` : ''}</div>
     <div class="avi-ops">${boton(v.accion, '', 'a')}${boton(v.accion2, 'ghost', 'b')}${v.fijo ? '' : html`<button type="button" class="btn ghost avi-pos" data-av="pos" aria-haspopup="menu" title="Posponer">${ico('clock', 14)}<span>Después</span></button>`}</div></article>`;
   const pintar = () => {
     const xs = todos(), n = cuentaDe(x), pos = x.r?.pospuestos || [];
@@ -34,6 +34,9 @@ export async function render(el, { me, alive }) {
     mount(el, html`<div class="avs">
       <header class="avs-h"><div><h1>Avisos</h1><p>${n ? html`<b>${n}</b> ${n === 1 ? 'pide' : 'piden'} atención.` : 'Nada urgente por ahora.'} Lo que falta en tu trabajo, en cada cliente y en la plataforma.</p></div>
         <button type="button" class="btn ghost" data-av="revisar">${ico('redo', 14)} Revisar otra vez</button></header>
+      <div class="avs-sum" role="list" aria-label="Resumen de avisos">${GRUPOS.map(([g, nombre]) => { const ys = xs.filter((v) => v.grupo === g), u = (k) => ys.filter((v) => v.urgencia === k).length;
+        return html`<button type="button" class="avs-t" data-av="ir" data-g="${g}" role="listitem" aria-label="${nombre}: ${ys.length}"><span class="avs-t-n">${ys.length}</span><span class="avs-t-l">${nombre}</span>
+          <span class="avs-t-b" aria-hidden="true">${ys.length ? ['alta', 'media', 'baja'].map((k) => (u(k) ? html`<i class="avs-u-${k}" style="flex:${u(k)}"></i>` : '')) : html`<i class="avs-u-ok" style="flex:1"></i>`}</span></button>`; })}</div>
       ${x.r?.error ? html`<div class="avi-err">${ico('alert', 14)} No pude leer los avisos del servidor: ${x.r.error}</div>` : ''}
       ${GRUPOS.map(([g, nombre]) => { const ys = xs.filter((v) => v.grupo === g); return html`<section class="avs-g" data-g="${g}"><h2>${nombre}${ys.length ? html` <span class="avs-n">${ys.length}</span>` : ''}</h2>
         ${ys.length ? html`<div class="avs-l">${ys.map(fila)}</div>` : html`<p class="avs-vacio">${ico('check', 14)} ${g === 'trabajo' ? 'Tu trabajo está al día.' : g === 'clientes' ? 'Ningún cliente tiene algo pendiente que veas tú.' : 'Todo conectado.'}</p>`}</section>`; })}
@@ -83,6 +86,7 @@ export async function render(el, { me, alive }) {
     const b = e.target.closest('[data-av]'); if (!b) return;
     const k = b.dataset.av, card = b.closest('[data-clave]'), v = card && [...todos(), ...(x.r?.pospuestos || [])].find((y) => y.clave === card.dataset.clave);
     if (k === 'revisar') return recargar();
+    if (k === 'ir') { el.querySelector(`.avs-g[data-g="${b.dataset.g}"]`)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); return; }
     if (k === 'ver-pos') { verPos = !verPos; return pintar(); }
     if (!v) return;
     if (k === 'a' || k === 'b') return hacer(k === 'a' ? v.accion : v.accion2);
