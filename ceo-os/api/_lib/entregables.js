@@ -355,3 +355,6 @@ export function rutas(on, { cleanTask = (t) => t } = {}) {
     res.json(salida(u, d));
   });
 }
+
+// Lo que comparte «Decide» (api/_lib/decide.js): el mismo candado, la misma escritura con versión y la misma historia.
+export const interno = { abre, deDoc, guardar, entrada, hist, salida, extraDe, alcanceDe, idOk, slugOk };

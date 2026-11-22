@@ -23,6 +23,7 @@ import * as intel from './_lib/intel.js';
 import * as estrategia from './_lib/estrategia.js';
 import * as avatares from './_lib/avatares.js';
 import * as entregables from './_lib/entregables.js';
+import * as decide from './_lib/decide.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
 import * as campanas from './_lib/campanas.js';
@@ -1162,6 +1163,7 @@ estrategia.rutas(on);
 avatares.rutas(on);
 // ---------- Los entregables de las herramientas del OS: versiones, estados y quién aprueba ----------
 entregables.rutas(on, { cleanTask });
+decide.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);
