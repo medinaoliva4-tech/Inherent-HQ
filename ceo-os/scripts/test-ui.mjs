@@ -174,7 +174,7 @@ t('barra única: máximo dos niveles y nada repite al Chat', () => {
 t('Chat y Code conservan su propia columna de carpetas', () => {
   const llm = JS.find(([f]) => f === path.join('js', 'screens', 'llm.js'))[1];
   assert.match(llm, /const lado = \(\) => C\('llm-side'\)/);
-  assert.match(llm, /ch-volver-os/);
+  // «ch-volver-os» (el enlace «Inherent OS» arriba de la columna) salió en 2b1f832 (Polish OS tools, sidebars…): la prueba ya no lo exige.
   assert.doesNotMatch(llm, /getElementById\('lat-ctx'\)/);
   assert.match(CSS, /html\[data-pantalla="chat"\] \.lat\{display:none\}/);
 });

@@ -457,13 +457,13 @@ document.addEventListener('keydown', (e) => {
 function celHtml() {
   const b = (id, label, icon, hoja = true) => (hoja ? html`<button type="button" class="nc-b" data-nc="${id}" data-hoja="${id}" aria-haspopup="dialog" aria-expanded="false">${ico(icon, 20)}<span>${label}</span></button>` : html`<a class="nc-b" href="#/${id}" data-nc="${id}">${ico(icon, 20)}<span>${label}</span></a>`);
   if (me.role === 'client') return html`<nav class="nav-cel" aria-label="Secciones">${b('portal', 'Mi portal', 'nav-portal', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
-  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Hoy', 'nav-home', false)}${b('chat', 'Chat', 'chat-ia', false)}${b('ai/agentes', 'Agentes', 'agents', false)}${b('calendario', 'Calendario', 'calendar', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
+  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Hoy', 'nav-home', false)}${b('decide', 'Decide', 'check', false)}${b('chat', 'Chat', 'chat-ia', false)}${b('calendario', 'Calendario', 'calendar', false)}${b('mas', 'Más', 'ellipsis')}</nav>`; // las 5 puertas: Hoy · Decide · Chat · Calendario · Más (Agentes vive en Más)
 }
 // El botón de abajo que corresponde a la ruta (Organization y Library viven en la hoja «Más», con Avisos y Mi perfil).
 const celKey = (cur) => {
   const k = cur.key;
-  if (k === 'home' || k === 'calendario' || k === 'chat') return k;
-  if (k === 'agentes') return 'ai/agentes';
+  if (k === 'home' || k === 'decide' || k === 'calendario' || k === 'chat') return k;
+  if (k === 'agentes') return 'mas';
   if (k === 'portal' && me.role === 'client') return 'portal';
   return ['avisos', 'me', 'ajustes', 'ai', 'areas'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };
@@ -488,7 +488,7 @@ function abrirHoja(id, btn) {
     else {
       const grupo = (id) => { const n = navDe(id); return n.ve() ? html`<span class="lat-k">${n.nombre}</span>${deNav(itemsDe(n))}` : ''; }, lib = navDe('library');
       const it1 = (n) => it(n.ruta, n.nombre, ico(n.icono, 18), pag?.[0]?.[2] === n.ruta || cur.key === n.id);
-      cuerpo = html`${['home', 'chat', 'agentes', 'calendario'].map((id) => it1(navDe(id)))}${grupo('org')}${grupo('empresa')}${grupo('areas')}<span class="lat-k">Más</span>${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${it('ai/mcps', 'Conexiones', ico('link', 18), cur.url === 'ai/mcps')}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
+      cuerpo = html`${['home', 'decide', 'chat', 'agentes', 'calendario'].map((id) => it1(navDe(id)))}${grupo('org')}${grupo('empresa')}${grupo('areas')}<span class="lat-k">Más</span>${lib.ve() ? it(lib.ruta, lib.nombre, ico(lib.icono, 18), pag?.[0]?.[2] === lib.ruta) : ''}${it('avisos', 'Avisos', ico('bell', 18), cur.key === 'avisos')}${it('ai/mcps', 'Conexiones', ico('link', 18), cur.url === 'ai/mcps')}${it('ajustes/ia', 'Ajustes', ico('settings', 18), cur.key === 'ajustes')}${guia && !guia.hidden ? bt('guia', 'Cómo se usa', ico('video', 18)) : ''}`;
     }
   }
   const h = document.createElement('div'); h.className = 'hoja'; h.dataset.hoja = id; h.setAttribute('data-popover', ''); h.setAttribute('role', 'dialog'); h.setAttribute('aria-label', titulo);

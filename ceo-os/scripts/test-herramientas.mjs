@@ -360,7 +360,8 @@ t('estáticas · costos y versión: toda respuesta con un entregable pasa por sa
   const src = fs.readFileSync(new URL('../api/_lib/entregables.js', import.meta.url), 'utf8'), shell = fs.readFileSync(new URL('../public/js/tool-shell.js', import.meta.url), 'utf8');
   // Las únicas respuestas que llevan un doc crudo son las que no son un doc (la lista de versiones, el aviso del alcance, las tareas).
   const crudas = [...src.matchAll(/res\.json\((.*)\)/g)].map((m) => m[1]).filter((x) => !/salida\(/.test(x));
-  assert.deepEqual(crudas.map((x) => x.slice(0, 12)), ['{ items: [],', '{ versiones:', '{ creadas: [', '{ creadas: i'], 'ninguna respuesta con contenido sale sin pasar por salida()');
+  assert.deepEqual(crudas.map((x) => x.slice(0, 12)), ['{ items: [],', '{ versiones:', '{ ...hilo, r', '{ creadas: [', '{ creadas: i'], 'ninguna respuesta con contenido sale sin pasar por salida()');
+  // El hilo (GET /api/hilo) tampoco lleva contenido: solo id, tool, título, estado y versión (test-vision-hilo.mjs lo comprueba).
   assert.match(src, /import \{[^}]*seesCosts[^}]*\} from '\.\/access\.js'/, 'usa seesCosts de access.js');
   assert.ok(src.includes('tool.conCostos(null, limpio.contenido)') && src.includes('tool.conCostos(cur.contenido, limpio.contenido)'), 'POST y PUT conservan o descartan los costos');
   // Aprobar: sin v, 400; con una v vieja, 409; las dos antes de las faltas.

@@ -9610,10 +9610,9 @@ html[data-vidrio="real"] .migas{-webkit-app-region:no-drag}
   .home-chips,.cal-leg,.agx-chips{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
   .home-chip{flex:none}
   .btn,.tabs>button,.tabs>a,.chip,select.in,input.in{min-height:40px}
-  /* Barra de arriba y menú lateral, sin barra de abajo */
-  .nav-cel{display:none!important}
+  /* Barra de arriba y, abajo, las 5 puertas (Hoy · Decide · Chat · Calendario · Más) al alcance del pulgar. Para quitarla: .nav-cel{display:none!important} y padding de 28px abajo. */
   .app::after{display:none}
-  .app{padding:0 16px calc(28px + env(safe-area-inset-bottom))}
+  .app{padding:0 16px calc(84px + env(safe-area-inset-bottom))}
   .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:6px;height:calc(50px + env(safe-area-inset-top));box-sizing:border-box;margin:0 -16px 14px;padding:env(safe-area-inset-top) 12px 0;border-radius:0;background:rgb(13 13 14 / .74);-webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
   .top .brand,.top .searchbtn,.top .top-ayuda,.top .sp{display:none}
   .top-hoja{display:grid;place-items:center;width:44px;height:44px;margin-left:-6px;border:0;background:none;color:var(--ui-ink)}
