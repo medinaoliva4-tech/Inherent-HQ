@@ -50,6 +50,16 @@ export function rutas(on, { adaptadores = ADAPTADORES } = {}) {
     if (!['ceo', 'coo'].includes(u.role) && run.owner !== u.email) { res.status(404).json({ error: 'No existe esa corrida' }); return {}; } // lo de otras personas no se ve
     return { u, run };
   };
+  // Lista compacta: quien no es CEO/COO solo ve sus corridas. Sin entradas, params ni resultados (pueden traer datos sensibles): el detalle va en `workflow-runs/:id`.
+  on('GET', 'workflow-runs', async (req, res) => {
+    const u = await abre(req, res); if (!u) return;
+    const alto = ['ceo', 'coo'].includes(u.role), slug = lc(req.query?.slug), estado = lc(req.query?.estado);
+    const lim = Math.min(200, Math.max(1, Number(req.query?.limit) || 50));
+    const filas = (await db.list(W.COLL_RUN)).filter((r) => (alto || r.owner === u.email) && (!slug || r.client_slug === slug) && (!estado || r.estado === estado))
+      .sort((a, z) => String(z.updated_at || z.created_at || '').localeCompare(String(a.updated_at || a.created_at || ''))).slice(0, lim);
+    res.json({ corridas: filas.map((r) => ({ id: r.id, def_id: r.def_id, def_version: r.def_version, client_slug: r.client_slug, estado: r.estado, v: r.v, owner: r.owner,
+      pasos: Object.fromEntries(Object.entries(r.pasos || {}).map(([k, p]) => [k, { estado: p.estado, ...(p.error ? { error: W.redactar(p.error) } : {}) }])) })) });
+  });
   on('GET', 'workflow-runs/:id', async (req, res) => { const { run } = await deRun(req, res, false); if (run) res.json(salida(run)); });
   on('POST', 'workflow-runs/:id/avanzar', async (req, res) => { const { run } = await deRun(req, res, true); if (!run) return; try { res.json(salida(await W.avanzar(run.id, { adaptadores }))); } catch (e) { err(res, e); } });
   on('POST', 'workflow-runs/:id/cancelar', async (req, res) => { const { u, run } = await deRun(req, res, true); if (!run) return; try { res.json(salida(await W.cancelar(u, run.id))); } catch (e) { err(res, e); } });

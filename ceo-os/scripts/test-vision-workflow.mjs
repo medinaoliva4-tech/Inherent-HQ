@@ -169,6 +169,16 @@ await test('rutas: correr con llave repetida no duplica ni la tarea; lo ajeno no
   const otra = await req('coo', 'workflows/ruta-demo/run', 'POST', { key: 'del-coo' });
   assert.equal((await req('team', `workflow-runs/${otra.data.id}`)).status, 404, 'otra persona sin rol alto no la ve'); assert.equal((await req('ceo', `workflow-runs/${otra.data.id}`)).status, 200);
 });
+await test('rutas: GET /api/workflow-runs lista compacto con las mismas reglas de acceso (sin entradas ni resultados)', async () => {
+  const eq = await req('team', 'workflow-runs'), ceo2 = await req('ceo', 'workflow-runs');
+  assert.equal(eq.status, 200); assert.equal(ceo2.status, 200);
+  assert.equal(eq.data.corridas.length, 1, 'quien no es CEO/COO solo ve las suyas'); assert.ok(eq.data.corridas.every((c) => c.owner === email('team')));
+  assert.ok(ceo2.data.corridas.length >= 2, 'el CEO ve todas');
+  const c = eq.data.corridas[0]; assert.ok(c.id && c.estado && c.pasos.n.estado);
+  for (const k of ['input', 'resultados', 'eventos']) assert.equal(k in c, false, `no lleva ${k}`);
+  assert.equal('params' in c.pasos.n, false);
+  assert.ok((await req('ceo', 'workflow-runs?estado=cancelado')).data.corridas.every((x) => x.estado === 'cancelado'), 'el filtro por estado funciona');
+});
 await test('rutas: las colecciones del motor no se leen ni se escriben por la ruta genérica /api/db', async () => {
   for (const c of ['wf_runs', 'wf_defs', 'wf_events', 'wf_limits', 'native_codes']) for (const [m, role] of [['GET', 'ceo'], ['POST', 'ceo']]) { const r = await req(role, `db/${c}`, m, { x: 1 }); assert.ok([403, 404].includes(r.status), `${m} ${c} → ${r.status}`); }
 });
