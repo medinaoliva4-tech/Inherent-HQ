@@ -64,7 +64,7 @@ export async function render(el, { me, sub, alive }) {
     let a = acct(slug) || { id: 'acc-' + slug, name: slug.toUpperCase(), contact: '', phone: '', email: '', notes: '', roadmap: [], accesos: [], links: [] };
     const ps = projects.filter((p) => p.client_slug === slug);
     // Marca ya no es una pestaña: vive en Marcas → este cliente → Marca (un solo lugar). #/clients/<slug>/marca lleva allá.
-    const TABS = [['info', 'Inicio'], ['movimientos', 'Movimientos'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos'], ['ajustes', 'Portal y accesos']])];
+    const TABS = [['info', 'Inicio'], ['sala', 'Sala'], ['movimientos', 'Movimientos'], ...(resumen ? [] : [['links', 'Links']]), ['servicio', 'Servicio'], ...(resumen ? [] : [['presupuestos', 'Presupuestos'], ['ajustes', 'Portal y accesos']])];
     const toBrand = !resumen && me.areas.includes('clients');
     // La pestaña vieja «Prospectos» lleva al CRM, que vive en Ventas.
     const hubBase = '#/sales';
@@ -94,11 +94,12 @@ export async function render(el, { me, sub, alive }) {
       mount(el, html`
         <div class="row" style="margin-bottom:14px">${tab === 'info' ? html`<a class="btn ghost sm" href="#/clients">← Clientes</a>` : html`<button class="btn ghost sm" data-act="tab" data-t="info">← ${a.name}</button>`}</div>
         ${tab === 'info' ? html`<header class="cp-hd"><span class="cp-mono">${initials(a.name)}</span><div class="cp-hd-t"><h1>${a.name}</h1><p>Cómo va la cuenta hoy</p><div id="cchips">${chips()}</div></div>
-          <div class="cp-hd-b">${toBrand ? html`<a class="btn ghost sm" href="#/ws/marketing/${slug}/overview">${ico('spark', 13)} Marketing ↗</a>` : ''}${edit ? html`<button class="btn ghost sm" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
+          <div class="cp-hd-b"><button class="btn sm" data-act="tab" data-t="sala">${ico('chat-ia', 13)} Sala · memoria</button>${toBrand ? html`<a class="btn ghost sm" href="#/ws/marketing/${slug}/overview">${ico('spark', 13)} Marketing ↗</a>` : ''}${edit ? html`<button class="btn ghost sm" data-act="editAcc">Editar datos</button>` : ''}</div></header>`
           : html`<header class="cp-hd sm"><div class="cp-hd-t"><h1>${(TABS.find(([k]) => k === tab) || [, ''])[1]}</h1><p>${a.name}</p></div></header>`}
         <div id="cbody"></div>`);
       const b = $('#cbody', el);
       if (tab === 'info') return infoTab(b);
+      if (tab === 'sala') return import('../sala-cliente.js').then((m) => m.pintarSala(b, { me, slug, alive }));
       if (tab === 'movimientos') return import('../movimientos-ui.js').then((m) => m.pintarMovimientos(b, { me, cliente: slug, alive }));
       if (tab === 'ajustes') return ajustesTab(b);
       if (tab === 'links') return linksTab(b);
@@ -145,6 +146,7 @@ export async function render(el, { me, sub, alive }) {
     function herramientas() {
       const t = (k, icon, titulo, sub, links) => html`<section class="cp-tool"><header><span class="cp-ti ${k}">${ico(icon, 15)}</span><div><b>${titulo}</b><span class="mut sm">${sub}</span></div></header>${links.map(([l, attrs]) => html`<${raw(attrs.href ? 'a' : 'button')} class="cp-tl" ${raw(attrs.href ? `href="${attrs.href}"` : `type="button" data-act="tab" data-t="${attrs.tab}"`)}>${l}<span>›</span></${raw(attrs.href ? 'a' : 'button')}>`)}</section>`;
       return html`<div class="sec-title"><h2>Todo del cliente</h2></div><div class="cp-tools">
+        ${t('t0', 'chat-ia', 'Sala del cliente', 'Lo que se habló y se prometió', [['Abrir la sala', { tab: 'sala' }]])}
         ${resumen ? '' : t('t1', 'link', 'Links', 'Drive, redes y archivos', [['Drive y links', { tab: 'links' }]])}
         ${t('t2', 'doc', 'Servicio', 'Qué contrató y qué no', [['Ficha y servicio', { tab: 'servicio' }], ...(resumen ? [] : [['Presupuestos', { tab: 'presupuestos' }]])])}
         ${resumen ? '' : t('t3', 'eye', 'Portal y accesos', 'Lo que ve el cliente y quién entra', [['Portal y especialista', { tab: 'ajustes' }], ['Ver su portal', { href: `#/portal/${slug}` }]])}
