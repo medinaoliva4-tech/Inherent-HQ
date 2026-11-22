@@ -123,7 +123,7 @@ async function pestanaIdeas(cuerpo, me) {
 }
 
 const PESTANAS = [['ideas', 'Ideación'], ['retencion', 'Curva de retención'], ['clips', 'Mejores clips'], ['modelo', 'Modelo']];
-export async function render(el, { me, rest = [] }) {
+export async function render(el, { me, sub: rest = [] }) {
   const cur = PESTANAS.some(([k]) => k === rest[0]) ? rest[0] : 'ideas', cuerpo = h('div', { class: 'st-cuerpo' });
   el.replaceChildren(h('div', { class: 'st' }, h('header', { class: 'st-h' }, h('h1', {}, 'Studio'), h('p', {}, 'Para saber si un video retiene antes de grabarlo, y sacar los mejores momentos de lo que ya grabaste.')),
     h('nav', { class: 'st-tabs', role: 'tablist' }, PESTANAS.map(([k, n]) => h('a', { href: `#/studio/${k}`, role: 'tab', class: k === cur ? 'on' : '', 'aria-selected': String(k === cur) }, n))), cuerpo));
