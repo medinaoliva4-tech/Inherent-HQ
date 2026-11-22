@@ -204,6 +204,18 @@ await test('enviarDecision / enviarAviso: solo a vinculados y solo lo que es suy
   assert.equal((await C.enviarAviso(email('coo'), 'x')).enviados, 0); process.env.TELEGRAM_BOT_TOKEN = prev;
   C.configurar({ enviarMensaje: async (m) => { sent.push(m); return { ok: true }; }, fetchImpl: null });
 });
+await test('avisarDecisiones: lo nuevo en Decide llega UNA vez por versión, solo a quien tiene Telegram vinculado; sin bot, no hace nada y lo dice', async () => {
+  for (let i = 0; i < 10 && (await C.avisarDecisiones()).enviados; i++); limpiar(); // lo de antes sale de a 3 por corrida: se vacía hasta quedar en cero
+  const x = await nuevo({ titulo: 'Moodboard nuevo para avisar' }); limpiar();
+  const a = await C.avisarDecisiones(); assert.ok(a.enviados >= 1, 'avisó la decisión nueva'); assert.ok(sent.every((m) => m.canal === 'telegram'));
+  assert.ok(sent.some((m) => String(m.texto || m.md).includes('Moodboard nuevo para avisar')), 'la tarjeta es de esa decisión'); assert.ok(sent.every((m) => m.chatId === String(COO) || m.chatId === String(CEO)), 'solo a chats vinculados');
+  limpiar(); assert.equal((await C.avisarDecisiones()).enviados, 0, 'la segunda vez no repite'); assert.equal(sent.length, 0);
+  const cur = await db.get('deliverables', x.id); await db.update('deliverables', x.id, { ...cur, version: (cur.version || 1) + 1 }, cur.v, 'test'); limpiar();
+  assert.ok((await C.avisarDecisiones()).enviados >= 1, 'otra versión es otra decisión');
+  C.configurar({ enviarMensaje: async () => ({ ok: false }) }); const y = await nuevo({ titulo: 'No salió' }); limpiar(); assert.equal((await C.avisarDecisiones()).enviados, 0);
+  C.configurar({ enviarMensaje: async (m) => { sent.push(m); return { ok: true }; } }); limpiar(); assert.ok((await C.avisarDecisiones()).enviados >= 1, 'lo que no salió se reintenta'); 
+  const tok = process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_BOT_TOKEN; limpiar(); const sin = await C.avisarDecisiones(); assert.deepEqual([sin.enviados, sin.motivo], [0, 'sin_telegram']); assert.equal(sent.length, 0); process.env.TELEGRAM_BOT_TOKEN = tok;
+});
 await test('un cliente del portal nunca recibe nada, ni con un vínculo forjado', async () => {
   await db.upsert('canal_vinculos', 'telegram:777', { canal: 'telegram', chatId: '777', email: 'cliente@alpha.com', espera: null, ultimo_entrante: Date.now() }, 'test'); limpiar();
   assert.equal((await C.enviarAviso('cliente@alpha.com', 'hola')).motivo, 'sin_permiso'); assert.equal((await C.enviarDecision('cliente@alpha.com', moodboard)).enviados, 0);
