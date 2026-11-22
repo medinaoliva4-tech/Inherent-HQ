@@ -10490,7 +10490,7 @@ a.hz-f:active{transform:scale(.99)}
   .hz-avisos{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:8px}.hz-aviso{flex:none}
   .hoy-tab{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
   .hz-f{padding:10px 12px;gap:4px;border-radius:var(--r-4)}
-  .hz-fila{flex-direction:column;align-items:flex-start;gap:4px}.hz-ciclo{height:auto;width:min(68px,100%);max-height:68px}.hz-f-ciclo .hz-t b{font-size:var(--fs-3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.hz-f-ciclo .hz-k{display:none}.hz-hito{margin-top:0;padding:2px 7px;font-size:var(--fs-2)}
+  .hz-fila{flex-direction:column;align-items:flex-start;gap:4px}.hz-ciclo{height:auto;width:min(56px,100%);max-height:56px}.hz-f-ciclo .hz-t b{font-size:var(--fs-3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.hz-f-ciclo .hz-k{display:none}.hz-hito{margin-top:0;padding:2px 7px;font-size:var(--fs-2)}
   .hz-cta{padding:5px 10px;font-size:var(--fs-3)}.hz-nd p,.hz-ok{font-size:var(--fs-4)}.hz-ok i{width:22px;height:22px}
   .hz-big{font-size:var(--fs-11)}
   .hz-dec{grid-template-columns:1fr;gap:6px;align-content:center}.hz-dec-n{flex-direction:row;align-items:baseline;gap:6px}.hz-dec-l li:nth-child(n+3){display:none}.hz-dec-l a{padding:6px 8px}
@@ -10832,3 +10832,19 @@ a.hz-f:active{transform:scale(.99)}
 /* «btn-s» (secundario) no tenía estilo propio: se veía como el primario. Ahora es el secundario de vidrio, igual en claro y oscuro. */
 .btn.btn-s,:root[data-theme="light"] .btn.btn-s{background:var(--ui-fill2);color:var(--ui-ink);border-color:transparent;box-shadow:none}
 .btn.btn-s:hover,:root[data-theme="light"] .btn.btn-s:hover{background:var(--ui-line2)}
+/* Teléfono en modo claro: la barra de arriba y la hoja «Más» eran oscuras con texto oscuro (no se leían). Ahora son de vidrio claro. */
+@media (max-width:760px){
+  :root[data-theme="light"] .top{background:var(--ui-glass);-webkit-backdrop-filter:var(--ui-blur);backdrop-filter:var(--ui-blur);box-shadow:0 1px 0 var(--ui-line)}
+  :root[data-theme="light"] .hoja{background:var(--ui-surf);box-shadow:0 0 0 100vmax rgb(var(--ui-tint) / .28)}
+  :root[data-theme="light"] .hoja-h>img{filter:invert(1)}
+  :root[data-theme="light"] .hoja-nueva{background:var(--ui-ink);color:var(--ui-bg)}
+  :root[data-theme="light"] .top .bellbtn b{background:var(--ui-rojo);color:var(--ui-surf)}
+  /* El título ya está en la barra de arriba: no se repite en la página (como en Hoy y Áreas). */
+  .dec-h h1,.rv-h h1,.st-h h1,.sa-top h1{display:none}
+  .rv-h p,.st-h p,.sa-top p{margin-top:0}
+}
+/* Decide: el mismo peso de título que el resto del OS, y el vacío con un objeto visual (no solo una frase). */
+.dec-h h1{font-weight:650}
+.dec-vacio{display:flex;flex-direction:column;align-items:center;gap:12px}
+.dec-vacio::before{content:'✓';display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--ui-ok-bg);color:var(--ui-ok-t);font-size:var(--fs-10);font-weight:700;animation:pop .35s ease-out both}
+@media (prefers-reduced-motion:reduce){.dec-vacio::before{animation:none}}
