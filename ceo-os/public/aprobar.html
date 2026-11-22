@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0d0d0e">
+<script src="/js/tema-boot.js"></script>
+<link rel="stylesheet" href="/primitives.css">
+<title>Aprobar · Inherent</title>
+<style>
+  html,body{margin:0;min-height:100%;background:var(--ui-bg);color:var(--ui-ink);font:var(--fs-6,15px)/1.5 -apple-system,system-ui,"Inter",sans-serif}
+  main{max-width:520px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 20px max(32px,env(safe-area-inset-bottom));display:grid;gap:20px}
+  .marca{color:var(--ui-mut);font-size:var(--fs-4);letter-spacing:.04em}
+  .tarjeta{display:grid;gap:12px;padding:22px;border:1px solid var(--ui-line);border-radius:var(--r-4);background:var(--ui-surf)}
+  h1{margin:0;font-size:var(--fs-9);font-weight:500;letter-spacing:-.01em}.sub{margin:0;color:var(--ui-mut)}
+  .acciones{display:grid;gap:10px}
+  button{min-height:52px;border:1px solid var(--ui-line2);border-radius:var(--r-3);background:var(--ui-fill);color:var(--ui-ink);font:inherit;font-weight:550;cursor:pointer}
+  button.primario{background:var(--ui-ink);color:var(--ui-bg);border-color:var(--ui-ink)}
+  button:disabled{opacity:.5;cursor:default}button:focus-visible,textarea:focus-visible{outline:2px solid var(--ui-focus);outline-offset:2px}
+  textarea{width:100%;box-sizing:border-box;min-height:110px;padding:12px;border:1px solid var(--ui-line2);border-radius:var(--r-3);background:var(--ui-surf2);color:var(--ui-ink);font:inherit;resize:vertical}
+  .estado{padding:14px 16px;border-radius:var(--r-3);background:var(--ui-fill);color:var(--ui-ink2)}
+  .estado.mal{background:var(--ui-bad-bg);color:var(--ui-bad)}.estado.bien{background:var(--ui-ok-bg,var(--ui-fill));color:var(--ui-ok-t,var(--ui-ink))}
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"><p class="marca">INHERENT</p><p class="estado">Abriendo…</p></main>
+<script src="/js/aprobar.js" type="module"></script>
+</body>
+</html>
