@@ -7,14 +7,14 @@ import { pocket, soloCompu } from './pocket.js';
 import { applyViews, movedRoute } from './roleviews.js';
 import { applyLevels, baseDefaults, LEVELS_ID } from './levels.js';
 import { $, $$, html, raw, mount, api, events, toast, col, ask, closeDrawer, setViewSection, IC, emblem, emblemaTema, initials, infoTips, canTransition, ico, skel, roleName, escalonar } from './core.js';
-import { openSearch, searchOpen } from './search.js';
+import { openSearch, searchOpen, accionesDe } from './search.js';
 import { marcarSeccion, instalarBoton } from './guia.js';
 import { primerDia } from './primer-dia.js';
 import { svgIco } from './iconos.js';
 import { abrirEnChat } from './areas.js';
 import { WORKSPACES, wsDe, wsDeRuta, puedeWs, herramientaDe } from './herramientas.js';
 import { migasDe } from './migas.js';
-import { contextoDe } from './contexto.js';
+import { contextoDe, contextoActual } from './contexto.js';
 import { SECCIONES } from './guia-secciones.js';
 
 // Tooltips de [data-tip] y teclado/ARIA de toda lista .tabs / .seg (ui.js), una vez para todo el OS.
@@ -549,7 +549,7 @@ function jumpItems() {
   push('Avisos', 'Lo que pide atención: tu trabajo, cada cliente y la plataforma', '#/avisos', svgIco('bell', 16));
   return out;
 }
-const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems }); };
+const search = () => { if (me && me.role !== 'client') openSearch({ jump: jumpItems, acciones: () => accionesDe(me, { slug: contextoActual(me) || '' }) }); };
 document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') { if (!me || me.role === 'client' || !$('.app') || document.querySelector('dialog[open]')) return; e.preventDefault(); if (!searchOpen()) search(); } });
 
 // ---------- El cascarón: la barra, la cabecera del cel y el main ----------

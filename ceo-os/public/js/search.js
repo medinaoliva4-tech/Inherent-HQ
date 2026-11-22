@@ -5,7 +5,7 @@ import { html, raw, mount, api, ico } from './core.js';
 import { ESTADO_CLS } from './element.js';
 
 const TYPES = {
-  ir: ['Ir a', 'right'], cliente: ['Clientes', 'users'], proyecto: ['Proyectos', 'layers'], tarea: ['Tareas', 'check'], lead: ['Leads', 'megaphone'],
+  hacer: ['Hacer', 'zap'], ir: ['Ir a', 'right'], cliente: ['Clientes', 'users'], proyecto: ['Proyectos', 'layers'], tarea: ['Tareas', 'check'], lead: ['Leads', 'megaphone'],
   cotizacion: ['Cotizaciones', 'doc'], servicio: ['Servicios', 'tool'], paquete: ['Paquetes', 'puzzle'], doc: ['Library', 'folder'], research: ['Research', 'search'], idea: ['Ideas', 'bulb'],
 };
 const ORDER = Object.keys(TYPES);
@@ -13,13 +13,31 @@ const fold = (x) => String(x ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toL
 const tone = (s) => (s in ESTADO_CLS ? ESTADO_CLS[s] : /hecha|aceptada|pagad|ganad/i.test(s) ? 'green' : /revisi|enviada|propuesta|curso/i.test(s) ? 'amber' : /atrasad|perdid|vencid|rechaz/i.test(s) ? 'red' : '');
 
 let live = null; // el buscador abierto (solo uno)
+// «Hacer»: acciones de un toque (no solo ir a una pantalla). Las que crean algo abren su propio diálogo; nada se envía solo.
+// Cada una: { title, sub, route } o { title, sub, run } (run se llama después de cerrar el buscador).
+export function accionesDe(me, { slug = '' } = {}) {
+  if (!me || me.role === 'client') return [];
+  const a = [
+    { title: 'Crear una tarea', sub: 'Con responsable y fecha', icon: '', run: async () => { const [{ newTask }, core] = await Promise.all([import('./create.js'), import('./core.js')]); const [team, projects] = await Promise.all([core.teamList().catch(() => []), core.col('projects').list().catch(() => [])]); const t = await newTask({ team, me, projects, pre: { assignee: me.email } }); if (t) core.toast('Tarea creada'); } },
+    { title: 'Nuevo lote de leads', sub: 'Describe a tu cliente ideal y pega prospectos', route: '#/revenue/nuevo' },
+    { title: 'Ideas de contenido', sub: 'Lo que funciona en el nicho, listo para grabar', route: '#/studio/ideas' },
+    { title: 'Construir un agente', sub: 'Cuéntalo en una frase y se arma el borrador', route: '#/sistemas', antes: () => { try { sessionStorage.setItem('sa.abrir-ia', '1'); } catch {} } },
+    { title: 'Nuevo workflow', sub: 'Pasos y aprobaciones, como borrador', route: '#/sistemas/workflows' },
+    { title: 'Curva de retención de un guion', sub: 'Dónde se cae la gente y qué cambiar', route: '#/studio/retencion' },
+    { title: 'Modo rodaje', sub: 'El shot list del día, escena por escena', route: '#/studio/rodaje' },
+    { title: 'Presentación del día 20', sub: 'Lo aprobado del ciclo, a pantalla completa', route: '#/studio/presentacion' },
+    ...(slug && slug !== 'personal' ? [{ title: 'Pegar lo que se habló', sub: `Sala de ${slug}: compromisos con su cita`, route: `#/clients/${slug}/sala` }] : []),
+    { title: 'Vincular Telegram', sub: 'Decide desde el teléfono', route: '#/ajustes/canales' },
+  ];
+  return a.map((x) => ({ ...x, type: 'hacer', route: x.route || '#' }));
+}
 // jump(): [{ title, sub, route, icon }] — a dónde se puede ir sin buscar (lo arma app.js con lo que ve el perfil).
-export function openSearch({ jump = () => [] } = {}) {
+export function openSearch({ jump = () => [], acciones = () => [] } = {}) {
   if (live) { live.input.focus(); live.input.select(); return; }
   const back = document.activeElement;
   const veil = document.createElement('div'); veil.className = 'spot-veil';
   mount(veil, html`<div class="spot" role="dialog" aria-modal="true" aria-label="Buscar en Inherent OS">
-    <div class="spot-in">${ico('search', 20)}<input id="spotq" type="search" placeholder="Busca clientes, proyectos, tareas, leads, docs, ideas…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="spotr" aria-autocomplete="list"><kbd class="spot-esc" data-x>esc</kbd></div>
+    <div class="spot-in">${ico('search', 20)}<input id="spotq" type="search" placeholder="Busca o haz algo: «nuevo lote», un cliente, una tarea…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="true" aria-controls="spotr" aria-autocomplete="list"><kbd class="spot-esc" data-x>esc</kbd></div>
     <div class="spot-r" id="spotr" role="listbox" aria-label="Resultados"></div>
     <div class="spot-foot"><span><kbd>↑</kbd><kbd>↓</kbd> moverte</span><span><kbd>↵</kbd> abrir</span><span><kbd>esc</kbd> cerrar</span></div></div>`);
   document.body.append(veil);
@@ -37,12 +55,14 @@ export function openSearch({ jump = () => [] } = {}) {
     document.removeEventListener('keydown', onKey, true);
     if (back && back.isConnected && back !== document.body) try { back.focus({ preventScroll: true }); } catch {}
   };
-  const go = (r) => { if (!r) return; close(); if (location.hash !== r.route) location.hash = r.route.replace(/^#/, ''); };
+  const go = (r) => { if (!r) return; close(); if (r.run) { Promise.resolve(r.run()).catch(() => {}); return; } r.antes?.(); if (location.hash !== r.route) location.hash = r.route.replace(/^#/, ''); else if (r.antes) window.dispatchEvent(new HashChangeEvent('hashchange')); };
 
   function paint() {
     const q = input.value.trim(), f = fold(q);
-    const jumps = jump().filter((j) => !f || f.split(/\s+/).every((w) => fold(`${j.title} ${j.sub || ''}`).includes(w))).slice(0, q ? 5 : 12).map((j) => ({ ...j, type: 'ir' }));
-    rows = [...jumps, ...(q ? server || [] : [])];
+    const pasa = (j) => !f || f.split(/\s+/).every((w) => fold(`${j.title} ${j.sub || ''}`).includes(w));
+    const hacer = acciones().filter(pasa).slice(0, q ? 4 : 6);
+    const jumps = jump().filter(pasa).slice(0, q ? 5 : 8).map((j) => ({ ...j, type: 'ir' }));
+    rows = [...hacer, ...jumps, ...(q ? server || [] : [])];
     sel = Math.min(sel, Math.max(0, rows.length - 1));
     const groups = ORDER.map((k) => [k, rows.filter((r) => r.type === k)]).filter(([, l]) => l.length);
     let i = -1;

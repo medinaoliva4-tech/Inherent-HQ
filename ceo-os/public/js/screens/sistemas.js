@@ -142,4 +142,7 @@ export async function render(el, { me, sub = [] }) {
     h('aside', { class: 'sa-lista', 'aria-label': 'Mis agentes' }, h('header', { class: 'sa-lista-h' }, h('b', {}, 'Mis agentes ', cuenta), nuevoBtn), h('div', { class: 'sa-filtro' }, buscar, area), listaBox),
     mainBox));
   el.replaceChildren(cuerpo); await cargar();
+  // ⌘K → «Construir un agente» llega aquí con la bandera puesta: abre el constructor con IA una vez.
+  let abrirIA = false; try { abrirIA = sessionStorage.getItem('sa.abrir-ia') === '1'; sessionStorage.removeItem('sa.abrir-ia'); } catch { /* sin almacenamiento */ }
+  if (abrirIA && puede) constructor(null, { ia: true, alGuardar: () => render(el, { me, sub }) });
 }
