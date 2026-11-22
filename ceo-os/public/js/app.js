@@ -131,19 +131,28 @@ const sees = (k) => {
 // [id, nombre, ruta, ve?, ícono, color?]; sin `ve`, la página la ve todo el equipo; con `color`, el ítem lleva el de su área.
 // Home, Calendario y Library son ítems de primer nivel (sin flecha). Library conserva su regla de siempre (area('library')).
 const NAV = [
+  // El organismo (docs/PLAN-ORGANISMO.md): Hoy · Revenue · Clientes · Studio · Biblioteca, y la trastienda «Sistemas». Lo que aún no tiene
+  // reemplazo vive agrupado debajo (Operación · Empresa · Áreas) y se retira cuando su sustituto exista.
   { id: 'home', nombre: 'Hoy', ruta: 'home', icono: 'nav-home', ve: equipo },
-  { id: 'decide', nombre: 'Decide', ruta: 'decide', icono: 'check', ve: equipo },
-  { id: 'studio', nombre: 'Studio', ruta: 'studio', icono: 'video', ve: () => me.role !== 'client' && me.areas.includes('content') },
+  { id: 'decide', nombre: 'Decide', ruta: 'decide', icono: 'check', ve: equipo, oculto: true }, // vive dentro de Hoy («Te necesita») y en la barra del teléfono
   { id: 'chat', nombre: 'Chat', ruta: 'chat', icono: 'chat-ia', ve: equipo, oculto: true }, // se abre desde el selector de workspace
-  { id: 'agentes', nombre: 'Agentes', ruta: 'ai/agentes', icono: 'agents', ve: equipo },
-  { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo },
-  { id: 'org', nombre: 'Organización', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
+  { id: 'revenue', nombre: 'Revenue', ruta: 'org/sales', icono: 'megaphone', ve: area('sales') },
+  { id: 'clients', nombre: 'Clientes', ruta: 'org/clients', icono: 'folder-open', ve: area('clients') },
+  { id: 'studio', nombre: 'Studio', ruta: 'studio', icono: 'video', ve: () => me.role !== 'client' && me.areas.includes('content') },
+  { id: 'library', nombre: 'Biblioteca', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
+  { id: 'sistemas', nombre: 'Sistemas', ruta: 'ai/agentes', icono: 'agents', ve: equipo,
     items: [
+      ['agentes', 'Agentes', 'ai/agentes', equipo, 'agents'],
+      ['setup', 'Configuración', 'org/setup', ceo, 'settings'],
+    ] },
+  { id: 'agentes', nombre: 'Agentes', ruta: 'ai/agentes', icono: 'agents', ve: equipo, oculto: true }, // lo usa la hoja «Más» del teléfono
+  { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo, oculto: true }, // dentro de «Operación»
+  { id: 'org', nombre: 'Operación', ruta: 'org', icono: 'nav-organization', ve: () => hasOrg(),
+    items: [
+      ['calendario', 'Calendario', 'calendario', equipo, 'calendar'],
       ['operations', 'Proyectos', 'org/operations', area('operations'), 'kanban'],
       ['work', 'Tareas', 'org/work', area('work'), 'square-check'],
-      ['sales', 'CRM', 'org/sales', area('sales'), 'megaphone'],
       ['cal', 'Fechas', 'org/operations/cal', area('operations'), 'calendar-days'],
-      ['clients', 'Clientes', 'org/clients', area('clients'), 'folder-open'],
       ['services', 'Servicios', 'org/services', () => full('sales'), 'briefcase'],
       ['finances', 'Finanzas', 'org/finanzas', area('finanzas'), 'nav-finances'],
     ] },
@@ -153,11 +162,9 @@ const NAV = [
       ['vision', 'Visión', 'org/vision', equipo, 'eye'],
       ['roadmap', 'Roadmap', 'org/roadmap', area('roadmap'), 'rocket'],
       ['laya', 'Laya', 'org/team/laya', ceo, 'message-square'],
-      ['setup', 'Configuración', 'org/setup', ceo, 'settings'],
     ] },
   { id: 'areas', nombre: 'Áreas', ruta: 'areas', icono: 'layout-grid', ve: () => sees('areas'),
     items: AREAS.map((a) => [a.id, a.nombre, 'areas/' + a.id, () => puedeVerArea(me, a.id), a.icono, a.color]) },
-  { id: 'library', nombre: 'Biblioteca', ruta: 'org/library', icono: 'nav-library', ve: area('library') },
   // Abajo, junto a tu cuenta: no son destinos del día a día.
   { id: 'mcps', nombre: 'Conexiones', ruta: 'ai/mcps', icono: 'link', ve: equipo, pie: true },
   { id: 'ajustes', nombre: 'Ajustes', ruta: 'ajustes/ia', icono: 'settings', ve: equipo, pie: true },
@@ -465,13 +472,14 @@ document.addEventListener('keydown', (e) => {
 function celHtml() {
   const b = (id, label, icon, hoja = true) => (hoja ? html`<button type="button" class="nc-b" data-nc="${id}" data-hoja="${id}" aria-haspopup="dialog" aria-expanded="false">${ico(icon, 20)}<span>${label}</span></button>` : html`<a class="nc-b" href="#/${id}" data-nc="${id}">${ico(icon, 20)}<span>${label}</span></a>`);
   if (me.role === 'client') return html`<nav class="nav-cel" aria-label="Secciones">${b('portal', 'Mi portal', 'nav-portal', false)}${b('mas', 'Más', 'ellipsis')}</nav>`;
-  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Hoy', 'nav-home', false)}${b('decide', 'Decide', 'check', false)}${b('chat', 'Chat', 'chat-ia', false)}${b('calendario', 'Calendario', 'calendar', false)}${b('mas', 'Más', 'ellipsis')}</nav>`; // las 5 puertas: Hoy · Decide · Chat · Calendario · Más (Agentes vive en Más)
+  return html`<nav class="nav-cel" aria-label="Secciones">${b('home', 'Hoy', 'nav-home', false)}${b('chat', 'Chat', 'chat-ia', false)}${b('org/clients', 'Clientes', 'folder-open', false)}${b('studio', 'Studio', 'video', false)}${b('mas', 'Más', 'ellipsis')}</nav>`; // las 5 puertas (plan § 8): Hoy · Chat · Clientes · Studio · Más (Decide, Calendario y Agentes viven en Más)
 }
 // El botón de abajo que corresponde a la ruta (Organization y Library viven en la hoja «Más», con Avisos y Mi perfil).
 const celKey = (cur) => {
   const k = cur.key;
-  if (k === 'home' || k === 'decide' || k === 'calendario' || k === 'chat') return k;
-  if (k === 'agentes') return 'mas';
+  if (k === 'home' || k === 'chat' || k === 'studio') return k;
+  if (k === 'clients') return 'org/clients';
+  if (k === 'decide' || k === 'calendario' || k === 'agentes') return 'mas';
   if (k === 'portal' && me.role === 'client') return 'portal';
   return ['avisos', 'me', 'ajustes', 'ai', 'areas'].includes(k) || ORG_SCREENS.includes(k) ? 'mas' : '';
 };
