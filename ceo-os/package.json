@@ -37,6 +37,7 @@
     "test:vision-tick": "node scripts/test-vision-tick.mjs",
     "test:vision-decide": "node scripts/test-vision-decide.mjs",
     "test:vision-hilo": "node scripts/test-vision-hilo.mjs",
+    "test:vision-flujo": "node scripts/test-vision-flujo-completo.mjs",
     "test:ui": "node scripts/test-ui.mjs",
     "test:tablas": "node scripts/test-tablas.mjs",
     "test:herramientas": "node scripts/test-herramientas.mjs",
