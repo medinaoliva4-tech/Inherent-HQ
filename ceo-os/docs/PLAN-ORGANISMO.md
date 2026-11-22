@@ -9,7 +9,7 @@
 ## 0 · En 10 líneas
 
 1. **Ya no son 8 departamentos con 34 herramientas.** Son **cuatro órganos** de un solo organismo y **cinco superficies** para verlo.
-2. **El Blueprint manda la forma:** 3 motores (**Acquisition · Delivery · Authority**) sostenidos por un **Management System** (responsables · KPIs · procesos · decisiones · incentivos).
+2. **El Blueprint manda la forma:** 3 motores (**Acquisition · Delivery · Authority**) sostenidos por **gobernanza** (quién decide qué, a quién escala, qué mide cada rol). **La gobernanza vive adentro como reglas, no como una pantalla para «manejar» a la gente**: el OS las aplica solo.
 3. **Cada persona responde por un resultado, no por una lista de tareas** (Outcome · Authority · Resources · Accountability). El OS muestra eso arriba, todos los días.
 4. **Construimos solo lo que nos da ventaja** (combinaciones que no existen): el **Lead Engine**, el **Contexto vivo**, el **constructor de agentes** y el **constructor de video con retención**. **Lo demás se integra.** No hacemos un Figma.
 5. **Costo operativo bajo:** modelos abiertos por API en el gateway que ya existe; los caros solo donde un error sale caro. **Codex y Claude solo para construir el OS**, no para operarlo.
@@ -53,7 +53,7 @@
 | Blueprint dice… | El OS lo hace así |
 |---|---|
 | **Tres motores:** Acquisition (pipeline) · Delivery (resultados) · Authority (confianza) | Tres **superficies**: **Revenue**, **Clientes**, **Studio**. Cada una con **su número**: pipeline · margen y resultados por cuenta · alcance y oportunidades atribuibles |
-| **Management System** (responsables · KPIs · procesos · decisiones · incentivos) | **Hoy** y **Decide** |
+| **Gobernanza** (responsables · KPIs · procesos · decisiones · incentivos) | **Reglas dentro del OS**, no una página: a quién le llega cada decisión (Decide), cuándo escala y qué indicador mira cada rol. Lo único visible es **Hoy** |
 | **Cada manager: Outcome · Authority · Resources · Accountability** | Arriba de Hoy, **una tarjeta por persona**: su resultado, qué decide sin pedir permiso, su presupuesto y su indicador. Sin lista de tareas |
 | **Quién decide qué / escala a quién** (9 pp.) | **Reglas de decisión** que el OS aplica solo: a quién le llega cada decisión y cuándo escala (extiende el `escalaA` actual). Ver § 4 |
 | **Ritmo:** diario · lunes (30 min) · viernes (45 min) · mensual · trimestral | **Cuatro vistas automáticas** en Hoy que se abren solas ese día: *Lunes* (objetivos, responsables, capacidad), *Viernes* (resultados y desvíos), *Mes* (MRR, success fees, margen, cash), *Trimestre* (mercados, ofertas, ventaja) |
@@ -72,7 +72,7 @@
 
 | Superficie | Quién la usa | Qué resuelve | Herramientas (máx. 5) | Lo que NO tiene |
 |---|---|---|---|---|
-| **Hoy** *(Pulso)* | Todos; el CEO a diario | Qué pasa, qué sigue, qué decides, mi resultado | Decide · Ritmos · Tarjeta de resultado por persona · Calendario del ciclo | Tablas de tareas sueltas |
+| **Hoy** *(Pulso)* | Todos; el CEO a diario | **«Te necesita» (Needs you)**: lo que espera tu decisión, qué pasa, mi resultado | Decide · Ritmos · Tarjeta de resultado por persona · Calendario del ciclo | Tablas de tareas sueltas |
 | **Revenue** *(Acquisition)* | Revenue Lead, Closers, Founder | Llenar y cerrar el pipeline de Inherent | **Lead Engine** · Pipeline/CRM · Propuesta y cotización · Registro de atribución · Respuestas (bandeja) | Un CRM genérico aparte |
 | **Clientes** *(Delivery)* | Client Growth Lead, Operadores | Que cada cliente avance y se vea el resultado | **Sala del cliente** (hilo + ficha + entregables + portal) · Plan del ciclo · Resultados y margen por cuenta · Presentación del día 20 | Una pantalla por departamento |
 | **Studio** *(Authority + producción)* | Creative & Agent Operator, Media | Ideas, guiones, video, diseño, publicación, podcast | **Constructor de video** · Guion/ángulos · Diseño (**Figma integrado**) · Posting y Community · Inherent Media | Editor de video completo, editor gráfico propio |
@@ -246,3 +246,55 @@ Cada ola termina con: pruebas verdes, **capturas en el navegador** (claro/oscuro
 3. **Correo de cold email:** ¿qué dominio y qué cuenta se usa para enviar? *(Hace falta uno dedicado y calentado.)*
 4. **Transcripciones de reuniones:** ¿qué herramienta usan hoy para grabarlas? *(Define el conector.)*
 5. **Tope mensual de IA** por persona y por cliente *(hoy no hay un número aprobado)*.
+
+---
+
+## 12 · Lo que enseñan los enlaces *(los vi: pies de foto y video)*
+
+> Vi los **7 enlaces**: leí los textos completos y **miré fotogramas** de los 5 videos (no pude escuchar el audio: no hay transcriptor aquí). Esto es lo que **sí cambia el plan**.
+
+| Enlace | Qué muestra | Qué nos llevamos |
+|---|---|---|
+| **Claude · «quitamos 80% del prompt»** | Seis cambios: **dar criterio** en vez de reglas rígidas, **diseñar interfaces** (herramientas expresivas), **revelación progresiva** (skills que se llaman solo si hacen falta), **descripciones simples**, **memoria automática**, **referencias ricas** | **Contexto sin pegar a mano** (§ 6). Nuestros agentes: **menos reglas duras, más principios; instrucciones largas en skills que se cargan solo cuando toca**. Es lo que ya hacen las skills de `agents/`: se mantiene y se aprieta |
+| **HAUS · «Claude edita mis reels»** *(video de 11 s)* | Una grabación → **15 borradores a la vez** (reel de propiedad, de estilo de vida, con marcas de tiempo, texto en pantalla…); una **cuadrícula de borradores**; «ajusta cada toma» (usar clip completo / recortar / cambiar); **Claude revisa cada borrador** y tú **eliges cuáles quedan**; al final, calidad 1080p/4K | Es **nuestra regla «una grabación, muchas piezas»** hecha pantalla. **El Constructor de video (§ 9) = cuadrícula de borradores + revisión por IA + «tú eliges»**. No es un editor: es un **generador con curaduría** |
+| **Plotline · «mi primer borrador antes del primer corte»** | Se manda el material **a DaVinci/Final Cut**; corre en segundo plano: **guion de la historia, corte multicámara, selección de b-roll, quién es quién**; hay una **curva de «sentimiento»** a lo largo de la historia; devuelve **XML al editor** y ahí se termina | **Confirma la regla «no hacemos un editor»**: **se integra con el editor que ya existe** (exportar a Resolve/Final Cut/Premiere). La **curva emocional** es lo que ayuda a la retención: la usamos como **gráfica guía del guion**, no como adorno |
+| **Luke Alexander · «el OS de Valar Agents»** *(5 min, el más importante)* | Un OS de agentes: **Home** («24 listos para ti · 2 aprobaciones · 0 alertas · 2 reuniones hoy»), **Agents**, **Inbox (30)**, **Calendar**, **Recordings**; **Marketing:** Performance, Ads, Library, Copy, **Studio**, Review, Pages; **Sales:** Stats, Prospecting, Outbound, Pipeline, Conversations, Contacts, Dialer, Bookings; **Fulfillment · Finance · System** plegados. Home trae **ingresos (MRR, caja, nuevo, churn)**, **conversaciones** y **«Te necesita»** con chips de **Aprobación**. **Studio edita por texto** (transcript a la izquierda, video vertical con subtítulos a la derecha, línea de tiempo abajo). **Ad Library** de referencias | **Valida la forma del organismo:** una sola barra, **Inbox + Recordings como entradas de Contexto**, **«Te necesita» = nuestro Decide**, **MRR/caja en Home** (solo CEO) y **Studio que edita desde el texto**. Nos quedamos con **la lógica**, no con tantas entradas: él tiene ~25 en la barra; nosotros, 6 |
+| **YC · «por qué fallan los harness de un solo jugador»** | Mesa redonda; el pie: *«sin una base de contexto compartida entre el equipo, tus agentes están ciegos»* | **Multi-jugador = contexto compartido**: todas las personas y agentes ven **el mismo hilo y las mismas decisiones**. Es **el hilo del cliente + el Contexto** (§ 6, 7). Falta **presencia** y **relevos** |
+| **Cloudflare «Code Mode»** *(pie de foto)* | El modelo **escribe código** que encadena herramientas en un espacio aislado y devuelve **solo el resultado**: **2,500 endpoints pasan de ~1.17 millones de tokens a ~1,000**. Anthropic tiene *Programmatic Tool Calling* | **Es la respuesta a «¿cómo usar mejor los MCPs?»**: no cargar todas las definiciones; **que el agente llame un resultado, no 40 herramientas**. Va en **Sistemas → Conexiones** (§ 7) |
+| **James · «how to token maxx»** | Usa **7 suscripciones de Claude Ultra y 1 de Codex Pro** y las sirve a sus productos con **CLIProxyAPI** (un servidor que las convierte en una API tipo OpenAI) | ⚠️ **No lo recomiendo.** Usar suscripciones personales como si fueran API **suele ir contra los términos de los proveedores** y puede costar la cuenta. **Nuestro camino es el seguro:** API keys y **modelos abiertos** por el gateway (§ 7) |
+
+---
+
+## 13 · Tus tres comentarios, respondidos
+
+**1 · «¿El Chat puede ser WhatsApp?»** **Sí, como canal, no como reemplazo.** El Chat es **una sola bandeja** donde caen **las conversaciones con agentes y las de afuera** (WhatsApp, Instagram, correo), como el «Inbox» de Valar. Alguien del equipo **le escribe al número del OS** (texto o nota de voz) y habla **con el mismo agente y el mismo Contexto** que en la app; la secretaria `00-account` **ya vive en WhatsApp** con los clientes. **Ojo:** WhatsApp Business exige **plantillas aprobadas** para escribirle primero a alguien fuera de 24 h, y su costo es por conversación; **hay que verificar el proveedor** (Zernio u otro) antes de prometerlo.
+
+**2 · «Management System es gobernanza, no una forma de manejar»** Corregido en § 0 y § 2: es **gobernanza que vive como reglas** (quién decide, a quién escala, qué mide cada rol), no una página de control.
+
+**3 · «Piensa en herramientas similares para los demás órganos»** Lo mismo que el Lead Engine: **combinaciones que no existen** y que nos dan ventaja, **cada una sobre algo que ya tenemos**:
+
+| Órgano | Herramienta de ventaja | Combina | Ya tenemos |
+|---|---|---|---|
+| **Pulso** | **«Te necesita» con reglas de gobernanza** y **resumen del lunes/viernes generado solo** | Decide + resultados + Blueprint (quién decide qué) | Decide, ciclo, entregables |
+| **Pulso** | **Extractor de compromisos de reuniones**: de cada call saca *qué se prometió, quién, para cuándo* y lo mete a Decide/Clientes | Transcript + hilo + tareas | Hilo, tareas |
+| **Contexto** | **Memoria del cliente**: una página viva por cliente (qué quiere, qué se le prometió, qué funcionó) que se arma sola | Reuniones + CRM + bandeja + entregables | Hilo, CRM, Zernio |
+| **Contexto** | **Bandeja unificada** (WhatsApp + IG + correo + agentes) | Zernio + Gmail + chat | Zernio inbox |
+| **Cerebro** | **Constructor de agentes con banco de pruebas**: antes de activar un agente lo corre contra casos reales y mide **calidad y costo** | Agentes + casos + gateway | Gateway, equipo de cocina |
+| **Cerebro** | **Router de costo**: cada tarea al modelo más barato que la resuelva bien, con tope visible | LiteLLM + presupuesto | Gateway |
+| **Manos** | **Lead Engine** (§ 5) | Scraping + ICP + Contexto + correo | CRM, Apify |
+| **Manos** | **Registro de atribución** y cálculo de *success fees* | CRM + cobros + reglas del Blueprint | CRM, facturas |
+| **Manos** | **Propuesta automática**: de la llamada y la ficha sale la propuesta con **alcance primero, precio después** | Transcript + ficha + precios | Cotizador |
+| **Manos** | **Presentación del día 20 que se arma sola** | Resultados + piezas + hilo | Entregables, portal |
+| **Manos** | **Constructor de video** (§ 9, con la lógica de HAUS y Plotline) | Remotion + ffmpeg + transcript | Motor de video |
+| **Manos** | **Inherent Media**: podcast → transcript → momentos → clips → distribución | Constructor de video + Zernio | Posting |
+| **Manos** | **Onboarding en piloto automático**: del contrato salen carpetas, ficha, hilo y primeras tareas | Workflows + ficha | Motor de workflows |
+
+> **Criterio para meter cualquier herramienta nueva:** (1) cambia una decisión o ahorra horas de verdad, (2) usa datos que **ya** están en el organismo, (3) **no** existe ya hecha a un costo razonable, (4) **no sube el costo operativo** (modelo barato, sin servicio pago nuevo).
+
+---
+
+## 14 · Codex y el ahorro de créditos
+
+- **En la nube (esta sesión):** no conecté Codex. La clave que quedó guardada **no es una API key válida de OpenAI** (OpenAI la rechaza: debe empezar con `sk-`). Y aunque lo fuera, **una API key se cobra por uso**; tu cuenta *edu* no tiene por qué darte créditos de API.
+- **El camino que sí ahorra:** **Codex en tu Mac**, donde ya inició sesión con tu plan. Lo preparé: `ceo-os/AGENTS.md` (le dice a Codex las reglas del repo) y `ceo-os/scripts/codex-delegar.sh` (una orden: crea una rama, corre Codex y deja el resultado para revisar). **Yo reviso lo que Codex haga antes de integrarlo.**
+
