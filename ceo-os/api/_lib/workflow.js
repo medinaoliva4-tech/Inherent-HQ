@@ -161,6 +161,21 @@ async function recuperar(run, def, { adaptadores, ahora }) {
   return db.get(COLL_RUN, run.id);
 }
 
+// ---------- El despertador: qué corridas ya toca avanzar ----------
+// Una corrida está «vencida» si tiene un paso listo (y su espera de reintento ya pasó) o un lease que murió. Las que esperan a una persona NO.
+// → [{ run, def, pasosListos }] por antigüedad, hasta `limite`. No ejecuta nada: eso lo hace avanzar().
+export async function corridasVencidas({ ahora = Date.now(), limite = 20 } = {}) {
+  const out = [];
+  for (const run of await db.list(COLL_RUN)) {
+    if (!['en_cola', 'corriendo'].includes(run.estado)) continue;
+    const def = await defDe(run); if (!def) continue;
+    const muerto = def.pasos.some((p) => run.pasos[p.id]?.estado === 'corriendo' && run.pasos[p.id].lease?.exp < ahora);
+    const pasosListos = listos(def, run).filter((p) => !(run.pasos[p.id].no_antes > ahora));
+    if (muerto || pasosListos.length) out.push({ run, def, pasosListos });
+  }
+  return out.sort((a, z) => String(a.run._meta?.created_at).localeCompare(String(z.run._meta?.created_at))).slice(0, limite);
+}
+
 // ---------- Personas: aprobar y cancelar ----------
 export async function aprobar(u, runId, pasoId, { hash: h, v }) {
   const run = await db.get(COLL_RUN, runId); if (!run) fail(404, 'NO_EXISTE', 'No existe esa corrida');

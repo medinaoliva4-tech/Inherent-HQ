@@ -43,12 +43,15 @@ export async function decisionesDe(u, { hoy = new Date(), ahora = Date.now() } =
   return ordenar(items, { hoy, ahora });
 }
 
+// El reloj se inyecta solo en pruebas (configurar({ hoy })). La ruta NO acepta fecha por parámetro: nadie adelanta el ciclo desde afuera.
+const deps = { hoy: null };
+export function configurar(o = {}) { Object.assign(deps, o); }
+
 export function rutas(on) {
   on('GET', 'decide', async (req, res) => {
     const u = await guardAny(req, res, AREAS); if (!u) return;
     if (u.role === 'client') return res.status(403).json({ error: 'Sin acceso' });
-    const hoy = req.query?.hoy && /^\d{4}-\d{2}-\d{2}$/.test(req.query.hoy) ? req.query.hoy : new Date();
-    const items = await decisionesDe(u, { hoy });
+    const items = await decisionesDe(u, deps.hoy ? { hoy: deps.hoy() } : {});
     res.json({ items, total: items.length });
   });
 

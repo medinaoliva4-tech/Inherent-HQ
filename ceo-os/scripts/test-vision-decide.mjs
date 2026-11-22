@@ -64,7 +64,8 @@ await test('las acciones: lo que el servidor no dice que se puede, no se puede; 
 
 // ---------- El servidor ----------
 const db = await import('../api/_lib/db.js'), session = await import('../api/_lib/session.js');
-const api = (await import('../api/index.js')).default;
+const api = (await import('../api/index.js')).default, decideSrv = await import('../api/_lib/decide.js');
+decideSrv.configurar({ hoy: () => '2026-11-08' }); // el reloj entra por inyección, no por la URL
 const email = (r) => `${r}@inherentglobal.com`;
 async function request(role, route, method = 'GET', body = {}) {
   const headers = { host: 'localhost', 'x-ceoos': '1' }, jar = new Map();
@@ -82,13 +83,22 @@ const moodboard = await db.create('deliverables', { ...base, tool: 'moodboard-st
 const icp = await db.create('deliverables', { ...base, tool: 'customer-bullseye', ws: 'strategy', pestana: 'research', titulo: 'ICP', estado: 'En revisión' }, 'fixture');
 await db.create('deliverables', { ...base, tool: 'moodboard-studio', ws: 'creative', pestana: 'concepts', titulo: 'Borrador suelto', estado: 'Borrador' }, 'fixture');
 
+await test('el reloj NO se puede mover por la URL: ?hoy= se ignora', async () => {
+  decideSrv.configurar({ hoy: () => '2026-11-06' });
+  const a = await request('ceo', 'decide?hoy=2026-11-20'); decideSrv.configurar({ hoy: () => '2026-11-20' }); const b = await request('ceo', 'decide?hoy=2026-11-06');
+  const pr = (r) => r.data.items.map((x) => [x.id, x.prioridad.puntos].join(':')).join();
+  assert.notEqual(pr(a), pr(b), 'manda el reloj inyectado, no el parámetro');
+  decideSrv.configurar({ hoy: () => '2026-11-06' }); const c = await request('ceo', 'decide?hoy=2026-11-20'), d = await request('ceo', 'decide'); assert.equal(pr(c), pr(d));
+  decideSrv.configurar({ hoy: () => '2026-11-08' });
+});
 await test('GET /api/decide: cada rol ve SOLO lo que le toca decidir (el ICP es del CEO; el moodboard, del COO también)', async () => {
-  const ceo = await request('ceo', 'decide?hoy=2026-11-08'), coo = await request('coo', 'decide?hoy=2026-11-08');
+  const ceo = await request('ceo', 'decide'), coo = await request('coo', 'decide');
   assert.deepEqual(ceo.data.items.map((x) => x.id).sort(), [icp.id, moodboard.id].sort());
   assert.deepEqual(coo.data.items.map((x) => x.id), [moodboard.id]);
   const m = coo.data.items[0]; assert.equal(m.puede.aprobar, true); assert.equal(m.puede.escalar, true); assert.ok(m.prioridad.puntos > 0);
   assert.equal(ceo.data.items.find((x) => x.id === icp.id).puede.escalar, false, 'el CEO no escala hacia arriba');
 });
+decideSrv.configurar({ hoy: null }); // el resto corre con el reloj real, como en producción
 await test('aprobar pasa por el servidor: sin la versión leída, 400; con una vieja, 409; con la buena, queda Aprobado y sale de Decide', async () => {
   assert.equal((await request('coo', `entregables/${moodboard.id}/estado`, 'POST', { a: 'Aprobado' })).data.code, 'FALTA_V');
   const mal = await request('coo', `entregables/${moodboard.id}/estado`, 'POST', { a: 'Aprobado', v: 999 }); assert.equal(mal.status, 409); assert.equal(mal.data.code, 'CONFLICTO');

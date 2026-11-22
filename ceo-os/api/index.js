@@ -33,6 +33,7 @@ import * as ideacion from './_lib/ideacion.js';
 import * as contextoVivo from './_lib/contexto-vivo.js';
 import * as canales from './_lib/canales.js';
 import * as leadEngine from './_lib/lead-engine.js';
+import * as tick from './_lib/tick.js';
 import * as creacion from './_lib/creacion.js';
 import * as planMes from './_lib/plan.js';
 import * as campanas from './_lib/campanas.js';
@@ -1193,7 +1194,10 @@ agentesBanco.rutas(on);
 ideacion.rutas(on);
 contextoVivo.rutas(on);
 canales.rutas(on);
+// El gateway del Chat entra a los canales por inyección. `transcribir` queda sin conectar a propósito: el servidor no tiene voz→texto; sin él el bot lo dice.
+canales.configurar({ responder: (texto, u) => chat.responderPorCanal(texto, u) });
 leadEngine.rutas(on);
+tick.rutas(on);
 // ---------- App 01 · Marca › Crear: formatos (plantillas) y guiones ----------
 creacion.rutas(on);
 planMes.rutas(on);

@@ -10,6 +10,7 @@ import { pendiente, seguir } from '../../gateway/ventanas.mjs';
 //   { owner, title, modo, mensajes: [{ role: 'user'|'assistant', content, at, tools?, modelo? }],
 //     turno: { estado: en_cola|trabajando|listo|error|detenido, at, modelo, sistema, esfuerzo, error?, gw? },
 //     resumen?: { hasta, texto } }   ← lo viejo resumido cuando la conversación ya no cabe en el contexto (D7)
+import crypto from 'node:crypto';
 import * as db from './db.js';
 import { guard } from './access.js';
 import { body } from './http.js';
@@ -31,6 +32,37 @@ const txt = (s, n) => String(s ?? '').slice(0, n);
 const ahora = () => new Date().toISOString();
 const MAX_MSGS = 400, MAX_MSG = 60000;
 const enLinea = (g) => Boolean(g?.at && Date.now() - Date.parse(g.at) < 90 * 1000);
+
+// ---------- Canales (Telegram/WhatsApp) → el mismo Chat ----------
+// canales.js recibe un texto de una persona vinculada y lo manda aquí (inyectado en api/index.js). Es el MISMO camino que la web:
+// un turno «en_cola» en una conversación de esa persona, que responde el trabajador del servidor. Sin servidor en línea se dice, no se finge.
+// Una conversación oculta por persona (no sale en su lista del Chat); es de ella y de nadie más. Sin llaves nuevas.
+const dormirMs = (ms) => new Promise((r) => setTimeout(r, ms));
+export const idCanal = (email) => `inh-libre-general-canal${crypto.createHash('sha256').update(lc(email)).digest('hex').slice(0, 16)}`;
+export async function responderPorCanal(texto, u, { esperaMs = 45_000, cadaMs = 1500, dormir = dormirMs } = {}) {
+  if (!u?.email || u.role === 'client') return 'No puedo atenderte por aquí.';
+  const mensaje = txt(texto, MAX_MSG).trim(); if (!mensaje) return '';
+  const g = await db.get(GW, 'vps').catch(() => null);
+  if (!enLinea(g) || !(g.modelos || []).length) return 'El Chat del servidor no está en línea ahora. Intenta más tarde o ábrelo en el OS.';
+  const id = idCanal(u.email);
+  let s = await db.get(COLL, id);
+  if (!s) s = await db.create(COLL, { owner: lc(u.email), title: 'Mensajería', modo: 'libre', mensajes: [], turno: null, archivado: false, oculto: true }, u.email, id).catch(() => db.get(COLL, id));
+  if (!s || lc(s.owner) !== lc(u.email)) return 'No pude abrir tu conversación. Ábrela en el OS.';
+  if (['en_cola', 'trabajando'].includes(s.turno?.estado)) return 'Todavía estoy respondiendo lo anterior. Dame un momento.';
+  const mensajes = [...(s.mensajes || []), { role: 'user', content: mensaje, at: ahora(), canal: true }].slice(-MAX_MSGS);
+  const empresa = await saberEmpresa(u).catch(() => '');
+  const { id: _i, v, _meta, ...datos } = s;
+  const d = await db.update(COLL, id, { ...datos, mensajes, turno: { estado: 'en_cola', at: ahora(), modelo: g.modelos[0], sistema: empresa, esfuerzo: '', desde: mensajes.length } }, v, u.email);
+  if (!d) return 'Estaba ocupado con otro mensaje. Vuelve a intentar.';
+  const desde = mensajes.length;
+  for (let t = 0; t <= esperaMs; t += cadaMs) {
+    await dormir(cadaMs);
+    const c = await db.get(COLL, id), est = c?.turno?.estado;
+    if (est === 'listo') { const r = (c.mensajes || []).slice(desde - 1).reverse().find((m) => m.role === 'assistant' && m.content && !m.parcial); return r ? txt(r.content, 3500) : 'No tengo respuesta para eso.'; }
+    if (est === 'error' || est === 'detenido') return 'No pude responder ahora. Intenta de nuevo.';
+  }
+  return 'Sigo trabajando en eso. Cuando termine, lo verás en el Chat del OS.';
+}
 
 const resumenSesion = (s, runs = []) => {
   const ult = [...(s.mensajes || [])].reverse().find((m) => m.role === 'user');

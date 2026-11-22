@@ -19,10 +19,12 @@ Qué hace: te muestra lo que espera por ti y te deja **Aprobar** o **Pedir cambi
 
 Qué **no** hace: pauta, presupuesto y precio **nunca** se resuelven por mensaje (solo «Abrir en el OS»). Solo habla con gente vinculada (los demás: silencio). Un cliente del portal no recibe nada de aquí. No manda costos ni notas internas.
 
-## Falta conectar (lo hace quien integre)
+## Conectado y lo que falta
 
-- `configurar({ responder, transcribir })` en `canales.js`: `responder(texto, usuario)` es el gateway del Chat; `transcribir({canal, archivoId, usuario})` convierte la nota de voz en texto. Sin ellos el bot responde «El chat aún no está conectado a este canal» y lo registra.
-- `enviarDecision(email, item)` y `enviarAviso(email, texto)` están listos para que Avisos/Decide empujen mensajes; hoy nadie los llama.
+- **Texto libre → Chat: conectado** (`api/index.js` inyecta `responderPorCanal` de `chat.js`). El mensaje entra como un turno «en cola» en una conversación **oculta** de esa persona (la misma ruta que la web); lo responde el trabajador del servidor y la respuesta vuelve al canal. Sin servidor en línea dice «El Chat del servidor no está en línea ahora». Si tarda más de 45 s: «Sigo trabajando… lo verás en el Chat del OS».
+- **Notas de voz: sin conectar a propósito.** El servidor no tiene voz→texto; `configurar({ transcribir })` queda libre. Sin él, el bot lo dice («Aún no entiendo notas de voz»).
+- **Decide → Telegram: conectado** vía `avisarDecisiones()`, que corre en cada pasada del despertador (`docs/DESPERTADOR.md`). Una vez por versión, solo con `TELEGRAM_BOT_TOKEN` y chat vinculado. Hasta agendar el despertador, no sale solo.
+- `enviarDecision(email, item)` y `enviarAviso(email, texto)` siguen disponibles para empujar un mensaje puntual.
 
 ## WhatsApp (adaptador mínimo)
 

@@ -5,7 +5,7 @@
 //   · pauta, presupuesto y precio NUNCA se resuelven por mensaje: el botón es «Abrir en el OS»;
 //   · los botones llevan firma (HMAC) atada a acción + entregable + versión + chat; los secretos vienen del entorno y nunca se devuelven ni se registran;
 //   · WhatsApp: solo API oficial (Cloud API), y solo se escribe dentro de las 24 h del último mensaje de la persona; iMessage: sin API de servidor, no se construye.
-// Colecciones propias (no salen por /api/db): canal_vinculos, canal_codigos, canal_pendientes.
+// Colecciones propias (no salen por /api/db): canal_vinculos, canal_codigos, canal_pendientes, canal_avisados (qué decisión ya se avisó, por versión).
 import crypto from 'node:crypto';
 import * as db from './db.js';
 import * as session from './session.js';
@@ -16,7 +16,7 @@ import { VACIO } from '../../public/js/decide.js';
 import { COLL } from '../../public/js/entregables.js';
 import * as M from '../../public/js/canales/mensajeria.js';
 
-export const COLL_V = 'canal_vinculos', COLL_C = 'canal_codigos', COLL_P = 'canal_pendientes', CANALES = ['telegram', 'whatsapp', 'imessage'];
+export const COLL_V = 'canal_vinculos', COLL_C = 'canal_codigos', COLL_P = 'canal_pendientes', COLL_A = 'canal_avisados', CANALES = ['telegram', 'whatsapp', 'imessage'];
 const TTL_CODIGO = 10 * 60_000, ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', MAX_TARJETAS = 3;
 const env = (k) => String(process.env[k] || '').trim();
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex');
@@ -195,10 +195,10 @@ export async function tratar(m) {
 }
 
 // ---------- Salida hacia el equipo ----------
-async function aVinculos(usuarioOS, armar, pendiente) {
+async function aVinculos(usuarioOS, armar, pendiente, canal = '') {
   const u = await persona(usuarioOS), res = { enviados: 0, motivo: '' };
   if (!u) return { ...res, motivo: 'sin_permiso' };
-  const vs = await vinculosDe(u.email); if (!vs.length) return { ...res, motivo: 'sin_vinculo' };
+  const vs = await vinculosDe(u.email, canal); if (!vs.length) return { ...res, motivo: 'sin_vinculo' };
   for (const v of vs) {
     if (v.canal === 'whatsapp' && !M.ventana24h(v.ultimo_entrante, deps.ahora())) { // fuera de 24 h haría falta una plantilla aprobada por Meta: queda pendiente
       if ((await db.list(COLL_P)).filter((p) => lc(p.email) === lc(u.email) && !p.entregado).length < 20) await db.create(COLL_P, { email: lc(u.email), canal: 'whatsapp', ...pendiente, entregado: false }, 'canales');
@@ -209,10 +209,30 @@ async function aVinculos(usuarioOS, armar, pendiente) {
   return res;
 }
 // Solo sale lo que está en las decisiones DE ESA persona (el servidor trae la versión fresca; lo ajeno no sale).
-export async function enviarDecision(usuarioOS, item) {
+export async function enviarDecision(usuarioOS, item, { canal = '' } = {}) {
   const u = await persona(usuarioOS); if (!u) return { enviados: 0, motivo: 'sin_permiso' };
   const mia = (await decisionesDe(u)).find((x) => x.id === item?.id); if (!mia) return { enviados: 0, motivo: 'no_es_tuya' };
-  return aVinculos(u.email, (v) => tarjetas([mia], v.chatId, v.canal), { tipo: 'decision', ref: mia.id });
+  return aVinculos(u.email, (v) => tarjetas([mia], v.chatId, v.canal), { tipo: 'decision', ref: mia.id }, canal);
+}
+// «Hay algo nuevo en Decide»: a cada persona con Telegram vinculado le llega UNA vez cada decisión (por versión; escalar o editar es otra decisión).
+// Solo con TELEGRAM_BOT_TOKEN listo y un chat vinculado; si no, no hace nada y dice por qué. Máx. 3 por persona por corrida (el resto, en la siguiente).
+export async function avisarDecisiones() {
+  const cap = adaptadores.telegram.capability(); if (cap.estado === 'disconnected') return { enviados: 0, motivo: 'sin_telegram', razon: cap.razon };
+  const emails = [...new Set((await db.list(COLL_V)).filter((x) => x.canal === 'telegram').map((x) => lc(x.email)))];
+  if (!emails.length) return { enviados: 0, motivo: 'sin_vinculos' };
+  const res = { enviados: 0, personas: 0, motivo: '' };
+  for (const email of emails) {
+    const u = await persona(email); if (!u) continue;
+    const nuevos = [];
+    for (const it of await decisionesDe(u)) { const id = sha(`${lc(email)}|${it.id}|${it.version}|${it.escaladoPor || ''}`).slice(0, 40); if (!(await db.get(COLL_A, id))) nuevos.push({ it, id }); }
+    let n = 0;
+    for (const { it, id } of nuevos.slice(0, MAX_TARJETAS)) {
+      const r = await enviarDecision(email, it, { canal: 'telegram' });
+      if (r.enviados > 0) { n += r.enviados; await db.create(COLL_A, { email: lc(email), decision: it.id, version: it.version }, 'canales', id).catch(() => null); } // solo se marca lo que SÍ salió
+    }
+    if (n) { res.enviados += n; res.personas++; }
+  }
+  return res;
 }
 export async function enviarAviso(usuarioOS, texto) {
   const t = M.limpio(texto, 600); if (!t) return { enviados: 0, motivo: 'vacio' };
