@@ -10291,3 +10291,19 @@ html[data-pantalla="chat"] .llm-side .ch-side-footer{flex:none;margin-top:auto;p
 .sl-vistas .btn[aria-pressed="false"]:hover,.sl-barra:nth-child(2) .btn:hover{background:var(--ui-fill2)}
 html{background:var(--ui-bg)}
 html::before,html::after{display:none}
+
+/* ---------- Decide (#/decide): lo que solo tú puedes resolver ---------- */
+.dec{display:grid;gap:20px;max-width:760px;margin:0 auto;padding:24px 16px 96px}
+.dec-h h1{margin:0;font-size:var(--fs-10);font-weight:300;letter-spacing:-.02em}.dec-h p{margin:4px 0 0;color:var(--ui-mut);font-size:var(--fs-5)}
+.dec-ciclo{display:grid;gap:8px;padding:14px 16px;border:1px solid var(--ui-line);border-radius:var(--r-3);background:var(--ui-surf)}
+.dec-ciclo-t{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:var(--fs-4)}.dec-ciclo-t b{font-size:var(--fs-6)}.dec-ciclo-t span{color:var(--ui-mut)}
+.dec-ciclo-r{display:grid;grid-template-columns:repeat(20,1fr);gap:3px;align-items:end;height:22px}
+.dec-ciclo-r i{display:block;height:8px;border-radius:var(--r-pill);background:var(--ui-fill2)}
+.dec-ciclo-r i.pasado{background:var(--ui-mut2)}.dec-ciclo-r i.hito{height:16px}
+.dec-ciclo-r i.hoy{height:22px;background:var(--ui-ink)}.dec-ciclo-r i[data-presion="1"]{background:var(--ui-amb-f)}.dec-ciclo-r i[data-presion="2"]{background:var(--ui-bad)}
+.dec-l{display:grid;gap:14px}.dec-card{padding:20px}.dec-aviso{color:var(--ui-amb-t);font-size:var(--fs-4)}
+.dec-vacio{margin:32px 0;text-align:center;font-size:var(--fs-8);color:var(--ui-ink2)}.dec-resto{text-align:center;color:var(--ui-mut);font-size:var(--fs-4)}
+.dec-error{padding:12px 14px;border-radius:var(--r-3);background:var(--ui-bad-bg);color:var(--ui-bad)}
+@media(max-width:760px){.dec{padding:16px 16px 120px}.dec-h h1{font-size:var(--fs-9)}.dec-card .kit-actions .kit-button{flex:1 1 100%;min-height:44px}}
+.dec-faltas{margin:12px 0 0;color:var(--ui-ink2);font-size:var(--fs-4)}.dec-faltas p{margin:0 0 6px}.dec-faltas summary{cursor:pointer;color:var(--ui-mut)}.dec-faltas ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+.dec-card .kit-status{min-height:0;margin:0}.dec-card .kit-actions{margin:14px 0 0}

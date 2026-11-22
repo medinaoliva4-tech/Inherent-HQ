@@ -113,7 +113,7 @@ const hasOrg = () => me.role !== 'client' && ORG_AREAS.some((a) => me.areas.incl
 const sees = (k) => {
   if (k === 'me') return true;
   if (me.role === 'client') return k === 'portal';
-  if (['avisos', 'home', 'calendario', 'chat', 'ai', 'agentes', 'ajustes', 'vision'].includes(k)) return true;
+  if (['avisos', 'home', 'decide', 'calendario', 'chat', 'ai', 'agentes', 'ajustes', 'vision'].includes(k)) return true;
   if (k === 'setup') return me.role === 'ceo';
   if (k === 'services') return me.areas.includes('sales');
   if (k === 'areas') return me.role !== 'client' && AREAS.some((a) => puedeVerArea(me, a.id));
@@ -126,6 +126,7 @@ const sees = (k) => {
 // Home, Calendario y Library son ítems de primer nivel (sin flecha). Library conserva su regla de siempre (area('library')).
 const NAV = [
   { id: 'home', nombre: 'Hoy', ruta: 'home', icono: 'nav-home', ve: equipo },
+  { id: 'decide', nombre: 'Decide', ruta: 'decide', icono: 'check', ve: equipo },
   { id: 'chat', nombre: 'Chat', ruta: 'chat', icono: 'chat-ia', ve: equipo, oculto: true }, // se abre desde el selector de workspace
   { id: 'agentes', nombre: 'Agentes', ruta: 'ai/agentes', icono: 'agents', ve: equipo },
   { id: 'calendario', nombre: 'Calendario', ruta: 'calendario', icono: 'calendar', ve: equipo },
@@ -173,9 +174,9 @@ function paginaDe(url) {
 // equipo) vale el prefijo de su ruta.
 const grupoEnRuta = (n, url) => { const pag = paginaDe(url); return pag ? pag[1] === n : enRuta(url, n.ruta); };
 
-const SCREENS = { ws: 'workspace', me: 'me', avisos: 'avisos', home: 'home', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', agentes: 'agentes', ajustes: 'ajustes', areas: 'areas', calendario: 'calendario' };
+const SCREENS = { ws: 'workspace', me: 'me', avisos: 'avisos', home: 'home', decide: 'decide', work: 'work', finanzas: 'finance', sales: 'sales', services: 'services', operations: 'operations', roadmap: 'roadmap', clients: 'clients', library: 'library', team: 'team', setup: 'setup', portal: 'portal', vision: 'vision', chat: 'llm', ai: 'harness', agentes: 'agentes', ajustes: 'ajustes', areas: 'areas', calendario: 'calendario' };
 // El nombre de cada pantalla (lo que recibe en `label`): los de NAV, más las que no están en la barra.
-const LABEL = { ajustes: 'Ajustes', agentes: 'Agentes', me: 'Mi perfil', avisos: 'Avisos', portal: 'Mi portal', chat: 'Chat', ai: 'Inherent AI', areas: 'Áreas', home: 'Home', calendario: 'Calendario' };
+const LABEL = { ajustes: 'Ajustes', agentes: 'Agentes', me: 'Mi perfil', avisos: 'Avisos', decide: 'Decide', portal: 'Mi portal', chat: 'Chat', ai: 'Inherent AI', areas: 'Áreas', home: 'Home', calendario: 'Calendario' };
 for (const n of NAV) for (const [, nombre, ruta] of todasDe(n)) { const m = /^org\/([\w-]+)$/.exec(ruta); if (m && !LABEL[m[1]]) LABEL[m[1]] = nombre; }
 // La capa de cada pantalla (html[data-capa]): home · calendario · org · ai · areas · '' (Mi perfil, Avisos, el portal).
 const capaDe = (k) => (k === 'home' ? 'home' : k === 'calendario' ? 'calendario' : k === 'areas' || k === 'ws' ? 'areas' : k === 'chat' || k === 'ai' || k === 'agentes' ? 'ai' : ORG_SCREENS.includes(k) ? 'org' : '');
@@ -237,6 +238,7 @@ function resolve(path) {
   if (a === 'me') return { key: 'me', rest: parts.slice(1), url: parts.join('/') };
   if (a === 'avisos') return sees('avisos') ? { key: 'avisos', rest: [], url: 'avisos' } : fallback();
   if (a === 'home') return sees('home') ? { key: 'home', rest: [], url: 'home' } : fallback();
+  if (a === 'decide') return sees('decide') && me.role !== 'client' ? { key: 'decide', rest: [], url: 'decide' } : fallback();
   // Calendario: #/calendario/trabajo (el de trabajo) o #/calendario/contenido[/<marca>]; sin vista abre Trabajo. La pantalla recibe
   // sub[0] = la vista y sub[1] = la marca (si viene).
   if (a === 'calendario') {
@@ -268,7 +270,7 @@ function resolve(path) {
   return { key, rest: org.slice(1), url: 'org/' + org.join('/') };
 }
 // Una ruta guardada que todavía puede abrir (solo la forma; el permiso lo revisa resolve, sin volver a landing).
-const esRutaViva = (r) => /^(home|calendario|ai|chat|avisos|me|areas)(\/|$)|^(org|ws)\/./.test(r || '');
+const esRutaViva = (r) => /^(home|decide|calendario|ai|chat|avisos|me|areas)(\/|$)|^(org|ws)\/./.test(r || '');
 // Dónde abre la app: la última ruta, o lo que el CEO decidió para el perfil (me.start) → Home, una sección o un área.
 function landing(useLast = true) {
   if (me.role === 'client') return 'portal';
