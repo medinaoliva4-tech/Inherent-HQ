@@ -43,7 +43,9 @@ import { pintarVentana, abrirDocumento } from '../agentes-ventana.js';
 import { activa, completo, enServidor as etapaEnServidor, faltaAporte } from '../agentes-flujos.js';
 import { cargarContexto } from '../contexto.js';
 import { modoDeArea } from '../agentes-chat-datos.js';
-import { partirUi, uiHtml, lectorUi, lectorFallo, sinUi, PROMPT_GENUI } from '../llm/genui.js'; // OpenUI: la interfaz que dibuja el modelo
+import { partirUi, uiHtml, lectorUi, lectorFallo, sinUi, PROMPT_GENUI as PROMPT_GENUI_BASE } from '../llm/genui.js';
+import { PROMPT_INTENT } from '../llm/intent.js'; // Intent-to-Interface: primero qué quiere lograr, después la forma
+const PROMPT_GENUI = `${PROMPT_GENUI_BASE}\n\n${PROMPT_INTENT}`; // OpenUI: la interfaz que dibuja el modelo
 const LLAVE_LENTE = 'os.llm.lente';
 const lenteOn = () => { try { return localStorage.getItem(LLAVE_LENTE) === '1'; } catch { return false; } };
 
