@@ -55,7 +55,8 @@
     "test:aviso": "node scripts/test-aviso-actualizacion.mjs",
     "test:laya": "node scripts/test-laya-rapido.mjs",
     "test:openui": "node scripts/test-openui.mjs",
-    "test:capacidades": "node scripts/test-capacidades.mjs"
+    "test:capacidades": "node scripts/test-capacidades.mjs",
+    "test:vision-icp-texto": "node scripts/test-vision-icp-texto.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
